@@ -1395,7 +1395,7 @@ table tr.trHeader th {
 .fullwidth {width:100%;}
 .mtop5 {margin-top:5px;}
 .mbot5 {margin-bottom:5px;}
-#taskGrid table.table tr.FirstRow td, #taskGrid table.table tr.AlternateRow td, #taskGrid table.table tr.dark-gray-background td {border-right: 1px solid #FFF; padding: 0 0 0 4px;}
+#taskGrid,#divSubTaskGrid table.table tr.FirstRow td, #taskGrid,#divSubTaskGrid table.table tr.AlternateRow td, #taskGrid,#divSubTaskGrid table.table tr.dark-gray-background td {border-right: 1px solid #FFF; padding: 0 0 0 4px;}
 .ajax__html_editor_extender_container {background-color: white; margin-bottom: 10px;max-width: 755px;}
 .taskHtmlContent {padding: 2px 2px 2px 2px; border: 1px solid #c2c2c2;background-color: white;height:150px; overflow:auto; }
 .tasklistfieldset {     border-width: 1px;

@@ -111,12 +111,6 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region "--Page methods--"
 
-        protected void Page_Init(object sender, EventArgs e)
-        {
-            gvSubTasks.DataBind();
-        }
-
-
         protected void Page_Load(object sender, EventArgs e)
         {
             ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
@@ -171,6 +165,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
+
         protected void lbtnAddNew_Click(object sender, EventArgs e)
         {
             clearAllFormData();
@@ -186,6 +181,8 @@ namespace JG_Prospect.Sr_App.Controls
             ddlTUStatus.DataTextField = "Text";
             ddlTUStatus.DataValueField = "Value";
             ddlTUStatus.DataBind();
+
+            this.LastSubTaskSequence = string.Empty;
 
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "open popup", "EditTask(0,\"Add New Task\");", true);
         }
@@ -254,7 +251,14 @@ namespace JG_Prospect.Sr_App.Controls
                         lbtnRequestStatus.Visible = true;
                         ddcbAssigned.Visible =
                         hypUsers.Visible = false;
-                        lbtnRequestStatus.Text = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignmentRequestUsers")).Split(':')[1];
+
+                        String[] status = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignmentRequestUsers")).Split(':');
+
+                        if (status.Length > 1)
+                        {
+                            lbtnRequestStatus.Text = status[1]; 
+                        }
+
                         lbtnRequestStatus.ForeColor = System.Drawing.Color.Red;
                         lbtnRequestStatus.CommandName = "approve-request";
                         lbtnRequestStatus.CommandArgument = DataBinder.Eval(e.Row.DataItem, "TaskId").ToString() + ":" + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignmentRequestUsers")).Split(':')[0];
@@ -441,7 +445,43 @@ namespace JG_Prospect.Sr_App.Controls
         #endregion
 
         #region Popup - Add / Edit Task
-        
+
+        protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "DownloadFile")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+        }
+
+        protected void rptAttachment_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = e.Item.DataItem.ToString();
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+
+                if (files[1].Length > 9)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat( files[1].Substring(0, 8), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+                    
+                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                }
+                else
+                {
+                    lbtnAttchment.Text =  files[1];
+                }
+
+                lbtnAttchment.CommandArgument = file;
+
+            }
+        }
 
         protected void gvSubTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -452,38 +492,10 @@ namespace JG_Prospect.Sr_App.Controls
                     string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
                     string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    int i = 1;
+                    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
+                    rptAttachments.DataSource = attachment;
+                    rptAttachments.DataBind();
 
-                    foreach (String file in attachment)
-                    {
-                        string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        HtmlAnchor lbtnAttchment = new HtmlAnchor();
-
-                        if (files[1].Length > 6)// sort name with ....
-                        {
-                            lbtnAttchment.InnerHtml =  String.Concat(i,". ",files[1].Substring(0,5),"..");
-                            lbtnAttchment.Attributes.Add("title", files[1]);
-                        }
-                        else
-                        {
-                            lbtnAttchment.InnerHtml = String.Concat(i,". ",files[1]);
-                        }
-
-                       lbtnAttchment.HRef = "javascript:void(0);";
-
-                       lbtnAttchment.Attributes.Add("onclick", string.Concat("javascript:downloadfile('",files[0],"','",files[1],"');")); 
-                        
-                        e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(lbtnAttchment);
-
-                        if (attachment.Length > 1)
-                        {
-                            HtmlGenericControl br = new HtmlGenericControl();
-                            br.InnerHtml = "<br>";
-                            e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(br); 
-                        }
-                        i++;
-                    }
                 }
 
             }
@@ -770,12 +782,22 @@ namespace JG_Prospect.Sr_App.Controls
         /// </summary>
         private void LoadPopupDropdown()
         {
+            BindTaskTypeDropDown();
             //DataSet dsdesign = TaskGeneratorBLL.Instance.GetInstallUsers(1, "");
             //DataSet ds = TaskGeneratorBLL.Instance.GetTaskUserDetails(1);
             //ddlUserDesignation.DataSource = dsdesign;
             //ddlUserDesignation.DataTextField = "Designation";
             //ddlUserDesignation.DataValueField = "Designation";
             //ddlUserDesignation.DataBind();
+        }
+
+        private void BindTaskTypeDropDown()
+        {
+            ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
+
+            ddlTaskType.DataTextField = "Text";
+            ddlTaskType.DataValueField = "Value";
+            ddlTaskType.DataBind();
         }
 
         private void DeletaTask(string TaskId)
@@ -1097,7 +1119,10 @@ namespace JG_Prospect.Sr_App.Controls
             txtSubTaskDescription.Text =
             txtSubTaskDueDate.Text =
             txtSubTaskHours.Text = string.Empty;
-            ddlTaskType.SelectedIndex = 0;
+            if (ddlTaskType.Items.Count > 0)
+            {
+                ddlTaskType.SelectedIndex = 0; 
+            }
             upAddSubTask.Update();
         }
 
@@ -1192,7 +1217,7 @@ namespace JG_Prospect.Sr_App.Controls
                 UploadUserAttachements(null, ItaskId, task.Attachment);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
-
+            hdnAttachments.Value = string.Empty;
             ClearSubTaskData();
         }
 
@@ -1341,8 +1366,17 @@ namespace JG_Prospect.Sr_App.Controls
             if (!String.IsNullOrEmpty(attachments))
             {
                 TaskUser taskUserFiles = new TaskUser();
+                String[] files;
 
-                String[] files = hdnAttachments.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+                if (!string.IsNullOrEmpty(attachments))
+                {
+                    files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+                }
+                else
+                {
+                    files = hdnAttachments.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+                }
+                 
 
                 foreach (String attachment in files)
                 {
@@ -1820,11 +1854,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void SetSubTaskDetails(DataTable dtSubTaskDetails)
         {
-            ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
-
-            ddlTaskType.DataTextField = "Text";
-            ddlTaskType.DataValueField = "Value";
-            ddlTaskType.DataBind();
+            
 
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
@@ -1833,6 +1863,10 @@ namespace JG_Prospect.Sr_App.Controls
             if (dtSubTaskDetails.Rows.Count > 0)
             {
                 this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+            }
+            else
+            {
+                this.LastSubTaskSequence = String.Empty;
             }
         }
 
@@ -1937,9 +1971,11 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void DownloadUserAttachment(String File, String OriginalFileName)
         {
+            Response.Clear();            
             Response.ContentType = "application/octet-stream";
             Response.AppendHeader("Content-Disposition", String.Concat("attachment; filename=", OriginalFileName));
-            Response.TransmitFile(Server.MapPath("~/TaskAttachments/" + File));
+            Response.WriteFile(Server.MapPath("~/TaskAttachments/" + File));
+            Response.Flush();
             Response.End();
         }
 
@@ -1960,6 +1996,8 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+
         #endregion
+
     }
 }

@@ -189,7 +189,7 @@
             <div id="taskGrid">
                 <asp:GridView ID="gvTasks" runat="server" EmptyDataRowStyle-ForeColor="White" EmptyDataRowStyle-HorizontalAlign="Center"
                     EmptyDataText="No task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-                    AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand" 
+                    AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand"
                     DataKeyNames="TaskId,CreatedBy">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
@@ -340,11 +340,11 @@
                             <legend>Task List</legend>
                             <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
                                 <ContentTemplate>
-                                    <div>
+                                    <div id="divSubTaskGrid">
                                         <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
                                             HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                                             EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                            AutoGenerateColumns="False" OnRowDataBound="gvSubTasks_RowDataBound"  GridLines="Vertical">
+                                            AutoGenerateColumns="False" OnRowDataBound="gvSubTasks_RowDataBound" GridLines="Vertical">
                                             <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                                             <HeaderStyle CssClass="trHeader " />
                                             <RowStyle CssClass="FirstRow" />
@@ -382,8 +382,15 @@
                                                         <%# string.Concat(cmbStatus.Items.FindByValue( Eval("Status").ToString()).Text , ":" , Eval("FristName")).Trim().TrimEnd(':') %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
                                                     <ItemTemplate>
+                                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                            <ItemTemplate>
+                                                                <small><b>
+                                                                    <asp:Literal ID="ltlSeQ" Text='<%#Container.ItemIndex + 1%>' runat="server"></asp:Literal></b></small>.
+                                                                <asp:LinkButton ID="lbtnDownload" runat="server" CommandName="DownloadFile"></asp:LinkButton><br>
+                                                            </ItemTemplate>
+                                                        </asp:Repeater>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -439,7 +446,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td colspan="2">
+                                                <td colspan="2">Attachment(s):<br>
                                                     <input id="hdnAttachments" runat="server" type="hidden" />
                                                     <div class="dropzone" style="overflow: auto; max-height: 150px;" id="dropzoneForm">
                                                         <div class="fallback">
@@ -911,17 +918,17 @@
             //Remove file from server once it is removed from dropzone.
             function RemoveTaskAttachmentFromServer(filename) {
 
-                var param = { serverfilename: filename };
+                //var param = { serverfilename: filename };
 
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(param),
-                    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: OnAttachmentRemoveSuccess,
-                    error: OnAttachmentRemoveError
-                });
+                //$.ajax({
+                //    type: "POST",
+                //    data: JSON.stringify(param),
+                //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
+                //    contentType: "application/json; charset=utf-8",
+                //    dataType: "json",
+                //    success: OnAttachmentRemoveSuccess,
+                //    error: OnAttachmentRemoveError
+                //});
 
             }
 
@@ -1049,8 +1056,8 @@
                 var strListID = $.trim($(sender).text());
                 if (strListID.length > 0) {
                     $('#<%= txtTaskListID.ClientID %>').val(strListID);
+                }
             }
-        }
-        
+
     </script>
 </div>
