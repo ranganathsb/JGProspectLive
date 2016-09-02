@@ -395,8 +395,6 @@
     <Content Include="js\jquery.datetimepicker.css" />
     <Content Include="js\jquery.datetimepicker.js" />
     <Content Include="js\jquery.dd.min.js" />
-    <Content Include="js\jquery.fileDownload.js" />
-    <Content Include="js\jquery.fileDownload.min.js" />
     <Content Include="js\jquery.js" />
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />

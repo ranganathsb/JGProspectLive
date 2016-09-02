@@ -386,9 +386,8 @@
                                                     <ItemTemplate>
                                                         <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
                                                             <ItemTemplate>
-                                                                <small><b>
-                                                                    <asp:Literal ID="ltlSeQ" Text='<%#Container.ItemIndex + 1%>' runat="server"></asp:Literal></b></small>.
-                                                                <asp:LinkButton ID="lbtnDownload" runat="server" CommandName="DownloadFile"></asp:LinkButton><br>
+                                                                <small>
+                                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile"></asp:LinkButton></small><br>
                                                             </ItemTemplate>
                                                         </asp:Repeater>
                                                     </ItemTemplate>

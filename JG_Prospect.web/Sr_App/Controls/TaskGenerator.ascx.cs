@@ -466,9 +466,9 @@ namespace JG_Prospect.Sr_App.Controls
 
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
 
-                if (files[1].Length > 9)// sort name with ....
+                if (files[1].Length > 13)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat( files[1].Substring(0, 8), "..");
+                    lbtnAttchment.Text = String.Concat( files[1].Substring(0, 12), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
                     
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
