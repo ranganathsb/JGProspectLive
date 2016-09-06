@@ -445,13 +445,18 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td colspan="2">Attachment(s):<br>
+                                                <td>Attachment(s):<br>
                                                     <input id="hdnAttachments" runat="server" type="hidden" />
-                                                    <div class="dropzone" style="overflow: auto; max-height: 150px;" id="dropzoneForm">
+                                                    <div class="dropzone" style="overflow: auto; width: 415px;" id="dropzoneForm">
                                                         <div class="fallback">
                                                             <input name="file" type="file" multiple />
                                                             <input type="submit" value="Upload" />
                                                         </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div id="attchmentPreview" class="dropzone-previews">
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -994,8 +999,9 @@
                 myDropzone = new Dropzone("div#dropzoneForm", {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 100,
-                    thumbnailHeight: 100,
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: '.dropzone-previews',
                     init: function () {
                         this.on("maxfilesexceeded", function (data) {
                             //var res = eval('(' + data.xhr.responseText + ')');
@@ -1008,36 +1014,36 @@
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
                             console.log(file);
                             AddAttachmenttoViewState(filename[0] + '@' + file.name);
-
+                            //this.removeFile(file);
                         });
 
                         //when file is removed from dropzone element, remove its corresponding server side file.
-                        this.on("removedfile", function (file) {
-                            var server_file = $(file.previewTemplate).children('.server_file').text();
-                            RemoveTaskAttachmentFromServer(server_file);
-                        });
+                        //this.on("removedfile", function (file) {
+                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                        //    RemoveTaskAttachmentFromServer(server_file);
+                        //});
 
                         // When is added to dropzone element, add its remove link.
-                        this.on("addedfile", function (file) {
+                        //this.on("addedfile", function (file) {
 
-                            // Create the remove button
-                            var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+                        //    // Create the remove button
+                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
 
-                            // Capture the Dropzone instance as closure.
-                            var _this = this;
+                        //    // Capture the Dropzone instance as closure.
+                        //    var _this = this;
 
-                            // Listen to the click event
-                            removeButton.addEventListener("click", function (e) {
-                                // Make sure the button click doesn't submit the form:
-                                e.preventDefault();
-                                e.stopPropagation();
-                                // Remove the file preview.
-                                _this.removeFile(file);
-                            });
+                        //    // Listen to the click event
+                        //    removeButton.addEventListener("click", function (e) {
+                        //        // Make sure the button click doesn't submit the form:
+                        //        e.preventDefault();
+                        //        e.stopPropagation();
+                        //        // Remove the file preview.
+                        //        _this.removeFile(file);
+                        //    });
 
-                            // Add the button to the file preview element.
-                            file.previewElement.appendChild(removeButton);
-                        });
+                        //    // Add the button to the file preview element.
+                        //    file.previewElement.appendChild(removeButton);
+                        //});
                     }
 
                 });

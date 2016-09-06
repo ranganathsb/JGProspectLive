@@ -6136,7 +6136,7 @@ namespace JG_Prospect.Sr_App
 
         protected void bindGrid()
         {
-            if (Session["ID"] != null)
+            if (!String.IsNullOrEmpty(Session["ID"].ToString()))
             {
                 int CustomerId = Convert.ToInt32(Session["ID"]);
                 DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);

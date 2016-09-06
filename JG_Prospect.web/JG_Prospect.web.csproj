@@ -104,10 +104,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.9.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\iTextSharp.5.5.9\lib\itextsharp.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="itextsharp">
+      <HintPath>External Dependencies\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -210,7 +211,6 @@
     <Content Include="bin\Google.GData.Extensions.dll" />
     <Content Include="bin\GoogleMaps.LocationServices.dll" />
     <Content Include="bin\Ionic.Zip.dll" />
-    <Content Include="bin\itextsharp.dll" />
     <Content Include="bin\JG_Prospect.BLL.dll" />
     <Content Include="bin\JG_Prospect.Common.dll" />
     <Content Include="bin\JG_Prospect.DAL.dll" />
