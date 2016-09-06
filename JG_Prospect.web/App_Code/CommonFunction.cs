@@ -1,6 +1,9 @@
-﻿using System;
+﻿using JG_Prospect.BLL;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -28,6 +31,7 @@ namespace JG_Prospect.App_Code
         BetaError = 2,
         Enhancement = 3
     }
+
 
     public static class CommonFunction
     {
@@ -184,6 +188,71 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Gets contract tamplate content string by combining header, body and footer.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetContractTemplateContent(int intContractTemplateId, int intDesignationId = 0)
+        {
+            DataSet ds1 = AdminBLL.Instance.FetchContractTemplate(intContractTemplateId, intDesignationId);
+            string strHtml = string.Empty;
+            if (ds1 != null)
+            {
+                strHtml = string.Concat(
+                                        ds1.Tables[1].Rows[0]["HTMLHeader"].ToString(),
+                                        ds1.Tables[1].Rows[0]["HTMLBody"].ToString(),
+                                        ds1.Tables[1].Rows[0]["HTMLBody2"].ToString(),
+                                        ds1.Tables[1].Rows[0]["HTMLFooter"].ToString()
+                                       );
+            }
+            return strHtml;
+        }
+
+        /// <summary>
+        /// Converts html to pdf file and retunrs pdf file path.
+        /// </summary>
+        /// <param name="strHtml">Html content to include in pdf.</param>
+        /// <param name="strRootPath">Folder path to store generated pdf.</param>
+        /// <returns>Path to the generated pdf file.</returns>
+        public static string ConvertHtmlToPdf(string strHtml, string strRootPath)
+        {
+            iTextSharp.text.Document objDocument = new iTextSharp.text.Document();
+            string strFilePath = Path.Combine(strRootPath, string.Format("{0}.pdf", DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt")));
+
+            try
+            {
+                iTextSharp.text.pdf.PdfWriter objPdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance
+                        (
+                            objDocument,
+                            new FileStream(strFilePath, FileMode.Create)
+                        );
+
+                objDocument.Open();
+
+                iTextSharp.tool.xml.XMLWorkerHelper.GetInstance().ParseXHtml
+                        (
+                            objPdfWriter,
+                            objDocument,
+                            new StringReader(strHtml)
+                        );
+
+                objDocument.Close();
+
+                return strFilePath;
+            }
+            catch
+            { }
+            finally
+            {
+                if (objDocument != null)
+                {
+                    objDocument.Close();
+                }
+                objDocument = null;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Generate subtask auto suggest sequence.
         /// </summary>
         /// <param name="sequence"></param>
@@ -259,10 +328,11 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("Bug", Convert.ToInt16(TaskType.Bug).ToString()));
             objListItemCollection.Add(new ListItem("BetaError", Convert.ToInt16(TaskType.BetaError).ToString()));
             objListItemCollection.Add(new ListItem("Enhancement", Convert.ToInt16(TaskType.Enhancement).ToString()));
-            
+
             //objListItemCollection[1].Enabled = false;
             return objListItemCollection;
         }
+
     }
 }
 
