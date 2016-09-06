@@ -671,7 +671,51 @@ namespace JG_Prospect
                     }
                 }
             }
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 105);
+            string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199);
+            strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+            strHtml = strHtml.Replace("#FirstName#", hdnFirstName.Value);
+            strHtml = strHtml.Replace("#LastName#", hdnLastName.Value);
+            strHtml = strHtml.Replace("#Address#", string.Empty);
+            strHtml = strHtml.Replace("#Designation#", Desig);
+            if (!string.IsNullOrEmpty(EmpType))
+            {
+                strHtml = strHtml.Replace("#EmpType#", EmpType);
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#EmpType#", "________________");
+            }
+            strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+            if (!string.IsNullOrEmpty(PayRates))
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", "____");
+            }
+            DateTime dtPayCheckDate;
+            if (!string.IsNullOrEmpty(HireDate))
+            {
+                dtPayCheckDate = Convert.ToDateTime(HireDate);
+            }
+            else
+            {
+                dtPayCheckDate = DateTime.Now;
+            }
+            dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+            strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+            string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+            List<Attachment> lstAttachments = new List<Attachment>();
+            if (File.Exists(strPath))
+            {
+                Attachment attachment = new Attachment(strPath);
+                attachment.Name = Path.GetFileName(strPath);
+                lstAttachments.Add(attachment);
+            }
+            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
+
             binddata();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             return;
@@ -1430,7 +1474,7 @@ namespace JG_Prospect
             return true;
         }
 
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID)
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
         {
             try
             {
@@ -1495,6 +1539,8 @@ namespace JG_Prospect
                         lstAttachments.Add(attachment);
                     }
                 }
+
+                lstAttachments.AddRange(Attachments);
 
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 

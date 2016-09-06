@@ -213,10 +213,10 @@ namespace JG_Prospect.App_Code
         /// <param name="strHtml">Html content to include in pdf.</param>
         /// <param name="strRootPath">Folder path to store generated pdf.</param>
         /// <returns>Path to the generated pdf file.</returns>
-        public static string ConvertHtmlToPdf(string strHtml, string strRootPath)
+        public static string ConvertHtmlToPdf(string strHtml, string strRootPath, string strFileName)
         {
             iTextSharp.text.Document objDocument = new iTextSharp.text.Document();
-            string strFilePath = Path.Combine(strRootPath, string.Format("{0}.pdf", DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt")));
+            string strFilePath = Path.Combine(strRootPath, string.Format("{0} {1}.pdf", strFileName, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt")));
 
             try
             {
