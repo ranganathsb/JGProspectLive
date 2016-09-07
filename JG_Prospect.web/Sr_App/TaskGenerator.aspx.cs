@@ -245,10 +245,10 @@ namespace JG_Prospect.Sr_App
 
                 lbtnAttchment.CommandArgument = file;
 
-                if (e.Item.ItemIndex == intTaskUserFilesCount - 1)
-                {
-                    e.Item.FindControl("ltrlSeprator").Visible = false;
-                }
+                //if (e.Item.ItemIndex == intTaskUserFilesCount - 1)
+                //{
+                //    e.Item.FindControl("ltrlSeprator").Visible = false;
+                //}
             }
         }
 

@@ -4,10 +4,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor" TagPrefix="ajax" %>
 
 <link rel="stylesheet" href="../css/jquery-ui.css" />
-<link href="../css/dropzone/css/basic.css" rel="stylesheet" />
-<link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
-<script type="text/javascript" src="../js/dropzone.js"></script>
-
 <style>
     table tr th {
         border: 1px solid;
@@ -90,14 +86,14 @@
         overflow-x: hidden;
     }
 
-    .dropzone{
+    /*.dropzone{
         min-height:120px;
         min-width:430px;
     }
     .dropzone .dz-default.dz-message {
         height: 120px;
         width: 430px;
-    }
+    }*/
 </style>
 
 <div id="divTaskMain" class="tasklist">
@@ -780,29 +776,15 @@
 
     <script>
 
-        var objMainTaskDropzone, objSubTaskDropzone;
-
-        Dropzone.options.dropzoneForm = false;
-
+        
         $(function () {
 
             //functions for auto search suggestions.
             createCategorisedAutoSearch();
-            setAutoSearch();
-            setTooltip();
+            setAutoSearch();            
             setDatePicker();
             setTaskDivClickTrigger();
-            //setSearchTextKeyUpSearchTrigger();
-            //manager.SetFocus('#<%=txtTaskTitle.ClientID%>');
-            var dlg = $("#divModal").dialog({
-                modal: true,
-                autoOpen: false,
-                height: 700,
-                width: 800
-            });
-
-            dlg.parent().appendTo(jQuery("form:first"));
-
+        
         });
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -811,28 +793,10 @@
 
             //functions for auto search suggestions.
             createCategorisedAutoSearch();
-            setAutoSearch();
-            setTooltip();
+            setAutoSearch();            
             setDatePicker();
-            ApplyDropZone();
-            //setSearchTextKeyUpSearchTrigger();
-            setTaskDivClickTrigger();
-
-            var dlg = $("#divModal").dialog({
-                modal: true,
-                autoOpen: false,
-                height: 700,
-                width: 800
-            });
-
-            dlg.parent().appendTo(jQuery("form:first"));
-
+            setTaskDivClickTrigger();        
         });
-
-        function setTooltip() {
-
-            //$('.tooltip').tooltip();
-        }
 
         function RemoveTask(TaskId) {
 
@@ -928,10 +892,6 @@
 
             function EditTask(id, tasktitle) {
 
-                //$("#divModal").dialog("option", "title", tasktitle);
-
-                //$('#divModal').dialog("open");
-                //$('#divModal').parent().find('span.ui-dialog-title').html(tasktitle);
                 window.open("TaskGenerator.aspx?TaskId="+ ($('#<%=hdnTaskId.ClientID%>').val()));
             }
 
@@ -968,236 +928,7 @@
                 $('#<%=btnSearch.ClientID %>').click();
 
             }
-
-            function CloseTaskPopup() {
-
-                $('#divModal').dialog("close");
-
-            }
-
-            //Add uploaded attachment to viewstate of page to save later.
-            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-
-                var attachments;
-
-                if ($(hdnControlID).val()) {
-                    attachments = $(hdnControlID).val() + serverfilename + "^";
-                }
-                else {
-                    attachments = serverfilename + "^";
-                }
-
-                $(hdnControlID).val(attachments);
-                console.log('file : ' + $(hdnControlID).val());
-            }
-
-            //Remove file from server once it is removed from dropzone.
-            function RemoveTaskAttachmentFromServer(filename) {
-
-                //var param = { serverfilename: filename };
-
-                //$.ajax({
-                //    type: "POST",
-                //    data: JSON.stringify(param),
-                //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-                //    contentType: "application/json; charset=utf-8",
-                //    dataType: "json",
-                //    success: OnAttachmentRemoveSuccess,
-                //    error: OnAttachmentRemoveError
-                //});
-
-            }
-
-            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            function OnAttachmentRemoveSuccess(data) {
-                var result = data.d;
-                if (result) {
-
-                    RemoveAttachmentFromViewState(result);
-                }
-
-            }
-            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            function OnAttachmentRemoveError(data) {
-                var result = data.d;
-                if (result) {
-
-                    console.log(result);
-                }
-
-            }
-
-            function RemoveAttachmentFromViewState(filename) {
-
-                console.log($('#<%= hdnAttachments.ClientID %>').val());
-                if ($('#<%= hdnAttachments.ClientID %>').val()) {
-
-                    //split images added by ^ seperator
-                    var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
-
-                    console.log(attachments);
-
-                    if (attachments.length > 0) {
-                        //find index of filename and remove it.
-                        var index = attachments.indexOf(filename);
-
-                        if (index > -1) {
-                            attachments.splice(index, 1);
-                        }
-                        console.log(attachments);
-
-                        //join remaining attachments.
-                        if (attachments.length > 0) {
-                            $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
-                        }
-                        else {
-                            $('#<%= hdnAttachments.ClientID %>').val("");
-                        }
-                    }
-
-                }
-            }
-
-            function ApplyDropZone() {
-
-                //User's drag and drop file attachment related code
-
-                //remove already attached dropzone.
-                if (objMainTaskDropzone) {
-                    objMainTaskDropzone.destroy();
-                    objMainTaskDropzone = null;
-                }
-
-
-                //objMainTaskDropzone = new Dropzone("div#dropzoneForm", {
-                objMainTaskDropzone = new Dropzone("div#divWorkFile", {
-                    maxFiles: 5,
-                    url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: 'div#divWorkFilePreview',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                            console.log(file);
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-                            //this.removeFile(file);
-                        });
-
-                        //when file is removed from dropzone element, remove its corresponding server side file.
-                        //this.on("removedfile", function (file) {
-                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                        //    RemoveTaskAttachmentFromServer(server_file);
-                        //});
-
-                        // When is added to dropzone element, add its remove link.
-                        //this.on("addedfile", function (file) {
-
-                        //    // Create the remove button
-                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                        //    // Capture the Dropzone instance as closure.
-                        //    var _this = this;
-
-                        //    // Listen to the click event
-                        //    removeButton.addEventListener("click", function (e) {
-                        //        // Make sure the button click doesn't submit the form:
-                        //        e.preventDefault();
-                        //        e.stopPropagation();
-                        //        // Remove the file preview.
-                        //        _this.removeFile(file);
-                        //    });
-
-                        //    // Add the button to the file preview element.
-                        //    file.previewElement.appendChild(removeButton);
-                        //});
-                    }
-
-                });
-
-                //remove already attached dropzone.
-                if (objSubTaskDropzone) {
-                    objSubTaskDropzone.destroy();
-                    objSubTaskDropzone = null;
-                }
-
-
-                //objSubTaskDropzone = new Dropzone("div#dropzoneForm", {
-                objSubTaskDropzone = new Dropzone("div#divSubTaskDropzone", {
-                    maxFiles: 5,
-                    url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: 'div#divSubTaskDropzonePreview',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                            console.log(file);
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-                            //this.removeFile(file);
-                        });
-
-                        //when file is removed from dropzone element, remove its corresponding server side file.
-                        //this.on("removedfile", function (file) {
-                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                        //    RemoveTaskAttachmentFromServer(server_file);
-                        //});
-
-                        // When is added to dropzone element, add its remove link.
-                        //this.on("addedfile", function (file) {
-
-                        //    // Create the remove button
-                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                        //    // Capture the Dropzone instance as closure.
-                        //    var _this = this;
-
-                        //    // Listen to the click event
-                        //    removeButton.addEventListener("click", function (e) {
-                        //        // Make sure the button click doesn't submit the form:
-                        //        e.preventDefault();
-                        //        e.stopPropagation();
-                        //        // Remove the file preview.
-                        //        _this.removeFile(file);
-                        //    });
-
-                        //    // Add the button to the file preview element.
-                        //    file.previewElement.appendChild(removeButton);
-                        //});
-                    }
-
-                });
-            }
-
-            // check if user has selected any designations or not.
-            function checkDesignations(oSrc, args) {
-
-                var n = $("#<%= ddlUserDesignation.ClientID%> input:checked").length;
-
-                args.IsValid = (n > 0);
-
-            }
-
-            function copytoListID(sender) {
-                var strListID = $.trim($(sender).text());
-                if (strListID.length > 0) {
-                    $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                }
-            }
+                   
 
     </script>
 </div>
