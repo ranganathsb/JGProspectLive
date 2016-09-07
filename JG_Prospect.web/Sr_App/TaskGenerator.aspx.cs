@@ -350,9 +350,9 @@ namespace JG_Prospect.Sr_App
             SearchTasks(null);
         }
 
-        protected void btnRemoveTask_Click(object sender, EventArgs e)
+        protected void lbtnDeleteTask_Click(object sender, EventArgs e)
         {
-            DeletaTask(hdnDeleteTaskId.Value);
+            DeletaTask(hdnTaskId.Value);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
 
@@ -534,7 +534,7 @@ namespace JG_Prospect.Sr_App
         private void DeletaTask(string TaskId)
         {
             TaskGeneratorBLL.Instance.DeleteTask(Convert.ToUInt64(TaskId));
-            hdnDeleteTaskId.Value = String.Empty;
+            hdnTaskId.Value = string.Empty;
             SearchTasks(null);
         }
 
@@ -1381,7 +1381,7 @@ namespace JG_Prospect.Sr_App
             SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
 
-            String taskPopupTitle = GetTaskPopupTitle(TaskId, dtTaskMasterDetails);
+            SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
         }
 
         private void SetSubTaskSectionView(bool blnView)
@@ -1389,39 +1389,19 @@ namespace JG_Prospect.Sr_App
             trSubTaskList.Visible = blnView;
         }
 
-        private string GetTaskPopupTitle(String TaskId, DataTable dtTaskMasterDetails)
+        private void SetTaskPopupTitle(String TaskId, DataTable dtTaskMasterDetails)
         {
-
-            StringBuilder taskTitle = new StringBuilder();
-            taskTitle.Append("<table width='100%'>");
-            taskTitle.Append("<tr>");
-
             // If its admin then add delete button else not delete button for normal users.
-            if (this.IsAdminMode)
-            {
-                taskTitle.Append(String.Concat("<td width='25%' align='left'><a style='cursor: pointer;' onclick='javascript: RemoveTask(", TaskId, ");'>Delete</a>&nbsp;&nbsp;Task ID#: **ID**</td>"));
-            }
-            else
-            {
-                taskTitle.Append("<td width='25%' align='left'>Task ID#: **ID**</td>");
-            }
-
-            taskTitle.Append("<td align='center'>Date Created: **CREATED**</td>");
-            taskTitle.Append("<td width='25%' align='right'>**MNGR**</td>");
-            taskTitle.Append("</tr>");
-            taskTitle.Append("</table>");
-            taskTitle = taskTitle.Replace("**ID**", dtTaskMasterDetails.Rows[0]["InstallId"].ToString()).Replace("**CREATED**", CommonFunction.FormatDateTimeString(dtTaskMasterDetails.Rows[0]["CreatedOn"]));
+            lbtnDeleteTask.Visible = this.IsAdminMode;
+            ltrlInstallId.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
+            ltrlDateCreated.Text = CommonFunction.FormatDateTimeString(dtTaskMasterDetails.Rows[0]["CreatedOn"]);
 
             if (dtTaskMasterDetails.Rows[0]["AssigningManager"] != null && !String.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["AssigningManager"].ToString()))
             {
-                taskTitle = taskTitle.Replace("**MNGR**", String.Concat("Created By: ", dtTaskMasterDetails.Rows[0]["AssigningManager"].ToString()));
-            }
-            else
-            {
-                taskTitle = taskTitle.Replace("**MNGR**", string.Empty);
+                ltrlAssigningManager.Text = string.Concat("Created By: ", dtTaskMasterDetails.Rows[0]["AssigningManager"].ToString());
             }
 
-            return taskTitle.ToString();
+            tblTaskHeader.Visible = true;
         }
 
         private void SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)

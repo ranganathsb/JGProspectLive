@@ -22,22 +22,49 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upnlTaskPopup;
         
         /// <summary>
-        /// btnRemoveTask control.
+        /// tblTaskHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton btnRemoveTask;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblTaskHeader;
         
         /// <summary>
-        /// hdnDeleteTaskId control.
+        /// lbtnDeleteTask control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnDeleteTaskId;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnDeleteTask;
+        
+        /// <summary>
+        /// ltrlInstallId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlInstallId;
+        
+        /// <summary>
+        /// ltrlDateCreated control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlDateCreated;
+        
+        /// <summary>
+        /// ltrlAssigningManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlAssigningManager;
         
         /// <summary>
         /// tblAdminTaskView control.
@@ -146,6 +173,24 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDesc;
+        
+        /// <summary>
+        /// lbtnFinishedWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles;
+        
+        /// <summary>
+        /// lbtnWorkSpecificationFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles;
         
         /// <summary>
         /// upWorkSpecifications control.
