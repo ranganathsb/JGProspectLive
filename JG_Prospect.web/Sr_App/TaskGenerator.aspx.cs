@@ -389,7 +389,7 @@ namespace JG_Prospect.Sr_App
                 rptWorkFiles.DataSource = lstTaskUserFiles;
                 rptWorkFiles.DataBind();
                 hdnWorkFiles.Value = "";
-                upWorkSpecifications.Update();
+                upFinishedWorkFiles.Update();
             }
         }
 
@@ -483,6 +483,17 @@ namespace JG_Prospect.Sr_App
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
         }
 
+        protected void lbtnFinishedWorkFiles_Click(object sender, EventArgs e)
+        {
+            upFinishedWorkFiles.Update();
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
+        }
+
+        protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
+        {
+            upWorkSpecificationFiles.Update();
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
+        }
 
         #endregion
 

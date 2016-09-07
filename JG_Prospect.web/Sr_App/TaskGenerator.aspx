@@ -13,14 +13,14 @@
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <div class="right_panel">
         <hr />
-        <asp:UpdatePanel ID="upnlTaskPopup" runat="server">
+        <asp:UpdatePanel ID="upTask" runat="server">
             <ContentTemplate>
                 <h1>Task</h1>
-                <table id="tblTaskHeader" runat="server" visible="false" class="appointment_tab" 
-                    style="position:absolute;top:221px;right:39px;background-color:#fff;">
+                <table id="tblTaskHeader" runat="server" visible="false" class="appointment_tab"
+                    style="position: absolute; top: 221px; right: 39px; background-color: #fff;">
                     <tr>
                         <td width="25%" align="left">
-                            <asp:LinkButton ID="lbtnDeleteTask" runat="server" OnClick="lbtnDeleteTask_Click" />
+                            <asp:LinkButton ID="lbtnDeleteTask" runat="server" OnClick="lbtnDeleteTask_Click" Text="Delete" />
                             &nbsp;&nbsp;Task ID#:
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
@@ -30,9 +30,10 @@
                     </tr>
                 </table>
                 <div class="form_panel_custom">
-                    <table id="tblAdminTaskView" runat="server" class="tablealign" width="100%">
+                    <table id="tblAdminTaskView" runat="server" class="tablealign"
+                        width="100%" cellspacing="5">
                         <tr>
-                            <td width="150">Designation <span style="color: red;">*</span>:</td>
+                            <td width="100">Designation <span style="color: red;">*</span>:</td>
                             <td>
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
@@ -103,114 +104,12 @@
                                     runat="server" ControlToValidate="txtDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
                                 </asp:RequiredFieldValidator>
                             </td>
-                            <td>
-                                <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files" />&nbsp;&nbsp;
-                                <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files" />
-                                <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
-                                    <ContentTemplate>
-                                        <asp:TabContainer ID="tcWork" runat="server" ActiveTabIndex="0" AutoPostBack="false" Width="450">
-                                            <asp:TabPanel ID="tpWork_Files" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                                <HeaderTemplate>Finished Work Files</HeaderTemplate>
-                                                <ContentTemplate>
-                                                    <div style="overflow: auto;">
-                                                        <table>
-                                                            <tr>
-                                                                <td>Attachment(s):<br>
-                                                                    <table style="width: 100%;">
-                                                                        <tr>
-                                                                            <td>
-                                                                                <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                                                                    <HeaderTemplate>
-                                                                                        <table class="table">
-                                                                                            <thead>
-                                                                                                <tr class="trHeader">
-                                                                                                    <th>Attachments</th>
-                                                                                                    <th>Uploaded By</th>
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                    </HeaderTemplate>
-                                                                                    <ItemTemplate>
-                                                                                        <tr class="FirstRow">
-                                                                                            <td><small>
-                                                                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                                                                                    CommandName="DownloadFile" /></small>
-                                                                                            </td>
-                                                                                            <td>Justin
-                                                                                            </td>
-                                                                                        </tr>
-
-                                                                                    </ItemTemplate>
-                                                                                    <AlternatingItemTemplate>
-                                                                                        <tr class="AlternateRow">
-                                                                                            <td><small>
-                                                                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                                                                                    CommandName="DownloadFile" /></small>
-                                                                                            </td>
-                                                                                            <td>Justin
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </AlternatingItemTemplate>
-                                                                                    <FooterTemplate>
-                                                                                        </table>
-                                                                                    </FooterTemplate>
-                                                                                </asp:Repeater>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                                                                <div id="divWorkFile" class="dropzone">
-                                                                                    <div class="fallback">
-                                                                                        <input name="WorkFile" type="file" multiple />
-                                                                                        <input type="submit" value="UploadWorkFile" />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div id="divWorkFilePreview" class="dropzone-previews">
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <%-- <tr>
-                                                                <td>
-                                                                    <div class="btn_sec">
-                                                                        <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
-                                                                            CssClass="ui-button" />
-                                                                    </div>
-                                                                </td>
-                                                            </tr>--%>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </ContentTemplate>
-                                            </asp:TabPanel>
-                                            <asp:TabPanel ID="tpWork_Specifications" runat="server" TabIndex="1" CssClass="task-history-tab">
-                                                <HeaderTemplate>Work Specification Files</HeaderTemplate>
-                                                <ContentTemplate>
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr class="trHeader">
-                                                                <th>Document</th>
-                                                                <th>Modified By</th>
-                                                                <th>Modified Time</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tr class="FirstRow">
-                                                            <td><a href="#">edit-salesuser-v1.0</a></td>
-                                                            <td>Justin</td>
-                                                            <td>09-07-2016 14:44 p.m.</td>
-                                                        </tr>
-                                                        <tr class="AlternateRow">
-                                                            <td><a href="#">edit-salesuser-v1.0</a></td>
-                                                            <td>Justin</td>
-                                                            <td>09-07-2016 14:44 p.m.</td>
-                                                        </tr>
-                                                    </table>
-                                                </ContentTemplate>
-                                            </asp:TabPanel>
-                                        </asp:TabContainer>
-                                    </ContentTemplate>
-                                </asp:UpdatePanel>
+                            <td valign="top">
+                                <br />
+                                <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
+                                    OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                                <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
+                                    OnClick="lbtnWorkSpecificationFiles_Click" />
                             </td>
                         </tr>
                         <tr>
@@ -318,7 +217,6 @@
                                                     <tr id="trDateHours" runat="server" visible="false">
                                                         <td>Due Date:
                             <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
-                                                            <%--<asp:CalendarExtender ID="ceSubTaskDueDate" runat="server" TargetControlID="txtSubTaskDueDate" PopupPosition="TopRight" />--%>
                                                         </td>
                                                         <td>Hrs of Task:
                             <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
@@ -405,7 +303,7 @@
                         </tr>
                     </table>
                     <!-- table for userview -->
-                    <table id="tblUserTaskView" class="tablealign" style="width: 100%;" runat="server">
+                    <table id="tblUserTaskView" class="tablealign" style="width: 100%;" cellspacing="5" runat="server">
                         <tr>
 
                             <td><b>Designation:</b>
@@ -424,8 +322,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><b>Task Title:</b>
+                            <td valign="top"><b>Task Title:</b>
                                 <asp:Literal ID="ltlTUTitle" runat="server"></asp:Literal>
+                            </td>
+                            <td valign="top">
+                                <br />
+                                <asp:LinkButton runat="server" Text="Finished Work Files" />&nbsp;&nbsp;
+                                <asp:LinkButton runat="server" Text="Work Specification Files" />
                             </td>
                         </tr>
                         <tr>
@@ -589,234 +492,344 @@
             </ContentTemplate>
         </asp:UpdatePanel>
 
-        <script type="text/javascript">
+        <div id="divFinishedWorkFiles" runat="server" style="display: none; width: 600px;" title="Finished Work Files">
+            <%--Finished Work Files--%>
+            <asp:UpdatePanel ID="upFinishedWorkFiles" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table width="500">
+                        <tr>
+                            <td>Attachment(s):<br>
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td>
+                                            <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                <HeaderTemplate>
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr class="trHeader">
+                                                                <th>Attachments</th>
+                                                                <th>Uploaded By</th>
+                                                            </tr>
+                                                        </thead>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <tr class="FirstRow">
+                                                        <td><small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                CommandName="DownloadFile" /></small>
+                                                        </td>
+                                                        <td>Justin
+                                                        </td>
+                                                    </tr>
 
-            var objMainTaskDropzone, objSubTaskDropzone;
-            Dropzone.autoDiscover = false;
-            Dropzone.options.dropzoneForm = false;
+                                                </ItemTemplate>
+                                                <AlternatingItemTemplate>
+                                                    <tr class="AlternateRow">
+                                                        <td><small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                CommandName="DownloadFile" /></small>
+                                                        </td>
+                                                        <td>Justin
+                                                        </td>
+                                                    </tr>
+                                                </AlternatingItemTemplate>
+                                                <FooterTemplate>
+                                                    </table>
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="hdnWorkFiles" runat="server" type="hidden" />
+                                            <div id="divWorkFile" class="dropzone">
+                                                <div class="fallback">
+                                                    <input name="WorkFile" type="file" multiple />
+                                                    <input type="submit" value="UploadWorkFile" />
+                                                </div>
+                                            </div>
+                                            <div id="divWorkFilePreview" class="dropzone-previews">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <%-- <tr>
+                                                                <td>
+                                                                    <div class="btn_sec">
+                                                                        <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
+                                                                            CssClass="ui-button" />
+                                                                    </div>
+                                                                </td>
+                                                            </tr>--%>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+        <div id="divWorkSpecifications" runat="server" style="display: none; width: 600px;" title="Work Specification Files">
+            <%--Work Specification Files--%>
+            <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table class="table" width="500">
+                        <thead>
+                            <tr class="trHeader">
+                                <th>Document</th>
+                                <th>Modified By</th>
+                                <th>Modified Time</th>
+                            </tr>
+                        </thead>
+                        <tr class="FirstRow">
+                            <td><a href="#">edit-salesuser-v1.0</a></td>
+                            <td>Justin</td>
+                            <td>09-07-2016 14:44 p.m.</td>
+                        </tr>
+                        <tr class="AlternateRow">
+                            <td><a href="#">edit-salesuser-v1.0</a></td>
+                            <td>Justin</td>
+                            <td>09-07-2016 14:44 p.m.</td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </div>
+    <script type="text/javascript">
 
-            $(function () {
-                ApplyDropZone();
-            });
-
-            var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
-
-            prmTaskGenerator.add_endRequest(function () {
-
-            });
-
-
-            //Add uploaded attachment to viewstate of page to save later.
-            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-
-                var attachments;
-
-                if ($(hdnControlID).val()) {
-                    attachments = $(hdnControlID).val() + serverfilename + "^";
-                }
-                else {
-                    attachments = serverfilename + "^";
-                }
-
-                $(hdnControlID).val(attachments);
-                console.log('file : ' + $(hdnControlID).val());
-            }
-
-            //Remove file from server once it is removed from dropzone.
-            function RemoveTaskAttachmentFromServer(filename) {
-                //var param = { serverfilename: filename };
-                //$.ajax({
-                //    type: "POST",
-                //    data: JSON.stringify(param),
-                //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-                //    contentType: "application/json; charset=utf-8",
-                //    dataType: "json",
-                //    success: OnAttachmentRemoveSuccess,
-                //    error: OnAttachmentRemoveError
-                //});
-            }
-
-            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            function OnAttachmentRemoveSuccess(data) {
-                var result = data.d;
-                if (r - esult) {
-                    RemoveAttachmentFromViewState(result);
-                }
-            }
-
-            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            function OnAttachmentRemoveError(data) {
-                var result = data.d;
-                if (result) {
-                    console.log(result);
-                }
-            }
-
-            function RemoveAttachmentFromViewState(filename) {
-                console.log($('#<%= hdnAttachments.ClientID %>').val());
-                if ($('#<%= hdnAttachments.ClientID %>').val()) {
-
-                    //split images added by ^ seperator
-                    var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
-
-                    console.log(attachments);
-
-                    if (attachments.length > 0) {
-                        //find index of filename and remove it.
-                        var index = attachments.indexOf(filename);
-
-                        if (index > -1) {
-                            attachments.splice(index, 1);
-                        }
-                        console.log(attachments);
-
-                        //join remaining attachments.
-                        if (attachments.length > 0) {
-                            $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
-                        }
-                        else {
-                            $('#<%= hdnAttachments.ClientID %>').val("");
-                        }
-                    }
-                }
-            }
-
-            function ApplyDropZone() {
-                //debugger;
-                ////User's drag and drop file attachment related code
-
-                ////remove already attached dropzone.
-                //if (objMainTaskDropzone) {
-                //    objMainTaskDropzone.destroy();
-                //    objMainTaskDropzone = null;
-                //}
-
-                objMainTaskDropzone = new Dropzone("div#divWorkFile", {
-                    maxFiles: 5,
-                    url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: 'div#divWorkFilePreview',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                            console.log(file);
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-                            //this.removeFile(file);
-                        });
-
-                        //when file is removed from dropzone element, remove its corresponding server side file.
-                        //this.on("removedfile", function (file) {
-                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                        //    RemoveTaskAttachmentFromServer(server_file);
-                        //});
-
-                        // When is added to dropzone element, add its remove link.
-                        //this.on("addedfile", function (file) {
-
-                        //    // Create the remove button
-                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                        //    // Capture the Dropzone instance as closure.
-                        //    var _this = this;
-
-                        //    // Listen to the click event
-                        //    removeButton.addEventListener("click", function (e) {
-                        //        // Make sure the button click doesn't submit the form:
-                        //        e.preventDefault();
-                        //        e.stopPropagation();
-                        //        // Remove the file preview.
-                        //        _this.removeFile(file);
-                        //    });
-
-                        //    // Add the button to the file preview element.
-                        //    file.previewElement.appendChild(removeButton);
-                        //});
-                    }
-
-                });
-
-                //remove already attached dropzone.
-                if (objSubTaskDropzone) {
-                    objSubTaskDropzone.destroy();
-                    objSubTaskDropzone = null;
-                }
-
-                objSubTaskDropzone = new Dropzone("div#divSubTaskDropzone", {
-                    maxFiles: 5,
-                    url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: 'div#divSubTaskDropzonePreview',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                            console.log(file);
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-                            //this.removeFile(file);
-                        });
-
-                        //when file is removed from dropzone element, remove its corresponding server side file.
-                        //this.on("removedfile", function (file) {
-                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                        //    RemoveTaskAttachmentFromServer(server_file);
-                        //});
-
-                        // When is added to dropzone element, add its remove link.
-                        //this.on("addedfile", function (file) {
-
-                        //    // Create the remove button
-                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                        //    // Capture the Dropzone instance as closure.
-                        //    var _this = this;
-
-                        //    // Listen to the click event
-                        //    removeButton.addEventListener("click", function (e) {
-                        //        // Make sure the button click doesn't submit the form:
-                        //        e.preventDefault();
-                        //        e.stopPropagation();
-                        //        // Remove the file preview.
-                        //        _this.removeFile(file);
-                        //    });
-
-                        //    // Add the button to the file preview element.
-                        //    file.previewElement.appendChild(removeButton);
-                        //});
-                    }
-
-                });
-            }
-
-            // check if user has selected any designations or not.
-            function checkDesignations(oSrc, args) {
-
-                var n = $("#<%= ddlUserDesignation.ClientID%> input:checked").length;
-
-            args.IsValid = (n > 0);
+        function ShowPopup(varControlID) {
+            $(varControlID).dialog().open()
+            //$(varControlID).parent().find('span.ui-dialog-title').html(tasktitle);
         }
 
-        function copytoListID(sender) {
-            var strListID = $.trim($(sender).text());
-            if (strListID.length > 0) {
-                $('#<%= txtTaskListID.ClientID %>').val(strListID);
+        function HidePopup(varControlID) {
+            $(varControlID).dialog("close");
+        }
+
+        var objMainTaskDropzone, objSubTaskDropzone;
+        Dropzone.autoDiscover = false;
+        Dropzone.options.dropzoneForm = false;
+
+        $(function () {
+            ApplyDropZone();
+        });
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+
+        });
+
+
+        //Add uploaded attachment to viewstate of page to save later.
+        function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+
+            var attachments;
+
+            if ($(hdnControlID).val()) {
+                attachments = $(hdnControlID).val() + serverfilename + "^";
+            }
+            else {
+                attachments = serverfilename + "^";
+            }
+
+            $(hdnControlID).val(attachments);
+            console.log('file : ' + $(hdnControlID).val());
+        }
+
+        //Remove file from server once it is removed from dropzone.
+        function RemoveTaskAttachmentFromServer(filename) {
+            //var param = { serverfilename: filename };
+            //$.ajax({
+            //    type: "POST",
+            //    data: JSON.stringify(param),
+            //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: OnAttachmentRemoveSuccess,
+            //    error: OnAttachmentRemoveError
+            //});
+        }
+
+        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        function OnAttachmentRemoveSuccess(data) {
+            var result = data.d;
+            if (r - esult) {
+                RemoveAttachmentFromViewState(result);
+            }
+        }
+
+        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        function OnAttachmentRemoveError(data) {
+            var result = data.d;
+            if (result) {
+                console.log(result);
+            }
+        }
+
+        function RemoveAttachmentFromViewState(filename) {
+            console.log($('#<%= hdnAttachments.ClientID %>').val());
+            if ($('#<%= hdnAttachments.ClientID %>').val()) {
+
+                //split images added by ^ seperator
+                var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
+
+                console.log(attachments);
+
+                if (attachments.length > 0) {
+                    //find index of filename and remove it.
+                    var index = attachments.indexOf(filename);
+
+                    if (index > -1) {
+                        attachments.splice(index, 1);
+                    }
+                    console.log(attachments);
+
+                    //join remaining attachments.
+                    if (attachments.length > 0) {
+                        $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
+                    }
+                    else {
+                        $('#<%= hdnAttachments.ClientID %>').val("");
+                    }
+                }
+            }
+        }
+
+        function ApplyDropZone() {
+            //debugger;
+            ////User's drag and drop file attachment related code
+
+            ////remove already attached dropzone.
+            //if (objMainTaskDropzone) {
+            //    objMainTaskDropzone.destroy();
+            //    objMainTaskDropzone = null;
+            //}
+
+            objMainTaskDropzone = new Dropzone("div#divWorkFile", {
+                maxFiles: 5,
+                url: "taskattachmentupload.aspx",
+                thumbnailWidth: 90,
+                thumbnailHeight: 90,
+                previewsContainer: 'div#divWorkFilePreview',
+                init: function () {
+                    this.on("maxfilesexceeded", function (data) {
+                        //var res = eval('(' + data.xhr.responseText + ')');
+                        alert('you are reached maximum attachment upload limit.');
+                    });
+
+                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                    this.on("success", function (file, response) {
+                        var filename = response.split("^");
+                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                        console.log(file);
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+                        //this.removeFile(file);
+                    });
+
+                    //when file is removed from dropzone element, remove its corresponding server side file.
+                    //this.on("removedfile", function (file) {
+                    //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                    //    RemoveTaskAttachmentFromServer(server_file);
+                    //});
+
+                    // When is added to dropzone element, add its remove link.
+                    //this.on("addedfile", function (file) {
+
+                    //    // Create the remove button
+                    //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+
+                    //    // Capture the Dropzone instance as closure.
+                    //    var _this = this;
+
+                    //    // Listen to the click event
+                    //    removeButton.addEventListener("click", function (e) {
+                    //        // Make sure the button click doesn't submit the form:
+                    //        e.preventDefault();
+                    //        e.stopPropagation();
+                    //        // Remove the file preview.
+                    //        _this.removeFile(file);
+                    //    });
+
+                    //    // Add the button to the file preview element.
+                    //    file.previewElement.appendChild(removeButton);
+                    //});
+                }
+
+            });
+
+            //remove already attached dropzone.
+            if (objSubTaskDropzone) {
+                objSubTaskDropzone.destroy();
+                objSubTaskDropzone = null;
+            }
+
+            objSubTaskDropzone = new Dropzone("div#divSubTaskDropzone", {
+                maxFiles: 5,
+                url: "taskattachmentupload.aspx",
+                thumbnailWidth: 90,
+                thumbnailHeight: 90,
+                previewsContainer: 'div#divSubTaskDropzonePreview',
+                init: function () {
+                    this.on("maxfilesexceeded", function (data) {
+                        //var res = eval('(' + data.xhr.responseText + ')');
+                        alert('you are reached maximum attachment upload limit.');
+                    });
+
+                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                    this.on("success", function (file, response) {
+                        var filename = response.split("^");
+                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                        console.log(file);
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                        //this.removeFile(file);
+                    });
+
+                    //when file is removed from dropzone element, remove its corresponding server side file.
+                    //this.on("removedfile", function (file) {
+                    //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                    //    RemoveTaskAttachmentFromServer(server_file);
+                    //});
+
+                    // When is added to dropzone element, add its remove link.
+                    //this.on("addedfile", function (file) {
+
+                    //    // Create the remove button
+                    //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+
+                    //    // Capture the Dropzone instance as closure.
+                    //    var _this = this;
+
+                    //    // Listen to the click event
+                    //    removeButton.addEventListener("click", function (e) {
+                    //        // Make sure the button click doesn't submit the form:
+                    //        e.preventDefault();
+                    //        e.stopPropagation();
+                    //        // Remove the file preview.
+                    //        _this.removeFile(file);
+                    //    });
+
+                    //    // Add the button to the file preview element.
+                    //    file.previewElement.appendChild(removeButton);
+                    //});
+                }
+
+            });
+        }
+
+        // check if user has selected any designations or not.
+        function checkDesignations(oSrc, args) {
+
+            var n = $("#<%= ddlUserDesignation.ClientID%> input:checked").length;
+
+                args.IsValid = (n > 0);
+            }
+
+            function copytoListID(sender) {
+                var strListID = $.trim($(sender).text());
+                if (strListID.length > 0) {
+                    $('#<%= txtTaskListID.ClientID %>').val(strListID);
                 }
             }
 
-        </script>
-    </div>
+    </script>
 </asp:Content>
