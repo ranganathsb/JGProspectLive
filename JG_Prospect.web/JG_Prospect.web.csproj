@@ -494,6 +494,7 @@
     <Content Include="Sr_App\StatusOverride.aspx" />
     <Content Include="Sr_App\taskattachmentdownload.aspx" />
     <Content Include="Sr_App\taskattachmentupload.aspx" />
+    <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadedFile\6162015 114211 AMKoala.jpg" />
@@ -1211,6 +1212,13 @@
     </Compile>
     <Compile Include="Sr_App\taskattachmentupload.aspx.designer.cs">
       <DependentUpon>taskattachmentupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\TaskGenerator.aspx.cs">
+      <DependentUpon>TaskGenerator.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\TaskGenerator.aspx.designer.cs">
+      <DependentUpon>TaskGenerator.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\TaskList.aspx.cs">
       <DependentUpon>TaskList.aspx</DependentUpon>
