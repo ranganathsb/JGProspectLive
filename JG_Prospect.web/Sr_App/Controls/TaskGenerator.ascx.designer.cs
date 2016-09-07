@@ -283,6 +283,69 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.HiddenField hdnTaskId;
         
         /// <summary>
+        /// upWorkSpecifications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
+        
+        /// <summary>
+        /// tcWork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabContainer tcWork;
+        
+        /// <summary>
+        /// tpWork_Files control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabPanel tpWork_Files;
+        
+        /// <summary>
+        /// rptWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptWorkFiles;
+        
+        /// <summary>
+        /// hdnWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnWorkFiles;
+        
+        /// <summary>
+        /// btnAddAttachment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddAttachment;
+        
+        /// <summary>
+        /// tpWork_Specifications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabPanel tpWork_Specifications;
+        
+        /// <summary>
         /// txtDescription control.
         /// </summary>
         /// <remarks>

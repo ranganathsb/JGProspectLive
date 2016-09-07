@@ -89,6 +89,15 @@
         overflow: auto;
         overflow-x: hidden;
     }
+
+    .dropzone{
+        min-height:120px;
+        min-width:430px;
+    }
+    .dropzone .dz-default.dz-message {
+        height: 120px;
+        width: 430px;
+    }
 </style>
 
 <div id="divTaskMain" class="tasklist">
@@ -314,16 +323,79 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4">Task Title <span style="color: red;">*</span>:<br />
-                        <asp:TextBox ID="txtTaskTitle" runat="server" Style="width: 100%" CssClass="textbox"></asp:TextBox>
-                        <%--<ajax:Editor ID="txtTaskTitle" Width="100%" Height="20px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
-                        <asp:RequiredFieldValidator ID="rfvTaskTitle" ValidationGroup="Submit"
-                            runat="server" ControlToValidate="txtTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None">                                 
-                        </asp:RequiredFieldValidator>
-                        <asp:HiddenField ID="controlMode" runat="server" />
-                        <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
+                    <td colspan="4" valign="top">
+                        <table width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td width="40%" valign="top">Task Title <span style="color: red;">*</span>:<br />
+                                    <asp:TextBox ID="txtTaskTitle" runat="server" Style="width: 90%" CssClass="textbox"></asp:TextBox>
+                                    <%--<ajax:Editor ID="txtTaskTitle" Width="100%" Height="20px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
+                                    <asp:RequiredFieldValidator ID="rfvTaskTitle" ValidationGroup="Submit"
+                                        runat="server" ControlToValidate="txtTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None">                                 
+                                    </asp:RequiredFieldValidator>
+                                    <asp:HiddenField ID="controlMode" runat="server" />
+                                    <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
+                                </td>
+                                <td valign="top">
+                                    <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
+                            <ContentTemplate>
+                                <asp:TabContainer ID="tcWork" runat="server" ActiveTabIndex="0" AutoPostBack="false" Width="460">
+                                    <asp:TabPanel ID="tpWork_Files" runat="server" TabIndex="0" CssClass="task-history-tab">
+                                        <HeaderTemplate>Work Files</HeaderTemplate>
+                                        <ContentTemplate>
+                                            <table>
+                                                <tr>
+                                                    <td>Attachment(s):<br>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                        <ItemTemplate>
+                                                                            <small>
+                                                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                                    CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
+                                                                        </ItemTemplate>
+                                                                    </asp:Repeater>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <input id="hdnWorkFiles" runat="server" type="hidden" />
+                                                                    <div id="divWorkFile" class="dropzone">
+                                                                        <div class="fallback">
+                                                                            <input name="WorkFile" type="file" multiple />
+                                                                            <input type="submit" value="UploadWorkFile" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div id="divWorkFilePreview" class="dropzone-previews">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="btn_sec">
+                                                                        <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
+                                                                            CssClass="ui-button" />
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ContentTemplate>
+                                    </asp:TabPanel>
+                                    <asp:TabPanel ID="tpWork_Specifications" runat="server" TabIndex="1" CssClass="task-history-tab">
+                                        <HeaderTemplate>Work Specifications</HeaderTemplate>
+                                        <ContentTemplate>
+                                        </ContentTemplate>
+                                    </asp:TabPanel>
+                                </asp:TabContainer>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
-
                 </tr>
                 <tr>
                     <td colspan="4">Task Description <span style="color: red;">*</span>:<br />
@@ -387,7 +459,8 @@
                                                         <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
                                                             <ItemTemplate>
                                                                 <small>
-                                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile"></asp:LinkButton></small><br>
+                                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                        CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
                                                             </ItemTemplate>
                                                         </asp:Repeater>
                                                     </ItemTemplate>
@@ -447,7 +520,7 @@
                                             <tr>
                                                 <td>Attachment(s):<br>
                                                     <input id="hdnAttachments" runat="server" type="hidden" />
-                                                    <div class="dropzone" style="overflow: auto; width: 415px;" id="dropzoneForm">
+                                                    <div id="divSubTaskDropzone" class="dropzone" style="overflow: auto; width: 415px;">
                                                         <div class="fallback">
                                                             <input name="file" type="file" multiple />
                                                             <input type="submit" value="Upload" />
@@ -455,8 +528,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div id="attchmentPreview" class="dropzone-previews">
-
+                                                    <div id="divSubTaskDropzonePreview" class="dropzone-previews">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -708,7 +780,7 @@
 
     <script>
 
-        var myDropzone;
+        var objMainTaskDropzone, objSubTaskDropzone;
 
         Dropzone.options.dropzoneForm = false;
 
@@ -903,20 +975,19 @@
             }
 
             //Add uploaded attachment to viewstate of page to save later.
-            function AddAttachmenttoViewState(serverfilename) {
+            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
                 var attachments;
 
-                if ($('#<%= hdnAttachments.ClientID %>').val()) {
-                    attachments = $('#<%= hdnAttachments.ClientID %>').val() + serverfilename + "^";
+                if ($(hdnControlID).val()) {
+                    attachments = $(hdnControlID).val() + serverfilename + "^";
                 }
                 else {
                     attachments = serverfilename + "^";
                 }
 
-                $('#<%= hdnAttachments.ClientID %>').val(attachments);
-                console.log($('#<%= hdnAttachments.ClientID %>').val());
-
+                $(hdnControlID).val(attachments);
+                console.log('file : ' + $(hdnControlID).val());
             }
 
             //Remove file from server once it is removed from dropzone.
@@ -991,17 +1062,19 @@
                 //User's drag and drop file attachment related code
 
                 //remove already attached dropzone.
-                if (myDropzone) {
-                    myDropzone.destroy();
-                    myDropzone = null;
+                if (objMainTaskDropzone) {
+                    objMainTaskDropzone.destroy();
+                    objMainTaskDropzone = null;
                 }
 
-                myDropzone = new Dropzone("div#dropzoneForm", {
+
+                //objMainTaskDropzone = new Dropzone("div#dropzoneForm", {
+                objMainTaskDropzone = new Dropzone("div#divWorkFile", {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
                     thumbnailWidth: 90,
                     thumbnailHeight: 90,
-                    previewsContainer: '.dropzone-previews',
+                    previewsContainer: 'div#divWorkFilePreview',
                     init: function () {
                         this.on("maxfilesexceeded", function (data) {
                             //var res = eval('(' + data.xhr.responseText + ')');
@@ -1013,7 +1086,67 @@
                             var filename = response.split("^");
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
                             console.log(file);
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name);
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+                            //this.removeFile(file);
+                        });
+
+                        //when file is removed from dropzone element, remove its corresponding server side file.
+                        //this.on("removedfile", function (file) {
+                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                        //    RemoveTaskAttachmentFromServer(server_file);
+                        //});
+
+                        // When is added to dropzone element, add its remove link.
+                        //this.on("addedfile", function (file) {
+
+                        //    // Create the remove button
+                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+
+                        //    // Capture the Dropzone instance as closure.
+                        //    var _this = this;
+
+                        //    // Listen to the click event
+                        //    removeButton.addEventListener("click", function (e) {
+                        //        // Make sure the button click doesn't submit the form:
+                        //        e.preventDefault();
+                        //        e.stopPropagation();
+                        //        // Remove the file preview.
+                        //        _this.removeFile(file);
+                        //    });
+
+                        //    // Add the button to the file preview element.
+                        //    file.previewElement.appendChild(removeButton);
+                        //});
+                    }
+
+                });
+
+                //remove already attached dropzone.
+                if (objSubTaskDropzone) {
+                    objSubTaskDropzone.destroy();
+                    objSubTaskDropzone = null;
+                }
+
+
+                //objSubTaskDropzone = new Dropzone("div#dropzoneForm", {
+                objSubTaskDropzone = new Dropzone("div#divSubTaskDropzone", {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: 'div#divSubTaskDropzonePreview',
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                            console.log(file);
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
                             //this.removeFile(file);
                         });
 
@@ -1048,6 +1181,7 @@
 
                 });
             }
+
             // check if user has selected any designations or not.
             function checkDesignations(oSrc, args) {
 
