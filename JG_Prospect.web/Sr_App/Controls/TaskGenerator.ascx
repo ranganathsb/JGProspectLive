@@ -930,8 +930,9 @@
 
                 //$("#divModal").dialog("option", "title", tasktitle);
 
-                $('#divModal').dialog("open");
-                $('#divModal').parent().find('span.ui-dialog-title').html(tasktitle);
+                //$('#divModal').dialog("open");
+                //$('#divModal').parent().find('span.ui-dialog-title').html(tasktitle);
+                window.open("TaskGenerator.aspx?TaskId="+ ($('#<%=hdnTaskId.ClientID%>').val()));
             }
 
             function setDatePicker() {
