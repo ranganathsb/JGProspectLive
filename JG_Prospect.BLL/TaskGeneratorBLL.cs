@@ -71,6 +71,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
         }
+
+        public DataSet GetTaskUserFiles(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId);
+        }
+
         public DataSet GetTaskUserDetails(Int16 Mode)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);

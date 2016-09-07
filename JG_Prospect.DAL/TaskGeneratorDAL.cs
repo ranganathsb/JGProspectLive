@@ -452,6 +452,30 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetTaskUserFiles(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetTaskUserFiles");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetInstallUsers(int Key, string Designastion)
         {
             DataSet result = new DataSet();
