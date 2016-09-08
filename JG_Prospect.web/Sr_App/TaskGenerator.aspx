@@ -612,7 +612,6 @@
 
         function ShowPopup(varControlID) {
             $(varControlID).dialog().open();
-            //$(varControlID).parent().find('span.ui-dialog-title').html(tasktitle);
         }
 
         function HidePopup(varControlID) {
@@ -637,9 +636,6 @@
 
             $(hdnControlID).val(attachments);
             console.log('file : ' + $(hdnControlID).val());
-
-            // saves attachment.
-            $('#<%=btnAddAttachment.ClientID%>').click();
         }
 
         //Remove file from server once it is removed from dropzone.
@@ -729,6 +725,9 @@
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
                         console.log(file);
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+
+                        // saves attachment.
+                        $('#<%=btnAddAttachment.ClientID%>').click();
                         //this.removeFile(file);
                     });
 
