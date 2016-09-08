@@ -228,7 +228,7 @@
                                                     <tr>
                                                         <td>Attachment(s):<br>
                                                             <input id="hdnAttachments" runat="server" type="hidden" />
-                                                            <div id="divSubTaskDropzone" class="dropzone" style="overflow: auto; width: 415px;">
+                                                            <div id="divSubTaskDropzone" runat="server" class="dropzone" style="overflow: auto; width: 415px;">
                                                                 <div class="fallback">
                                                                     <input name="file" type="file" multiple />
                                                                     <input type="submit" value="Upload" />
@@ -236,7 +236,7 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div id="divSubTaskDropzonePreview" class="dropzone-previews">
+                                                            <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -492,7 +492,7 @@
             </ContentTemplate>
         </asp:UpdatePanel>
 
-        <div id="divFinishedWorkFiles" runat="server" style="display: none; width: 600px;" title="Finished Work Files">
+        <div id="divFinishedWorkFiles" runat="server" style="display: none;" title="Finished Work Files">
             <%--Finished Work Files--%>
             <asp:UpdatePanel ID="upFinishedWorkFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -542,13 +542,13 @@
                                     <tr>
                                         <td>
                                             <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                            <div id="divWorkFile" class="dropzone">
+                                            <div id="divWorkFile" runat="server" class="dropzone">
                                                 <div class="fallback">
                                                     <input name="WorkFile" type="file" multiple />
                                                     <input type="submit" value="UploadWorkFile" />
                                                 </div>
                                             </div>
-                                            <div id="divWorkFilePreview" class="dropzone-previews">
+                                            <div id="divWorkFilePreview" runat="server" class="dropzone-previews">
                                             </div>
                                         </td>
                                     </tr>
@@ -567,7 +567,7 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
-        <div id="divWorkSpecifications" runat="server" style="display: none; width: 600px;" title="Work Specification Files">
+        <div id="divWorkSpecifications" runat="server" style="display: none;" title="Work Specification Files">
             <%--Work Specification Files--%>
             <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -611,18 +611,25 @@
         }
 
         function ShowPopup(varControlID) {
-            $(varControlID).dialog().open();
+            $(varControlID).dialog({width:"600px",height:"auto"});
         }
 
         function HidePopup(varControlID) {
             $(varControlID).dialog("close");
         }
 
-        var objMainTaskDropzone, objSubTaskDropzone;
-        Dropzone.autoDiscover = false;
-        Dropzone.options.dropzoneForm = false;
+        // check if user has selected any designations or not.
+        function checkDesignations(oSrc, args) {
+            args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
+        }
 
-        //Add uploaded attachment to viewstate of page to save later.
+        function copytoListID(sender) {
+            var strListID = $.trim($(sender).text());
+            if (strListID.length > 0) {
+                $('#<%= txtTaskListID.ClientID %>').val(strListID);
+            }
+        }
+
         function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
             var attachments;
@@ -635,47 +642,14 @@
             }
 
             $(hdnControlID).val(attachments);
-            console.log('file : ' + $(hdnControlID).val());
-        }
-
-        //Remove file from server once it is removed from dropzone.
-        function RemoveTaskAttachmentFromServer(filename) {
-            //var param = { serverfilename: filename };
-            //$.ajax({
-            //    type: "POST",
-            //    data: JSON.stringify(param),
-            //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-            //    contentType: "application/json; charset=utf-8",
-            //    dataType: "json",
-            //    success: OnAttachmentRemoveSuccess,
-            //    error: OnAttachmentRemoveError
-            //});
-        }
-
-        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-        function OnAttachmentRemoveSuccess(data) {
-            var result = data.d;
-            if (r - esult) {
-                RemoveAttachmentFromViewState(result);
-            }
-        }
-
-        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-        function OnAttachmentRemoveError(data) {
-            var result = data.d;
-            if (result) {
-                console.log(result);
-            }
         }
 
         function RemoveAttachmentFromViewState(filename) {
-            console.log($('#<%= hdnAttachments.ClientID %>').val());
+
             if ($('#<%= hdnAttachments.ClientID %>').val()) {
 
                 //split images added by ^ seperator
                 var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
-
-                console.log(attachments);
 
                 if (attachments.length > 0) {
                     //find index of filename and remove it.
@@ -684,8 +658,7 @@
                     if (index > -1) {
                         attachments.splice(index, 1);
                     }
-                    console.log(attachments);
-
+                    
                     //join remaining attachments.
                     if (attachments.length > 0) {
                         $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
@@ -697,22 +670,26 @@
             }
         }
 
+        var objMainTaskDropzone, objSubTaskDropzone;
+        //Dropzone.autoDiscover = false;
+        //Dropzone.options.dropzoneForm = false;
+
         function ApplyDropZone() {
             //debugger;
             ////User's drag and drop file attachment related code
 
-            ////remove already attached dropzone.
-            //if (objMainTaskDropzone) {
-            //    objMainTaskDropzone.destroy();
-            //    objMainTaskDropzone = null;
-            //}
+            //remove already attached dropzone.
+            if (objMainTaskDropzone) {
+                objMainTaskDropzone.destroy();
+                objMainTaskDropzone = null;
+            }
 
-            objMainTaskDropzone = new Dropzone("div#divWorkFile", {
+            objMainTaskDropzone = new Dropzone("#<%=divWorkFile.ClientID%>", {
                 maxFiles: 5,
                 url: "taskattachmentupload.aspx",
                 thumbnailWidth: 90,
                 thumbnailHeight: 90,
-                previewsContainer: 'div#divWorkFilePreview',
+                previewsContainer: '#<%=divWorkFilePreview.ClientID%>',
                 init: function () {
                     this.on("maxfilesexceeded", function (data) {
                         //var res = eval('(' + data.xhr.responseText + ')');
@@ -723,7 +700,7 @@
                     this.on("success", function (file, response) {
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        console.log(file);
+                        
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
 
                         // saves attachment.
@@ -768,12 +745,12 @@
                 objSubTaskDropzone = null;
             }
 
-            objSubTaskDropzone = new Dropzone("div#divSubTaskDropzone", {
+            objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                 maxFiles: 5,
                 url: "taskattachmentupload.aspx",
                 thumbnailWidth: 90,
                 thumbnailHeight: 90,
-                previewsContainer: 'div#divSubTaskDropzonePreview',
+                previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                 init: function () {
                     this.on("maxfilesexceeded", function (data) {
                         //var res = eval('(' + data.xhr.responseText + ')');
@@ -784,7 +761,7 @@
                     this.on("success", function (file, response) {
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        console.log(file);
+                        
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
                         //this.removeFile(file);
                     });
@@ -821,20 +798,35 @@
             });
         }
 
-        // check if user has selected any designations or not.
-        function checkDesignations(oSrc, args) {
+        //Remove file from server once it is removed from dropzone.
+        //function RemoveTaskAttachmentFromServer(filename) {
+        //var param = { serverfilename: filename };
+        //$.ajax({
+        //    type: "POST",
+        //    data: JSON.stringify(param),
+        //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: OnAttachmentRemoveSuccess,
+        //    error: OnAttachmentRemoveError
+        //});
+        //}
 
-            var n = $("#<%= ddlUserDesignation.ClientID%> input:checked").length;
+        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        //function OnAttachmentRemoveSuccess(data) {
+        //    var result = data.d;
+        //    if (r - esult) {
+        //        RemoveAttachmentFromViewState(result);
+        //    }
+        //}
 
-            args.IsValid = (n > 0);
-        }
-
-        function copytoListID(sender) {
-            var strListID = $.trim($(sender).text());
-            if (strListID.length > 0) {
-                $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                }
-            }
+        //// Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        //function OnAttachmentRemoveError(data) {
+        //    var result = data.d;
+        //    if (result) {
+        //        console.log(result);
+        //    }
+        //}
 
     </script>
 </asp:Content>
