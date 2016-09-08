@@ -209,7 +209,7 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
-        #region Popup - Add / Edit Task
+        #region Add / Edit Task
 
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -318,7 +318,7 @@ namespace JG_Prospect.Sr_App
             //Save details of users to whom task is assgined.
             SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
-            if (controlMode.Value == "0" && this.lstTaskUserFiles.Any())
+            if (controlMode.Value == "0")
             {
                 foreach (string strFile in this.lstTaskUserFiles)
                 {
@@ -368,14 +368,24 @@ namespace JG_Prospect.Sr_App
             {
                 if (controlMode.Value == "0")
                 {
+                    #region '-- Save And Refresh Viewstate --'
+                    
                     lstTaskUserFiles.AddRange(hdnWorkFiles.Value.Split('^'));
+                    intTaskUserFilesCount = lstTaskUserFiles.Count;
+                    rptWorkFiles.DataSource = lstTaskUserFiles;
+                    rptWorkFiles.DataBind(); 
+
+                    #endregion
                 }
                 else
                 {
+                    #region '-- Save And Refresh Database --'
+                    
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
                     DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value));
                     if (dsTaskUserFiles != null && dsTaskUserFiles.Tables.Count > 0)
                     {
+                        List<string> lstTaskUserFiles = new List<string>();
                         foreach (DataRow drFile in dsTaskUserFiles.Tables[0].Rows)
                         {
                             if (!string.IsNullOrEmpty(Convert.ToString(drFile["attachment"])))
@@ -383,11 +393,14 @@ namespace JG_Prospect.Sr_App
                                 lstTaskUserFiles.Add(drFile["attachment"].ToString());
                             }
                         }
-                    }
+                        intTaskUserFilesCount = lstTaskUserFiles.Count;
+                        rptWorkFiles.DataSource = lstTaskUserFiles;
+                        rptWorkFiles.DataBind();
+                    } 
+
+                    #endregion
                 }
-                intTaskUserFilesCount = lstTaskUserFiles.Count;
-                rptWorkFiles.DataSource = lstTaskUserFiles;
-                rptWorkFiles.DataBind();
+                
                 hdnWorkFiles.Value = "";
                 upFinishedWorkFiles.Update();
             }
@@ -1511,9 +1524,9 @@ namespace JG_Prospect.Sr_App
             this.TaskCreatedBy = Convert.ToInt32(dtTaskMasterDetails.Rows[0]["CreatedBy"]);
             if (!string.IsNullOrEmpty(Convert.ToString(dtTaskMasterDetails.Rows[0]["attachment"])))
             {
-                this.lstTaskUserFiles.AddRange(Convert.ToString(dtTaskMasterDetails.Rows[0]["attachment"]).Split(','));
-                intTaskUserFilesCount = lstTaskUserFiles.Count;
-                rptWorkFiles.DataSource = lstTaskUserFiles;
+                string []arrTaskUserFiles = Convert.ToString(dtTaskMasterDetails.Rows[0]["attachment"]).Split(',');
+                intTaskUserFilesCount = arrTaskUserFiles.Length;
+                rptWorkFiles.DataSource = arrTaskUserFiles;
                 rptWorkFiles.DataBind();
             }
             if (this.IsAdminMode)
