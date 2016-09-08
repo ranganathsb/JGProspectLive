@@ -486,13 +486,13 @@ namespace JG_Prospect.Sr_App
         protected void lbtnFinishedWorkFiles_Click(object sender, EventArgs e)
         {
             upFinishedWorkFiles.Update();
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
         }
 
         protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
         {
             upWorkSpecificationFiles.Update();
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
 
         #endregion

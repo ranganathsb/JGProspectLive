@@ -552,14 +552,14 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <%-- <tr>
-                                                                <td>
-                                                                    <div class="btn_sec">
-                                                                        <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
-                                                                            CssClass="ui-button" />
-                                                                    </div>
-                                                                </td>
-                                                            </tr>--%>
+                                    <tr style="display:none;">
+                                        <td>
+                                            <div class="btn_sec">
+                                                <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
+                                                    CssClass="ui-button" />
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </table>
                             </td>
                         </tr>
@@ -596,8 +596,22 @@
     </div>
     <script type="text/javascript">
 
+        $(function () {
+            Initialize();
+        });
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+            Initialize();
+        });
+
+        function Initialize() {
+            ApplyDropZone();
+        }
+
         function ShowPopup(varControlID) {
-            $(varControlID).dialog().open()
+            $(varControlID).dialog().open();
             //$(varControlID).parent().find('span.ui-dialog-title').html(tasktitle);
         }
 
@@ -608,17 +622,6 @@
         var objMainTaskDropzone, objSubTaskDropzone;
         Dropzone.autoDiscover = false;
         Dropzone.options.dropzoneForm = false;
-
-        $(function () {
-            ApplyDropZone();
-        });
-
-        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
-
-        prmTaskGenerator.add_endRequest(function () {
-
-        });
-
 
         //Add uploaded attachment to viewstate of page to save later.
         function AddAttachmenttoViewState(serverfilename, hdnControlID) {
@@ -634,6 +637,9 @@
 
             $(hdnControlID).val(attachments);
             console.log('file : ' + $(hdnControlID).val());
+
+            // saves attachment.
+            $('#<%=btnAddAttachment.ClientID%>').click();
         }
 
         //Remove file from server once it is removed from dropzone.
@@ -821,13 +827,13 @@
 
             var n = $("#<%= ddlUserDesignation.ClientID%> input:checked").length;
 
-                args.IsValid = (n > 0);
-            }
+            args.IsValid = (n > 0);
+        }
 
-            function copytoListID(sender) {
-                var strListID = $.trim($(sender).text());
-                if (strListID.length > 0) {
-                    $('#<%= txtTaskListID.ClientID %>').val(strListID);
+        function copytoListID(sender) {
+            var strListID = $.trim($(sender).text());
+            if (strListID.length > 0) {
+                $('#<%= txtTaskListID.ClientID %>').val(strListID);
                 }
             }
 
