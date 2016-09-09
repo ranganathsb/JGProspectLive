@@ -240,7 +240,7 @@
                                                     <tr>
                                                         <td>Attachment(s):<br>
                                                             <input id="hdnAttachments" runat="server" type="hidden" />
-                                                            <div id="divSubTaskDropzone" runat="server" class="drop-zone" style="overflow: auto; width: 415px;">
+                                                            <div id="divSubTaskDropzone" runat="server" class="dropzone" style="overflow: auto; width: 415px;">
                                                                 <div class="fallback">
                                                                     <input name="file" type="file" multiple />
                                                                     <input type="submit" value="Upload" />
@@ -607,6 +607,8 @@
         </div>
     </div>
     <script type="text/javascript">
+
+        Dropzone.autoDiscover = false;
 
         $(function () {
             Initialize();
