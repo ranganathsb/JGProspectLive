@@ -113,13 +113,13 @@
                                 <br />
                                 <br />
                                 <div>
-                                    <div id="divWorkFileAdmin" class="dropzone work-file">
+                                    <div id="divWorkFileAdmin" class="drop-zone work-file">
                                         <div class="fallback">
                                             <input name="WorkFile" type="file" multiple />
                                             <input type="submit" value="UploadWorkFile" />
                                         </div>
                                     </div>
-                                    <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
+                                    <div id="divWorkFileAdminPreview" class="drop-zone-previews work-file-previews">
                                     </div>
                                 </div>
                             </td>
@@ -240,7 +240,7 @@
                                                     <tr>
                                                         <td>Attachment(s):<br>
                                                             <input id="hdnAttachments" runat="server" type="hidden" />
-                                                            <div id="divSubTaskDropzone" runat="server" class="dropzone" style="overflow: auto; width: 415px;">
+                                                            <div id="divSubTaskDropzone" runat="server" class="drop-zone" style="overflow: auto; width: 415px;">
                                                                 <div class="fallback">
                                                                     <input name="file" type="file" multiple />
                                                                     <input type="submit" value="Upload" />
