@@ -110,6 +110,18 @@
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                 <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnWorkSpecificationFiles_Click" />
+                                <br />
+                                <br />
+                                <div>
+                                    <div id="divWorkFileAdmin" class="dropzone work-file">
+                                        <div class="fallback">
+                                            <input name="WorkFile" type="file" multiple />
+                                            <input type="submit" value="UploadWorkFile" />
+                                        </div>
+                                    </div>
+                                    <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -329,6 +341,18 @@
                                 <br />
                                 <asp:LinkButton runat="server" Text="Finished Work Files" />&nbsp;&nbsp;
                                 <asp:LinkButton runat="server" Text="Work Specification Files" />
+                                <br />
+                                <br />
+                                <div>
+                                    <div id="divWorkFileUser" class="dropzone work-file">
+                                        <div class="fallback">
+                                            <input name="WorkFile" type="file" multiple />
+                                            <input type="submit" value="UploadWorkFile" />
+                                        </div>
+                                    </div>
+                                    <div id="divWorkFileUserPreview" class="dropzone-previews work-file-previews">
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -539,22 +563,10 @@
                                             </asp:Repeater>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                            <div id="divWorkFile" runat="server" class="dropzone">
-                                                <div class="fallback">
-                                                    <input name="WorkFile" type="file" multiple />
-                                                    <input type="submit" value="UploadWorkFile" />
-                                                </div>
-                                            </div>
-                                            <div id="divWorkFilePreview" runat="server" class="dropzone-previews">
-                                            </div>
-                                        </td>
-                                    </tr>
                                     <tr style="display:none;">
                                         <td>
                                             <div class="btn_sec">
+                                                <input id="hdnWorkFiles" runat="server" type="hidden" />
                                                 <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
                                                     CssClass="ui-button" />
                                             </div>
@@ -670,7 +682,7 @@
             }
         }
 
-        var objMainTaskDropzone, objSubTaskDropzone;
+        var objWorkFileDropzone, objSubTaskDropzone;
         //Dropzone.autoDiscover = false;
         //Dropzone.options.dropzoneForm = false;
 
@@ -679,65 +691,11 @@
             ////User's drag and drop file attachment related code
 
             //remove already attached dropzone.
-            if (objMainTaskDropzone) {
-                objMainTaskDropzone.destroy();
-                objMainTaskDropzone = null;
+            if (objWorkFileDropzone) {
+                objWorkFileDropzone.destroy();
+                objWorkFileDropzone = null;
             }
-
-            objMainTaskDropzone = new Dropzone("#<%=divWorkFile.ClientID%>", {
-                maxFiles: 5,
-                url: "taskattachmentupload.aspx",
-                thumbnailWidth: 90,
-                thumbnailHeight: 90,
-                previewsContainer: '#<%=divWorkFilePreview.ClientID%>',
-                init: function () {
-                    this.on("maxfilesexceeded", function (data) {
-                        //var res = eval('(' + data.xhr.responseText + ')');
-                        alert('you are reached maximum attachment upload limit.');
-                    });
-
-                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                    this.on("success", function (file, response) {
-                        var filename = response.split("^");
-                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        
-                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
-                        // saves attachment.
-                        $('#<%=btnAddAttachment.ClientID%>').click();
-                        //this.removeFile(file);
-                    });
-
-                    //when file is removed from dropzone element, remove its corresponding server side file.
-                    //this.on("removedfile", function (file) {
-                    //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                    //    RemoveTaskAttachmentFromServer(server_file);
-                    //});
-
-                    // When is added to dropzone element, add its remove link.
-                    //this.on("addedfile", function (file) {
-
-                    //    // Create the remove button
-                    //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                    //    // Capture the Dropzone instance as closure.
-                    //    var _this = this;
-
-                    //    // Listen to the click event
-                    //    removeButton.addEventListener("click", function (e) {
-                    //        // Make sure the button click doesn't submit the form:
-                    //        e.preventDefault();
-                    //        e.stopPropagation();
-                    //        // Remove the file preview.
-                    //        _this.removeFile(file);
-                    //    });
-
-                    //    // Add the button to the file preview element.
-                    //    file.previewElement.appendChild(removeButton);
-                    //});
-                }
-
-            });
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
 
             //remove already attached dropzone.
             if (objSubTaskDropzone) {
@@ -796,6 +754,64 @@
                 }
 
             });
+        }
+
+        function GetWorkFileDropzone(strDropzoneSelector,strPreviewSelector) {
+            return new Dropzone(strDropzoneSelector,
+                {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: strPreviewSelector,
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+
+                            // saves attachment.
+                            $('#<%=btnAddAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        });
+
+                        //when file is removed from dropzone element, remove its corresponding server side file.
+                        //this.on("removedfile", function (file) {
+                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                        //    RemoveTaskAttachmentFromServer(server_file);
+                        //});
+
+                        // When is added to dropzone element, add its remove link.
+                        //this.on("addedfile", function (file) {
+
+                        //    // Create the remove button
+                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+
+                        //    // Capture the Dropzone instance as closure.
+                        //    var _this = this;
+
+                        //    // Listen to the click event
+                        //    removeButton.addEventListener("click", function (e) {
+                        //        // Make sure the button click doesn't submit the form:
+                        //        e.preventDefault();
+                        //        e.stopPropagation();
+                        //        // Remove the file preview.
+                        //        _this.removeFile(file);
+                        //    });
+
+                        //    // Add the button to the file preview element.
+                        //    file.previewElement.appendChild(removeButton);
+                        //});
+                    }
+
+                });
         }
 
         //Remove file from server once it is removed from dropzone.
