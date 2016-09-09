@@ -1,4 +1,4 @@
-﻿#region "-- using -"
+﻿#region "-- using --"
 
 using JG_Prospect.BLL;
 using JG_Prospect.Common;
@@ -25,7 +25,6 @@ using System.Linq;
 using System.Web.UI.HtmlControls;
 
 #endregion
-
 
 namespace JG_Prospect.Sr_App
 {
@@ -1200,7 +1199,7 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Path, hdnTaskId.Value));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
 
