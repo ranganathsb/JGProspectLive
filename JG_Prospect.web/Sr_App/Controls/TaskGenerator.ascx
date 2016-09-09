@@ -356,13 +356,13 @@
                                                             <tr>
                                                                 <td>
                                                                     <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                                                    <div id="divWorkFile" class="dropzone">
+                                                                    <div id="divWorkFile" class="drop-zone">
                                                                         <div class="fallback">
                                                                             <input name="WorkFile" type="file" multiple />
                                                                             <input type="submit" value="UploadWorkFile" />
                                                                         </div>
                                                                     </div>
-                                                                    <div id="divWorkFilePreview" class="dropzone-previews">
+                                                                    <div id="divWorkFilePreview" class="drop-zone-previews">
                                                                     </div>
                                                                 </td>
                                                             </tr>
