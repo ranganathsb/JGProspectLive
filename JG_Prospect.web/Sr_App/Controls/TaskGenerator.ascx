@@ -516,7 +516,7 @@
                                             <tr>
                                                 <td>Attachment(s):<br>
                                                     <input id="hdnAttachments" runat="server" type="hidden" />
-                                                    <div id="divSubTaskDropzone" class="dropzone" style="overflow: auto; width: 415px;">
+                                                    <div id="divSubTaskDropzone1" class="drop-zone" style="overflow: auto; width: 415px;">
                                                         <div class="fallback">
                                                             <input name="file" type="file" multiple />
                                                             <input type="submit" value="Upload" />
@@ -524,7 +524,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div id="divSubTaskDropzonePreview" class="dropzone-previews">
+                                                    <div id="divSubTaskDropzonePreview1" class="drop-zone-previews">
                                                     </div>
                                                 </td>
                                             </tr>
