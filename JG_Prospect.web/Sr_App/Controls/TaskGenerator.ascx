@@ -256,7 +256,8 @@
     </asp:UpdatePanel>
 </div>
 
-<div id="divModal" title="Task : Title" style="background: #efeeee url(../img/form-bg.png) repeat-x top; display: none;">
+<div id="divModal" title="Task : Title" style="background: #efeeee url(../img/form-bg.png) repeat-x top; display: none;"
+    runat="server" visible="false">
     <hr />
     <asp:UpdatePanel ID="upnlTaskPopup" runat="server">
         <ContentTemplate>
