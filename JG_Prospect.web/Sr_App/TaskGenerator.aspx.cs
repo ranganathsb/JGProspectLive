@@ -1200,55 +1200,7 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-
-                    strBody = strHeader + strBody + strFooter;
-
-                    List<Attachment> lstAttachments = new List<Attachment>();
-                    // your remote SMTP server IP.
-                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
-                    {
-                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                        if (File.Exists(sourceDir))
-                        {
-                            Attachment attachment = new Attachment(sourceDir);
-                            attachment.Name = Path.GetFileName(sourceDir);
-                            lstAttachments.Add(attachment);
-                        }
-                    }
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0} Exception caught.", ex);
-            }
-        }
-
-        private void SendEmailToAdminUser(int intTaskCreatedBy)
-        {
-            try
-            {
-                if (intTaskCreatedBy > 0)
-                {
-                    string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName);
-                    DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
-                    if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
-                    {
-                        dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(intTaskCreatedBy);
-                    }
-
-                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
-                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
-                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
-                    string fullname = FName + " " + LName;
-
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
-
-                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Path, hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -1423,7 +1375,7 @@ namespace JG_Prospect.Sr_App
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
             this.TaskCreatedBy = Convert.ToInt32(dtTaskMasterDetails.Rows[0]["CreatedBy"]);
-            
+
             if (this.IsAdminMode)
             {
                 txtTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
