@@ -526,7 +526,7 @@
                                 <table style="width: 100%;">
                                     <tr>
                                         <td>
-                                            <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                            <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptWorkFiles_ItemCommand" OnItemDataBound="rptWorkFiles_ItemDataBound" runat="server">
                                                 <HeaderTemplate>
                                                     <table class="table">
                                                         <thead>
@@ -542,7 +542,7 @@
                                                             <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
                                                                 CommandName="DownloadFile" /></small>
                                                         </td>
-                                                        <td>Justin
+                                                        <td><%#Eval("FirstName") %>
                                                         </td>
                                                     </tr>
 
@@ -553,7 +553,7 @@
                                                             <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
                                                                 CommandName="DownloadFile" /></small>
                                                         </td>
-                                                        <td>Justin
+                                                        <td><%#Eval("FirstName") %>
                                                         </td>
                                                     </tr>
                                                 </AlternatingItemTemplate>
@@ -776,9 +776,9 @@
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
+                            
                             // saves attachment.
-                            $('#<%=btnAddAttachment.ClientID%>').click();
+                            $('#<%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
                             //this.removeFile(file);
                         });
 
