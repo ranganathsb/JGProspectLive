@@ -58,9 +58,9 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
-            
+
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
             //createForeMenForJobAcceptance();
@@ -4877,7 +4877,7 @@ namespace JG_Prospect.Sr_App
                 {
                     ViewState["txtOfferPassword"] = txtOfferPassword.Text;
                 }
-                
+
                 if (EditId > 0)
                 {
                     InstallUserBLL.Instance.UpdateOfferMade(EditId, Convert.ToString(ViewState["txtOfferReqMail"]), Convert.ToString(ViewState["txtOfferPassword"]));
@@ -4985,7 +4985,7 @@ namespace JG_Prospect.Sr_App
             {
                 ViewState["ddlInsteviewtime"] = ddlInsteviewtime.SelectedItem.Text;
             }
-            
+
             if (EditId > 0)
             {
                 string email = "";
@@ -6141,7 +6141,7 @@ namespace JG_Prospect.Sr_App
                 int CustomerId = Convert.ToInt32(Session["ID"]);
                 DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
                 grdTouchPointLog.DataSource = ds;
-                grdTouchPointLog.DataBind(); 
+                grdTouchPointLog.DataBind();
             }
             // txtAddNotes.Text = "";
         }

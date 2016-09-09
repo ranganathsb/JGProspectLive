@@ -87,7 +87,7 @@ namespace JG_Prospect
         {
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
@@ -547,7 +547,7 @@ namespace JG_Prospect
                 string HireDate = "";
                 string EmpType = "";
                 string PayRates = "";
-                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),JGSession.IsInstallUser.Value, txtReason.Text);
+                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)

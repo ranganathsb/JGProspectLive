@@ -37,7 +37,7 @@ namespace JG_Prospect.Sr_App
             //  CalendarExtender10.StartDate = DateTime.Now;
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
@@ -11653,16 +11653,17 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    if(txtpassword1.Text != txtpassword.Text){
+                    if (txtpassword1.Text != txtpassword.Text)
+                    {
                         lMessage += "Password and Confirm password does not match\n";
                     }
                 }
-                if (lMessage!="")
+                if (lMessage != "")
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + lMessage + "')", true);
                     return;
                 }
-                
+
 
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 //return;
@@ -11886,8 +11887,8 @@ namespace JG_Prospect.Sr_App
                 lblConfirmPass.Visible = false;
             }
             #endregion
-            InstallUserBLL.Instance.UpdateInstallUserStatus(ddlstatus.SelectedValue,  Convert.ToInt32(Session["ID"]));
-            
+            InstallUserBLL.Instance.UpdateInstallUserStatus(ddlstatus.SelectedValue, Convert.ToInt32(Session["ID"]));
+
         }
 
         //protected void btnPassword_Click(object sender, EventArgs e)

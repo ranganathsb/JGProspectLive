@@ -31,7 +31,7 @@ namespace JG_Prospect.Sr_App
             //}
             //else
             //{
-            //    Response.Redirect("/login.aspx");
+            //    Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
             //}
 
             if (Session["Username"] != null)
@@ -40,7 +40,7 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
 
 
@@ -331,13 +331,13 @@ namespace JG_Prospect.Sr_App
                     //lblmsg.CssClass = "success";
                     //lblmsg.Text = "Prospect has been created successfully";
                     //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Prospect has been created successfully');", true);
-                    
+
                     Session["UploadFileCountProspect"] = 0;
                     Session["ProspectAttachment"] = null;
                     CheckUserType();
-                  
-                    if(isInstallUser)
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Prospect has been created successfully');window.location ='EditInstallUser.aspx';", true);
+
+                    if (isInstallUser)
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Prospect has been created successfully');window.location ='EditInstallUser.aspx';", true);
                     else
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sales has been created successfully');window.location ='EditUser.aspx';", true);
                     //Response.Redirect("EditInstallUser.aspx");

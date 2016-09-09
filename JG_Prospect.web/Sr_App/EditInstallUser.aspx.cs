@@ -27,7 +27,7 @@ namespace JG_Prospect.Sr_App
         {
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
