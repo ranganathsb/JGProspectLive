@@ -233,18 +233,16 @@ namespace JG_Prospect.Sr_App
 
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
 
-                if (files[1].Length > 13)// sort name with ....
+                if (files[1].Length > 40)// sort name with ....
                 {
                     lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
-
-                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 }
                 else
                 {
                     lbtnAttchment.Text = files[1];
                 }
-
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 lbtnAttchment.CommandArgument = file;
             }
         }
