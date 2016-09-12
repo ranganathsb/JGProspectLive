@@ -7,6 +7,11 @@ using JG_Prospect.Common;
 using JG_Prospect.BLL;
 using System.Data;
 using JG_Prospect.App_Code;
+using Saplin.Controls;
+using JG_Prospect.Common.modal;
+using System.Collections.Generic;
+using System.Net.Mail;
+using System.IO;
 #endregion
 
 namespace JG_Prospect.Sr_App
@@ -62,18 +67,34 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region "-Control Events-"
-        
+
+        #region Filters - Search Task
+
+        protected void ddlDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadFilterUsersByDesgination();
+            SearchTasks();
+        }
+
+        protected void ddlUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SearchTasks();
+        }
+
+        protected void ddlTaskStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SearchTasks();
+        }
+
         protected void btnSearch_Click(object sender, ImageClickEventArgs e)
         {
             SearchTasks();
         }
-        
-        protected void gvTasks_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvTasks.PageIndex = e.NewPageIndex;
-            SearchTasks();
-        }
-        
+
+        #endregion
+
+        #region gvTasks - Task List
+
         protected void gvTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -83,7 +104,10 @@ namespace JG_Prospect.Sr_App
                 HyperLink hypTask = e.Row.FindControl("hypTask") as HyperLink;
                 Label lblDesignation = e.Row.FindControl("lblDesignation") as Label;
                 Label lblAssignedUser = e.Row.FindControl("lblAssignedUser") as Label;
+                DropDownCheckBoxes ddcbAssignedUser = e.Row.FindControl("ddcbAssignedUser") as DropDownCheckBoxes;
+                LinkButton lbtnRequestStatus = e.Row.FindControl("lbtnRequestStatus") as LinkButton;
                 Literal ltrlStatus = e.Row.FindControl("ltrlStatus") as Literal;
+                DropDownList ddlStatus = e.Row.FindControl("ddlStatus") as DropDownList;
                 Literal ltrlDueDate = e.Row.FindControl("ltrlDueDate") as Literal;
 
                 hypTask.Text = drTask["Title"].ToString();
@@ -109,33 +133,189 @@ namespace JG_Prospect.Sr_App
                 }
 
                 ltrlStatus.Text = ((TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
+                ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
+                ddlStatus.DataTextField = "Text";
+                ddlStatus.DataValueField = "Value";
+                ddlStatus.DataBind();
+                ddlStatus.SelectedValue = drTask["Status"].ToString();
 
                 if (!string.IsNullOrEmpty(Convert.ToString(drTask["DueDate"])))
                 {
                     ltrlDueDate.Text = Convert.ToDateTime(drTask["DueDate"]).ToString("MM-dd-yyyy");
                 }
+
+                if (this.IsAdminMode)
+                {
+                    #region Admin User
+
+                    if (
+                        ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                        string.IsNullOrEmpty(Convert.ToString(drTask["TaskAssignedUsers"]))
+                       )
+                    {
+                        ddcbAssignedUser.Visible = true;
+                        lbtnRequestStatus.Visible =
+                        lblAssignedUser.Visible = false;
+
+                        ddcbAssignedUser.Items.Clear();
+                        ddcbAssignedUser.DataSource = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(drTask["TaskDesignations"]).Trim());
+                        ddcbAssignedUser.DataTextField = "FristName";
+                        ddcbAssignedUser.DataValueField = "Id";
+                        ddcbAssignedUser.DataBind();
+
+                        ddcbAssignedUser.Attributes.Add("TaskId", drTask["TaskId"].ToString());
+                        ddcbAssignedUser.Attributes.Add("TaskStatus", ddlStatus.SelectedValue);
+                    }
+                    else if (ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Requested).ToString())
+                    {
+                        lbtnRequestStatus.Visible = true;
+                        ddcbAssignedUser.Visible =
+                        lblAssignedUser.Visible = false;
+
+                        string[] arrTaskAssignmentRequest = Convert.ToString(drTask["TaskAssignmentRequestUsers"]).Split(':');
+
+                        if (arrTaskAssignmentRequest.Length > 1)
+                        {
+                            lbtnRequestStatus.Text = arrTaskAssignmentRequest[1];
+                        }
+
+                        lbtnRequestStatus.ForeColor = System.Drawing.Color.Red;
+                        lbtnRequestStatus.CommandName = "approve-request";
+                        lbtnRequestStatus.CommandArgument = string.Format(
+                                                                            "{0}:{1}",
+                                                                            drTask["TaskId"].ToString(),
+                                                                            arrTaskAssignmentRequest[0]
+                                                                          );
+                    }
+                    else
+                    {
+                        lblAssignedUser.Visible = true;
+                        ddcbAssignedUser.Visible =
+                        lbtnRequestStatus.Visible = false;
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region Install User
+
+                    string strMyDesignation = Convert.ToString(Session["DesigNew"]).Trim().ToLower();
+
+                    // show request link when,
+                    // task status is open
+                    // task assigned to my designation
+                    if (ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                        strMyDesignation == Convert.ToString(drTask["TaskDesignations"]).Trim().ToLower())
+                    {
+                        lbtnRequestStatus.Visible = true;
+                        ddcbAssignedUser.Visible =
+                        lblAssignedUser.Visible = false;
+                        lbtnRequestStatus.ForeColor = System.Drawing.Color.Green;
+                        lbtnRequestStatus.CommandName = "request";
+                        lbtnRequestStatus.CommandArgument = string.Format(
+                                                                            "{0}:{1}",
+                                                                            drTask["TaskId"].ToString(),
+                                                                            drTask["CreatedBy"].ToString()
+                                                                        );
+                    }
+                    else
+                    {
+                        ddcbAssignedUser.Visible =
+                        lbtnRequestStatus.Visible = false;
+                        lblAssignedUser.Visible = true;
+                    }
+
+                    #endregion
+                }
             }
         }
-        
-        protected void ddlDesignation_SelectedIndexChanged(object sender, EventArgs e)
+
+        protected void gvTasks_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            LoadFilterUsersByDesgination();
+            if (e.CommandName == "request")
+            {
+                Task objTask = new Task()
+                {
+                    TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
+                    Status = Convert.ToByte(TaskStatus.Requested)
+                };
+
+                // update task status to requested.
+                if (TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask) > 0)
+                {
+                    // insert user request.
+                    if (TaskGeneratorBLL.Instance.SaveTaskAssignmentRequests(Convert.ToUInt64(objTask.TaskId), Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()].ToString()))
+                    {
+                        SendEmailToAdminUser(objTask.TaskId, Convert.ToInt32(e.CommandArgument.ToString().Split(':')[1]));
+                        SearchTasks();
+                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task requested successfully!");
+                    }
+                    else
+                    {
+                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not requested successfully! Please try again later.");
+                    }
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not requested successfully! Please try again later.");
+                }
+            }
+            else if (e.CommandName == "approve-request")
+            {
+                Task objTask = new Task()
+                {
+                    TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
+                    Status = Convert.ToByte(TaskStatus.Assigned)
+                };
+
+                if (TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask) > 0)
+                {
+                    // insert user request.
+                    if (TaskGeneratorBLL.Instance.AcceptTaskAssignmentRequests(Convert.ToUInt64(objTask.TaskId), e.CommandArgument.ToString().Split(':')[1]))
+                    {
+                        SendEmailToAssignedUsers(objTask.TaskId,e.CommandArgument.ToString().Split(':')[1]);
+                        SearchTasks();
+                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task assigned successfully!");
+                    }
+                    else
+                    {
+                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not assigned successfully! Please try again later.");
+                    }
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task assigned successfully!");
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not assigned successfully! Please try again later.");
+                }
+            }
+            //else if (e.CommandName == "RemoveTask")
+            //{
+            //    DeletaTask(e.CommandArgument.ToString());
+            //}
+        }
+
+        protected void gvTasks_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvTasks.PageIndex = e.NewPageIndex;
             SearchTasks();
         }
 
-        protected void ddlUsers_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvTasks_ddcbAssignedUser_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SearchTasks();
+
         }
 
-        protected void ddlTaskStatus_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SearchTasks();
+
         }
 
         #endregion
 
-        #region "--Private Methods--"
+        #endregion
+
+        #region "--Methods--"
 
         private void CheckIsAdmin()
         {
@@ -189,7 +369,7 @@ namespace JG_Prospect.Sr_App
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            DataSet dsResult = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode , Start, PageLimit);
+            DataSet dsResult = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode, Start, PageLimit);
 
             gvTasks.VirtualItemCount = Convert.ToInt32(dsResult.Tables[1].Rows[0]["VirtualCount"].ToString());
 
@@ -284,6 +464,102 @@ namespace JG_Prospect.Sr_App
             ddlUsers.DataBind();
 
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
+        }
+
+        private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        private void SendEmailToAdminUser(int intTaskId,int intTaskCreatedBy)
+        {
+            try
+            {
+                if (intTaskCreatedBy > 0)
+                {
+                    string strHTMLTemplateName = "Task Assignment Requested";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,109);
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
+                    if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
+                    {
+                        dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(intTaskCreatedBy);
+                    }
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
         }
 
         #endregion

@@ -366,7 +366,7 @@ namespace JG_Prospect.Sr_App.Controls
                     // insert user request.
                     if (TaskGeneratorBLL.Instance.SaveTaskAssignmentRequests(Convert.ToUInt64(objTask.TaskId), Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()].ToString()))
                     {
-                        SendEmailToAdminUser(Convert.ToInt32(e.CommandArgument.ToString().Split(':')[1]));
+                        SendEmailToAdminUser(objTask.TaskId, Convert.ToInt32(e.CommandArgument.ToString().Split(':')[1]));
 
                         SearchTasks(null);
                         CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task requested successfully!");
@@ -394,7 +394,7 @@ namespace JG_Prospect.Sr_App.Controls
                     // insert user request.
                     if (TaskGeneratorBLL.Instance.AcceptTaskAssignmentRequests(Convert.ToUInt64(objTask.TaskId), e.CommandArgument.ToString().Split(':')[1]))
                     {
-                        SendEmailToAssignedUsers(e.CommandArgument.ToString().Split(':')[1]);
+                        SendEmailToAssignedUsers(objTask.TaskId, e.CommandArgument.ToString().Split(':')[1]);
                         SearchTasks(null);
                         CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task assigned successfully!");
                     }
@@ -1339,7 +1339,7 @@ namespace JG_Prospect.Sr_App.Controls
                             UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
                         }
 
-                        SendEmailToAssignedUsers(strUsersIds);
+                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value),strUsersIds);
                     }
                 }
                 // send email to all users of the department as task is assigned to designation, but not to any specific user.
@@ -1352,7 +1352,7 @@ namespace JG_Prospect.Sr_App.Controls
                         strUserIDs += string.Concat(item.Value, ",");
                     }
 
-                    SendEmailToAssignedUsers(strUserIDs.TrimEnd(','));
+                    SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUserIDs.TrimEnd(','));
                 }
             }
         }
@@ -1680,12 +1680,12 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        private void SendEmailToAssignedUsers(string strInstallUserIDs)
+        private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
         {
             try
             {
                 string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName);
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,108);
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -1701,6 +1701,7 @@ namespace JG_Prospect.Sr_App.Controls
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -1725,14 +1726,14 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        private void SendEmailToAdminUser(int intTaskCreatedBy)
+        private void SendEmailToAdminUser(int intTaskId, int intTaskCreatedBy)
         {
             try
             {
                 if (intTaskCreatedBy > 0)
                 {
                     string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName);
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,109);
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
                     if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
                     {
@@ -1750,6 +1751,7 @@ namespace JG_Prospect.Sr_App.Controls
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 

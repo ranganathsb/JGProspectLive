@@ -1,8 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskList.aspx.cs" Inherits="JG_Prospect.Sr_App.TaskList" EnableEventValidation="false" %>
 
 <%@ MasterType VirtualPath="~/Sr_App/SR_app.Master" %>
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../Styles/dd.css" rel="stylesheet" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
@@ -216,7 +218,9 @@
                     <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" 
                         AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
                         BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" 
-                        OnRowDataBound="gvTasks_RowDataBound" OnPageIndexChanging="gvTasks_PageIndexChanging">
+                        OnRowDataBound="gvTasks_RowDataBound" 
+                        OnRowCommand="gvTasks_RowCommand"
+                        OnPageIndexChanging="gvTasks_PageIndexChanging">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
@@ -237,11 +241,20 @@
                             <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150">
                                 <ItemTemplate>
                                     <asp:Label ID="lblAssignedUser" runat="server" />
+                                    <asp:DropDownCheckBoxes ID="ddcbAssignedUser" runat="server" UseSelectAllNode="false"
+                                        AutoPostBack="true" OnSelectedIndexChanged="gvTasks_ddcbAssignedUser_SelectedIndexChanged">
+                                        <Style SelectBoxWidth="140" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                        <Texts SelectBoxCaption="--Open--" />
+                                    </asp:DropDownCheckBoxes>
+                                    <asp:LinkButton ID="lbtnRequestStatus" runat="server" Visible="false" Text="Request" 
+                                        CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60">
                                 <ItemTemplate>
                                     <asp:Literal ID="ltrlStatus" runat="server" />
+                                    <asp:DropDownList ID="ddlStatus" Width="50" AutoPostBack="true" runat="server" 
+                                        OnSelectedIndexChanged="gvTasks_ddlStatus_SelectedIndexChanged" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Due Date" HeaderStyle-Width="60">
