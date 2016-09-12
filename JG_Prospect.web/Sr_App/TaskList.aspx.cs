@@ -92,6 +92,7 @@ namespace JG_Prospect.Sr_App
                     hypTask.ToolTip = hypTask.Text;
                     hypTask.Text = hypTask.Text.Substring(0, 55) + "..";
                 }
+                hypTask.NavigateUrl = "~/sr_app/TaskGenerator.aspx?TaskId=" + drTask["TaskId"].ToString();
 
                 lblDesignation.Text = drTask["TaskDesignations"].ToString();
                 if (lblDesignation.Text.Length > 30)
