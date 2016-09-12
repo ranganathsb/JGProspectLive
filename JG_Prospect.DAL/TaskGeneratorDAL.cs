@@ -21,7 +21,7 @@ namespace JG_Prospect.DAL
         public static TaskGeneratorDAL Instance
         {
             get { return m_TaskGeneratorDAL; }
-            private set {; }
+            private set { ; }
         }
 
         private DataSet returndata;
@@ -48,7 +48,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@Hours", DbType.String, objTask.Hours);
                     database.AddInParameter(command, "@CreatedBy", DbType.Int32, objTask.CreatedBy);
-                    
+
                     if (objTask.ParentTaskId.HasValue)
                     {
                         database.AddInParameter(command, "@InstallId", DbType.String, objTask.InstallId);
@@ -366,7 +366,7 @@ namespace JG_Prospect.DAL
 
                     if (objTaskUser.TaskUpdateId != null)
                     {
-                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, objTaskUser.TaskUpdateId ); 
+                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, objTaskUser.TaskUpdateId);
                     }
                     else
                     {
@@ -400,6 +400,88 @@ namespace JG_Prospect.DAL
                 return false;
             }
 
+        }
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecification.Content);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecification.IsInstallUser);
+                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecification.Status);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecificationVersions objTaskWorkSpecificationVersions)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecificationVersions.Id);
+                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecificationVersions.IsInstallUser);
+                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecificationVersions.TaskWorkSpecification.Status);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, byte? bytStatus)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetLatestTaskWorkSpecification");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    if (bytStatus.HasValue)
+                    {
+                        database.AddInParameter(command, "@Status", DbType.Int32, bytStatus.Value);
+                    }
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         //Get details for task with user and attachments
@@ -595,7 +677,7 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-        
+
         /// <summary>
         /// Will fetch task lists based on various filter parameters provided.
         /// </summary>

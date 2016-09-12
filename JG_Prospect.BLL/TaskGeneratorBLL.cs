@@ -62,6 +62,21 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskUserFiles(objTaskUser);
         }
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+        }
+        
+        public int UpdateTaskWorkSpecification(TaskWorkSpecificationVersions objTaskWorkSpecificationVersions)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecificationVersions);
+        }
+        
+        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, byte? bytStatus)
+        {
+            return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(TaskId, bytStatus);
+        }
         public DataSet GetTaskDetails(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
