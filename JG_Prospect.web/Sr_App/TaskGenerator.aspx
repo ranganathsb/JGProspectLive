@@ -11,7 +11,7 @@
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
-    
+
     <div class="right_panel">
         <hr />
         <asp:UpdatePanel ID="upTask" runat="server">
@@ -581,35 +581,83 @@
             <%--Work Specification Files--%>
             <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <table class="table" width="500">
-                        <thead>
-                            <tr class="trHeader">
-                                <th>Document</th>
-                                <th>Modified By</th>
-                                <th>Modified Time</th>
-                            </tr>
-                        </thead>
-                        <tr class="FirstRow">
-                            <td><a href="#">edit-salesuser-v1.0</a></td>
-                            <td>Justin</td>
-                            <td>09-07-2016 14:44 p.m.</td>
+                    <table class="table" width="100%">
+                        <tr>
+                            <td>Work Specification:<br />
+                                <asp:TextBox id="txtWorkSpecification" runat="server" Text="hello how r u?..."></asp:TextBox>
+                            </td>
                         </tr>
-                        <tr class="AlternateRow">
-                            <td><a href="#">edit-salesuser-v1.0</a></td>
-                            <td>Justin</td>
-                            <td>09-07-2016 14:44 p.m.</td>
+                        <tr>
+                            <td>
+                                <asp:CheckBox ID="chkFreez" runat="server" Checked="false" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn_sec">
+                                    <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
+                                        OnClick="btnSaveWorkSpecification_Click" />
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
     </div>
+    <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
+    <script type="text/javascript" src='../js/ice/lib/rangy/rangy-core.js'></script>
+    <script type="text/javascript" src='../js/ice/src/polyfills.js'></script>
+    <script type="text/javascript" src='../js/ice/src/ice.js'></script>
+    <script type="text/javascript" src='../js/ice/src/dom.js'></script>
+    <script type="text/javascript" src='../js/ice/src/icePlugin.js'></script>
+    <script type="text/javascript" src='../js/ice/src/icePluginManager.js'></script>
+    <script type="text/javascript" src='../js/ice/src/bookmark.js'></script>
+    <script type="text/javascript" src='../js/ice/src/selection.js'></script>
+    <script type="text/javascript" src='../js/ice/src/plugins/IceAddTitlePlugin/IceAddTitlePlugin.js'></script>
+    <script type="text/javascript" src='../js/ice/src/plugins/IceCopyPastePlugin/IceCopyPastePlugin.js'></script>
+    <script type="text/javascript" src='../js/ice/src/plugins/IceEmdashPlugin/IceEmdashPlugin.js'></script>
+    <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
+    <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript">
+        var txtWorkSpecification = '<%=txtWorkSpecification.ClientID%>';
+
+        function LoadTinyMce() {
+            tinymce.init({
+                mode: "exact",
+                elements: txtWorkSpecification,
+                theme: "advanced",
+                plugins: 'ice,icesearchreplace',
+                theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|,ice_togglechanges,ice_toggleshowchanges,iceacceptall,icerejectall,iceaccept,icereject",
+                theme_advanced_buttons2: "",
+                theme_advanced_buttons3: "",
+                theme_advanced_buttons4: "",
+                theme_advanced_toolbar_location: "top",
+                theme_advanced_toolbar_align: "left",
+                extended_valid_elements: "p,span[*],delete[*],insert[*]",
+                ice: {
+                    user: { name: 'Jackson', id: 11 },
+                    preserveOnPaste: 'p,a[href],i,em,b,span',
+                    deleteTag: 'delete',
+                    insertTag: 'insert'
+                },
+                height: '150'
+            });
+        }
+
+        function setUserMCE(el) {
+            var name = 'J Grove';
+            var id = 22;
+            tinymce.execCommand('ice_changeuser', { id: id, name: name });
+        }
+    </script>
     <script type="text/javascript">
 
         Dropzone.autoDiscover = false;
 
         $(function () {
             Initialize();
+            LoadTinyMce();
         });
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -620,10 +668,11 @@
 
         function Initialize() {
             ApplyDropZone();
+            LoadTinyMce();
         }
 
         function ShowPopup(varControlID) {
-            $(varControlID).dialog({width:"600px",height:"auto"});
+            $(varControlID).dialog({ width: "600px", height: "auto" });
         }
 
         function HidePopup(varControlID) {
@@ -670,7 +719,7 @@
                     if (index > -1) {
                         attachments.splice(index, 1);
                     }
-                    
+
                     //join remaining attachments.
                     if (attachments.length > 0) {
                         $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
@@ -719,7 +768,7 @@
                     this.on("success", function (file, response) {
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        
+
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
                         //this.removeFile(file);
                     });
@@ -756,7 +805,7 @@
             });
         }
 
-        function GetWorkFileDropzone(strDropzoneSelector,strPreviewSelector) {
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
             return new Dropzone(strDropzoneSelector,
                 {
                     maxFiles: 5,
@@ -776,7 +825,7 @@
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-                            
+
                             // saves attachment.
                             $('#<%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
                             //this.removeFile(file);
@@ -812,37 +861,37 @@
                     }
 
                 });
-        }
+            }
 
-        //Remove file from server once it is removed from dropzone.
-        //function RemoveTaskAttachmentFromServer(filename) {
-        //var param = { serverfilename: filename };
-        //$.ajax({
-        //    type: "POST",
-        //    data: JSON.stringify(param),
-        //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-        //    contentType: "application/json; charset=utf-8",
-        //    dataType: "json",
-        //    success: OnAttachmentRemoveSuccess,
-        //    error: OnAttachmentRemoveError
-        //});
-        //}
+            //Remove file from server once it is removed from dropzone.
+            //function RemoveTaskAttachmentFromServer(filename) {
+            //var param = { serverfilename: filename };
+            //$.ajax({
+            //    type: "POST",
+            //    data: JSON.stringify(param),
+            //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: OnAttachmentRemoveSuccess,
+            //    error: OnAttachmentRemoveError
+            //});
+            //}
 
-        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-        //function OnAttachmentRemoveSuccess(data) {
-        //    var result = data.d;
-        //    if (r - esult) {
-        //        RemoveAttachmentFromViewState(result);
-        //    }
-        //}
+            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+            //function OnAttachmentRemoveSuccess(data) {
+            //    var result = data.d;
+            //    if (r - esult) {
+            //        RemoveAttachmentFromViewState(result);
+            //    }
+            //}
 
-        //// Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-        //function OnAttachmentRemoveError(data) {
-        //    var result = data.d;
-        //    if (result) {
-        //        console.log(result);
-        //    }
-        //}
+            //// Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+            //function OnAttachmentRemoveError(data) {
+            //    var result = data.d;
+            //    if (result) {
+            //        console.log(result);
+            //    }
+            //}
 
     </script>
 </asp:Content>
