@@ -388,9 +388,11 @@
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jquery-latest.js" />
     <Content Include="js\jquery-latest_old.js" />
+    <Content Include="js\jquery-migrate-1.0.0.js" />
     <Content Include="js\jquery-ui.js" />
     <Content Include="js\Jquery.Actual.min.js" />
     <Content Include="js\jquery.datetimepicker.css" />
