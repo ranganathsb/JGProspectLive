@@ -235,7 +235,7 @@ namespace JG_Prospect.Sr_App
 
                 if (files[1].Length > 13)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 12), "..");
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
 
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);

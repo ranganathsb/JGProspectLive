@@ -113,13 +113,13 @@
                                 <br />
                                 <br />
                                 <div>
-                                    <div id="divWorkFileAdmin" class="drop-zone work-file">
+                                    <div id="divWorkFileAdmin" class="dropzone work-file">
                                         <div class="fallback">
                                             <input name="WorkFile" type="file" multiple />
                                             <input type="submit" value="UploadWorkFile" />
                                         </div>
                                     </div>
-                                    <div id="divWorkFileAdminPreview" class="drop-zone-previews work-file-previews">
+                                    <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
                                     </div>
                                 </div>
                             </td>
@@ -528,11 +528,11 @@
                                         <td>
                                             <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptWorkFiles_ItemCommand" OnItemDataBound="rptWorkFiles_ItemDataBound" runat="server">
                                                 <HeaderTemplate>
-                                                    <table class="table">
+                                                    <table class="table" width="100%">
                                                         <thead>
                                                             <tr class="trHeader">
                                                                 <th>Attachments</th>
-                                                                <th>Uploaded By</th>
+                                                                <th width="200">Uploaded By</th>
                                                             </tr>
                                                         </thead>
                                                 </HeaderTemplate>
