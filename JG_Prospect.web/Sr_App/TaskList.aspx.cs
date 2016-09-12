@@ -78,11 +78,40 @@ namespace JG_Prospect.Sr_App
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Label lblTaskStatus = (Label)e.Row.FindControl("lblTaskStatus");
+                DataRowView drTask = e.Row.DataItem as DataRowView;
 
-                if (lblTaskStatus != null)
+                HyperLink hypTask = e.Row.FindControl("hypTask") as HyperLink;
+                Label lblDesignation = e.Row.FindControl("lblDesignation") as Label;
+                Label lblAssignedUser = e.Row.FindControl("lblAssignedUser") as Label;
+                Literal ltrlStatus = e.Row.FindControl("ltrlStatus") as Literal;
+                Literal ltrlDueDate = e.Row.FindControl("ltrlDueDate") as Literal;
+
+                hypTask.Text = drTask["Title"].ToString();
+                if (hypTask.Text.Length > 55)
                 {
-                    lblTaskStatus.Text = ((TaskStatus)Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"))).ToString();
+                    hypTask.ToolTip = hypTask.Text;
+                    hypTask.Text = hypTask.Text.Substring(0, 55) + "..";
+                }
+
+                lblDesignation.Text = drTask["TaskDesignations"].ToString();
+                if (lblDesignation.Text.Length > 30)
+                {
+                    lblDesignation.ToolTip = lblDesignation.Text;
+                    lblDesignation.Text = lblDesignation.Text.Substring(0, 30) + "..";
+                }
+
+                lblAssignedUser.Text = drTask["TaskAssignedUsers"].ToString();
+                if (lblAssignedUser.Text.Length > 30)
+                {
+                    lblAssignedUser.ToolTip = lblAssignedUser.Text;
+                    lblAssignedUser.Text = lblAssignedUser.Text.Substring(0, 30) + "..";
+                }
+
+                ltrlStatus.Text = ((TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
+
+                if (!string.IsNullOrEmpty(Convert.ToString(drTask["DueDate"])))
+                {
+                    ltrlDueDate.Text = Convert.ToDateTime(drTask["DueDate"]).ToString("MM-dd-yyyy");
                 }
             }
         }

@@ -139,8 +139,9 @@
                 <h1>Task List</h1>
 
                 <div class="form_panel_custom">
+                    <br />
                     <%--Filter Section--%>
-                    <table class="filter_section">
+                    <table width="100%" cellspacing="5" class="filter_section">
                         <tr>
                             <td id="tdDesigCap" runat="server">
                                 <span>Designation:</span>
@@ -210,37 +211,42 @@
                             </td>
                         </tr>
                     </table>
-
+                    <br />
                     <%--Task List Section--%>
-                    <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnPageIndexChanging="gvTasks_PageIndexChanging">
+                    <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" 
+                        AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
+                        BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" 
+                        OnRowDataBound="gvTasks_RowDataBound" OnPageIndexChanging="gvTasks_PageIndexChanging">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
+                        <FooterStyle CssClass="trFooter" />
+                        <PagerStyle CssClass="trPager" />
                         <Columns>
-                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" />
-                            <asp:TemplateField HeaderText="Task Title">
+                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" HeaderStyle-Width="50" />
+                            <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300">
                                 <ItemTemplate>
-                                    <asp:HyperLink ID="hypTask" runat="server"><%# Eval("Title") %></asp:HyperLink>
+                                    <asp:HyperLink ID="hypTask" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Designation">
+                            <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblUserDesignation" runat="server" Text='<%# Eval("TaskDesignations") %>' />
+                                    <asp:Label ID="lblDesignation" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Assigned To">
+                            <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblAssignedUser" runat="server" Text='<%# Eval("TaskAssignedUsers") %>' />
+                                    <asp:Label ID="lblAssignedUser" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Status">
+                            <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblTaskStatus" runat="server" />
+                                    <asp:Literal ID="ltrlStatus" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Due Date">
+                            <asp:TemplateField HeaderText="Due Date" HeaderStyle-Width="60">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblTaskDueDate" runat="server" Text='<%#Eval("DueDate")%>' />
+                                    <asp:Literal ID="ltrlDueDate" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
