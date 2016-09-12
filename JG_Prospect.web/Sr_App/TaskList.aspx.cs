@@ -13,7 +13,11 @@ namespace JG_Prospect.Sr_App
 {
     public partial class TaskList : System.Web.UI.Page
     {
+        #region '--Members--'
+
         private static string strAdminMode = "ADMINMODE";
+
+        #endregion
 
         #region "-- Properties --"
 
@@ -58,15 +62,18 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region "-Control Events-"
+        
         protected void btnSearch_Click(object sender, ImageClickEventArgs e)
         {
             SearchTasks();
         }
+        
         protected void gvTasks_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvTasks.PageIndex = e.NewPageIndex;
             SearchTasks();
         }
+        
         protected void gvTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -91,7 +98,6 @@ namespace JG_Prospect.Sr_App
             SearchTasks();
         }
 
-
         protected void ddlTaskStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             SearchTasks();
@@ -103,9 +109,7 @@ namespace JG_Prospect.Sr_App
 
         private void CheckIsAdmin()
         {
-
             this.IsAdminMode = CommonFunction.CheckAdminMode();
-
         }
 
         private void SetControlDisplay()
@@ -133,22 +137,11 @@ namespace JG_Prospect.Sr_App
             ddlTaskStatus.DataBind();
             ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
-            DataTable dtUsers = dsFilters.Tables[0];
-            //DataTable dtDesignations = dsFilters.Tables[1];
-
-            ddlUsers.DataSource = dtUsers;
-            //ddlDesignation.DataSource = dtDesignations;
-
+            ddlUsers.DataSource = dsFilters.Tables[0];
             ddlUsers.DataTextField = "FirstName";
             ddlUsers.DataValueField = "Id";
             ddlUsers.DataBind();
-
-            //ddlDesignation.DataTextField = "Designation";
-            //ddlDesignation.DataValueField = "Designation";
-            //ddlDesignation.DataBind();
-
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
-            ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         /// <summary>
@@ -156,12 +149,10 @@ namespace JG_Prospect.Sr_App
         /// </summary>
         private void SearchTasks()
         {
-
             int? UserID = null;
             string Title = String.Empty, Designation = String.Empty, Designations = String.Empty, Statuses = String.Empty;
             Int16? Status = null;
             DateTime? CreatedFrom = null, CreatedTo = null;
-            
 
             // this is for paging based data fetch, in header view case it will be always page numnber 0 and page size 5
             int Start = gvTasks.PageIndex, PageLimit = gvTasks.PageSize;
@@ -174,7 +165,6 @@ namespace JG_Prospect.Sr_App
 
             gvTasks.DataSource = dsResult;
             gvTasks.DataBind();
-
         }
 
         /// <summary>
@@ -187,7 +177,6 @@ namespace JG_Prospect.Sr_App
         /// <param name="CreatedOn"></param>
         private void PrepareSearchFilters(ref int? UserID, ref string Title, ref string Designation, ref short? Status, ref DateTime? CreatedFrom, ref DateTime? CreatedTo, ref string Statuses, ref string Designations)
         {
-
             if (this.IsAdminMode)
             {
                 if (ddlUsers.SelectedIndex > 0)
@@ -202,11 +191,6 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    //foreach (ListItem item in ddlDesignation.Items)
-                    //{
-                    //    Designations += (item.Value + ",");
-                    //}
-                    //Designations = Designations.Trim(',');
                     Designations =
                     Designation = "0";
                 }
@@ -232,13 +216,11 @@ namespace JG_Prospect.Sr_App
                 Title = txtSearch.Text;
             }
 
-
             if (!String.IsNullOrEmpty(txtFromDate.Text) && !String.IsNullOrEmpty(txtToDate.Text))
             {
                 CreatedFrom = Convert.ToDateTime(txtFromDate.Text);
                 CreatedTo = Convert.ToDateTime(txtToDate.Text);
             }
-
         }
 
         /// <summary>
@@ -266,24 +248,14 @@ namespace JG_Prospect.Sr_App
 
         private void LoadFilterUsersByDesgination()
         {
-            DataSet dsUsers;
-
-            // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
-            // DropDownList ddlDesignation = (DropDownList)sender;
-            string designation = ddlDesignation.SelectedValue;
-
-            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designation);
-
-            ddlUsers.DataSource = dsUsers;
+            ddlUsers.DataSource = TaskGeneratorBLL.Instance.GetInstallUsers(2, ddlDesignation.SelectedValue);
             ddlUsers.DataTextField = "FristName";
             ddlUsers.DataValueField = "Id";
             ddlUsers.DataBind();
 
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
-
         }
 
         #endregion
-
     }
 }

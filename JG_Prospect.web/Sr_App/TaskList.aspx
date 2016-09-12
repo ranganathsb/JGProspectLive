@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskList.aspx.cs" Inherits="JG_Prospect.Sr_App.TaskList" EnableEventValidation="false" %>
+
 <%@ MasterType VirtualPath="~/Sr_App/SR_app.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
@@ -86,7 +87,6 @@
             height: 150px;
         }
     </style>
-
     <style type="text/css">
         .Autocomplete {
             overflow: auto;
@@ -121,29 +121,25 @@
             width: 447px;
         }
     </style>
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <asp:UpdatePanel ID="UpdatePanel8" runat="server">
+    <asp:UpdatePanel ID="upTaskListContainer" runat="server">
         <ContentTemplate>
-
             <div class="right_panel">
-
                 <!-- appointment tabs section start -->
                 <ul class="appointment_tab">
                     <li><a href="home.aspx">Personal Appointment</a></li>
                     <li><a href="GoogleCalendarView.aspx">Master Appointment</a></li>
-                    <%-- Originaly it Redirect to  MasterAppointment.aspx altered by Neeta and Redirects to GoogleCalendarView.aspx--%>
-                    <%--<li><a href="MasterAppointment.aspx">Master Appointment</a></li>--%>
                     <li><a href="#">Construction Calendar</a></li>
                     <li><a href="CallSheet.aspx">Call Sheet</a></li>
                 </ul>
+
                 <!-- appointment tabs section end -->
-                <h1>Task List
-                </h1>
+                <h1>Task List</h1>
 
                 <div class="form_panel_custom">
+                    <%--Filter Section--%>
                     <table class="filter_section">
                         <tr>
                             <td id="tdDesigCap" runat="server">
@@ -157,78 +153,65 @@
                             </td>
                             <td>
                                 <span>Period From:</span>
-
                             </td>
                             <td><span>To:</span></td>
                             <td>
                                 <span>Task Title:</span>
                             </td>
-
                             <td></td>
-                            <td style="display: none"></td>
                         </tr>
                         <tr>
-
-
                             <td id="tdDesig" runat="server">
-
-                                <asp:DropDownList ID="ddlDesignation" Width="130" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged">
-                                    
-                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
-                                </asp:DropDownList></td>
-                            <td id="tdUsers" runat="server">
-
-                                <asp:DropDownList ID="ddlUsers" Width="100" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged">
-                                </asp:DropDownList></td>
-                            <td>
-
-                                <asp:DropDownList ID="ddlTaskStatus" Width="100" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTaskStatus_SelectedIndexChanged">
-                                    <%--<asp:ListItem Text="--All--" Value="0"></asp:ListItem>
-                                    <asp:ListItem Text="Open" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="Assigned" Value="2"></asp:ListItem>
-                                    <asp:ListItem Text="In Progress" Value="3"></asp:ListItem>
-                                    <asp:ListItem Text="Pending" Value="4"></asp:ListItem>
-                                    <asp:ListItem Text="Re-Opened" Value="5"></asp:ListItem>
-                                    <asp:ListItem Text="Closed" Value="6"></asp:ListItem>--%>
-                                </asp:DropDownList></td>
-                            <td>
-
-
-                                <asp:TextBox ID="txtFromDate" CssClass="filter-datepicker" Width="80" runat="server"></asp:TextBox></td>
-                            <td>
-                                <asp:TextBox ID="txtToDate" CssClass="filter-datepicker" Width="80" runat="server"></asp:TextBox></td>
-                            <td>
-
-                                <asp:TextBox ID="txtSearch" runat="server" Width="150"></asp:TextBox></td>
-                            <td>
-                                <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" />
+                                <asp:DropDownList ID="ddlDesignation" Width="130" AutoPostBack="true" runat="server"
+                                    OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged">
+                                    <asp:ListItem Text="--All--" Value="0"></asp:ListItem>
+                                    <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                    <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
+                                    <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
+                                    <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
+                                    <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
+                                    <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
+                                    <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
+                                    <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
+                                    <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
+                                    <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
+                                    <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
+                                    <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
+                                    <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
+                                    <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
+                                    <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
+                                    <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
+                                    <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
+                                    <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
+                                    <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
+                                    <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                </asp:DropDownList>
                             </td>
-
-                            <td style="display: none">
-                                <%--<asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click"  />--%>
-                                <a id="hypTaskListMore" href="../Sr_App/TaskList.aspx">View All</a>
+                            <td id="tdUsers" runat="server">
+                                <asp:DropDownList ID="ddlUsers" Width="100" AutoPostBack="true" runat="server"
+                                    OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged" />
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="ddlTaskStatus" Width="100" runat="server" AutoPostBack="True"
+                                    OnSelectedIndexChanged="ddlTaskStatus_SelectedIndexChanged" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtFromDate" CssClass="filter-datepicker" Width="80" runat="server" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtToDate" CssClass="filter-datepicker" Width="80" runat="server" />
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtSearch" runat="server" Width="150" />
+                            </td>
+                            <td>
+                                <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn"
+                                    Style="display: none;" OnClick="btnSearch_Click" />
                             </td>
                         </tr>
                     </table>
+
+                    <%--Task List Section--%>
                     <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnPageIndexChanging="gvTasks_PageIndexChanging">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
@@ -242,47 +225,27 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Designation">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblUserDesignation" runat="server" Text='<%# Eval("TaskDesignations") %>'></asp:Label>
-                                    <%-- <asp:DropDownList ID="ddlRole" runat="server">
-                                            <asp:ListItem Text="Sr.Developer"></asp:ListItem>
-                                            <asp:ListItem Text="Jr.Developer"></asp:ListItem>
-                                        </asp:DropDownList>--%>
+                                    <asp:Label ID="lblUserDesignation" runat="server" Text='<%# Eval("TaskDesignations") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Assigned To">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblAssignedUser" runat="server" Text='<%# Eval("TaskAssignedUsers") %>'></asp:Label>
-                                    <%--<asp:DropDownList ID="ddlRole" runat="server">
-                                            <asp:ListItem Text="Sr.Developer"></asp:ListItem>
-                                            <asp:ListItem Text="Jr.Developer"></asp:ListItem>
-                                        </asp:DropDownList>--%>
+                                    <asp:Label ID="lblAssignedUser" runat="server" Text='<%# Eval("TaskAssignedUsers") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Status">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblTaskStatus" runat="server"></asp:Label>
-                                    <%--<asp:DropDownList ID="ddlRole" runat="server">
-                                            <asp:ListItem Text="Sr.Developer"></asp:ListItem>
-                                            <asp:ListItem Text="Jr.Developer"></asp:ListItem>
-                                        </asp:DropDownList>--%>
+                                    <asp:Label ID="lblTaskStatus" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Due Date">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblTaskDueDate" runat="server" Text='<%#Eval("DueDate")%>'></asp:Label>
-                                    <%--<asp:DropDownList ID="ddlRole" runat="server">
-                                            <asp:ListItem Text="Sr.Developer"></asp:ListItem>
-                                            <asp:ListItem Text="Jr.Developer"></asp:ListItem>
-                                        </asp:DropDownList>--%>
+                                    <asp:Label ID="lblTaskDueDate" runat="server" Text='<%#Eval("DueDate")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-
                         </Columns>
                     </asp:GridView>
                 </div>
-            </div>
-
-            <!-- End of Right panel -->
             </div>
         </ContentTemplate>
 
@@ -323,15 +286,15 @@
                     TriggerTaskListSearch();
                 }
             });
-        }
+            }
 
-        function TriggerTaskListSearch() {
-            $('#<%=btnSearch.ClientID %>').click();
+            function TriggerTaskListSearch() {
+                $('#<%=btnSearch.ClientID %>').click();
 
-        }
+            }
 
-        $(document).ready(function () { setTaskListAutoSearch(); });
-        prmTaskGenerator.add_endRequest(function () { setTaskListAutoSearch();});
+            $(document).ready(function () { setTaskListAutoSearch(); });
+            prmTaskGenerator.add_endRequest(function () { setTaskListAutoSearch(); });
     </script>
 
 </asp:Content>
