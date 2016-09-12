@@ -204,7 +204,7 @@
                         <asp:BoundField DataField="InstallId" HeaderText="ID#" HeaderStyle-Width="10%" />
                         <asp:TemplateField HeaderText="Task Title">
                             <ItemTemplate>
-                                <asp:LinkButton ID="hypTask" runat="server" CommandName="EditTask" CommandArgument='<%# Eval("TaskId") %>'><%# Eval("Title") %></asp:LinkButton>
+                                <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_blank" />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%">
@@ -334,61 +334,61 @@
                                 </td>
                                 <td valign="top">
                                     <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
-                            <ContentTemplate>
-                                <asp:TabContainer ID="tcWork" runat="server" ActiveTabIndex="0" AutoPostBack="false" Width="460">
-                                    <asp:TabPanel ID="tpWork_Files" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                        <HeaderTemplate>Work Files</HeaderTemplate>
                                         <ContentTemplate>
-                                            <table>
-                                                <tr>
-                                                    <td>Attachment(s):<br>
+                                            <asp:TabContainer ID="tcWork" runat="server" ActiveTabIndex="0" AutoPostBack="false" Width="460">
+                                                <asp:TabPanel ID="tpWork_Files" runat="server" TabIndex="0" CssClass="task-history-tab">
+                                                    <HeaderTemplate>Work Files</HeaderTemplate>
+                                                    <ContentTemplate>
                                                         <table>
                                                             <tr>
-                                                                <td>
-                                                                    <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                                                        <ItemTemplate>
-                                                                            <small>
-                                                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                                                                    CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
-                                                                        </ItemTemplate>
-                                                                    </asp:Repeater>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                                                    <div id="divWorkFile" class="drop-zone">
-                                                                        <div class="fallback">
-                                                                            <input name="WorkFile" type="file" multiple />
-                                                                            <input type="submit" value="UploadWorkFile" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="divWorkFilePreview" class="drop-zone-previews">
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="btn_sec">
-                                                                        <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
-                                                                            CssClass="ui-button" />
-                                                                    </div>
+                                                                <td>Attachment(s):<br>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                                    <ItemTemplate>
+                                                                                        <small>
+                                                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                                                CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
+                                                                                    </ItemTemplate>
+                                                                                </asp:Repeater>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input id="hdnWorkFiles" runat="server" type="hidden" />
+                                                                                <div id="divWorkFile" class="drop-zone">
+                                                                                    <div class="fallback">
+                                                                                        <input name="WorkFile" type="file" multiple />
+                                                                                        <input type="submit" value="UploadWorkFile" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div id="divWorkFilePreview" class="drop-zone-previews">
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="btn_sec">
+                                                                                    <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
+                                                                                        CssClass="ui-button" />
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </td>
                                                             </tr>
                                                         </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                                    </ContentTemplate>
+                                                </asp:TabPanel>
+                                                <asp:TabPanel ID="tpWork_Specifications" runat="server" TabIndex="1" CssClass="task-history-tab">
+                                                    <HeaderTemplate>Work Specifications</HeaderTemplate>
+                                                    <ContentTemplate>
+                                                    </ContentTemplate>
+                                                </asp:TabPanel>
+                                            </asp:TabContainer>
                                         </ContentTemplate>
-                                    </asp:TabPanel>
-                                    <asp:TabPanel ID="tpWork_Specifications" runat="server" TabIndex="1" CssClass="task-history-tab">
-                                        <HeaderTemplate>Work Specifications</HeaderTemplate>
-                                        <ContentTemplate>
-                                        </ContentTemplate>
-                                    </asp:TabPanel>
-                                </asp:TabContainer>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
+                                    </asp:UpdatePanel>
                                 </td>
                             </tr>
                         </table>
@@ -478,17 +478,20 @@
                                         <table class="tablealign fullwidth">
                                             <tr>
                                                 <td>ListID:
+                                                   
                                                     <asp:TextBox ID="txtTaskListID" runat="server" />
                                                     &nbsp; <small><a href="javascript:void(0);" style="color: #06c;" onclick="copytoListID(this);">
                                                         <asp:Literal ID="listIDOpt" runat="server" />
                                                     </a></small></td>
                                                 <td>Type:
+                                                   
                                                     <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server"></asp:DropDownList>
                                                 </td>
                                             </tr>
                                             <tr style="display: none;">
                                                 <td colspan="2">Title <span style="color: red;">*</span>:
-                            <br />
+                           
+                                                    <br />
                                                     <asp:TextBox ID="txtSubTaskTitle" Text="N.A." runat="server" Width="98%" CssClass="textbox" />
                                                     <asp:RequiredFieldValidator ID="rfvSubTaskTitle" Visible="false" ValidationGroup="vgSubTask"
                                                         runat="server" ControlToValidate="txtSubTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None" />
@@ -496,7 +499,8 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="2">Description <span style="color: red;">*</span>:
-                            <br />
+                           
+                                                    <br />
                                                     <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                     <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                                                         runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
@@ -504,11 +508,13 @@
                                             </tr>
                                             <tr id="trDateHours" runat="server" visible="false">
                                                 <td>Due Date:
-                            <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
+                           
+                                                    <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
                                                     <%--<asp:CalendarExtender ID="ceSubTaskDueDate" runat="server" TargetControlID="txtSubTaskDueDate" PopupPosition="TopRight" />--%>
                                                 </td>
                                                 <td>Hrs of Task:
-                            <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
+                           
+                                                    <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
                                                     <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
                                                         ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
                                                         ValidationExpression="(\d+\.\d{1,2})?\d*" />
@@ -743,30 +749,35 @@
                             <HeaderTemplate>Files & docs</HeaderTemplate>
                             <ContentTemplate>
                                 HTML Goes here 1
+                           
                             </ContentTemplate>
                         </asp:TabPanel>
                         <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
                             <HeaderTemplate>Images</HeaderTemplate>
                             <ContentTemplate>
                                 HTML Goes here 3
+                           
                             </ContentTemplate>
                         </asp:TabPanel>
                         <asp:TabPanel ID="tpTaskHistory_Links" runat="server" TabIndex="0" CssClass="task-history-tab">
                             <HeaderTemplate>Links</HeaderTemplate>
                             <ContentTemplate>
                                 HTML Goes here 4
+                           
                             </ContentTemplate>
                         </asp:TabPanel>
                         <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
                             <HeaderTemplate>Videos</HeaderTemplate>
                             <ContentTemplate>
                                 HTML Goes here 5
+                           
                             </ContentTemplate>
                         </asp:TabPanel>
                         <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
                             <HeaderTemplate>Audios</HeaderTemplate>
                             <ContentTemplate>
                                 HTML Goes here 6
+                           
                             </ContentTemplate>
                         </asp:TabPanel>
                     </asp:TabContainer>
@@ -775,44 +786,45 @@
         </ContentTemplate>
     </asp:UpdatePanel>
 
-    <script>
 
-        
-        $(function () {
+</div>
+<script>
 
-            //functions for auto search suggestions.
-            createCategorisedAutoSearch();
-            setAutoSearch();            
-            setDatePicker();
-            setTaskDivClickTrigger();
-        
-        });
+    $(function () {
 
-        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+        //functions for auto search suggestions.
+        createCategorisedAutoSearch();
+        setAutoSearch();
+        setDatePicker();
+        setTaskDivClickTrigger();
 
-        prmTaskGenerator.add_endRequest(function () {
+    });
 
-            //functions for auto search suggestions.
-            createCategorisedAutoSearch();
-            setAutoSearch();            
-            setDatePicker();
-            setTaskDivClickTrigger();        
-        });
+    var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
-        function RemoveTask(TaskId) {
+    prmTaskGenerator.add_endRequest(function () {
 
-            var userChoice = confirm('Are you sure you want to delete this task?');
+        //functions for auto search suggestions.
+        createCategorisedAutoSearch();
+        setAutoSearch();
+        setDatePicker();
+        setTaskDivClickTrigger();
+    });
 
-            if (userChoice) {
-                $("#<%=hdnDeleteTaskId.ClientID%>").val(TaskId);
-                $('#<%=btnRemoveTask.ClientID %>').click();
-            }
+    function RemoveTask(TaskId) {
 
+        var userChoice = confirm('Are you sure you want to delete this task?');
+
+        if (userChoice) {
+            $("#<%=hdnDeleteTaskId.ClientID%>").val(TaskId);
+            $('#<%=btnRemoveTask.ClientID %>').click();
         }
 
-        function setAutoSearch() {
+    }
 
-            $("#<%=txtSearch.ClientID%>").catcomplete({
+    function setAutoSearch() {
+
+        $("#<%=txtSearch.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
                     $.ajax({
@@ -893,7 +905,7 @@
 
             function EditTask(id, tasktitle) {
 
-                window.open("TaskGenerator.aspx?TaskId="+ ($('#<%=hdnTaskId.ClientID%>').val()));
+                window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
             }
 
             function setDatePicker() {
@@ -929,7 +941,5 @@
                 $('#<%=btnSearch.ClientID %>').click();
 
             }
-                   
 
     </script>
-</div>

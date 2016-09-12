@@ -185,23 +185,25 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void lbtnAddNew_Click(object sender, EventArgs e)
         {
-            clearAllFormData();
+            //clearAllFormData();
 
-            SetTaskView();
+            //SetTaskView();
 
-            cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
-            cmbStatus.DataTextField = "Text";
-            cmbStatus.DataValueField = "Value";
-            cmbStatus.DataBind();
+            //cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
+            //cmbStatus.DataTextField = "Text";
+            //cmbStatus.DataValueField = "Value";
+            //cmbStatus.DataBind();
 
-            ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
-            ddlTUStatus.DataTextField = "Text";
-            ddlTUStatus.DataValueField = "Value";
-            ddlTUStatus.DataBind();
+            //ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
+            //ddlTUStatus.DataTextField = "Text";
+            //ddlTUStatus.DataValueField = "Value";
+            //ddlTUStatus.DataBind();
 
-            this.LastSubTaskSequence = string.Empty;
+            //this.LastSubTaskSequence = string.Empty;
 
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "open popup", "EditTask(0,\"Add New Task\");", true);
+            //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "open popup", "EditTask(0,\"Add New Task\");", true);
+
+            Response.Redirect("~/sr_app/TaskGenerator.aspx");
         }
 
         protected void btnLoadMore_Click(object sender, EventArgs e)
@@ -221,6 +223,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
+                HyperLink hypTask = (HyperLink)e.Row.FindControl("hypTask");
                 DropDownList ddlgvTaskStatus = (DropDownList)e.Row.FindControl("ddlgvTaskStatus");
                 LinkButton lbtnRequestStatus = (LinkButton)e.Row.FindControl("lbtnRequestStatus");
                 HtmlAnchor hypUsers = (HtmlAnchor)e.Row.FindControl("hypUsers");
@@ -231,6 +234,8 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlgvTaskStatus.DataTextField = "Text";
                 ddlgvTaskStatus.DataValueField = "Value";
                 ddlgvTaskStatus.DataBind();
+
+                hypTask.NavigateUrl = "~/sr_app/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TaskId").ToString();
 
                 ddlgvTaskStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
 
