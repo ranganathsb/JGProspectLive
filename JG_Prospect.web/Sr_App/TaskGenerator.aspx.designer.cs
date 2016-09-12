@@ -634,6 +634,24 @@ namespace JG_Prospect.Sr_App {
         protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Audios;
         
         /// <summary>
+        /// hdnWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnWorkFiles;
+        
+        /// <summary>
+        /// btnAddAttachment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddAttachment;
+        
+        /// <summary>
         /// divFinishedWorkFiles control.
         /// </summary>
         /// <remarks>
@@ -659,24 +677,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptWorkFiles;
-        
-        /// <summary>
-        /// hdnWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnWorkFiles;
-        
-        /// <summary>
-        /// btnAddAttachment control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddAttachment;
         
         /// <summary>
         /// divWorkSpecifications control.

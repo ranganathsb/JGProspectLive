@@ -11,6 +11,7 @@
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
+    
     <div class="right_panel">
         <hr />
         <asp:UpdatePanel ID="upTask" runat="server">
@@ -513,6 +514,12 @@
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </div>
+                <%--This is a client side hidden section and It is used to trigger server event from java script code.--%>
+                <div class="hide">
+                    <input id="hdnWorkFiles" runat="server" type="hidden" />
+                    <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
+                        CssClass="ui-button" />
+                </div>
             </ContentTemplate>
         </asp:UpdatePanel>
 
@@ -561,15 +568,6 @@
                                                     </table>
                                                 </FooterTemplate>
                                             </asp:Repeater>
-                                        </td>
-                                    </tr>
-                                    <tr style="display:none;">
-                                        <td>
-                                            <div class="btn_sec">
-                                                <input id="hdnWorkFiles" runat="server" type="hidden" />
-                                                <asp:Button ID="btnAddAttachment" runat="server" OnClick="btnAddAttachment_ClicK" Text="Save"
-                                                    CssClass="ui-button" />
-                                            </div>
                                         </td>
                                     </tr>
                                 </table>
