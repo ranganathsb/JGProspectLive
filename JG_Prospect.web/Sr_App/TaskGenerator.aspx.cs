@@ -534,6 +534,40 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
         {
+            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
+                                                                                (
+                                                                                    Convert.ToInt32(hdnTaskId.Value),
+                                                                                    null
+                                                                                );
+            if (
+                dsLatestTaskWorkSpecification != null &&
+                dsLatestTaskWorkSpecification.Tables.Count > 0 &&
+                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
+               )
+            {
+                hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Id"]);
+                txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"]);
+
+                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["CurrentUsername"])))
+                {
+                    ltrlLastCheckedInBy.Text = string.Format(
+                                                            "Last check-in by \'{0}\'.<br/>",
+                                                            dsLatestTaskWorkSpecification.Tables[0].Rows[0]["CurrentUsername"].ToString()
+                                                            );
+                }
+                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                {
+                    ltrlLastVersionUpdateBy.Text = string.Format(
+                                                            "Last version updated by \'{0}\'",
+                                                            dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
+                                                            );
+                }
+            }
+            else
+            {
+                hdnWorkSpecificationId.Value = "0";
+            }
+
             upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
@@ -1501,7 +1535,23 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
+            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+            objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+            objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            objTaskWorkSpecification.Content = txtWorkSpecification.Text;
+            objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskWorkSpecification.Status = Convert.ToByte(chkFreeze.Checked? 1:0);
 
+            if (objTaskWorkSpecification.Id == 0)
+            {
+                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+            }
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
     }
 }

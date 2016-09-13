@@ -577,19 +577,19 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
-        <div id="divWorkSpecifications" runat="server" style="display: none;" title="Work Specification Files">
+        <div id="divWorkSpecifications" runat="server" class="hide" title="Work Specification Files">
             <%--Work Specification Files--%>
             <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <table class="table" width="100%">
                         <tr>
                             <td>Work Specification:<br />
-                                <asp:TextBox id="txtWorkSpecification" runat="server" Text="hello how r u?..."></asp:TextBox>
+                                <asp:TextBox id="txtWorkSpecification" runat="server" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <asp:CheckBox ID="chkFreez" runat="server" Checked="false" />
+                                <asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
                             </td>
                         </tr>
                         <tr>
@@ -597,7 +597,13 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
                                         OnClick="btnSaveWorkSpecification_Click" />
+                                    <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
                                 </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
                             </td>
                         </tr>
                     </table>
@@ -620,8 +626,11 @@
     <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
     <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
-        var txtWorkSpecification = '<%=txtWorkSpecification.ClientID%>';
+        var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;
+        var strUserName = '<%=Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]%>';
 
+        var txtWorkSpecification = '<%=txtWorkSpecification.ClientID%>';
+        
         function LoadTinyMce() {
             tinymce.init({
                 mode: "exact",
@@ -636,12 +645,13 @@
                 theme_advanced_toolbar_align: "left",
                 extended_valid_elements: "p,span[*],delete[*],insert[*]",
                 ice: {
-                    user: { name: 'Jackson', id: 11 },
+                    user: { name: strUserName, id: intUserId },
                     preserveOnPaste: 'p,a[href],i,em,b,span',
                     deleteTag: 'delete',
                     insertTag: 'insert'
                 },
-                height: '150'
+                height: '150',
+                width:'100%'
             });
         }
 
@@ -672,7 +682,9 @@
         }
 
         function ShowPopup(varControlID) {
-            $(varControlID).dialog({ width: "600px", height: "auto" });
+            var objDialog = $(varControlID).dialog({ width: "600px", height: "auto" });
+            // this will enable postback from dialog buttons.
+            objDialog.parent().appendTo(jQuery("form:first"));
         }
 
         function HidePopup(varControlID) {
