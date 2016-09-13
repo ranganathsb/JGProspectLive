@@ -253,6 +253,50 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Converts html to pdf file stream and retunrs bytes.
+        /// </summary>
+        /// <param name="strHtml">Html content to include in pdf.</param>
+        /// <returns>Bytes to generate pdf file.</returns>
+        public static byte[] ConvertHtmlToPdf(string strHtml)
+        {
+            iTextSharp.text.Document objDocument = new iTextSharp.text.Document();
+            
+            try
+            {
+                MemoryStream objMemoryStream = new MemoryStream();
+                iTextSharp.text.pdf.PdfWriter objPdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance
+                        (
+                            objDocument,
+                            objMemoryStream
+                        );
+
+                objDocument.Open();
+
+                iTextSharp.tool.xml.XMLWorkerHelper.GetInstance().ParseXHtml
+                        (
+                            objPdfWriter,
+                            objDocument,
+                            new StringReader(strHtml)
+                        );
+
+                objDocument.Close();
+
+                return objMemoryStream.ToArray();
+            }
+            catch
+            { }
+            finally
+            {
+                if (objDocument != null)
+                {
+                    objDocument.Close();
+                }
+                objDocument = null;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Generate subtask auto suggest sequence.
         /// </summary>
         /// <param name="sequence"></param>

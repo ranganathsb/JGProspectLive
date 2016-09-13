@@ -341,10 +341,10 @@
                             </td>
                             <td valign="top">
                                 <br />
-                                <asp:LinkButton runat="server" Text="Finished Work Files"
+                                <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                                <asp:LinkButton runat="server" Text="Work Specification Files"
-                                    OnClick="lbtnWorkSpecificationFiles_Click" />
+                                <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile1" runat="server" Text="Download Work Specification Files"
+                                    OnClick="lbtnDownloadWorkSpecificationFile1_Click" />
                                 <br />
                                 <br />
                                 <div>
@@ -524,6 +524,9 @@
                         CssClass="ui-button" />
                 </div>
             </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile1" />
+            </Triggers>
         </asp:UpdatePanel>
 
         <div id="divFinishedWorkFiles" runat="server" style="display: none;" title="Finished Work Files">

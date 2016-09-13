@@ -1569,5 +1569,50 @@ namespace JG_Prospect.Sr_App
             }
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
+
+        protected void lbtnDownloadWorkSpecificationFile1_Click(object sender, EventArgs e)
+        {
+            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
+                                                                                (
+                                                                                    Convert.ToInt32(hdnTaskId.Value),
+                                                                                    true
+                                                                                );
+            if (
+                dsLatestTaskWorkSpecification != null &&
+                dsLatestTaskWorkSpecification.Tables.Count == 2
+               )
+            {
+                // main / last freezed copy.
+                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                    {
+                        ltrlLastCheckedInBy.Text = string.Format(
+                                                                "Last freeze by \'{0}\'.<br/>",
+                                                                dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
+                                                                );
+                    }
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
+                    {
+                        byte[] arrPdf = CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString());
+
+                        if (arrPdf != null)
+                        {
+                            string strFileName = string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"));
+                            Response.Clear();
+                            Response.ContentType = "application/pdf";
+                            Response.AddHeader("content-disposition", "attachment;filename=" + strFileName);
+                            Response.Buffer = true;
+                            (new MemoryStream(arrPdf)).WriteTo(Response.OutputStream);
+                            Response.End();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // file does not exist.
+            }
+        }
     }
 }
