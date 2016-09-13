@@ -429,7 +429,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int UpdateTaskWorkSpecification(TaskWorkSpecificationVersions objTaskWorkSpecificationVersions)
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
         {
             try
             {
@@ -439,11 +439,11 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecificationVersions.Id);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecificationVersions.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecificationVersions.TaskWorkSpecification.Status);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecification.Content);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecification.IsInstallUser);
+                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecification.Status);
 
                     int result = database.ExecuteNonQuery(command);
 

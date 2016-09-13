@@ -67,10 +67,10 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
         }
-        
-        public int UpdateTaskWorkSpecification(TaskWorkSpecificationVersions objTaskWorkSpecificationVersions)
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
         {
-            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecificationVersions);
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
         
         public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, byte? bytStatus)
