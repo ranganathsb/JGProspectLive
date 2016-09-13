@@ -341,8 +341,10 @@
                             </td>
                             <td valign="top">
                                 <br />
-                                <asp:LinkButton runat="server" Text="Finished Work Files" />&nbsp;&nbsp;
-                                <asp:LinkButton runat="server" Text="Work Specification Files" />
+                                <asp:LinkButton runat="server" Text="Finished Work Files"
+                                    OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                                <asp:LinkButton runat="server" Text="Work Specification Files"
+                                    OnClick="lbtnWorkSpecificationFiles_Click" />
                                 <br />
                                 <br />
                                 <div>
@@ -785,57 +787,59 @@
                 objSubTaskDropzone = null;
             }
 
-            objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                maxFiles: 5,
-                url: "taskattachmentupload.aspx",
-                thumbnailWidth: 90,
-                thumbnailHeight: 90,
-                previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                init: function () {
-                    this.on("maxfilesexceeded", function (data) {
-                        //var res = eval('(' + data.xhr.responseText + ')');
-                        alert('you are reached maximum attachment upload limit.');
-                    });
+            if($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
 
-                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                    this.on("success", function (file, response) {
-                        var filename = response.split("^");
-                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
-                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-                        //this.removeFile(file);
-                    });
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                            //this.removeFile(file);
+                        });
 
-                    //when file is removed from dropzone element, remove its corresponding server side file.
-                    //this.on("removedfile", function (file) {
-                    //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                    //    RemoveTaskAttachmentFromServer(server_file);
-                    //});
+                        //when file is removed from dropzone element, remove its corresponding server side file.
+                        //this.on("removedfile", function (file) {
+                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
+                        //    RemoveTaskAttachmentFromServer(server_file);
+                        //});
 
-                    // When is added to dropzone element, add its remove link.
-                    //this.on("addedfile", function (file) {
+                        // When is added to dropzone element, add its remove link.
+                        //this.on("addedfile", function (file) {
 
-                    //    // Create the remove button
-                    //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
+                        //    // Create the remove button
+                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
 
-                    //    // Capture the Dropzone instance as closure.
-                    //    var _this = this;
+                        //    // Capture the Dropzone instance as closure.
+                        //    var _this = this;
 
-                    //    // Listen to the click event
-                    //    removeButton.addEventListener("click", function (e) {
-                    //        // Make sure the button click doesn't submit the form:
-                    //        e.preventDefault();
-                    //        e.stopPropagation();
-                    //        // Remove the file preview.
-                    //        _this.removeFile(file);
-                    //    });
+                        //    // Listen to the click event
+                        //    removeButton.addEventListener("click", function (e) {
+                        //        // Make sure the button click doesn't submit the form:
+                        //        e.preventDefault();
+                        //        e.stopPropagation();
+                        //        // Remove the file preview.
+                        //        _this.removeFile(file);
+                        //    });
 
-                    //    // Add the button to the file preview element.
-                    //    file.previewElement.appendChild(removeButton);
-                    //});
-                }
+                        //    // Add the button to the file preview element.
+                        //    file.previewElement.appendChild(removeButton);
+                        //});
+                    }
 
-            });
+                });
+            }
         }
 
         function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {

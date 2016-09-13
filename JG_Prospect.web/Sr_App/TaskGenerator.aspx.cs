@@ -576,6 +576,8 @@ namespace JG_Prospect.Sr_App
             {
                 hdnWorkSpecificationId.Value = "0";
             }
+            
+            chkFreeze.Checked = false;
 
             upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
