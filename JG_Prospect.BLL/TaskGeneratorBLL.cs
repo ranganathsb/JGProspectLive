@@ -73,7 +73,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
         
-        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, byte? bytStatus)
+        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, bool? bytStatus)
         {
             return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(TaskId, bytStatus);
         }

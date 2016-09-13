@@ -406,6 +406,8 @@ namespace JG_Prospect.DAL
         {
             try
             {
+                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
@@ -413,10 +415,10 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecification.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecification.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecification.Status);
+                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
+                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -433,17 +435,19 @@ namespace JG_Prospect.DAL
         {
             try
             {
+                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
 
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecification.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Byte, objTaskWorkSpecification.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Byte, objTaskWorkSpecification.Status);
+                    database.AddInParameter(command, "@TaskWorkSpecificationId", DbType.Int32, objTaskWorkSpecification.Id);
+                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
+                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -456,7 +460,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, byte? bytStatus)
+        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, bool? bytStatus)
         {
             try
             {
@@ -469,7 +473,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
                     if (bytStatus.HasValue)
                     {
-                        database.AddInParameter(command, "@Status", DbType.Int32, bytStatus.Value);
+                        database.AddInParameter(command, "@Status", DbType.Boolean, bytStatus.Value);
                     }
 
                     returndata = database.ExecuteDataSet(command);

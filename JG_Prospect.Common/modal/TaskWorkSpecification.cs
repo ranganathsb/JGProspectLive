@@ -8,13 +8,13 @@ namespace JG_Prospect.Common.modal
 {
     public class TaskWorkSpecification
     {
-        public Int64 Id;
-        public Int64 TaskId;
-        public Int32 UserId;
-        public bool IsInstallUser;
-        public Int16 Status;
-        public string Content;
-        public DateTime DateCreated;
-        public TaskWorkSpecificationVersions TaskWorkSpecificationVersions;
+        public TaskWorkSpecification()
+        {
+            this.TaskWorkSpecificationVersions = new List<TaskWorkSpecificationVersions>();
+        }
+
+        public Int64 Id { get; set; }
+        public Int64 TaskId { get; set; }
+        public List<TaskWorkSpecificationVersions> TaskWorkSpecificationVersions { get; set; }
     }
 }
