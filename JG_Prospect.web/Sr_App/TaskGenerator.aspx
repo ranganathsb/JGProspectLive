@@ -1,4 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskGenerator.aspx.cs" Inherits="JG_Prospect.Sr_App.TaskGenerator" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskGenerator.aspx.cs" 
+    Inherits="JG_Prospect.Sr_App.TaskGenerator" ValidateRequest="false" EnableEventValidation="false" %>
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
@@ -584,7 +585,13 @@
                     <table class="table" width="100%">
                         <tr>
                             <td>Work Specification:<br />
-                                <asp:TextBox id="txtWorkSpecification" runat="server" />
+                                <asp:TextBox ID="txtWorkSpecification" runat="server" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
+                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
                             </td>
                         </tr>
                         <tr>
@@ -596,6 +603,7 @@
                             <td>
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
+                                        OnClientClick="javascript:SetContentInTextbox();"
                                         OnClick="btnSaveWorkSpecification_Click" />
                                     <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
                                 </div>
@@ -637,7 +645,8 @@
                 elements: txtWorkSpecification,
                 theme: "advanced",
                 plugins: 'ice,icesearchreplace',
-                theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|,ice_togglechanges,ice_toggleshowchanges,iceacceptall,icerejectall,iceaccept,icereject",
+                //theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|,ice_togglechanges,ice_toggleshowchanges,iceacceptall,icerejectall,iceaccept,icereject",
+                theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace",
                 theme_advanced_buttons2: "",
                 theme_advanced_buttons3: "",
                 theme_advanced_buttons4: "",
@@ -659,6 +668,18 @@
             var name = 'J Grove';
             var id = 22;
             tinymce.execCommand('ice_changeuser', { id: id, name: name });
+        }
+
+        function AcceptAllChanges(){
+            tinymce.execCommand('iceacceptall');
+        }
+
+        function RejectAllChanges(){
+            tinymce.execCommand('icerejectall');
+        }
+
+        function SetContentInTextbox(){
+            $('#'+txtWorkSpecification).val(""+tinymce.get(txtWorkSpecification).getContent());
         }
     </script>
     <script type="text/javascript">

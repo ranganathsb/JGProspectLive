@@ -537,30 +537,39 @@ namespace JG_Prospect.Sr_App
             DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
                                                                                 (
                                                                                     Convert.ToInt32(hdnTaskId.Value),
-                                                                                    null
+                                                                                    true
                                                                                 );
             if (
                 dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count > 0 &&
-                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
+                dsLatestTaskWorkSpecification.Tables.Count == 2
                )
             {
-                hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Id"]);
-                txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"]);
-
-                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["CurrentUsername"])))
+                // main / last freezed copy.
+                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
                 {
-                    ltrlLastCheckedInBy.Text = string.Format(
-                                                            "Last check-in by \'{0}\'.<br/>",
-                                                            dsLatestTaskWorkSpecification.Tables[0].Rows[0]["CurrentUsername"].ToString()
-                                                            );
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                    {
+                        ltrlLastCheckedInBy.Text = string.Format(
+                                                                "Last freeze by \'{0}\'.<br/>",
+                                                                dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
+                                                                );
+                    }
                 }
-                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+
+                // current / working copy.
+                if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
                 {
-                    ltrlLastVersionUpdateBy.Text = string.Format(
-                                                            "Last version updated by \'{0}\'",
-                                                            dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
-                                                            );
+                    hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Id"]);
+
+                    txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
+
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
+                    {
+                        ltrlLastVersionUpdateBy.Text = string.Format(
+                                                                "Last version updated by \'{0}\'",
+                                                                dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString()
+                                                                );
+                    }
                 }
             }
             else
@@ -1538,10 +1547,15 @@ namespace JG_Prospect.Sr_App
             TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
             objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
             objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-            objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            objTaskWorkSpecification.Content = txtWorkSpecification.Text;
-            objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
-            objTaskWorkSpecification.Status = Convert.ToByte(chkFreeze.Checked? 1:0);
+
+            TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+            objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+            objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+            objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
+
+            objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
 
             if (objTaskWorkSpecification.Id == 0)
             {
