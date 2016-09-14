@@ -142,7 +142,9 @@
                                                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
                                                     HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                                                     EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                                    AutoGenerateColumns="False" OnRowDataBound="gvSubTasks_RowDataBound" GridLines="Vertical">
+                                                    AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId"
+                                                    OnRowDataBound="gvSubTasks_RowDataBound"
+                                                    OnRowCommand="gvSubTasks_RowCommand">
                                                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                                                     <HeaderStyle CssClass="trHeader " />
                                                     <RowStyle CssClass="FirstRow" />
@@ -151,7 +153,8 @@
                                                         <asp:BoundField DataField="InstallId" HeaderText="List ID" HeaderStyle-Width="10%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" />
                                                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                                             <ItemTemplate>
-                                                                <%# Eval("Description") %>
+                                                                <asp:LinkButton ID="lbtnEditSubTask" runat="server" CommandName="edit-sub-task" Text='<%# Eval("Description") %>'
+                                                                    CommandArgument='<%# Container.DataItemIndex  %>' />
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
@@ -188,6 +191,7 @@
                                             <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
                                             <div id="divSubTask" runat="server" style="display: none;">
                                                 <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
+                                                <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
                                                 <table class="tablealign fullwidth">
                                                     <tr>
                                                         <td>ListID:

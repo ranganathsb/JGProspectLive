@@ -306,6 +306,62 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected void gvSubTasks_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName.Equals("edit-sub-task"))
+            {
+                ClearSubTaskData();
+                
+                hdnSubTaskId.Value = "0";
+                hdnSubTaskIndex.Value = "-1";
+
+                if (controlMode.Value == "0")
+                {
+                    hdnSubTaskIndex.Value = e.CommandArgument.ToString();
+
+                    Task objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
+
+                    txtTaskListID.Text = objTask.InstallId.ToString();
+                    txtSubTaskTitle.Text = Server.HtmlDecode(objTask.Title);
+                    txtSubTaskDescription.Text = Server.HtmlDecode(objTask.Description);
+
+                    if (objTask.TaskType.HasValue && ddlTaskType.Items.FindByValue(objTask.TaskType.Value.ToString()) != null)
+                    {
+                        ddlTaskType.SelectedValue = objTask.TaskType.Value.ToString();
+                    }
+
+                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
+                    txtSubTaskHours.Text = objTask.Hours;
+                }
+                else
+                {
+                    hdnSubTaskId.Value = gvSubTasks.DataKeys[Convert.ToInt32(e.CommandArgument)]["TaskId"].ToString();
+
+                    DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(hdnSubTaskId.Value));
+
+                    DataTable dtTaskMasterDetails = dsTaskDetails.Tables[0];
+
+                    txtTaskListID.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
+                    txtSubTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
+                    txtSubTaskDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
+
+                    ListItem item = ddlTaskType.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskType"].ToString());
+
+                    if (item != null)
+                    {
+                        ddlTaskType.SelectedIndex = ddlTaskType.Items.IndexOf(item);
+                    }
+
+                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
+                    txtSubTaskHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
+                }
+
+                upAddSubTask.Update();
+
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+            }
+        }
+
         protected void lbtnAddNewSubTask_Click(object sender, EventArgs e)
         {
             ClearSubTaskData();
@@ -576,7 +632,7 @@ namespace JG_Prospect.Sr_App
             {
                 hdnWorkSpecificationId.Value = "0";
             }
-            
+
             chkFreeze.Checked = false;
 
             upWorkSpecificationFiles.Update();
@@ -934,6 +990,7 @@ namespace JG_Prospect.Sr_App
         private void ClearSubTaskData()
         {
             hdnSubTaskId.Value = "0";
+            hdnSubTaskIndex.Value = "-1";
             txtTaskListID.Text = string.Empty;
             txtSubTaskTitle.Text =
             txtSubTaskDescription.Text =
@@ -974,30 +1031,45 @@ namespace JG_Prospect.Sr_App
 
         private void SaveSubTask()
         {
-            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            Task task = new Task();
-            task.TaskId = Convert.ToInt32(hdnSubTaskId.Value);
-            task.Title = txtSubTaskTitle.Text;
-            task.Description = txtSubTaskDescription.Text;
-            task.Status = 1; // 1 : Open
-            task.DueDate = txtSubTaskDueDate.Text;
-            task.Hours = txtSubTaskHours.Text;
-            task.CreatedBy = userId;
-            task.Mode = 0;// Convert.ToInt32(controlMode.Value);
+            Task objTask = null;
+            if (hdnSubTaskIndex.Value == "-1")
+            {
+                objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(hdnSubTaskId.Value);
+            }
+            else
+            {
+                objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
+            }
+            
+            if (objTask.TaskId > 0)
+            {
+                objTask.Mode = 1;
+            }
+            else
+            {
+                objTask.Mode = 0;
+            }
+
+            objTask.Title = txtSubTaskTitle.Text;
+            objTask.Description = txtSubTaskDescription.Text;
+            objTask.Status = 1; // 1 : Open
+            objTask.DueDate = txtSubTaskDueDate.Text;
+            objTask.Hours = txtSubTaskHours.Text;
+            objTask.CreatedBy = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
             //task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
-            task.InstallId = txtTaskListID.Text.Trim();
-            task.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
-            task.Attachment = hdnAttachments.Value;
+            objTask.InstallId = txtTaskListID.Text.Trim();
+            objTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
+            objTask.Attachment = hdnAttachments.Value;
 
             if (ddlTaskType.SelectedIndex > 0)
             {
-                task.TaskType = Convert.ToInt16(ddlTaskType.SelectedValue);
+                objTask.TaskType = Convert.ToInt16(ddlTaskType.SelectedValue);
             }
-
 
             if (controlMode.Value == "0")
             {
-                this.lstSubTasks.Add(task);
+                this.lstSubTasks.Add(objTask);
 
                 // Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
                 DataTable dtSubtasks = new DataTable();
@@ -1032,9 +1104,9 @@ namespace JG_Prospect.Sr_App
             else
             {
                 // save task master details to database.
-                Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
+                Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
                 hdnSubTaskId.Value = ItaskId.ToString();
-                UploadUserAttachements(null, ItaskId, task.Attachment);
+                UploadUserAttachements(null, ItaskId, objTask.Attachment);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
@@ -1469,8 +1541,6 @@ namespace JG_Prospect.Sr_App
 
         private void SetSubTaskDetails(DataTable dtSubTaskDetails)
         {
-
-
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
             upSubTasks.Update();
