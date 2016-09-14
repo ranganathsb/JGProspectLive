@@ -670,33 +670,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnAddAttachment;
         
         /// <summary>
-        /// divFinishedWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFinishedWorkFiles;
-        
-        /// <summary>
-        /// upFinishedWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upFinishedWorkFiles;
-        
-        /// <summary>
-        /// rptWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptWorkFiles;
-        
-        /// <summary>
         /// divWorkSpecifications control.
         /// </summary>
         /// <remarks>
@@ -722,6 +695,24 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
+        
+        /// <summary>
+        /// ltrlLastCheckedInBy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlLastCheckedInBy;
+        
+        /// <summary>
+        /// ltrlLastVersionUpdateBy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
         
         /// <summary>
         /// chkFreeze control.
@@ -751,21 +742,30 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.HiddenField hdnWorkSpecificationId;
         
         /// <summary>
-        /// ltrlLastCheckedInBy control.
+        /// rptWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastCheckedInBy;
+        protected global::System.Web.UI.WebControls.Repeater rptWorkFiles;
         
         /// <summary>
-        /// ltrlLastVersionUpdateBy control.
+        /// divFinishedWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFinishedWorkFiles;
+        
+        /// <summary>
+        /// upFinishedWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upFinishedWorkFiles;
     }
 }

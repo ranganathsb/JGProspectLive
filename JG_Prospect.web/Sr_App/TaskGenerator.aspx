@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskGenerator.aspx.cs" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskGenerator.aspx.cs"
     Inherits="JG_Prospect.Sr_App.TaskGenerator" ValidateRequest="false" EnableEventValidation="false" %>
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
@@ -24,8 +24,10 @@
                         <td width="25%" align="left">
                             <asp:LinkButton ID="lbtnDeleteTask" runat="server" OnClick="lbtnDeleteTask_Click" Text="Delete" />
                             &nbsp;&nbsp;Task ID#:
+                           
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
+                           
                             <asp:Literal ID="ltrlDateCreated" runat="server" /></td>
                         <td width="25%" align="right">
                             <asp:Literal ID="ltrlAssigningManager" runat="server" /></td>
@@ -110,6 +112,7 @@
                                 <br />
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                               
                                 <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnWorkSpecificationFiles_Click" />
                                 <br />
@@ -151,22 +154,6 @@
                                                                 <%# Eval("Description") %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <%--<asp:TemplateField HeaderText="Due Date" HeaderStyle-Width="11%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%#  string.IsNullOrEmpty( Eval("DueDate").ToString() )?string.Empty: Convert.ToDateTime(Eval("DueDate")).ToShortDateString()%>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Hrs. Est" HeaderStyle-Width="13%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Eval("Hours") %>
-                                                    </ItemTemplate>
-                                                    <HeaderStyle Width="5%" />
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Note Ref:" HeaderStyle-Width="10%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        Note Ref#
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>--%>
                                                         <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>
                                                                 <%# String.IsNullOrEmpty(Eval("TaskType").ToString()) == true ? String.Empty : ddlTaskType.Items.FindByValue( Eval("TaskType").ToString()).Text %>
@@ -204,17 +191,20 @@
                                                 <table class="tablealign fullwidth">
                                                     <tr>
                                                         <td>ListID:
-                                                    <asp:TextBox ID="txtTaskListID" runat="server" />
+                                                   
+                                                            <asp:TextBox ID="txtTaskListID" runat="server" />
                                                             &nbsp; <small><a href="javascript:void(0);" style="color: #06c;" onclick="copytoListID(this);">
                                                                 <asp:Literal ID="listIDOpt" runat="server" />
                                                             </a></small></td>
                                                         <td>Type:
-                                                    <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server"></asp:DropDownList>
+                                                   
+                                                            <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server"></asp:DropDownList>
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;">
                                                         <td colspan="2">Title <span style="color: red;">*</span>:
-                            <br />
+                           
+                                                            <br />
                                                             <asp:TextBox ID="txtSubTaskTitle" Text="N.A." runat="server" Width="98%" CssClass="textbox" />
                                                             <asp:RequiredFieldValidator ID="rfvSubTaskTitle" Visible="false" ValidationGroup="vgSubTask"
                                                                 runat="server" ControlToValidate="txtSubTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None" />
@@ -222,7 +212,8 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="2">Description <span style="color: red;">*</span>:
-                            <br />
+                           
+                                                            <br />
                                                             <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                             <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                                                                 runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
@@ -230,10 +221,12 @@
                                                     </tr>
                                                     <tr id="trDateHours" runat="server" visible="false">
                                                         <td>Due Date:
-                            <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
+                           
+                                                            <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
                                                         </td>
                                                         <td>Hrs of Task:
-                            <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
+                           
+                                                            <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
                                                             <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
                                                                 ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
                                                                 ValidationExpression="(\d+\.\d{1,2})?\d*" />
@@ -343,6 +336,7 @@
                                 <br />
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                               
                                 <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile1" runat="server" Text="Download Work Specification Files"
                                     OnClick="lbtnDownloadWorkSpecificationFile1_Click" />
                                 <br />
@@ -487,30 +481,35 @@
                                     <HeaderTemplate>Files & docs</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 1
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Images</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 3
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Links" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Links</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 4
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Videos</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 5
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Audios</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 6
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                             </asp:TabContainer>
@@ -528,15 +527,64 @@
                 <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile1" />
             </Triggers>
         </asp:UpdatePanel>
-
-        <div id="divFinishedWorkFiles" runat="server" style="display: none;" title="Finished Work Files">
-            <%--Finished Work Files--%>
-            <asp:UpdatePanel ID="upFinishedWorkFiles" runat="server" UpdateMode="Conditional">
+    </div>
+    <%--Popup Starts--%>
+    <div class="hide">
+        <div id="divWorkSpecifications" runat="server" title="Work Specification Files">
+            <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <table width="500">
+                    <table class="table" width="100%">
                         <tr>
-                            <td>Attachment(s):<br>
-                                <table style="width: 100%;">
+                            <td>Work Specification:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table class="table" width="100%">
+                                    <tr>
+                                        <td>
+                                            <asp:TextBox ID="txtWorkSpecification" runat="server" />
+                                            <span style="float: right; font-size: 10px; color: gray;">
+                                                <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="float: left; min-width: 200px;">
+                                                <asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
+                                            </div>
+                                            <div style="float: right; text-align: right; min-width: 200px;">
+                                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
+                                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="btn_sec">
+                                                <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
+                                                    OnClientClick="javascript:SetContentInTextbox();"
+                                                    OnClick="btnSaveWorkSpecification_Click" />
+                                                <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <hr /><br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Attachment(s):
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table class="table" width="100%">
                                     <tr>
                                         <td>
                                             <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptWorkFiles_ItemCommand" OnItemDataBound="rptWorkFiles_ItemDataBound" runat="server">
@@ -572,6 +620,7 @@
                                                 </AlternatingItemTemplate>
                                                 <FooterTemplate>
                                                     </table>
+                                               
                                                 </FooterTemplate>
                                             </asp:Repeater>
                                         </td>
@@ -583,40 +632,12 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
-        <div id="divWorkSpecifications" runat="server" class="hide" title="Work Specification Files">
-            <%--Work Specification Files--%>
-            <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
+        <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files">
+            <asp:UpdatePanel ID="upFinishedWorkFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <table class="table" width="100%">
+                    <table width="500">
                         <tr>
-                            <td>Work Specification:<br />
-                                <asp:TextBox ID="txtWorkSpecification" runat="server" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">
-                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
-                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="btn_sec">
-                                    <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
-                                        OnClientClick="javascript:SetContentInTextbox();"
-                                        OnClick="btnSaveWorkSpecification_Click" />
-                                    <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
+                            <td>In progress...
                             </td>
                         </tr>
                     </table>
@@ -624,6 +645,7 @@
             </asp:UpdatePanel>
         </div>
     </div>
+    <%--Popup Ends--%>
     <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
     <script type="text/javascript" src='../js/ice/lib/rangy/rangy-core.js'></script>
     <script type="text/javascript" src='../js/ice/src/polyfills.js'></script>

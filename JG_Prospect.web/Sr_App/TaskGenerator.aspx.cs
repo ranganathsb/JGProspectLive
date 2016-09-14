@@ -550,7 +550,7 @@ namespace JG_Prospect.Sr_App
                     if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
                     {
                         ltrlLastCheckedInBy.Text = string.Format(
-                                                                "Last freeze by \'{0}\'.<br/>",
+                                                                "Last freeze by \'{0}\'.&nbsp;",
                                                                 dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
                                                                 );
                     }
@@ -581,6 +581,77 @@ namespace JG_Prospect.Sr_App
 
             upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
+        }
+
+        protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
+        {
+            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+            objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+            objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+            TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+            objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+            objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+            objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
+
+            objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+
+            if (objTaskWorkSpecification.Id == 0)
+            {
+                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+            }
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+        }
+
+        protected void lbtnDownloadWorkSpecificationFile1_Click(object sender, EventArgs e)
+        {
+            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
+                                                                                (
+                                                                                    Convert.ToInt32(hdnTaskId.Value),
+                                                                                    true
+                                                                                );
+            if (
+                dsLatestTaskWorkSpecification != null &&
+                dsLatestTaskWorkSpecification.Tables.Count == 2
+               )
+            {
+                // main / last freezed copy.
+                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                    {
+                        ltrlLastCheckedInBy.Text = string.Format(
+                                                                "Last freeze by \'{0}\'.<br/>",
+                                                                dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
+                                                                );
+                    }
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
+                    {
+                        byte[] arrPdf = CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString());
+
+                        if (arrPdf != null)
+                        {
+                            string strFileName = string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"));
+                            Response.Clear();
+                            Response.ContentType = "application/pdf";
+                            Response.AddHeader("content-disposition", "attachment;filename=" + strFileName);
+                            Response.Buffer = true;
+                            (new MemoryStream(arrPdf)).WriteTo(Response.OutputStream);
+                            Response.End();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // file does not exist.
+            }
         }
 
         #endregion
@@ -1543,76 +1614,5 @@ namespace JG_Prospect.Sr_App
 
 
         #endregion
-
-        protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
-        {
-            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-            objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-            objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-            TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-            objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-            objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-            objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-            objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
-
-            objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
-
-            if (objTaskWorkSpecification.Id == 0)
-            {
-                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-            }
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
-        }
-
-        protected void lbtnDownloadWorkSpecificationFile1_Click(object sender, EventArgs e)
-        {
-            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                (
-                                                                                    Convert.ToInt32(hdnTaskId.Value),
-                                                                                    true
-                                                                                );
-            if (
-                dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count == 2
-               )
-            {
-                // main / last freezed copy.
-                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
-                {
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
-                    {
-                        ltrlLastCheckedInBy.Text = string.Format(
-                                                                "Last freeze by \'{0}\'.<br/>",
-                                                                dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
-                                                                );
-                    }
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
-                    {
-                        byte[] arrPdf = CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString());
-
-                        if (arrPdf != null)
-                        {
-                            string strFileName = string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"));
-                            Response.Clear();
-                            Response.ContentType = "application/pdf";
-                            Response.AddHeader("content-disposition", "attachment;filename=" + strFileName);
-                            Response.Buffer = true;
-                            (new MemoryStream(arrPdf)).WriteTo(Response.OutputStream);
-                            Response.End();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // file does not exist.
-            }
-        }
     }
 }
