@@ -386,7 +386,7 @@ namespace JG_Prospect.Sr_App
                 strHtml = strHtml.Replace("#LastName#", lastName);
                 strHtml = strHtml.Replace("#Address#", string.Empty);
                 strHtml = strHtml.Replace("#Designation#", Desig);
-                if (!string.IsNullOrEmpty(EmpType))
+                if (!string.IsNullOrEmpty(EmpType) && EmpType.Length > 1)
                 {
                     strHtml = strHtml.Replace("#EmpType#", EmpType);
                 }
