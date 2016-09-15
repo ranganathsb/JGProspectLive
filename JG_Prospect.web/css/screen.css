@@ -457,7 +457,7 @@ form.inline {
 }
 
 .header {
-    min-height: 200px;    
+    min-height: 200px;
     position: relative;
     min-width: 600px;
 }
@@ -1389,25 +1389,52 @@ ul.left_nav {
         width: 39px;
     }
 
-.fullwidth {width:100%;}
-.mtop5 {margin-top:5px;}
-.mbot5 {margin-bottom:5px;}
-.ajax__html_editor_extender_container {background-color: white; margin-bottom: 10px;max-width: 755px;}
-.taskHtmlContent {padding: 2px 2px 2px 2px; border: 1px solid #c2c2c2;background-color: white;height:150px; overflow:auto; }
-.tasklistfieldset {     border-width: 1px;
+.fullwidth {
+    width: 100%;
+}
+
+.mtop5 {
+    margin-top: 5px;
+}
+
+.mbot5 {
+    margin-bottom: 5px;
+}
+
+.ajax__html_editor_extender_container {
+    background-color: white;
+    margin-bottom: 10px;
+    max-width: 755px;
+}
+
+.taskHtmlContent {
+    padding: 2px 2px 2px 2px;
+    border: 1px solid #c2c2c2;
+    background-color: white;
+    height: 150px;
+    overflow: auto;
+}
+
+.tasklistfieldset {
+    border-width: 1px;
     border-style: solid;
-    border-color: lightgray;
-    padding: 5px;}
+    border-color: darkgrey;
+    padding: 5px;
+}
 
 table tr.trHeader th,
-table.table tr.FirstRow td, 
-table.table tr.AlternateRow td, 
+table.table tr.FirstRow td,
+table.table tr.AlternateRow td,
 table.table tr.dark-gray-background td {
-    border-right: 1px solid #FFF; 
+    border-right: 1px solid #FFF;
     padding: 5px;
 }
 
 table tr.trPager td,
 table tr.trFooter td {
     padding: 5px;
+}
+
+.valigntop {
+    vertical-align: top;
 }

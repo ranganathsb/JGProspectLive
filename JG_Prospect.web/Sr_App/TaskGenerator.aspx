@@ -37,8 +37,7 @@
                     <table id="tblAdminTaskView" runat="server" class="tablealign"
                         width="100%" cellspacing="5">
                         <tr>
-                            <td width="100">Designation <span style="color: red;">*</span>:</td>
-                            <td>
+                            <td style="width: 40%;">Designation <span style="color: red;">*</span>:                            
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
                                         <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
@@ -72,8 +71,7 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </td>
-                            <td>Assigned:</td>
-                            <td>
+                            <td>Assigned:                            
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
                                         <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
@@ -86,7 +84,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3" valign="top">Task Title <span style="color: red;">*</span>:<br />
+                            <td class="valigntop">Task Title <span style="color: red;">*</span>:<br />
                                 <asp:TextBox ID="txtTaskTitle" runat="server" Style="width: 90%" CssClass="textbox"></asp:TextBox>
                                 <%--<ajax:Editor ID="txtTaskTitle" Width="100%" Height="20px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
                                 <asp:RequiredFieldValidator ID="rfvTaskTitle" ValidationGroup="Submit"
@@ -94,39 +92,43 @@
                                 </asp:RequiredFieldValidator>
                                 <asp:HiddenField ID="controlMode" runat="server" />
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
-                                <br>
-                                Task Description <span style="color: red;">*</span>:<br />
-                                <asp:TextBox ID="txtDescription" TextMode="MultiLine" runat="server" CssClass="textbox" Width="90%" Rows="10"></asp:TextBox>
+                            </td>
+                            <td class="valigntop">
+                                <table>
+                                    <tr>
+                                        <td style="width: 30%;" class="valigntop">
+                                            <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
+                                                OnClick="lbtnWorkSpecificationFiles_Click" />
+                                        </td>
+                                        <td class="valigntop">
+                                            <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
+                                                OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                                    <br />
+                                            <div id="divWorkFileAdmin" class="dropzone work-file">
+                                                <div class="fallback">
+                                                    <input name="WorkFile" type="file" multiple />
+                                                    <input type="submit" value="UploadWorkFile" />
+                                                </div>
+                                            </div>
+                                            <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Task Description <span style="color: red;">*</span>:<br />
+                                <asp:TextBox ID="txtDescription" TextMode="MultiLine" runat="server" CssClass="textbox" Width="98%" Rows="10"></asp:TextBox>
                                 <%--<ajax:Editor ID="txtDescription" Width="100%" Height="100px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
                                 <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
                                     runat="server" ControlToValidate="txtDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
                                 </asp:RequiredFieldValidator>
                             </td>
-                            <td valign="top">
-                                <br />
-                                <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
-                                    OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                                <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
-                                    OnClick="lbtnWorkSpecificationFiles_Click" />
-                                <br />
-                                <br />
-                                <div>
-                                    <div id="divWorkFileAdmin" class="dropzone work-file">
-                                        <div class="fallback">
-                                            <input name="WorkFile" type="file" multiple />
-                                            <input type="submit" value="UploadWorkFile" />
-                                        </div>
-                                    </div>
-                                    <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
                         </tr>
                         <tr id="trSubTaskList" runat="server">
-                            <td colspan="4">
+                            <td colspan="2">
                                 <fieldset class="tasklistfieldset">
                                     <legend>Task List</legend>
                                     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
@@ -143,11 +145,15 @@
                                                     <RowStyle CssClass="FirstRow" />
                                                     <AlternatingRowStyle CssClass="AlternateRow " />
                                                     <Columns>
-                                                        <asp:BoundField DataField="InstallId" HeaderText="List ID" HeaderStyle-Width="10%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" />
+                                                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%">
+                                                            <ItemTemplate>
+                                                                <asp:LinkButton ID="lbtnEditSubTask" runat="server" CommandName="edit-sub-task" Text='<%# Eval("InstallId") %>'
+                                                                    CommandArgument='<%# Container.DataItemIndex  %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                                             <ItemTemplate>
-                                                                <asp:LinkButton ID="lbtnEditSubTask" runat="server" CommandName="edit-sub-task" Text='<%# Eval("Description") %>'
-                                                                    CommandArgument='<%# Container.DataItemIndex  %>' />
+                                                                <%# Eval("Description")%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
@@ -182,7 +188,7 @@
                                             <asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" OnClick="lbtnAddNewSubTask_Click" />
                                             <br />
                                             <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
-                                            <div id="divSubTask" runat="server" style="display: none;">
+                                            <div id="divSubTask" runat="server" class="tasklistfieldset" style="display: none;">
                                                 <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
                                                 <table class="tablealign fullwidth">
@@ -214,6 +220,24 @@
                                                             <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                             <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                                                                 runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
+
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Attachment(s):<br>
+                                                            <input id="hdnAttachments" runat="server" type="hidden" />
+                                                            <div id="divSubTaskDropzone" runat="server" class="dropzone">
+                                                                <div class="fallback">
+                                                                    <input name="file" type="file" multiple />
+                                                                    <input type="submit" value="Upload" />
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
+                                                            </div>
+
                                                         </td>
                                                     </tr>
                                                     <tr id="trDateHours" runat="server" visible="false">
@@ -229,21 +253,8 @@
                                                                 ValidationExpression="(\d+\.\d{1,2})?\d*" />
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Attachment(s):<br>
-                                                            <input id="hdnAttachments" runat="server" type="hidden" />
-                                                            <div id="divSubTaskDropzone" runat="server" class="dropzone" style="overflow: auto; width: 415px;">
-                                                                <div class="fallback">
-                                                                    <input name="file" type="file" multiple />
-                                                                    <input type="submit" value="Upload" />
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+
+
                                                     <tr>
                                                         <td colspan="2">
                                                             <div class="btn_sec">
@@ -260,15 +271,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>User Acceptance:</td>
-                            <td>
+                            <td>User Acceptance:
                                 <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
                                     <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
                                     <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
                                 </asp:DropDownList>
                             </td>
-                            <td>Due Date:</td>
-                            <td>
+                            <td>Due Date:
                                 <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" />
                                 <%--<asp:CalendarExtender ID="CEDueDate" runat="server" TargetControlID="txtDueDate"></asp:CalendarExtender>--%>
                                 <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Submit"
@@ -277,8 +286,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Hrs of Task:</td>
-                            <td>
+                            <td>Hrs of Task:
                                 <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" />
                                 <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
                                     ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="Submit" ValidationExpression="(\d+\.\d{1,2})?\d*" />
@@ -286,8 +294,7 @@
                             runat="server" ControlToValidate="txtHours" ForeColor="Red" ErrorMessage="Please Enter Hours Of Task" Display="None">                                 
                         </asp:RequiredFieldValidator>--%>
                             </td>
-                            <td>Staus:</td>
-                            <td>
+                            <td>Staus:
                                 <asp:DropDownList ID="cmbStatus" runat="server" CssClass="textbox">
                                     <%--<asp:ListItem Text="Open" Value="1"></asp:ListItem>
                             <asp:ListItem Text="Assigned" Value="2"></asp:ListItem>
@@ -299,7 +306,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="2">
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveTask" runat="server" Text="Save Task" CssClass="ui-button" ValidationGroup="Submit" OnClick="btnSaveTask_Click" />
                                 </div>
@@ -326,10 +333,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top"><b>Task Title:</b>
+                            <td class="valigntop"><b>Task Title:</b>
                                 <asp:Literal ID="ltlTUTitle" runat="server"></asp:Literal>
                             </td>
-                            <td valign="top">
+                            <td class="valigntop">
                                 <br />
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
@@ -524,21 +531,26 @@
     </div>
     <%--Popup Starts--%>
     <div class="hide">
-        <div id="divWorkSpecifications" runat="server" title="Work Specification Files">
+        <div id="divWorkSpecifications" runat="server">
             <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <table class="table" width="100%">
+                    <table class="table" style="width: 100%;">
                         <tr>
-                            <td>Work Specification:
+                            <td>Work Specifications:
                             </td>
+                            <td align="right" id="trFreezeWorkSpecification" runat="server">
+                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
+                                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a> &nbsp;<asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
+                            </td>
+
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <table class="table" width="100%">
                                     <tr>
                                         <td>
                                             <asp:TextBox ID="txtWorkSpecification" runat="server" />
-                                            <div style="float:left; width:98%;">
+                                            <div style="float: left; width: 98%;">
                                                 <div style="float: left; font-size: 10px; text-align: left; min-width: 200px;">
                                                     <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
                                                         Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />&nbsp;
@@ -551,17 +563,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr id="trFreezeWorkSpecification" runat="server">
-                                        <td>
-                                            <div style="float: left; min-width: 200px;">
-                                                <asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
-                                            </div>
-                                            <div style="float: right; text-align: right; min-width: 200px;">
-                                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
-                                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    
                                     <tr id="trSaveWorkSpecification" runat="server">
                                         <td>
                                             <div class="btn_sec">
@@ -576,17 +578,17 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <hr />
                                 <br />
                             </td>
                         </tr>
                         <tr>
-                            <td>Attachment(s):
+                            <td colspan="2">Attachment(s):
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <table class="table" width="100%">
                                     <tr>
                                         <td>

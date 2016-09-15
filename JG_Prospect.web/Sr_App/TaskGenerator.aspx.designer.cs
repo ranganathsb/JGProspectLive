@@ -157,6 +157,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.HiddenField hdnTaskId;
         
         /// <summary>
+        /// lbtnWorkSpecificationFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles;
+        
+        /// <summary>
+        /// lbtnFinishedWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles;
+        
+        /// <summary>
         /// txtDescription control.
         /// </summary>
         /// <remarks>
@@ -173,24 +191,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDesc;
-        
-        /// <summary>
-        /// lbtnFinishedWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles;
-        
-        /// <summary>
-        /// lbtnWorkSpecificationFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles;
         
         /// <summary>
         /// trSubTaskList control.
@@ -337,6 +337,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSubTaskDescription;
         
         /// <summary>
+        /// hdnAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnAttachments;
+        
+        /// <summary>
+        /// divSubTaskDropzone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzone;
+        
+        /// <summary>
+        /// divSubTaskDropzonePreview control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzonePreview;
+        
+        /// <summary>
         /// trDateHours control.
         /// </summary>
         /// <remarks>
@@ -371,33 +398,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revSubTaskHours;
-        
-        /// <summary>
-        /// hdnAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnAttachments;
-        
-        /// <summary>
-        /// divSubTaskDropzone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzone;
-        
-        /// <summary>
-        /// divSubTaskDropzonePreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzonePreview;
         
         /// <summary>
         /// btnSaveSubTask control.
@@ -697,6 +697,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecificationFiles;
         
         /// <summary>
+        /// trFreezeWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell trFreezeWorkSpecification;
+        
+        /// <summary>
+        /// chkFreeze control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkFreeze;
+        
+        /// <summary>
         /// txtWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -740,24 +758,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
-        
-        /// <summary>
-        /// trFreezeWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trFreezeWorkSpecification;
-        
-        /// <summary>
-        /// chkFreeze control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkFreeze;
         
         /// <summary>
         /// trSaveWorkSpecification control.

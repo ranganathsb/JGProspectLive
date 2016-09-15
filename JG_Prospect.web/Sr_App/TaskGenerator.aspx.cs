@@ -570,10 +570,9 @@ namespace JG_Prospect.Sr_App
                                                                 "Last freeze by \'{0}\'.&nbsp;",
                                                                 dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
                                                                 );
+                        // show link to download freezed copy.
+                        lbtnDownloadWorkSpecificationFile.Visible = true;
                     }
-
-                    // show link to download freezed copy.
-                    lbtnDownloadWorkSpecificationFile.Visible = true;
                 }
 
                 // current / working copy.
@@ -583,13 +582,13 @@ namespace JG_Prospect.Sr_App
 
                     txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
 
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
-                    {
-                        ltrlLastVersionUpdateBy.Text = string.Format(
-                                                                "Last version updated by \'{0}\'",
-                                                                dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString()
-                                                                );
-                    }
+                    //if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
+                    //{
+                    //    ltrlLastVersionUpdateBy.Text = string.Format(
+                    //                                            "Last version updated by \'{0}\'",
+                    //                                            dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString()
+                    //                                            );
+                    //}
                 }
             }
             else
@@ -597,7 +596,6 @@ namespace JG_Prospect.Sr_App
                 hdnWorkSpecificationId.Value = "0";
             }
 
-            chkFreeze.Checked = false;
 
             // show link to download working copy for preview for admin users only.
             if (this.IsAdminMode)
@@ -607,9 +605,13 @@ namespace JG_Prospect.Sr_App
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
             }
 
+            if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
+                SetWorkSpecificationFilePopupTitle(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"]), Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"]));
+
             upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
+
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
@@ -655,14 +657,14 @@ namespace JG_Prospect.Sr_App
             if (
                 dsLatestTaskWorkSpecification != null &&
                 dsLatestTaskWorkSpecification.Tables.Count == 2 &&
-                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0 
+                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
                )
             {
                 // main / last freezed copy.
                 if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
                 {
                     DownloadPdf(
-                                    CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString()), 
+                                    CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString()),
                                     string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
                                 );
                 }
@@ -1697,6 +1699,27 @@ namespace JG_Prospect.Sr_App
                 Response.End();
             }
         }
+
+        private void SetWorkSpecificationFilePopupTitle(string freezeUserName, string lastUpdatedUserName)
+        {
+            String strTitle = "<table><tr><td align=\"left\" style=\"width:50%\">Work Specification Files</td><td align=\"right\">**title**</td></tr></table>";
+
+            if (!string.IsNullOrEmpty(freezeUserName))
+            {
+                strTitle = strTitle.Replace("**title**", String.Concat("Specs freezed by: ", freezeUserName));
+            }
+            else if (!string.IsNullOrEmpty(lastUpdatedUserName))
+            {
+                strTitle = strTitle.Replace("**title**", String.Concat("Last updated by: ", lastUpdatedUserName));
+            }
+            else
+            {
+                strTitle = strTitle.Replace("**title**", String.Empty);
+            }
+
+            divWorkSpecifications.Attributes.Add("title", strTitle);
+        }
+
 
         #endregion
     }
