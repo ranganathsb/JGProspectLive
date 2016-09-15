@@ -83,12 +83,6 @@
                                         </asp:DropDownCheckBoxes>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-
-                                <%--                       <asp:DropDownList ID="ddlAssigned" runat="server" CssClass="textbox" onchange="addRow(this)">
-                        <asp:ListItem Text="Darmendra"></asp:ListItem>
-                        <asp:ListItem Text="Shabir"></asp:ListItem>
-                       </asp:DropDownList>--%>
-                  
                             </td>
                         </tr>
                         <tr>
@@ -112,7 +106,6 @@
                                 <br />
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                               
                                 <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnWorkSpecificationFiles_Click" />
                                 <br />
@@ -341,8 +334,8 @@
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                
-                                <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile1" runat="server" Text="Download Work Specification Files"
-                                    OnClick="lbtnDownloadWorkSpecificationFile1_Click" />
+                                <asp:LinkButton ID="lbtnWorkSpecificationFiles1" runat="server" Text="Work Specification Files"
+                                    OnClick="lbtnWorkSpecificationFiles_Click" />
                                 <br />
                                 <br />
                                 <div>
@@ -527,9 +520,6 @@
                         CssClass="ui-button" />
                 </div>
             </ContentTemplate>
-            <Triggers>
-                <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile1" />
-            </Triggers>
         </asp:UpdatePanel>
     </div>
     <%--Popup Starts--%>
@@ -548,12 +538,20 @@
                                     <tr>
                                         <td>
                                             <asp:TextBox ID="txtWorkSpecification" runat="server" />
-                                            <span style="float: right; font-size: 10px; color: gray;">
-                                                <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
-                                            </span>
+                                            <div style="float:left; width:98%;">
+                                                <div style="float: left; font-size: 10px; text-align: left; min-width: 200px;">
+                                                    <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
+                                                        Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />&nbsp;
+                                                    <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile" runat="server"
+                                                        Text="Download" OnClick="lbtnDownloadWorkSpecificationFile_Click" />
+                                                </div>
+                                                <div style="float: right; font-size: 10px; text-align: right; color: gray; min-width: 200px;">
+                                                    <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="trFreezeWorkSpecification" runat="server">
                                         <td>
                                             <div style="float: left; min-width: 200px;">
                                                 <asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
@@ -564,7 +562,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="trSaveWorkSpecification" runat="server">
                                         <td>
                                             <div class="btn_sec">
                                                 <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
@@ -579,7 +577,8 @@
                         </tr>
                         <tr>
                             <td>
-                                <hr /><br />
+                                <hr />
+                                <br />
                             </td>
                         </tr>
                         <tr>
@@ -634,6 +633,10 @@
                         </tr>
                     </table>
                 </ContentTemplate>
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile" />
+                    <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFilePreview" />
+                </Triggers>
             </asp:UpdatePanel>
         </div>
         <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files">
