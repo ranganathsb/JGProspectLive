@@ -74,6 +74,9 @@ namespace JG_Prospect.Sr_App
                 {
                     UserId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 }
+                
+                Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
+
                 bindGrid();
             }
             else
