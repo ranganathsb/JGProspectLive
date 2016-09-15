@@ -1122,9 +1122,9 @@ namespace JG_Prospect.Sr_App
             else
             {
                 // save task master details to database.
-                Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
-                hdnSubTaskId.Value = ItaskId.ToString();
-                UploadUserAttachements(null, ItaskId, objTask.Attachment);
+                TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+                hdnSubTaskId.Value = objTask.TaskId.ToString();
+                UploadUserAttachements(null, objTask.TaskId, objTask.Attachment);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
@@ -1559,6 +1559,9 @@ namespace JG_Prospect.Sr_App
 
         private void SetSubTaskDetails(DataTable dtSubTaskDetails)
         {
+            gvSubTasks1.DataSource = dtSubTaskDetails;
+            gvSubTasks1.DataBind();
+
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
             upSubTasks.Update();

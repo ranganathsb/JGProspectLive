@@ -363,6 +363,59 @@
                             </td>
                         </tr>
                         <tr>
+                            <td colspan="2">
+                                <fieldset class="tasklistfieldset">
+                                    <legend>Task List</legend>
+                                    <div>
+                                        <asp:GridView ID="gvSubTasks1" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                                            HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                                            EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                                            AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId"
+                                            OnRowDataBound="gvSubTasks_RowDataBound"
+                                            OnRowCommand="gvSubTasks_RowCommand">
+                                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                                            <HeaderStyle CssClass="trHeader " />
+                                            <RowStyle CssClass="FirstRow" />
+                                            <AlternatingRowStyle CssClass="AlternateRow " />
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%">
+                                                    <ItemTemplate>
+                                                        <%# Eval("InstallId") %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <%# Eval("Description")%>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# String.IsNullOrEmpty(Eval("TaskType").ToString()) == true ? String.Empty : ddlTaskType.Items.FindByValue( Eval("TaskType").ToString()).Text %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Status" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# string.Concat(cmbStatus.Items.FindByValue( Eval("Status").ToString()).Text , ":" , Eval("FristName")).Trim().TrimEnd(':') %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                            <ItemTemplate>
+                                                                <small>
+                                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                        CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
+                                                            </ItemTemplate>
+                                                        </asp:Repeater>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><b>User Acceptance:</b>
                                 <asp:DropDownList ID="ddlTUAcceptance" AutoPostBack="true" runat="server" CssClass="textbox">
                                     <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
@@ -563,7 +616,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    
+
                                     <tr id="trSaveWorkSpecification" runat="server">
                                         <td>
                                             <div class="btn_sec">
