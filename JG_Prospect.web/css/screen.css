@@ -1373,9 +1373,9 @@ ul.left_nav {
 
 .tasklist {
     overflow: auto;
-    max-height: 178px;
+    max-height: 165px;
     margin-left: 220px !important;
-    width: 71%;
+    width: 75%;
     position: relative;
     z-index: 9;
 }
