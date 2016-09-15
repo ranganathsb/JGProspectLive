@@ -545,6 +545,9 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
         {
+            string strLastCheckedInBy = "";
+            string strLastVersionUpdateBy = "";
+
             DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
                                                                                 (
                                                                                     Convert.ToInt32(hdnTaskId.Value),
@@ -566,9 +569,11 @@ namespace JG_Prospect.Sr_App
                 {
                     if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
                     {
+                        strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
+
                         ltrlLastCheckedInBy.Text = string.Format(
                                                                 "Last freeze by \'{0}\'.&nbsp;",
-                                                                dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString()
+                                                                strLastCheckedInBy
                                                                 );
                         // show link to download freezed copy.
                         lbtnDownloadWorkSpecificationFile.Visible = true;
@@ -582,13 +587,14 @@ namespace JG_Prospect.Sr_App
 
                     txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
 
-                    //if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
-                    //{
-                    //    ltrlLastVersionUpdateBy.Text = string.Format(
-                    //                                            "Last version updated by \'{0}\'",
-                    //                                            dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString()
-                    //                                            );
-                    //}
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
+                    {
+                        strLastVersionUpdateBy = dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString();
+                        //ltrlLastVersionUpdateBy.Text = string.Format(
+                        //                                            "Last version updated by \'{0}\'",
+                        //                                            strLastVersionUpdateBy
+                        //                                            );
+                    }
                 }
             }
             else
@@ -605,11 +611,18 @@ namespace JG_Prospect.Sr_App
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
             }
 
-            if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
-                SetWorkSpecificationFilePopupTitle(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"]), Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"]));
-
             upWorkSpecificationFiles.Update();
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divWorkSpecifications.ClientID), true);
+            ScriptManager.RegisterStartupScript(
+                                                    (sender as Control), 
+                                                    this.GetType(), 
+                                                    "ShowPopup", 
+                                                    string.Format(
+                                                                    "ShowPopupWithTitle(\"#{0}\", \"{1}\");", 
+                                                                    divWorkSpecifications.ClientID, 
+                                                                    GetWorkSpecificationFilePopupTitle(strLastCheckedInBy, strLastVersionUpdateBy)
+                                                                ),
+                                                    true
+                                              );
         }
 
 
@@ -1700,24 +1713,26 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void SetWorkSpecificationFilePopupTitle(string freezeUserName, string lastUpdatedUserName)
+        private string GetWorkSpecificationFilePopupTitle(string strFreezeUserName, string strLastUpdatedUserName)
         {
-            String strTitle = "<table><tr><td align=\"left\" style=\"width:50%\">Work Specification Files</td><td align=\"right\">**title**</td></tr></table>";
+            string strTitle = string.Empty;
+            strTitle += "<div style='width:100%;'>";
+            strTitle += "<div style='float:left;max-width:180px;'>";
+            strTitle += "Work Specification Files";
+            strTitle += "</div>";
+            strTitle += "<div style='float:right; font-size:12px; font-weight:normal;max-width:330px;'>";
+            if (!string.IsNullOrEmpty(strFreezeUserName))
+            {
+                strTitle += string.Concat("Specs freezed by: ", strFreezeUserName);
+            }
+            if (!string.IsNullOrEmpty(strLastUpdatedUserName))
+            {
+                strTitle += string.Concat(", Last updated by: ", strLastUpdatedUserName);
+            }
+            strTitle += "</div>";
+            strTitle += "</div>";
 
-            if (!string.IsNullOrEmpty(freezeUserName))
-            {
-                strTitle = strTitle.Replace("**title**", String.Concat("Specs freezed by: ", freezeUserName));
-            }
-            else if (!string.IsNullOrEmpty(lastUpdatedUserName))
-            {
-                strTitle = strTitle.Replace("**title**", String.Concat("Last updated by: ", lastUpdatedUserName));
-            }
-            else
-            {
-                strTitle = strTitle.Replace("**title**", String.Empty);
-            }
-
-            divWorkSpecifications.Attributes.Add("title", strTitle);
+            return strTitle;
         }
 
 

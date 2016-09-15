@@ -739,7 +739,14 @@
         }
 
         function ShowPopup(varControlID) {
-            var objDialog = $(varControlID).dialog({ width: "600px", height: "auto" });
+            var objDialog = $(varControlID).dialog({ width: "700px", height: "auto" });
+            // this will enable postback from dialog buttons.
+            objDialog.parent().appendTo(jQuery("form:first"));
+        }
+
+        function ShowPopupWithTitle(varControlID,strTitle) {
+            var objDialog = $(varControlID).dialog({ width: "700px", height: "auto" });
+            $('.ui-dialog-title').html(strTitle);
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));
         }
