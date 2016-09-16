@@ -290,7 +290,35 @@ namespace JG_Prospect.Sr_App
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                if (!String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
+                DropDownList ddlStatus = e.Row.FindControl("ddlStatus") as DropDownList;
+                ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
+                ddlStatus.DataTextField = "Text";
+                ddlStatus.DataValueField = "Value";
+                ddlStatus.DataBind();
+
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "Status").ToString()))
+                {
+                    ddlStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
+                }
+
+                if (!this.IsAdminMode)
+                {
+                    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
+                    {
+                        ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
+                    }
+                }
+
+                if (controlMode.Value == "0")
+                {
+                    ddlStatus.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
+                }
+                else
+                {
+                    ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                }
+
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
                 {
                     string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
                     string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -357,6 +385,30 @@ namespace JG_Prospect.Sr_App
                 upAddSubTask.Update();
 
                 ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+            }
+        }
+
+        protected void gvSubTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlStatus = sender as DropDownList;
+            if (controlMode.Value == "0")
+            {
+                this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
+
+                SetSubTaskDetails(this.lstSubTasks);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString()),
+                                                    Status = Convert.ToInt32(ddlStatus.SelectedValue)
+                                                }
+                                            );
+
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
         }
 
@@ -613,12 +665,12 @@ namespace JG_Prospect.Sr_App
 
             upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript(
-                                                    (sender as Control), 
-                                                    this.GetType(), 
-                                                    "ShowPopup", 
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup",
                                                     string.Format(
-                                                                    "ShowPopupWithTitle(\"#{0}\", \"{1}\");", 
-                                                                    divWorkSpecifications.ClientID, 
+                                                                    "ShowPopupWithTitle(\"#{0}\", \"{1}\");",
+                                                                    divWorkSpecifications.ClientID,
                                                                     GetWorkSpecificationFilePopupTitle(strLastCheckedInBy, strLastVersionUpdateBy)
                                                                 ),
                                                     true
@@ -1089,31 +1141,8 @@ namespace JG_Prospect.Sr_App
             {
                 this.lstSubTasks.Add(objTask);
 
-                // Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
-                DataTable dtSubtasks = new DataTable();
-                dtSubtasks.Columns.Add("Title");
-                dtSubtasks.Columns.Add("Description");
-                dtSubtasks.Columns.Add("Status");
-                dtSubtasks.Columns.Add("DueDate");
-                dtSubtasks.Columns.Add("Hours");
-                dtSubtasks.Columns.Add("InstallId");
-                dtSubtasks.Columns.Add("FristName");
-                dtSubtasks.Columns.Add("TaskType");
-                dtSubtasks.Columns.Add("attachment");
+                SetSubTaskDetails(this.lstSubTasks);
 
-                foreach (Task objSubTask in this.lstSubTasks)
-                {
-                    dtSubtasks.Rows.Add(objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
-                }
-
-                gvSubTasks.DataSource = dtSubtasks;
-                gvSubTasks.DataBind();
-                upSubTasks.Update();
-
-                //if (this.lstSubTasks.Count > 0)
-                //{
-                //    this.LastSubTaskSequence = this.lstSubTasks[this.lstSubTasks.Count - 1].InstallId.ToString();
-                //}
                 if (!string.IsNullOrEmpty(txtTaskListID.Text))
                 {
                     this.LastSubTaskSequence = txtTaskListID.Text.Trim();
@@ -1122,13 +1151,44 @@ namespace JG_Prospect.Sr_App
             else
             {
                 // save task master details to database.
-                TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
-                hdnSubTaskId.Value = objTask.TaskId.ToString();
+                if (hdnSubTaskId.Value == "0")
+                {
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask).ToString();
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+                }
+
                 UploadUserAttachements(null, objTask.TaskId, objTask.Attachment);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();
+        }
+
+        private void SetSubTaskDetails(List<Task> lstSubtasks)
+        {
+            // Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
+            DataTable dtSubtasks = new DataTable();
+            dtSubtasks.Columns.Add("Title");
+            dtSubtasks.Columns.Add("Description");
+            dtSubtasks.Columns.Add("Status");
+            dtSubtasks.Columns.Add("DueDate");
+            dtSubtasks.Columns.Add("Hours");
+            dtSubtasks.Columns.Add("InstallId");
+            dtSubtasks.Columns.Add("FristName");
+            dtSubtasks.Columns.Add("TaskType");
+            dtSubtasks.Columns.Add("attachment");
+
+            foreach (Task objSubTask in lstSubtasks)
+            {
+                dtSubtasks.Rows.Add(objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
+            }
+
+            gvSubTasks.DataSource = dtSubtasks;
+            gvSubTasks.DataBind();
+            upSubTasks.Update();
         }
 
         private void SaveTaskDesignations()
