@@ -36,8 +36,9 @@ namespace JG_Prospect
 
                     if (objException.InnerException != null)
                     {
-                        strBody += "<br/><hr/>InnerException<br/><hr/>";
-                        strBody += GetExceptionHtml(objException.InnerException);
+                        strSubject = "Exception - " + objException.InnerException.Message;
+
+                        strBody = GetExceptionHtml(objException.InnerException);
                     }
 
                     strBody += "<br/><br/>";
