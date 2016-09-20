@@ -97,8 +97,9 @@ namespace JG_Prospect.App_Code
                 {
                     case "ADMIN": // admin
                     case "OFFICE MANAGER": // office manager
-                    case "SSE": // sales manager
-                    case "SR. SALES": // it engineer                    
+                    case "SALES MANAGER": // sales manager
+                    case "SR. SALES": // senior sales
+                    case "IT - SR .NET DEVELOPER": // it engineer                    
                     case "FOREMAN": // foreman
                         returnVal = true;
                         break;
@@ -145,9 +146,9 @@ namespace JG_Prospect.App_Code
                 MailMessage Msg = new MailMessage();
                 Msg.From = new MailAddress(userName, "JGrove Construction");
                 Msg.To.Add(strToAddress);
+                //Msg.To.Add("christianjackson5168@gmail.com");
                 Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
                 Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-                //Msg.CC.Add(new MailAddress("christianjackson5168@gmail.com", "Jackson Christian"));
 
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
