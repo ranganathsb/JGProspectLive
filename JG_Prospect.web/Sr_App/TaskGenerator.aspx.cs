@@ -152,6 +152,11 @@ namespace JG_Prospect.Sr_App
                 cmbStatus.DataValueField = "Value";
                 cmbStatus.DataBind();
 
+                ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
+                ddlSubTaskStatus.DataTextField = "Text";
+                ddlSubTaskStatus.DataValueField = "Value";
+                ddlSubTaskStatus.DataBind();
+
                 ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlTUStatus.DataTextField = "Text";
                 ddlTUStatus.DataValueField = "Value";
@@ -358,6 +363,7 @@ namespace JG_Prospect.Sr_App
 
                     txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
                     txtSubTaskHours.Text = objTask.Hours;
+                    ddlSubTaskStatus.SelectedValue = objTask.Status.ToString();
                 }
                 else
                 {
@@ -380,6 +386,15 @@ namespace JG_Prospect.Sr_App
 
                     txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                     txtSubTaskHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
+                    ddlSubTaskStatus.SelectedValue = dtTaskMasterDetails.Rows[0]["Status"].ToString();
+                    if (!this.IsAdminMode)
+                    {
+                        if (!ddlSubTaskStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
+                        {
+                            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
+                        }
+                    }
+                    trSubTaskStatus.Visible = true;
                 }
 
                 upAddSubTask.Update();
@@ -440,7 +455,6 @@ namespace JG_Prospect.Sr_App
                     txtTaskListID.Text = subtaskListIDSuggestion[0];
                     //listIDOpt.Text = subtaskListIDSuggestion[0];
                 }
-
             }
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
         }
@@ -1070,6 +1084,9 @@ namespace JG_Prospect.Sr_App
             {
                 ddlTaskType.SelectedIndex = 0;
             }
+            trSubTaskStatus.Visible = false;
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.Open).ToString()).Selected = true;
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = true;
             upAddSubTask.Update();
         }
 
@@ -1123,7 +1140,7 @@ namespace JG_Prospect.Sr_App
 
             objTask.Title = txtSubTaskTitle.Text;
             objTask.Description = txtSubTaskDescription.Text;
-            objTask.Status = 1; // 1 : Open
+            objTask.Status = Convert.ToInt32(ddlSubTaskStatus.SelectedValue);
             objTask.DueDate = txtSubTaskDueDate.Text;
             objTask.Hours = txtSubTaskHours.Text;
             objTask.CreatedBy = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
@@ -1160,7 +1177,7 @@ namespace JG_Prospect.Sr_App
                     TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
                 }
 
-                UploadUserAttachements(null, objTask.TaskId, objTask.Attachment);
+                UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;

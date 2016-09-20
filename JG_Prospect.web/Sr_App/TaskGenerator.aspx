@@ -237,7 +237,6 @@
                                                         <td>
                                                             <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
                                                             </div>
-
                                                         </td>
                                                     </tr>
                                                     <tr id="trDateHours" runat="server" visible="false">
@@ -253,8 +252,15 @@
                                                                 ValidationExpression="(\d+\.\d{1,2})?\d*" />
                                                         </td>
                                                     </tr>
-
-
+                                                    <tr id="trSubTaskStatus" runat="server" visible="false">
+                                                        <td>
+                                                            Status:
+                                                            <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
+                                                        </td>
+                                                        <td>
+                                                            &nbsp;
+                                                        </td>
+                                                    </tr>
                                                     <tr>
                                                         <td colspan="2">
                                                             <div class="btn_sec">
@@ -900,6 +906,7 @@
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                            console.log($('#<%= hdnAttachments.ClientID %>').val());
                             //this.removeFile(file);
                         });
 
