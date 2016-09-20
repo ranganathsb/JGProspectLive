@@ -262,7 +262,7 @@ namespace JG_Prospect.App_Code
                                                    htmlData.Rows[0]["HTMLBody"].ToString(),
                                                    htmlData.Rows[0]["HTMLBody2"].ToString(),
                                                    htmlData.Rows[0]["HTMLFooter"].ToString()
-                                                  ); 
+                                                  );
                 }
                 else
                 {
@@ -273,6 +273,8 @@ namespace JG_Prospect.App_Code
                                                    ds1.Tables[1].Rows[0]["HTMLFooter"].ToString()
                                                   );
                 }
+                // this creates a warpper to limit width of all the sections.
+                strHtml = "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>" + strHtml + "</td></tr></table>";
             }
             return strHtml;
         }
@@ -330,7 +332,7 @@ namespace JG_Prospect.App_Code
         public static byte[] ConvertHtmlToPdf(string strHtml)
         {
             iTextSharp.text.Document objDocument = new iTextSharp.text.Document();
-            
+
             try
             {
                 MemoryStream objMemoryStream = new MemoryStream();
