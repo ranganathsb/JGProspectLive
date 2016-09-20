@@ -98,8 +98,7 @@ namespace JG_Prospect.App_Code
                     case "ADMIN": // admin
                     case "OFFICE MANAGER": // office manager
                     case "SALES MANAGER": // sales manager
-                    case "SR. SALES": // senior sales
-                    case "IT - SR .NET DEVELOPER": // it engineer                    
+                    case "ITLEAD": // it engineer | tech lead
                     case "FOREMAN": // foreman
                         returnVal = true;
                         break;
