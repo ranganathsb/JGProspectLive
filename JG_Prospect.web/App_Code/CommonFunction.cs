@@ -188,6 +188,59 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Sends an internal email.
+        /// </summary>
+        /// <param name="strEmailTemplate"></param>
+        /// <param name="strToAddress">it will receive email.</param>
+        /// <param name="strSubject">subject line of email.</param>
+        /// <param name="strBody">contect / body of email.</param>
+        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
+        {
+            try
+            {
+                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                MailMessage Msg = new MailMessage();
+                Msg.From = new MailAddress(userName, "JGrove Construction");
+                foreach (string strEmailAddress in strToAddress.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Msg.To.Add(strEmailAddress);
+                }
+
+                Msg.Subject = strSubject;// "JG Prospect Notification";
+                Msg.Body = strBody;
+                Msg.IsBodyHtml = true;
+
+                SmtpClient sc = new SmtpClient(
+                                                ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                              );
+                NetworkCredential ntw = new NetworkCredential(userName, password);
+                sc.UseDefaultCredentials = false;
+                sc.Credentials = ntw;
+                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                try
+                {
+                    sc.Send(Msg);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                Msg = null;
+                sc.Dispose();
+                sc = null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        /// <summary>
         /// Gets contract tamplate content string by combining header, body and footer.
         /// </summary>
         /// <returns></returns>
