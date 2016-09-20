@@ -244,18 +244,35 @@ namespace JG_Prospect.App_Code
         /// Gets contract tamplate content string by combining header, body and footer.
         /// </summary>
         /// <returns></returns>
-        public static string GetContractTemplateContent(int intContractTemplateId, int intDesignationId = 0)
+        public static string GetContractTemplateContent(int intContractTemplateId, int intDesignationId = 0, String designation = "IT - Sr .Net Developer")
         {
             DataSet ds1 = AdminBLL.Instance.FetchContractTemplate(intContractTemplateId, intDesignationId);
             string strHtml = string.Empty;
             if (ds1 != null)
             {
-                strHtml = string.Concat(
-                                        ds1.Tables[1].Rows[0]["HTMLHeader"].ToString(),
-                                        ds1.Tables[1].Rows[0]["HTMLBody"].ToString(),
-                                        ds1.Tables[1].Rows[0]["HTMLBody2"].ToString(),
-                                        ds1.Tables[1].Rows[0]["HTMLFooter"].ToString()
-                                       );
+
+                DataTable htmlData = (from myRow in ds1.Tables[1].AsEnumerable()
+                                      where myRow.Field<string>("Designation") == designation
+                                      select myRow).CopyToDataTable();
+
+                if (htmlData.Rows.Count > 0)
+                {
+                    strHtml = string.Concat(
+                                                   htmlData.Rows[0]["HTMLHeader"].ToString(),
+                                                   htmlData.Rows[0]["HTMLBody"].ToString(),
+                                                   htmlData.Rows[0]["HTMLBody2"].ToString(),
+                                                   htmlData.Rows[0]["HTMLFooter"].ToString()
+                                                  ); 
+                }
+                else
+                {
+                    strHtml = string.Concat(
+                                                   ds1.Tables[1].Rows[0]["HTMLHeader"].ToString(),
+                                                   ds1.Tables[1].Rows[0]["HTMLBody"].ToString(),
+                                                   ds1.Tables[1].Rows[0]["HTMLBody2"].ToString(),
+                                                   ds1.Tables[1].Rows[0]["HTMLFooter"].ToString()
+                                                  );
+                }
             }
             return strHtml;
         }

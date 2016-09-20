@@ -671,7 +671,7 @@ namespace JG_Prospect
                     }
                 }
             }
-            string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199);
+            string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199,0,Desig);
             strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
             strHtml = strHtml.Replace("#FirstName#", hdnFirstName.Value);
             strHtml = strHtml.Replace("#LastName#", hdnLastName.Value);
