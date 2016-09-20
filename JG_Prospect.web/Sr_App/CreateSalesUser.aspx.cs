@@ -4919,7 +4919,7 @@ namespace JG_Prospect.Sr_App
                             }
                         }
                     }
-                    string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199);
+                    string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
                     strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
                     strHtml = strHtml.Replace("#FirstName#", txtfirstname.Text);
                     strHtml = strHtml.Replace("#LastName#", txtlastname.Text);
