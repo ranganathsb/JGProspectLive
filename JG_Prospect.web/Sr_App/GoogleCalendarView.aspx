@@ -328,7 +328,8 @@
                             Email<span><asp:Label ID="lblOfferEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtOfferMail" runat="server" MaxLength="40" Width="242px"></asp:TextBox>
+                        <asp:TextBox ID="txtOfferMail" runat="server" MaxLength="40" Width="242px"
+                            Enabled="false" ReadOnly="true"></asp:TextBox>
                         <br />
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" Display="Dynamic" runat="server" ControlToValidate="txtOfferMail"
                             ValidationGroup="OfferPopUp" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>

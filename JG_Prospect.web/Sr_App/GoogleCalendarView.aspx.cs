@@ -327,6 +327,8 @@ namespace JG_Prospect.Sr_App
             {
                 LinkButton lnkEmail = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lnkEmail");
                 txtOfferMail.Text = lnkEmail.Text;
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
                 ViewState["Email"] = lnkEmail.Text;
 
                 if (selValue == "OfferMade")
