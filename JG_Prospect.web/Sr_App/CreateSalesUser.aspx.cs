@@ -3115,6 +3115,21 @@ namespace JG_Prospect.Sr_App
                 //rqDtNewReview.Enabled = false;
                 //rqLastReviewDate.Enabled = false;
 
+                if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
+                {
+                    txtOfferReqMail.Enabled = false;
+                    txtOfferReqMail.ReadOnly = true;
+                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                    txtOfferPassword.Attributes.Add("value", "jmgrove");
+                }
+                else
+                {
+                    txtOfferReqMail.Enabled = true;
+                    txtOfferReqMail.ReadOnly = false;
+                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                    txtOfferPassword.Attributes.Add("value", "jmgrove");
+                }
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
                 return;
             }
@@ -4964,6 +4979,10 @@ namespace JG_Prospect.Sr_App
                     }
 
                     SendEmail(email, txtfirstname.Text, txtlastname.Text, "Offer Made", reason, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
+                }
+                else
+                {
+                    txtemail.Text = txtOfferReqMail.Text;
                 }
             }
             catch (Exception ex)
