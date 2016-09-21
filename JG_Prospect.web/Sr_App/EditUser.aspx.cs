@@ -340,6 +340,8 @@ namespace JG_Prospect
                     hdnFirstName.Value = lblFirstName.Text;
                     hdnLastName.Value = lblLastName.Text;
                     txtEmail.Text = lblEmail.Text;
+                    txtPassword1.Attributes.Add("value", "jmgrove");
+                    txtpassword2.Attributes.Add("value", "jmgrove");
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
                     return;
                 }
@@ -381,6 +383,8 @@ namespace JG_Prospect
             else if (ddl.SelectedValue == "OfferMade")
             {
                 txtEmail.Text = lblEmail.Text;
+                txtPassword1.Attributes.Add("value", "jmgrove");
+                txtpassword2.Attributes.Add("value", "jmgrove");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
                 return;
                 /*

@@ -753,7 +753,8 @@
                             Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"></asp:TextBox>
+                        <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
+                            Enabled="false" ReadOnly="true"></asp:TextBox>
                         <br />
                         <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
                             ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
