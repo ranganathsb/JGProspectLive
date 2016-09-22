@@ -430,13 +430,13 @@
                 </tr>
             </table>
             <div class="grid">
-                 <asp:UpdatePanel ID="upGridViewUser" runat="server">
+                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                <asp:GridView ID="GridViewUser" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
-                    OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowEditing="GridViewUser_RowEditing"
-                    OnRowUpdating="GridViewUser_RowUpdating" OnRowDeleting="GridViewUser_RowDeleting"
-                    OnRowDataBound="GridViewUser_RowDataBound" OnSelectedIndexChanged="GridViewUser_SelectedIndexChanged"
-                    OnRowCommand="GridViewUser_RowCommand" OnSorting="GridViewUser_Sorting" EmptyDataText="No Data">
+                <asp:GridView ID="grdUsers" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
+                    OnRowCancelingEdit="grdUsers_RowCancelingEdit" OnRowEditing="grdUsers_RowEditing"
+                    OnRowUpdating="grdUsers_RowUpdating" OnRowDeleting="grdUsers_RowDeleting"
+                    OnRowDataBound="grdUsers_RowDataBound" OnSelectedIndexChanged="grdUsers_SelectedIndexChanged"
+                    OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" EmptyDataText="No Data">
                     <Columns>
                         <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px">
                             <ItemTemplate>
@@ -533,7 +533,7 @@
                             <ItemTemplate>
                                 <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                 <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
-                                <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server" DataValueField='<%#Eval("Status")%>'>
+                                <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" DataValueField='<%#Eval("Status")%>'>
                                     <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem><asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
                                     <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
                                     <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
@@ -653,9 +653,9 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        <asp:Button ID="btnSave" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                        <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
-                            TabIndex="119" OnClick="btnSave_Click" />
+                            TabIndex="119" OnClick="btnSaveReason_Click" />
                         <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
                     </td>
                 </tr>
@@ -725,9 +725,9 @@
                 </tr>
                 <tr>
                     <td align="center" colspan="2" style="height: 54px;">
-                        <asp:Button ID="btnPassword" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                        <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
-                            TabIndex="119" OnClick="btnPassword_Click" />
+                            TabIndex="119" OnClick="btnChangeStatus_Click" />
                         <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
                     </td>
                 </tr>

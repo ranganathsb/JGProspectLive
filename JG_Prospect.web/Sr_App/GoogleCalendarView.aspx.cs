@@ -581,78 +581,74 @@ namespace JG_Prospect.Sr_App
 
         public void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
         {
-            try
+            string fullname = FName + " " + LName;
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+
+            if (ds == null)
             {
-                string fullname = FName + " " + LName;
-                DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+            else if (ds.Tables[0].Rows.Count == 0)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+            string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
+            string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
+            string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
+            string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
-                if (ds == null)
+            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+            //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+            //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+            //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+            strBody = strBody.Replace("Reason", Reason);
+            //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
+            strBody = strHeader + strBody + strFooter;
+
+            EditUser obj = new EditUser();
+            if (status == "OfferMade")
+            {
+                obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+            if (status == "Deactive")
+            {
+                obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+
+            List<Attachment> lstAttachments = new List<Attachment>();
+
+            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+            {
+                string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+                if (File.Exists(sourceDir))
                 {
-                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                    Attachment attachment = new Attachment(sourceDir);
+                    attachment.Name = Path.GetFileName(sourceDir);
+                    lstAttachments.Add(attachment);
                 }
-                else if (ds.Tables[0].Rows.Count == 0)
-                {
-                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-                }
-                string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
-                string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
-                string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
-                string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+            }
 
-                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
-
-                strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
-                //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-                //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
-                strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
-
-                strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
-                //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-                //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
-                strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
-
-                strBody = strBody.Replace("Lbl Full name", fullname);
-                strBody = strBody.Replace("LBL position", Designition);
-                //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
-                //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
-                strBody = strBody.Replace("Reason", Reason);
-                //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
-                strBody = strHeader + strBody + strFooter;
-
-                EditUser obj = new EditUser();
-                if (status == "OfferMade")
-                {
-                    obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
-                }
-                if (status == "Deactive")
-                {
-                    obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
-                }
-
-                List<Attachment> lstAttachments = new List<Attachment>();
-
-                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
-                {
-                    string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
-                    if (File.Exists(sourceDir))
-                    {
-                        Attachment attachment = new Attachment(sourceDir);
-                        attachment.Name = Path.GetFileName(sourceDir);
-                        lstAttachments.Add(attachment);
-                    }
-                }
-
+            if (Attachments != null)
+            {
                 lstAttachments.AddRange(Attachments);
-
-                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
             }
-            catch (Exception ex)
-            {
-                UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-            }
+
+            JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
         }
 
         #endregion
