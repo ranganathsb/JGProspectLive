@@ -22,6 +22,8 @@ using System.Xml;
 
 namespace JG_Prospect
 {
+    #region '--Enums--'
+
     enum OrderStatus1
     {
         OfferMade = 0,
@@ -54,6 +56,8 @@ namespace JG_Prospect
         public string status { get; set; }
         public string count { get; set; }
     }
+
+    #endregion
 
     public partial class EditUser : System.Web.UI.Page
     {
@@ -675,7 +679,7 @@ namespace JG_Prospect
                     }
                 }
             }
-            string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199,0,Desig);
+            string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
             strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
             strHtml = strHtml.Replace("#FirstName#", hdnFirstName.Value);
             strHtml = strHtml.Replace("#LastName#", hdnLastName.Value);

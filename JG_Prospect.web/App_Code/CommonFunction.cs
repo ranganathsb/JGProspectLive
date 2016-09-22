@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.App_Code
 {
+    #region '--Enums--'
 
     public enum TaskStatus
     {
@@ -31,7 +32,8 @@ namespace JG_Prospect.App_Code
         BetaError = 2,
         Enhancement = 3
     }
-
+    
+    #endregion
 
     public static class CommonFunction
     {

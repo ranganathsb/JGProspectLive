@@ -856,6 +856,7 @@
     </Compile>
     <Content Include="App_Code\DropDownListAdapter.cs" />
     <Compile Include="App_Code\CommonFunction.cs" />
+    <Content Include="App_Code\EmailHelper.cs" />
     <Compile Include="App_Code\ExtensionMethods.cs" />
     <Compile Include="App_Code\PDFCheckBoxFieldType.cs" />
     <Compile Include="App_Code\PDFFieldType.cs" />
