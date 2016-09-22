@@ -15,6 +15,16 @@ namespace JG_Prospect.App_Code
 {
     #region '--Enums--'
 
+    /// <summary>
+    /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
+    /// </summary>
+    public enum ApplicationEnvironment
+    {
+        Local = 1,
+        Staging = 2,
+        Live = 3
+    }
+
     public enum TaskStatus
     {
         Open = 1,
@@ -32,7 +42,7 @@ namespace JG_Prospect.App_Code
         BetaError = 2,
         Enhancement = 3
     }
-    
+
     #endregion
 
     public static class CommonFunction
