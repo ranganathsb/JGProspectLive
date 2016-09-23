@@ -157,11 +157,25 @@ namespace JG_Prospect.Sr_App
             ddlPrimaryTrade.DataValueField = "Id";
             ddlPrimaryTrade.DataBind();
             ddlPrimaryTrade.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
+
+            //added by Ramya 09/23/2016
+            DataView view = DS.Tables[0].DefaultView;
+            view.Sort = "TradeName";
+            ddlPrimaryTrade.DataSource = view;
+                      
             ddlSecondaryTrade.DataSource = DS.Tables[0];
             ddlSecondaryTrade.DataTextField = "TradeName";
             ddlSecondaryTrade.DataValueField = "Id";
             ddlSecondaryTrade.DataBind();
             ddlSecondaryTrade.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
+            //DataView view = DS.Tables[0].DefaultView;
+            //view.Sort = "TradeName";
+            ddlSecondaryTrade.DataSource = view;
+        }
+
+        protected void btnAdd_Click(object sender, EventArgs e)
+        {
+            divEmail.Visible = true;
         }
 
         private string GetId()
@@ -281,6 +295,18 @@ namespace JG_Prospect.Sr_App
                     objuser.UserType = "sales";
                 }
                 objuser.designation = ddldesignation.SelectedValue;
+
+
+                foreach (var item in salesUserDesignationList)
+                {
+                    if (item.Value == ddldesignation.SelectedValue)//checking whether its sale user
+                    {
+                        RfvPrimaryTrade.Enabled = false; // disables the primary requiredfieldvalidator
+                        RfvSecondaryTrade.Enabled = false;// disables the secondary requiredfieldvalidator
+                    }                      
+                }
+
+
                 string strFileName = string.Empty;
 
                 //if (ViewState["FileName"] != null)
@@ -294,6 +320,15 @@ namespace JG_Prospect.Sr_App
                 //    objprospect.attachements = strFileName;
                 //}
                 objuser.status = "Install Prospect";
+
+                //added by Ramya 
+                objuser.Phone2Type = ddlPhoneType.SelectedValue;
+                objuser.city = txtcity.Text;
+                objuser.state = txtstate.Text;
+                objuser.zip = txtzip.Text;
+                objuser.City2 = txtSecondaryCity.Text;
+                objuser.State2 = txtSecondaryState.Text;
+                objuser.Zip2 = txtSecondaryZip.Text;
 
                 lblException.Text = Convert.ToString(err.Append(" Before  CheckInstallUser "));
                 DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(txtemail.Text, txtPhone.Text);
@@ -686,6 +721,7 @@ namespace JG_Prospect.Sr_App
         protected void txtPhone_TextChanged(object sender, EventArgs e)
         {
             ViewState["Phone"] = txtPhone.Text;
+            CheckDuplicateEmailorPhone("", txtPhone.Text);
             txtPhone2.Focus();
         }
         protected void txtPhone2_TextChanged(object sender, EventArgs e)
@@ -696,6 +732,7 @@ namespace JG_Prospect.Sr_App
         protected void txtemail_TextChanged(object sender, EventArgs e)
         {
             ViewState["Email"] = txtemail.Text;
+            CheckDuplicateEmailorPhone(txtemail.Text, "");
             txtemail2.Focus();
 
         }
@@ -742,7 +779,8 @@ namespace JG_Prospect.Sr_App
                     fileNameall = Convert.ToString(Session["ProspectAttachment"]);
                 }
                 string fileName = Path.GetFileName(AsyncFileUploadCustomerAttachment.FileName);
-                fileName = Convert.ToString(DateTime.Now) + fileName;
+                // fileName = Convert.ToString(DateTime.Now) + fileName;//commented by Ramya on 09/22/2016
+
                 fileName = fileName.Replace("/", "");
                 fileName = fileName.Replace(":", "");
                 fileName = fileName.Replace(" ", "");
@@ -764,6 +802,20 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        //check for duplicate emailorphone
+        public void CheckDuplicateEmailorPhone(string email, string phone)
+        {
+            StringBuilder err = new StringBuilder();
+            DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(email, phone);
+            if (dsCheckDuplicate.Tables.Count > 1)
+            {
+                lblException.Text = Convert.ToString(err.Append("Before Session[EmailEdiId]"));
+                Session["EmailEdiId"] = Convert.ToInt32(dsCheckDuplicate.Tables[0].Rows[0][0]);
+                lblException.Text = Convert.ToString(err.Append("After Session[EmailEdiId]"));
+                ScriptManager.RegisterStartupScript(this, GetType(), "overlay", "overlay();", true);
+                return;
+            }
+        }
         //List<Designation> lstSaleuser = new List<Designation>();
         //List<Designation> lstInstalluser = new List<Designation>();
         public static List<KeyValuePair<string, string>> salesUserDesignationList = new List<KeyValuePair<string, string>>();
