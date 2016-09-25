@@ -1088,7 +1088,7 @@ namespace JG_Prospect
         private void Import_To_Grid(string FilePath, string Extension)
         {
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
+            
             string conStr = "";
             switch (Extension)
             {
