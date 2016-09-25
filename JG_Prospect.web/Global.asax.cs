@@ -91,6 +91,10 @@ namespace JG_Prospect
 
             strHtml += "<table width='700' cellpadding='5' border='0'>";
             strHtml += "<tr>";
+            strHtml += "<td valign='top'>Type:</td>";
+            strHtml += "<td valign='top'>" + objException.GetType().FullName + "</td>";
+            strHtml += "</tr>";
+            strHtml += "<tr>";
             strHtml += "<td valign='top'>Message:</td>";
             strHtml += "<td valign='top'>" + objException.Message + "</td>";
             strHtml += "</tr>";

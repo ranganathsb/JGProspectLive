@@ -226,7 +226,8 @@
                         </tr>
                         
 
-                        <%if(isInstallUser==true){ %>
+                        <%if (isInstallUser == true)
+                        { %>
                         <tr>
                             <td>
                                 <%--<asp:UpdatePanel ID="UpdatePanel13" runat="server">
@@ -330,7 +331,8 @@
                                     ForeColor="Red" Display="Dynamic" ValidationGroup="submit">Enter LastName</asp:RequiredFieldValidator><br />
                             </td>
                         </tr>
-                        <%if(isInstallUser==true){ %>
+                        <%if (isInstallUser == true)
+                        { %>
                         <tr>
                             <td class="style2">
 
@@ -380,32 +382,29 @@
 
                             </td>
                         </tr>
-
-
-
-
-
-                        <%if(isInstallUser==true){ %>
+                        <%if (isInstallUser == true)
+                        { %>
                         <tr>
-                            <td>
-
-                                <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                                    <ContentTemplate>--%>
+                           <td>
+                                <label>Secondary Trade <span>*</span></label>
+                                <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">		                               
+                                     <asp:DropDownCheckBoxes ID="ddlSecondaryTrade" runat="server" Width="200px" OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged"
+                                    <ContentTemplate>--%>		                                    AddJQueryReference="True" AutoPostBack="true">
                                 <label>
-                                    Secondary Trade <span>*</span></label>
-
-                                <asp:DropDownList ID="ddlSecondaryTrade" runat="server" TabIndex="110"
-                                    OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged" Style="border: 1px solid; border-radius: 5px; width: 227px;" AutoPostBack="True">
-                                </asp:DropDownList>
-                                <br />
-                                <label>
-                                </label>
-                                <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
-                                <%--</ContentTemplate>
-                                </asp:UpdatePanel>--%>
-                                <asp:RequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
-                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:RequiredFieldValidator>
-                            </td>
+                                     <Style SelectBoxWidth="200" DropDownBoxBoxWidth="200" DropDownBoxBoxHeight="130" />
+                                    Secondary Trade <span>*</span></label>		                                </asp:DropDownCheckBoxes>
+                                <asp:DropDownList ID="ddlSecondaryTrade" runat="server" TabIndex="110"		
+                                    OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged" Style="border: 1px solid; border-radius: 5px; width: 227px;" AutoPostBack="True">		
+                                </asp:DropDownList>		
+                                <br />		                                <br />
+                                <label>		
+                                </label>		
+                                <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>		                                <asp:TextBox ID="TextBox1" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
+                                <%--</ContentTemplate>		                                <asp:ExtendedRequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
+                                </asp:UpdatePanel>--%>		                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade">
+                                <asp:RequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"		                                </asp:ExtendedRequiredFieldValidator>
+                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:RequiredFieldValidator>		
+                           		                            </td>
                         </tr>
                         <%} %>
                         <tr>
@@ -649,10 +648,11 @@
                     </tr>
                 </table>
             </div>
-        </asp:Panel>
+        </asp:Panel><style> </style>
         <div id="fade" class="black_overlay">
         </div>
 
 
     </div>
+  
 </asp:Content>

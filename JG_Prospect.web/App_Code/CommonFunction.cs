@@ -186,7 +186,8 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-
+                    // throw will call application error event, which will log error details.
+                    throw ex;
                 }
 
                 Msg = null;
@@ -195,7 +196,8 @@ namespace JG_Prospect.App_Code
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} Exception caught.", ex);
+                // throw will call application error event, which will log error details.
+                throw ex;
             }
         }
 
@@ -237,18 +239,24 @@ namespace JG_Prospect.App_Code
                 {
                     sc.Send(Msg);
                 }
-                catch (Exception ex)
+                catch
                 {
-
+                    // do not add throw clause here.
+                    // it will lead to infinite loop.
+                    // because application error event calls this method to send error details.
+                    // here, we need to supress the exception.
                 }
 
                 Msg = null;
                 sc.Dispose();
                 sc = null;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("{0} Exception caught.", ex);
+                // do not add throw clause here.
+                // it will lead to infinite loop.
+                // because application error event calls this method to send error details.
+                // here, we need to supress the exception.
             }
         }
 
