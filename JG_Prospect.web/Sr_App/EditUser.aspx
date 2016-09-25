@@ -25,7 +25,7 @@
             filter: alpha(opacity=80);
             overflow-y: hidden;
         }
-
+        /*#327FB5*/
         .white_content {
             display: none;
             position: absolute;
@@ -34,7 +34,7 @@
             width: 60%;
             min-height: 10%;
             padding: 16px;
-            border: 10px solid #327FB5;
+            border: 10px solid #000000;
             background-color: white;
             z-index: 1002;
             overflow: auto;
@@ -841,7 +841,7 @@
                     <asp:ListView ID="listDuplicateUsers" runat="server">
                         <ItemTemplate>
                             <tr>
-                                <td><span><%#Eval("firstname")%>&nbsp;<%#Eval("lastname")%></span></td>
+                                <td><span><%#Eval("fristname")%>&nbsp;<%#Eval("lastname")%></span></td>
                                 <td><span><%#Eval("Email")%></span></td>
                                 <td><span><%#Eval("phone")%></span></td>
                             </tr>
@@ -849,12 +849,12 @@
                     </asp:ListView>
                 </table>
             </div>
-            <div style="padding: 10px; margin: auto;">
-                <asp:Button ID="btnYesEdit" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+             <div style="padding: 10px; margin: auto;">
+                <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
                     Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
                     ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="btnNoEdit" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+            <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
                 Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
                 ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
             </div>
