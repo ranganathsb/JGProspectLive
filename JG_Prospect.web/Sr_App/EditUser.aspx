@@ -841,7 +841,7 @@
                     <asp:ListView ID="listDuplicateUsers" runat="server">
                         <ItemTemplate>
                             <tr>
-                                <td><span><%#Eval("fristname")%>&nbsp;<%#Eval("lastname")%></span></td>
+                                <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
                                 <td><span><%#Eval("Email")%></span></td>
                                 <td><span><%#Eval("phone")%></span></td>
                             </tr>
