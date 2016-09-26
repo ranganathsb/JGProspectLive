@@ -26,8 +26,6 @@
 	background-color: #e8e8e8;
 }
 
-
-
 .cts-1 {
     background-color: gray;
 }
@@ -40,33 +38,44 @@
 
 /*For user at index 0*/
 [data-userid="0"] {
-    background-color: green;
+    background-color: lightgreen;
 }
 .del[data-userid="0"] img {
-    border-color: green;
+    border-color: lightgreen;
 }
 .ins[data-userid="0"] img {
-    background-color: green;
+    background-color: lightgreen;
 }
 
 /*For user at index 1*/
 [data-userid="1"] {
-    background-color: red;
+    background-color: burlywood;
 }
 .del[data-userid="1"] img {
-    border-color: red;
+    border-color: burlywood;
 }
 .ins[data-userid="1"] img {
-    background-color: red;
+    background-color: burlywood;
 }
 
-/*For user at index 2*/
+/*For user id 2 (jmgrove)*/
 [data-userid="2"] {
-    background-color: blue;
+    background-color: yellow;
 }
 .del[data-userid="2"] img {
-    border-color: blue;
+    border-color: yellow;
 }
 .ins[data-userid="2"] img {
-    background-color: blue;
+    background-color: yellow;
+}
+
+/*For user id 58 (yogesh)*/
+[data-userid="901"] {
+    background-color: aqua;
+}
+.del[data-userid="901"] img {
+    border-color: aqua;
+}
+.ins[data-userid="901"] img {
+    background-color: aqua;
 }
