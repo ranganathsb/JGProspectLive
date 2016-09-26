@@ -577,7 +577,7 @@ namespace JG_Prospect.Sr_App
             {
                 if (controlMode.Value == "0")
                 {
-                    #region '-- Save And Refresh Viewstate --'
+                    #region '-- Save To Viewstate --'
 
                     foreach (string strAttachment in hdnWorkFiles.Value.Split('^'))
                     {
@@ -587,19 +587,13 @@ namespace JG_Prospect.Sr_App
                         dtTaskUserFiles.Rows.Add(drTaskUserFiles);
                     }
 
-                    FillrptWorkFiles(dtTaskUserFiles);
-
                     #endregion
                 }
                 else
                 {
-                    #region '-- Save And Refresh Database --'
+                    #region '-- Save To Database --'
 
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value));
-
-                    FillrptWorkFiles(dsTaskUserFiles.Tables[0]);
 
                     #endregion
                 }
@@ -611,6 +605,8 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
         {
+            #region '--Work Specification--'
+
             string strLastCheckedInBy = "";
             string strLastVersionUpdateBy = "";
 
@@ -668,7 +664,6 @@ namespace JG_Prospect.Sr_App
                 hdnWorkSpecificationId.Value = "0";
             }
 
-
             // show link to download working copy for preview for admin users only.
             if (this.IsAdminMode)
             {
@@ -677,7 +672,18 @@ namespace JG_Prospect.Sr_App
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
             }
 
+            #endregion
+
+            #region '--Work Specification Attachments--'
+
+            grdWorkFiles.PageIndex = 0;
+
+            FillgrdWorkFiles();
+
+            #endregion
+
             upWorkSpecificationFiles.Update();
+
             ScriptManager.RegisterStartupScript(
                                                     (sender as Control),
                                                     this.GetType(),
@@ -749,25 +755,15 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void rptWorkFiles_ItemCommand(object source, RepeaterCommandEventArgs e)
+        protected void grdWorkFiles_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (e.CommandName == "DownloadFile")
+            if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
-            }
-        }
-
-        protected void rptWorkFiles_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                string file = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "attachment"));
+                string file = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "attachment"));
 
                 string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+                LinkButton lbtnAttchment = (LinkButton)e.Row.FindControl("lbtnDownload");
 
                 if (files[1].Length > 40)// sort name with ....
                 {
@@ -781,6 +777,23 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 lbtnAttchment.CommandArgument = file;
             }
+        }
+
+        protected void grdWorkFiles_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DownloadFile")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+        }
+
+        protected void grdWorkFiles_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            grdWorkFiles.PageIndex = e.NewPageIndex;
+
+            FillgrdWorkFiles();
         }
 
         #endregion
@@ -1525,19 +1538,37 @@ namespace JG_Prospect.Sr_App
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
-            FillrptWorkFiles(dsTaskDetails.Tables[5]);
+            //FillrptWorkFiles(dsTaskDetails.Tables[5]);
 
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
         }
 
-        private void FillrptWorkFiles(DataTable dtTaskUserFiles)
+        private void FillgrdWorkFiles()
         {
-            if (dtTaskUserFiles != null)
+            DataTable dtTaskUserFiles = null;
+
+            if (controlMode.Value == "0")
             {
+                dtTaskUserFiles = this.dtTaskUserFiles;
                 intTaskUserFilesCount = dtTaskUserFiles.Rows.Count;
+                grdWorkFiles.AllowCustomPaging = false;
             }
-            rptWorkFiles.DataSource = dtTaskUserFiles;
-            rptWorkFiles.DataBind();
+            else
+            {
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), grdWorkFiles.PageIndex, grdWorkFiles.PageSize);
+                if (dsTaskUserFiles != null)
+                {
+                    dtTaskUserFiles = dsTaskUserFiles.Tables[0];
+                    intTaskUserFilesCount = Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
+                }
+                grdWorkFiles.AllowCustomPaging = true;
+                grdWorkFiles.VirtualItemCount = intTaskUserFilesCount;
+            }
+
+            grdWorkFiles.DataSource = dtTaskUserFiles;
+            grdWorkFiles.DataBind();
+
+            upWorkSpecificationAttachments.Update();
         }
 
         private void SetSubTaskSectionView(bool blnView)

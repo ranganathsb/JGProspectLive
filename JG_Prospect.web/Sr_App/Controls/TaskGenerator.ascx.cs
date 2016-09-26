@@ -595,7 +595,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
 
-            if (controlMode.Value == "0"    )
+            if (controlMode.Value == "0")
             {
                 ScriptManager.RegisterStartupScript(this.Page, GetType(), "closepopup", "CloseTaskPopup();", true);
             }
@@ -630,7 +630,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value));
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), null, null);
                     if (dsTaskUserFiles != null && dsTaskUserFiles.Tables.Count > 0)
                     {
                         foreach (DataRow drFile in dsTaskUserFiles.Tables[0].Rows)
@@ -1339,7 +1339,7 @@ namespace JG_Prospect.Sr_App.Controls
                             UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
                         }
 
-                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value),strUsersIds);
+                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUsersIds);
                     }
                 }
                 // send email to all users of the department as task is assigned to designation, but not to any specific user.
@@ -1685,7 +1685,7 @@ namespace JG_Prospect.Sr_App.Controls
             try
             {
                 string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,108);
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -1733,7 +1733,7 @@ namespace JG_Prospect.Sr_App.Controls
                 if (intTaskCreatedBy > 0)
                 {
                     string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,109);
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 109);
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
                     if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
                     {

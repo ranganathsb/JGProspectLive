@@ -672,43 +672,32 @@
                         <asp:TabPanel ID="tpWorkSpecificationAttachments" runat="server" TabIndex="0" CssClass="">
                             <HeaderTemplate>Attachment(s)</HeaderTemplate>
                             <ContentTemplate>
-                                <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Always">
+                                <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <asp:Repeater ID="rptWorkFiles" OnItemCommand="rptWorkFiles_ItemCommand" OnItemDataBound="rptWorkFiles_ItemDataBound" runat="server">
-                                            <HeaderTemplate>
-                                                <table class="table" width="100%">
-                                                    <thead>
-                                                        <tr class="trHeader">
-                                                            <th>Attachments</th>
-                                                            <th width="200">Uploaded By</th>
-                                                        </tr>
-                                                    </thead>
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-                                                <tr class="FirstRow">
-                                                    <td><small>
-                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                                            CommandName="DownloadFile" /></small>
-                                                    </td>
-                                                    <td><%#Eval("FirstName") %>
-                                                        </td>
-                                                </tr>
-
-                                            </ItemTemplate>
-                                            <AlternatingItemTemplate>
-                                                <tr class="AlternateRow">
-                                                    <td><small>
-                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                                            CommandName="DownloadFile" /></small>
-                                                    </td>
-                                                    <td><%#Eval("FirstName") %>
-                                                        </td>
-                                                </tr>
-                                            </AlternatingItemTemplate>
-                                            <FooterTemplate>
-                                                </table>
-                                            </FooterTemplate>
-                                        </asp:Repeater>
+                                        <asp:GridView ID="grdWorkFiles" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
+                                            GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
+                                            PagerSettings-Position="Bottom"
+                                            OnRowDataBound="grdWorkFiles_RowDataBound"
+                                            OnPageIndexChanging="grdWorkFiles_PageIndexChanging"
+                                            OnRowCommand="grdWorkFiles_RowCommand">
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="Attachments">
+                                                    <ItemTemplate>
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
+                                                                CommandName="DownloadFile" /></small>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Uploaded By" ControlStyle-Width="200px">
+                                                    <ItemTemplate>
+                                                        <%#Eval("FirstName") %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                            <HeaderStyle CssClass="trHeader" />
+                                            <RowStyle CssClass="FirstRow" />
+                                            <AlternatingRowStyle CssClass="AlternateRow" />
+                                        </asp:GridView>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </ContentTemplate>

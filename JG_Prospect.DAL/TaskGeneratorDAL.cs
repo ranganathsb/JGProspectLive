@@ -538,7 +538,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskUserFiles(Int32 TaskId)
+        public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -549,6 +549,15 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
 
                     returndata = database.ExecuteDataSet(command);
 
