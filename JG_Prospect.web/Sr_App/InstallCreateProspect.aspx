@@ -648,11 +648,11 @@
                     </tr>
                 </table>
             </div>
-        </asp:Panel><style> </style>
+        </asp:Panel>
         <div id="fade" class="black_overlay">
         </div>
 
 
     </div>
   
-</asp:Content>
+</style>
