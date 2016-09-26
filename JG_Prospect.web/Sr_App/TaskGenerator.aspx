@@ -741,7 +741,7 @@
                 theme: "advanced",
                 plugins: 'ice,icesearchreplace',
                 //theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|,ice_togglechanges,ice_toggleshowchanges,iceacceptall,icerejectall,iceaccept,icereject",
-                theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace",
+                theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|,iceaccept,icereject",
                 theme_advanced_buttons2: "",
                 theme_advanced_buttons3: "",
                 theme_advanced_buttons4: "",
