@@ -691,7 +691,6 @@ namespace JG_Prospect.Sr_App
                                               );
         }
 
-
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
             TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
@@ -1800,7 +1799,7 @@ namespace JG_Prospect.Sr_App
             strTitle += "<div style='float:left;max-width:180px;'>";
             strTitle += "Work Specification Files";
             strTitle += "</div>";
-            strTitle += "<div style='float:right; font-size:12px; font-weight:normal;max-width:330px;'>";
+            strTitle += "<div style='float:right; font-size:12px; font-weight:normal;max-width:360px;'>";
             if (!string.IsNullOrEmpty(strFreezeUserName))
             {
                 strTitle += string.Concat("Specs freezed by: ", strFreezeUserName);
