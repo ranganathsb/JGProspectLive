@@ -60,7 +60,7 @@ namespace JG_Prospect.Common.modal
         public string Field12;
         public string maritalstatus;
         public int PrimeryTradeId;
-        public int SecondoryTradeId;
+        public string SecondoryTradeId;
         public string Notes;
         public string Source;
         public string Reason;
@@ -184,8 +184,11 @@ namespace JG_Prospect.Common.modal
     {
         public int Id;
         public string Email;
-        public string Email2;//Add By ratnakar
-        public string Notes; // Add By ratnakar
+
+        public string Email2;//added by Ratnakar
+        public string Notes;//added by Ratnakar
+       // public string Phone2;//added by Ratnakar
+
         public string Designation;
         public string usertype;
         public string status;

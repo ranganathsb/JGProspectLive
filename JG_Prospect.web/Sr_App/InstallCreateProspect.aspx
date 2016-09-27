@@ -212,7 +212,7 @@
 
 
                         <tr>
-<td>Phone Type
+                            <td>Phone Type
                                 <asp:DropDownList ID="ddlPhoneType" runat="server">
                                     <asp:ListItem Value="0">-Select-</asp:ListItem>
                                     <asp:ListItem Value="1">Cell Phone #</asp:ListItem>
@@ -224,7 +224,7 @@
                                     ValidationGroup="submit" InitialValue="0" ForeColor="Red" ErrorMessage="Please Select PhoneType"></asp:RequiredFieldValidator>
                             </td>
                         </tr>
-                        
+
 
                         <%if (isInstallUser == true)
                         { %>
@@ -353,11 +353,11 @@
                                     Secondary Contact Phone # 2</label>
                                 <asp:TextBox ID="txtPhone2" runat="server" MaxLength="12" TabIndex="105" Width="218px" OnTextChanged="txtPhone2_TextChanged"
                                     autocomplete="off" onkeypress="return IsNumeric(event);"></asp:TextBox>
-                              
+
                                 <asp:RegularExpressionValidator ID="revSecondaryPhoneNumber" runat="server"
                                     ErrorMessage="Please enter Phone Number(3-3-4)" ControlToValidate="txtPhone2"
                                     ValidationExpression="^\d{3}-\d{3}-\d{3}$"></asp:RegularExpressionValidator>
-                                  <br />
+                                <br />
                                 <label></label>
 
 
@@ -365,7 +365,7 @@
                         </tr>
                         <tr>
                             <td>
-                                 <div id="divEmail" visible="false" runat="server">
+                                <div id="divEmail" visible="false" runat="server">
                                     <label>
                                         Email 2</label>
                                     <asp:TextBox ID="txtemail2" runat="server" MaxLength="50" TabIndex="107" Width="218px" autocomplete="off"></asp:TextBox>
@@ -385,26 +385,31 @@
                         <%if (isInstallUser == true)
                         { %>
                         <tr>
-                           <td>
-                                <label>Secondary Trade <span>*</span></label>
-                                <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">		                               
-                                     <asp:DropDownCheckBoxes ID="ddlSecondaryTrade" runat="server" Width="200px" OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged"
-                                    <ContentTemplate>--%>		                                    AddJQueryReference="True" AutoPostBack="true">
+                            <td>
+
+                                <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                    <ContentTemplate>--%>
                                 <label>
-                                     <Style SelectBoxWidth="200" DropDownBoxBoxWidth="200" DropDownBoxBoxHeight="130" />
-                                    Secondary Trade <span>*</span></label>		                                </asp:DropDownCheckBoxes>
-                                <asp:DropDownList ID="ddlSecondaryTrade" runat="server" TabIndex="110"		
-                                    OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged" Style="border: 1px solid; border-radius: 5px; width: 227px;" AutoPostBack="True">		
-                                </asp:DropDownList>		
-                                <br />		                                <br />
-                                <label>		
-                                </label>		
-                                <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>		                                <asp:TextBox ID="TextBox1" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
-                                <%--</ContentTemplate>		                                <asp:ExtendedRequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
-                                </asp:UpdatePanel>--%>		                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade">
-                                <asp:RequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"		                                </asp:ExtendedRequiredFieldValidator>
-                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:RequiredFieldValidator>		
-                           		                            </td>
+                                    Secondary Trade <span>*</span></label>
+
+                                <asp:DropDownCheckBoxes ID="ddlSecondaryTrade" runat="server" Width="200px" OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged"
+                                    AddJQueryReference="True">
+                                    <Style SelectBoxWidth="200" DropDownBoxBoxWidth="200" DropDownBoxBoxHeight="130" />
+                                </asp:DropDownCheckBoxes>
+                                <%--UseButtons="True" UseSelectAllNode="True"--%>
+
+                                <br />
+                                <label>
+                                </label>
+                                <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
+                                <%--</ContentTemplate>
+                                </asp:UpdatePanel>--%>
+
+                                <%-- <asp:RequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
+                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:RequiredFieldValidator>--%>
+                                <asp:ExtendedRequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
+                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:ExtendedRequiredFieldValidator>
+                            </td>
                         </tr>
                         <%} %>
                         <tr>
@@ -430,11 +435,11 @@
                         </tr>
 
 
-                        
+
                         <tr>
                             <td>
                                 <label style="font: bold">Home address</label></td>
-                           
+
                         </tr>
                         <tr>
                             <td>
@@ -453,7 +458,7 @@
                                     ErrorMessage="Please Enter Zip Code" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
                             </td>
 
-                          
+
                         </tr>
                         <tr>
                             <td>
@@ -465,7 +470,7 @@
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" ControlToValidate="txtcity"
                                     ErrorMessage="Please Enter City" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
                             </td>
-                           
+
                         </tr>
                         <tr>
                             <td>
@@ -477,14 +482,16 @@
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ControlToValidate="txtstate"
                                     ErrorMessage="Please Enter State" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
                             </td>
-                          
+
                         </tr>
 
 
-                         <tr><td>
-                                <label style="font: bold">Secondary address</label></td></tr>
                         <tr>
-                              <td>
+                            <td>
+                                <label style="font: bold">Secondary address</label></td>
+                        </tr>
+                        <tr>
+                            <td>
 
                                 <%--<label id="lblZip" runat="server">Zip<span>*</span></label>--%>
 
@@ -501,7 +508,7 @@
                             </td>
                         </tr>
                         <tr>
-                             <td>
+                            <td>
                                 <%--<label id="lblCity" runat="server">City<span>*</span></label>--%>
                                 <asp:Label ID="lblSecondaryCity" runat="server" AssociatedControlID="txtSecondaryCity" Text="">City<span>*</span></asp:Label>
                                 <asp:TextBox ID="txtSecondaryCity" Text="" runat="server" onkeypress="return isAlphaKey(event);"
@@ -512,7 +519,7 @@
                             </td>
                         </tr>
                         <tr>
-                              <td>
+                            <td>
                                 <%--<label id="lblState" runat="server">State<span>*</span></label>--%>
                                 <asp:Label ID="lblSecondaryState" runat="server" AssociatedControlID="txtSecondaryState" Text="">State<span>*</span></asp:Label>
                                 <asp:TextBox ID="txtSecondaryState" runat="server" onkeypress="return isAlphaKey(event);"
@@ -526,9 +533,9 @@
                 </li>
                 <asp:Label ID="lblMessage" runat="server" Visible="False"></asp:Label>
             </ul>
-          
-          
-          
+
+
+
             <div class="btn_sec">
                 <asp:Button ID="btncreate" Text="Create Prospect" runat="server" OnClick="btncreate_Click"
                     TabIndex="116" ValidationGroup="submit" />
@@ -648,11 +655,10 @@
                     </tr>
                 </table>
             </div>
-        </asp:Panel><style> </style>
+        </asp:Panel>
         <div id="fade" class="black_overlay">
         </div>
 
 
     </div>
-  
-</asp:Content>
+</style>
