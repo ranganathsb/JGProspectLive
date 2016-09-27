@@ -1277,17 +1277,17 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 // send email to all users of the department as task is assigned to designation, but not to any specific user.
-                else
-                {
-                    string strUserIDs = "";
+                //else
+                //{
+                //    string strUserIDs = "";
 
-                    foreach (ListItem item in ddcbAssigned.Items)
-                    {
-                        strUserIDs += string.Concat(item.Value, ",");
-                    }
+                //    foreach (ListItem item in ddcbAssigned.Items)
+                //    {
+                //        strUserIDs += string.Concat(item.Value, ",");
+                //    }
 
-                    SendEmailToAssignedUsers(strUserIDs.TrimEnd(','));
-                }
+                //    SendEmailToAssignedUsers(strUserIDs.TrimEnd(','));
+                //}
             }
         }
 
