@@ -113,7 +113,7 @@ namespace JG_Prospect.Sr_App
         {
             get
             {
-                if (ViewState["dtTaskUserFiles"] != null)
+                if (ViewState["dtTaskUserFiles"] == null)
                 {
                     DataTable dt = new DataTable();
                     dt.Columns.Add("attachment");
@@ -513,14 +513,14 @@ namespace JG_Prospect.Sr_App
 
             if (controlMode.Value == "0")
             {
-                ScriptManager.RegisterStartupScript(this.Page, GetType(), "closepopup", "CloseTaskPopup();", true);
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task created successfully!");
             }
             else
             {
                 CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
             }
 
-            SearchTasks(null);
+            RedirectToViewTasks(null);
         }
 
         protected void lbtnDeleteTask_Click(object sender, EventArgs e)
@@ -812,7 +812,10 @@ namespace JG_Prospect.Sr_App
 
         #region "--Private Methods--"
 
-        private void SearchTasks(object o) { }
+        private void RedirectToViewTasks(object o)
+        {
+            Response.Redirect("~/sr_app/TaskList.aspx");
+        }
 
         private string getSingleValueFromCommaSeperatedString(string commaSeperatedString)
         {
@@ -857,7 +860,7 @@ namespace JG_Prospect.Sr_App
         {
             TaskGeneratorBLL.Instance.DeleteTask(Convert.ToUInt64(TaskId));
             hdnTaskId.Value = string.Empty;
-            SearchTasks(null);
+            RedirectToViewTasks(null);
         }
 
         private void doSearch(object sender, EventArgs e)
@@ -873,7 +876,7 @@ namespace JG_Prospect.Sr_App
 
             int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
 
-            SearchTasks(null);
+            RedirectToViewTasks(null);
 
             String AlertMsg;
 
@@ -1168,7 +1171,14 @@ namespace JG_Prospect.Sr_App
 
             if (controlMode.Value == "0")
             {
-                this.lstSubTasks.Add(objTask);
+                if (hdnSubTaskIndex.Value == "-1")
+                {
+                    this.lstSubTasks.Add(objTask);
+                }
+                else
+                {
+                    this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)] = objTask;
+                }
 
                 SetSubTaskDetails(this.lstSubTasks);
 
@@ -1198,8 +1208,9 @@ namespace JG_Prospect.Sr_App
 
         private void SetSubTaskDetails(List<Task> lstSubtasks)
         {
-            // Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
+            // TaskId,Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
             DataTable dtSubtasks = new DataTable();
+            dtSubtasks.Columns.Add("TaskId");
             dtSubtasks.Columns.Add("Title");
             dtSubtasks.Columns.Add("Description");
             dtSubtasks.Columns.Add("Status");
@@ -1212,7 +1223,7 @@ namespace JG_Prospect.Sr_App
 
             foreach (Task objSubTask in lstSubtasks)
             {
-                dtSubtasks.Rows.Add(objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
+                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
             }
 
             gvSubTasks.DataSource = dtSubtasks;
