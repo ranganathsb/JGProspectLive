@@ -252,8 +252,8 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60">
                                 <ItemTemplate>
-                                    <asp:Literal ID="ltrlStatus" runat="server" />
-                                    <asp:DropDownList ID="ddlStatus" Width="50" AutoPostBack="true" runat="server" 
+                                    <asp:Literal ID="ltrlStatus" runat="server" Visible="false" />
+                                    <asp:DropDownList ID="ddlStatus" Width="100%" AutoPostBack="true" runat="server" 
                                         OnSelectedIndexChanged="gvTasks_ddlStatus_SelectedIndexChanged" />
                                 </ItemTemplate>
                             </asp:TemplateField>

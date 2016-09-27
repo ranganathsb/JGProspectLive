@@ -228,6 +228,11 @@ namespace JG_Prospect.Sr_App
 
                     #endregion
                 }
+
+                if (Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsDeleted")))
+                {
+                    e.Row.CssClass = "ui-state-default dark-gray-background";
+                }
             }
         }
 
