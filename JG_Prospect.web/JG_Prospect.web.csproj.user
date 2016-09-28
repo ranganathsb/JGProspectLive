@@ -3,7 +3,6 @@
   <PropertyGroup>
     <NameOfLastUsedPublishProfile>TestProfile</NameOfLastUsedPublishProfile>
     <ProjectView>ShowAllFiles</ProjectView>
-    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
