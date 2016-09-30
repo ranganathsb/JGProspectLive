@@ -204,7 +204,7 @@
                         <asp:BoundField DataField="InstallId" HeaderText="ID#" HeaderStyle-Width="10%" />
                         <asp:TemplateField HeaderText="Task Title">
                             <ItemTemplate>
-                                <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_blank" />
+                                <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_self" />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%">
