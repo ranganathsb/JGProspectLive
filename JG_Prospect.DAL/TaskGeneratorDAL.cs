@@ -117,6 +117,33 @@ namespace JG_Prospect.DAL
 
         }
 
+        public int UpdateTaskPriority(Task objTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateTaskPriority");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
+                    database.AddInParameter(command, "@TaskPriority", DbType.Int16, objTask.TaskPriority);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
+
         public bool DeleteTask(UInt64 taskId)
         {
             try

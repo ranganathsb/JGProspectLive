@@ -129,6 +129,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.UpdateTaskStatus(objTask);
         }
+
+        public int UpdateTaskPriority(Task objTask)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskPriority(objTask);
+        }
+
         public bool DeleteTask(UInt64 TaskId)
         {
             return TaskGeneratorDAL.Instance.DeleteTask(TaskId);
