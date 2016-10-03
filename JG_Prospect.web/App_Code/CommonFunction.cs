@@ -43,6 +43,14 @@ namespace JG_Prospect.App_Code
         Enhancement = 3
     }
 
+    public enum TaskPriority
+    {
+        Critical = 1,
+        High = 2,
+        Medium = 3,
+        Low = 4
+    }
+
     #endregion
 
     public static class CommonFunction
