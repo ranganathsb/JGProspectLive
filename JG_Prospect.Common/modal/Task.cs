@@ -23,7 +23,7 @@ namespace JG_Prospect.Common.modal
         public string InstallId;
         public int? ParentTaskId;
         public Int16? TaskType;
-        public Int16? TaskPriority;
+        public byte? TaskPriority;
 
     }
 }
