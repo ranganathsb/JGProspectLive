@@ -477,6 +477,19 @@ namespace JG_Prospect.App_Code
             return objListItemCollection;
         }
 
+        public static System.Web.UI.WebControls.ListItemCollection GetTaskPriorityList()
+        {
+            ListItemCollection objListItemCollection = new ListItemCollection();
+
+            objListItemCollection.Add(new ListItem("--None--", "0"));
+            objListItemCollection.Add(new ListItem("Critical", Convert.ToInt16(TaskPriority.Critical).ToString()));
+            objListItemCollection.Add(new ListItem("High", Convert.ToInt16(TaskPriority.High).ToString()));
+            objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(TaskPriority.Medium).ToString()));
+            objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(TaskPriority.Low).ToString()));
+            
+            return objListItemCollection;
+        }
+
     }
 }
 
