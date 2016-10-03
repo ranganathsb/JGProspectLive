@@ -372,6 +372,10 @@ namespace JG_Prospect.Sr_App
                     txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
                     txtSubTaskHours.Text = objTask.Hours;
                     ddlSubTaskStatus.SelectedValue = objTask.Status.ToString();
+                    if (objTask.TaskPriority.HasValue)
+                    {
+                        ddlSubTaskPriority.SelectedValue = objTask.TaskPriority.Value.ToString();
+                    }
                 }
                 else
                 {
@@ -403,6 +407,10 @@ namespace JG_Prospect.Sr_App
                         }
                     }
                     trSubTaskStatus.Visible = true;
+                    if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))
+                    {
+                        ddlSubTaskPriority.SelectedValue = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
+                    }
                 }
 
                 upAddSubTask.Update();
@@ -1138,6 +1146,7 @@ namespace JG_Prospect.Sr_App
             ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
             cmbStatus.ClearSelection();
             ddlUserAcceptance.ClearSelection();
+            ddlTaskPriority.SelectedValue = "0";
             txtDueDate.Text = string.Empty;
             txtHours.Text = string.Empty;
             gdTaskUsers.DataSource = null;
@@ -1163,6 +1172,7 @@ namespace JG_Prospect.Sr_App
             trSubTaskStatus.Visible = false;
             ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.Open).ToString()).Selected = true;
             ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = true;
+            ddlSubTaskPriority.SelectedValue = "0";
             upAddSubTask.Update();
         }
 
@@ -1301,7 +1311,7 @@ namespace JG_Prospect.Sr_App
 
             foreach (Task objSubTask in lstSubtasks)
             {
-                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment,objSubTask.TaskPriority);
+                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment, objSubTask.TaskPriority);
             }
 
             gvSubTasks.DataSource = dtSubtasks;
