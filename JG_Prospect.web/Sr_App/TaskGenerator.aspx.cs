@@ -145,22 +145,7 @@ namespace JG_Prospect.Sr_App
 
                 SetTaskView();
 
-                LoadPopupDropdown();
-
-                cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
-                cmbStatus.DataTextField = "Text";
-                cmbStatus.DataValueField = "Value";
-                cmbStatus.DataBind();
-
-                ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlSubTaskStatus.DataTextField = "Text";
-                ddlSubTaskStatus.DataValueField = "Value";
-                ddlSubTaskStatus.DataBind();
-
-                ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlTUStatus.DataTextField = "Text";
-                ddlTUStatus.DataValueField = "Value";
-                ddlTUStatus.DataBind();
+                FillDropdowns();
 
                 this.LastSubTaskSequence = string.Empty;
 
@@ -301,6 +286,29 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
 
+                DropDownList ddlTaskPriority = e.Row.FindControl("ddlTaskPriority") as DropDownList;
+                if (ddlTaskPriority != null)
+                {
+                    ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+                    ddlTaskPriority.DataTextField = "Text";
+                    ddlTaskPriority.DataValueField = "Value";
+                    ddlTaskPriority.DataBind();
+
+                    if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()))
+                    {
+                        ddlTaskPriority.SelectedValue = DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString();
+                    }
+
+                    if (controlMode.Value == "0")
+                    {
+                        ddlTaskPriority.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
+                    }
+                    else
+                    {
+                        ddlTaskPriority.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "Status").ToString()))
                 {
                     ddlStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
@@ -422,6 +430,40 @@ namespace JG_Prospect.Sr_App
                                                     Status = Convert.ToInt32(ddlStatus.SelectedValue)
                                                 }
                                             );
+
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
+            }
+        }
+
+        protected void gvSubTasks_ddlTaskPriority_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlTaskPriority = sender as DropDownList;
+            if (controlMode.Value == "0")
+            {
+                if (ddlTaskPriority.SelectedValue == "0")
+                {
+                    this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = null;
+                }
+                else
+                {
+                    this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedValue);
+                }
+
+                SetSubTaskDetails(this.lstSubTasks);
+            }
+            else
+            {
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(ddlTaskPriority.Attributes["TaskId"].ToString());
+                if (ddlTaskPriority.SelectedValue == "0")
+                {
+                    objTask.TaskPriority = null;
+                }
+                else
+                {
+                    objTask.TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedItem.Value);
+                }
+                TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
 
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
@@ -836,15 +878,34 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// To load Designation to popup dropdown
         /// </summary>
-        private void LoadPopupDropdown()
+        private void FillDropdowns()
         {
             BindTaskTypeDropDown();
-            //DataSet dsdesign = TaskGeneratorBLL.Instance.GetInstallUsers(1, "");
-            //DataSet ds = TaskGeneratorBLL.Instance.GetTaskUserDetails(1);
-            //ddlUserDesignation.DataSource = dsdesign;
-            //ddlUserDesignation.DataTextField = "Designation";
-            //ddlUserDesignation.DataValueField = "Designation";
-            //ddlUserDesignation.DataBind();
+
+            cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
+            cmbStatus.DataTextField = "Text";
+            cmbStatus.DataValueField = "Value";
+            cmbStatus.DataBind();
+
+            ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
+            ddlSubTaskStatus.DataTextField = "Text";
+            ddlSubTaskStatus.DataValueField = "Value";
+            ddlSubTaskStatus.DataBind();
+
+            ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+            ddlTaskPriority.DataTextField = "Text";
+            ddlTaskPriority.DataValueField = "Value";
+            ddlTaskPriority.DataBind();
+
+            ddlSubTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+            ddlSubTaskPriority.DataTextField = "Text";
+            ddlSubTaskPriority.DataValueField = "Value";
+            ddlSubTaskPriority.DataBind();
+
+            ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
+            ddlTUStatus.DataTextField = "Text";
+            ddlTUStatus.DataValueField = "Value";
+            ddlTUStatus.DataBind();
         }
 
         private void BindTaskTypeDropDown()
@@ -1112,18 +1173,26 @@ namespace JG_Prospect.Sr_App
         private void SaveTask()
         {
             int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            Task task = new Task();
-            task.TaskId = Convert.ToInt32(hdnTaskId.Value);
-            task.Title = Server.HtmlEncode(txtTaskTitle.Text);
-            task.Description = Server.HtmlEncode(txtDescription.Text);
-            task.Status = Convert.ToUInt16(cmbStatus.SelectedItem.Value);
-            task.DueDate = txtDueDate.Text;
-            task.Hours = txtHours.Text;
-            task.CreatedBy = userId;
-            task.Mode = Convert.ToInt32(controlMode.Value);
-            task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objTask.Title = Server.HtmlEncode(txtTaskTitle.Text);
+            objTask.Description = Server.HtmlEncode(txtDescription.Text);
+            objTask.Status = Convert.ToUInt16(cmbStatus.SelectedItem.Value);
+            if (ddlTaskPriority.SelectedValue == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedItem.Value);
+            }
+            objTask.DueDate = txtDueDate.Text;
+            objTask.Hours = txtHours.Text;
+            objTask.CreatedBy = userId;
+            objTask.Mode = Convert.ToInt32(controlMode.Value);
+            objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
 
-            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
+            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);    // save task master details
 
             if (controlMode.Value == "0")
             {
@@ -1156,6 +1225,14 @@ namespace JG_Prospect.Sr_App
             objTask.Title = txtSubTaskTitle.Text;
             objTask.Description = txtSubTaskDescription.Text;
             objTask.Status = Convert.ToInt32(ddlSubTaskStatus.SelectedValue);
+            if (ddlSubTaskPriority.SelectedValue == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(ddlSubTaskPriority.SelectedItem.Value);
+            }
             objTask.DueDate = txtSubTaskDueDate.Text;
             objTask.Hours = txtSubTaskHours.Text;
             objTask.CreatedBy = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
@@ -1710,6 +1787,21 @@ namespace JG_Prospect.Sr_App
                 {
                     cmbStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
                 }
+                else
+                {
+                    cmbStatus.SelectedIndex = 0;
+                }
+
+                item = ddlTaskPriority.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString());
+
+                if (item != null)
+                {
+                    ddlTaskPriority.SelectedIndex = ddlTaskPriority.Items.IndexOf(item);
+                }
+                else
+                {
+                    ddlTaskPriority.SelectedIndex = 0;
+                }
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 txtHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
@@ -1734,10 +1826,9 @@ namespace JG_Prospect.Sr_App
                     ddlTUStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
                 }
 
+                ltrlTaskPriority.Text = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
                 ltlTUDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 ltlTUHrsTask.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
-
-
             }
             // ddlUserDesignation.SelectedValue = dtTaskMasterDetails.Rows[0]["Designation"].ToString();
             //LoadUsersByDesgination();

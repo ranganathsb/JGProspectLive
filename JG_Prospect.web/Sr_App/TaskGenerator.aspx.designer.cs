@@ -301,6 +301,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.DropDownList ddlTaskType;
         
         /// <summary>
+        /// ddlSubTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskPriority;
+        
+        /// <summary>
         /// txtSubTaskTitle control.
         /// </summary>
         /// <remarks>
@@ -472,6 +481,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.DropDownList cmbStatus;
         
         /// <summary>
+        /// ddlTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTaskPriority;
+        
+        /// <summary>
         /// btnSaveTask control.
         /// </summary>
         /// <remarks>
@@ -506,6 +524,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlTUStatus;
+        
+        /// <summary>
+        /// ltrlTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlTaskPriority;
         
         /// <summary>
         /// ltlTUTitle control.
