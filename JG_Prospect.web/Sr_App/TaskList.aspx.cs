@@ -107,7 +107,9 @@ namespace JG_Prospect.Sr_App
                 DropDownCheckBoxes ddcbAssignedUser = e.Row.FindControl("ddcbAssignedUser") as DropDownCheckBoxes;
                 LinkButton lbtnRequestStatus = e.Row.FindControl("lbtnRequestStatus") as LinkButton;
                 Literal ltrlStatus = e.Row.FindControl("ltrlStatus") as Literal;
+                Literal ltrlPriority = e.Row.FindControl("ltrlPriority") as Literal;
                 DropDownList ddlStatus = e.Row.FindControl("ddlStatus") as DropDownList;
+                DropDownList ddlPriority = e.Row.FindControl("ddlPriority") as DropDownList;
                 Literal ltrlDueDate = e.Row.FindControl("ltrlDueDate") as Literal;
 
                 hypTask.Text = drTask["Title"].ToString();
@@ -133,11 +135,23 @@ namespace JG_Prospect.Sr_App
                 }
 
                 ltrlStatus.Text = ((TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
+                
                 ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.SelectedValue = drTask["Status"].ToString();
+
+                if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()))
+                {
+                    ddlStatus.SelectedValue = drTask["TaskPriority"].ToString();
+                    ltrlPriority.Text = ((TaskPriority)Convert.ToInt32(drTask["TaskPriority"])).ToString();
+                }
+
+                ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
+                ddlPriority.DataTextField = "Text";
+                ddlPriority.DataValueField = "Value";
+                ddlPriority.DataBind();
+                ddlPriority.SelectedValue = drTask["Status"].ToString();
 
                 if (!string.IsNullOrEmpty(Convert.ToString(drTask["DueDate"])))
                 {
@@ -194,6 +208,10 @@ namespace JG_Prospect.Sr_App
                         lbtnRequestStatus.Visible = false;
                     }
 
+                    ltrlPriority.Visible = false;
+                    ddlPriority.Visible = true;
+                    ddlPriority.Attributes.Add("TaskId", drTask["TaskId"].ToString());
+
                     #endregion
                 }
                 else
@@ -225,6 +243,9 @@ namespace JG_Prospect.Sr_App
                         lbtnRequestStatus.Visible = false;
                         lblAssignedUser.Visible = true;
                     }
+
+                    ltrlPriority.Visible = true;
+                    ddlPriority.Visible = false;
 
                     #endregion
                 }
@@ -279,7 +300,7 @@ namespace JG_Prospect.Sr_App
                     // insert user request.
                     if (TaskGeneratorBLL.Instance.AcceptTaskAssignmentRequests(Convert.ToUInt64(objTask.TaskId), e.CommandArgument.ToString().Split(':')[1]))
                     {
-                        SendEmailToAssignedUsers(objTask.TaskId,e.CommandArgument.ToString().Split(':')[1]);
+                        SendEmailToAssignedUsers(objTask.TaskId, e.CommandArgument.ToString().Split(':')[1]);
                         SearchTasks();
                         CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task assigned successfully!");
                     }
@@ -313,8 +334,33 @@ namespace JG_Prospect.Sr_App
 
         protected void gvTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
+            DropDownList ddlStatus = sender as DropDownList;
 
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString());
+            objTask.Status = Convert.ToByte(ddlStatus.SelectedItem.Value);
+            TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
+            SearchTasks();
         }
+
+        protected void gvTasks_ddlPriority_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlPriority = sender as DropDownList;
+
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(ddlPriority.Attributes["TaskId"].ToString());
+            if (ddlPriority.SelectedValue == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(ddlPriority.SelectedItem.Value);
+            }
+            TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
+            SearchTasks();
+        }
+
 
         #endregion
 
@@ -517,14 +563,14 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void SendEmailToAdminUser(int intTaskId,int intTaskCreatedBy)
+        private void SendEmailToAdminUser(int intTaskId, int intTaskCreatedBy)
         {
             try
             {
                 if (intTaskCreatedBy > 0)
                 {
                     string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,109);
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 109);
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
                     if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
                     {

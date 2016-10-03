@@ -257,6 +257,12 @@
                                         OnSelectedIndexChanged="gvTasks_ddlStatus_SelectedIndexChanged" />
                                 </ItemTemplate>
                             </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Priority" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                <ItemTemplate>
+                                    <asp:Literal ID="ltrlPriority" runat="server" Visible="false" />
+                                    <asp:DropDownList ID="ddlPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvTasks_ddlPriority_SelectedIndexChanged" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:TemplateField HeaderText="Due Date" HeaderStyle-Width="60">
                                 <ItemTemplate>
                                     <asp:Literal ID="ltrlDueDate" runat="server" />
