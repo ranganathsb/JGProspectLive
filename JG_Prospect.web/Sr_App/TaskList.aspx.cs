@@ -140,18 +140,17 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-
-                if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()))
-                {
-                    ddlStatus.SelectedValue = drTask["TaskPriority"].ToString();
-                    ltrlPriority.Text = ((TaskPriority)Convert.ToInt32(drTask["TaskPriority"])).ToString();
-                }
-
+                ddlStatus.SelectedValue = drTask["Status"].ToString();
+                
                 ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
                 ddlPriority.DataTextField = "Text";
                 ddlPriority.DataValueField = "Value";
                 ddlPriority.DataBind();
-                ddlPriority.SelectedValue = drTask["Status"].ToString();
+                if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()))
+                {
+                    ddlPriority.SelectedValue = drTask["TaskPriority"].ToString();
+                    ltrlPriority.Text = ((TaskPriority)Convert.ToInt32(drTask["TaskPriority"])).ToString();
+                }
 
                 if (!string.IsNullOrEmpty(Convert.ToString(drTask["DueDate"])))
                 {
