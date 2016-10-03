@@ -1297,10 +1297,11 @@ namespace JG_Prospect.Sr_App
             dtSubtasks.Columns.Add("FristName");
             dtSubtasks.Columns.Add("TaskType");
             dtSubtasks.Columns.Add("attachment");
+            dtSubtasks.Columns.Add("TaskPriority");
 
             foreach (Task objSubTask in lstSubtasks)
             {
-                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
+                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment,objSubTask.TaskPriority);
             }
 
             gvSubTasks.DataSource = dtSubtasks;
