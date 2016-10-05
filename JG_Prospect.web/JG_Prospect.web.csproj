@@ -272,6 +272,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\yogesh\scripts oct v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
@@ -1380,7 +1381,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
