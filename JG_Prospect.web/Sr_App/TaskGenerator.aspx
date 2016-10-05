@@ -424,8 +424,7 @@
                                 <asp:DropDownList ID="ddlTUStatus" AutoPostBack="true" runat="server" CssClass="textbox">
                                 </asp:DropDownList>
                                 &nbsp;&nbsp;
-                                Priority:
-                               
+                                <b>Priority:</b>
                                 <asp:Literal ID="ltrlTaskPriority" runat="server" />
                             </td>
                         </tr>
