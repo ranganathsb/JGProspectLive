@@ -159,6 +159,15 @@ namespace JG_Prospect.Sr_App
                 else
                 {
                     controlMode.Value = "0";
+
+                    // set default specs in progress status for It Leads.
+                    if (CommonFunction.CheckArchitectAndItLeadMode())
+                    {
+                        ListItem objSpecsInProgress = cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                        objSpecsInProgress.Enabled = true;
+                        objSpecsInProgress.Selected = true;
+                        cmbStatus.Enabled = false;
+                    }
                 }
             }
         }
@@ -285,6 +294,7 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
+                ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 DropDownList ddlTaskPriority = e.Row.FindControl("ddlTaskPriority") as DropDownList;
                 if (ddlTaskPriority != null)
@@ -309,10 +319,7 @@ namespace JG_Prospect.Sr_App
                     }
                 }
 
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "Status").ToString()))
-                {
-                    ddlStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
-                }
+                SetStatusSelectedValue(ddlStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
                 if (!this.IsAdminMode)
                 {
@@ -758,6 +765,12 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
+            // change status only after freezing the specifications.
+            if (chkFreeze.Checked)
+            {
+                SetStatusSelectedValue(cmbStatus,Convert.ToByte(TaskStatus.Open).ToString());
+            }
+
             if (controlMode.Value == "0")
             {
                 InsertUpdateTask();
@@ -922,11 +935,13 @@ namespace JG_Prospect.Sr_App
             cmbStatus.DataTextField = "Text";
             cmbStatus.DataValueField = "Value";
             cmbStatus.DataBind();
+            cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
             ddlSubTaskStatus.DataTextField = "Text";
             ddlSubTaskStatus.DataValueField = "Value";
             ddlSubTaskStatus.DataBind();
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
             ddlTaskPriority.DataTextField = "Text";
@@ -942,6 +957,7 @@ namespace JG_Prospect.Sr_App
             ddlTUStatus.DataTextField = "Text";
             ddlTUStatus.DataValueField = "Value";
             ddlTUStatus.DataBind();
+            ddlTUStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
         }
 
         private void BindTaskTypeDropDown()
@@ -1824,7 +1840,19 @@ namespace JG_Prospect.Sr_App
 
                 if (item != null)
                 {
+                    item.Enabled = true;
                     cmbStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
+
+                    // disable dropdown and do not allow user to change status
+                    // status will be changed only after freezing the specifications.
+                    if (item.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                    {
+                        cmbStatus.Enabled = false;
+                    }
+                    else
+                    {
+                        cmbStatus.Enabled = true;
+                    }
                 }
                 else
                 {
@@ -1989,6 +2017,23 @@ namespace JG_Prospect.Sr_App
             return strTitle;
         }
 
+        private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
+        {
+            ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
+            if (objListItem != null)
+            {
+                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                {
+                    ddlStatus.Enabled = false;
+                }
+                else
+                {
+                    ddlStatus.Enabled = true;
+                }
+                objListItem.Enabled = true;
+                objListItem.Selected = true;
+            }
+        }
 
         #endregion
     }

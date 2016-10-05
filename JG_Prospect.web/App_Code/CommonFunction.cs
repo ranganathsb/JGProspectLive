@@ -33,7 +33,8 @@ namespace JG_Prospect.App_Code
         InProgress = 4,
         Pending = 5,
         ReOpened = 6,
-        Closed = 7
+        Closed = 7,
+        SpecsInProgress = 8
     }
 
     public enum TaskType
@@ -131,6 +132,32 @@ namespace JG_Prospect.App_Code
             //{
             //    returnVal = true;
             //}
+
+            return returnVal;
+        }
+
+        /// <summary>
+        /// Used in task related controls to enable / disable features based on user type.
+        /// Tech Leads, IT Enginners are given different default values for task controls.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckArchitectAndItLeadMode()
+        {
+            // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
+
+            bool returnVal = false;
+            if (HttpContext.Current.Session["DesigNew"] != null)
+            {
+                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                {
+                    case "ITLEAD": // it engineer | tech lead
+                        returnVal = true;
+                        break;
+                    default: // other designations
+                        returnVal = false;
+                        break;
+                }
+            }
 
             return returnVal;
         }
@@ -460,6 +487,7 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(TaskStatus.Pending).ToString()));
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(TaskStatus.ReOpened).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(TaskStatus.Closed).ToString()));
+            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(TaskStatus.SpecsInProgress).ToString()) { Enabled = false });
             //objListItemCollection[1].Enabled = false;
             return objListItemCollection;
         }
@@ -486,7 +514,7 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("High", Convert.ToInt16(TaskPriority.High).ToString()));
             objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(TaskPriority.Medium).ToString()));
             objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(TaskPriority.Low).ToString()));
-            
+
             return objListItemCollection;
         }
 
