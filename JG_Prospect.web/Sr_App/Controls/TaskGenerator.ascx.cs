@@ -2067,6 +2067,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
         {
+            ddlStatus.ClearSelection();
+
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {

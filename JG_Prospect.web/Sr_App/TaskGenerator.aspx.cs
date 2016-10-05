@@ -546,13 +546,20 @@ namespace JG_Prospect.Sr_App
 
         private void InsertUpdateTask()
         {
-            //Save task master details
+            // save task master details
             SaveTask();
 
-            // Save assgined designation.
+            if (controlMode.Value == "0")
+            {
+                // save task description as a first note.
+                txtNote.Text = txtDescription.Text;
+                SaveTaskNotesNAttachments();
+            }
+
+            // save assgined designation.
             SaveTaskDesignations();
 
-            //Save details of users to whom task is assgined.
+            // save details of users to whom task is assgined.
             SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0")
@@ -2019,6 +2026,8 @@ namespace JG_Prospect.Sr_App
 
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
         {
+            ddlStatus.ClearSelection();
+
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
