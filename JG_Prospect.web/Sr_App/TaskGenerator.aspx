@@ -31,12 +31,28 @@
 
 
 
+                           
+
+
+
+
+
+
+
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
                            
                            
 
                            
+
+
+
+                           
+
+
+
+
 
 
 
@@ -50,6 +66,7 @@
                         width="100%" cellspacing="5">
                         <tr>
                             <td style="width: 40%;">Designation <span style="color: red;">*</span>: 
+                               
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
                                         <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
@@ -84,6 +101,7 @@
                                 </asp:UpdatePanel>
                             </td>
                             <td>Assigned:    
+                               
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
                                         <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
@@ -110,13 +128,17 @@
                                     <tr>
                                         <td style="width: 30%;" class="valigntop">
                                             <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
-                                                OnClick="lbtnWorkSpecificationFiles_Click" />
+                                                 ValidationGroup="Submit" OnClick="lbtnWorkSpecificationFiles_Click" />
                                         </td>
                                         <td class="valigntop">
                                             <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
                                                 OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                    
                                            
+
+                                           
+
+
 
                                             <br />
                                             <div id="divWorkFileAdmin" class="dropzone work-file">
@@ -221,6 +243,14 @@
 
 
 
+                                                           
+
+
+
+
+
+
+
                                                             <asp:TextBox ID="txtTaskListID" runat="server" />
                                                             &nbsp; <small><a href="javascript:void(0);" style="color: #06c;" onclick="copytoListID(this);">
                                                                 <asp:Literal ID="listIDOpt" runat="server" />
@@ -233,15 +263,25 @@
 
 
 
+                                                           
+
+
+
+
+
+
+
                                                             <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server"></asp:DropDownList>
-                                                            
+
                                                             &nbsp;&nbsp;
                                                             Priority:
-                                                                    <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                                                                   
+                                                            <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;">
                                                         <td colspan="2">Title <span style="color: red;">*</span>:
+                                                           
                                                             <br />
                                                             <asp:TextBox ID="txtSubTaskTitle" Text="N.A." runat="server" Width="98%" CssClass="textbox" />
                                                             <asp:RequiredFieldValidator ID="rfvSubTaskTitle" Visible="false" ValidationGroup="vgSubTask"
@@ -254,6 +294,14 @@
                                                            
 
                                                            
+
+
+
+                                                           
+
+
+
+
 
 
 
@@ -289,6 +337,14 @@
 
 
 
+                                                           
+
+
+
+
+
+
+
                                                             <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
                                                         </td>
                                                         <td>Hrs of Task:
@@ -296,6 +352,14 @@
                                                            
 
                                                            
+
+
+
+                                                           
+
+
+
+
 
 
 
@@ -309,6 +373,10 @@
                                                         <td>Status:
                                                            
                                                            
+
+                                                           
+
+
 
                                                             <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
                                                         </td>
@@ -331,23 +399,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>User Acceptance:
-                                <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
-                                    <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
-                                </asp:DropDownList>
-                            </td>
-                            <td>Due Date:
-                                <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Hrs of Task:
-                                <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" />
-                                <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
-                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="Submit" ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                            </td>
-                            <td>Staus:
+                            <td colspan="2" align="left">Staus:
                                 <asp:DropDownList ID="cmbStatus" runat="server" CssClass="textbox" />
                                 &nbsp;&nbsp;Priority:&nbsp;<asp:DropDownList ID="ddlTaskPriority" runat="server" CssClass="textbox" />
                             </td>
@@ -371,7 +423,9 @@
                             <td><b>Status:</b>
                                 <asp:DropDownList ID="ddlTUStatus" AutoPostBack="true" runat="server" CssClass="textbox">
                                 </asp:DropDownList>
+                                &nbsp;&nbsp;
                                 Priority:
+                               
                                 <asp:Literal ID="ltrlTaskPriority" runat="server" />
                             </td>
                         </tr>
@@ -383,6 +437,7 @@
                                 <br />
                                 <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                               
                                 <asp:LinkButton ID="lbtnWorkSpecificationFiles1" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnWorkSpecificationFiles_Click" />
                                 <br />
@@ -461,21 +516,6 @@
                                     </div>
                                 </fieldset>
                             </td>
-                        </tr>
-                        <tr>
-                            <td><b>User Acceptance:</b>
-                                <asp:DropDownList ID="ddlTUAcceptance" AutoPostBack="true" runat="server" CssClass="textbox">
-                                    <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
-                                </asp:DropDownList>
-                            </td>
-                            <td><b>Due Date:</b>
-                                <asp:Literal ID="ltlTUDueDate" runat="server"></asp:Literal></td>
-                        </tr>
-                        <tr>
-                            <td><b>Hrs of Task:</b>
-                                <asp:Literal ID="ltlTUHrsTask" runat="server"></asp:Literal></td>
-                            <td></td>
                         </tr>
                     </table>
                     <hr />
@@ -588,12 +628,14 @@
                                    
                                    
                                    
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Images</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 3
+                                   
                                    
                                    
                                    
@@ -606,6 +648,7 @@
                                    
                                    
                                    
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
@@ -615,12 +658,14 @@
                                    
                                    
                                    
+                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Audios</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 6
+                                   
                                    
                                    
                                    
@@ -664,6 +709,8 @@
                                                             <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
                                                                 Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />&nbsp;
                                                    
+                                                           
+
                                                             <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile" runat="server"
                                                                 Text="Download" OnClick="lbtnDownloadWorkSpecificationFile_Click" />
                                                         </div>
@@ -673,12 +720,38 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    <table width="100%">
+                                                        <tr>
+                                                            <td align="left">User Acceptance:
+                                                                <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
+                                                                    <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
+                                                                    <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                            <td align="left">Due Date:
+                                                                <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
+
+                                                                <asp:Literal ID="ltlTUDueDate" runat="server" />
+                                                            </td>
+                                                            <td align="right">Hrs of Task:
+                                                                <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
+                                                                <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
+                                                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="Submit" ValidationExpression="(\d+\.\d{1,2})?\d*" />
+
+                                                                <asp:Literal ID="ltlTUHrsTask" runat="server" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
                                             <tr id="trSaveWorkSpecification" runat="server">
                                                 <td>
                                                     <div class="btn_sec">
                                                         <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
                                                             OnClientClick="javascript:SetContentInTextbox();"
-                                                            OnClick="btnSaveWorkSpecification_Click" />
+                                                            OnClick="btnSaveWorkSpecification_Click" ValidationGroup="Submit" />
                                                         <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
                                                     </div>
                                                 </td>

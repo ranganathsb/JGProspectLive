@@ -532,6 +532,13 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveTask_Click(object sender, EventArgs e)
         {
+            InsertUpdateTask();
+
+            RedirectToViewTasks(null);
+        }
+
+        private void InsertUpdateTask()
+        {
             //Save task master details
             SaveTask();
 
@@ -569,8 +576,6 @@ namespace JG_Prospect.Sr_App
             {
                 CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
             }
-
-            RedirectToViewTasks(null);
         }
 
         protected void lbtnDeleteTask_Click(object sender, EventArgs e)
@@ -666,6 +671,8 @@ namespace JG_Prospect.Sr_App
                                                                                     true
                                                                                 );
 
+            txtDueDate.Visible =
+            txtHours.Visible =
             trFreezeWorkSpecification.Visible =
             trSaveWorkSpecification.Visible =
             lbtnDownloadWorkSpecificationFilePreview.Visible =
@@ -717,6 +724,8 @@ namespace JG_Prospect.Sr_App
             // show link to download working copy for preview for admin users only.
             if (this.IsAdminMode)
             {
+                txtDueDate.Visible =
+                txtHours.Visible =
                 trFreezeWorkSpecification.Visible =
                 trSaveWorkSpecification.Visible =
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
@@ -749,6 +758,17 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
+            if (controlMode.Value == "0")
+            {
+                InsertUpdateTask();
+            }
+            else
+            {
+                SaveTask();
+            }
+
+            #region Insert TaskWorkSpecification
+
             TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
             objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
             objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
@@ -770,7 +790,15 @@ namespace JG_Prospect.Sr_App
             {
                 TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
             }
+
+            #endregion
+
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+
+            if (controlMode.Value == "0")
+            {
+                RedirectToViewTasks(null);
+            }
         }
 
         protected void lbtnDownloadWorkSpecificationFilePreview_Click(object sender, EventArgs e)
@@ -864,7 +892,7 @@ namespace JG_Prospect.Sr_App
 
         private void RedirectToViewTasks(object o)
         {
-            Response.Redirect("~/sr_app/TaskList.aspx");
+            Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value);
         }
 
         private string getSingleValueFromCommaSeperatedString(string commaSeperatedString)
@@ -1837,7 +1865,10 @@ namespace JG_Prospect.Sr_App
                     ddlTUStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
                 }
 
-                ltrlTaskPriority.Text = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
+                if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))
+                {
+                    ltrlTaskPriority.Text = ((TaskPriority)Convert.ToByte(dtTaskMasterDetails.Rows[0]["TaskPriority"])).ToString();
+                }
                 ltlTUDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 ltlTUHrsTask.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
             }
