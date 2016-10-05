@@ -480,6 +480,7 @@ namespace JG_Prospect.App_Code
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
+            
             objListItemCollection.Add(new ListItem("Open", Convert.ToByte(TaskStatus.Open).ToString()));
             objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(TaskStatus.Requested).ToString()));
             objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(TaskStatus.Assigned).ToString()));
@@ -487,8 +488,8 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(TaskStatus.Pending).ToString()));
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(TaskStatus.ReOpened).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(TaskStatus.Closed).ToString()));
-            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(TaskStatus.SpecsInProgress).ToString()) { Enabled = false });
-            //objListItemCollection[1].Enabled = false;
+            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(TaskStatus.SpecsInProgress).ToString()));
+            
             return objListItemCollection;
         }
 

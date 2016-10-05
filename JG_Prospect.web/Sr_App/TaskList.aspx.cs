@@ -140,7 +140,8 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.SelectedValue = drTask["Status"].ToString();
+                ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                SetStatusSelectedValue(ddlStatus,drTask["Status"].ToString());
                 
                 ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
                 ddlPriority.DataTextField = "Text";
@@ -397,6 +398,11 @@ namespace JG_Prospect.Sr_App
             ddlTaskStatus.DataBind();
             ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
+            if (!this.IsAdminMode)
+            {
+                ddlTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            }
+
             ddlUsers.DataSource = dsFilters.Tables[0];
             ddlUsers.DataTextField = "FirstName";
             ddlUsers.DataValueField = "Id";
@@ -609,6 +615,24 @@ namespace JG_Prospect.Sr_App
             catch (Exception ex)
             {
                 Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
+        {
+            ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
+            if (objListItem != null)
+            {
+                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                {
+                    ddlStatus.Enabled = false;
+                }
+                else
+                {
+                    ddlStatus.Enabled = true;
+                }
+                objListItem.Enabled = true;
+                objListItem.Selected = true;
             }
         }
 

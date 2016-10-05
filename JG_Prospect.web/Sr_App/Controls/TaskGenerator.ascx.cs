@@ -234,10 +234,11 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlgvTaskStatus.DataTextField = "Text";
                 ddlgvTaskStatus.DataValueField = "Value";
                 ddlgvTaskStatus.DataBind();
+                ddlgvTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+
+                SetStatusSelectedValue(ddlgvTaskStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
                 hypTask.NavigateUrl = "~/sr_app/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TaskId").ToString();
-
-                ddlgvTaskStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
 
                 hypDesg.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")));
 
@@ -349,6 +350,7 @@ namespace JG_Prospect.Sr_App.Controls
                 cmbStatus.DataTextField = "Text";
                 cmbStatus.DataValueField = "Value";
                 cmbStatus.DataBind();
+                cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 LoadTaskData(e.CommandArgument.ToString(), true);
             }
@@ -786,7 +788,6 @@ namespace JG_Prospect.Sr_App.Controls
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
                 DataTable dtUsers = dsFilters.Tables[0];
-                //DataTable dtDesignations = dsFilters.Tables[1];
 
                 ddlTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlTaskStatus.DataTextField = "Text";
@@ -794,15 +795,15 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskStatus.DataBind();
                 ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
+                if (!this.IsAdminMode)
+                {
+                    ddlTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                }
+
                 ddlUsers.DataSource = dtUsers;
                 ddlUsers.DataTextField = "FirstName";
                 ddlUsers.DataValueField = "Id";
                 ddlUsers.DataBind();
-
-                //ddlDesignation.DataSource = dtDesignations;
-                //ddlDesignation.DataTextField = "Designation";
-                //ddlDesignation.DataValueField = "Designation";
-                //ddlDesignation.DataBind();
 
                 ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
                 ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
@@ -1952,13 +1953,7 @@ namespace JG_Prospect.Sr_App.Controls
                 txtTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
                 txtDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
 
-                //Get selected index of task status
-                ListItem item = cmbStatus.Items.FindByValue(dtTaskMasterDetails.Rows[0]["Status"].ToString());
-
-                if (item != null)
-                {
-                    cmbStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
-                }
+                SetStatusSelectedValue(cmbStatus, dtTaskMasterDetails.Rows[0]["Status"].ToString());
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 txtHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
@@ -2070,8 +2065,24 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
+        {
+            ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
+            if (objListItem != null)
+            {
+                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                {
+                    ddlStatus.Enabled = false;
+                }
+                else
+                {
+                    ddlStatus.Enabled = true;
+                }
+                objListItem.Enabled = true;
+                objListItem.Selected = true;
+            }
+        }
 
         #endregion
-
     }
 }
