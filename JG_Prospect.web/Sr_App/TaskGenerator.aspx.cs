@@ -685,9 +685,9 @@ namespace JG_Prospect.Sr_App
                                                                                     true
                                                                                 );
 
+            txtPasswordToFreezeSpecification.Visible =
             txtDueDate.Visible =
             txtHours.Visible =
-            trFreezeWorkSpecification.Visible =
             trWorkSpecification.Visible =
             trWorkSpecificationSave.Visible =
             lbtnDownloadWorkSpecificationFilePreview.Visible =
@@ -698,21 +698,36 @@ namespace JG_Prospect.Sr_App
                 dsLatestTaskWorkSpecification.Tables.Count == 2
                )
             {
+                #region Freezed Copy
+
                 // main / last freezed copy.
                 if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
                 {
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"])))
                     {
-                        strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
+                        if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                        {
+                            strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
 
-                        ltrlLastCheckedInBy.Text = string.Format(
-                                                                "Last freeze by \'{0}\'.&nbsp;",
-                                                                strLastCheckedInBy
-                                                                );
-                        // show link to download freezed copy.
-                        lbtnDownloadWorkSpecificationFile.Visible = true;
+                            string strProfileUrl = "CreatesalesUser.aspx?id=" + dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"].ToString();
+
+                            string strLastUserFullName = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserFirstName"].ToString() + " " +
+                                                         dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserLastName"].ToString();
+                            ltrlLastCheckedInBy.Text = string.Format(
+                                                                    "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
+                                                                    strProfileUrl,
+                                                                    strLastUserFullName.Trim(),
+                                                                    Convert.ToDateTime(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
+                                                                    );
+                            // show link to download freezed copy.
+                            lbtnDownloadWorkSpecificationFile.Visible = true;
+                        }
                     }
                 }
+
+                #endregion
+
+                #region Working Copy
 
                 // current / working copy.
                 if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
@@ -730,6 +745,8 @@ namespace JG_Prospect.Sr_App
                         //                                            );
                     }
                 }
+
+                #endregion
             }
             else
             {
@@ -741,10 +758,19 @@ namespace JG_Prospect.Sr_App
             {
                 txtDueDate.Visible =
                 txtHours.Visible =
-                trFreezeWorkSpecification.Visible =
                 trWorkSpecification.Visible =
                 trWorkSpecificationSave.Visible =
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
+
+                string strDesignation = Convert.ToString(HttpContext.Current.Session["DesigNew"]);
+                if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ITLEAD"))
+                {
+                    txtPasswordToFreezeSpecification.Visible = true;
+                }
+                else if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ADMIN"))
+                {
+                    txtPasswordToFreezeSpecification.Visible = true;
+                }
             }
 
             #endregion
@@ -778,61 +804,93 @@ namespace JG_Prospect.Sr_App
             // only admin can update disabled "specs in progress" status by freezing the work specifications.
             if (this.IsAdminMode)
             {
-                #region Insert / Update Task and Status
+                bool? blFreeze = null;
 
-                // change status only after freezing the specifications.
-                // this will change disabled "specs in progress" status to open on feezing.
-                if (chkFreeze.Checked && cmbStatus.SelectedValue == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
-                {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
-                }
+                #region Freeze Based On Password
 
-                if (controlMode.Value == "0")
+                if (!string.IsNullOrEmpty(txtPasswordToFreezeSpecification.Text))
                 {
-                    InsertUpdateTask();
+                    if (!txtPasswordToFreezeSpecification.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                    {
+                        ScriptManager.RegisterStartupScript(
+                                                            this,
+                                                            this.GetType(),
+                                                            "InvalidPasswordAlert",
+                                                            "alert('Specification cannot be freezed as password is not valid.')",
+                                                            true
+                                                           );
+                    }
+                    else
+                    {
+                        blFreeze = true;
+                    }
                 }
                 else
                 {
-                    SaveTask();
+                    blFreeze = false;
                 }
 
                 #endregion
 
-                #region Insert TaskWorkSpecification
-
-                TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-                objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-                objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-                objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-                objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-                objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-                objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
-
-                objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
-
-                if (objTaskWorkSpecification.Id == 0)
+                // process only if proper freeze value is available.
+                if (blFreeze.HasValue)
                 {
-                    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-                }
-                else
-                {
-                    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-                }
+                    #region Insert / Update Task and Status
 
-                #endregion
+                    // change status only after freezing the specifications.
+                    // this will change disabled "specs in progress" status to open on feezing.
+                    if (blFreeze.Value && cmbStatus.SelectedValue == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                    {
+                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                    }
 
-                // redirect to task generator page or
-                // hide popup.
-                if (controlMode.Value == "0")
-                {
-                    RedirectToViewTasks(null);
-                }
-                else
-                {
-                    ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                    if (controlMode.Value == "0")
+                    {
+                        InsertUpdateTask();
+                    }
+                    else
+                    {
+                        SaveTask();
+                    }
+
+                    #endregion
+
+                    #region Insert TaskWorkSpecification
+
+                    TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                    objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+                    objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+                    TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+                    objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+                    objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+                    objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+                    objTaskWorkSpecificationVersions.Status = blFreeze.Value;
+
+                    objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+
+                    if (objTaskWorkSpecification.Id == 0)
+                    {
+                        TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                    }
+                    else
+                    {
+                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                    }
+
+                    #endregion
+
+                    // redirect to task generator page or
+                    // hide popup.
+                    if (controlMode.Value == "0")
+                    {
+                        RedirectToViewTasks(null);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                    }
                 }
             }
         }
