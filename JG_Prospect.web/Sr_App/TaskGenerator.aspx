@@ -24,38 +24,8 @@
                         <td width="25%" align="left">
                             <asp:LinkButton ID="lbtnDeleteTask" runat="server" OnClick="lbtnDeleteTask_Click" Text="Delete" />
                             &nbsp;&nbsp;Task ID#:
-                           
-                           
-
-                           
-
-
-
-                           
-
-
-
-
-
-
-
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
-                           
-                           
-
-                           
-
-
-
-                           
-
-
-
-
-
-
-
                             <asp:Literal ID="ltrlDateCreated" runat="server" /></td>
                         <td width="25%" align="right">
                             <asp:Literal ID="ltrlAssigningManager" runat="server" /></td>
@@ -133,13 +103,6 @@
                                         <td class="valigntop">
                                             <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
                                                 OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                                   
-                                           
-
-                                           
-
-
-
                                             <br />
                                             <div id="divWorkFileAdmin" class="dropzone work-file">
                                                 <div class="fallback">
@@ -236,41 +199,11 @@
                                                 <table class="tablealign fullwidth">
                                                     <tr>
                                                         <td>ListID:
-                                                   
-                                                           
-
-                                                           
-
-
-
-                                                           
-
-
-
-
-
-
-
                                                             <asp:TextBox ID="txtTaskListID" runat="server" />
                                                             &nbsp; <small><a href="javascript:void(0);" style="color: #06c;" onclick="copytoListID(this);">
                                                                 <asp:Literal ID="listIDOpt" runat="server" />
                                                             </a></small></td>
                                                         <td>Type:
-                                                   
-                                                           
-
-                                                           
-
-
-
-                                                           
-
-
-
-
-
-
-
                                                             <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server"></asp:DropDownList>
 
                                                             &nbsp;&nbsp;
@@ -290,28 +223,12 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="2">Description <span style="color: red;">*</span>:
-                           
-                                                           
-
-                                                           
-
-
-
-                                                           
-
-
-
-
-
-
-
                                                             <br />
                                                             <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                             <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                                                                 runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
 
                                                         </td>
-
                                                     </tr>
                                                     <tr>
                                                         <td>Attachment(s):<br>
@@ -330,39 +247,9 @@
                                                     </tr>
                                                     <tr id="trDateHours" runat="server" visible="false">
                                                         <td>Due Date:
-                           
-                                                           
-
-                                                           
-
-
-
-                                                           
-
-
-
-
-
-
-
                                                             <asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
                                                         </td>
                                                         <td>Hrs of Task:
-                           
-                                                           
-
-                                                           
-
-
-
-                                                           
-
-
-
-
-
-
-
                                                             <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
                                                             <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
                                                                 ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
@@ -371,13 +258,6 @@
                                                     </tr>
                                                     <tr id="trSubTaskStatus" runat="server" visible="false">
                                                         <td>Status:
-                                                           
-                                                           
-
-                                                           
-
-
-
                                                             <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
                                                         </td>
                                                         <td>&nbsp;
@@ -415,7 +295,6 @@
                     <!-- table for userview -->
                     <table id="tblUserTaskView" class="tablealign" style="width: 100%;" cellspacing="5" runat="server">
                         <tr>
-
                             <td><b>Designation:</b>
                                 <asp:Literal ID="ltlTUDesig" runat="server"></asp:Literal>
                             </td>
@@ -624,50 +503,30 @@
                                     <HeaderTemplate>Files & docs</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 1
-                                   
-                                   
-                                   
-                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Images</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 3
-                                   
-                                   
-                                   
-                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Links" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Links</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 4
-                                   
-                                   
-                                   
-                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Videos</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 5
-                                   
-                                   
-                                   
-                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                                 <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
                                     <HeaderTemplate>Audios</HeaderTemplate>
                                     <ContentTemplate>
                                         HTML Goes here 6
-                                   
-                                   
-                                   
-                                   
                                     </ContentTemplate>
                                 </asp:TabPanel>
                             </asp:TabContainer>
