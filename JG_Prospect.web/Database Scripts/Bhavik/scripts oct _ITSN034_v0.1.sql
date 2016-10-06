@@ -153,7 +153,7 @@ BEGIN
 	END
 
 	-- task's main details
-	SELECT Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, 
+	SELECT Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.TaskPriority,
 		   Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager ,Tasks.TaskType, Tasks.IsTechTask,
 		   STUFF
 			(
@@ -189,7 +189,7 @@ BEGIN
 	WHERE (TaskUsers.TaskId = @TaskId) 
 
 	-- sub tasks
-	SELECT Tasks.TaskId, Title, [Description], Tasks.[Status], DueDate,Tasks.[Hours], Tasks.CreatedOn,
+	SELECT Tasks.TaskId, Title, [Description], Tasks.[Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.TaskPriority,
 		   Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager , UsersMaster.FristName,
 		   Tasks.TaskType,Tasks.TaskPriority, Tasks.IsTechTask,
 		   STUFF
