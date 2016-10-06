@@ -24,6 +24,6 @@ namespace JG_Prospect.Common.modal
         public int? ParentTaskId;
         public Int16? TaskType;
         public byte? TaskPriority;
-
+        public bool IsTechTask;
     }
 }

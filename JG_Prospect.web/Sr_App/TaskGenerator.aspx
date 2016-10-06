@@ -87,6 +87,9 @@
                                         </asp:DropDownCheckBoxes>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
+                                <span style="padding-left:20px;">
+                                    <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
+                                </span>
                             </td>
                         </tr>
                         <tr>
