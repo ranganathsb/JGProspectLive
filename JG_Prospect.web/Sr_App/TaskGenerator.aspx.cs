@@ -676,6 +676,7 @@ namespace JG_Prospect.Sr_App
         {
             #region '--Work Specification--'
 
+            long intLastCheckInByUserId = 0;
             string strLastCheckedInBy = "";
             string strLastVersionUpdateBy = "";
 
@@ -705,6 +706,7 @@ namespace JG_Prospect.Sr_App
                 {
                     if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"])))
                     {
+                        intLastCheckInByUserId = Convert.ToInt64(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"]);
                         if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
                         {
                             strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
@@ -770,6 +772,12 @@ namespace JG_Prospect.Sr_App
                 else if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ADMIN"))
                 {
                     txtPasswordToFreezeSpecification.Visible = true;
+                }
+
+                // verify.
+                if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()])) 
+                {
+                    txtPasswordToFreezeSpecification.Visible = false;
                 }
             }
 
