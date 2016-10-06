@@ -587,9 +587,9 @@
                                                 <td>
                                                     <table width="100%">
                                                         <tr>
-                                                            <td align="right" id="trFreezeWorkSpecification" runat="server">
-                                                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;<a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a> &nbsp;<asp:CheckBox ID="chkFreeze" runat="server" Checked="false" Text="Freeze all changes?" />
-                                                                
+                                                            <td align="right">
+                                                                <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
+                                                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -612,6 +612,9 @@
                                                         </div>
                                                         <div style="float: right; text-align: right; color: gray; min-width: 200px;">
                                                             <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
+                                                            <br />
+                                                            <asp:TextBox ID="txtPasswordToFreezeSpecification" runat="server" TextMode="Password" 
+                                                                    placeholder="password to freeze" CssClass="textbox" Width="150" style="margin-top: 10px;" />
                                                         </div>
                                                     </div>
                                                 </td>

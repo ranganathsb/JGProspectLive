@@ -733,24 +733,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecification;
         
         /// <summary>
-        /// trFreezeWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell trFreezeWorkSpecification;
-        
-        /// <summary>
-        /// chkFreeze control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkFreeze;
-        
-        /// <summary>
         /// txtWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -794,6 +776,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
+        
+        /// <summary>
+        /// txtPasswordToFreezeSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPasswordToFreezeSpecification;
         
         /// <summary>
         /// ddlUserAcceptance control.
