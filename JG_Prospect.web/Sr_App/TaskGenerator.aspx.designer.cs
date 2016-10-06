@@ -715,6 +715,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecification;
         
         /// <summary>
+        /// trWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecification;
+        
+        /// <summary>
         /// trFreezeWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -832,13 +841,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
         
         /// <summary>
-        /// trSaveWorkSpecification control.
+        /// trWorkSpecificationSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trSaveWorkSpecification;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationSave;
         
         /// <summary>
         /// btnSaveWorkSpecification control.

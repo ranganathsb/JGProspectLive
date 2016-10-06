@@ -688,7 +688,8 @@ namespace JG_Prospect.Sr_App
             txtDueDate.Visible =
             txtHours.Visible =
             trFreezeWorkSpecification.Visible =
-            trSaveWorkSpecification.Visible =
+            trWorkSpecification.Visible =
+            trWorkSpecificationSave.Visible =
             lbtnDownloadWorkSpecificationFilePreview.Visible =
             lbtnDownloadWorkSpecificationFile.Visible = false;
 
@@ -741,7 +742,8 @@ namespace JG_Prospect.Sr_App
                 txtDueDate.Visible =
                 txtHours.Visible =
                 trFreezeWorkSpecification.Visible =
-                trSaveWorkSpecification.Visible =
+                trWorkSpecification.Visible =
+                trWorkSpecificationSave.Visible =
                 lbtnDownloadWorkSpecificationFilePreview.Visible = true;
             }
 
@@ -772,52 +774,66 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
-            // change status only after freezing the specifications.
-            if (chkFreeze.Checked)
+            // only admin can update work specification.
+            // only admin can update disabled "specs in progress" status by freezing the work specifications.
+            if (this.IsAdminMode)
             {
-                SetStatusSelectedValue(cmbStatus,Convert.ToByte(TaskStatus.Open).ToString());
-            }
+                #region Insert / Update Task and Status
 
-            if (controlMode.Value == "0")
-            {
-                InsertUpdateTask();
-            }
-            else
-            {
-                SaveTask();
-            }
+                // change status only after freezing the specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                if (chkFreeze.Checked && cmbStatus.SelectedValue == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                }
 
-            #region Insert TaskWorkSpecification
+                if (controlMode.Value == "0")
+                {
+                    InsertUpdateTask();
+                }
+                else
+                {
+                    SaveTask();
+                }
 
-            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-            objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-            objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+                #endregion
 
-            TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-            objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-            objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-            objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-            objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
+                #region Insert TaskWorkSpecification
 
-            objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+                TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+                objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
 
-            if (objTaskWorkSpecification.Id == 0)
-            {
-                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-            }
+                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+                objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+                objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+                objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
 
-            #endregion
+                objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
 
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                if (objTaskWorkSpecification.Id == 0)
+                {
+                    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                }
 
-            if (controlMode.Value == "0")
-            {
-                RedirectToViewTasks(null);
+                #endregion
+
+                // redirect to task generator page or
+                // hide popup.
+                if (controlMode.Value == "0")
+                {
+                    RedirectToViewTasks(null);
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                }
             }
         }
 
