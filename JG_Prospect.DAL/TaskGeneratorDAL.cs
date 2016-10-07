@@ -519,7 +519,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, bool? bytStatus)
+        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool? blFreezed)
         {
             try
             {
@@ -529,10 +529,11 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetLatestTaskWorkSpecification");
                     command.CommandType = CommandType.StoredProcedure;
 
+                    database.AddInParameter(command, "@Id", DbType.Int32, Id);
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    if (bytStatus.HasValue)
+                    if (blFreezed.HasValue)
                     {
-                        database.AddInParameter(command, "@Status", DbType.Boolean, bytStatus.Value);
+                        database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed.Value);
                     }
 
                     returndata = database.ExecuteDataSet(command);
@@ -591,6 +592,38 @@ namespace JG_Prospect.DAL
                 }
             }
 
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecifications");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
             catch (Exception ex)
             {
                 return null;
