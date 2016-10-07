@@ -691,7 +691,7 @@ namespace JG_Prospect.Sr_App
         {
             if (e.CommandName == "edit-version")
             {
-
+                SetAddEditWorkSpecificationSection(Convert.ToInt32(e.CommandArgument));
             }
             else if (e.CommandName == "download-freezed-copy")
             {
@@ -712,7 +712,7 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnAddWorkSpecification_Click(object sender, EventArgs e)
         {
-            SetAddEditWorkSpecificationSection();
+            SetAddEditWorkSpecificationSection(0);
 
             tblAddEditWorkSpecification.Visible = true;
             upAddEditWorkSpecification.Update();
@@ -809,7 +809,12 @@ namespace JG_Prospect.Sr_App
                     }
                     else
                     {
-                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecificationSection.ClientID), true);
+                        //ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecificationSection.ClientID), true);
+                        
+                        FillWorkSpecifications();
+
+                        tblAddEditWorkSpecification.Visible = false;
+                        upAddEditWorkSpecification.Update();
                     }
                 }
             }
@@ -2068,7 +2073,7 @@ namespace JG_Prospect.Sr_App
             return strTitle;
         }
 
-        private void SetAddEditWorkSpecificationSection()
+        private void SetAddEditWorkSpecificationSection(Int32 intTaskWorkSpecificationId)
         {
             #region '--Work Specification--'
 
@@ -2078,7 +2083,7 @@ namespace JG_Prospect.Sr_App
 
             DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
                                                                                 (
-                                                                                    0,
+                                                                                    intTaskWorkSpecificationId,
                                                                                     Convert.ToInt32(hdnTaskId.Value),
                                                                                     true
                                                                                 );
@@ -2173,6 +2178,9 @@ namespace JG_Prospect.Sr_App
                 {
                     txtPasswordToFreezeSpecification.Visible = false;
                 }
+
+                tblAddEditWorkSpecification.Visible = true;
+                upAddEditWorkSpecification.Update();
             }
 
             #endregion

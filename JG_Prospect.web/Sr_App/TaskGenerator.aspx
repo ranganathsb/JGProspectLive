@@ -592,7 +592,7 @@
                                                 <asp:TemplateField HeaderText="Id">
                                                     <ItemTemplate>
                                                         <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" CommandName="edit-version"
-                                                            Text='<%#Eval("Id")%>' /></small>
+                                                            Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' /></small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Status" ControlStyle-Width="80px">
