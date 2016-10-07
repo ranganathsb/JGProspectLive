@@ -166,22 +166,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.HiddenField hdnTaskId;
         
         /// <summary>
-        /// lbtnWorkSpecificationFiles control.
+        /// lbtnShowWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection;
         
         /// <summary>
-        /// lbtnFinishedWorkFiles control.
+        /// lbtnShowFinishedWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
         
         /// <summary>
         /// txtDescription control.
@@ -517,22 +517,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUTitle;
         
         /// <summary>
-        /// lbtnFinishedWorkFiles1 control.
+        /// lbtnShowFinishedWorkFiles1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles1;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles1;
         
         /// <summary>
-        /// lbtnWorkSpecificationFiles1 control.
+        /// lbtnShowWorkSpecificationSection1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles1;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection1;
         
         /// <summary>
         /// txtTUDesc control.
@@ -679,22 +679,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnAddAttachment;
         
         /// <summary>
-        /// divWorkSpecifications control.
+        /// divWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divWorkSpecifications;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divWorkSpecificationSection;
         
         /// <summary>
-        /// upWorkSpecificationFiles control.
+        /// upWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecificationFiles;
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationSection;
         
         /// <summary>
         /// tcWorkSpecification control.
@@ -715,13 +715,49 @@ namespace JG_Prospect.Sr_App {
         protected global::AjaxControlToolkit.TabPanel tpWorkSpecification;
         
         /// <summary>
-        /// upWorkSpecification control.
+        /// upWorkSpecifications control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecification;
+        protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
+        
+        /// <summary>
+        /// grdWorkSpecifications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView grdWorkSpecifications;
+        
+        /// <summary>
+        /// lbtnAddWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnAddWorkSpecification;
+        
+        /// <summary>
+        /// upAddEditWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upAddEditWorkSpecification;
+        
+        /// <summary>
+        /// tblAddEditWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblAddEditWorkSpecification;
         
         /// <summary>
         /// trWorkSpecification control.
@@ -749,15 +785,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lbtnDownloadWorkSpecificationFilePreview;
-        
-        /// <summary>
-        /// lbtnDownloadWorkSpecificationFile control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnDownloadWorkSpecificationFile;
         
         /// <summary>
         /// ltrlLastCheckedInBy control.
@@ -886,13 +913,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
         
         /// <summary>
-        /// grdWorkFiles control.
+        /// grdWorkSpecificationAttachments control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdWorkFiles;
+        protected global::System.Web.UI.WebControls.GridView grdWorkSpecificationAttachments;
         
         /// <summary>
         /// divFinishedWorkFiles control.

@@ -106,12 +106,12 @@
                                 <table>
                                     <tr>
                                         <td style="width: 30%;" class="valigntop">
-                                            <asp:LinkButton ID="lbtnWorkSpecificationFiles" runat="server" Text="Work Specification Files"
-                                                ValidationGroup="Submit" OnClick="lbtnWorkSpecificationFiles_Click" />
+                                            <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
+                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
                                         </td>
                                         <td class="valigntop">
-                                            <asp:LinkButton ID="lbtnFinishedWorkFiles" runat="server" Text="Finished Work Files"
-                                                OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                                            <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
+                                                OnClick="lbtnShowFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                            
                                             <br />
                                             <div id="divWorkFileAdmin" class="dropzone work-file">
@@ -335,13 +335,13 @@
                             </td>
                             <td class="valigntop">
                                 <br />
-                                <asp:LinkButton ID="lbtnFinishedWorkFiles1" runat="server" Text="Finished Work Files"
-                                    OnClick="lbtnFinishedWorkFiles_Click" />&nbsp;&nbsp;
+                                <asp:LinkButton ID="lbtnShowFinishedWorkFiles1" runat="server" Text="Finished Work Files"
+                                    OnClick="lbtnShowFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                
                                
 
-                                <asp:LinkButton ID="lbtnWorkSpecificationFiles1" runat="server" Text="Work Specification Files"
-                                    OnClick="lbtnWorkSpecificationFiles_Click" />
+                                <asp:LinkButton ID="lbtnShowWorkSpecificationSection1" runat="server" Text="Work Specification Files"
+                                    OnClick="lbtnShowWorkSpecificationSection_Click" />
                                 <br />
                                 <br />
                                 <div>
@@ -573,16 +573,62 @@
     </div>
     <%--Popup Starts--%>
     <div class="hide">
-        <div id="divWorkSpecifications" runat="server">
-            <asp:UpdatePanel ID="upWorkSpecificationFiles" runat="server" UpdateMode="Conditional">
+        <div id="divWorkSpecificationSection" runat="server">
+            <asp:UpdatePanel ID="upWorkSpecificationSection" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <asp:TabContainer ID="tcWorkSpecification" runat="server" ActiveTabIndex="0" AutoPostBack="false">
                         <asp:TabPanel ID="tpWorkSpecification" runat="server" TabIndex="0" CssClass="">
                             <HeaderTemplate>Work Specifications</HeaderTemplate>
                             <ContentTemplate>
-                                <asp:UpdatePanel ID="upWorkSpecification" runat="server" UpdateMode="Always">
+                                <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <table class="table" width="100%">
+                                        <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                                            GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
+                                            PagerSettings-Position="Bottom" DataKeyNames="Id,VersionId"
+                                            OnRowDataBound="grdWorkSpecifications_RowDataBound"
+                                            OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
+                                            OnRowCommand="grdWorkSpecifications_RowCommand">
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="Id">
+                                                    <ItemTemplate>
+                                                        <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" CommandName="edit-version"
+                                                            Text='<%#Eval("Id")%>' /></small>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Status" ControlStyle-Width="80px">
+                                                    <ItemTemplate>
+                                                        <%#Eval("Status").ToString().Equals("1") ? "Freezed" : "In Progress" %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="User" ControlStyle-Width="300px">
+                                                    <ItemTemplate>
+                                                        <%# (Eval("CurrentFirstName") + " " +Eval("CurrentLastName")).Trim()  %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="" ControlStyle-Width="100px">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lbtnDownload" runat="server" Text="Download" CommandName="download-freezed-copy"
+                                                            CommandArgument='<%#Eval("Id")%>'/>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="" ControlStyle-Width="150px">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lbtnDownloadPreview" runat="server" Text="Download Preview" CommandName="download-working-copy"
+                                                            CommandArgument='<%#Eval("Id")%>' />
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                            <HeaderStyle CssClass="trHeader" />
+                                            <RowStyle CssClass="FirstRow" />
+                                            <AlternatingRowStyle CssClass="AlternateRow" />
+                                        </asp:GridView>
+                                        <br />
+                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification" OnClick="lbtnAddWorkSpecification_Click" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%">
                                             <tr id="trWorkSpecification" runat="server">
                                                 <td>
                                                     <table width="100%">
@@ -605,10 +651,7 @@
                                                     <div style="height:25px;">
                                                         <div style="float: left; text-align: left; min-width: 200px;">
                                                             <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
-                                                                Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />&nbsp;
-                                                           
-                                                            <asp:LinkButton ID="lbtnDownloadWorkSpecificationFile" runat="server"
-                                                                Text="Download" OnClick="lbtnDownloadWorkSpecificationFile_Click" />
+                                                                Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />
                                                         </div>
                                                         <div style="float: right; text-align: right; color: gray; min-width: 200px;">
                                                             <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
@@ -660,7 +703,6 @@
                                         </table>
                                     </ContentTemplate>
                                     <Triggers>
-                                        <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile" />
                                         <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFilePreview" />
                                     </Triggers>
                                 </asp:UpdatePanel>
@@ -671,12 +713,12 @@
                             <ContentTemplate>
                                 <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <asp:GridView ID="grdWorkFiles" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                                        <asp:GridView ID="grdWorkSpecificationAttachments" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                             GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
                                             PagerSettings-Position="Bottom"
-                                            OnRowDataBound="grdWorkFiles_RowDataBound"
-                                            OnPageIndexChanging="grdWorkFiles_PageIndexChanging"
-                                            OnRowCommand="grdWorkFiles_RowCommand">
+                                            OnRowDataBound="grdWorkSpecificationAttachments_RowDataBound"
+                                            OnPageIndexChanging="grdWorkSpecificationAttachments_PageIndexChanging"
+                                            OnRowCommand="grdWorkSpecificationAttachments_RowCommand">
                                             <Columns>
                                                 <asp:TemplateField HeaderText="Attachments">
                                                     <ItemTemplate>

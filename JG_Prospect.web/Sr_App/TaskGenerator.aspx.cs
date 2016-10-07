@@ -281,6 +281,67 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected void btnSaveTask_Click(object sender, EventArgs e)
+        {
+            InsertUpdateTask();
+
+            RedirectToViewTasks(null);
+        }
+
+        private void InsertUpdateTask()
+        {
+            // save task master details
+            SaveTask();
+
+            if (controlMode.Value == "0")
+            {
+                // save task description as a first note.
+                txtNote.Text = txtDescription.Text;
+                SaveTaskNotesNAttachments();
+            }
+
+            // save assgined designation.
+            SaveTaskDesignations();
+
+            // save details of users to whom task is assgined.
+            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+
+            if (controlMode.Value == "0")
+            {
+                foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
+                {
+                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
+                }
+            }
+
+            if (this.lstSubTasks.Any())
+            {
+                foreach (Task objSubTask in this.lstSubTasks)
+                {
+                    objSubTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
+                    // save task master details to database.
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
+
+                    UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment);
+                }
+            }
+
+            if (controlMode.Value == "0")
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task created successfully!");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
+            }
+        }
+
+        protected void lbtnDeleteTask_Click(object sender, EventArgs e)
+        {
+            DeletaTask(hdnTaskId.Value);
+            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
+        }
+
         #region '--Sub Tasks--'
 
         #region '--gvSubTasks--'
@@ -537,67 +598,6 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
-        protected void btnSaveTask_Click(object sender, EventArgs e)
-        {
-            InsertUpdateTask();
-
-            RedirectToViewTasks(null);
-        }
-
-        private void InsertUpdateTask()
-        {
-            // save task master details
-            SaveTask();
-
-            if (controlMode.Value == "0")
-            {
-                // save task description as a first note.
-                txtNote.Text = txtDescription.Text;
-                SaveTaskNotesNAttachments();
-            }
-
-            // save assgined designation.
-            SaveTaskDesignations();
-
-            // save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
-
-            if (controlMode.Value == "0")
-            {
-                foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
-                {
-                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
-                }
-            }
-
-            if (this.lstSubTasks.Any())
-            {
-                foreach (Task objSubTask in this.lstSubTasks)
-                {
-                    objSubTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
-                    // save task master details to database.
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
-
-                    UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment);
-                }
-            }
-
-            if (controlMode.Value == "0")
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task created successfully!");
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
-            }
-        }
-
-        protected void lbtnDeleteTask_Click(object sender, EventArgs e)
-        {
-            DeletaTask(hdnTaskId.Value);
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
-        }
-
         #region '--Task History--'
 
         protected void btnAddNote_Click(object sender, EventArgs e)
@@ -638,160 +638,30 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
-        #region '--Work Specification - Popup--'
+        #region '--Work Specification Section--'
 
-        protected void btnAddAttachment_ClicK(object sender, EventArgs e)
+        protected void lbtnShowWorkSpecificationSection_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
-            {
-                if (controlMode.Value == "0")
-                {
-                    #region '-- Save To Viewstate --'
+            #region '--Work Specifications--'
 
-                    foreach (string strAttachment in hdnWorkFiles.Value.Split('^'))
-                    {
-                        DataRow drTaskUserFiles = dtTaskUserFiles.NewRow();
-                        drTaskUserFiles["attachment"] = strAttachment;
-                        drTaskUserFiles["FirstName"] = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]);
-                        dtTaskUserFiles.Rows.Add(drTaskUserFiles);
-                    }
+            grdWorkSpecifications.PageIndex = 0;
 
-                    #endregion
-                }
-                else
-                {
-                    #region '-- Save To Database --'
+            FillWorkSpecifications();
 
-                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-
-                    #endregion
-                }
-
-                hdnWorkFiles.Value = "";
-                upFinishedWorkFiles.Update();
-            }
-        }
-
-        protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
-        {
-            #region '--Work Specification--'
-
-            long intLastCheckInByUserId = 0;
-            string strLastCheckedInBy = "";
-            string strLastVersionUpdateBy = "";
-
-            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                (
-                                                                                    Convert.ToInt32(hdnTaskId.Value),
-                                                                                    true
-                                                                                );
-
-            txtPasswordToFreezeSpecification.Visible =
-            txtDueDate.Visible =
-            txtHours.Visible =
-            trWorkSpecification.Visible =
-            trWorkSpecificationSave.Visible =
-            lbtnDownloadWorkSpecificationFilePreview.Visible =
-            lbtnDownloadWorkSpecificationFile.Visible = false;
-
-            if (
-                dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count == 2
-               )
-            {
-                #region Freezed Copy
-
-                // main / last freezed copy.
-                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
-                {
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"])))
-                    {
-                        intLastCheckInByUserId = Convert.ToInt64(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"]);
-                        if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
-                        {
-                            strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
-
-                            string strProfileUrl = "CreatesalesUser.aspx?id=" + dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"].ToString();
-
-                            string strLastUserFullName = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserFirstName"].ToString() + " " +
-                                                         dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserLastName"].ToString();
-                            ltrlLastCheckedInBy.Text = string.Format(
-                                                                    "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
-                                                                    strProfileUrl,
-                                                                    strLastUserFullName.Trim(),
-                                                                    Convert.ToDateTime(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
-                                                                    );
-                            // show link to download freezed copy.
-                            lbtnDownloadWorkSpecificationFile.Visible = true;
-                        }
-                    }
-                }
-
-                #endregion
-
-                #region Working Copy
-
-                // current / working copy.
-                if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
-                {
-                    hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Id"]);
-
-                    txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
-
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
-                    {
-                        strLastVersionUpdateBy = dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString();
-                        //ltrlLastVersionUpdateBy.Text = string.Format(
-                        //                                            "Last version updated by \'{0}\'",
-                        //                                            strLastVersionUpdateBy
-                        //                                            );
-                    }
-                }
-
-                #endregion
-            }
-            else
-            {
-                hdnWorkSpecificationId.Value = "0";
-            }
-
-            // show link to download working copy for preview for admin users only.
-            if (this.IsAdminMode)
-            {
-                txtDueDate.Visible =
-                txtHours.Visible =
-                trWorkSpecification.Visible =
-                trWorkSpecificationSave.Visible =
-                lbtnDownloadWorkSpecificationFilePreview.Visible = true;
-
-                string strDesignation = Convert.ToString(HttpContext.Current.Session["DesigNew"]);
-                if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ITLEAD"))
-                {
-                    txtPasswordToFreezeSpecification.Visible = true;
-                }
-                else if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ADMIN"))
-                {
-                    txtPasswordToFreezeSpecification.Visible = true;
-                }
-
-                // verify.
-                if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()])) 
-                {
-                    txtPasswordToFreezeSpecification.Visible = false;
-                }
-            }
+            tblAddEditWorkSpecification.Visible = false;
+            upAddEditWorkSpecification.Update();
 
             #endregion
 
             #region '--Work Specification Attachments--'
 
-            grdWorkFiles.PageIndex = 0;
+            grdWorkSpecificationAttachments.PageIndex = 0;
 
-            FillgrdWorkFiles();
+            FillWorkSpecificationAttachments();
 
             #endregion
 
-            upWorkSpecificationFiles.Update();
+            upWorkSpecificationSection.Update();
 
             ScriptManager.RegisterStartupScript(
                                                     (sender as Control),
@@ -799,11 +669,53 @@ namespace JG_Prospect.Sr_App
                                                     "ShowPopup",
                                                     string.Format(
                                                                     "ShowPopupWithTitle(\"#{0}\", \"{1}\");",
-                                                                    divWorkSpecifications.ClientID,
-                                                                    GetWorkSpecificationFilePopupTitle(strLastCheckedInBy, strLastVersionUpdateBy)
+                                                                    divWorkSpecificationSection.ClientID,
+                                                                    GetWorkSpecificationFilePopupTitle("", "")
                                                                 ),
                                                     true
                                               );
+        }
+
+        #region Work Specifications
+
+        protected void grdWorkSpecifications_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(e.Row.FindControl("lbtnDownload"));
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(e.Row.FindControl("lbtnDownloadPreview"));
+            }
+        }
+
+        protected void grdWorkSpecifications_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "edit-version")
+            {
+
+            }
+            else if (e.CommandName == "download-freezed-copy")
+            {
+                DownloadTaskWorkSpecification(Convert.ToInt32(e.CommandArgument), true);
+            }
+            else if (e.CommandName == "download-working-copy")
+            {
+                DownloadTaskWorkSpecification(Convert.ToInt32(e.CommandArgument), false);
+            }
+        }
+
+        protected void grdWorkSpecifications_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            grdWorkSpecifications.PageIndex = e.NewPageIndex;
+
+            FillWorkSpecifications();
+        }
+
+        protected void lbtnAddWorkSpecification_Click(object sender, EventArgs e)
+        {
+            SetAddEditWorkSpecificationSection();
+
+            tblAddEditWorkSpecification.Visible = true;
+            upAddEditWorkSpecification.Update();
         }
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
@@ -897,7 +809,7 @@ namespace JG_Prospect.Sr_App
                     }
                     else
                     {
-                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecificationSection.ClientID), true);
                     }
                 }
             }
@@ -905,37 +817,56 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnDownloadWorkSpecificationFilePreview_Click(object sender, EventArgs e)
         {
-            DownloadPdf(
-                        CommonFunction.ConvertHtmlToPdf(txtWorkSpecification.Text),
-                        string.Format("Task-Preview-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
-                       );
-        }
-
-        protected void lbtnDownloadWorkSpecificationFile_Click(object sender, EventArgs e)
-        {
-            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                (
-                                                                                    Convert.ToInt32(hdnTaskId.Value),
-                                                                                    true
-                                                                                );
-            if (
-                dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count == 2 &&
-                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
-               )
+            if (!string.IsNullOrEmpty(txtWorkSpecification.Text))
             {
-                // main / last freezed copy.
-                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
-                {
-                    DownloadPdf(
-                                    CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString()),
-                                    string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
-                                );
-                }
+                DownloadPdf(
+                            CommonFunction.ConvertHtmlToPdf(txtWorkSpecification.Text),
+                            string.Format("Task-Preview-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
+                           );
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "File is empty!");
             }
         }
 
-        protected void grdWorkFiles_RowDataBound(object sender, GridViewRowEventArgs e)
+        #endregion
+
+        #region Work Specification Attachments
+
+        protected void btnAddAttachment_ClicK(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
+            {
+                if (controlMode.Value == "0")
+                {
+                    #region '-- Save To Viewstate --'
+
+                    foreach (string strAttachment in hdnWorkFiles.Value.Split('^'))
+                    {
+                        DataRow drTaskUserFiles = dtTaskUserFiles.NewRow();
+                        drTaskUserFiles["attachment"] = strAttachment;
+                        drTaskUserFiles["FirstName"] = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]);
+                        dtTaskUserFiles.Rows.Add(drTaskUserFiles);
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region '-- Save To Database --'
+
+                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
+
+                    #endregion
+                }
+
+                hdnWorkFiles.Value = "";
+                upFinishedWorkFiles.Update();
+            }
+        }
+
+        protected void grdWorkSpecificationAttachments_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
@@ -959,7 +890,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void grdWorkFiles_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void grdWorkSpecificationAttachments_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "DownloadFile")
             {
@@ -969,18 +900,20 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void grdWorkFiles_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        protected void grdWorkSpecificationAttachments_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            grdWorkFiles.PageIndex = e.NewPageIndex;
+            grdWorkSpecificationAttachments.PageIndex = e.NewPageIndex;
 
-            FillgrdWorkFiles();
+            FillWorkSpecificationAttachments();
         }
 
         #endregion
 
-        #region '--Finished Work - Popup--'
+        #endregion
 
-        protected void lbtnFinishedWorkFiles_Click(object sender, EventArgs e)
+        #region '--Finished Work Section--'
+
+        protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
         {
             upFinishedWorkFiles.Update();
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
@@ -1776,7 +1709,35 @@ namespace JG_Prospect.Sr_App
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
         }
 
-        private void FillgrdWorkFiles()
+        private void FillWorkSpecifications()
+        {
+            DataTable dtWorkSpecifications = null;
+
+            if (controlMode.Value == "0")
+            {
+                dtWorkSpecifications = this.dtTaskUserFiles;
+                intTaskUserFilesCount = dtWorkSpecifications.Rows.Count;
+                grdWorkSpecifications.AllowCustomPaging = false;
+            }
+            else
+            {
+                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                if (dsWorkSpecifications != null)
+                {
+                    dtWorkSpecifications = dsWorkSpecifications.Tables[0];
+                    intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
+                }
+                grdWorkSpecifications.AllowCustomPaging = true;
+                grdWorkSpecifications.VirtualItemCount = intTaskUserFilesCount;
+            }
+
+            grdWorkSpecifications.DataSource = dtWorkSpecifications;
+            grdWorkSpecifications.DataBind();
+
+            upWorkSpecifications.Update();
+        }
+
+        private void FillWorkSpecificationAttachments()
         {
             DataTable dtTaskUserFiles = null;
 
@@ -1784,22 +1745,22 @@ namespace JG_Prospect.Sr_App
             {
                 dtTaskUserFiles = this.dtTaskUserFiles;
                 intTaskUserFilesCount = dtTaskUserFiles.Rows.Count;
-                grdWorkFiles.AllowCustomPaging = false;
+                grdWorkSpecificationAttachments.AllowCustomPaging = false;
             }
             else
             {
-                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), grdWorkFiles.PageIndex, grdWorkFiles.PageSize);
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), grdWorkSpecificationAttachments.PageIndex, grdWorkSpecificationAttachments.PageSize);
                 if (dsTaskUserFiles != null)
                 {
                     dtTaskUserFiles = dsTaskUserFiles.Tables[0];
                     intTaskUserFilesCount = Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
                 }
-                grdWorkFiles.AllowCustomPaging = true;
-                grdWorkFiles.VirtualItemCount = intTaskUserFilesCount;
+                grdWorkSpecificationAttachments.AllowCustomPaging = true;
+                grdWorkSpecificationAttachments.VirtualItemCount = intTaskUserFilesCount;
             }
 
-            grdWorkFiles.DataSource = dtTaskUserFiles;
-            grdWorkFiles.DataBind();
+            grdWorkSpecificationAttachments.DataSource = dtTaskUserFiles;
+            grdWorkSpecificationAttachments.DataBind();
 
             upWorkSpecificationAttachments.Update();
         }
@@ -2105,6 +2066,160 @@ namespace JG_Prospect.Sr_App
             strTitle += "</div>";
 
             return strTitle;
+        }
+
+        private void SetAddEditWorkSpecificationSection()
+        {
+            #region '--Work Specification--'
+
+            long intLastCheckInByUserId = 0;
+            string strLastCheckedInBy = "";
+            string strLastVersionUpdateBy = "";
+
+            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
+                                                                                (
+                                                                                    0,
+                                                                                    Convert.ToInt32(hdnTaskId.Value),
+                                                                                    true
+                                                                                );
+
+            txtPasswordToFreezeSpecification.Visible =
+            txtDueDate.Visible =
+            txtHours.Visible =
+            trWorkSpecification.Visible =
+            trWorkSpecificationSave.Visible =
+            lbtnDownloadWorkSpecificationFilePreview.Visible = false;
+
+            if (
+                dsLatestTaskWorkSpecification != null &&
+                dsLatestTaskWorkSpecification.Tables.Count == 2
+               )
+            {
+                #region Freezed Copy
+
+                // main / last freezed copy.
+                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"])))
+                    {
+                        intLastCheckInByUserId = Convert.ToInt64(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"]);
+                        if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                        {
+                            strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
+
+                            string strProfileUrl = "CreatesalesUser.aspx?id=" + dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"].ToString();
+
+                            string strLastUserFullName = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserFirstName"].ToString() + " " +
+                                                         dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserLastName"].ToString();
+                            ltrlLastCheckedInBy.Text = string.Format(
+                                                                    "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
+                                                                    strProfileUrl,
+                                                                    strLastUserFullName.Trim(),
+                                                                    Convert.ToDateTime(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
+                                                                    );
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region Working Copy
+
+                // current / working copy.
+                if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
+                {
+                    hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Id"]);
+
+                    txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
+
+                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
+                    {
+                        strLastVersionUpdateBy = dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString();
+                        //ltrlLastVersionUpdateBy.Text = string.Format(
+                        //                                            "Last version updated by \'{0}\'",
+                        //                                            strLastVersionUpdateBy
+                        //                                            );
+                    }
+                }
+
+                #endregion
+            }
+            else
+            {
+                hdnWorkSpecificationId.Value = "0";
+            }
+
+            // show link to download working copy for preview for admin users only.
+            if (this.IsAdminMode)
+            {
+                txtDueDate.Visible =
+                txtHours.Visible =
+                trWorkSpecification.Visible =
+                trWorkSpecificationSave.Visible =
+                lbtnDownloadWorkSpecificationFilePreview.Visible = true;
+
+                string strDesignation = Convert.ToString(HttpContext.Current.Session["DesigNew"]);
+                if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ITLEAD"))
+                {
+                    txtPasswordToFreezeSpecification.Visible = true;
+                }
+                else if (!string.IsNullOrEmpty(strDesignation) && strDesignation.ToUpper().Equals("ADMIN"))
+                {
+                    txtPasswordToFreezeSpecification.Visible = true;
+                }
+
+                // verify.
+                if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]))
+                {
+                    txtPasswordToFreezeSpecification.Visible = false;
+                }
+            }
+
+            #endregion
+        }
+
+        private void DownloadTaskWorkSpecification(Int32 intTaskWorkSpecificationId, bool blFreezed)
+        {
+            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
+                                                                                (
+                                                                                    intTaskWorkSpecificationId,
+                                                                                    Convert.ToInt32(hdnTaskId.Value),
+                                                                                    blFreezed
+                                                                                );
+
+            string strContent = string.Empty;
+
+            if (
+                dsLatestTaskWorkSpecification != null &&
+                dsLatestTaskWorkSpecification.Tables.Count == 2 &&
+                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
+               )
+            {
+                strContent = Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"]);
+            }
+
+            if (!string.IsNullOrEmpty(strContent))
+            {
+                string strFileNameFormat = string.Empty;
+                if (blFreezed)
+                {
+                    strFileNameFormat = "Task-{0} {1}.pdf";
+
+                }
+                else
+                {
+                    strFileNameFormat = "Task-Preview-{0} {1}.pdf";
+                }
+
+                DownloadPdf(
+                                CommonFunction.ConvertHtmlToPdf(strContent),
+                                string.Format(strFileNameFormat, ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
+                           );
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "File is empty!");
+            }
         }
 
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
