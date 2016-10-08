@@ -519,7 +519,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool? blFreezed)
+        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
         {
             try
             {
@@ -531,10 +531,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@Id", DbType.Int32, Id);
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    if (blFreezed.HasValue)
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed.Value);
-                    }
+                    database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -598,7 +595,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId,bool blIsAdmin,bool blFreezed, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -609,7 +606,8 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+                    database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed);
                     if (intPageIndex.HasValue)
                     {
                         database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
@@ -693,7 +691,7 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetAllActiveTechTask");
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     result = database.ExecuteDataSet(command);
                 }
                 return result;

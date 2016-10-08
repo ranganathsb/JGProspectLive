@@ -721,9 +721,22 @@ namespace JG_Prospect.Sr_App
 
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownload);
 
+                DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
+
                 if (this.IsAdminAndItLeadMode)
                 {
-                    ltrlId.Visible = false;
+                    // do not allow edit, when contents are last freezed by current user.
+                    if (
+                        Convert.ToBoolean(drWorkSpecification["Status"]) &&
+                        drWorkSpecification["CurrentUserId"].ToString() == Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()].ToString()
+                       )
+                    {
+                        lbtnId.Visible = false;
+                    }
+                    else
+                    {
+                        ltrlId.Visible = false;
+                    }
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownloadPreview);
                 }
                 else
@@ -761,9 +774,6 @@ namespace JG_Prospect.Sr_App
         protected void lbtnAddWorkSpecification_Click(object sender, EventArgs e)
         {
             SetAddEditWorkSpecificationSection(0);
-
-            tblAddEditWorkSpecification.Visible = true;
-            upAddEditWorkSpecification.Update();
         }
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
@@ -1768,13 +1778,14 @@ namespace JG_Prospect.Sr_App
 
             if (controlMode.Value == "0")
             {
-                dtWorkSpecifications = this.dtTaskUserFiles;
-                intTaskUserFilesCount = dtWorkSpecifications.Rows.Count;
+                dtWorkSpecifications = null;
+                intTaskUserFilesCount = 0;
                 grdWorkSpecifications.AllowCustomPaging = false;
             }
             else
             {
-                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value),this.IsAdminAndItLeadMode,true, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+
                 if (dsWorkSpecifications != null)
                 {
                     dtWorkSpecifications = dsWorkSpecifications.Tables[0];
@@ -2126,18 +2137,18 @@ namespace JG_Prospect.Sr_App
             if (intTaskWorkSpecificationId == 0)
             {
                 #region '--Set Add Work Specification UI--'
-                
+
                 hdnWorkSpecificationId.Value = "0";
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
-                ltrlLastVersionUpdateBy.Text = string.Empty; 
+                ltrlLastVersionUpdateBy.Text = string.Empty;
 
                 #endregion
             }
             else
             {
                 hdnWorkSpecificationId.Value = intTaskWorkSpecificationId.ToString();
-                
+
                 #region '--Work Specification--'
 
                 long intLastCheckInByUserId = 0;
@@ -2163,27 +2174,29 @@ namespace JG_Prospect.Sr_App
                     dsLatestTaskWorkSpecification.Tables.Count == 2
                    )
                 {
-                    #region Freezed Copy
+                    DataTable dtFreezedWorkSpecification = dsLatestTaskWorkSpecification.Tables[0];
 
-                    // main / last freezed copy.
-                    if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
+                    #region Freezed Work Specification
+
+                    // last freezed copy.
+                    if (dtFreezedWorkSpecification.Rows.Count > 0)
                     {
-                        if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"])))
+                        if (!string.IsNullOrEmpty(Convert.ToString(dtFreezedWorkSpecification.Rows[0]["LastUserId"])))
                         {
-                            intLastCheckInByUserId = Convert.ToInt64(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"]);
-                            if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
+                            intLastCheckInByUserId = Convert.ToInt64(dtFreezedWorkSpecification.Rows[0]["LastUserId"]);
+                            if (!string.IsNullOrEmpty(Convert.ToString(dtFreezedWorkSpecification.Rows[0]["LastUsername"])))
                             {
-                                strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
+                                strLastCheckedInBy = dtFreezedWorkSpecification.Rows[0]["LastUsername"].ToString();
 
-                                string strProfileUrl = "CreatesalesUser.aspx?id=" + dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserId"].ToString();
+                                string strProfileUrl = "CreatesalesUser.aspx?id=" + dtFreezedWorkSpecification.Rows[0]["LastUserId"].ToString();
 
-                                string strLastUserFullName = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserFirstName"].ToString() + " " +
-                                                             dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUserLastName"].ToString();
+                                string strLastUserFullName = dtFreezedWorkSpecification.Rows[0]["LastUserFirstName"].ToString() + " " +
+                                                             dtFreezedWorkSpecification.Rows[0]["LastUserLastName"].ToString();
                                 ltrlLastCheckedInBy.Text = string.Format(
                                                                         "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
                                                                         strProfileUrl,
                                                                         strLastUserFullName.Trim(),
-                                                                        Convert.ToDateTime(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
+                                                                        Convert.ToDateTime(dtFreezedWorkSpecification.Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
                                                                         );
                             }
                         }
@@ -2191,22 +2204,25 @@ namespace JG_Prospect.Sr_App
 
                     #endregion
 
-                    #region Working Copy
+                    DataTable dtLastTwoWorkSpecifications = dsLatestTaskWorkSpecification.Tables[1];
+
+                    #region Last Two Copies
 
                     // current / working copy.
-                    if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
+                    if (dtLastTwoWorkSpecifications.Rows.Count > 0)
                     {
-                        hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Id"]);
+                        hdnWorkSpecificationId.Value = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
 
-                        txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
+                        txtWorkSpecification.Text = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
 
-                        if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
+                        if (!string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"])))
                         {
-                            strLastVersionUpdateBy = dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString();
-                            //ltrlLastVersionUpdateBy.Text = string.Format(
-                            //                                            "Last version updated by \'{0}\'",
-                            //                                            strLastVersionUpdateBy
-                            //                                            );
+                            strLastVersionUpdateBy = dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"].ToString();
+                        }
+
+                        if (dtLastTwoWorkSpecifications.Rows.Count > 1)
+                        {
+
                         }
                     }
 

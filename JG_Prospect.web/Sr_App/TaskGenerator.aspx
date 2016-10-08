@@ -591,7 +591,7 @@
                                             <Columns>
                                                 <asp:TemplateField HeaderText="Id">
                                                     <ItemTemplate>
-                                                        <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" CommandName="edit-version"
+                                                        <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
                                                             Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' />
                                                             <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("Id") %>' />
                                                         </small>
@@ -599,7 +599,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Status" ControlStyle-Width="80px">
                                                     <ItemTemplate>
-                                                        <%#Eval("Status").ToString().Equals("1") ? "Freezed" : "In Progress" %>
+                                                        <%#Convert.ToBoolean(Eval("Status"))? "Freezed" : "In Progress" %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="User" ControlStyle-Width="300px">
