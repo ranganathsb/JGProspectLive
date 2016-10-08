@@ -138,10 +138,10 @@ namespace JG_Prospect.App_Code
 
         /// <summary>
         /// Used in task related controls to enable / disable features based on user type.
-        /// Tech Leads, IT Enginners are given different default values for task controls.
+        /// Admin, Tech Leads are given different default values for task controls.
         /// </summary>
         /// <returns></returns>
-        public static bool CheckArchitectAndItLeadMode()
+        public static bool CheckAdminAndItLeadMode()
         {
             // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
 
@@ -150,6 +150,7 @@ namespace JG_Prospect.App_Code
             {
                 switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
                 {
+                    case "ADMIN": // admin
                     case "ITLEAD": // it engineer | tech lead
                         returnVal = true;
                         break;

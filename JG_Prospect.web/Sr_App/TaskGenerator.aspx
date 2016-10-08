@@ -592,7 +592,9 @@
                                                 <asp:TemplateField HeaderText="Id">
                                                     <ItemTemplate>
                                                         <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" CommandName="edit-version"
-                                                            Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' /></small>
+                                                            Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' />
+                                                            <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("Id") %>' />
+                                                        </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Status" ControlStyle-Width="80px">
@@ -605,14 +607,10 @@
                                                         <%# (Eval("CurrentFirstName") + " " +Eval("CurrentLastName")).Trim()  %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="" ControlStyle-Width="100px">
+                                                <asp:TemplateField HeaderText="">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lbtnDownload" runat="server" Text="Download" CommandName="download-freezed-copy"
-                                                            CommandArgument='<%#Eval("Id")%>'/>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="" ControlStyle-Width="150px">
-                                                    <ItemTemplate>
+                                                            CommandArgument='<%#Eval("Id")%>'/><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
                                                         <asp:LinkButton ID="lbtnDownloadPreview" runat="server" Text="Download Preview" CommandName="download-working-copy"
                                                             CommandArgument='<%#Eval("Id")%>' />
                                                     </ItemTemplate>
