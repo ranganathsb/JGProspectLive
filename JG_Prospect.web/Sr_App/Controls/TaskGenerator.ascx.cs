@@ -833,7 +833,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode, Start, PageLimit);
+            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit);
 
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
