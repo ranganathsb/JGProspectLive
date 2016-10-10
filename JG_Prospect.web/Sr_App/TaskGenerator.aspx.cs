@@ -153,6 +153,22 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private TaskWorkSpecificationVersions LastTaskWorkSpecificationVersion
+        {
+            get
+            {
+                if (ViewState["LastTaskWorkSpecificationVersion"] == null)
+                {
+                    ViewState["LastTaskWorkSpecificationVersion"] = new TaskWorkSpecificationVersions();
+                }
+                return (TaskWorkSpecificationVersions)ViewState["LastTaskWorkSpecificationVersion"];
+            }
+            set
+            {
+                ViewState["LastTaskWorkSpecificationVersion"] = value;
+            }
+        }
+
         #endregion
 
         #region "--Page methods--"
@@ -715,6 +731,7 @@ namespace JG_Prospect.Sr_App
             {
                 LinkButton lbtnId = e.Row.FindControl("lbtnId") as LinkButton;
                 Literal ltrlId = e.Row.FindControl("ltrlId") as Literal;
+                Literal ltrlUser = e.Row.FindControl("ltrlUser") as Literal;
                 LinkButton lbtnDownload = e.Row.FindControl("lbtnDownload") as LinkButton;
                 Literal ltrlSeprator = e.Row.FindControl("ltrlSeprator") as Literal;
                 LinkButton lbtnDownloadPreview = e.Row.FindControl("lbtnDownloadPreview") as LinkButton;
@@ -723,13 +740,30 @@ namespace JG_Prospect.Sr_App
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
 
+                string strLastUserFullName = drWorkSpecification["CurrentFirstName"].ToString() + " " +
+                                             drWorkSpecification["CurrentLastName"].ToString();
+
                 if (this.IsAdminAndItLeadMode)
                 {
-                    // do not allow edit, when contents are last freezed by current user.
+                    string strProfileUrl = "CreatesalesUser.aspx?id=" + drWorkSpecification["CurrentUserId"].ToString();
+
+                    ltrlUser.Text = string.Format(
+                                                    "<a href=\'{0}\'>{1}</a>",
+                                                    strProfileUrl,
+                                                    strLastUserFullName.Trim()
+                                                 );
+
+                    // do not allow edit, when 
+                    // 1. contents are last freezed by current user.
+                    // 2. contents are last freezed by 2 users.
                     if (
                         Convert.ToBoolean(drWorkSpecification["Status"]) &&
                         drWorkSpecification["CurrentUserId"].ToString() == Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()].ToString()
                        )
+                    {
+                        lbtnId.Visible = false;
+                    }
+                    else if (Convert.ToInt32(drWorkSpecification["FreezedByCount"]) >= 2)
                     {
                         lbtnId.Visible = false;
                     }
@@ -741,6 +775,8 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
+                    ltrlUser.Text = strLastUserFullName;
+
                     lbtnId.Visible =
                     ltrlSeprator.Visible =
                     lbtnDownloadPreview.Visible = false;
@@ -836,7 +872,7 @@ namespace JG_Prospect.Sr_App
                     #region Insert TaskWorkSpecification
 
                     TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-                    objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+                    objTaskWorkSpecification.Id = LastTaskWorkSpecificationVersion.TaskWorkSpecificationId;
                     objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
 
                     TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
@@ -845,6 +881,18 @@ namespace JG_Prospect.Sr_App
                     objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
                     objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
                     objTaskWorkSpecificationVersions.Status = blFreeze.Value;
+
+                    if (objTaskWorkSpecificationVersions.Status == true &&
+                        LastTaskWorkSpecificationVersion.Status == true &&
+                        LastTaskWorkSpecificationVersion.UserId != objTaskWorkSpecificationVersions.UserId &&
+                        LastTaskWorkSpecificationVersion.Content.Equals(txtWorkSpecification.Text))
+                    {
+                        objTaskWorkSpecificationVersions.FreezedByCount = 2;
+                    }
+                    else
+                    {
+                        objTaskWorkSpecificationVersions.FreezedByCount = 1;
+                    }
 
                     objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
 
@@ -1784,7 +1832,16 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value),this.IsAdminAndItLeadMode,true, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                DataSet dsWorkSpecifications = null;
+
+                if (this.IsAdminAndItLeadMode)
+                {
+                    dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, null, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                }
+                else
+                {
+                    dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, true, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                }
 
                 if (dsWorkSpecifications != null)
                 {
@@ -2139,6 +2196,7 @@ namespace JG_Prospect.Sr_App
                 #region '--Set Add Work Specification UI--'
 
                 hdnWorkSpecificationId.Value = "0";
+                LastTaskWorkSpecificationVersion = null;
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
                 ltrlLastVersionUpdateBy.Text = string.Empty;
@@ -2212,8 +2270,14 @@ namespace JG_Prospect.Sr_App
                     if (dtLastTwoWorkSpecifications.Rows.Count > 0)
                     {
                         hdnWorkSpecificationId.Value = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
-
                         txtWorkSpecification.Text = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
+
+                        LastTaskWorkSpecificationVersion.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["VersionId"]);
+                        LastTaskWorkSpecificationVersion.TaskWorkSpecificationId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
+                        LastTaskWorkSpecificationVersion.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
+                        LastTaskWorkSpecificationVersion.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
+                        LastTaskWorkSpecificationVersion.Status = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
+                        LastTaskWorkSpecificationVersion.Content = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
 
                         if (!string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"])))
                         {

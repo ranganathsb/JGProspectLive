@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace JG_Prospect.Common.modal
 {
+    [Serializable]
     public class TaskWorkSpecificationVersions
     {
         public Int64 Id { get; set; }
@@ -16,5 +17,7 @@ namespace JG_Prospect.Common.modal
         public bool Status { get; set; }
         public DateTime DateCreated { get; set; }
         public TaskWorkSpecification TaskWorkSpecification { get; set; }
+
+        public Int32 FreezedByCount { get; set; }
     }
 }

@@ -817,3 +817,338 @@ BEGIN
 
 END
 GO
+
+
+/*------------------------------------------------------------------------------------------------------*/
+-- 10 OCT
+/*------------------------------------------------------------------------------------------------------*/
+
+ALTER TABLE tblTaskWorkSpecificationVersions
+ADD FreezedByCount INT NULL
+GO
+
+UPDATE tblTaskWorkSpecificationVersions
+SET
+	FreezedByCount = 0
+WHERE [Status] = 0
+
+UPDATE tblTaskWorkSpecificationVersions
+SET
+	FreezedByCount = 1
+WHERE [Status] = 1
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@TaskId int,
+	@Content text,
+	@UserId	int,
+	@IsInstallUser bit,
+	@Status Bit,
+	@FreezedByCount INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    INSERT INTO tblTaskWorkSpecification
+		(
+			TaskId
+		)
+	VALUES
+		(
+			@TaskId
+		)
+	
+	DECLARE @TaskWorkSpecificationId INT = SCOPE_IDENTITY()
+
+	INSERT INTO tblTaskWorkSpecificationVersions
+		(
+			TaskWorkSpecificationId,
+			Content,
+			UserId,
+			IsInstallUser,
+			[Status],
+			FreezedByCount,
+			DateCreated
+		)
+	VALUES
+		(
+			@TaskWorkSpecificationId,
+			@Content,
+			@UserId,
+			@IsInstallUser,
+			@Status,
+			@FreezedByCount,
+			GETDATE()
+		)
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Update Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecification]
+	@TaskWorkSpecificationId int,
+	@Content text,
+	@UserId	int,
+	@IsInstallUser bit,
+	@Status Bit,
+	@FreezedByCount INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO tblTaskWorkSpecificationVersions
+		(
+			TaskWorkSpecificationId,
+			Content,
+			UserId,
+			IsInstallUser,
+			[Status],
+			FreezedByCount,
+			DateCreated
+		)
+	VALUES
+		(
+			@TaskWorkSpecificationId,
+			@Content,
+			@UserId,
+			@IsInstallUser,
+			@Status,
+			@FreezedByCount,
+			GETDATE()
+		)
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Get last checked-in Task specification from history.
+-- =============================================
+ALTER PROCEDURE [dbo].[GetLatestTaskWorkSpecification]
+	@Id		INT,
+	@TaskId INT,
+	@Status BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	-- last copy with given status.
+	SELECT TOP 1
+			
+			s.Id AS Id,
+			sv.Id As VersionId,
+			sv.[Status] AS [Status],
+			sv.Content,
+			sv.IsInstallUser,
+			sv.DateCreated,
+			LastUser.Id AS LastUserId,
+			LastUser.Username AS LastUsername,
+			LastUser.FirstName AS LastUserFirstName,
+			LastUser.LastName AS LastUserLastName,
+			LastUser.Email AS LastUserEmail
+
+	FROM tblTaskWorkSpecification s
+			INNER JOIN tblTaskWorkSpecificationVersions sv ON s.Id= sv.TaskWorkSpecificationId
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = sv.UserId AND sv.IsInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = sv.UserId AND sv.IsInstallUser = 0
+			) AS LastUser
+
+	WHERE 
+			s.Id = @Id AND 
+			s.TaskId = @TaskId AND 
+			sv.[Status] = @Status
+
+	ORDER BY sv.DateCreated DESC
+
+	-- last 2 working copies with any status.
+    SELECT TOP 2
+			
+			s.Id AS Id,
+			sv.Id As VersionId,
+			sv.[Status] AS [Status],
+			sv.Content,
+			sv.IsInstallUser,
+			sv.DateCreated,
+			CurrentUser.Id AS CurrentUserId,
+			CurrentUser.Username AS CurrentUsername,
+			CurrentUser.FirstName AS CurrentFirstName,
+			CurrentUser.LastName AS CurrentLastName,
+			CurrentUser.Email AS CurrentEmail
+
+	FROM tblTaskWorkSpecification s
+			INNER JOIN tblTaskWorkSpecificationVersions sv ON s.Id= sv.TaskWorkSpecificationId
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = sv.UserId AND sv.IsInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = sv.UserId AND sv.IsInstallUser = 0
+			) AS CurrentUser
+	
+	WHERE 
+			s.Id = @Id AND 
+			s.TaskId = @TaskId 
+
+	ORDER BY sv.DateCreated DESC
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Get all Task specifications related to a task, 
+--				with optional status filter.
+-- =============================================
+-- EXEC GetTaskWorkSpecifications 151, NULL, 1
+ALTER PROCEDURE [dbo].[GetTaskWorkSpecifications]
+	@TaskId int,
+	@Status bit = NULL,
+	@Admin bit,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskWorkSpecifications
+	AS
+	(
+		-- working copies (last working copies for each specification).
+		SELECT
+				sv.*,
+				sv.Id as TaskWorkSpecificationVersionId,
+				CurrentUser.Id AS CurrentUserId,
+				CurrentUser.Username AS CurrentUsername,
+				CurrentUser.FirstName AS CurrentFirstName,
+				CurrentUser.LastName AS CurrentLastName,
+				CurrentUser.Email AS CurrentEmail,
+				ROW_NUMBER() OVER(ORDER BY s.ID ASC) AS RowNumber
+
+		FROM tblTaskWorkSpecification s
+				OUTER APPLY
+				(
+					SELECT TOP 1 *, ROW_NUMBER() OVER(ORDER BY ID DESC) AS RowNo
+					FROM tblTaskWorkSpecificationVersions
+					WHERE TaskWorkSpecificationId = s.Id AND [Status] = ISNULL(@Status,[Status])
+				) AS sv 
+				OUTER APPLY
+				(
+					SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+					FROM tblInstallUsers iu
+					WHERE iu.Id = sv.UserId AND sv.IsInstallUser = 1
+			
+					UNION
+
+					SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+					FROM tblUsers u
+					WHERE u.Id = sv.UserId AND sv.IsInstallUser = 0
+
+				) AS CurrentUser
+		WHERE 
+			s.TaskId = @TaskId AND 
+			sv.[Status] = ISNULL(@Status,[Status]) AND
+			(
+				@Admin = 1 OR 
+				(
+					@Admin = 0 AND 
+					sv.FreezedByCount = 2
+				)
+			)
+	)
+
+			
+	-- get records
+	SELECT *
+	FROM TaskWorkSpecifications
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM tblTaskWorkSpecification s
+				OUTER APPLY
+				(
+					SELECT TOP 1 *, ROW_NUMBER() OVER(ORDER BY ID DESC) AS RowNo
+					FROM tblTaskWorkSpecificationVersions
+					WHERE TaskWorkSpecificationId = s.Id AND [Status] = ISNULL(@Status,[Status])
+				) AS sv 
+	WHERE 
+		s.TaskId = @TaskId AND 
+		[Status] = ISNULL(@Status,[Status]) AND
+		(
+			@Admin = 1 OR 
+			(
+				@Admin = 0 AND 
+				sv.FreezedByCount = 2
+			)
+		)
+
+END
+GO

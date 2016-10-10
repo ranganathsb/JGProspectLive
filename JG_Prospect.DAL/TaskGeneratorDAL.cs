@@ -478,6 +478,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
                     database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
                     database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
+                    database.AddInParameter(command, "@FreezedByCount", DbType.Int32, objTaskWorkSpecificationVersions.FreezedByCount);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -507,6 +508,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
                     database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
                     database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
+                    database.AddInParameter(command, "@FreezedByCount", DbType.Int32, objTaskWorkSpecificationVersions.FreezedByCount);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -595,7 +597,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId,bool blIsAdmin,bool blFreezed, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId,bool blIsAdmin,bool? blFreezed, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -607,7 +609,10 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed);
+                    if (blFreezed.HasValue)
+                    {
+                        database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed.Value);
+                    }
                     if (intPageIndex.HasValue)
                     {
                         database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);

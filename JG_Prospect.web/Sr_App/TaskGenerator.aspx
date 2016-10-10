@@ -584,7 +584,7 @@
                                     <ContentTemplate>
                                         <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                             GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
-                                            PagerSettings-Position="Bottom" DataKeyNames="Id,VersionId"
+                                            PagerSettings-Position="Bottom" DataKeyNames="TaskWorkSpecificationId,TaskWorkSpecificationVersionId"
                                             OnRowDataBound="grdWorkSpecifications_RowDataBound"
                                             OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
                                             OnRowCommand="grdWorkSpecifications_RowCommand">
@@ -592,8 +592,8 @@
                                                 <asp:TemplateField HeaderText="Id">
                                                     <ItemTemplate>
                                                         <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                            Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' />
-                                                            <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("Id") %>' />
+                                                            Text='<%#Eval("TaskWorkSpecificationId")%>' CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
+                                                            <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("TaskWorkSpecificationId") %>' />
                                                         </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
@@ -604,15 +604,20 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="User" ControlStyle-Width="300px">
                                                     <ItemTemplate>
-                                                        <%# (Eval("CurrentFirstName") + " " +Eval("CurrentLastName")).Trim()  %>
+                                                        <asp:Literal ID="ltrlUser" runat="server" />
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Date" ControlStyle-Width="100px">
+                                                    <ItemTemplate>
+                                                        <%#Convert.ToDateTime(Eval("DateCreated")).ToString("MM-dd-yyyy hh:mm tt") %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lbtnDownload" runat="server" Text="Download" CommandName="download-freezed-copy"
-                                                            CommandArgument='<%#Eval("Id")%>'/><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
+                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>'/><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
                                                         <asp:LinkButton ID="lbtnDownloadPreview" runat="server" Text="Download Preview" CommandName="download-working-copy"
-                                                            CommandArgument='<%#Eval("Id")%>' />
+                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>

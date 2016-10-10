@@ -91,7 +91,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
         }
 
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, bool blFreezed, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, bool? blFreezed, Int32? intPageIndex, Int32? intPageSize)
         {
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId,blIsAdmin,blFreezed, intPageIndex, intPageSize);
         }
