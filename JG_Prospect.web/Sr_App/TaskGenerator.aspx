@@ -87,7 +87,7 @@
                                         </asp:DropDownCheckBoxes>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <span style="padding-left:20px;">
+                                <span style="padding-left: 20px;">
                                     <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
                                 </span>
                             </td>
@@ -591,8 +591,9 @@
                                             <Columns>
                                                 <asp:TemplateField HeaderText="Id">
                                                     <ItemTemplate>
-                                                        <small><asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                            Text='<%#Eval("TaskWorkSpecificationId")%>' CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
+                                                                Text='<%#Eval("TaskWorkSpecificationId")%>' CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
                                                             <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("TaskWorkSpecificationId") %>' />
                                                         </small>
                                                     </ItemTemplate>
@@ -615,7 +616,7 @@
                                                 <asp:TemplateField HeaderText="">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lbtnDownload" runat="server" Text="Download" CommandName="download-freezed-copy"
-                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>'/><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
+                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' /><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
                                                         <asp:LinkButton ID="lbtnDownloadPreview" runat="server" Text="Download Preview" CommandName="download-working-copy"
                                                             CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
                                                     </ItemTemplate>
@@ -651,16 +652,16 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <div style="height:25px;">
+                                                    <div style="height: 25px;">
                                                         <div style="float: left; text-align: left; min-width: 200px;">
                                                             <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
                                                                 Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />
                                                         </div>
                                                         <div style="float: right; text-align: right; color: gray; min-width: 200px;">
                                                             <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
-                                                            <br />
-                                                            <asp:TextBox ID="txtPasswordToFreezeSpecification" runat="server" TextMode="Password" 
-                                                                    placeholder="password to freeze" CssClass="textbox" Width="150" style="margin-top: 10px;" />
+
+                                                            <asp:TextBox ID="txtPasswordToFreezeSpecification" runat="server" TextMode="Password"
+                                                                CssClass="textbox" Width="150" Style="margin-top: 10px;" />
                                                         </div>
                                                     </div>
                                                 </td>

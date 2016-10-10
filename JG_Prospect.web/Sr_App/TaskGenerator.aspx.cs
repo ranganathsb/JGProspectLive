@@ -2272,7 +2272,7 @@ namespace JG_Prospect.Sr_App
                                                                         "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
                                                                         strProfileUrl,
                                                                         strLastUserFullName.Trim(),
-                                                                        Convert.ToDateTime(dtFreezedWorkSpecification.Rows[0]["DateCreated"]).ToString("MM-dd-yyyy")
+                                                                        Convert.ToDateTime(dtFreezedWorkSpecification.Rows[0]["DateCreated"]).ToString("MM-dd-yyyy hh:mm tt")
                                                                         );
                             }
                         }
@@ -2323,6 +2323,15 @@ namespace JG_Prospect.Sr_App
                     if (this.IsAdminAndItLeadMode)
                     {
                         txtPasswordToFreezeSpecification.Visible = true;
+
+                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                        {
+                            txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
+                        }
+                        else
+                        {
+                            txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
+                        }
                     }
 
                     // verify.
