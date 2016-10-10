@@ -765,6 +765,7 @@ namespace JG_Prospect.Sr_App
                     }
                     else if (Convert.ToInt32(drWorkSpecification["FreezedByCount"]) >= 2)
                     {
+                        lbtnDownloadPreview.Visible =
                         lbtnId.Visible = false;
                     }
                     else
@@ -849,25 +850,10 @@ namespace JG_Prospect.Sr_App
                 // process only if proper freeze value is available.
                 if (blFreeze.HasValue)
                 {
-                    #region Insert / Update Task and Status
-
-                    // change status only after freezing the specifications.
-                    // this will change disabled "specs in progress" status to open on feezing.
-                    if (blFreeze.Value && cmbStatus.SelectedValue == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
-                    {
-                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
-                    }
-
                     if (controlMode.Value == "0")
                     {
                         InsertUpdateTask();
                     }
-                    else
-                    {
-                        SaveTask();
-                    }
-
-                    #endregion
 
                     #region Insert TaskWorkSpecification
 
@@ -907,6 +893,24 @@ namespace JG_Prospect.Sr_App
 
                     #endregion
 
+                    #region Insert / Update Task and Status
+                    
+                    // change status only after freezing all specifications.
+                    // this will change disabled "specs in progress" status to open on feezing.
+                    if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
+                    {
+                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                    }
+                    else
+                    {
+                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                    }
+
+                    // update task status.
+                    SaveTask(); 
+                    
+                    #endregion
+
                     // redirect to task generator page or
                     // hide popup.
                     if (controlMode.Value == "0")
@@ -915,8 +919,6 @@ namespace JG_Prospect.Sr_App
                     }
                     else
                     {
-                        //ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecificationSection.ClientID), true);
-
                         FillWorkSpecifications();
 
                         tblAddEditWorkSpecification.Visible = false;
@@ -2062,7 +2064,23 @@ namespace JG_Prospect.Sr_App
 
                 if (item != null)
                 {
-                    ddlTUStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
+                    item.Enabled = true;
+                    ddlTUStatus.SelectedIndex = ddlTUStatus.Items.IndexOf(item);
+
+                    // disable dropdown and do not allow user to change status
+                    // status will be changed only after freezing the specifications.
+                    if (item.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                    {
+                        ddlTUStatus.Enabled = false;
+                    }
+                    else
+                    {
+                        ddlTUStatus.Enabled = true;
+                    }
+                }
+                else
+                {
+                    ddlTUStatus.SelectedIndex = 0;
                 }
 
                 if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))

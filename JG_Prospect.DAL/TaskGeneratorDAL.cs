@@ -633,6 +633,35 @@ namespace JG_Prospect.DAL
             }
         }
 
+
+        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        {
+            int intReturnValue = 0;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPendingTaskWorkSpecificationCount");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables.Count > 0 && returndata.Tables[0].Rows.Count > 0) {
+                        intReturnValue = Convert.ToInt32(returndata.Tables[0].Rows[0]["TotalRecordCount"]);
+                    }
+
+                    return intReturnValue;
+                }
+            }
+            catch (Exception ex)
+            {
+                return intReturnValue;
+            }
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
         {
             try
@@ -960,6 +989,11 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
                     }
+
+                    // 8 is for specs in progress
+                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, 8);
+
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
 
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);

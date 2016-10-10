@@ -96,6 +96,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId,blIsAdmin,blFreezed, intPageIndex, intPageSize);
         }
 
+        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId, intPageIndex, intPageSize);
