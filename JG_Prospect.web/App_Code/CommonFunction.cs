@@ -476,10 +476,23 @@ namespace JG_Prospect.App_Code
             return ReturnSequence;
         }
 
+        public static string GetTaskWorkSpecificationSqquence(string strStartAt)
+        {
+            string[] strValues = strStartAt.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            if (strValues.Length == 2)
+            {
+                char chNextChar = (char)(Convert.ToInt16(strValues[0][0]) + 1);
+                int intNextNum = Convert.ToInt16(strValues[1]) + 1;
+
+                return (chNextChar + "-" + intNextNum);
+            }
+            return "a-1";
+        }
+
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
-            
+
             objListItemCollection.Add(new ListItem("Open", Convert.ToByte(TaskStatus.Open).ToString()));
             objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(TaskStatus.Requested).ToString()));
             objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(TaskStatus.Assigned).ToString()));
@@ -488,7 +501,7 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(TaskStatus.ReOpened).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(TaskStatus.Closed).ToString()));
             objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(TaskStatus.SpecsInProgress).ToString()));
-            
+
             return objListItemCollection;
         }
 

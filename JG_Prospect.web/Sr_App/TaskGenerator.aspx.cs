@@ -169,6 +169,22 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private string TaskWorkSpecificationSequence
+        {
+            get
+            {
+                if (ViewState["TaskWorkSpecificationSequence"] == null)
+                {
+                    return string.Empty;
+                }
+                return ViewState["TaskWorkSpecificationSequence"].ToString();
+            }
+            set
+            {
+                ViewState["TaskWorkSpecificationSequence"] = value;
+            }
+        }
+
         #endregion
 
         #region "--Page methods--"
@@ -832,7 +848,7 @@ namespace JG_Prospect.Sr_App
                 objTaskWorkSpecification.CustomId = txtCustomId.Text;
                 objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
                 objTaskWorkSpecification.Description = txtWorkSpecification.Text;
-                objTaskWorkSpecification.Links = string.Join(",",LastTaskWorkSpecification.Links.Split(new char[]{','},StringSplitOptions.RemoveEmptyEntries));
+                objTaskWorkSpecification.Links = string.Join(",", LastTaskWorkSpecification.Links.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
                 objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value;
                 objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
@@ -1808,6 +1824,11 @@ namespace JG_Prospect.Sr_App
                 {
                     dtWorkSpecifications = dsWorkSpecifications.Tables[0];
                     intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
+
+                    if(dtWorkSpecifications.Rows.Count > 0)
+                    {
+                        this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
+                    }
                 }
                 grdWorkSpecifications.AllowCustomPaging = true;
                 grdWorkSpecifications.VirtualItemCount = intTaskUserFilesCount;
@@ -2169,14 +2190,17 @@ namespace JG_Prospect.Sr_App
         private void SetAddEditWorkSpecificationSection(Int32 intTaskWorkSpecificationId)
         {
             hdnWorkSpecificationFile.Value = "";
-            
+
             if (intTaskWorkSpecificationId == 0)
             {
                 #region '--Set Add Work Specification UI--'
 
                 LastTaskWorkSpecification = null;
                 LastTaskWorkSpecification.Links = "";
-                
+
+                LastTaskWorkSpecification.CustomId =
+                txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSqquence(this.TaskWorkSpecificationSequence);
+
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
                 ltrlLastVersionUpdateBy.Text = string.Empty;
@@ -2202,7 +2226,7 @@ namespace JG_Prospect.Sr_App
                     if (dtLastTwoWorkSpecifications.Rows.Count > 0)
                     {
                         #region Prepare Data
-                        
+
                         LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
                         LastTaskWorkSpecification.CustomId = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CustomId"]);
                         LastTaskWorkSpecification.TaskId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["TaskId"]);
@@ -2222,7 +2246,7 @@ namespace JG_Prospect.Sr_App
                         LastTaskWorkSpecification.UserEmail = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserEmail"]);
 
                         hdnWorkSpecificationFile.Value = LastTaskWorkSpecification.WireFrame;
-                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description; 
+                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
 
                         #endregion
 
@@ -2269,7 +2293,7 @@ namespace JG_Prospect.Sr_App
                     {
                         txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
                     }
-                    
+
                     // do not show password field to the user, if the user is the current user who checked-in the specification.
                     if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]))
                     {
