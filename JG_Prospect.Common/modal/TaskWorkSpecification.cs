@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JG_Prospect.Common.modal
 {
     [Serializable]
-    public class TaskWorkSpecification
+    public partial class TaskWorkSpecification
     {
         public long Id { get; set; }
         public string CustomId { get; set; }
@@ -21,5 +21,9 @@ namespace JG_Prospect.Common.modal
         public bool TechLeadStatus { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
+        public string Username { get; set; }
+        public string UserFirstname { get; set; }
+        public string UserLastname { get; set; }
+        public string UserEmail { get; set; }
     }
 }

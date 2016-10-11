@@ -690,14 +690,10 @@ namespace JG_Prospect.Sr_App
 
             FillWorkSpecifications();
 
+            // expand add work specification section for admin and tech lead users.
             if (this.IsAdminAndItLeadMode)
             {
                 SetAddEditWorkSpecificationSection(0);
-                lbtnAddWorkSpecification.Visible = false;
-            }
-            else
-            {
-                lbtnAddWorkSpecification.Visible = false;
             }
 
             #endregion
@@ -733,56 +729,38 @@ namespace JG_Prospect.Sr_App
             {
                 LinkButton lbtnId = e.Row.FindControl("lbtnId") as LinkButton;
                 Literal ltrlId = e.Row.FindControl("ltrlId") as Literal;
-                Literal ltrlUser = e.Row.FindControl("ltrlUser") as Literal;
-                LinkButton lbtnDownload = e.Row.FindControl("lbtnDownload") as LinkButton;
-                Literal ltrlSeprator = e.Row.FindControl("ltrlSeprator") as Literal;
-                LinkButton lbtnDownloadPreview = e.Row.FindControl("lbtnDownloadPreview") as LinkButton;
-
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownload);
+                Label lblDescription = e.Row.FindControl("lblDescription") as Label;
+                Literal ltrlLinks = e.Row.FindControl("ltrlLinks") as Literal;
+                Literal ltrlWireframe = e.Row.FindControl("ltrlWireframe") as Literal;
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
 
-                string strLastUserFullName = drWorkSpecification["CurrentFirstName"].ToString() + " " +
-                                             drWorkSpecification["CurrentLastName"].ToString();
+                lblDescription.ToolTip = Convert.ToString(drWorkSpecification["Description"]);
+                lblDescription.Text = lblDescription.ToolTip.Length > 100 ?
+                                            lblDescription.ToolTip.Substring(0, 100) + "..." :
+                                            lblDescription.ToolTip;
+
+                if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
+                {
+                    foreach (string strLink in drWorkSpecification["Links"].ToString().Split(','))
+                    {
+                        ltrlLinks.Text += string.Format(
+                                                            "<a href='{0}'>{1}</a><br/>",
+                                                            strLink,
+                                                            strLink.Length > 50 ?
+                                                                strLink.Substring(0, 50) :
+                                                                strLink
+                                                       );
+                    }
+                }
 
                 if (this.IsAdminAndItLeadMode)
                 {
-                    string strProfileUrl = "CreatesalesUser.aspx?id=" + drWorkSpecification["CurrentUserId"].ToString();
-
-                    ltrlUser.Text = string.Format(
-                                                    "<a href=\'{0}\'>{1}</a>",
-                                                    strProfileUrl,
-                                                    strLastUserFullName.Trim()
-                                                 );
-
-                    // do not allow edit, when 
-                    // 1. contents are last freezed by current user.
-                    // 2. contents are last freezed by 2 users.
-                    if (
-                        Convert.ToBoolean(drWorkSpecification["Status"]) &&
-                        drWorkSpecification["CurrentUserId"].ToString() == Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()].ToString()
-                       )
-                    {
-                        lbtnId.Visible = false;
-                    }
-                    else if (Convert.ToInt32(drWorkSpecification["FreezedByCount"]) >= 2)
-                    {
-                        lbtnDownloadPreview.Visible =
-                        lbtnId.Visible = false;
-                    }
-                    else
-                    {
-                        ltrlId.Visible = false;
-                    }
-                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownloadPreview);
+                    ltrlId.Visible = true;
                 }
                 else
                 {
-                    ltrlUser.Text = strLastUserFullName;
-
-                    lbtnId.Visible =
-                    ltrlSeprator.Visible =
-                    lbtnDownloadPreview.Visible = false;
+                    lbtnId.Visible = false;
                 }
             }
         }
@@ -810,6 +788,25 @@ namespace JG_Prospect.Sr_App
             FillWorkSpecifications();
         }
 
+        protected void repWorkSpecificationLinks_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "delete-link")
+            {
+                UpdateWorkSpecificationLinksFromView();
+
+                List<string> lstLinks = LastTaskWorkSpecification.Links.Split(',').ToList();
+                lstLinks.RemoveAt(Convert.ToInt32(e.CommandArgument));
+                LastTaskWorkSpecification.Links = string.Join(",", lstLinks);
+            }
+            else if (e.CommandName == "add-new-link")
+            {
+                UpdateWorkSpecificationLinksFromView();
+
+                LastTaskWorkSpecification.Links += ",";
+            }
+            FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
+        }
+
         protected void lbtnAddWorkSpecification_Click(object sender, EventArgs e)
         {
             SetAddEditWorkSpecificationSection(0);
@@ -817,12 +814,79 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
+            UpdateWorkSpecificationLinksFromView();
+
             // only admin can update work specification.
             // only admin can update disabled "specs in progress" status by freezing the work specifications.
-            if (this.IsAdminMode)
+            if (this.IsAdminAndItLeadMode)
             {
-                bool? blFreeze = null;
+                if (controlMode.Value == "0")
+                {
+                    InsertUpdateTask();
+                }
 
+                #region Insert TaskWorkSpecification
+
+                TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                objTaskWorkSpecification.Id = LastTaskWorkSpecification.Id;
+                objTaskWorkSpecification.CustomId = txtCustomId.Text;
+                objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+                objTaskWorkSpecification.Description = txtWorkSpecification.Text;
+                objTaskWorkSpecification.Links = string.Join(",",LastTaskWorkSpecification.Links.Split(new char[]{','},StringSplitOptions.RemoveEmptyEntries));
+                objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value;
+                objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskWorkSpecification.AdminStatus = false;
+                objTaskWorkSpecification.TechLeadStatus = false;
+
+                if (objTaskWorkSpecification.Id == 0)
+                {
+                    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                }
+
+                #endregion
+
+                #region Insert / Update Task and Status
+
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                }
+                else
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                }
+
+                // update task status.
+                SaveTask();
+
+                #endregion
+
+                // redirect to task generator page or
+                // hide popup.
+                if (controlMode.Value == "0")
+                {
+                    RedirectToViewTasks(null);
+                }
+                else
+                {
+                    FillWorkSpecifications();
+
+                    SetAddEditWorkSpecificationSection(0);
+                }
+            }
+        }
+
+        protected void txtPasswordToFreezeSpecification_TextChanged(object sender, EventArgs e)
+        {
+            if (this.IsAdminAndItLeadMode)
+            {
                 #region Freeze Based On Password
 
                 if (!string.IsNullOrEmpty(txtPasswordToFreezeSpecification.Text))
@@ -839,93 +903,11 @@ namespace JG_Prospect.Sr_App
                     }
                     else
                     {
-                        blFreeze = true;
+                        // Freeze all specifications
                     }
-                }
-                else
-                {
-                    blFreeze = false;
                 }
 
                 #endregion
-
-                // process only if proper freeze value is available.
-                if (blFreeze.HasValue)
-                {
-                    if (controlMode.Value == "0")
-                    {
-                        InsertUpdateTask();
-                    }
-
-                    #region Insert TaskWorkSpecification
-
-                    TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-                    objTaskWorkSpecification.Id = LastTaskWorkSpecification.Id;
-                    objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-                    objTaskWorkSpecification.Description = txtWorkSpecification.Text;
-                    objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                    objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
-                    objTaskWorkSpecification.AdminStatus = blFreeze.Value;
-                    objTaskWorkSpecification.TechLeadStatus = blFreeze.Value;
-
-                    if (objTaskWorkSpecification.Id == 0)
-                    {
-                        TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-                    }
-                    else
-                    {
-                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-                    }
-
-                    #endregion
-
-                    #region Insert / Update Task and Status
-                    
-                    // change status only after freezing all specifications.
-                    // this will change disabled "specs in progress" status to open on feezing.
-                    if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
-                    {
-                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
-                    }
-                    else
-                    {
-                        SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
-                    }
-
-                    // update task status.
-                    SaveTask(); 
-                    
-                    #endregion
-
-                    // redirect to task generator page or
-                    // hide popup.
-                    if (controlMode.Value == "0")
-                    {
-                        RedirectToViewTasks(null);
-                    }
-                    else
-                    {
-                        FillWorkSpecifications();
-
-                        SetAddEditWorkSpecificationSection(0);
-                        lbtnAddWorkSpecification.Visible = false;
-                    }
-                }
-            }
-        }
-
-        protected void lbtnDownloadWorkSpecificationFilePreview_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txtWorkSpecification.Text))
-            {
-                DownloadPdf(
-                            CommonFunction.ConvertHtmlToPdf(txtWorkSpecification.Text),
-                            string.Format("Task-Preview-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
-                           );
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "File is empty!");
             }
         }
 
@@ -1820,7 +1802,7 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode,grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
 
                 if (dsWorkSpecifications != null)
                 {
@@ -2186,11 +2168,15 @@ namespace JG_Prospect.Sr_App
 
         private void SetAddEditWorkSpecificationSection(Int32 intTaskWorkSpecificationId)
         {
+            hdnWorkSpecificationFile.Value = "";
+            
             if (intTaskWorkSpecificationId == 0)
             {
                 #region '--Set Add Work Specification UI--'
 
                 LastTaskWorkSpecification = null;
+                LastTaskWorkSpecification.Links = "";
+                
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
                 ltrlLastVersionUpdateBy.Text = string.Empty;
@@ -2203,99 +2189,88 @@ namespace JG_Prospect.Sr_App
 
                 long intLastCheckInByUserId = 0;
                 string strLastCheckedInBy = "";
-                string strLastVersionUpdateBy = "";
 
                 DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
 
                 if (
                     dsLatestTaskWorkSpecification != null &&
-                    dsLatestTaskWorkSpecification.Tables.Count == 2
+                    dsLatestTaskWorkSpecification.Tables.Count > 0
                    )
                 {
-                    DataTable dtFreezedWorkSpecification = dsLatestTaskWorkSpecification.Tables[0];
+                    DataTable dtLastTwoWorkSpecifications = dsLatestTaskWorkSpecification.Tables[0];
 
-                    #region Freezed Work Specification
-
-                    // last freezed copy.
-                    if (dtFreezedWorkSpecification.Rows.Count > 0)
+                    if (dtLastTwoWorkSpecifications.Rows.Count > 0)
                     {
-                        if (!string.IsNullOrEmpty(Convert.ToString(dtFreezedWorkSpecification.Rows[0]["LastUserId"])))
+                        #region Prepare Data
+                        
+                        LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
+                        LastTaskWorkSpecification.CustomId = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CustomId"]);
+                        LastTaskWorkSpecification.TaskId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["TaskId"]);
+                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
+                        LastTaskWorkSpecification.Links = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Links"]);
+                        LastTaskWorkSpecification.WireFrame = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["WireFrame"]);
+                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
+                        LastTaskWorkSpecification.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
+                        LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["AdminStatus"]);
+                        LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["TechLeadStatus"]);
+                        LastTaskWorkSpecification.DateCreated = Convert.ToDateTime(dtLastTwoWorkSpecifications.Rows[0]["DateCreated"]);
+                        LastTaskWorkSpecification.DateUpdated = Convert.ToDateTime(dtLastTwoWorkSpecifications.Rows[0]["DateUpdated"]);
+
+                        LastTaskWorkSpecification.Username = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUsername"]);
+                        LastTaskWorkSpecification.UserFirstname = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserFirstName"]);
+                        LastTaskWorkSpecification.UserLastname = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserLastName"]);
+                        LastTaskWorkSpecification.UserEmail = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserEmail"]);
+
+                        hdnWorkSpecificationFile.Value = LastTaskWorkSpecification.WireFrame;
+                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description; 
+
+                        #endregion
+
+                        #region Last Check-In / Freezed By
+
+                        // show freezed by text, if any of the status contains true value.
+                        if (
+                            (LastTaskWorkSpecification.AdminStatus || LastTaskWorkSpecification.TechLeadStatus) &&
+                            !string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]))
+                           )
                         {
-                            intLastCheckInByUserId = Convert.ToInt64(dtFreezedWorkSpecification.Rows[0]["LastUserId"]);
-                            if (!string.IsNullOrEmpty(Convert.ToString(dtFreezedWorkSpecification.Rows[0]["LastUsername"])))
+                            intLastCheckInByUserId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]);
+                            if (!string.IsNullOrEmpty(LastTaskWorkSpecification.Username))
                             {
-                                strLastCheckedInBy = dtFreezedWorkSpecification.Rows[0]["LastUsername"].ToString();
+                                strLastCheckedInBy = LastTaskWorkSpecification.Username;
 
-                                string strProfileUrl = "CreatesalesUser.aspx?id=" + dtFreezedWorkSpecification.Rows[0]["LastUserId"].ToString();
+                                string strProfileUrl = "CreatesalesUser.aspx?id=" + dtLastTwoWorkSpecifications.Rows[0]["LastUserId"].ToString();
 
-                                string strLastUserFullName = dtFreezedWorkSpecification.Rows[0]["LastUserFirstName"].ToString() + " " +
-                                                             dtFreezedWorkSpecification.Rows[0]["LastUserLastName"].ToString();
+                                string strLastUserFullName = LastTaskWorkSpecification.UserFirstname + " " +
+                                                             LastTaskWorkSpecification.UserLastname;
                                 ltrlLastCheckedInBy.Text = string.Format(
-                                                                        "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
-                                                                        strProfileUrl,
-                                                                        strLastUserFullName.Trim(),
-                                                                        Convert.ToDateTime(dtFreezedWorkSpecification.Rows[0]["DateCreated"]).ToString("MM-dd-yyyy hh:mm tt")
+                                                                            "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
+                                                                            strProfileUrl,
+                                                                            strLastUserFullName.Trim(),
+                                                                            LastTaskWorkSpecification.DateUpdated.ToString("MM-dd-yyyy hh:mm tt")
                                                                         );
                             }
                         }
+
+                        #endregion
                     }
-
-                    #endregion
-
-                    DataTable dtLastTwoWorkSpecifications = dsLatestTaskWorkSpecification.Tables[1];
-
-                    #region Last Two Copies
-
-                    // current / working copy.
-                    if (dtLastTwoWorkSpecifications.Rows.Count > 0)
-                    {
-                        LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
-                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
-                        LastTaskWorkSpecification.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
-                        LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
-                        LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
-                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
-
-                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
-
-                        if (!string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"])))
-                        {
-                            strLastVersionUpdateBy = dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"].ToString();
-                        }
-
-                        if (dtLastTwoWorkSpecifications.Rows.Count > 1)
-                        {
-
-                        }
-                    }
-
-                    #endregion
                 }
 
                 // show link to download working copy for preview for admin users only.
-                if (this.IsAdminMode)
+                if (this.IsAdminAndItLeadMode)
                 {
-                    //txtDueDate.Visible =
-                    //txtHours.Visible =
-                    //trWorkSpecification.Visible =
-                    //trWorkSpecificationSave.Visible =
-                    //lbtnDownloadWorkSpecificationFilePreview.Visible = true;
+                    txtPasswordToFreezeSpecification.Visible = true;
 
-                    if (this.IsAdminAndItLeadMode)
+                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                     {
-                        txtPasswordToFreezeSpecification.Visible = true;
-
-                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
-                        {
-                            txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
-                        }
-                        else
-                        {
-                            txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
-                        }
+                        txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
                     }
-
-                    // verify.
+                    else
+                    {
+                        txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
+                    }
+                    
+                    // do not show password field to the user, if the user is the current user who checked-in the specification.
                     if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]))
                     {
                         txtPasswordToFreezeSpecification.Visible = false;
@@ -2305,8 +2280,28 @@ namespace JG_Prospect.Sr_App
                 #endregion
             }
 
+            FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
+
             tblAddEditWorkSpecification.Visible = true;
             upAddEditWorkSpecification.Update();
+        }
+
+        private void FillWorkSpecificationLinks(string[] arrLinks)
+        {
+            repWorkSpecificationLinks.DataSource = arrLinks;
+            repWorkSpecificationLinks.DataBind();
+        }
+
+        private void UpdateWorkSpecificationLinksFromView()
+        {
+            List<string> lstLinks = new List<string>();
+
+            foreach (RepeaterItem item in repWorkSpecificationLinks.Items)
+            {
+                lstLinks.Add((item.FindControl("txtWorkSpecificationLink") as TextBox).Text.Trim());
+            }
+
+            LastTaskWorkSpecification.Links = string.Join(",", lstLinks);
         }
 
         private void DownloadTaskWorkSpecification(Int32 intTaskWorkSpecificationId, bool blFreezed)

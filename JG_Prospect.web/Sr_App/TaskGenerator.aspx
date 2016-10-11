@@ -114,7 +114,7 @@
                                                 OnClick="lbtnShowFinishedWorkFiles_Click" />&nbsp;&nbsp;
                                            
                                             <br />
-                                            <div id="divWorkFileAdmin" class="dropzone work-file">
+                                            <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
                                                 <div class="fallback">
                                                     <input name="WorkFile" type="file" multiple />
                                                     <input type="submit" value="UploadWorkFile" />
@@ -345,7 +345,7 @@
                                 <br />
                                 <br />
                                 <div>
-                                    <div id="divWorkFileUser" class="dropzone work-file">
+                                    <div id="divWorkFileUser" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
                                         <div class="fallback">
                                             <input name="WorkFile" type="file" multiple />
                                             <input type="submit" value="UploadWorkFile" />
@@ -582,9 +582,13 @@
                             <ContentTemplate>
                                 <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
+                                        <div>
+                                            <asp:TextBox ID="txtPasswordToFreezeSpecification" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                                AutoPostBack="true" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                        </div>
                                         <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                             GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
-                                            PagerSettings-Position="Bottom" DataKeyNames="TaskWorkSpecificationId,TaskWorkSpecificationVersionId"
+                                            PagerSettings-Position="Bottom" DataKeyNames="Id"
                                             OnRowDataBound="grdWorkSpecifications_RowDataBound"
                                             OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
                                             OnRowCommand="grdWorkSpecifications_RowCommand">
@@ -593,32 +597,24 @@
                                                     <ItemTemplate>
                                                         <small>
                                                             <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                                Text='<%#Eval("TaskWorkSpecificationId")%>' CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
-                                                            <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("TaskWorkSpecificationId") %>' />
+                                                                Text='<%#Eval("CustomId") + "-" + Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' />
+                                                            <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
                                                         </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Status" ControlStyle-Width="80px">
+                                                <asp:TemplateField HeaderText="Description" ControlStyle-Width="200px">
                                                     <ItemTemplate>
-                                                        <%#Convert.ToBoolean(Eval("Status"))? "Freezed" : "In Progress" %>
+                                                        <asp:Label ID="lblDescription" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="User" ControlStyle-Width="300px">
+                                                <asp:TemplateField HeaderText="Links" ControlStyle-Width="80px">
                                                     <ItemTemplate>
-                                                        <asp:Literal ID="ltrlUser" runat="server" />
+                                                        <asp:Literal ID="ltrlLinks" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Date" ControlStyle-Width="100px">
+                                                <asp:TemplateField HeaderText="Wire frame" ControlStyle-Width="80px">
                                                     <ItemTemplate>
-                                                        <%#Convert.ToDateTime(Eval("DateCreated")).ToString("MM-dd-yyyy hh:mm tt") %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="">
-                                                    <ItemTemplate>
-                                                        <asp:LinkButton ID="lbtnDownload" runat="server" Text="Download" CommandName="download-freezed-copy"
-                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' /><asp:Literal ID="ltrlSeprator" runat="server" Text="&nbsp;|&nbsp;" />
-                                                        <asp:LinkButton ID="lbtnDownloadPreview" runat="server" Text="Download Preview" CommandName="download-working-copy"
-                                                            CommandArgument='<%#Eval("TaskWorkSpecificationId")%>' />
+                                                        <asp:Literal ID="ltrlWireframe" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -627,11 +623,13 @@
                                             <AlternatingRowStyle CssClass="AlternateRow" />
                                         </asp:GridView>
                                         <br />
-                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification" OnClick="lbtnAddWorkSpecification_Click" />
+                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification" 
+                                            Visible="false" OnClick="lbtnAddWorkSpecification_Click" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                                 <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
+                                        <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="vgSaveWorkSpecification" ShowSummary="False" ShowMessageBox="True" />
                                         <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%">
                                             <tr id="trWorkSpecification" runat="server">
                                                 <td>
@@ -653,17 +651,65 @@
                                             <tr>
                                                 <td>
                                                     <div style="height: 25px;">
-                                                        <div style="float: left; text-align: left; min-width: 200px;">
-                                                            <asp:LinkButton ID="lbtnDownloadWorkSpecificationFilePreview" runat="server"
-                                                                Text="Download Preview" OnClick="lbtnDownloadWorkSpecificationFilePreview_Click" />
-                                                        </div>
                                                         <div style="float: right; text-align: right; color: gray; min-width: 200px;">
                                                             <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
-
-                                                            <asp:TextBox ID="txtPasswordToFreezeSpecification" runat="server" TextMode="Password"
-                                                                CssClass="textbox" Width="150" Style="margin-top: 10px;" />
                                                         </div>
                                                     </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div style="width:200px; float:left;">
+                                                    CustomId: <asp:TextBox ID="txtCustomId" runat="server" CssClass="textbox" Width="100" />
+                                                    <asp:RequiredFieldValidator ID="rfvCustomId" runat="server" ControlToValidate="txtCustomId" ValidationGroup="vgSaveWorkSpecification" 
+                                                        ErrorMessage="CustomId is required."/>
+                                                    </div>
+                                                    <div style="width:400px; float:left;">
+                                                        <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>">
+                                                            <div class="fallback">
+                                                                <input name="WorkFile" type="file" multiple />
+                                                                <input type="submit" value="UploadWorkFile" />
+                                                            </div>
+                                                        </div>
+                                                        <div id="divWorkSpecificationFilePreview" class="dropzone-previews work-file-previews">
+                                                        </div>
+                                                        <asp:HiddenField ID="hdnWorkSpecificationFile" runat="server" Value="" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <asp:UpdatePanel ID="upWorkSpecificationLinks" runat="server">
+                                                        <ContentTemplate>
+                                                            <asp:Repeater ID="repWorkSpecificationLinks" runat="server" OnItemCommand="repWorkSpecificationLinks_ItemCommand">
+                                                                <HeaderTemplate>
+                                                                    <table width="100%">
+                                                                        <tr>
+                                                                            <td>Links:</td>
+                                                                        </tr>
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <asp:TextBox ID="txtWorkSpecificationLink" runat="server" CssClass="textbox"
+                                                                                Text='<%#Container.DataItem.ToString()%>' Width="400px" />
+                                                                            <asp:LinkButton ID="lbtnDeleteLink" runat="server" CommandName="delete-link"  ClientIDMode="AutoID"
+                                                                                CommandArgument='<%#Container.ItemIndex%>' Text="Delete" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <asp:LinkButton ID="lbtnAddNewLink" runat="server" ClientIDMode="AutoID" CommandName="add-new-link"
+                                                                                 Text="Add New" />
+                                                                        </td>
+                                                                    </tr>
+                                                                    </table>
+                                                                </FooterTemplate>
+                                                            </asp:Repeater>
+                                                        </ContentTemplate>
+                                                    </asp:UpdatePanel>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -686,7 +732,7 @@
                                                                
                                                                 <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
                                                                 <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
-                                                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="Submit" ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                                                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
 
                                                                 <asp:Literal ID="ltlTUHrsTask" runat="server" />
                                                             </td>
@@ -699,15 +745,12 @@
                                                     <div class="btn_sec">
                                                         <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
                                                             OnClientClick="javascript:SetContentInTextbox();"
-                                                            OnClick="btnSaveWorkSpecification_Click" ValidationGroup="Submit" />
+                                                            OnClick="btnSaveWorkSpecification_Click" ValidationGroup="SaveWorkSpecification" />
                                                     </div>
                                                 </td>
                                             </tr>
                                         </table>
                                     </ContentTemplate>
-                                    <Triggers>
-                                        <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFilePreview" />
-                                    </Triggers>
                                 </asp:UpdatePanel>
                             </ContentTemplate>
                         </asp:TabPanel>

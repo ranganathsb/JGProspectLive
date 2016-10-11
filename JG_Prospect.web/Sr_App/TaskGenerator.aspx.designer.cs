@@ -724,6 +724,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
         
         /// <summary>
+        /// txtPasswordToFreezeSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPasswordToFreezeSpecification;
+        
+        /// <summary>
         /// grdWorkSpecifications control.
         /// </summary>
         /// <remarks>
@@ -749,6 +758,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel upAddEditWorkSpecification;
+        
+        /// <summary>
+        /// ValidationSummary2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary2;
         
         /// <summary>
         /// tblAddEditWorkSpecification control.
@@ -778,15 +796,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
         
         /// <summary>
-        /// lbtnDownloadWorkSpecificationFilePreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnDownloadWorkSpecificationFilePreview;
-        
-        /// <summary>
         /// ltrlLastCheckedInBy control.
         /// </summary>
         /// <remarks>
@@ -805,13 +814,49 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
         
         /// <summary>
-        /// txtPasswordToFreezeSpecification control.
+        /// txtCustomId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPasswordToFreezeSpecification;
+        protected global::System.Web.UI.WebControls.TextBox txtCustomId;
+        
+        /// <summary>
+        /// rfvCustomId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomId;
+        
+        /// <summary>
+        /// hdnWorkSpecificationFile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnWorkSpecificationFile;
+        
+        /// <summary>
+        /// upWorkSpecificationLinks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationLinks;
+        
+        /// <summary>
+        /// repWorkSpecificationLinks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repWorkSpecificationLinks;
         
         /// <summary>
         /// ddlUserAcceptance control.
