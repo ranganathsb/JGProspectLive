@@ -700,7 +700,6 @@
                                                         <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
                                                             OnClientClick="javascript:SetContentInTextbox();"
                                                             OnClick="btnSaveWorkSpecification_Click" ValidationGroup="Submit" />
-                                                        <asp:HiddenField ID="hdnWorkSpecificationId" runat="server" Value="0" />
                                                     </div>
                                                 </td>
                                             </tr>

@@ -153,19 +153,19 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private TaskWorkSpecificationVersions LastTaskWorkSpecificationVersion
+        private TaskWorkSpecification LastTaskWorkSpecification
         {
             get
             {
-                if (ViewState["LastTaskWorkSpecificationVersion"] == null)
+                if (ViewState["LastTaskWorkSpecification"] == null)
                 {
-                    ViewState["LastTaskWorkSpecificationVersion"] = new TaskWorkSpecificationVersions();
+                    ViewState["LastTaskWorkSpecification"] = new TaskWorkSpecification();
                 }
-                return (TaskWorkSpecificationVersions)ViewState["LastTaskWorkSpecificationVersion"];
+                return (TaskWorkSpecification)ViewState["LastTaskWorkSpecification"];
             }
             set
             {
-                ViewState["LastTaskWorkSpecificationVersion"] = value;
+                ViewState["LastTaskWorkSpecification"] = value;
             }
         }
 
@@ -860,29 +860,13 @@ namespace JG_Prospect.Sr_App
                     #region Insert TaskWorkSpecification
 
                     TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-                    objTaskWorkSpecification.Id = LastTaskWorkSpecificationVersion.TaskWorkSpecificationId;
+                    objTaskWorkSpecification.Id = LastTaskWorkSpecification.Id;
                     objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-                    TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-                    objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-                    objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                    objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-                    objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-                    objTaskWorkSpecificationVersions.Status = blFreeze.Value;
-
-                    if (objTaskWorkSpecificationVersions.Status == true &&
-                        LastTaskWorkSpecificationVersion.Status == true &&
-                        LastTaskWorkSpecificationVersion.UserId != objTaskWorkSpecificationVersions.UserId &&
-                        LastTaskWorkSpecificationVersion.Content.Equals(txtWorkSpecification.Text))
-                    {
-                        objTaskWorkSpecificationVersions.FreezedByCount = 2;
-                    }
-                    else
-                    {
-                        objTaskWorkSpecificationVersions.FreezedByCount = 1;
-                    }
-
-                    objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+                    objTaskWorkSpecification.Description = txtWorkSpecification.Text;
+                    objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
+                    objTaskWorkSpecification.AdminStatus = blFreeze.Value;
+                    objTaskWorkSpecification.TechLeadStatus = blFreeze.Value;
 
                     if (objTaskWorkSpecification.Id == 0)
                     {
@@ -1836,16 +1820,7 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                DataSet dsWorkSpecifications = null;
-
-                if (this.IsAdminAndItLeadMode)
-                {
-                    dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, null, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
-                }
-                else
-                {
-                    dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, true, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
-                }
+                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode,grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
 
                 if (dsWorkSpecifications != null)
                 {
@@ -2215,8 +2190,7 @@ namespace JG_Prospect.Sr_App
             {
                 #region '--Set Add Work Specification UI--'
 
-                hdnWorkSpecificationId.Value = "0";
-                LastTaskWorkSpecificationVersion = null;
+                LastTaskWorkSpecification = null;
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
                 ltrlLastVersionUpdateBy.Text = string.Empty;
@@ -2225,27 +2199,13 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                hdnWorkSpecificationId.Value = intTaskWorkSpecificationId.ToString();
-
                 #region '--Work Specification--'
 
                 long intLastCheckInByUserId = 0;
                 string strLastCheckedInBy = "";
                 string strLastVersionUpdateBy = "";
 
-                DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                    (
-                                                                                        intTaskWorkSpecificationId,
-                                                                                        Convert.ToInt32(hdnTaskId.Value),
-                                                                                        true
-                                                                                    );
-
-                //txtPasswordToFreezeSpecification.Visible =
-                //txtDueDate.Visible =
-                //txtHours.Visible =
-                //trWorkSpecification.Visible =
-                //trWorkSpecificationSave.Visible =
-                //lbtnDownloadWorkSpecificationFilePreview.Visible = false;
+                DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
 
                 if (
                     dsLatestTaskWorkSpecification != null &&
@@ -2289,15 +2249,14 @@ namespace JG_Prospect.Sr_App
                     // current / working copy.
                     if (dtLastTwoWorkSpecifications.Rows.Count > 0)
                     {
-                        hdnWorkSpecificationId.Value = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
-                        txtWorkSpecification.Text = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
+                        LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
+                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
+                        LastTaskWorkSpecification.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
+                        LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
+                        LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
+                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
 
-                        LastTaskWorkSpecificationVersion.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["VersionId"]);
-                        LastTaskWorkSpecificationVersion.TaskWorkSpecificationId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
-                        LastTaskWorkSpecificationVersion.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
-                        LastTaskWorkSpecificationVersion.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
-                        LastTaskWorkSpecificationVersion.Status = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["Status"]);
-                        LastTaskWorkSpecificationVersion.Content = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
+                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
 
                         if (!string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CurrentUsername"])))
                         {
