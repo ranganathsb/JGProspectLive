@@ -690,10 +690,12 @@ namespace JG_Prospect.Sr_App
 
             FillWorkSpecifications();
 
-            tblAddEditWorkSpecification.Visible = false;
-            upAddEditWorkSpecification.Update();
-
-            if (!this.IsAdminAndItLeadMode)
+            if (this.IsAdminAndItLeadMode)
+            {
+                SetAddEditWorkSpecificationSection(0);
+                lbtnAddWorkSpecification.Visible = false;
+            }
+            else
             {
                 lbtnAddWorkSpecification.Visible = false;
             }
@@ -921,8 +923,8 @@ namespace JG_Prospect.Sr_App
                     {
                         FillWorkSpecifications();
 
-                        tblAddEditWorkSpecification.Visible = false;
-                        upAddEditWorkSpecification.Update();
+                        SetAddEditWorkSpecificationSection(0);
+                        lbtnAddWorkSpecification.Visible = false;
                     }
                 }
             }
