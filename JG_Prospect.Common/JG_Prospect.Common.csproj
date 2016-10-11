@@ -111,7 +111,6 @@
     <Compile Include="modal\Task.cs" />
     <Compile Include="modal\TaskUser.cs" />
     <Compile Include="modal\TaskWorkSpecification.cs" />
-    <Compile Include="modal\TaskWorkSpecificationVersions.cs" />
     <Compile Include="modal\TimeAndMaterial.cs" />
     <Compile Include="modal\user.cs" />
     <Compile Include="modal\Vendor.cs" />

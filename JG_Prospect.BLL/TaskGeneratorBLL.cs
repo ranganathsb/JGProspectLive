@@ -67,20 +67,6 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskUserFiles(objTaskUser);
         }
 
-        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            return TaskGeneratorDAL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-        }
-
-        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-        }
-
-        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
-        {
-            return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(Id, TaskId, blFreezed);
-        }
         public DataSet GetTaskDetails(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
@@ -89,16 +75,6 @@ namespace JG_Prospect.BLL
         public DataSet GetSubTasks(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
-        }
-
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, bool? blFreezed, Int32? intPageIndex, Int32? intPageSize)
-        {
-            return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId,blIsAdmin,blFreezed, intPageIndex, intPageSize);
-        }
-
-        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
-        {
-            return TaskGeneratorDAL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
@@ -158,5 +134,39 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.DeleteTask(TaskId);
         }
+
+        #region TaskWorkSpecification
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+        }
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+        }
+
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int32? intPageIndex, Int32? intPageSize)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intPageIndex, intPageSize);
+        }
+
+        public DataSet GetTaskWorkSpecificationById(Int64 Id)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskWorkSpecificationById(Id);
+        }
+
+        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
+        {
+            return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(Id, TaskId, blFreezed);
+        }
+
+        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
+        }
+
+        #endregion
     }
 }

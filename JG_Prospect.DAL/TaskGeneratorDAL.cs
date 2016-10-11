@@ -461,92 +461,6 @@ namespace JG_Prospect.DAL
 
         }
 
-        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            try
-            {
-                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
-
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
-
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
-                    database.AddInParameter(command, "@FreezedByCount", DbType.Int32, objTaskWorkSpecificationVersions.FreezedByCount);
-
-                    int result = database.ExecuteNonQuery(command);
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
-        }
-
-        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            try
-            {
-                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
-
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
-
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskWorkSpecificationId", DbType.Int32, objTaskWorkSpecification.Id);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
-                    database.AddInParameter(command, "@FreezedByCount", DbType.Int32, objTaskWorkSpecificationVersions.FreezedByCount);
-
-                    int result = database.ExecuteNonQuery(command);
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
-        }
-
-        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetLatestTaskWorkSpecification");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@Id", DbType.Int32, Id);
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed);
-
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         //Get details for task with user and attachments
         public DataSet GetTaskDetails(Int32 TaskId)
         {
@@ -594,71 +508,6 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return null;
-            }
-        }
-
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId,bool blIsAdmin,bool? blFreezed, Int32? intPageIndex, Int32? intPageSize)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecifications");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
-                    if (blFreezed.HasValue)
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed.Value);
-                    }
-                    if (intPageIndex.HasValue)
-                    {
-                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
-                    }
-                    if (intPageSize.HasValue)
-                    {
-                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
-                    }
-
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-
-        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
-        {
-            int intReturnValue = 0;
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetPendingTaskWorkSpecificationCount");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    returndata = database.ExecuteDataSet(command);
-
-                    if (returndata != null && returndata.Tables.Count > 0 && returndata.Tables[0].Rows.Count > 0) {
-                        intReturnValue = Convert.ToInt32(returndata.Tables[0].Rows[0]["TotalRecordCount"]);
-                    }
-
-                    return intReturnValue;
-                }
-            }
-            catch (Exception ex)
-            {
-                return intReturnValue;
             }
         }
 
@@ -1036,6 +885,172 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
+        #region TaskWorkSpecification
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
+                    database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
+                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.String, objTaskWorkSpecification.Id);
+                    database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
+                    database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
+                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int32? intPageIndex, Int32? intPageSize)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecifications");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetTaskWorkSpecificationById(Int64 Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecificationById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, Id);
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetLatestTaskWorkSpecification");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int32, Id);
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@Status", DbType.Boolean, blFreezed);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        {
+            int intReturnValue = 0;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPendingTaskWorkSpecificationCount");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables.Count > 0 && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        intReturnValue = Convert.ToInt32(returndata.Tables[0].Rows[0]["TotalRecordCount"]);
+                    }
+
+                    return intReturnValue;
+                }
+            }
+            catch (Exception ex)
+            {
+                return intReturnValue;
+            }
+        }
+
+        #endregion
 
     }
 }
