@@ -899,9 +899,9 @@ namespace JG_Prospect.Sr_App
             {
                 #region Freeze Based On Password
 
-                if (!string.IsNullOrEmpty(txtPasswordToFreezeSpecification.Text))
+                if (!string.IsNullOrEmpty(txtPasswordToFreezeSpecificationPopup.Text))
                 {
-                    if (!txtPasswordToFreezeSpecification.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                    if (!txtPasswordToFreezeSpecificationPopup.Text.Equals(Convert.ToString(Session["loginpassword"])))
                     {
                         ScriptManager.RegisterStartupScript(
                                                             this,
@@ -1839,6 +1839,8 @@ namespace JG_Prospect.Sr_App
             //FillrptWorkFiles(dsTaskDetails.Tables[5]);
 
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
+
+            SetPasswordToFreezeWorkSpecificationUI();
         }
 
         private void FillWorkSpecifications()
@@ -2335,24 +2337,29 @@ namespace JG_Prospect.Sr_App
             // show link to download working copy for preview for admin users only.
             if (this.IsAdminAndItLeadMode)
             {
-                txtPasswordToFreezeSpecification.Visible = true;
+                txtPasswordToFreezeSpecificationMain.Visible =
+                txtPasswordToFreezeSpecificationPopup.Visible = true;
 
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                 {
-                    txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
+                    txtPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "IT Lead Password");
+                    txtPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "IT Lead Password");
                 }
                 else
                 {
-                    txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
+                    txtPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "Admin Password");
+                    txtPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "Admin Password");
                 }
 
                 if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
                 {
-                    txtPasswordToFreezeSpecification.Visible = true;
+                    txtPasswordToFreezeSpecificationMain.Visible =
+                    txtPasswordToFreezeSpecificationPopup.Visible = true;
                 }
                 else
                 {
-                    txtPasswordToFreezeSpecification.Visible = false;
+                    txtPasswordToFreezeSpecificationMain.Visible =
+                    txtPasswordToFreezeSpecificationPopup.Visible = false;
                 }
             }
         }
