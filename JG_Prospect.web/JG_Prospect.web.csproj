@@ -272,6 +272,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\yogesh\scripts oct v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
@@ -1628,6 +1629,7 @@
     <Compile Include="UserControl\UCAddress.ascx.designer.cs">
       <DependentUpon>UCAddress.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Utilits\FullDropDown.cs" />
     <Compile Include="WeatherControl.ascx.cs">
       <DependentUpon>WeatherControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
