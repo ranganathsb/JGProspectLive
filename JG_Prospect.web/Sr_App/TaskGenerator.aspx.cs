@@ -747,7 +747,7 @@ namespace JG_Prospect.Sr_App
                 Literal ltrlId = e.Row.FindControl("ltrlId") as Literal;
                 Label lblDescription = e.Row.FindControl("lblDescription") as Label;
                 Literal ltrlLinks = e.Row.FindControl("ltrlLinks") as Literal;
-                Literal ltrlWireframe = e.Row.FindControl("ltrlWireframe") as Literal;
+                LinkButton lbtnDownloadWireframe = e.Row.FindControl("lbtnDownloadWireframe") as LinkButton;
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
 
@@ -768,6 +768,13 @@ namespace JG_Prospect.Sr_App
                                                                 strLink
                                                        );
                     }
+                }
+
+                if (!string.IsNullOrEmpty(drWorkSpecification["Wireframe"].ToString()))
+                {
+                    lbtnDownloadWireframe.CommandArgument = drWorkSpecification["Wireframe"].ToString();
+                    lbtnDownloadWireframe.Text = lbtnDownloadWireframe.CommandArgument.Split('@')[1];
+                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownloadWireframe);
                 }
 
                 if (this.IsAdminAndItLeadMode)
@@ -794,6 +801,12 @@ namespace JG_Prospect.Sr_App
             else if (e.CommandName == "download-working-copy")
             {
                 DownloadTaskWorkSpecification(Convert.ToInt32(e.CommandArgument), false);
+            }
+            else if (e.CommandName == "download-wireframe-file")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
         }
 
@@ -850,7 +863,14 @@ namespace JG_Prospect.Sr_App
                 objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
                 objTaskWorkSpecification.Description = txtWorkSpecification.Text;
                 objTaskWorkSpecification.Links = string.Join(",", LastTaskWorkSpecification.Links.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
-                objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value;
+                if (!string.IsNullOrEmpty(hdnWorkSpecificationFile.Value))
+                {
+                    objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                }
+                else
+                {
+                    objTaskWorkSpecification.WireFrame = LastTaskWorkSpecification.WireFrame;
+                }
                 objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
 
@@ -2287,7 +2307,6 @@ namespace JG_Prospect.Sr_App
                         LastTaskWorkSpecification.UserEmail = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserEmail"]);
 
                         txtCustomId.Text = LastTaskWorkSpecification.CustomId;
-                        hdnWorkSpecificationFile.Value = LastTaskWorkSpecification.WireFrame;
                         txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
 
                         #endregion

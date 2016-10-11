@@ -595,7 +595,7 @@
                                             OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
                                             OnRowCommand="grdWorkSpecifications_RowCommand">
                                             <Columns>
-                                                <asp:TemplateField HeaderText="Id">
+                                                <asp:TemplateField HeaderText="Id" ItemStyle-Width="60px">
                                                     <ItemTemplate>
                                                         <small>
                                                             <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
@@ -604,19 +604,20 @@
                                                         </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Description" ControlStyle-Width="200px">
+                                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblDescription" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Links" ControlStyle-Width="80px">
+                                                <asp:TemplateField HeaderText="Links">
                                                     <ItemTemplate>
                                                         <asp:Literal ID="ltrlLinks" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Wire frame" ControlStyle-Width="80px">
+                                                <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px">
                                                     <ItemTemplate>
-                                                        <asp:Literal ID="ltrlWireframe" runat="server" />
+                                                        <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
+                                                            CommandArgument='<%#Eval("Wireframe") %>' />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -698,7 +699,7 @@
                                                     <div style="width:350px; float:left;">
                                                         <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>">
                                                             <div class="fallback">
-                                                                <input name="WorkFile" type="file" multiple />
+                                                                <input name="WorkSpecificationFile" type="file" />
                                                                 <input type="submit" value="UploadWorkFile" />
                                                             </div>
                                                         </div>
@@ -961,10 +962,8 @@
             }
         }
 
-        var objWorkFileDropzone, objSubTaskDropzone;
-        //Dropzone.autoDiscover = false;
-        //Dropzone.options.dropzoneForm = false;
-
+        var objWorkFileDropzone, objSubTaskDropzone, objWireframeDropzone;
+        
         function ApplyDropZone() {
             //debugger;
             ////User's drag and drop file attachment related code
@@ -974,7 +973,13 @@
                 objWorkFileDropzone.destroy();
                 objWorkFileDropzone = null;
             }
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews','#<%= hdnWorkFiles.ClientID %>','#<%=btnAddAttachment.ClientID%>');
+
+            if(objWireframeDropzone) {
+                objWireframeDropzone.destroy();
+                objWireframeDropzone = null;
+            }
+            objWireframeDropzone = GetWorkFileDropzone("#divWorkSpecificationFile", '#divWorkSpecificationFilePreview','#<%= hdnWorkSpecificationFile.ClientID %>','');
 
             //remove already attached dropzone.
             if (objSubTaskDropzone) {
@@ -1001,44 +1006,13 @@
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-                            console.log($('#<%= hdnAttachments.ClientID %>').val());
-                            //this.removeFile(file);
                         });
-
-                        //when file is removed from dropzone element, remove its corresponding server side file.
-                        //this.on("removedfile", function (file) {
-                        //    var server_file = $(file.previewTemplate).children('.server_file').text();
-                        //    RemoveTaskAttachmentFromServer(server_file);
-                        //});
-
-                        // When is added to dropzone element, add its remove link.
-                        //this.on("addedfile", function (file) {
-
-                        //    // Create the remove button
-                        //    var removeButton = Dropzone.createElement("<a><small>Remove file</smalll></a>");
-
-                        //    // Capture the Dropzone instance as closure.
-                        //    var _this = this;
-
-                        //    // Listen to the click event
-                        //    removeButton.addEventListener("click", function (e) {
-                        //        // Make sure the button click doesn't submit the form:
-                        //        e.preventDefault();
-                        //        e.stopPropagation();
-                        //        // Remove the file preview.
-                        //        _this.removeFile(file);
-                        //    });
-
-                        //    // Add the button to the file preview element.
-                        //    file.previewElement.appendChild(removeButton);
-                        //});
                     }
-
                 });
             }
         }
 
-        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector,strHiddenFieldIdSelector,strButtonIdSelector) {
             return new Dropzone(strDropzoneSelector,
                 {
                     maxFiles: 5,
@@ -1056,12 +1030,12 @@
                         this.on("success", function (file, response) {
                             var filename = response.split("^");
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
-                            // saves attachment.
-                            $('#<%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
-                            //this.removeFile(file);
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, strHiddenFieldIdSelector);
+                            if(typeof(strButtonIdSelector)!= 'undefined' && strButtonIdSelector.length > 0){
+                                // saves attachment.
+                                $(strButtonIdSelector).click();
+                                //this.removeFile(file);
+                            }
                         });
 
                         //when file is removed from dropzone element, remove its corresponding server side file.
