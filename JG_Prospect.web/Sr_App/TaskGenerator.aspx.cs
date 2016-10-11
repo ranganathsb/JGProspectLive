@@ -772,7 +772,7 @@ namespace JG_Prospect.Sr_App
 
                 if (this.IsAdminAndItLeadMode)
                 {
-                    ltrlId.Visible = true;
+                    ltrlId.Visible = false;
                 }
                 else
                 {
@@ -836,6 +836,7 @@ namespace JG_Prospect.Sr_App
             // only admin can update disabled "specs in progress" status by freezing the work specifications.
             if (this.IsAdminAndItLeadMode)
             {
+                // insert task, if not created yet.
                 if (controlMode.Value == "0")
                 {
                     InsertUpdateTask();
@@ -852,6 +853,8 @@ namespace JG_Prospect.Sr_App
                 objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value;
                 objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
+
+                // save will revoke freezed status.
                 objTaskWorkSpecification.AdminStatus = false;
                 objTaskWorkSpecification.TechLeadStatus = false;
 
@@ -866,18 +869,9 @@ namespace JG_Prospect.Sr_App
 
                 #endregion
 
-                #region Insert / Update Task and Status
+                #region Update Task and Status
 
-                // change status only after freezing all specifications.
-                // this will change disabled "specs in progress" status to open on feezing.
-                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
-                {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
-                }
-                else
-                {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
-                }
+                SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
 
                 // update task status.
                 SaveTask();
@@ -920,10 +914,51 @@ namespace JG_Prospect.Sr_App
                     else
                     {
                         // Freeze all specifications
+                        TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                        objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+                        objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
+
+                        // save will revoke freezed status.
+
+                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                        {
+                            objTaskWorkSpecification.TechLeadStatus = true;
+                        }
+                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                        {
+                            objTaskWorkSpecification.AdminStatus = true;
+                        }
+
+                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"));
                     }
                 }
 
                 #endregion
+
+
+                #region Update Task and Status
+
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                }
+                else
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                }
+
+                // update task status.
+                SaveTask();
+
+                #endregion
+
+
+                FillWorkSpecifications();
+
+                SetAddEditWorkSpecificationSection(0);
             }
         }
 
@@ -1825,7 +1860,7 @@ namespace JG_Prospect.Sr_App
                     dtWorkSpecifications = dsWorkSpecifications.Tables[0];
                     intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
 
-                    if(dtWorkSpecifications.Rows.Count > 0)
+                    if (dtWorkSpecifications.Rows.Count > 0)
                     {
                         this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
                     }
@@ -2189,6 +2224,8 @@ namespace JG_Prospect.Sr_App
 
         private void SetAddEditWorkSpecificationSection(Int32 intTaskWorkSpecificationId)
         {
+            SetPasswordToFreezeWorkSpecificationUI();
+
             hdnWorkSpecificationFile.Value = "";
 
             if (intTaskWorkSpecificationId == 0)
@@ -2204,6 +2241,8 @@ namespace JG_Prospect.Sr_App
                 txtWorkSpecification.Text =
                 ltrlLastCheckedInBy.Text =
                 ltrlLastVersionUpdateBy.Text = string.Empty;
+
+                trWorkSpecificationCheckedInBy.Visible = false;
 
                 #endregion
             }
@@ -2230,10 +2269,10 @@ namespace JG_Prospect.Sr_App
                         LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
                         LastTaskWorkSpecification.CustomId = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CustomId"]);
                         LastTaskWorkSpecification.TaskId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["TaskId"]);
-                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Content"]);
+                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Description"]);
                         LastTaskWorkSpecification.Links = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Links"]);
                         LastTaskWorkSpecification.WireFrame = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["WireFrame"]);
-                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["CurrentUserId"]);
+                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]);
                         LastTaskWorkSpecification.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
                         LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["AdminStatus"]);
                         LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["TechLeadStatus"]);
@@ -2245,6 +2284,7 @@ namespace JG_Prospect.Sr_App
                         LastTaskWorkSpecification.UserLastname = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserLastName"]);
                         LastTaskWorkSpecification.UserEmail = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserEmail"]);
 
+                        txtCustomId.Text = LastTaskWorkSpecification.CustomId;
                         hdnWorkSpecificationFile.Value = LastTaskWorkSpecification.WireFrame;
                         txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
 
@@ -2274,30 +2314,10 @@ namespace JG_Prospect.Sr_App
                                                                             LastTaskWorkSpecification.DateUpdated.ToString("MM-dd-yyyy hh:mm tt")
                                                                         );
                             }
+                            trWorkSpecificationCheckedInBy.Visible = true;
                         }
 
                         #endregion
-                    }
-                }
-
-                // show link to download working copy for preview for admin users only.
-                if (this.IsAdminAndItLeadMode)
-                {
-                    txtPasswordToFreezeSpecification.Visible = true;
-
-                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
-                    {
-                        txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
-                    }
-                    else
-                    {
-                        txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
-                    }
-
-                    // do not show password field to the user, if the user is the current user who checked-in the specification.
-                    if (intLastCheckInByUserId == Convert.ToInt64(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]))
-                    {
-                        txtPasswordToFreezeSpecification.Visible = false;
                     }
                 }
 
@@ -2308,6 +2328,33 @@ namespace JG_Prospect.Sr_App
 
             tblAddEditWorkSpecification.Visible = true;
             upAddEditWorkSpecification.Update();
+        }
+
+        private void SetPasswordToFreezeWorkSpecificationUI()
+        {
+            // show link to download working copy for preview for admin users only.
+            if (this.IsAdminAndItLeadMode)
+            {
+                txtPasswordToFreezeSpecification.Visible = true;
+
+                if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                {
+                    txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "IT Lead Password");
+                }
+                else
+                {
+                    txtPasswordToFreezeSpecification.Attributes.Add("placeholder", "Admin Password");
+                }
+
+                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
+                {
+                    txtPasswordToFreezeSpecification.Visible = true;
+                }
+                else
+                {
+                    txtPasswordToFreezeSpecification.Visible = false;
+                }
+            }
         }
 
         private void FillWorkSpecificationLinks(string[] arrLinks)

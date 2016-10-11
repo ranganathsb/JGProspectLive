@@ -481,10 +481,11 @@ namespace JG_Prospect.App_Code
             string[] strValues = strStartAt.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
             if (strValues.Length == 2)
             {
-                char chNextChar = (char)(Convert.ToInt16(strValues[0][0]) + 1);
+                //char chNextChar = (char)(Convert.ToInt16(strValues[0][0]) + 1);
                 int intNextNum = Convert.ToInt16(strValues[1]) + 1;
 
-                return (chNextChar + "-" + intNextNum);
+                //return (chNextChar + "-" + intNextNum);
+                return (strValues[0] + "-" + intNextNum);
             }
             return "a-1";
         }

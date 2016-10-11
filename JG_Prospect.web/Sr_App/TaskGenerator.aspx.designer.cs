@@ -778,15 +778,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblAddEditWorkSpecification;
         
         /// <summary>
-        /// trWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecification;
-        
-        /// <summary>
         /// txtWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -794,6 +785,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
+        
+        /// <summary>
+        /// trWorkSpecificationCheckedInBy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationCheckedInBy;
         
         /// <summary>
         /// ltrlLastCheckedInBy control.
@@ -812,51 +812,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
-        
-        /// <summary>
-        /// txtCustomId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCustomId;
-        
-        /// <summary>
-        /// rfvCustomId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomId;
-        
-        /// <summary>
-        /// hdnWorkSpecificationFile control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnWorkSpecificationFile;
-        
-        /// <summary>
-        /// upWorkSpecificationLinks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecificationLinks;
-        
-        /// <summary>
-        /// repWorkSpecificationLinks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater repWorkSpecificationLinks;
         
         /// <summary>
         /// ddlUserAcceptance control.
@@ -913,13 +868,49 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
         
         /// <summary>
-        /// trWorkSpecificationSave control.
+        /// txtCustomId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationSave;
+        protected global::System.Web.UI.WebControls.TextBox txtCustomId;
+        
+        /// <summary>
+        /// rfvCustomId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomId;
+        
+        /// <summary>
+        /// hdnWorkSpecificationFile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnWorkSpecificationFile;
+        
+        /// <summary>
+        /// upWorkSpecificationLinks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationLinks;
+        
+        /// <summary>
+        /// repWorkSpecificationLinks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repWorkSpecificationLinks;
         
         /// <summary>
         /// btnSaveWorkSpecification control.

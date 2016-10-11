@@ -157,6 +157,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecificationById(Id);
         }
 
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdminDesig)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, blIsAdminDesig);
+        }
+
         public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
         {
             return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(Id, TaskId, blFreezed);

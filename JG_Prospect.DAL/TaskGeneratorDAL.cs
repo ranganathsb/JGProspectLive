@@ -995,6 +995,37 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification,bool blIsAdminDesig)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecificationStatusByTaskId");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    if (blIsAdminDesig)
+                    {
+                        database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                    }
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
         public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
         {
             try

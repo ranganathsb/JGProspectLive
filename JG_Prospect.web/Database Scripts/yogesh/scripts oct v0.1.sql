@@ -1503,6 +1503,10 @@ GO
 
 --==========================================================================================================================================================================================
 
+/*------------------------------------------------------------------------------------------------------*/
+-- 11 OCT
+/*------------------------------------------------------------------------------------------------------*/
+
 DROP TABLE tblTaskWorkSpecificationVersions
 GO
 
@@ -1782,3 +1786,74 @@ BEGIN
 
 END
 GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Updates status of Task specifications by task Id.
+-- =============================================
+
+CREATE PROCEDURE [dbo].[UpdateTaskWorkSpecificationStatusByTaskId]
+	@TaskId		BIGINT,
+	@AdminStatus BIT = NULL,
+	@TechLeadStatus BIT = NULL,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE tblTaskWorkSpecifications
+	SET
+		AdminStatus = ISNULL(@AdminStatus,AdminStatus),
+		TechLeadStatus = ISNULL(@TechLeadStatus,TechLeadStatus),
+		UserId= @UserId,
+		IsInstallUser = @IsInstallUser,
+		DateUpdated = GETDATE()
+	WHERE TaskId = @TaskId
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Gets number of pending Task specifications related to a task.
+-- =============================================
+-- EXEC GetPendingTaskWorkSpecificationCount 0
+ALTER PROCEDURE [dbo].[GetPendingTaskWorkSpecificationCount]
+	@TaskId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SELECT COUNT(DISTINCT s.id) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId AND 
+		(
+			ISNULL(s.AdminStatus ,0) = 0 OR
+			ISNULL(s.TechLeadStatus ,0) = 0
+		)
+
+END
+GO
+
+
+/*------------------------------------------------------------------------------------------------------*/
+-- 12 OCT
+/*------------------------------------------------------------------------------------------------------*/
