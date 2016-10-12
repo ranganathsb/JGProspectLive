@@ -598,16 +598,16 @@
                                             OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
                                             OnRowCommand="grdWorkSpecifications_RowCommand">
                                             <Columns>
-                                                <asp:TemplateField HeaderText="Id" ItemStyle-Width="60px">
+                                                <asp:TemplateField HeaderText="Id" ItemStyle-Width="30px">
                                                     <ItemTemplate>
                                                         <small>
                                                             <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                                Text='<%#Eval("CustomId") + "-" + Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' />
+                                                                Text='<%#Eval("CustomId")%>' CommandArgument='<%#Eval("Id")%>' />
                                                             <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
                                                         </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
+                                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="60px">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" />
                                                     </ItemTemplate>
@@ -701,7 +701,7 @@
                                                             ErrorMessage="CustomId is required." />
                                                     </div>
                                                     <div style="width: 350px; float: left;">
-                                                        <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>">
+                                                        <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>" data-accepted-files=".jpg,.jpeg,.png">
                                                             <div class="fallback">
                                                                 <input name="WorkSpecificationFile" type="file" />
                                                                 <input type="submit" value="UploadWorkFile" />
@@ -1022,7 +1022,6 @@
                     previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                     init: function () {
                         this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
                             alert('you are reached maximum attachment upload limit.');
                         });
 
@@ -1039,12 +1038,18 @@
         }
 
         function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector,strHiddenFieldIdSelector,strButtonIdSelector) {
+            var strAcceptedFiles = '';
+            if($(strDropzoneSelector).attr("data-accepted-files")){
+                strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
+            }
+
             return new Dropzone(strDropzoneSelector,
                 {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
                     thumbnailWidth: 90,
                     thumbnailHeight: 90,
+                    acceptedFiles: strAcceptedFiles,
                     previewsContainer: strPreviewSelector,
                     init: function () {
                         this.on("maxfilesexceeded", function (data) {
