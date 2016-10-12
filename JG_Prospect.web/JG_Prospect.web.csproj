@@ -510,6 +510,7 @@
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />
     <Content Include="js\jquery.ui.core.js" />
+    <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />

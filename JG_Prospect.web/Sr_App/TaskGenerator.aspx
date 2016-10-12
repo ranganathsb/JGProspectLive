@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
+
+
     <script type="text/javascript" src="../js/dropzone.js"></script>
 
     <div class="right_panel">
@@ -107,7 +109,8 @@
                                     <tr>
                                         <td style="width: 30%;" class="valigntop">
                                             <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
-                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" /> <br />
+                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
+                                            <br />
                                             <asp:TextBox ID="txtPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
@@ -584,7 +587,7 @@
                             <ContentTemplate>
                                 <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div style="text-align:right;">
+                                        <div style="text-align: right;">
                                             <asp:TextBox ID="txtPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </div>
@@ -606,7 +609,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblDescription" runat="server" />
+                                                        <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Links">
@@ -626,7 +629,7 @@
                                             <AlternatingRowStyle CssClass="AlternateRow" />
                                         </asp:GridView>
                                         <br />
-                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification" 
+                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification"
                                             Visible="false" OnClick="lbtnAddWorkSpecification_Click" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
@@ -690,13 +693,14 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <div style="width:200px; float:left;">
-                                                        Sequence Id: <br />
+                                                    <div style="width: 200px; float: left;">
+                                                        Sequence Id:
+                                                        <br />
                                                         <asp:TextBox ID="txtCustomId" runat="server" CssClass="textbox" Width="100" />
-                                                        <asp:RequiredFieldValidator ID="rfvCustomId" runat="server" ControlToValidate="txtCustomId" ValidationGroup="vgSaveWorkSpecification" 
-                                                            ErrorMessage="CustomId is required."/>
+                                                        <asp:RequiredFieldValidator ID="rfvCustomId" runat="server" ControlToValidate="txtCustomId" ValidationGroup="vgSaveWorkSpecification"
+                                                            ErrorMessage="CustomId is required." />
                                                     </div>
-                                                    <div style="width:350px; float:left;">
+                                                    <div style="width: 350px; float: left;">
                                                         <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>">
                                                             <div class="fallback">
                                                                 <input name="WorkSpecificationFile" type="file" />
@@ -725,7 +729,7 @@
                                                                         <td>
                                                                             <asp:TextBox ID="txtWorkSpecificationLink" runat="server" CssClass="textbox"
                                                                                 Text='<%#Container.DataItem.ToString()%>' Width="400px" />
-                                                                            <asp:LinkButton ID="lbtnDeleteLink" runat="server" CommandName="delete-link"  ClientIDMode="AutoID"
+                                                                            <asp:LinkButton ID="lbtnDeleteLink" runat="server" CommandName="delete-link" ClientIDMode="AutoID"
                                                                                 CommandArgument='<%#Container.ItemIndex%>' Text="Delete" />
                                                                         </td>
                                                                     </tr>
@@ -734,7 +738,7 @@
                                                                     <tr>
                                                                         <td>
                                                                             <asp:LinkButton ID="lbtnAddNewLink" runat="server" ClientIDMode="AutoID" CommandName="add-new-link"
-                                                                                 Text="Add New" />
+                                                                                Text="Add New" />
                                                                         </td>
                                                                     </tr>
                                                                     </table>
@@ -823,6 +827,8 @@
     <script type="text/javascript" src='../js/ice/src/plugins/IceEmdashPlugin/IceEmdashPlugin.js'></script>
     <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
     <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+
+
     <script type="text/javascript">
         var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;
         var strUserName = '<%=Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]%>';
@@ -880,6 +886,7 @@
         $(function () {
             Initialize();
             LoadTinyMce();
+            ApplyToolTip();
         });
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -908,6 +915,25 @@
 
         function HidePopup(varControlID) {
             $(varControlID).dialog("close");
+        }
+
+        function ApplyToolTip() {
+            $( document ).tooltip({
+                items: "[data-tooltip]",
+                content: function() {
+                    var element = $( this );
+                   
+                    if ( element.is( "[data-tooltipcontent]" ) ) {
+                        return element.attr("data-tooltipcontent");
+                    }
+                    //if ( element.is( "[title]" ) ) {
+                    //    return element.attr( "title" );
+                    //}
+                    //if ( element.is( "img" ) ) {
+                    //    return element.attr( "alt" );
+                    //}
+                }
+            });
         }
 
         // check if user has selected any designations or not.
@@ -1068,37 +1094,37 @@
                     }
 
                 });
-            }
+        }
 
-            //Remove file from server once it is removed from dropzone.
-            //function RemoveTaskAttachmentFromServer(filename) {
-            //var param = { serverfilename: filename };
-            //$.ajax({
-            //    type: "POST",
-            //    data: JSON.stringify(param),
-            //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
-            //    contentType: "application/json; charset=utf-8",
-            //    dataType: "json",
-            //    success: OnAttachmentRemoveSuccess,
-            //    error: OnAttachmentRemoveError
-            //});
-            //}
+        //Remove file from server once it is removed from dropzone.
+        //function RemoveTaskAttachmentFromServer(filename) {
+        //var param = { serverfilename: filename };
+        //$.ajax({
+        //    type: "POST",
+        //    data: JSON.stringify(param),
+        //    url: "taskattachmentupload.aspx/RemoveUploadedattachment",
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: OnAttachmentRemoveSuccess,
+        //    error: OnAttachmentRemoveError
+        //});
+        //}
 
-            // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            //function OnAttachmentRemoveSuccess(data) {
-            //    var result = data.d;
-            //    if (r - esult) {
-            //        RemoveAttachmentFromViewState(result);
-            //    }
-            //}
+        // Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        //function OnAttachmentRemoveSuccess(data) {
+        //    var result = data.d;
+        //    if (r - esult) {
+        //        RemoveAttachmentFromViewState(result);
+        //    }
+        //}
 
-            //// Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
-            //function OnAttachmentRemoveError(data) {
-            //    var result = data.d;
-            //    if (result) {
-            //        console.log(result);
-            //    }
-            //}
+        //// Once attachement is removed then remove it from viewstate as well to keep correct track of file upload.
+        //function OnAttachmentRemoveError(data) {
+        //    var result = data.d;
+        //    if (result) {
+        //        console.log(result);
+        //    }
+        //}
 
     </script>
 </asp:Content>

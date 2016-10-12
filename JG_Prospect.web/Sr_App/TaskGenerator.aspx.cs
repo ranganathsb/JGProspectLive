@@ -750,11 +750,10 @@ namespace JG_Prospect.Sr_App
                 LinkButton lbtnDownloadWireframe = e.Row.FindControl("lbtnDownloadWireframe") as LinkButton;
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
-
-                lblDescription.ToolTip = Convert.ToString(drWorkSpecification["Description"]);
-                lblDescription.Text = lblDescription.ToolTip.Length > 100 ?
-                                            lblDescription.ToolTip.Substring(0, 100) + "..." :
-                                            lblDescription.ToolTip;
+                String description = Convert.ToString(drWorkSpecification["Description"]);
+                lblDescription.Attributes.Add("data-tooltip", "true");
+                lblDescription.Attributes.Add("data-tooltipcontent", description);
+                lblDescription.Text = "View";
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
                 {
