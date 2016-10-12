@@ -619,8 +619,9 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px">
                                                     <ItemTemplate>
+                                                        <asp:HyperLink ID="hypWireframe" runat="server" />
                                                         <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
-                                                            CommandArgument='<%#Eval("Wireframe") %>' />
+                                                            CommandArgument='<%#Eval("Wireframe") %>' Visible="false" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -811,6 +812,12 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
+        <div id="divImagePopup" title="Work Specification File">
+            <b><label id="lblImageName"></label></b><br />
+            <img id="imgWorkSpecificationFile" src="javascript:void(0);" />
+            <br /><asp:HiddenField ID="hdnWorkSpecificationFileData" runat="server" ClientIDMode="Static" />
+            <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" Text="Download" OnClick="lbtnDownloadWireframe_Click" />
+        </div>
     </div>
     <%--Popup Ends--%>
     <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
@@ -898,6 +905,20 @@
         function Initialize() {
             ApplyDropZone();
             LoadTinyMce();
+        }
+
+        function ShowImageDialog(sender,strControlId){
+            var objDialog = $('#divImagePopup').dialog({ width: "700px", height: "auto" });
+            // this will enable postback from dialog buttons.
+            objDialog.parent().appendTo(jQuery("form:first"));
+
+            $('#lblImageName').html($(sender).attr('data-file-name'));
+
+            $('#imgWorkSpecificationFile').attr('src',$(sender).attr('href'));
+
+            $('#hdnWorkSpecificationFileData').val($(sender).attr('data-file-data'));
+
+            return false;
         }
 
         function ShowPopup(varControlID) {

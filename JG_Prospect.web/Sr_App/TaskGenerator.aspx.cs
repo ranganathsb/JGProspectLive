@@ -771,8 +771,18 @@ namespace JG_Prospect.Sr_App
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Wireframe"].ToString()))
                 {
+                    string[] arrWireframe = lbtnDownloadWireframe.CommandArgument.Split('@');
+
+                    HyperLink hypWireframe = e.Row.FindControl("hypWireframe") as HyperLink;
+                    hypWireframe.Attributes.Add("data-file-data", lbtnDownloadWireframe.CommandArgument);
+                    hypWireframe.Attributes.Add("data-file-name", arrWireframe[1]);
+                    hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + lbtnDownloadWireframe.CommandArgument.Split('@')[0]));
+                    hypWireframe.Attributes.Add("onclick","javascript:return ShowImageDialog(this,'#divImagePopup');");
+                    hypWireframe.NavigateUrl = "~/TaskAttachments/" + arrWireframe[0];
+                    hypWireframe.Text = arrWireframe[1];
+
                     lbtnDownloadWireframe.CommandArgument = drWorkSpecification["Wireframe"].ToString();
-                    lbtnDownloadWireframe.Text = lbtnDownloadWireframe.CommandArgument.Split('@')[1];
+                    lbtnDownloadWireframe.Text = arrWireframe[1];
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownloadWireframe);
                 }
 
@@ -814,6 +824,16 @@ namespace JG_Prospect.Sr_App
             grdWorkSpecifications.PageIndex = e.NewPageIndex;
 
             FillWorkSpecifications();
+        }
+
+        protected void lbtnDownloadWireframe_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(hdnWorkSpecificationFileData.Value))
+            {
+                string[] files = hdnWorkSpecificationFileData.Value.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
         }
 
         protected void repWorkSpecificationLinks_ItemCommand(object source, RepeaterCommandEventArgs e)
