@@ -755,7 +755,7 @@ namespace JG_Prospect.Sr_App
                 lblDescription.Attributes.Add("data-tooltip", "true");
                 lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
                 lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w\s\=\""\-\/\:\:]*/>)|(<[\w\s\=\""\-\/\:\:]*>)|(</[\w\s\=\""\-\/\:\:]*>)")).Replace(lblDescription.Text, " ").Trim();
-                lblDescription.Text = lblDescription.Text.Length > 35 ? lblDescription.Text.Substring(0, 35) : lblDescription.Text;
+                lblDescription.Text = lblDescription.Text.Length > 50 ? lblDescription.Text.Substring(0, 50)+"..." : lblDescription.Text;
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
                 {
@@ -764,8 +764,8 @@ namespace JG_Prospect.Sr_App
                         ltrlLinks.Text += string.Format(
                                                             "<a href='{0}' title='{0}'>{1}</a><br/>",
                                                             strLink,
-                                                            strLink.Length > 35 ?
-                                                                strLink.Substring(0, 35) :
+                                                            strLink.Length > 40 ?
+                                                                strLink.Substring(0, 40) + "..." :
                                                                 strLink
                                                        );
                     }

@@ -601,7 +601,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" />
+                                                        <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" style="display:block;" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px">
