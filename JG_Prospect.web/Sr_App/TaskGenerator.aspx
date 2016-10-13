@@ -115,10 +115,6 @@
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
                                         <td class="valigntop">
-                                            <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
-                                                OnClick="lbtnShowFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                                           
-                                            <br />
                                             <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
                                                 <div class="fallback">
                                                     <input name="WorkFile" type="file" multiple />
@@ -127,7 +123,6 @@
                                             </div>
                                             <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
                                             </div>
-
                                         </td>
                                     </tr>
                                 </table>
@@ -339,15 +334,8 @@
                                 <asp:Literal ID="ltlTUTitle" runat="server"></asp:Literal>
                             </td>
                             <td class="valigntop">
-                                <br />
-                                <asp:LinkButton ID="lbtnShowFinishedWorkFiles1" runat="server" Text="Finished Work Files"
-                                    OnClick="lbtnShowFinishedWorkFiles_Click" />&nbsp;&nbsp;
-                               
-                               
-
                                 <asp:LinkButton ID="lbtnShowWorkSpecificationSection1" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnShowWorkSpecificationSection_Click" />
-                                <br />
                                 <br />
                                 <div>
                                     <div id="divWorkFileUser" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
@@ -607,12 +595,12 @@
                                                         </small>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="60px">
+                                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Links">
+                                                <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px">
                                                     <ItemTemplate>
                                                         <asp:Literal ID="ltrlLinks" runat="server" />
                                                     </ItemTemplate>
@@ -800,18 +788,6 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
-        <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files">
-            <asp:UpdatePanel ID="upFinishedWorkFiles" runat="server" UpdateMode="Conditional">
-                <ContentTemplate>
-                    <table width="500">
-                        <tr>
-                            <td>In progress...
-                            </td>
-                        </tr>
-                    </table>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </div>
         <div id="divImagePopup" title="Work Specification File">
             <b><label id="lblImageName"></label></b><br />
             <img id="imgWorkSpecificationFile" src="javascript:void(0);" />
@@ -928,7 +904,7 @@
         }
 
         function ShowPopupWithTitle(varControlID,strTitle) {
-            var objDialog = $(varControlID).dialog({ width: "700px", height: "auto" });
+            var objDialog = $(varControlID).dialog({ width: "900px", height: "auto" });
             $('.ui-dialog-title').html(strTitle);
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));

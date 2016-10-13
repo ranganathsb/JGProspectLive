@@ -750,20 +750,23 @@ namespace JG_Prospect.Sr_App
                 LinkButton lbtnDownloadWireframe = e.Row.FindControl("lbtnDownloadWireframe") as LinkButton;
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
-                String description = Convert.ToString(drWorkSpecification["Description"]);
+
+                lblDescription.Text = Convert.ToString(drWorkSpecification["Description"]);
                 lblDescription.Attributes.Add("data-tooltip", "true");
-                lblDescription.Attributes.Add("data-tooltipcontent", description);
-                lblDescription.Text = "View";
+                lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
+                lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w]*/>)|(<[\w]*>)|(</[\w]*>)")).Replace(lblDescription.Text, " ");
+                //lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w""'=:;]*/>)|(<[\w""'=:;]*>)|(</[\w""'=:;]*>)")).Replace(lblDescription.Text, " ");
+                lblDescription.Text = lblDescription.Text.Length > 35 ? lblDescription.Text.Substring(0, 35) : lblDescription.Text;
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
                 {
                     foreach (string strLink in drWorkSpecification["Links"].ToString().Split(','))
                     {
                         ltrlLinks.Text += string.Format(
-                                                            "<a href='{0}'>{1}</a><br/>",
+                                                            "<a href='{0}' title='{0}'>{1}</a><br/>",
                                                             strLink,
-                                                            strLink.Length > 50 ?
-                                                                strLink.Substring(0, 50) :
+                                                            strLink.Length > 35 ?
+                                                                strLink.Substring(0, 35) :
                                                                 strLink
                                                        );
                     }
@@ -1033,7 +1036,6 @@ namespace JG_Prospect.Sr_App
                 }
 
                 hdnWorkFiles.Value = "";
-                upFinishedWorkFiles.Update();
             }
         }
 
@@ -1079,16 +1081,6 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
-
-        #endregion
-
-        #region '--Finished Work Section--'
-
-        protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
-        {
-            upFinishedWorkFiles.Update();
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
-        }
 
         #endregion
 
