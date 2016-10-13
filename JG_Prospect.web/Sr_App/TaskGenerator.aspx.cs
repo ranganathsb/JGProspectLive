@@ -751,11 +751,10 @@ namespace JG_Prospect.Sr_App
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
 
-                lblDescription.Text = Convert.ToString(drWorkSpecification["Description"]);
+                lblDescription.Text = HttpUtility.HtmlDecode(drWorkSpecification["Description"].ToString());
                 lblDescription.Attributes.Add("data-tooltip", "true");
                 lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
-                lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w]*/>)|(<[\w]*>)|(</[\w]*>)")).Replace(lblDescription.Text, " ");
-                //lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w""'=:;]*/>)|(<[\w""'=:;]*>)|(</[\w""'=:;]*>)")).Replace(lblDescription.Text, " ");
+                lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w\s\=\""\-\/\:\:]*/>)|(<[\w\s\=\""\-\/\:\:]*>)|(</[\w\s\=\""\-\/\:\:]*>)")).Replace(lblDescription.Text, " ").Trim();
                 lblDescription.Text = lblDescription.Text.Length > 35 ? lblDescription.Text.Substring(0, 35) : lblDescription.Text;
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
