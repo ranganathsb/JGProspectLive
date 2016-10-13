@@ -175,13 +175,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection;
         
         /// <summary>
-        /// txtPasswordToFreezeSpecificationMain control.
+        /// txtITLeadPasswordToFreezeSpecificationMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPasswordToFreezeSpecificationMain;
+        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
+        
+        /// <summary>
+        /// txtAdminPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAdminPasswordToFreezeSpecificationMain;
         
         /// <summary>
         /// txtDescription control.
@@ -715,13 +724,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
         
         /// <summary>
-        /// txtPasswordToFreezeSpecificationPopup control.
+        /// txtAdminPasswordToFreezeSpecificationPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPasswordToFreezeSpecificationPopup;
+        protected global::System.Web.UI.WebControls.TextBox txtAdminPasswordToFreezeSpecificationPopup;
+        
+        /// <summary>
+        /// txtITLeadPasswordToFreezeSpecificationPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationPopup;
         
         /// <summary>
         /// grdWorkSpecifications control.

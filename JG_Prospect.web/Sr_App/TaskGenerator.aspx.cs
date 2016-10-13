@@ -941,9 +941,9 @@ namespace JG_Prospect.Sr_App
             {
                 #region Freeze Based On Password
 
-                if (!string.IsNullOrEmpty(txtPasswordToFreezeSpecificationPopup.Text))
+                if (!string.IsNullOrEmpty(txtITLeadPasswordToFreezeSpecificationPopup.Text))
                 {
-                    if (!txtPasswordToFreezeSpecificationPopup.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                    if (!txtITLeadPasswordToFreezeSpecificationPopup.Text.Equals(Convert.ToString(Session["loginpassword"])))
                     {
                         ScriptManager.RegisterStartupScript(
                                                             this,
@@ -2367,29 +2367,37 @@ namespace JG_Prospect.Sr_App
             // show link to download working copy for preview for admin users only.
             if (this.IsAdminAndItLeadMode)
             {
-                txtPasswordToFreezeSpecificationMain.Visible =
-                txtPasswordToFreezeSpecificationPopup.Visible = true;
+                txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                txtITLeadPasswordToFreezeSpecificationPopup.Visible =
+                txtAdminPasswordToFreezeSpecificationMain.Visible =
+                txtAdminPasswordToFreezeSpecificationPopup.Visible = true;
+
+                txtITLeadPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "IT Lead Password");
+                txtITLeadPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "IT Lead Password");
+
+                txtAdminPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "Admin Password");
+                txtAdminPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "Admin Password");
 
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                 {
-                    txtPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "IT Lead Password");
-                    txtPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "IT Lead Password");
+                    txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
                 else
                 {
-                    txtPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "Admin Password");
-                    txtPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "Admin Password");
+                    txtITLeadPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
 
                 if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
                 {
-                    txtPasswordToFreezeSpecificationMain.Visible =
-                    txtPasswordToFreezeSpecificationPopup.Visible = true;
+                    txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                    txtITLeadPasswordToFreezeSpecificationPopup.Visible = true;
                 }
                 else
                 {
-                    txtPasswordToFreezeSpecificationMain.Visible =
-                    txtPasswordToFreezeSpecificationPopup.Visible = false;
+                    txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                    txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
                 }
             }
         }

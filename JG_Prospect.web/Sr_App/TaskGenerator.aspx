@@ -105,13 +105,15 @@
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
                             <td class="valigntop">
+                                <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
+                                    ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
                                 <table>
                                     <tr>
                                         <td style="width: 30%;" class="valigntop">
-                                            <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
-                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
+                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                                AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                             <br />
-                                            <asp:TextBox ID="txtPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
                                         <td class="valigntop">
@@ -576,7 +578,9 @@
                                 <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div style="text-align: right;">
-                                            <asp:TextBox ID="txtPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                                AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </div>
                                         <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
