@@ -2252,83 +2252,89 @@ namespace JG_Prospect.Sr_App
 
         private void SetAddEditWorkSpecificationSection(Int32 intTaskWorkSpecificationId)
         {
-            SetPasswordToFreezeWorkSpecificationUI();
-
-            hdnWorkSpecificationFile.Value = "";
-
-            if (intTaskWorkSpecificationId == 0)
+            if (this.IsAdminAndItLeadMode)
             {
-                #region '--Set Add Work Specification UI--'
+                SetPasswordToFreezeWorkSpecificationUI();
 
-                LastTaskWorkSpecification = null;
-                LastTaskWorkSpecification.Links = "";
+                hdnWorkSpecificationFile.Value = "";
 
-                LastTaskWorkSpecification.CustomId =
-                txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSqquence(this.TaskWorkSpecificationSequence);
-
-                txtWorkSpecification.Text = string.Empty;
-
-                #endregion
-            }
-            else
-            {
-                #region '--Work Specification--'
-
-                DataSet dsTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
-
-                if (
-                    dsTaskWorkSpecification != null &&
-                    dsTaskWorkSpecification.Tables.Count > 0 &&
-                    dsTaskWorkSpecification.Tables[0].Rows.Count > 0
-                   )
+                if (intTaskWorkSpecificationId == 0)
                 {
-                    DataRow drTaskWorkSpecification = dsTaskWorkSpecification.Tables[0].Rows[0];
+                    #region '--Set Add Work Specification UI--'
 
-                    #region Store TaskWorkSpecification In ViewState
+                    LastTaskWorkSpecification = null;
+                    LastTaskWorkSpecification.Links = "";
 
-                    LastTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
-                    LastTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
-                    LastTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
-                    LastTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
-                    LastTaskWorkSpecification.Links = Convert.ToString(drTaskWorkSpecification["Links"]);
-                    LastTaskWorkSpecification.WireFrame = Convert.ToString(drTaskWorkSpecification["WireFrame"]);
+                    LastTaskWorkSpecification.CustomId =
+                    txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSqquence(this.TaskWorkSpecificationSequence);
 
-                    if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
+                    txtWorkSpecification.Text = string.Empty;
+
+                    #endregion
+                }
+                else
+                {
+                    #region '--Work Specification--'
+
+                    DataSet dsTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
+
+                    if (
+                        dsTaskWorkSpecification != null &&
+                        dsTaskWorkSpecification.Tables.Count > 0 &&
+                        dsTaskWorkSpecification.Tables[0].Rows.Count > 0
+                       )
                     {
-                        LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["AdminUserId"]);
-                        LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsAdminInstallUser"]);
-                        LastTaskWorkSpecification.AdminUsername = Convert.ToString(drTaskWorkSpecification["AdminUsername"]);
-                        LastTaskWorkSpecification.AdminUserFirstname = Convert.ToString(drTaskWorkSpecification["AdminUserFirstName"]);
-                        LastTaskWorkSpecification.AdminUserLastname = Convert.ToString(drTaskWorkSpecification["AdminUserLastName"]);
-                        LastTaskWorkSpecification.AdminUserEmail = Convert.ToString(drTaskWorkSpecification["AdminUserEmail"]);
+                        DataRow drTaskWorkSpecification = dsTaskWorkSpecification.Tables[0].Rows[0];
+
+                        #region Store TaskWorkSpecification In ViewState
+
+                        LastTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
+                        LastTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
+                        LastTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
+                        LastTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
+                        LastTaskWorkSpecification.Links = Convert.ToString(drTaskWorkSpecification["Links"]);
+                        LastTaskWorkSpecification.WireFrame = Convert.ToString(drTaskWorkSpecification["WireFrame"]);
+
+                        if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
+                        {
+                            LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["AdminUserId"]);
+                            LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsAdminInstallUser"]);
+                            LastTaskWorkSpecification.AdminUsername = Convert.ToString(drTaskWorkSpecification["AdminUsername"]);
+                            LastTaskWorkSpecification.AdminUserFirstname = Convert.ToString(drTaskWorkSpecification["AdminUserFirstName"]);
+                            LastTaskWorkSpecification.AdminUserLastname = Convert.ToString(drTaskWorkSpecification["AdminUserLastName"]);
+                            LastTaskWorkSpecification.AdminUserEmail = Convert.ToString(drTaskWorkSpecification["AdminUserEmail"]);
+                        }
+
+                        if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["TechLeadUserId"])))
+                        {
+                            LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["TechLeadUserId"]);
+                            LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsTechLeadInstallUser"]);
+                            LastTaskWorkSpecification.TechLeadUsername = Convert.ToString(drTaskWorkSpecification["TechLeadUsername"]);
+                            LastTaskWorkSpecification.TechLeadUserFirstname = Convert.ToString(drTaskWorkSpecification["TechLeadUserFirstName"]);
+                            LastTaskWorkSpecification.TechLeadUserLastname = Convert.ToString(drTaskWorkSpecification["TechLeadUserLastName"]);
+                            LastTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
+                        }
+
+                        LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
+                        LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
+                        LastTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
+                        LastTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
+
+                        txtCustomId.Text = LastTaskWorkSpecification.CustomId;
+                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
+
+                        #endregion
                     }
-
-                    if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["TechLeadUserId"])))
-                    {
-                        LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["TechLeadUserId"]);
-                        LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsTechLeadInstallUser"]);
-                        LastTaskWorkSpecification.TechLeadUsername = Convert.ToString(drTaskWorkSpecification["TechLeadUsername"]);
-                        LastTaskWorkSpecification.TechLeadUserFirstname = Convert.ToString(drTaskWorkSpecification["TechLeadUserFirstName"]);
-                        LastTaskWorkSpecification.TechLeadUserLastname = Convert.ToString(drTaskWorkSpecification["TechLeadUserLastName"]);
-                        LastTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
-                    }
-
-                    LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
-                    LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
-                    LastTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
-                    LastTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
-
-                    txtCustomId.Text = LastTaskWorkSpecification.CustomId;
-                    txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
 
                     #endregion
                 }
 
-                #endregion
+                FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
             }
-
-            FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
-
+            else
+            {
+                tblAddEditWorkSpecification.Visible = false;
+            }
             upAddEditWorkSpecification.Update();
         }
 
