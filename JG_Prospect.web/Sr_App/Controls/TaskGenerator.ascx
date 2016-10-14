@@ -85,15 +85,6 @@
         overflow: auto;
         overflow-x: hidden;
     }
-
-    /*.dropzone{
-        min-height:120px;
-        min-width:430px;
-    }
-    .dropzone .dz-default.dz-message {
-        height: 120px;
-        width: 430px;
-    }*/
 </style>
 
 <div id="divTaskMain" class="tasklist">

@@ -958,6 +958,78 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView grdWorkSpecificationAttachments;
         
         /// <summary>
+        /// txtEstHrsOfTaskFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEstHrsOfTaskFWF;
+        
+        /// <summary>
+        /// txtActualHrsOfTaskFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtActualHrsOfTaskFWF;
+        
+        /// <summary>
+        /// ddlSubTasksFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSubTasksFWF;
+        
+        /// <summary>
+        /// ddlSubTaskStatusFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskStatusFWF;
+        
+        /// <summary>
+        /// DateOfFileSubmissionFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox DateOfFileSubmissionFWF;
+        
+        /// <summary>
+        /// txtSubTaskCommentFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSubTaskCommentFWF;
+        
+        /// <summary>
+        /// txtTestPageUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTestPageUrl;
+        
+        /// <summary>
+        /// btnSaveFWF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveFWF;
+        
+        /// <summary>
         /// hdnWorkSpecificationFileData control.
         /// </summary>
         /// <remarks>
