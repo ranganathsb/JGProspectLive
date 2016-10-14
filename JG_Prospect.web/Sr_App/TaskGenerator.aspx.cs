@@ -912,7 +912,9 @@ namespace JG_Prospect.Sr_App
 
                 #region Update Task and Status
 
-                SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                SetPasswordToFreezeWorkSpecificationUI();
 
                 // update task status.
                 SaveTask();
@@ -979,7 +981,6 @@ namespace JG_Prospect.Sr_App
 
                 #endregion
 
-
                 #region Update Task and Status
 
                 // change status only after freezing all specifications.
@@ -990,7 +991,6 @@ namespace JG_Prospect.Sr_App
                 SaveTask();
 
                 #endregion
-
 
                 FillWorkSpecifications();
 

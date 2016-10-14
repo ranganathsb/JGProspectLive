@@ -1916,3 +1916,117 @@ BEGIN
 
 END
 GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Links varchar(1000),
+	@WireFrame varchar(300),
+	@UserId int,
+	@IsInstallUser bit,
+	@AdminStatus bit,
+	@TechLeadStatus bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[tblTaskWorkSpecifications]
+		([CustomId]
+		,[TaskId]
+		,[Description]
+		,[Links]
+		,[WireFrame]
+		,[UserId]
+		,[IsInstallUser]
+		,[AdminStatus]
+		,[TechLeadStatus]
+		,[DateCreated]
+		,[DateUpdated])
+	VALUES
+		(@CustomId
+		,@TaskId
+		,@Description
+		,@Links
+		,@WireFrame
+		,@UserId
+		,@IsInstallUser
+		,@AdminStatus
+		,@TechLeadStatus
+		,GETDATE()
+		,GETDATE())
+
+		
+	-- reset status for all, as any change requires 2 level freezing.
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[DateUpdated] = GETDATE()
+	WHERE [TaskId] = @TaskId
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Update Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecification]
+	@Id bigint,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Links varchar(1000),
+	@WireFrame varchar(300),
+	@UserId int,
+	@IsInstallUser bit,
+	@AdminStatus bit,
+	@TechLeadStatus bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[CustomId] = @CustomId
+		,[TaskId] = @TaskId
+		,[Description] = @Description
+		,[Links] = @Links
+		,[WireFrame] = @WireFrame
+		,[UserId] = @UserId
+		,[IsInstallUser] = @IsInstallUser
+		,[AdminStatus] = @AdminStatus
+		,[TechLeadStatus] = @TechLeadStatus
+		,[DateUpdated] = GETDATE()
+	WHERE Id = @Id
+
+	-- reset status for all, as any change requires 2 level freezing.
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[DateUpdated] = GETDATE()
+	WHERE [TaskId] = @TaskId
+
+END
+GO
