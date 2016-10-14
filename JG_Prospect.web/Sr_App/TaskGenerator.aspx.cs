@@ -790,7 +790,15 @@ namespace JG_Prospect.Sr_App
 
                 if (this.IsAdminAndItLeadMode)
                 {
-                    ltrlId.Visible = false;
+                    // do not allow edit for specifications freezed by both.
+                    if (Convert.ToBoolean(drWorkSpecification["AdminStatus"]) && Convert.ToBoolean(drWorkSpecification["TechLeadStatus"]))
+                    {
+                        lbtnId.Visible = false;
+                    }
+                    else
+                    {
+                        ltrlId.Visible = false;
+                    }
                 }
                 else
                 {
@@ -857,11 +865,6 @@ namespace JG_Prospect.Sr_App
             FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
         }
 
-        protected void lbtnAddWorkSpecification_Click(object sender, EventArgs e)
-        {
-            SetAddEditWorkSpecificationSection(0);
-        }
-
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
             UpdateWorkSpecificationLinksFromView();
@@ -892,8 +895,6 @@ namespace JG_Prospect.Sr_App
                 {
                     objTaskWorkSpecification.WireFrame = LastTaskWorkSpecification.WireFrame;
                 }
-                objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
 
                 // save will revoke freezed status.
                 objTaskWorkSpecification.AdminStatus = false;
@@ -961,17 +962,17 @@ namespace JG_Prospect.Sr_App
                         // Freeze all specifications
                         TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
                         objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-                        objTaskWorkSpecification.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                        objTaskWorkSpecification.IsInstallUser = JGSession.IsInstallUser.Value;
-
-                        // save will revoke freezed status.
 
                         if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                         {
+                            objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
                             objTaskWorkSpecification.TechLeadStatus = true;
                         }
                         else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
                         {
+                            objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
                             objTaskWorkSpecification.AdminStatus = true;
                         }
 
@@ -2265,11 +2266,7 @@ namespace JG_Prospect.Sr_App
                 LastTaskWorkSpecification.CustomId =
                 txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSqquence(this.TaskWorkSpecificationSequence);
 
-                txtWorkSpecification.Text =
-                ltrlLastCheckedInBy.Text =
-                ltrlLastVersionUpdateBy.Text = string.Empty;
-
-                trWorkSpecificationCheckedInBy.Visible = false;
+                txtWorkSpecification.Text = string.Empty;
 
                 #endregion
             }
@@ -2277,74 +2274,54 @@ namespace JG_Prospect.Sr_App
             {
                 #region '--Work Specification--'
 
-                long intLastCheckInByUserId = 0;
-                string strLastCheckedInBy = "";
-
-                DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
+                DataSet dsTaskWorkSpecification = TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
 
                 if (
-                    dsLatestTaskWorkSpecification != null &&
-                    dsLatestTaskWorkSpecification.Tables.Count > 0
+                    dsTaskWorkSpecification != null &&
+                    dsTaskWorkSpecification.Tables.Count > 0 &&
+                    dsTaskWorkSpecification.Tables[0].Rows.Count > 0
                    )
                 {
-                    DataTable dtLastTwoWorkSpecifications = dsLatestTaskWorkSpecification.Tables[0];
+                    DataRow drTaskWorkSpecification = dsTaskWorkSpecification.Tables[0].Rows[0];
 
-                    if (dtLastTwoWorkSpecifications.Rows.Count > 0)
+                    #region Store TaskWorkSpecification In ViewState
+
+                    LastTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
+                    LastTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
+                    LastTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
+                    LastTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
+                    LastTaskWorkSpecification.Links = Convert.ToString(drTaskWorkSpecification["Links"]);
+                    LastTaskWorkSpecification.WireFrame = Convert.ToString(drTaskWorkSpecification["WireFrame"]);
+
+                    if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
                     {
-                        #region Prepare Data
-
-                        LastTaskWorkSpecification.Id = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["Id"]);
-                        LastTaskWorkSpecification.CustomId = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["CustomId"]);
-                        LastTaskWorkSpecification.TaskId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["TaskId"]);
-                        LastTaskWorkSpecification.Description = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Description"]);
-                        LastTaskWorkSpecification.Links = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["Links"]);
-                        LastTaskWorkSpecification.WireFrame = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["WireFrame"]);
-                        LastTaskWorkSpecification.UserId = Convert.ToInt32(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]);
-                        LastTaskWorkSpecification.IsInstallUser = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["IsInstallUser"]);
-                        LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["AdminStatus"]);
-                        LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(dtLastTwoWorkSpecifications.Rows[0]["TechLeadStatus"]);
-                        LastTaskWorkSpecification.DateCreated = Convert.ToDateTime(dtLastTwoWorkSpecifications.Rows[0]["DateCreated"]);
-                        LastTaskWorkSpecification.DateUpdated = Convert.ToDateTime(dtLastTwoWorkSpecifications.Rows[0]["DateUpdated"]);
-
-                        LastTaskWorkSpecification.Username = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUsername"]);
-                        LastTaskWorkSpecification.UserFirstname = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserFirstName"]);
-                        LastTaskWorkSpecification.UserLastname = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserLastName"]);
-                        LastTaskWorkSpecification.UserEmail = Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserEmail"]);
-
-                        txtCustomId.Text = LastTaskWorkSpecification.CustomId;
-                        txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
-
-                        #endregion
-
-                        #region Last Check-In / Freezed By
-
-                        // show freezed by text, if any of the status contains true value.
-                        if (
-                            (LastTaskWorkSpecification.AdminStatus || LastTaskWorkSpecification.TechLeadStatus) &&
-                            !string.IsNullOrEmpty(Convert.ToString(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]))
-                           )
-                        {
-                            intLastCheckInByUserId = Convert.ToInt64(dtLastTwoWorkSpecifications.Rows[0]["LastUserId"]);
-                            if (!string.IsNullOrEmpty(LastTaskWorkSpecification.Username))
-                            {
-                                strLastCheckedInBy = LastTaskWorkSpecification.Username;
-
-                                string strProfileUrl = "CreatesalesUser.aspx?id=" + dtLastTwoWorkSpecifications.Rows[0]["LastUserId"].ToString();
-
-                                string strLastUserFullName = LastTaskWorkSpecification.UserFirstname + " " +
-                                                             LastTaskWorkSpecification.UserLastname;
-                                ltrlLastCheckedInBy.Text = string.Format(
-                                                                            "Last freeze by <a href=\'{0}\'>{1}</a> on {2}.",
-                                                                            strProfileUrl,
-                                                                            strLastUserFullName.Trim(),
-                                                                            LastTaskWorkSpecification.DateUpdated.ToString("MM-dd-yyyy hh:mm tt")
-                                                                        );
-                            }
-                            trWorkSpecificationCheckedInBy.Visible = true;
-                        }
-
-                        #endregion
+                        LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["AdminUserId"]);
+                        LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsAdminInstallUser"]);
+                        LastTaskWorkSpecification.AdminUsername = Convert.ToString(drTaskWorkSpecification["AdminUsername"]);
+                        LastTaskWorkSpecification.AdminUserFirstname = Convert.ToString(drTaskWorkSpecification["AdminUserFirstName"]);
+                        LastTaskWorkSpecification.AdminUserLastname = Convert.ToString(drTaskWorkSpecification["AdminUserLastName"]);
+                        LastTaskWorkSpecification.AdminUserEmail = Convert.ToString(drTaskWorkSpecification["AdminUserEmail"]);
                     }
+
+                    if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["TechLeadUserId"])))
+                    {
+                        LastTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["TechLeadUserId"]);
+                        LastTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsTechLeadInstallUser"]);
+                        LastTaskWorkSpecification.TechLeadUsername = Convert.ToString(drTaskWorkSpecification["TechLeadUsername"]);
+                        LastTaskWorkSpecification.TechLeadUserFirstname = Convert.ToString(drTaskWorkSpecification["TechLeadUserFirstName"]);
+                        LastTaskWorkSpecification.TechLeadUserLastname = Convert.ToString(drTaskWorkSpecification["TechLeadUserLastName"]);
+                        LastTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
+                    }
+
+                    LastTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
+                    LastTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
+                    LastTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
+                    LastTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
+
+                    txtCustomId.Text = LastTaskWorkSpecification.CustomId;
+                    txtWorkSpecification.Text = LastTaskWorkSpecification.Description;
+
+                    #endregion
                 }
 
                 #endregion
@@ -2352,7 +2329,6 @@ namespace JG_Prospect.Sr_App
 
             FillWorkSpecificationLinks(LastTaskWorkSpecification.Links.Split(','));
 
-            tblAddEditWorkSpecification.Visible = true;
             upAddEditWorkSpecification.Update();
         }
 
@@ -2378,10 +2354,12 @@ namespace JG_Prospect.Sr_App
                 // this will change disabled "specs in progress" status to open on feezing.
                 if (Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) > 0)
                 {
+                    tblAddEditWorkSpecification.Visible = true;
                     SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
                 }
                 else
                 {
+                    tblAddEditWorkSpecification.Visible = false;
                     SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
                 }
 
@@ -2398,26 +2376,50 @@ namespace JG_Prospect.Sr_App
 
                 if (dsTaskSpecificationStatus.Tables[1].Rows.Count > 0)
                 {
-                    string strProfileUrl = "CreatesalesUser.aspx?id=" + dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserId"].ToString();
-
-                    string strLastUserFullName = dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserFirstName"].ToString() + " " +
-                                                 dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserLastName"].ToString();
-
+                    string strLinkText = string.Empty;
 
                     if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminStatus"].ToString()))
                     {
+                        strLinkText += string.Format(
+                                                    "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
+                                                    dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserId"].ToString(),
+                                                    string.Concat
+                                                            (
+                                                                dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserFirstName"].ToString(),
+                                                                " ",
+                                                                dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserLastName"].ToString(),
+                                                                " : ",
+                                                                Convert.ToDateTime(dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                            )
+                                                   );
+
                         txtAdminPasswordToFreezeSpecificationMain.Visible =
                         txtAdminPasswordToFreezeSpecificationPopup.Visible = false;
                     }
 
-                    if(Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatus"].ToString()))
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatus"].ToString()))
                     {
+                        strLinkText += string.Format(
+                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
+                                                       dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserId"].ToString(),
+                                                       string.Concat
+                                                               (
+                                                                   dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserFirstName"].ToString(),
+                                                                   " ",
+                                                                   dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserLastName"].ToString(),
+                                                                   " : ",
+                                                                   Convert.ToDateTime(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                               )
+                                                      );
+
                         txtITLeadPasswordToFreezeSpecificationMain.Visible =
                         txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
                     }
 
+
+
                     ltrlFreezedSpecificationByUserLinkMain.Text =
-                    ltrlFreezedSpecificationByUserLinkPopup.Text = string.Format("<a href='{0}'>{1}</a>", strProfileUrl, strLastUserFullName);
+                    ltrlFreezedSpecificationByUserLinkPopup.Text = strLinkText;
                 }
                 else
                 {

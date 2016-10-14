@@ -902,10 +902,6 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
                     database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
                     database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
-                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
-                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
 
                     return database.ExecuteNonQuery(command);
                 }
@@ -932,10 +928,6 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
                     database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
                     database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
-                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
-                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
 
                     return database.ExecuteNonQuery(command);
                 }
@@ -1009,14 +1001,16 @@ namespace JG_Prospect.DAL
                     if (blIsAdminDesig)
                     {
                         database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsAdminInstallUser);
                     }
                     else
                     {
                         database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
                     }
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsInstallUser);
-
+                    
                     return database.ExecuteNonQuery(command);
                 }
             }

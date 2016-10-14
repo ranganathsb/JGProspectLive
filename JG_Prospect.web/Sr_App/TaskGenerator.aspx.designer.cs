@@ -769,15 +769,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView grdWorkSpecifications;
         
         /// <summary>
-        /// lbtnAddWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnAddWorkSpecification;
-        
-        /// <summary>
         /// upAddEditWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -812,33 +803,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
-        
-        /// <summary>
-        /// trWorkSpecificationCheckedInBy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationCheckedInBy;
-        
-        /// <summary>
-        /// ltrlLastCheckedInBy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastCheckedInBy;
-        
-        /// <summary>
-        /// ltrlLastVersionUpdateBy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
         
         /// <summary>
         /// ddlUserAcceptance control.

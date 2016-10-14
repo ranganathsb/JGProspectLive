@@ -117,19 +117,24 @@
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
                             <td class="valigntop">
-                                <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
-                                    ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
-                                <table>
+                                <table width="100%">
                                     <tr>
-                                        <td style="width: 30%;" class="valigntop">
+                                        <td>
+                                            <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
+                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
+                                            &nbsp;&nbsp;
                                             <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
-                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                            <br />
-                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                            &nbsp;&nbsp;
+                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
-                                        <td class="valigntop">
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="valigntop">
                                             <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
                                                 <div class="fallback">
                                                     <input name="WorkFile" type="file" multiple />
@@ -619,11 +624,12 @@
                             <ContentTemplate>
                                 <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div style="text-align: right;">
+                                        <div style="text-align: right; height:35px; vertical-align:top;">
                                             <asp:Literal ID="ltrlFreezedSpecificationByUserLinkPopup" runat="server" />
-                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
+                                            &nbsp;&nbsp;
+                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </div>
                                         <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
@@ -665,8 +671,6 @@
                                             <AlternatingRowStyle CssClass="AlternateRow" />
                                         </asp:GridView>
                                         <br />
-                                        <asp:LinkButton ID="lbtnAddWorkSpecification" runat="server" Text="Add Work Specification"
-                                            Visible="false" OnClick="lbtnAddWorkSpecification_Click" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                                 <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
@@ -689,15 +693,6 @@
                                                             </td>
                                                         </tr>
                                                     </table>
-                                                </td>
-                                            </tr>
-                                            <tr id="trWorkSpecificationCheckedInBy" runat="server" visible="false">
-                                                <td>
-                                                    <div style="height: 25px;">
-                                                        <div style="float: right; text-align: right; color: gray; min-width: 200px;">
-                                                            <asp:Literal ID="ltrlLastCheckedInBy" runat="server" /><asp:Literal ID="ltrlLastVersionUpdateBy" runat="server" />
-                                                        </div>
-                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1154,7 +1149,10 @@
                 objWireframeDropzone.destroy();
                 objWireframeDropzone = null;
             }
-            objWireframeDropzone = GetWorkFileDropzone("#divWorkSpecificationFile", '#divWorkSpecificationFilePreview','#<%= hdnWorkSpecificationFile.ClientID %>','');
+
+            if($("#divWorkSpecificationFile").length > 0){
+                objWireframeDropzone = GetWorkFileDropzone("#divWorkSpecificationFile", '#divWorkSpecificationFilePreview','#<%= hdnWorkSpecificationFile.ClientID %>','');
+            }
 
             //remove already attached dropzone.
             if (objSubTaskDropzone) {

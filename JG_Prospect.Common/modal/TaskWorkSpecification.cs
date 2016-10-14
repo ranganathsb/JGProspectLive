@@ -15,15 +15,23 @@ namespace JG_Prospect.Common.modal
         public string Description { get; set; }
         public string Links { get; set; }
         public string WireFrame { get; set; }
-        public int UserId { get; set; }
-        public bool IsInstallUser { get; set; }
+        public int? AdminUserId { get; set; }
+        public int? TechLeadUserId { get; set; }
+        public bool? IsAdminInstallUser { get; set; }
+        public bool? IsTechLeadInstallUser { get; set; }
         public bool AdminStatus { get; set; }
         public bool TechLeadStatus { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public string Username { get; set; }
-        public string UserFirstname { get; set; }
-        public string UserLastname { get; set; }
-        public string UserEmail { get; set; }
+        public DateTime? AdminStatusUpdated { get; set; }
+        public DateTime? TechLeadStatusUpdated { get; set; }
+        public string AdminUsername { get; set; }
+        public string AdminUserFirstname { get; set; }
+        public string AdminUserLastname { get; set; }
+        public string AdminUserEmail { get; set; }
+        public string TechLeadUsername { get; set; }
+        public string TechLeadUserFirstname { get; set; }
+        public string TechLeadUserLastname { get; set; }
+        public string TechLeadUserEmail { get; set; }
     }
 }
