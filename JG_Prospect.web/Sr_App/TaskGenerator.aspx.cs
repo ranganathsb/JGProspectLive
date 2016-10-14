@@ -755,7 +755,7 @@ namespace JG_Prospect.Sr_App
                 lblDescription.Attributes.Add("data-tooltip", "true");
                 lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
                 lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w\s\=\""\-\/\:\:]*/>)|(<[\w\s\=\""\-\/\:\:]*>)|(</[\w\s\=\""\-\/\:\:]*>)")).Replace(lblDescription.Text, " ").Trim();
-                lblDescription.Text = lblDescription.Text.Length > 50 ? lblDescription.Text.Substring(0, 50)+"..." : lblDescription.Text;
+                lblDescription.Text = lblDescription.Text.Length > 50 ? lblDescription.Text.Substring(0, 50) + "..." : lblDescription.Text;
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Links"].ToString()))
                 {
@@ -779,7 +779,7 @@ namespace JG_Prospect.Sr_App
                     hypWireframe.Attributes.Add("data-file-data", lbtnDownloadWireframe.CommandArgument);
                     hypWireframe.Attributes.Add("data-file-name", arrWireframe[1]);
                     hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + lbtnDownloadWireframe.CommandArgument.Split('@')[0]));
-                    hypWireframe.Attributes.Add("onclick","javascript:return ShowImageDialog(this,'#divImagePopup');");
+                    hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#divImagePopup');");
                     hypWireframe.NavigateUrl = "~/TaskAttachments/" + arrWireframe[0];
                     hypWireframe.Text = arrWireframe[1];
 
@@ -940,9 +940,11 @@ namespace JG_Prospect.Sr_App
             {
                 #region Freeze Based On Password
 
-                if (!string.IsNullOrEmpty(txtITLeadPasswordToFreezeSpecificationPopup.Text))
+                TextBox txtPassword = sender as TextBox;
+
+                if (txtPassword != null && !string.IsNullOrEmpty(txtPassword.Text))
                 {
-                    if (!txtITLeadPasswordToFreezeSpecificationPopup.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                    if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
                     {
                         ScriptManager.RegisterStartupScript(
                                                             this,
@@ -982,14 +984,7 @@ namespace JG_Prospect.Sr_App
 
                 // change status only after freezing all specifications.
                 // this will change disabled "specs in progress" status to open on feezing.
-                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
-                {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
-                }
-                else
-                {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
-                }
+                SetPasswordToFreezeWorkSpecificationUI();
 
                 // update task status.
                 SaveTask();
@@ -2377,6 +2372,19 @@ namespace JG_Prospect.Sr_App
                 txtAdminPasswordToFreezeSpecificationMain.Attributes.Add("placeholder", "Admin Password");
                 txtAdminPasswordToFreezeSpecificationPopup.Attributes.Add("placeholder", "Admin Password");
 
+                DataSet dsTaskSpecificationStatus = TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value));
+
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                if (Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) > 0)
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                }
+                else
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                }
+
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                 {
                     txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
@@ -2388,15 +2396,28 @@ namespace JG_Prospect.Sr_App
                     txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
 
-                if (TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value)) > 0)
+                if (dsTaskSpecificationStatus.Tables[1].Rows.Count > 0)
                 {
-                    txtITLeadPasswordToFreezeSpecificationMain.Visible =
-                    txtITLeadPasswordToFreezeSpecificationPopup.Visible = true;
-                }
-                else
-                {
-                    txtITLeadPasswordToFreezeSpecificationMain.Visible =
-                    txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
+                    string strProfileUrl = "CreatesalesUser.aspx?id=" + dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserId"].ToString();
+
+                    string strLastUserFullName = dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserFirstName"].ToString() + " " +
+                                                 dsTaskSpecificationStatus.Tables[1].Rows[0]["LastUserLastName"].ToString();
+
+
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminStatus"].ToString()))
+                    {
+                        txtAdminPasswordToFreezeSpecificationMain.Visible =
+                        txtAdminPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
+                    if(Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatus"].ToString()))
+                    {
+                        txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                        txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
+                    ltrlFreezedSpecificationByUserLinkMain.Text =
+                    ltrlFreezedSpecificationByUserLinkPopup.Text = string.Format("<a href='{0}'>{1}</a>", strProfileUrl, strLastUserFullName);
                 }
             }
         }

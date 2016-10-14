@@ -1860,5 +1860,59 @@ GO
 --==========================================================================================================================================================================================
 
 /*------------------------------------------------------------------------------------------------------*/
--- 12 OCT
+-- 14 OCT
 /*------------------------------------------------------------------------------------------------------*/
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Gets number of pending Task specifications related to a task.
+-- =============================================
+-- EXEC GetPendingTaskWorkSpecificationCount 152
+ALTER PROCEDURE [dbo].[GetPendingTaskWorkSpecificationCount]
+	@TaskId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SELECT COUNT(DISTINCT s.id) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId AND 
+		(
+			ISNULL(s.AdminStatus ,0) = 0 OR
+			ISNULL(s.TechLeadStatus ,0) = 0
+		)
+
+	SELECT TOP 1
+			s.*,
+			LastUser.Id AS LastUserId,
+			LastUser.Username AS LastUsername,
+			LastUser.FirstName AS LastUserFirstName,
+			LastUser.LastName AS LastUserLastName,
+			LastUser.Email AS LastUserEmail
+
+	FROM tblTaskWorkSpecifications s
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.UserId AND s.IsInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = s.UserId AND s.IsInstallUser = 0
+			) AS LastUser
+
+	WHERE s.TaskId = @TaskId AND (s.AdminStatus = 1 OR s.TechLeadStatus = 1)
+
+END
+GO

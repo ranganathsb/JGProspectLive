@@ -122,6 +122,7 @@
                                 <table>
                                     <tr>
                                         <td style="width: 30%;" class="valigntop">
+                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
                                             <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                             <br />
@@ -619,6 +620,7 @@
                                 <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div style="text-align: right;">
+                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkPopup" runat="server" />
                                             <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"
                                                 AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                             <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="150"

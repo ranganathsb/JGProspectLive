@@ -175,6 +175,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection;
         
         /// <summary>
+        /// ltrlFreezedSpecificationByUserLinkMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlFreezedSpecificationByUserLinkMain;
+        
+        /// <summary>
         /// txtITLeadPasswordToFreezeSpecificationMain control.
         /// </summary>
         /// <remarks>
@@ -722,6 +731,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
+        
+        /// <summary>
+        /// ltrlFreezedSpecificationByUserLinkPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlFreezedSpecificationByUserLinkPopup;
         
         /// <summary>
         /// txtAdminPasswordToFreezeSpecificationPopup control.

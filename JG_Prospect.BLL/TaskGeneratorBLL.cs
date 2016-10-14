@@ -167,7 +167,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(Id, TaskId, blFreezed);
         }
 
-        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        public DataSet GetPendingTaskWorkSpecificationCount(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
         }

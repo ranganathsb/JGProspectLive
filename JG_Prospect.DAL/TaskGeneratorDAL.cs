@@ -1052,10 +1052,8 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        public DataSet GetPendingTaskWorkSpecificationCount(Int32 TaskId)
         {
-            int intReturnValue = 0;
-
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
@@ -1065,19 +1063,12 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    returndata = database.ExecuteDataSet(command);
-
-                    if (returndata != null && returndata.Tables.Count > 0 && returndata.Tables[0].Rows.Count > 0)
-                    {
-                        intReturnValue = Convert.ToInt32(returndata.Tables[0].Rows[0]["TotalRecordCount"]);
-                    }
-
-                    return intReturnValue;
+                    return database.ExecuteDataSet(command);
                 }
             }
             catch (Exception ex)
             {
-                return intReturnValue;
+                return null;
             }
         }
 
