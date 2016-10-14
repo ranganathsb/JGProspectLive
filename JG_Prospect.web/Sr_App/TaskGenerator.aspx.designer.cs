@@ -184,15 +184,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlFreezedSpecificationByUserLinkMain;
         
         /// <summary>
-        /// txtITLeadPasswordToFreezeSpecificationMain control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
-        
-        /// <summary>
         /// txtAdminPasswordToFreezeSpecificationMain control.
         /// </summary>
         /// <remarks>
@@ -200,6 +191,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAdminPasswordToFreezeSpecificationMain;
+        
+        /// <summary>
+        /// txtITLeadPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
         
         /// <summary>
         /// txtDescription control.
