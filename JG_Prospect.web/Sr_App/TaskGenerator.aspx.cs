@@ -2419,6 +2419,11 @@ namespace JG_Prospect.Sr_App
                     ltrlFreezedSpecificationByUserLinkMain.Text =
                     ltrlFreezedSpecificationByUserLinkPopup.Text = string.Format("<a href='{0}'>{1}</a>", strProfileUrl, strLastUserFullName);
                 }
+                else
+                {
+                    ltrlFreezedSpecificationByUserLinkMain.Text =
+                    ltrlFreezedSpecificationByUserLinkPopup.Text = string.Empty;
+                }
             }
         }
 
