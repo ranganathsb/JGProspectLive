@@ -676,7 +676,7 @@
                                 <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="vgSaveWorkSpecification" ShowSummary="False" ShowMessageBox="True" />
-                                        <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%">
+                                        <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%" visible="false">
                                             <tr>
                                                 <td>
                                                     <table width="100%">

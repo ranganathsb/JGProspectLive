@@ -2358,7 +2358,10 @@ namespace JG_Prospect.Sr_App
 
                 // change status only after freezing all specifications.
                 // this will change disabled "specs in progress" status to open on feezing.
-                if (Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) > 0)
+                if (
+                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) == 0 ||
+                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]) > 0
+                   )
                 {
                     tblAddEditWorkSpecification.Visible = true;
                     SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
@@ -2380,22 +2383,22 @@ namespace JG_Prospect.Sr_App
                     txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
 
-                if (dsTaskSpecificationStatus.Tables[1].Rows.Count > 0)
+                if (dsTaskSpecificationStatus.Tables[2].Rows.Count > 0)
                 {
                     string strLinkText = string.Empty;
 
-                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminStatus"].ToString()))
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatus"].ToString()))
                     {
                         strLinkText += string.Format(
                                                     "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
-                                                    dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserId"].ToString(),
+                                                    dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserId"].ToString(),
                                                     string.Concat
                                                             (
-                                                                dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserFirstName"].ToString(),
+                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserFirstName"].ToString(),
                                                                 " ",
-                                                                dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminUserLastName"].ToString(),
+                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserLastName"].ToString(),
                                                                 " : ",
-                                                                Convert.ToDateTime(dsTaskSpecificationStatus.Tables[1].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                                Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
                                                             )
                                                    );
 
@@ -2403,18 +2406,18 @@ namespace JG_Prospect.Sr_App
                         txtAdminPasswordToFreezeSpecificationPopup.Visible = false;
                     }
 
-                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatus"].ToString()))
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatus"].ToString()))
                     {
                         strLinkText += string.Format(
                                                        "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
-                                                       dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserId"].ToString(),
+                                                       dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserId"].ToString(),
                                                        string.Concat
                                                                (
-                                                                   dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserFirstName"].ToString(),
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserFirstName"].ToString(),
                                                                    " ",
-                                                                   dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadUserLastName"].ToString(),
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserLastName"].ToString(),
                                                                    " : ",
-                                                                   Convert.ToDateTime(dsTaskSpecificationStatus.Tables[1].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                                   Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
                                                                )
                                                       );
 

@@ -2404,6 +2404,11 @@ BEGIN
 	SELECT COUNT(DISTINCT s.id) AS TotalRecordCount
 	FROM tblTaskWorkSpecifications s
 	WHERE 
+		s.TaskId = @TaskId
+
+	SELECT COUNT(DISTINCT s.id) AS PendingRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
 		s.TaskId = @TaskId AND 
 		(
 			ISNULL(s.AdminStatus ,0) = 0 OR
