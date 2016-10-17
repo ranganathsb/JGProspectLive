@@ -71,6 +71,17 @@ namespace JG_Prospect.Common
 
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
 
+
+        /// <summary>
+        /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
+        /// </summary>
+        public enum ApplicationEnvironment
+        {
+            Local = 1,
+            Staging = 2,
+            Live = 3
+        }
+
         public enum ProductType
         {
             shutter = 1,
@@ -87,11 +98,29 @@ namespace JG_Prospect.Common
 
         public enum TaskStatus
         {
-            Assigned = 1,
-            InProgress = 2,
-            Pending = 3,
-            ReOpened = 4,
-            Closed = 5
+            Open = 1,
+            Requested = 2,
+            Assigned = 3,
+            InProgress = 4,
+            Pending = 5,
+            ReOpened = 6,
+            Closed = 7,
+            SpecsInProgress = 8
+        }
+
+        public enum TaskPriority
+        {
+            Critical = 1,
+            High = 2,
+            Medium = 3,
+            Low = 4
+        }
+
+        public enum TaskType
+        {
+            Bug = 1,
+            BetaError = 2,
+            Enhancement = 3
         }
 
         #region '-- Page Name --'

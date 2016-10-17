@@ -1,4 +1,6 @@
 ﻿using JG_Prospect.BLL;
+
+using JG_Prospect.Common;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,47 +15,6 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.App_Code
 {
-    #region '--Enums--'
-
-    /// <summary>
-    /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
-    /// </summary>
-    public enum ApplicationEnvironment
-    {
-        Local = 1,
-        Staging = 2,
-        Live = 3
-    }
-
-    public enum TaskStatus
-    {
-        Open = 1,
-        Requested = 2,
-        Assigned = 3,
-        InProgress = 4,
-        Pending = 5,
-        ReOpened = 6,
-        Closed = 7,
-        SpecsInProgress = 8
-    }
-
-    public enum TaskType
-    {
-        Bug = 1,
-        BetaError = 2,
-        Enhancement = 3
-    }
-
-    public enum TaskPriority
-    {
-        Critical = 1,
-        High = 2,
-        Medium = 3,
-        Low = 4
-    }
-
-    #endregion
-
     public static class CommonFunction
     {
         /// <summary>
@@ -494,14 +455,14 @@ namespace JG_Prospect.App_Code
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
 
-            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(TaskStatus.Open).ToString()));
-            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(TaskStatus.Requested).ToString()));
-            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(TaskStatus.Assigned).ToString()));
-            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(TaskStatus.InProgress).ToString()));
-            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(TaskStatus.Pending).ToString()));
-            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(TaskStatus.ReOpened).ToString()));
-            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(TaskStatus.Closed).ToString()));
-            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(TaskStatus.SpecsInProgress).ToString()));
+            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
+            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
+            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
+            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
+            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
+            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
+            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
 
             return objListItemCollection;
         }
@@ -511,9 +472,9 @@ namespace JG_Prospect.App_Code
             ListItemCollection objListItemCollection = new ListItemCollection();
 
             objListItemCollection.Add(new ListItem("--None--", "0"));
-            objListItemCollection.Add(new ListItem("Bug", Convert.ToInt16(TaskType.Bug).ToString()));
-            objListItemCollection.Add(new ListItem("BetaError", Convert.ToInt16(TaskType.BetaError).ToString()));
-            objListItemCollection.Add(new ListItem("Enhancement", Convert.ToInt16(TaskType.Enhancement).ToString()));
+            objListItemCollection.Add(new ListItem("Bug", Convert.ToInt16(JGConstant.TaskType.Bug).ToString()));
+            objListItemCollection.Add(new ListItem("BetaError", Convert.ToInt16(JGConstant.TaskType.BetaError).ToString()));
+            objListItemCollection.Add(new ListItem("Enhancement", Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString()));
 
             //objListItemCollection[1].Enabled = false;
             return objListItemCollection;
@@ -524,10 +485,10 @@ namespace JG_Prospect.App_Code
             ListItemCollection objListItemCollection = new ListItemCollection();
 
             objListItemCollection.Add(new ListItem("--None--", "0"));
-            objListItemCollection.Add(new ListItem("Critical", Convert.ToInt16(TaskPriority.Critical).ToString()));
-            objListItemCollection.Add(new ListItem("High", Convert.ToInt16(TaskPriority.High).ToString()));
-            objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(TaskPriority.Medium).ToString()));
-            objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(TaskPriority.Low).ToString()));
+            objListItemCollection.Add(new ListItem("Critical", Convert.ToInt16(JGConstant.TaskPriority.Critical).ToString()));
+            objListItemCollection.Add(new ListItem("High", Convert.ToInt16(JGConstant.TaskPriority.High).ToString()));
+            objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(JGConstant.TaskPriority.Medium).ToString()));
+            objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(JGConstant.TaskPriority.Low).ToString()));
 
             return objListItemCollection;
         }

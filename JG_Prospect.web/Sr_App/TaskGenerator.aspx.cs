@@ -221,7 +221,7 @@ namespace JG_Prospect.Sr_App
                     // set default specs in progress status for It Leads.
                     if (this.IsAdminAndItLeadMode)
                     {
-                        ListItem objSpecsInProgress = cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                        ListItem objSpecsInProgress = cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
                         objSpecsInProgress.Enabled = true;
                         objSpecsInProgress.Selected = true;
                         cmbStatus.Enabled = false;
@@ -362,7 +362,7 @@ namespace JG_Prospect.Sr_App
             SaveTaskDesignations();
 
             // save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0")
             {
@@ -413,7 +413,7 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 DropDownList ddlTaskPriority = e.Row.FindControl("ddlTaskPriority") as DropDownList;
                 if (ddlTaskPriority != null)
@@ -442,9 +442,9 @@ namespace JG_Prospect.Sr_App
 
                 if (!this.IsAdminMode)
                 {
-                    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
+                    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
                     {
-                        ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
+                        ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
                     }
                 }
 
@@ -527,9 +527,9 @@ namespace JG_Prospect.Sr_App
                     ddlSubTaskStatus.SelectedValue = dtTaskMasterDetails.Rows[0]["Status"].ToString();
                     if (!this.IsAdminMode)
                     {
-                        if (!ddlSubTaskStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
+                        if (!ddlSubTaskStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
                         {
-                            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
+                            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
                         }
                     }
                     trSubTaskStatus.Visible = true;
@@ -661,7 +661,7 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(TaskType.Enhancement).ToString())
+            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
             {
                 trDateHours.Visible = true;
             }
@@ -1139,13 +1139,13 @@ namespace JG_Prospect.Sr_App
             cmbStatus.DataTextField = "Text";
             cmbStatus.DataValueField = "Value";
             cmbStatus.DataBind();
-            cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
             ddlSubTaskStatus.DataTextField = "Text";
             ddlSubTaskStatus.DataValueField = "Value";
             ddlSubTaskStatus.DataBind();
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
             ddlTaskPriority.DataTextField = "Text";
@@ -1161,7 +1161,7 @@ namespace JG_Prospect.Sr_App
             ddlTUStatus.DataTextField = "Text";
             ddlTUStatus.DataValueField = "Value";
             ddlTUStatus.DataBind();
-            ddlTUStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
         }
 
         private void BindTaskTypeDropDown()
@@ -1418,8 +1418,8 @@ namespace JG_Prospect.Sr_App
                 ddlTaskType.SelectedIndex = 0;
             }
             trSubTaskStatus.Visible = false;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.Open).ToString()).Selected = true;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = true;
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
+            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
             ddlSubTaskPriority.SelectedValue = "0";
             upAddSubTask.Update();
         }
@@ -1589,7 +1589,7 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
@@ -1616,9 +1616,9 @@ namespace JG_Prospect.Sr_App
                     if (isSuccessful)
                     {
                         // Change task status to assigned = 3.
-                        if (objTaskStatus == TaskStatus.Open || objTaskStatus == TaskStatus.Requested)
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
                         {
-                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
+                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
                         }
 
                         SendEmailToAssignedUsers(strUsersIds);
@@ -2086,7 +2086,7 @@ namespace JG_Prospect.Sr_App
 
                     // disable dropdown and do not allow user to change status
                     // status will be changed only after freezing the specifications.
-                    if (item.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                    if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                     {
                         cmbStatus.Enabled = false;
                     }
@@ -2136,7 +2136,7 @@ namespace JG_Prospect.Sr_App
 
                     // disable dropdown and do not allow user to change status
                     // status will be changed only after freezing the specifications.
-                    if (item.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                    if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                     {
                         ddlTUStatus.Enabled = false;
                     }
@@ -2152,7 +2152,7 @@ namespace JG_Prospect.Sr_App
 
                 if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))
                 {
-                    ltrlTaskPriority.Text = ((TaskPriority)Convert.ToByte(dtTaskMasterDetails.Rows[0]["TaskPriority"])).ToString();
+                    ltrlTaskPriority.Text = ((JGConstant.TaskPriority)Convert.ToByte(dtTaskMasterDetails.Rows[0]["TaskPriority"])).ToString();
                 }
                 ltlTUDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 ltlTUHrsTask.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
@@ -2388,12 +2388,12 @@ namespace JG_Prospect.Sr_App
                    )
                 {
                     tblAddEditWorkSpecification.Visible = true;
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.SpecsInProgress).ToString());
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
                 }
                 else
                 {
                     tblAddEditWorkSpecification.Visible = false;
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(TaskStatus.Open).ToString());
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.Open).ToString());
                 }
 
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
@@ -2531,7 +2531,7 @@ namespace JG_Prospect.Sr_App
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                 {
                     ddlStatus.Enabled = false;
                 }

@@ -50,15 +50,15 @@ namespace JG_Prospect
 
                     if (!string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["ApplicationEnvironment"]))
                     {
-                        switch ((JG_Prospect.App_Code.ApplicationEnvironment)Convert.ToByte(System.Configuration.ConfigurationManager.AppSettings["ApplicationEnvironment"]))
+                        switch ((JG_Prospect.Common.JGConstant.ApplicationEnvironment)Convert.ToByte(System.Configuration.ConfigurationManager.AppSettings["ApplicationEnvironment"]))
                         {
-                            case JG_Prospect.App_Code.ApplicationEnvironment.Local:
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Local:
                                 strSubject = "Local " + strSubject;
                                 break;
-                            case JG_Prospect.App_Code.ApplicationEnvironment.Staging:
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Staging:
                                 strSubject = "Staging " + strSubject;
                                 break;
-                            case JG_Prospect.App_Code.ApplicationEnvironment.Live:
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Live:
                                 strSubject = "Live " + strSubject;
                                 break;
                         }

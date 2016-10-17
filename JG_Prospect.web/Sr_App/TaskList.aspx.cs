@@ -134,13 +134,13 @@ namespace JG_Prospect.Sr_App
                     lblAssignedUser.Text = lblAssignedUser.Text.Substring(0, 30) + "..";
                 }
 
-                ltrlStatus.Text = ((TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
+                ltrlStatus.Text = ((JGConstant.TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
                 
                 ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
                 SetStatusSelectedValue(ddlStatus,drTask["Status"].ToString());
                 
                 ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
@@ -150,7 +150,7 @@ namespace JG_Prospect.Sr_App
                 if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()))
                 {
                     ddlPriority.SelectedValue = drTask["TaskPriority"].ToString();
-                    ltrlPriority.Text = ((TaskPriority)Convert.ToInt32(drTask["TaskPriority"])).ToString();
+                    ltrlPriority.Text = ((JGConstant.TaskPriority)Convert.ToInt32(drTask["TaskPriority"])).ToString();
                 }
 
                 if (!string.IsNullOrEmpty(Convert.ToString(drTask["DueDate"])))
@@ -163,7 +163,7 @@ namespace JG_Prospect.Sr_App
                     #region Admin User
 
                     if (
-                        ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                        ddlStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
                         string.IsNullOrEmpty(Convert.ToString(drTask["TaskAssignedUsers"]))
                        )
                     {
@@ -180,7 +180,7 @@ namespace JG_Prospect.Sr_App
                         ddcbAssignedUser.Attributes.Add("TaskId", drTask["TaskId"].ToString());
                         ddcbAssignedUser.Attributes.Add("TaskStatus", ddlStatus.SelectedValue);
                     }
-                    else if (ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Requested).ToString())
+                    else if (ddlStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Requested).ToString())
                     {
                         lbtnRequestStatus.Visible = true;
                         ddcbAssignedUser.Visible =
@@ -223,7 +223,7 @@ namespace JG_Prospect.Sr_App
                     // show request link when,
                     // task status is open
                     // task assigned to my designation
-                    if (ddlStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                    if (ddlStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
                         strMyDesignation == Convert.ToString(drTask["TaskDesignations"]).Trim().ToLower())
                     {
                         lbtnRequestStatus.Visible = true;
@@ -264,7 +264,7 @@ namespace JG_Prospect.Sr_App
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Requested)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Requested)
                 };
 
                 // update task status to requested.
@@ -292,7 +292,7 @@ namespace JG_Prospect.Sr_App
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Assigned)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Assigned)
                 };
 
                 if (TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask) > 0)
@@ -400,7 +400,7 @@ namespace JG_Prospect.Sr_App
 
             if (!this.IsAdminMode)
             {
-                ddlTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
             }
 
             ddlUsers.DataSource = dsFilters.Tables[0];
@@ -625,7 +625,7 @@ namespace JG_Prospect.Sr_App
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                 {
                     ddlStatus.Enabled = false;
                 }

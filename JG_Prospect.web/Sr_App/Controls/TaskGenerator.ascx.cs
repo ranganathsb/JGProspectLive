@@ -234,7 +234,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlgvTaskStatus.DataTextField = "Text";
                 ddlgvTaskStatus.DataValueField = "Value";
                 ddlgvTaskStatus.DataBind();
-                ddlgvTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                ddlgvTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 SetStatusSelectedValue(ddlgvTaskStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
@@ -250,7 +250,7 @@ namespace JG_Prospect.Sr_App.Controls
                     #region Admin User
 
                     if (
-                        ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                        ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
                         string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
                        )
                     {
@@ -269,7 +269,7 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                         ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
                     }
-                    else if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Requested).ToString())
+                    else if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Requested).ToString())
                     {
                         lbtnRequestStatus.Visible = true;
                         ddcbAssigned.Visible =
@@ -307,7 +307,7 @@ namespace JG_Prospect.Sr_App.Controls
                     // show request link when,
                     // task status is open
                     // task assigned to my designation
-                    if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
+                    if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
                         strMyDesignation == Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim().ToLower())
                     {
                         lbtnRequestStatus.Visible = true;
@@ -350,7 +350,7 @@ namespace JG_Prospect.Sr_App.Controls
                 cmbStatus.DataTextField = "Text";
                 cmbStatus.DataValueField = "Value";
                 cmbStatus.DataBind();
-                cmbStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 LoadTaskData(e.CommandArgument.ToString(), true);
             }
@@ -359,7 +359,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Requested)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Requested)
                 };
 
                 // update task status to requested.
@@ -388,7 +388,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Assigned)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Assigned)
                 };
 
                 if (TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask) > 0)
@@ -425,7 +425,7 @@ namespace JG_Prospect.Sr_App.Controls
                 hdnTaskId.Value = ddcbAssigned.Attributes["TaskId"];
                 if (!string.IsNullOrEmpty(hdnTaskId.Value))
                 {
-                    SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
+                    SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
                     hdnTaskId.Value = "0";
                     SearchTasks(null);
                 }
@@ -575,7 +575,7 @@ namespace JG_Prospect.Sr_App.Controls
             SaveTaskDesignations();
 
             //Save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0" && this.lstTaskUserFiles.Any())
             {
@@ -731,7 +731,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(TaskType.Enhancement).ToString())
+            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
             {
                 trDateHours.Visible = true;
             }
@@ -797,7 +797,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (!this.IsAdminMode)
                 {
-                    ddlTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                    ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
                 }
 
                 ddlUsers.DataSource = dtUsers;
@@ -1308,7 +1308,7 @@ namespace JG_Prospect.Sr_App.Controls
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned,TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
@@ -1335,9 +1335,9 @@ namespace JG_Prospect.Sr_App.Controls
                     if (isSuccessful)
                     {
                         // Change task status to assigned = 3.
-                        if (objTaskStatus == TaskStatus.Open || objTaskStatus == TaskStatus.Requested)
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
                         {
-                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
+                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
                         }
 
                         SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUsersIds);
@@ -2072,7 +2072,7 @@ namespace JG_Prospect.Sr_App.Controls
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(TaskStatus.SpecsInProgress).ToString())
+                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                 {
                     ddlStatus.Enabled = false;
                 }
