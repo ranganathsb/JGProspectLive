@@ -12,7 +12,6 @@
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
 
-
     <script type="text/javascript" src="../js/dropzone.js"></script>
 
     <div class="right_panel">
@@ -167,7 +166,7 @@
                                                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
                                                     HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                                                     EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                                    AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId"
+                                                    AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                                                     OnRowDataBound="gvSubTasks_RowDataBound"
                                                     OnRowCommand="gvSubTasks_RowCommand">
                                                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
@@ -175,7 +174,7 @@
                                                     <RowStyle CssClass="FirstRow" />
                                                     <AlternatingRowStyle CssClass="AlternateRow " />
                                                     <Columns>
-                                                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%">
+                                                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60">
                                                             <ItemTemplate>
                                                                 <asp:LinkButton ID="lbtnEditSubTask" runat="server" CommandName="edit-sub-task" Text='<%# Eval("InstallId") %>'
                                                                     CommandArgument='<%# Container.DataItemIndex  %>' />
@@ -186,17 +185,17 @@
                                                                 <%# Eval("Description")%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                        <asp:TemplateField HeaderText="Type" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="85">
                                                             <ItemTemplate>
                                                                 <%# String.IsNullOrEmpty(Eval("TaskType").ToString()) == true ? String.Empty : ddlTaskType.Items.FindByValue( Eval("TaskType").ToString()).Text %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                        <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="105">
                                                             <ItemTemplate>
                                                                 <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Priority" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                        <asp:TemplateField HeaderText="Priority" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                                                             <ItemTemplate>
                                                                 <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
                                                             </ItemTemplate>
@@ -210,6 +209,11 @@
                                                                                 CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
                                                                     </ItemTemplate>
                                                                 </asp:Repeater>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                                                            <ItemTemplate>
+                                                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Feedback" CommandName="sub-task-feedback" CommandArgument='<%# Container.DataItemIndex  %>' />
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
@@ -406,7 +410,7 @@
                                         <asp:GridView ID="gvSubTasks1" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
                                             HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                                             EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                            AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId"
+                                            AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                                             OnRowDataBound="gvSubTasks_RowDataBound"
                                             OnRowCommand="gvSubTasks_RowCommand">
                                             <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
@@ -414,7 +418,7 @@
                                             <RowStyle CssClass="FirstRow" />
                                             <AlternatingRowStyle CssClass="AlternateRow " />
                                             <Columns>
-                                                <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%">
+                                                <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60">
                                                     <ItemTemplate>
                                                         <%# Eval("InstallId") %>
                                                     </ItemTemplate>
@@ -424,17 +428,17 @@
                                                         <%# Eval("Description")%>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Type" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Type" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="85">
                                                     <ItemTemplate>
                                                         <%# String.IsNullOrEmpty(Eval("TaskType").ToString()) == true ? String.Empty : ddlTaskType.Items.FindByValue( Eval("TaskType").ToString()).Text %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Status" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="105">
                                                     <ItemTemplate>
                                                         <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Priority" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Priority" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                                                     <ItemTemplate>
                                                         <%# String.IsNullOrEmpty(Eval("TaskPriority").ToString()) == true ? String.Empty : ddlSubTaskPriority.Items.FindByValue( Eval("TaskPriority").ToString()).Text %>
                                                     </ItemTemplate>
@@ -448,6 +452,11 @@
                                                                         CommandName="DownloadFile" /><asp:Literal ID="ltrlSeprator" runat="server" Text=" ," /></small>
                                                             </ItemTemplate>
                                                         </asp:Repeater>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Feedback" CommandName="sub-task-feedback" CommandArgument='<%# Container.DataItemIndex  %>' />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -941,6 +950,66 @@
             <asp:HiddenField ID="hdnWorkSpecificationFileData" runat="server" ClientIDMode="Static" />
             <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" Text="Download" OnClick="lbtnDownloadWireframe_Click" />
         </div>
+        <div id="divSubTaskFeedbackPopup" runat="server" title="Sub Task Feedback">
+            <asp:UpdatePanel ID="upSubTaskFeedbackPopup" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <fieldset>
+                        <legend><asp:Literal ID="ltrlSubTaskFeedbackTitle" runat="server" /></legend>
+                        <table cellspacing="3" cellpadding="3" width="100%">
+                            <tr>
+                                <td>
+                                    <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" 
+                                        style="background-color:White;width:100%;border-collapse:collapse;">
+					                    <tbody>
+                                            <tr class="trHeader " style="color:White;background-color:Black;">
+						                        <th align="left" scope="col">Description</th>
+                                                <th align="center" scope="col" style="width:15%;">Attachments</th>
+					                        </tr>   
+                                            <tr class="FirstRow">
+                                                <td align="left">
+                                                    Feedback for sub task with install Id I.
+                                                </td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+        				                </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tblAddEditSubTaskFeedback" runat="server" cellspacing="3" cellpadding="3" width="100%">
+                            <tr>
+                                <td colspan="2">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="right" valign="top">
+                                    Description:
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtSubTaskFeedback" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" valign="top">
+                                    Files:
+                                </td>
+                                <td>
+                                    <div class="dropzone"><div class="dz-default dz-message"></div></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="btn_sec">
+                                        <asp:Button ID="btnSaveSubTaskFeedback" runat="server" CssClass="ui-button" Text="Save" OnClientClick="javascript:return false;" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
     </div>
     <%--Popup Ends--%>
     <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
@@ -957,7 +1026,6 @@
     <script type="text/javascript" src='../js/ice/src/plugins/IceEmdashPlugin/IceEmdashPlugin.js'></script>
     <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
     <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-
 
     <script type="text/javascript">
         var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;

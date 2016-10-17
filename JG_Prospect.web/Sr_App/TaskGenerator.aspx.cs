@@ -543,6 +543,30 @@ namespace JG_Prospect.Sr_App
 
                 ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
             }
+            else if (e.CommandName.Equals("sub-task-feedback"))
+            {
+                ltrlSubTaskFeedbackTitle.Text = "Sub Task : " + gvSubTasks.DataKeys[Convert.ToInt32(e.CommandArgument)]["InstallId"].ToString();
+
+                if (this.IsAdminMode)
+                {
+                    tblAddEditSubTaskFeedback.Visible = true;
+                }
+                else
+                {
+                    tblAddEditSubTaskFeedback.Visible = false;
+                }
+                upSubTaskFeedbackPopup.Update();
+                ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup",
+                                                    string.Format(
+                                                                    "ShowPopup(\"#{0}\");",
+                                                                    divSubTaskFeedbackPopup.ClientID
+                                                                ),
+                                                    true
+                                              );
+            }
         }
 
         protected void gvSubTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
