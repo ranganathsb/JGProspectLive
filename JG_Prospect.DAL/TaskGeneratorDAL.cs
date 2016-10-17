@@ -839,8 +839,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
                     }
 
-                    // 8 is for specs in progress
-                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, 8);
+                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
 
                     database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
 
