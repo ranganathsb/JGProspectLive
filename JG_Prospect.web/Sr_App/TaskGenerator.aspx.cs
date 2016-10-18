@@ -753,9 +753,48 @@ namespace JG_Prospect.Sr_App
                                                     this.GetType(),
                                                     "ShowPopup",
                                                     string.Format(
-                                                                    "ShowPopupWithTitle(\"#{0}\", \"{1}\");",
+                                                                    "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
                                                                     divWorkSpecificationSection.ClientID,
-                                                                    GetWorkSpecificationFilePopupTitle("", "")
+                                                                    divFinishedWorkFiles.ClientID
+                                                                ),
+                                                    true
+                                              );
+        }
+
+        protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
+        {
+            #region '--Work Specifications--'
+
+            grdWorkSpecifications.PageIndex = 0;
+
+            FillWorkSpecifications();
+
+            // expand add work specification section for admin and tech lead users.
+            if (this.IsAdminAndItLeadMode)
+            {
+                SetAddEditWorkSpecificationSection(0);
+            }
+
+            #endregion
+
+            #region '--Work Specification Attachments--'
+
+            grdWorkSpecificationAttachments.PageIndex = 0;
+
+            FillWorkSpecificationAttachments();
+
+            #endregion
+
+            upWorkSpecificationSection.Update();
+
+            ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup",
+                                                    string.Format(
+                                                                    "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                                    divFinishedWorkFiles.ClientID,
+                                                                    divWorkSpecificationSection.ClientID
                                                                 ),
                                                     true
                                               );
@@ -803,7 +842,7 @@ namespace JG_Prospect.Sr_App
                     hypWireframe.Attributes.Add("data-file-data", lbtnDownloadWireframe.CommandArgument);
                     hypWireframe.Attributes.Add("data-file-name", arrWireframe[1]);
                     hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + lbtnDownloadWireframe.CommandArgument.Split('@')[0]));
-                    hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#divImagePopup');");
+                    hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#"+divImagePopup.ClientID+"');");
                     hypWireframe.NavigateUrl = "~/TaskAttachments/" + arrWireframe[0];
                     hypWireframe.Text = arrWireframe[1];
 

@@ -202,6 +202,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
         
         /// <summary>
+        /// lbtnShowFinishedWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
+        
+        /// <summary>
         /// txtDescription control.
         /// </summary>
         /// <remarks>
@@ -544,6 +553,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection1;
         
         /// <summary>
+        /// lbtnShowFinishedWorkFiles1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles1;
+        
+        /// <summary>
         /// txtTUDesc control.
         /// </summary>
         /// <remarks>
@@ -704,24 +722,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel upWorkSpecificationSection;
-        
-        /// <summary>
-        /// tcWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer tcWorkSpecification;
-        
-        /// <summary>
-        /// tpWorkSpecification control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpWorkSpecification;
         
         /// <summary>
         /// upWorkSpecifications control.
@@ -913,13 +913,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnSaveWorkSpecification;
         
         /// <summary>
-        /// tpWorkSpecificationAttachments control.
+        /// divFinishedWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpWorkSpecificationAttachments;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFinishedWorkFiles;
         
         /// <summary>
         /// upWorkSpecificationAttachments control.
@@ -1010,6 +1010,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveFWF;
+        
+        /// <summary>
+        /// divImagePopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divImagePopup;
         
         /// <summary>
         /// hdnWorkSpecificationFileData control.
