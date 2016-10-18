@@ -707,9 +707,11 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
+    <div id="divFixedSection" runat="server" style="position: fixed; right: 0px; bottom: 0px; margin: 0px 10px 10px 0px; padding: 3px; background-color: black; color: white;">
+    </div>
     <%--Popup Starts--%>
     <div class="hide">
-        <div id="divWorkSpecificationSection" runat="server" title="Work Specification Files">
+        <div id="divWorkSpecificationSection" runat="server" title="Work Specification Files" data-min-button="Work Specification Files">
             <asp:UpdatePanel ID="upWorkSpecificationSection" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
@@ -908,7 +910,7 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
-        <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files">
+        <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files" data-min-button="Finished Work Files">
             <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <asp:GridView ID="grdWorkSpecificationAttachments" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
@@ -1215,8 +1217,35 @@
 
         function ShowPopup(varControlID) {
             var objDialog = $(varControlID).dialog({ width: "900px", height: "auto" });
+            
+            AppendMinimizeButton(objDialog);
+            
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));
+        }
+
+        function AppendMinimizeButton(objDialog){
+        
+            var varTarget = $('#'+objDialog.attr('id'));
+
+            if(typeof(varTarget.attr('data-min-button')) != 'undefined' ) {
+
+                if(objDialog.parent().find('.ui-dialog-titlebar-minimize').length ==0){
+                    var varMinimizeButton = $('<button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-minimize" role="button" title="Minimize"><span class="ui-button-icon-primary ui-icon ui-icon-minusthick"></span><span class="ui-button-text">Minimize</span></button>');
+            
+                    varMinimizeButton.click(function() {
+                        var divFixedSection = $('#<%=divFixedSection.ClientID%>');
+
+                        if(divFixedSection.find('a[data-id="'+varTarget.attr('id')+'"]').length == 0) {
+                            var varLink = $('<a data-id="'+varTarget.attr('id')+'" href="javascript:void(0);" style="margin:0px 6px 0px 0px;color:white;font-weight:bold" onclick="javascript:ShowPopup(\'#'+varTarget.attr('id')+'\');$(this).remove();">'+varTarget.attr('data-min-button')+'</a>');
+                            varLink.appendTo(divFixedSection);
+                        }
+                        HidePopup('#'+varTarget.attr('id'));
+                    });
+                    
+                    varMinimizeButton.insertBefore(objDialog.parent().find('.ui-dialog-titlebar-close'));
+                }
+            }
         }
 
         function ShowPopupWithTitle(varControlID, strTitle) {

@@ -754,8 +754,8 @@ namespace JG_Prospect.Sr_App
                                                     "ShowPopup",
                                                     string.Format(
                                                                     "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
-                                                                    divWorkSpecificationSection.ClientID,
-                                                                    divFinishedWorkFiles.ClientID
+                                                                    divFinishedWorkFiles.ClientID,
+                                                                    divWorkSpecificationSection.ClientID
                                                                 ),
                                                     true
                                               );
