@@ -805,6 +805,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblAddEditWorkSpecification;
         
         /// <summary>
+        /// trWorkSpecificationEditor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationEditor;
+        
+        /// <summary>
         /// txtWorkSpecification control.
         /// </summary>
         /// <remarks>
@@ -812,6 +821,24 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
+        
+        /// <summary>
+        /// trWorkSpecificationContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationContent;
+        
+        /// <summary>
+        /// ltrlWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlWorkSpecification;
         
         /// <summary>
         /// ddlUserAcceptance control.
@@ -911,6 +938,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater repWorkSpecificationLinks;
+        
+        /// <summary>
+        /// trWorkSpecificationSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trWorkSpecificationSave;
         
         /// <summary>
         /// btnSaveWorkSpecification control.

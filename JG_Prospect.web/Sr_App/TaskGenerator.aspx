@@ -150,11 +150,11 @@
                                             <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
 
                                             <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                                placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                             &nbsp;&nbsp;
                                            
                                             <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                                placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -719,11 +719,11 @@
                             <div style="text-align: right; height: 35px; vertical-align: top;">
                                 <asp:Literal ID="ltrlFreezedSpecificationByUserLinkPopup" runat="server" />
                                 <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                    AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                    placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                 &nbsp;&nbsp;
                                
                                 <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                    AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                    placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                             </div>
                             <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                 GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
@@ -769,8 +769,8 @@
                     <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
                             <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="vgSaveWorkSpecification" ShowSummary="False" ShowMessageBox="True" />
-                            <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%" visible="false">
-                                <tr>
+                            <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%">
+                                <tr id="trWorkSpecificationEditor" runat="server">
                                     <td>
                                         <table width="100%">
                                             <tr>
@@ -788,6 +788,14 @@
                                                 </td>
                                             </tr>
                                         </table>
+                                    </td>
+                                </tr>
+                                <tr id="trWorkSpecificationContent" runat="server">
+                                    <td>
+                                        <fieldset style="border:1px solid gray;margin-bottom:10px;">
+                                            <legend>Work Specification</legend>
+                                            <asp:Literal ID="ltrlWorkSpecification" runat="server" />
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
@@ -862,7 +870,9 @@
                                     <td>
                                         <asp:UpdatePanel ID="upWorkSpecificationLinks" runat="server">
                                             <ContentTemplate>
-                                                <asp:Repeater ID="repWorkSpecificationLinks" runat="server" OnItemCommand="repWorkSpecificationLinks_ItemCommand">
+                                                <asp:Repeater ID="repWorkSpecificationLinks" runat="server" 
+                                                    OnItemDataBound="repWorkSpecificationLinks_ItemDataBound"
+                                                    OnItemCommand="repWorkSpecificationLinks_ItemCommand">
                                                     <HeaderTemplate>
                                                         <table width="100%">
                                                             <tr>
@@ -873,7 +883,7 @@
                                                         <tr>
                                                             <td>
                                                                 <asp:TextBox ID="txtWorkSpecificationLink" runat="server" CssClass="textbox"
-                                                                    Text='<%#Container.DataItem.ToString()%>' Width="400px" />
+                                                                    Text='<%#Container.DataItem.ToString()%>' Width="90%" />
                                                                 <asp:LinkButton ID="lbtnDeleteLink" runat="server" CommandName="delete-link" ClientIDMode="AutoID"
                                                                     CommandArgument='<%#Container.ItemIndex%>' Text="Delete" />
                                                             </td>
@@ -895,7 +905,7 @@
                                         </asp:UpdatePanel>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="trWorkSpecificationSave" runat="server">
                                     <td>
                                         <div class="btn_sec">
                                             <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
