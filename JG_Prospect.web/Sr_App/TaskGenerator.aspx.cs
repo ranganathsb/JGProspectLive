@@ -726,14 +726,20 @@ namespace JG_Prospect.Sr_App
         {
             #region '--Work Specifications--'
 
-            grdWorkSpecifications.PageIndex = 0;
+            //grdWorkSpecifications.PageIndex = 0;
 
-            FillWorkSpecifications();
+            //FillWorkSpecifications();
 
             // expand add work specification section for admin and tech lead users.
             if (this.IsAdminAndItLeadMode)
             {
-                SetAddEditWorkSpecificationSection(0);
+                SetAddEditWorkSpecificationSection(GetTaskWorkSpecificationId());
+            }
+            else
+            {
+                grdWorkSpecifications.PageIndex = 0;
+
+                FillWorkSpecifications();
             }
 
             #endregion
@@ -765,14 +771,20 @@ namespace JG_Prospect.Sr_App
         {
             #region '--Work Specifications--'
 
-            grdWorkSpecifications.PageIndex = 0;
+            //grdWorkSpecifications.PageIndex = 0;
 
-            FillWorkSpecifications();
+            //FillWorkSpecifications();
 
             // expand add work specification section for admin and tech lead users.
             if (this.IsAdminAndItLeadMode)
             {
-                SetAddEditWorkSpecificationSection(0);
+                SetAddEditWorkSpecificationSection(GetTaskWorkSpecificationId());
+            }
+            else
+            {
+                grdWorkSpecifications.PageIndex = 0;
+
+                FillWorkSpecifications();
             }
 
             #endregion
@@ -842,7 +854,7 @@ namespace JG_Prospect.Sr_App
                     hypWireframe.Attributes.Add("data-file-data", lbtnDownloadWireframe.CommandArgument);
                     hypWireframe.Attributes.Add("data-file-name", arrWireframe[1]);
                     hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + lbtnDownloadWireframe.CommandArgument.Split('@')[0]));
-                    hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#"+divImagePopup.ClientID+"');");
+                    hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#" + divImagePopup.ClientID + "');");
                     hypWireframe.NavigateUrl = "~/TaskAttachments/" + arrWireframe[0];
                     hypWireframe.Text = arrWireframe[1];
 
@@ -995,7 +1007,9 @@ namespace JG_Prospect.Sr_App
                 {
                     FillWorkSpecifications();
 
-                    SetAddEditWorkSpecificationSection(0);
+                    SetAddEditWorkSpecificationSection(GetTaskWorkSpecificationId());
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "Specification updated successfully.");
                 }
             }
         }
@@ -1012,13 +1026,7 @@ namespace JG_Prospect.Sr_App
                 {
                     if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
                     {
-                        ScriptManager.RegisterStartupScript(
-                                                            this,
-                                                            this.GetType(),
-                                                            "InvalidPasswordAlert",
-                                                            "alert('Specification cannot be freezed as password is not valid.')",
-                                                            true
-                                                           );
+                        CommonFunction.ShowAlertFromUpdatePanel(this, "Specification cannot be freezed as password is not valid.");
                     }
                     else
                     {
@@ -1040,6 +1048,8 @@ namespace JG_Prospect.Sr_App
                         }
 
                         TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"));
+
+                        CommonFunction.ShowAlertFromUpdatePanel(this, "Specification freezed successfully.");
                     }
                 }
 
@@ -1058,7 +1068,7 @@ namespace JG_Prospect.Sr_App
 
                 FillWorkSpecifications();
 
-                SetAddEditWorkSpecificationSection(0);
+                SetAddEditWorkSpecificationSection(GetTaskWorkSpecificationId());
             }
         }
 
@@ -1934,36 +1944,44 @@ namespace JG_Prospect.Sr_App
 
         private void FillWorkSpecifications()
         {
-            DataTable dtWorkSpecifications = null;
-
-            if (controlMode.Value == "0")
+            // fill grid only for non admin users.
+            if (!this.IsAdminAndItLeadMode)
             {
-                dtWorkSpecifications = null;
-                intTaskUserFilesCount = 0;
-                grdWorkSpecifications.AllowCustomPaging = false;
-            }
-            else
-            {
-                DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+                DataTable dtWorkSpecifications = null;
 
-                if (dsWorkSpecifications != null)
+                // ToDo: uncomment below code, if specification listing is required.
+                if (controlMode.Value == "0")
                 {
-                    dtWorkSpecifications = dsWorkSpecifications.Tables[0];
-                    intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
-
-                    if (dtWorkSpecifications.Rows.Count > 0)
-                    {
-                        this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
-                    }
+                    dtWorkSpecifications = null;
+                    intTaskUserFilesCount = 0;
+                    grdWorkSpecifications.AllowCustomPaging = false;
                 }
-                grdWorkSpecifications.AllowCustomPaging = true;
-                grdWorkSpecifications.VirtualItemCount = intTaskUserFilesCount;
+                else
+                {
+                    DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, grdWorkSpecifications.PageIndex, grdWorkSpecifications.PageSize);
+
+                    if (dsWorkSpecifications != null)
+                    {
+                        dtWorkSpecifications = dsWorkSpecifications.Tables[0];
+                        intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
+
+                        if (dtWorkSpecifications.Rows.Count > 0)
+                        {
+                            this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
+                        }
+                    }
+                    grdWorkSpecifications.AllowCustomPaging = true;
+                    grdWorkSpecifications.VirtualItemCount = intTaskUserFilesCount;
+                }
+
+                grdWorkSpecifications.DataSource = dtWorkSpecifications;
+                grdWorkSpecifications.DataBind();
+
+                upWorkSpecifications.Update(); 
             }
 
-            grdWorkSpecifications.DataSource = dtWorkSpecifications;
-            grdWorkSpecifications.DataBind();
-
-            upWorkSpecifications.Update();
+            // ToDo: remove this line to make specification listing visible on screen.
+            //grdWorkSpecifications.Visible = false;
         }
 
         private void FillWorkSpecificationAttachments()
@@ -2488,8 +2506,6 @@ namespace JG_Prospect.Sr_App
                         txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
                     }
 
-
-
                     ltrlFreezedSpecificationByUserLinkMain.Text =
                     ltrlFreezedSpecificationByUserLinkPopup.Text = strLinkText;
                 }
@@ -2505,6 +2521,18 @@ namespace JG_Prospect.Sr_App
         {
             repWorkSpecificationLinks.DataSource = arrLinks;
             repWorkSpecificationLinks.DataBind();
+        }
+
+        private Int32 GetTaskWorkSpecificationId()
+        {
+            Int32 intTaskWorkSpecificationId = 0;
+
+            DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(Convert.ToInt32(hdnTaskId.Value), this.IsAdminAndItLeadMode, 0, 1);
+            if (dsWorkSpecifications != null && dsWorkSpecifications.Tables.Count > 0 && dsWorkSpecifications.Tables[0].Rows.Count > 0)
+            {
+                intTaskWorkSpecificationId = Convert.ToInt32(dsWorkSpecifications.Tables[0].Rows[0]["Id"]);
+            }
+            return intTaskWorkSpecificationId;
         }
 
         private void UpdateWorkSpecificationLinksFromView()
