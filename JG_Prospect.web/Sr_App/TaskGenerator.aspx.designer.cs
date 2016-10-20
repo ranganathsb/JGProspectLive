@@ -175,6 +175,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection;
         
         /// <summary>
+        /// lbtnShowFinishedWorkFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
+        
+        /// <summary>
         /// ltrlFreezedSpecificationByUserLinkMain control.
         /// </summary>
         /// <remarks>
@@ -200,15 +209,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
-        
-        /// <summary>
-        /// lbtnShowFinishedWorkFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
         
         /// <summary>
         /// txtDescription control.
@@ -841,60 +841,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlWorkSpecification;
         
         /// <summary>
-        /// ddlUserAcceptance control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlUserAcceptance;
-        
-        /// <summary>
-        /// txtDueDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDueDate;
-        
-        /// <summary>
-        /// ltlTUDueDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlTUDueDate;
-        
-        /// <summary>
-        /// txtHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHours;
-        
-        /// <summary>
-        /// revHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revHours;
-        
-        /// <summary>
-        /// ltlTUHrsTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
-        
-        /// <summary>
         /// txtCustomId control.
         /// </summary>
         /// <remarks>
@@ -1001,6 +947,60 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtActualHrsOfTaskFWF;
+        
+        /// <summary>
+        /// ddlUserAcceptance control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlUserAcceptance;
+        
+        /// <summary>
+        /// txtDueDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDueDate;
+        
+        /// <summary>
+        /// ltlTUDueDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTUDueDate;
+        
+        /// <summary>
+        /// ltlTUHrsTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
+        
+        /// <summary>
+        /// txtHours control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHours;
+        
+        /// <summary>
+        /// revHours control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revHours;
         
         /// <summary>
         /// ddlSubTasksFWF control.

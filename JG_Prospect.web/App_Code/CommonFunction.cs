@@ -448,7 +448,7 @@ namespace JG_Prospect.App_Code
                 //return (chNextChar + "-" + intNextNum);
                 return (strValues[0] + "-" + intNextNum);
             }
-            return "a-1";
+            return "A-1";
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()

@@ -142,25 +142,24 @@
                             <td class="valigntop">
                                 <table width="100%">
                                     <tr>
-                                        <td colspan="2">
+                                        <td>
                                             <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
                                                 ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
-                                            &nbsp;&nbsp;
-                                           
-                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
-
-                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                            &nbsp;&nbsp;
-                                           
-                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                        </td>
+                                        <td>
+                                            <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
+                                                ValidationGroup="Submit" OnClick="lbtnShowFinishedWorkFiles_Click" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="valigntop">
-                                            <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
-                                                ValidationGroup="Submit" OnClick="lbtnShowFinishedWorkFiles_Click" />
+                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
+                                            <br />
+                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                                placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                            <br />
+                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                                placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
                                         <td class="valigntop">
                                             <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
@@ -808,49 +807,6 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table width="100%">
-                                            <tr>
-                                                <td align="left">User Acceptance:
-                                                               
-                                                   
-
-                                                <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
-                                                    <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
-                                                    <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
-                                                </asp:DropDownList>
-                                                </td>
-                                                <td align="left">Due Date:
-                                                               
-                                                               
-
-                                                   
-
-
-
-                                                <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
-
-                                                    <asp:Literal ID="ltlTUDueDate" runat="server" />
-                                                </td>
-                                                <td align="right">Hrs of Task:
-                                                               
-                                                               
-
-                                                   
-
-
-
-                                                <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
-                                                    <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
-                                                        ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
-
-                                                    <asp:Literal ID="ltlTUHrsTask" runat="server" />
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
                                         <div style="width: 200px; float: left;">
                                             Sequence Id:
                                                        
@@ -975,6 +931,30 @@
                                 </td>
                                 <td style="min-width: 200px;">
                                     <asp:TextBox ID="txtActualHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <table width="100%">
+                                        <tr>
+                                            <td align="left">User Acceptance:
+                                            <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
+                                                <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
+                                                <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
+                                            </asp:DropDownList>
+                                            </td>
+                                            <td align="left">Due Date:
+                                                <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
+                                                <asp:Literal ID="ltlTUDueDate" runat="server" />
+                                            </td>
+                                            <td align="right">Hrs of Task:
+                                                <asp:Literal ID="ltlTUHrsTask" runat="server" />
+                                                <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
+                                                <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
+                                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                             <tr>
