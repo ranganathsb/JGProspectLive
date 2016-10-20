@@ -1,5 +1,4 @@
 ﻿using JG_Prospect.BLL;
-
 using JG_Prospect.Common;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,6 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -437,18 +435,81 @@ namespace JG_Prospect.App_Code
             return ReturnSequence;
         }
 
-        public static string GetTaskWorkSpecificationSqquence(string strStartAt)
+        /// <summary>
+        /// Gets next sequence value based on current value.
+        /// </summary>
+        /// <param name="strCurrentSequence">current sequence number.</param>
+        /// <returns>
+        /// input  : ouput
+        ///    ''  :     A
+        ///     1  :     2 
+        ///     A  :     B 
+        ///     Z  :    AA 
+        ///    A1  :    A2
+        ///    Z1  :    Z2
+        ///    A9  :   AA0
+        ///    Z9  :   AZ0
+        ///    A-  :   A-0
+        ///    Z-  :   Z-0
+        /// </returns>
+        public static string GetTaskWorkSpecificationSequence(string strCurrentSequence = "")
         {
-            string[] strValues = strStartAt.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-            if (strValues.Length == 2)
-            {
-                //char chNextChar = (char)(Convert.ToInt16(strValues[0][0]) + 1);
-                int intNextNum = Convert.ToInt16(strValues[1]) + 1;
+            string strReturnValue = "A";
 
-                //return (chNextChar + "-" + intNextNum);
-                return (strValues[0] + "-" + intNextNum);
+            if (!string.IsNullOrEmpty(strCurrentSequence))
+            {
+                string strInputPrefix = string.Empty;
+                char chInputPostfix = strCurrentSequence[strCurrentSequence.Length - 1];
+                if (strCurrentSequence.Length > 1)
+                {
+                    strInputPrefix = strCurrentSequence.Substring(0, strCurrentSequence.Length - 1);
+                }
+
+                int intNumber;
+
+                int intaCode = (int)'a';
+                int intzCode = (int)'z';
+                int intACode = (int)'A';
+                int intZCode = (int)'Z';
+                int intInputCode = (int)chInputPostfix;
+
+                if (
+                    (intInputCode >= intaCode && intInputCode <= intzCode) ||
+                    (intInputCode >= intACode && intInputCode <= intZCode)
+                   )
+                {
+                    if (intInputCode == intzCode || intInputCode == intZCode)
+                    {
+                        strInputPrefix = "A" + strInputPrefix;
+                        chInputPostfix = 'A';
+                    }
+                    else
+                    {
+                        chInputPostfix = (char)(++intInputCode);
+                    }
+                }
+                else if (int.TryParse(chInputPostfix.ToString(), out intNumber))
+                {
+                    if (intNumber == 9)
+                    {
+                        strInputPrefix = "A" + strInputPrefix;
+                        chInputPostfix = '0';
+                    }
+                    else
+                    {
+                        chInputPostfix = (++intNumber).ToString()[0];
+                    }
+                }
+                else
+                {
+                    strInputPrefix = strInputPrefix + chInputPostfix;
+                    chInputPostfix = '0';
+                }
+
+                strReturnValue = strInputPrefix + chInputPostfix;
             }
-            return "A-1";
+
+            return strReturnValue;
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()
@@ -498,7 +559,6 @@ namespace JG_Prospect.App_Code
 
 namespace JG_Prospect
 {
-
     public static class JGSession
     {
         public static string Username
