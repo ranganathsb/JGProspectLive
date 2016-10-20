@@ -1438,3 +1438,9 @@ table tr.trFooter td {
 .valigntop {
     vertical-align: top;
 }
+
+.block-link-container a {
+    display: block;
+    line-height: 20px;
+    height: 20px;
+}

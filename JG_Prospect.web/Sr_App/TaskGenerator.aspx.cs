@@ -2515,16 +2515,15 @@ namespace JG_Prospect.Sr_App
                     if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatus"].ToString()))
                     {
                         strLinkText += string.Format(
-                                                    "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
+                                                    "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
                                                     dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserId"].ToString(),
                                                     string.Concat
                                                             (
                                                                 dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserFirstName"].ToString(),
                                                                 " ",
-                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserLastName"].ToString(),
-                                                                " : ",
-                                                                Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
-                                                            )
+                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserLastName"].ToString()
+                                                            ),
+                                                    Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
                                                    );
 
                         txtAdminPasswordToFreezeSpecificationMain.Visible =
@@ -2534,17 +2533,16 @@ namespace JG_Prospect.Sr_App
                     if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatus"].ToString()))
                     {
                         strLinkText += string.Format(
-                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank'>{1}</a>&nbsp;&nbsp;",
+                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
                                                        dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserId"].ToString(),
                                                        string.Concat
                                                                (
                                                                    dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserFirstName"].ToString(),
                                                                    " ",
-                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserLastName"].ToString(),
-                                                                   " : ",
-                                                                   Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
-                                                               )
-                                                      );
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserLastName"].ToString()
+                                                               ),
+                                                        Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                    );
 
                         txtITLeadPasswordToFreezeSpecificationMain.Visible =
                         txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;

@@ -153,7 +153,9 @@
                                     </tr>
                                     <tr>
                                         <td class="valigntop">
-                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
+                                            <div class="block-link-container">
+                                                <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
+                                            </div>
                                             <br />
                                             <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
