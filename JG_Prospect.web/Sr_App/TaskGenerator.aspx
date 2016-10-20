@@ -1,16 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="TaskGenerator.aspx.cs"
     Inherits="JG_Prospect.Sr_App.TaskGenerator" ValidateRequest="false" EnableEventValidation="false" %>
 
-<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor" TagPrefix="ajax" %>
-
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
+<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
+    <script src="../ckeditor/ckeditor.js"></script>
 
     <script type="text/javascript" src="../js/dropzone.js"></script>
 
@@ -177,7 +177,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2">Task Description <span style="color: red;">*</span>:<br />
+                            <td colspan="2">Task Description <span style="color: red;">*</span>:
+                                
+                                <br />
+
                                 <asp:TextBox ID="txtDescription" TextMode="MultiLine" runat="server" CssClass="textbox" Width="98%" Rows="10"></asp:TextBox>
                                 <%--<ajax:Editor ID="txtDescription" Width="100%" Height="100px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
                                 <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
@@ -330,7 +333,7 @@
                                                         <td colspan="2">Description <span style="color: red;">*</span>:
                                                            
                                                            
-
+                                                          
                                                            
 
 
@@ -784,7 +787,12 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <asp:TextBox ID="txtWorkSpecification" runat="server" />
+                                                    <%--                 <asp:TextBox ID="txtWorkSpecification" TextMode="MultiLine" runat="server" />--%>
+
+                                                    <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor">
+		
+                                                    </CKEditor:CKEditorControl>
+
                                                 </td>
                                             </tr>
                                         </table>
@@ -792,7 +800,7 @@
                                 </tr>
                                 <tr id="trWorkSpecificationContent" runat="server">
                                     <td>
-                                        <fieldset style="border:1px solid gray;margin-bottom:10px;">
+                                        <fieldset style="border: 1px solid gray; margin-bottom: 10px;">
                                             <legend>Work Specification</legend>
                                             <asp:Literal ID="ltrlWorkSpecification" runat="server" />
                                         </fieldset>
@@ -870,7 +878,7 @@
                                     <td>
                                         <asp:UpdatePanel ID="upWorkSpecificationLinks" runat="server">
                                             <ContentTemplate>
-                                                <asp:Repeater ID="repWorkSpecificationLinks" runat="server" 
+                                                <asp:Repeater ID="repWorkSpecificationLinks" runat="server"
                                                     OnItemDataBound="repWorkSpecificationLinks_ItemDataBound"
                                                     OnItemCommand="repWorkSpecificationLinks_ItemCommand">
                                                     <HeaderTemplate>
@@ -952,37 +960,37 @@
                             When user submit their CODE files, it should be auto compiled and if there is any compilation error it should show popup to user 
                             with build error and that errors should be logged with attempt count as well. when user resubmit work it should follow same process 
                             as above and there should be max. attempt count.
-                                --%>
+                    --%>
                     <fieldset>
                         <legend>Log Finished Work</legend>
                         <hr />
                         <table width="100%" border="0" cellspacing="3" cellpadding="3">
                             <tr>
                                 <td width="120" align="right">Est. Hrs. of Task:
-                                    </td>
+                                </td>
                                 <td width="250">
                                     <asp:TextBox ID="txtEstHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
                                 </td>
                                 <td width="180" align="right">Actual Hrs. of Task:
-                                    </td>
+                                </td>
                                 <td style="min-width: 200px;">
                                     <asp:TextBox ID="txtActualHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
                                 </td>
                             </tr>
                             <tr>
                                 <td align="right">Freeze By:
-                                    </td>
+                                </td>
                                 <td>Yogesh Keraliya
-                                    </td>
+                                </td>
                                 <td align="right">Profile:
-                                    </td>
+                                </td>
                                 <td>
                                     <a href="InstallCreateUser.aspx?Id=901">901</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td align="right">Sub task:
-                                    </td>
+                                </td>
                                 <td>
                                     <asp:DropDownList ID="ddlSubTasksFWF" runat="server" CssClass="textbox" Width="100">
                                         <asp:ListItem>Select</asp:ListItem>
@@ -992,7 +1000,7 @@
                                     </asp:DropDownList>
                                 </td>
                                 <td align="right">Sub task status:
-                                    </td>
+                                </td>
                                 <td>
                                     <asp:DropDownList ID="ddlSubTaskStatusFWF" runat="server" CssClass="textbox" Width="100">
                                         <asp:ListItem>Select</asp:ListItem>
@@ -1009,7 +1017,7 @@
                                     </div>
                                 </td>
                                 <td align="right" valign="top">Date of File Submission:
-                                    </td>
+                                </td>
                                 <td valign="top">
                                     <asp:TextBox ID="DateOfFileSubmissionFWF" runat="server" CssClass="textbox" Width="80" />
                                 </td>
@@ -1127,19 +1135,6 @@
     </div>
     <%--Popup Ends--%>
     <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
-    <script type="text/javascript" src='../js/ice/lib/rangy/rangy-core.js'></script>
-    <script type="text/javascript" src='../js/ice/src/polyfills.js'></script>
-    <script type="text/javascript" src='../js/ice/src/ice.js'></script>
-    <script type="text/javascript" src='../js/ice/src/dom.js'></script>
-    <script type="text/javascript" src='../js/ice/src/icePlugin.js'></script>
-    <script type="text/javascript" src='../js/ice/src/icePluginManager.js'></script>
-    <script type="text/javascript" src='../js/ice/src/bookmark.js'></script>
-    <script type="text/javascript" src='../js/ice/src/selection.js'></script>
-    <script type="text/javascript" src='../js/ice/src/plugins/IceAddTitlePlugin/IceAddTitlePlugin.js'></script>
-    <script type="text/javascript" src='../js/ice/src/plugins/IceCopyPastePlugin/IceCopyPastePlugin.js'></script>
-    <script type="text/javascript" src='../js/ice/src/plugins/IceEmdashPlugin/IceEmdashPlugin.js'></script>
-    <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
-    <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 
     <script type="text/javascript">
         var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;
@@ -1193,11 +1188,14 @@
     </script>
     <script type="text/javascript">
 
+        var workspecEditor;
+
         Dropzone.autoDiscover = false;
 
         $(function () {
             Initialize();
-            LoadTinyMce();
+            //LoadTinyMce();
+            //LoadCKEditor();
             ApplyToolTip();
         });
 
@@ -1209,7 +1207,8 @@
 
         function Initialize() {
             ApplyDropZone();
-            LoadTinyMce();
+            // LoadTinyMce();
+            LoadCKEditor();
         }
 
         function ShowImageDialog(sender,strControlId) {
@@ -1226,7 +1225,16 @@
         }
 
         function ShowPopup(varControlID) {
-            var objDialog = $(varControlID).dialog({ width: "900px", height: "auto" });
+            var objDialog = $(varControlID).dialog({ width: "900px", height: "auto"<%--, 
+                open: function( event, ui )
+                { 
+                    console.log(varControlID);
+                    if (varControlID == "#<%=divWorkSpecificationSection.ClientID%>") {
+                        setTimeout(function(){LoadCKEditor();},1000);
+                        
+                    } 
+                }--%>
+            });
             
             AppendMinimizeButton(objDialog);
             
@@ -1256,6 +1264,17 @@
                     varMinimizeButton.insertBefore(objDialog.parent().find('.ui-dialog-titlebar-close'));
                 }
             }
+        }
+
+        function LoadCKEditor() {                        
+            //// $('#workspecs').ckeditor();
+            //var editor = CKEDITOR.instances['workspecs'];
+            
+            //if (editor) {               
+            //    editor.destroy(true);
+            //}   
+
+            //CKEDITOR.replace( 'workspecs');
         }
 
         function ShowPopupWithTitle(varControlID, strTitle) {
@@ -1296,26 +1315,26 @@
             var strListID = $.trim($(sender).text());
             if (strListID.length > 0) {
                 $('#<%= txtTaskListID.ClientID %>').val(strListID);
-            }
-        }
-
-        function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-
-            var attachments;
-
-            if ($(hdnControlID).val()) {
-                attachments = $(hdnControlID).val() + serverfilename + "^";
-            }
-            else {
-                attachments = serverfilename + "^";
+                }
             }
 
-            $(hdnControlID).val(attachments);
-        }
+            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
-        function RemoveAttachmentFromViewState(filename) {
+                var attachments;
 
-            if ($('#<%= hdnAttachments.ClientID %>').val()) {
+                if ($(hdnControlID).val()) {
+                    attachments = $(hdnControlID).val() + serverfilename + "^";
+                }
+                else {
+                    attachments = serverfilename + "^";
+                }
+
+                $(hdnControlID).val(attachments);
+            }
+
+            function RemoveAttachmentFromViewState(filename) {
+
+                if ($('#<%= hdnAttachments.ClientID %>').val()) {
 
                 //split images added by ^ seperator
                 var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
