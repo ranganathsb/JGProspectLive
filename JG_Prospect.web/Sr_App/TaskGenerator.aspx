@@ -743,14 +743,14 @@
                                             </small>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px">
                                         <ItemTemplate>
                                             <asp:Literal ID="ltrlLinks" runat="server" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px">
@@ -805,13 +805,10 @@
                                         </fieldset>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr runat="server" visible="false">
                                     <td>
                                         <div style="width: 200px; float: left;">
                                             Sequence Id:
-                                                       
-                                           
-
                                         <br />
                                             <asp:TextBox ID="txtCustomId" runat="server" CssClass="textbox" Width="100" />
                                             <asp:RequiredFieldValidator ID="rfvCustomId" runat="server" ControlToValidate="txtCustomId" ValidationGroup="vgSaveWorkSpecification"
@@ -830,7 +827,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr runat="server" visible="false">
                                     <td>
                                         <asp:UpdatePanel ID="upWorkSpecificationLinks" runat="server">
                                             <ContentTemplate>
