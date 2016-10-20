@@ -740,27 +740,50 @@
                                         <ItemTemplate>
                                             <small>
                                                 <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                    Text='<%#Eval("CustomId")%>' CommandArgument='<%#Eval("Id")%>' />
+                                                    Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>
                                                 <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
                                             </small>
                                         </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <small>
+                                                <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
+                                                    Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>
+                                                <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
+                                            </small>
+                                        </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px">
+                                    <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px" Visible="false">
                                         <ItemTemplate>
                                             <asp:Literal ID="ltrlLinks" runat="server" />
                                         </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:Literal ID="ltrlLinks" runat="server" />
+                                        </EditItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
                                         <ItemTemplate>
                                             <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />
                                         </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
+                                            <br />
+                                            <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" Text="Save" CommandName="save-version"
+                                                CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>&nbsp;&nbsp;
+                                            <asp:LinkButton ID="lbtnCancelEditing" runat="server"  Text="Cancel" CommandName="cancel-edit-version"
+                                                />
+                                        </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px">
+                                    <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px" Visible="false">
                                         <ItemTemplate>
                                             <asp:HyperLink ID="hypWireframe" runat="server" />
                                             <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
                                                 CommandArgument='<%#Eval("Wireframe") %>' Visible="false" />
                                         </ItemTemplate>
+                                        <EditItemTemplate>
+                                            <asp:HyperLink ID="hypWireframe" runat="server" />
+                                            <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
+                                                CommandArgument='<%#Eval("Wireframe") %>' Visible="false" />
+                                        </EditItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
                                 <HeaderStyle CssClass="trHeader" />
@@ -872,8 +895,8 @@
                                     <td>
                                         <div class="btn_sec">
                                             <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
-                                                OnClientClick="javascript:SetContentInTextbox();"
-                                                OnClick="btnSaveWorkSpecification_Click" ValidationGroup="SaveWorkSpecification" />
+                                                
+                                                OnClick="btnSaveWorkSpecification_Click" ValidationGroup="SaveWorkSpecification" /><%--OnClientClick="javascript:SetContentInTextbox();"--%>
                                         </div>
                                     </td>
                                 </tr>
@@ -1173,8 +1196,6 @@
 
         $(function () {
             Initialize();
-            //LoadTinyMce();
-            //LoadCKEditor();
             ApplyToolTip();
         });
 
@@ -1189,6 +1210,19 @@
             // LoadTinyMce();
             LoadCKEditor();
         }
+
+        
+        function LoadCKEditor() {                        
+            //// $('#workspecs').ckeditor();
+            //var editor = CKEDITOR.instances['workspecs'];
+            
+            //if (editor) {               
+            //    editor.destroy(true);
+            //}   
+
+            //CKEDITOR.replace( 'workspecs');
+        }
+
 
         function ShowImageDialog(sender,strControlId) {
             
@@ -1243,17 +1277,6 @@
                     varMinimizeButton.insertBefore(objDialog.parent().find('.ui-dialog-titlebar-close'));
                 }
             }
-        }
-
-        function LoadCKEditor() {                        
-            //// $('#workspecs').ckeditor();
-            //var editor = CKEDITOR.instances['workspecs'];
-            
-            //if (editor) {               
-            //    editor.destroy(true);
-            //}   
-
-            //CKEDITOR.replace( 'workspecs');
         }
 
         function ShowPopupWithTitle(varControlID, strTitle) {
