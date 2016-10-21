@@ -840,7 +840,9 @@ namespace JG_Prospect.Sr_App
             {
                 LinkButton lbtnId = e.Row.FindControl("lbtnId") as LinkButton;
                 Literal ltrlId = e.Row.FindControl("ltrlId") as Literal;
-                Label lblDescription = e.Row.FindControl("lblDescription") as Label;
+                //Label lblDescription = e.Row.FindControl("lblDescription") as Label;
+                Literal lblDescription = e.Row.FindControl("lblDescription") as Literal;
+                
                 CKEditorControl txtWorkSpecification = e.Row.FindControl("txtWorkSpecification") as CKEditorControl;
                 Literal ltrlLinks = e.Row.FindControl("ltrlLinks") as Literal;
                 LinkButton lbtnDownloadWireframe = e.Row.FindControl("lbtnDownloadWireframe") as LinkButton;
@@ -850,10 +852,10 @@ namespace JG_Prospect.Sr_App
                 if (lblDescription != null)
                 {
                     lblDescription.Text = HttpUtility.HtmlDecode(drWorkSpecification["Description"].ToString());
-                    lblDescription.Attributes.Add("data-tooltip", "true");
-                    lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
+                    //lblDescription.Attributes.Add("data-tooltip", "true");
+                    //lblDescription.Attributes.Add("data-tooltipcontent", lblDescription.Text);
                     lblDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w\s\=\""\-\/\:\:]*/>)|(<[\w\s\=\""\-\/\:\:]*>)|(</[\w\s\=\""\-\/\:\:]*>)")).Replace(lblDescription.Text, " ").Trim();
-                    lblDescription.Text = lblDescription.Text.Length > 100 ? lblDescription.Text.Substring(0, 100) + "..." : lblDescription.Text;
+                    //lblDescription.Text = lblDescription.Text.Length > 100 ? lblDescription.Text.Substring(0, 100) + "..." : lblDescription.Text;
                 }
 
                 if (txtWorkSpecification != null)

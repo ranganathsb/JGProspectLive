@@ -12,6 +12,7 @@
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script src="../ckeditor/ckeditor.js"></script>
 
+
     <script type="text/javascript" src="../js/dropzone.js"></script>
 
     <div class="right_panel">
@@ -728,6 +729,9 @@
                                
                                 <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                     placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                &nbsp;&nbsp;
+                                <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                    placeholder="User Password" AutoPostBack="true" Visible="true" />
                             </div>
                             <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                 GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
@@ -760,17 +764,19 @@
                                             <asp:Literal ID="ltrlLinks" runat="server" />
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Description" ItemStyle-Width="300px">
+                                    <asp:TemplateField HeaderText="Description" >
                                         <ItemTemplate>
-                                            <asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />
+                                            <%--<asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />--%>
+                                            <div style="background-color:white;">
+                                                <asp:Literal ID="lblDescription" runat="server" />
+                                            </div>
                                         </ItemTemplate>
                                         <EditItemTemplate>
                                             <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
                                             <br />
                                             <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" Text="Save" CommandName="save-version"
                                                 CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>&nbsp;&nbsp;
-                                            <asp:LinkButton ID="lbtnCancelEditing" runat="server"  Text="Cancel" CommandName="cancel-edit-version"
-                                                />
+                                            <asp:LinkButton ID="lbtnCancelEditing" runat="server" Text="Cancel" CommandName="cancel-edit-version" />
                                         </EditItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px" Visible="false">
@@ -895,7 +901,6 @@
                                     <td>
                                         <div class="btn_sec">
                                             <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
-                                                
                                                 OnClick="btnSaveWorkSpecification_Click" ValidationGroup="SaveWorkSpecification" /><%--OnClientClick="javascript:SetContentInTextbox();"--%>
                                         </div>
                                     </td>
@@ -1317,41 +1322,41 @@
             var strListID = $.trim($(sender).text());
             if (strListID.length > 0) {
                 $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                }
+            }
+        }
+
+        function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+
+            var attachments;
+
+            if ($(hdnControlID).val()) {
+                attachments = $(hdnControlID).val() + serverfilename + "^";
+            }
+            else {
+                attachments = serverfilename + "^";
             }
 
-            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+            $(hdnControlID).val(attachments);
+        }
 
-                var attachments;
+        function RemoveAttachmentFromViewState(filename) {
 
-                if ($(hdnControlID).val()) {
-                    attachments = $(hdnControlID).val() + serverfilename + "^";
-                }
-                else {
-                    attachments = serverfilename + "^";
-                }
+            if ($('#<%= hdnAttachments.ClientID %>').val()) {
 
-                $(hdnControlID).val(attachments);
-            }
+                    //split images added by ^ seperator
+                    var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
 
-            function RemoveAttachmentFromViewState(filename) {
-
-                if ($('#<%= hdnAttachments.ClientID %>').val()) {
-
-                //split images added by ^ seperator
-                var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
-
-                if (attachments.length > 0) {
-                    //find index of filename and remove it.
-                    var index = attachments.indexOf(filename);
-
-                    if (index > -1) {
-                        attachments.splice(index, 1);
-                    }
-
-                    //join remaining attachments.
                     if (attachments.length > 0) {
-                        $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
+                        //find index of filename and remove it.
+                        var index = attachments.indexOf(filename);
+
+                        if (index > -1) {
+                            attachments.splice(index, 1);
+                        }
+
+                        //join remaining attachments.
+                        if (attachments.length > 0) {
+                            $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
                     }
                     else {
                         $('#<%= hdnAttachments.ClientID %>').val("");
