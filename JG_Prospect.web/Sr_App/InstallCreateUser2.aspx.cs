@@ -271,6 +271,7 @@ namespace JG_Prospect.Sr_App
                         Session["LastName"] = ds.Tables[0].Rows[0][2].ToString();
                         txtemail.Text = ds.Tables[0].Rows[0][3].ToString();
                         ViewState["Email"] = ds.Tables[0].Rows[0][3].ToString();
+                        ucAuditTrail.UserLoginID = ds.Tables[0].Rows[0][3].ToString();
                         txtaddress.Text = ds.Tables[0].Rows[0][4].ToString();
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();

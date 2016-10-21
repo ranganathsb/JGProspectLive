@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
+using JG_Prospect.Common.modal;
+using JG_Prospect.BLL;
 
 namespace JG_Prospect.Sr_App
 {
@@ -30,10 +32,12 @@ namespace JG_Prospect.Sr_App
                     ScriptEditor.Enabled = false;
                     ScriptEditor.Attributes.Add("readonly", "readonly");
                 }
+                AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
             }
             else
             {
                 Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
+                AddUpdateUserAuditTrailRecord("Session Expired", Session["loginid"].ToString());
             }
         }
 
@@ -60,5 +64,16 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void AddUpdateUserAuditTrailRecord(string strPageName, string UserLoginID)
+        {
+            UserAuditTrail objUserAudit = new UserAuditTrail();
+
+            objUserAudit.UserLoginID = UserLoginID;
+            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
+            objUserAudit.Description = strPageName;
+            objUserAudit.CurrentActionTime = DateTime.Now;
+
+            UserAuditTrailBLL.Instance.AddUpdateUserAuditTrailRecord(objUserAudit);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
+using JG_Prospect.BLL;
 
 namespace JG_Prospect.Sr_App
 {
@@ -40,9 +41,24 @@ namespace JG_Prospect.Sr_App
 
         protected void btnlogout_Click(object sender, EventArgs e)
         {
+            UpdateAudiTrailForLogout();
             Session.Clear();
             Session["LogOut"] = 1;
             Response.Redirect("~/login.aspx");
+        }
+
+        /// <summary>
+        /// User Audi Trail Entry for Logout
+        /// </summary>
+        private void UpdateAudiTrailForLogout()
+        {
+            Common.modal.UserAuditTrail objUserAudit = new Common.modal.UserAuditTrail();
+
+            objUserAudit.LogOutTime = DateTime.Now;
+            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
+            
+            UserAuditTrailBLL.Instance.UpdateUserLogOutTime(objUserAudit);
+
         }
 
         protected void lbtWeather_Click(object sender, EventArgs e)

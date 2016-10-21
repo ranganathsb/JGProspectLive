@@ -2,6 +2,7 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register Src="~/UserControl/ucAuditTrailByUser.ascx" TagPrefix="ucAudit" TagName="UserListing" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../Styles/dd.css" rel="stylesheet" />
 
@@ -492,605 +493,28 @@
                     <span>
                         <%--<asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>--%>
                     </span>
-                    <%--<asp:UpdatePanel ID="UpdatePanel10" runat="server">
-                <ContentTemplate>--%>
-                    <asp:Panel ID="pnlAll" runat="server">
-                        <ul style="overflow: hidden; margin-bottom: 10px;">
-                            <li style="width: 100%;">
-                                <table width="100%" style="height: 30px;">
-                                    <tr>
-                                        <td class="auto-style10" style="width: 60px;">
-                                            <%--<asp:UpdatePanel ID="UpdatePanel8" runat="server">
-                                                <ContentTemplate>--%>
-                                            <asp:Button ID="btnNewPluse" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="+" OnClick="btnNewPluse_Click" /><%-- TabIndex="149" --%>
-                                            <asp:Button ID="btnNewMinus" runat="server" Text="-" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnNewMinus_Click" />
-                                            <%--TabIndex="150"--%>
-                                            <%--</ContentTemplate>
-                                                <Triggers>
-                                                    <asp:AsyncPostBackTrigger ControlID="btnNewPluse" EventName="Click" />
-                                                    <asp:AsyncPostBackTrigger ControlID="btnNewMinus" EventName="Click" />
-                                                    <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                                                </Triggers>
-                                            </asp:UpdatePanel>--%>
-                                        </td>
-                                        <td style="font-weight: bold; font-size: large">New Hire</td>
-                                    </tr>
-                                </table>
-                            </li>
-                            <li style="width: 49%;">
-                                <%-- <asp:UpdatePanel ID="UpdatePanel3" runat="server">
-                                    <ContentTemplate>--%>
 
-                                <asp:Panel ID="pnlnewHire" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td style="height: 137px;">
-                                                <label>
-                                                    Hire Date<span><asp:Label ID="lblReqHireDate" runat="server" Text="*" ForeColor="Blue"></asp:Label></span></label>
-                                                <asp:TextBox ID="txtHireDate" Enabled="false" runat="server" Width="231px"></asp:TextBox><%-- TabIndex="151"--%>
-                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender2" TargetControlID="txtHireDate" runat="server"></ajaxToolkit:CalendarExtender>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqHireDate" runat="server" ControlToValidate="txtHireDate"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Hire Date"></asp:RequiredFieldValidator>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label>
-                                                    Workers Comp Code<span><asp:Label ID="lblReqWWC" Text="*" runat="server" ForeColor="Blue"></asp:Label></span></label>
-                                                <asp:DropDownList ID="ddlWorkerCompCode" runat="server" Width="251px">
-                                                    <%--TabIndex="153"--%>
-                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                                    <asp:ListItem Text="0951    Salesperson – Outside" Value="0951    Salesperson – Outside"></asp:ListItem>
-                                                    <asp:ListItem Text="0953    Office" Value="0953    Office"></asp:ListItem>
-                                                </asp:DropDownList>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqWorkCompCode" runat="server" ControlToValidate="ddlWorkerCompCode"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Worker Comp Code"
-                                                    InitialValue="0"></asp:RequiredFieldValidator>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label>
-                                                    Employee Type<span><asp:Label ID="lblReqEmpType" Text="*" ForeColor="Blue" runat="server"></asp:Label></span></label>
-                                                <asp:DropDownList ID="ddlEmpType" runat="server" Width="249px">
-                                                    <%--TabIndex="155"--%>
-                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                                    <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
-                                                    <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
-                                                    <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
-                                                    <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
-                                                </asp:DropDownList>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Employee Type"
-                                                    InitialValue="0"></asp:RequiredFieldValidator>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label>
-                                                    Pay Rates<span><asp:Label ID="lblReqPayRates" Text="*" ForeColor="Blue" runat="server"></asp:Label></span> $</label>
-                                                <asp:TextBox ID="txtPayRates" runat="server" MaxLength="40" autocomplete="off"
-                                                    EnableViewState="false" AutoCompleteType="None" Width="242px" onkeypress="return isNumericKey(event);"></asp:TextBox><%--TabIndex="157"--%>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqPayRate" Display="Dynamic" runat="server" ControlToValidate="txtPayRates"
-                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Pay Rate"></asp:RequiredFieldValidator>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <asp:Label ID="lblPaySource" runat="server" Text="Pay Source" Font-Bold="True"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <asp:RadioButton ID="rdoCheque" runat="server" AutoPostBack="true" GroupName="paymethod" Text="Check" OnCheckedChanged="rdoCheque_CheckedChanged" Checked="True" /><%--TabIndex="166" --%>
-                                                <asp:RadioButton ID="rdoDeposite" runat="server" GroupName="paymethod" Text="Direct Deposite" OnCheckedChanged="rdoDeposite_CheckedChanged" AutoPostBack="True" /><%-- TabIndex="167"--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <%--<asp:UpdatePanel ID="UpdatePanel14" UpdateMode="Always" runat="server">
-                                                            <ContentTemplate>--%>
-                                                <label>
-                                                    <asp:Label ID="lblAba" runat="server" ForeColor="Black">
-                                                            ABA Routing #</asp:Label>
-                                                </label>
-                                                <asp:TextBox ID="txtRoutingNo" runat="server" MaxLength="40" autocomplete="off"
-                                                    EnableViewState="false" onkeypress="return IsNumeric(event);" AutoCompleteType="None" Width="242px"></asp:TextBox><%--TabIndex="168"--%>
-                                                <br />
-                                                <label></label>
-                                                <asp:RequiredFieldValidator ID="rqRoutingNo" Display="Dynamic" runat="server" ControlToValidate="txtRoutingNo"
-                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Routing No."></asp:RequiredFieldValidator>
-                                                <%--</ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoDeposite" EventName="CheckedChanged" />
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoCheque" EventName="CheckedChanged" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                                <br />
-                                                <label></label>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <%--<asp:UpdatePanel ID="UpdatePanel15" UpdateMode="Always" runat="server">
-                                                            <ContentTemplate>--%>
-                                                <label>
-                                                    <asp:Label ID="lblAccount" runat="server" ForeColor="Black">
-                                                            Account #</asp:Label>
-                                                </label>
-                                                <asp:TextBox ID="txtAccountNo" runat="server" MaxLength="40" autocomplete="off"
-                                                    EnableViewState="false" onkeypress="return IsNumeric(event);" AutoCompleteType="None" Width="242px"></asp:TextBox><%--TabIndex="169"--%>
-                                                <br />
-                                                <label></label>
-                                                <asp:RequiredFieldValidator ID="rqAccountNo" Display="Dynamic" runat="server" ControlToValidate="txtAccountNo"
-                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Account No."></asp:RequiredFieldValidator>
-                                                <%--</ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoDeposite" EventName="CheckedChanged" />
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoCheque" EventName="CheckedChanged" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                                <br />
-                                                <label></label>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <%--<asp:UpdatePanel ID="UpdatePanel16" runat="server" UpdateMode="Always">
-                                                            <ContentTemplate>--%>
-                                                <label>
-                                                    <asp:Label ID="lblAccountType" runat="server" ForeColor="Black">
-                                                            Account Type</asp:Label>
-                                                </label>
-                                                <asp:TextBox ID="txtAccountType" runat="server" MaxLength="40" autocomplete="off"
-                                                    EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
-                                                <%--TabIndex="170"--%>
-                                                <br />
-                                                <label></label>
-                                                <asp:RequiredFieldValidator ID="rqAccountType" Display="Dynamic" runat="server" ControlToValidate="txtAccountType"
-                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Account Account Type"></asp:RequiredFieldValidator>
-                                                <%--</ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoDeposite" EventName="CheckedChanged" />
-                                                                <asp:AsyncPostBackTrigger ControlID="rdoCheque" EventName="CheckedChanged" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                                <br />
-                                                <label></label>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </asp:Panel>
-                                <%--   </ContentTemplate>
-                                    <Triggers>
-                                        <asp:AsyncPostBackTrigger ControlID="btnNewPluse" EventName="Click" />
-                                        <asp:AsyncPostBackTrigger ControlID="btnNewMinus" EventName="Click" />
-                                        <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                                    </Triggers>
-                                </asp:UpdatePanel>--%>
-                            </li>
-                            <li style="width: 49%;">
-                                <%--<asp:UpdatePanel ID="UpdatePanel5" runat="server">
-                                    <ContentTemplate>--%>
-                                <asp:Panel ID="pnlNew2" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td class="auto-style14">
-                                                <label>
-                                                    Termination Date/Reason<asp:Label ID="lblTermination" runat="server" ForeColor="Red" Text="*"></asp:Label></label>
-                                                <asp:TextBox ID="dtResignation" runat="server" Width="222px"></asp:TextBox><%--TabIndex="152"--%>
-                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender3" TargetControlID="dtResignation" runat="server"></ajaxToolkit:CalendarExtender>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqdtResignition" runat="server" ControlToValidate="dtResignation"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter Resignition Date"></asp:RequiredFieldValidator>
-
-                                                <asp:CompareValidator ID="CompareValidator1" ValidationGroup="submit" Type="Date" Operator="GreaterThanEqual" Display="Dynamic" ControlToValidate="dtResignation" ControlToCompare="txtHireDate" runat="server" ForeColor="Red" ErrorMessage="Termination date should be greater than hire date."></asp:CompareValidator>
-
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <label>
-                                                    Next Review Date<asp:Label ID="lblNextReviewDate" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                                                <asp:TextBox ID="dtReviewDate" runat="server" Width="230px"></asp:TextBox><%--TabIndex="154"--%>
-                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender4" TargetControlID="dtReviewDate" Enabled="true" runat="server"></ajaxToolkit:CalendarExtender>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqDtNewReview" runat="server" ControlToValidate="dtReviewDate"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter New Review Date"></asp:RequiredFieldValidator>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <label>
-                                                    Last Review Date<asp:Label ID="lblLastReview" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                                                <asp:TextBox ID="dtLastDate" runat="server" Width="238px"></asp:TextBox><%--TabIndex="156"--%>
-                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender5" TargetControlID="dtLastDate" runat="server"></ajaxToolkit:CalendarExtender>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqLastReviewDate" runat="server" ControlToValidate="dtLastDate"
-                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter LastReview Date"></asp:RequiredFieldValidator>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <%--<asp:UpdatePanel ID="UpdatePanel19" runat="server" UpdateMode="Conditional">
-                                                            <ContentTemplate>--%>
-                                                <label>
-                                                    Extra Earnings</label>
-                                                <asp:DropDownList ID="ddlExtraEarning" runat="server" Width="110px">
-                                                    <%--TabIndex="158"--%>
-                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                                    <asp:ListItem Text="Test" Value="Test"></asp:ListItem>
-                                                    <asp:ListItem Text="Test2" Value="Test2"></asp:ListItem>
-                                                </asp:DropDownList>
-
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <label style="width: 2%;">
-                                    $</label>
-                                                <asp:TextBox ID="txtExtraIncome" runat="server" onkeypress="return IsNumeric(event);" Width="75"></asp:TextBox>
-                                                <%--TabIndex="159"--%>
-                                                <br />
-                                                <label></label>
-                                                <asp:RequiredFieldValidator ID="rqExtraEarnings" runat="server" ControlToValidate="ddlExtraEarning"
-                                                    ValidationGroup="SubmitNew" ForeColor="Red" Display="Dynamic" ErrorMessage="Select Extra Earning Type"
-                                                    InitialValue="0"></asp:RequiredFieldValidator>
-                                                <asp:RequiredFieldValidator ID="rqExtraEarningAmt" runat="server" ControlToValidate="txtExtraIncome"
-                                                    ValidationGroup="SubmitNew" ForeColor="Red" Display="Static" ErrorMessage="Enter Extra Earning"></asp:RequiredFieldValidator>
-                                                <br />
-                                                <label>
-                                                    <asp:Label ID="lblExtraEarning" ForeColor="Black" runat="server"> Extra Earnings</asp:Label></label>
-                                                <label>
-                                                    <asp:Label ID="lblExtra" ForeColor="Black" runat="server"></asp:Label>
-                                                </label>
-                                                <label style="width: 3%;">
-                                                    <asp:Label ID="lblExtraDollar" ForeColor="Black" runat="server">&amp;</asp:Label>
-                                                </label>
-                                                <label>
-                                                    &nbsp;&nbsp;&nbsp;
-                                                                <asp:Label ID="lblDoller" ForeColor="Black" runat="server"></asp:Label></label>
-                                                <br />
-                                                <label>
-                                                </label>
-                                                <%--            </ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="btnAddExtraIncome" EventName="Click" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <asp:Button ID="btnAddExtraIncome" ValidationGroup="SubmitNew" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" runat="server" Text="Add" Height="28px" Width="55px" OnClick="btnAddExtraIncome_Click" /><%--TabIndex="160" --%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <%--<asp:UpdatePanel ID="UpdatePanel17" runat="server" UpdateMode="Conditional">
-                                                            <ContentTemplate>--%>
-                                                <label>
-                                                    Deduction: $</label>
-                                                <asp:TextBox ID="txtDeduction" runat="server" onkeypress="return IsNumeric(event);" Width="113px"></asp:TextBox>
-                                                <%--TabIndex="161"--%>
-                                                                &nbsp;
-                                                        <label style="width: 45px;">
-                                                            Reason</label>
-                                                <asp:TextBox ID="txtDeducReason" runat="server" Width="113px"></asp:TextBox><%-- TabIndex="162"--%>
-                                                                &nbsp;
-                                                            <%--</ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                                <label>
-                                                </label>
-                                                <asp:RequiredFieldValidator ID="rqDeductionAmt" Display="Static" runat="server" ControlToValidate="txtDeduction"
-                                                    ForeColor="Red" ValidationGroup="Add" ErrorMessage="Enter Deduction"></asp:RequiredFieldValidator>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <asp:RequiredFieldValidator ID="rqDeduction" Display="Static" runat="server" ControlToValidate="txtDeducReason"
-                                                            ForeColor="Red" ValidationGroup="Add" ErrorMessage="Enter Deduction Reason"></asp:RequiredFieldValidator>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <asp:RadioButton ID="rdoOneTime" runat="server" GroupName="Deduction" Text="One Time" Checked="True" />
-                                                <%--TabIndex="163"--%>
-                                                <asp:RadioButton ID="rdoReoccurance" runat="server" GroupName="Deduction" Text="Re-Occurance" />
-                                                <%--TabIndex="164" --%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <%--<asp:UpdatePanel ID="UpdatePanel18" runat="server" UpdateMode="Conditional">
-                                                            <ContentTemplate>--%>
-                                                <asp:Button ID="btnAddType" runat="server" Height="28px" OnClick="btnAddType_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Add" ValidationGroup="Add" Width="55px" /><%--TabIndex="165" --%>
-                                                <%--</ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <%--<asp:UpdatePanel ID="UpdatePanel20" runat="server">
-                                                            <ContentTemplate>--%>
-                                                <asp:Panel runat="server" ID="Panel1">
-                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
-                                                        <div class="grid">
-                                                            <%--<table id="table2" class="auto-style11">
-                                    <tr>
-                                        <td>--%>
-                                                            <asp:GridView ID="GridView1" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
-                                                                <EmptyDataTemplate>
-                                                                    No data to display
-                                                                </EmptyDataTemplate>
-                                                                <Columns>
-
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("DeductionFor")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("Type")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Amount" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblAmount" runat="server" Text='<%#Eval("Amount")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                            <br />
-                                                            <%--</td>
-                                    </tr>
-                                </table>--%>
-                                                        </div>
-                                                    </div>
-                                                </asp:Panel>
-                                                <%--  </ContentTemplate>
-                                                            <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
-                                                            </Triggers>
-                                                        </asp:UpdatePanel>--%>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </asp:Panel>
-                                <%-- </ContentTemplate>
-                                    <Triggers>
-                                        <asp:AsyncPostBackTrigger ControlID="btnNewPluse" EventName="Click" />
-                                        <asp:AsyncPostBackTrigger ControlID="btnNewMinus" EventName="Click" />
-                                        <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                                    </Triggers>
-                                </asp:UpdatePanel>--%>
-                            </li>
-                        </ul>
-                    </asp:Panel>
+                    
                     <%--</ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
                     <asp:AsyncPostBackTrigger ControlID="ddldesignation" EventName="SelectedIndexChanged" />
                 </Triggers>
             </asp:UpdatePanel>--%>
-                    <ul style="overflow-x: hidden; margin-bottom: 10px;">
-                        <li style="width: 100%;">
-                            <%--<asp:UpdatePanel ID="UpdatePanel6" runat="server">
-                        <ContentTemplate>--%>
-                            <asp:Panel ID="pnlFngPrint" runat="server">
-                                <table id="table1" class="auto-style11">
-                                    <tr>
-                                        <td colspan="4" style="font-weight: bold">Fingure Print Report</td>
-                                    </tr>
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td>Benifit Rate</td>
-                                        <td>Available Days</td>
-                                        <td>Used Days</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Personal Days</td>
-                                        <td>
-                                            <asp:TextBox ID="txtPDBR" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtPDAD" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtPDUD" runat="server"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sick Days</td>
-                                        <td>
-                                            <asp:TextBox ID="txtSDBR" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtSDAD" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtSDUD" runat="server"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Vacation Days</td>
-                                        <td>
-                                            <asp:TextBox ID="txtVDBR" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtVDAD" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtVDUD" runat="server"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Holidays</td>
-                                        <td>
-                                            <asp:TextBox ID="txtHDBR" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtHDAD" runat="server"></asp:TextBox>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtHDUD" runat="server"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </asp:Panel>
-                            <%--</ContentTemplate>
-                        <Triggers>
-                            <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                        </Triggers>
-                    </asp:UpdatePanel>--%>
-                        </li>
-                    </ul>
+                    
                     <%--<asp:UpdatePanel ID="UpdatePanel7" runat="server">
                 <ContentTemplate>--%>
-                    <asp:Panel runat="server" ID="pnlGrid">
-                        <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
-                            <div class="grid">
-                                <%--<table id="table2" class="auto-style11">
-                                    <tr>
-                                        <td>--%>
-                                <asp:GridView ID="gvYtd" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
-                                    <EmptyDataTemplate>
-                                        No data to display
-                                    </EmptyDataTemplate>
-                                    <Columns>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Pay Period" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblPayPeriod" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Net Amount" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblNetAmount" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Fedral Income Tax" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblFedralTax" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="State Income Tax" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblStateTax" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="SS Tax" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblSSTax" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Mdicare" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblMedicare" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Deduction" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblDeduction" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField ShowHeader="True" HeaderText="Gross Pay" ControlStyle-ForeColor="Black"
-                                            ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="lblGrossPay" runat="server" Text=""></asp:Label>
-                                            </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
-                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                                <br />
-                                <br />
-                                <label>
-                                    YTD :
-                                </label>
-                                <br />
-                            </div>
-                        </div>
-                    </asp:Panel>
+                    
                     <%--  </ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
                 </Triggers>
             </asp:UpdatePanel>--%>
-                    <br />
-                    <br />
+
 
                     <%-- New code change    --%>
 
-
-                    <p style="font-weight: bold; font-size: large;">Basic Info: </p>
+                    <%--<p style="font-weight: bold; font-size: large;">Basic Info: </p>--%>
                     <ul style="margin-bottom: 10px;">
                         <li style="width: 49%;">
                             <table border="0" cellspacing="0" cellpadding="0">
@@ -1302,7 +726,7 @@
                             <li style="width: 100%;">
                                 <%--<asp:UpdatePanel ID="UpdatePanel21" runat="server">
                             <ContentTemplate>--%>
-                                <table width="100%" style="height: 30px;">
+                                <table width="100%" style="height: 50px;">
                                     <tr>
                                         <td class="auto-style10" style="width: 60px;">
                                             <asp:Button ID="btnPlusNew" runat="server" Text="+" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnPlusNew_Click" /><%--TabIndex="171" --%>
@@ -1811,7 +1235,563 @@
                             </li>
                         </ul>
                     </asp:Panel>
+                    <%--New Hire , Fingure Print Report -- START--%>
 
+                    <asp:Panel ID="pnlAll" runat="server">
+                        <ul style="overflow: hidden; margin-bottom: 10px;">
+                            <li style="width: 100%;">
+                                <table width="100%" style="height: 30px;">
+                                    <tr>
+                                        <td class="auto-style10" style="width: 60px;">
+                                            <%--<asp:UpdatePanel ID="UpdatePanel8" runat="server">
+                                                <ContentTemplate>--%>
+                                            <asp:Button ID="btnNewPluse" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="+" OnClick="btnNewPluse_Click" /><%-- TabIndex="149" --%>
+                                            <asp:Button ID="btnNewMinus" runat="server" Text="-" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnNewMinus_Click" />
+                                            <%--TabIndex="150"--%>
+                                            <%--</ContentTemplate>
+                                                <Triggers>
+                                                    <asp:AsyncPostBackTrigger ControlID="btnNewPluse" EventName="Click" />
+                                                    <asp:AsyncPostBackTrigger ControlID="btnNewMinus" EventName="Click" />
+                                                    <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
+                                                </Triggers>
+                                            </asp:UpdatePanel>--%>
+                                        </td>
+                                        <td style="font-weight: bold; font-size: large">New Hire</td>
+                                    </tr>
+                                </table>
+                            </li>
+                            <li style="width: 49%;">
+                                <asp:Panel ID="pnlnewHire" runat="server">
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td style="height:50px;">
+                                                <label>
+                                                    Hire Date<span><asp:Label ID="lblReqHireDate" runat="server" Text="*" ForeColor="Blue"></asp:Label></span></label>
+                                                <asp:TextBox ID="txtHireDate" Enabled="false" runat="server" Width="231px"></asp:TextBox><%-- TabIndex="151"--%>
+                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender2" TargetControlID="txtHireDate" runat="server"></ajaxToolkit:CalendarExtender>
+                                                <br />                                                
+                                                <asp:RequiredFieldValidator ID="rqHireDate" runat="server" ControlToValidate="txtHireDate"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Hire Date"></asp:RequiredFieldValidator>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    Workers Comp Code<span><asp:Label ID="lblReqWWC" Text="*" runat="server" ForeColor="Blue"></asp:Label></span></label>
+                                                <asp:DropDownList ID="ddlWorkerCompCode" runat="server" Width="251px">
+                                                    <%--TabIndex="153"--%>
+                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                                    <asp:ListItem Text="0951    Salesperson – Outside" Value="0951    Salesperson – Outside"></asp:ListItem>
+                                                    <asp:ListItem Text="0953    Office" Value="0953    Office"></asp:ListItem>
+                                                </asp:DropDownList>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqWorkCompCode" runat="server" ControlToValidate="ddlWorkerCompCode"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Worker Comp Code"
+                                                    InitialValue="0"></asp:RequiredFieldValidator>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    Employee Type<span><asp:Label ID="lblReqEmpType" Text="*" ForeColor="Blue" runat="server"></asp:Label></span></label>
+                                                <asp:DropDownList ID="ddlEmpType" runat="server" Width="249px">
+                                                    <%--TabIndex="155"--%>
+                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                                    <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
+                                                    <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
+                                                    <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
+                                                    <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
+                                                </asp:DropDownList>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Employee Type"
+                                                    InitialValue="0"></asp:RequiredFieldValidator>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    Pay Rates<span><asp:Label ID="lblReqPayRates" Text="*" ForeColor="Blue" runat="server"></asp:Label></span> $</label>
+                                                <asp:TextBox ID="txtPayRates" runat="server" MaxLength="40" autocomplete="off"
+                                                    EnableViewState="false" AutoCompleteType="None" Width="242px" onkeypress="return isNumericKey(event);"></asp:TextBox><%--TabIndex="157"--%>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqPayRate" Display="Dynamic" runat="server" ControlToValidate="txtPayRates"
+                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Pay Rate"></asp:RequiredFieldValidator>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <asp:Label ID="lblPaySource" runat="server" Text="Pay Source" Font-Bold="True"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <asp:RadioButton ID="rdoCheque" runat="server" AutoPostBack="true" GroupName="paymethod" Text="Check" OnCheckedChanged="rdoCheque_CheckedChanged" Checked="True" /><%--TabIndex="166" --%>
+                                                <asp:RadioButton ID="rdoDeposite" runat="server" GroupName="paymethod" Text="Direct Deposite" OnCheckedChanged="rdoDeposite_CheckedChanged" AutoPostBack="True" /><%-- TabIndex="167"--%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <asp:Label ID="lblAba" runat="server" ForeColor="Black">
+                                                            ABA Routing #</asp:Label>
+                                                </label>
+                                                <asp:TextBox ID="txtRoutingNo" runat="server" MaxLength="40" autocomplete="off"
+                                                    EnableViewState="false" onkeypress="return IsNumeric(event);" AutoCompleteType="None" Width="242px"></asp:TextBox><%--TabIndex="168"--%>
+                                                <br />
+                                                <label></label>
+                                                <asp:RequiredFieldValidator ID="rqRoutingNo" Display="Dynamic" runat="server" ControlToValidate="txtRoutingNo"
+                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Routing No."></asp:RequiredFieldValidator>
+                                                <br />
+                                                <label></label>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <%--<asp:UpdatePanel ID="UpdatePanel15" UpdateMode="Always" runat="server">
+                                                            <ContentTemplate>--%>
+                                                <label>
+                                                    <asp:Label ID="lblAccount" runat="server" ForeColor="Black">
+                                                            Account #</asp:Label>
+                                                </label>
+                                                <asp:TextBox ID="txtAccountNo" runat="server" MaxLength="40" autocomplete="off"
+                                                    EnableViewState="false" onkeypress="return IsNumeric(event);" AutoCompleteType="None" Width="242px"></asp:TextBox><%--TabIndex="169"--%>
+                                                <br />
+                                                <label></label>
+                                                <asp:RequiredFieldValidator ID="rqAccountNo" Display="Dynamic" runat="server" ControlToValidate="txtAccountNo"
+                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Account No."></asp:RequiredFieldValidator>
+                                                <%--</ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="rdoDeposite" EventName="CheckedChanged" />
+                                                                <asp:AsyncPostBackTrigger ControlID="rdoCheque" EventName="CheckedChanged" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                                <br />
+                                                <label></label>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <%--<asp:UpdatePanel ID="UpdatePanel16" runat="server" UpdateMode="Always">
+                                                            <ContentTemplate>--%>
+                                                <label>
+                                                    <asp:Label ID="lblAccountType" runat="server" ForeColor="Black">
+                                                            Account Type</asp:Label>
+                                                </label>
+                                                <asp:TextBox ID="txtAccountType" runat="server" MaxLength="40" autocomplete="off"
+                                                    EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
+                                                <%--TabIndex="170"--%>
+                                                <br />
+                                                <label></label>
+                                                <asp:RequiredFieldValidator ID="rqAccountType" Display="Dynamic" runat="server" ControlToValidate="txtAccountType"
+                                                    ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Account Account Type"></asp:RequiredFieldValidator>
+                                                <%--</ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="rdoDeposite" EventName="CheckedChanged" />
+                                                                <asp:AsyncPostBackTrigger ControlID="rdoCheque" EventName="CheckedChanged" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                                <br />
+                                                <label></label>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </asp:Panel>    
+                            </li>
+                            
+                            <li style="width: 49%;">                                
+                                <asp:Panel ID="pnlNew2" runat="server">
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td style="height:50px;">
+                                                <label>
+                                                    Termination Date/Reason<asp:Label ID="lblTermination" runat="server" ForeColor="Red" Text="*"></asp:Label></label>
+                                                <asp:TextBox ID="dtResignation" runat="server" Width="222px"></asp:TextBox><%--TabIndex="152"--%>
+                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender3" TargetControlID="dtResignation" runat="server"></ajaxToolkit:CalendarExtender>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqdtResignition" runat="server" ControlToValidate="dtResignation"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter Resignition Date"></asp:RequiredFieldValidator>
+
+                                                <asp:CompareValidator ID="CompareValidator1" ValidationGroup="submit" Type="Date" Operator="GreaterThanEqual" Display="Dynamic" ControlToValidate="dtResignation" ControlToCompare="txtHireDate" runat="server" ForeColor="Red" ErrorMessage="Termination date should be greater than hire date."></asp:CompareValidator>
+
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <label>
+                                                    Next Review Date<asp:Label ID="lblNextReviewDate" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                                <asp:TextBox ID="dtReviewDate" runat="server" Width="230px"></asp:TextBox><%--TabIndex="154"--%>
+                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender4" TargetControlID="dtReviewDate" Enabled="true" runat="server"></ajaxToolkit:CalendarExtender>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqDtNewReview" runat="server" ControlToValidate="dtReviewDate"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter New Review Date"></asp:RequiredFieldValidator>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <label>
+                                                    Last Review Date<asp:Label ID="lblLastReview" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                                <asp:TextBox ID="dtLastDate" runat="server" Width="238px"></asp:TextBox><%--TabIndex="156"--%>
+                                                <ajaxToolkit:CalendarExtender ID="CalendarExtender5" TargetControlID="dtLastDate" runat="server"></ajaxToolkit:CalendarExtender>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqLastReviewDate" runat="server" ControlToValidate="dtLastDate"
+                                                    ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Enter LastReview Date"></asp:RequiredFieldValidator>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <%--<asp:UpdatePanel ID="UpdatePanel19" runat="server" UpdateMode="Conditional">
+                                                            <ContentTemplate>--%>
+                                                <label>
+                                                    Extra Earnings</label>
+                                                <asp:DropDownList ID="ddlExtraEarning" runat="server" Width="110px">
+                                                    <%--TabIndex="158"--%>
+                                                    <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                                    <asp:ListItem Text="Test" Value="Test"></asp:ListItem>
+                                                    <asp:ListItem Text="Test2" Value="Test2"></asp:ListItem>
+                                                </asp:DropDownList>
+
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label style="width: 2%;">
+                                    $</label>
+                                                <asp:TextBox ID="txtExtraIncome" runat="server" onkeypress="return IsNumeric(event);" Width="75"></asp:TextBox>
+                                                <%--TabIndex="159"--%>
+                                                <br />
+                                                <label></label>
+                                                <asp:RequiredFieldValidator ID="rqExtraEarnings" runat="server" ControlToValidate="ddlExtraEarning"
+                                                    ValidationGroup="SubmitNew" ForeColor="Red" Display="Dynamic" ErrorMessage="Select Extra Earning Type"
+                                                    InitialValue="0"></asp:RequiredFieldValidator>
+                                                <asp:RequiredFieldValidator ID="rqExtraEarningAmt" runat="server" ControlToValidate="txtExtraIncome"
+                                                    ValidationGroup="SubmitNew" ForeColor="Red" Display="Static" ErrorMessage="Enter Extra Earning"></asp:RequiredFieldValidator>
+                                                <br />
+                                                <label>
+                                                    <asp:Label ID="lblExtraEarning" ForeColor="Black" runat="server"> Extra Earnings</asp:Label></label>
+                                                <label>
+                                                    <asp:Label ID="lblExtra" ForeColor="Black" runat="server"></asp:Label>
+                                                </label>
+                                                <label style="width: 3%;">
+                                                    <asp:Label ID="lblExtraDollar" ForeColor="Black" runat="server">&amp;</asp:Label>
+                                                </label>
+                                                <label>
+                                                    &nbsp;&nbsp;&nbsp;
+                                                                <asp:Label ID="lblDoller" ForeColor="Black" runat="server"></asp:Label></label>
+                                                <br />
+                                                <label>
+                                                </label>
+                                                <%--            </ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="btnAddExtraIncome" EventName="Click" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <asp:Button ID="btnAddExtraIncome" ValidationGroup="SubmitNew" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" runat="server" Text="Add" Height="28px" Width="55px" OnClick="btnAddExtraIncome_Click" /><%--TabIndex="160" --%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <%--<asp:UpdatePanel ID="UpdatePanel17" runat="server" UpdateMode="Conditional">
+                                                            <ContentTemplate>--%>
+                                                <label>
+                                                    Deduction: $</label>
+                                                <asp:TextBox ID="txtDeduction" runat="server" onkeypress="return IsNumeric(event);" Width="113px"></asp:TextBox>
+                                                <%--TabIndex="161"--%>
+                                                                &nbsp;
+                                                        <label style="width: 45px;">
+                                                            Reason</label>
+                                                <asp:TextBox ID="txtDeducReason" runat="server" Width="113px"></asp:TextBox><%-- TabIndex="162"--%>
+                                                                &nbsp;
+                                                            <%--</ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                                <label>
+                                                </label>
+                                                <asp:RequiredFieldValidator ID="rqDeductionAmt" Display="Static" runat="server" ControlToValidate="txtDeduction"
+                                                    ForeColor="Red" ValidationGroup="Add" ErrorMessage="Enter Deduction"></asp:RequiredFieldValidator>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <asp:RequiredFieldValidator ID="rqDeduction" Display="Static" runat="server" ControlToValidate="txtDeducReason"
+                                                            ForeColor="Red" ValidationGroup="Add" ErrorMessage="Enter Deduction Reason"></asp:RequiredFieldValidator>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <asp:RadioButton ID="rdoOneTime" runat="server" GroupName="Deduction" Text="One Time" Checked="True" />
+                                                <%--TabIndex="163"--%>
+                                                <asp:RadioButton ID="rdoReoccurance" runat="server" GroupName="Deduction" Text="Re-Occurance" />
+                                                <%--TabIndex="164" --%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <%--<asp:UpdatePanel ID="UpdatePanel18" runat="server" UpdateMode="Conditional">
+                                                            <ContentTemplate>--%>
+                                                <asp:Button ID="btnAddType" runat="server" Height="28px" OnClick="btnAddType_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Add" ValidationGroup="Add" Width="55px" /><%--TabIndex="165" --%>
+                                                <%--</ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <%--<asp:UpdatePanel ID="UpdatePanel20" runat="server">
+                                                            <ContentTemplate>--%>
+                                                <asp:Panel runat="server" ID="Panel1">
+                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
+                                                        <div class="grid">
+                                                            <%--<table id="table2" class="auto-style11">
+                                    <tr>
+                                        <td>--%>
+                                                            <asp:GridView ID="GridView1" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
+                                                                <EmptyDataTemplate>
+                                                                    No data to display
+                                                                </EmptyDataTemplate>
+                                                                <Columns>
+
+                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
+                                                                        ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("DeductionFor")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
+                                                                        ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("Type")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Amount" ControlStyle-ForeColor="Black"
+                                                                        ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblAmount" runat="server" Text='<%#Eval("Amount")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                            <br />
+                                                            <%--</td>
+                                    </tr>
+                                </table>--%>
+                                                        </div>
+                                                    </div>
+                                                </asp:Panel>
+                                                <%--  </ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="btnAddType" EventName="Click" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>--%>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </asp:Panel>
+                            </li>
+                            <li>
+                                ****
+                            </li>
+                        </ul>
+                        
+                    </asp:Panel>
+
+                    <ul style="overflow-x: hidden; margin-bottom: 10px;">
+                        <li style="width: 100%;">
+                            <%--<asp:UpdatePanel ID="UpdatePanel6" runat="server">
+                        <ContentTemplate>--%>
+                            <asp:Panel ID="pnlFngPrint" runat="server">
+                                <table id="table1" class="auto-style11">
+                                    <tr>
+                                        <td colspan="4" style="font-weight: bold">Fingure Print Report</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>Benifit Rate</td>
+                                        <td>Available Days</td>
+                                        <td>Used Days</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Personal Days</td>
+                                        <td>
+                                            <asp:TextBox ID="txtPDBR" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtPDAD" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtPDUD" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sick Days</td>
+                                        <td>
+                                            <asp:TextBox ID="txtSDBR" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtSDAD" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtSDUD" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vacation Days</td>
+                                        <td>
+                                            <asp:TextBox ID="txtVDBR" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtVDAD" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtVDUD" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Holidays</td>
+                                        <td>
+                                            <asp:TextBox ID="txtHDBR" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtHDAD" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtHDUD" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </asp:Panel>
+                            <%--</ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
+                        </Triggers>
+                    </asp:UpdatePanel>--%>
+                        </li>
+                    </ul>
+
+                    <%--Following Grid is not in Used. --%>
+                    <asp:Panel runat="server" ID="pnlGrid">
+                        <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
+                            <div class="grid"> 
+                                <asp:GridView ID="gvYtd" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
+                                    <EmptyDataTemplate>
+                                        No data to display
+                                    </EmptyDataTemplate>
+                                    <Columns>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Pay Period" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblPayPeriod" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Net Amount" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblNetAmount" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Fedral Income Tax" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblFedralTax" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="State Income Tax" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblStateTax" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="SS Tax" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblSSTax" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Mdicare" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblMedicare" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Deduction" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblDeduction" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="True" HeaderText="Gross Pay" ControlStyle-ForeColor="Black"
+                                            ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblGrossPay" runat="server" Text=""></asp:Label>
+                                            </ItemTemplate>
+                                            <ControlStyle ForeColor="Black" />
+                                            <ControlStyle ForeColor="Black" />
+                                            <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                                <br />
+                                <br />
+                                <label>
+                                    YTD :
+                                </label>
+                                <br />
+                            </div>
+                        </div>
+                    </asp:Panel>
+
+                    <%--New Hire , Fingure Print Report -- END--%>
 
                     <ul style="margin-bottom: 10px;">
                         <li style="width: 49%;">
@@ -2156,7 +2136,9 @@
                                         </asp:GridView>
                                     </td>
                                 </tr>
+                                
                             </table>
+                            <ucAudit:UserListing runat="server"  ID="ucAuditTrail" />
                         </li>
                         <li style="width: 49%;" class="last">
                             <table border="0" cellspacing="0" cellpadding="0">
@@ -2180,7 +2162,7 @@
                                         <label></label>
                                         <%--<asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" Width="127px"></asp:TextBox>--%><%--TabIndex="104"--%>
                                         <%--<asp:DropDownList ID="ddlInsteviewtime" runat="server" Width="112px">--%>
-                                            <%--TabIndex="105"--%>
+                                        <%--TabIndex="105"--%>
                                         <%--</asp:DropDownList>--%>
                                         <%--<ajaxToolkit:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" runat="server"></ajaxToolkit:CalendarExtender>--%>
                                         <%--OnTextChanged="DOBdatepicker_TextChanged"--%>
@@ -3540,6 +3522,7 @@
                         <table>
                             <tr>
                                 <td>
+
                                     <asp:CheckBox ID="chkboxcondition" runat="server" /><%--TabIndex="148" --%>
 
                                     <asp:Label ID="lblTerms" runat="server" Text="I accept Term and Conditions of the above mentioned Subcontract"></asp:Label>

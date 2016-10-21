@@ -84,6 +84,7 @@ namespace JG_Prospect.Sr_App
                 if (!IsPostBack)
                 {
                     Session["ID"] = "";
+                    ucAuditTrail.UserLoginID = string.Empty;
                 }
                 touchPointlogPanel.Visible = false;
             }
@@ -356,6 +357,7 @@ namespace JG_Prospect.Sr_App
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
+                        ucAuditTrail.UserLoginID = ds.Tables[0].Rows[0][3].ToString(); //  For User Audi Trail 
                         txtCity.Text = ds.Tables[0].Rows[0][13].ToString();
                         ViewState["City"] = ds.Tables[0].Rows[0][13].ToString();
                         txtState.Text = ds.Tables[0].Rows[0][12].ToString();
@@ -395,6 +397,8 @@ namespace JG_Prospect.Sr_App
                         txtDateSourced.Text = Convert.ToString(ds.Tables[0].Rows[0]["DateSourced"]);
                         if (Convert.ToString(ds.Tables[0].Rows[0][6]) != "")
                         {
+
+                            #region - if Rows[0][6] is haveing value
                             ddlstatus.SelectedValue = ds.Tables[0].Rows[0][6].ToString();
                             Session["PreviousStatusNew"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                             if (ddlstatus.SelectedValue == "Install Prospect")
@@ -650,9 +654,17 @@ namespace JG_Prospect.Sr_App
                                 rqEmpType.Enabled = true;
                                 #endregion
 
+                                if ((ddlstatus.SelectedValue == "InterviewDate")
+                                        || (ddlstatus.SelectedValue == "Active")
+                                        || (ddlstatus.SelectedValue == "Deactive")
+                                        || (ddlstatus.SelectedValue == "OfferMade"))
+                                {
+                                    showHideNewHireSection(true);
+                                }
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                                 return;
                             }
+                            #endregion
                         }
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         if (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
@@ -679,9 +691,11 @@ namespace JG_Prospect.Sr_App
                         {
                             ddlstatus.Enabled = false;
                         }
-                        if ((ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade") && (ds.Tables[0].Rows[0][5].ToString() == "ForeMan" || ds.Tables[0].Rows[0][5].ToString() == "Installer"))
+                        if (ds.Tables[0].Rows[0][6].ToString() == "InterviewDate" ||
+                            (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
+                            && (ds.Tables[0].Rows[0][5].ToString() == "ForeMan" || ds.Tables[0].Rows[0][5].ToString() == "Installer"))
                         {
-                            pnlAll.Visible = true;
+                            showHideNewHireSection(true);
                         }
                         else
                         {
@@ -1077,6 +1091,14 @@ namespace JG_Prospect.Sr_App
                         }
                         chkboxcondition.Checked = true;
                         //chkboxcondition.Enabled = false;
+
+                        if ((ds.Tables[0].Rows[0][6].ToString() == "InterviewDate")
+                                || (ds.Tables[0].Rows[0][6].ToString() == "Active")
+                                || (ds.Tables[0].Rows[0][6].ToString() == "Deactive")
+                                || (ds.Tables[0].Rows[0][6].ToString() == "OfferMade"))
+                        {
+                            showHideNewHireSection(true);
+                        }
                     }
                 }
                 else
@@ -2554,6 +2576,8 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
+                    objuser.SourceUser = Convert.ToString(Session["userid"]);
+
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
@@ -3052,6 +3076,8 @@ namespace JG_Prospect.Sr_App
                 ddlInsteviewtime.SelectedValue = "10:00 AM";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
+                showHideNewHireSection(true);
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
             else if (ddlstatus.SelectedValue == "Deactive")
@@ -3142,6 +3168,7 @@ namespace JG_Prospect.Sr_App
                 rqdtResignition.Enabled = true;
                 //rqDtNewReview.Enabled = true;
                 //rqLastReviewDate.Enabled = true;
+                showHideNewHireSection(true);
             }
             else
             {
@@ -3361,63 +3388,72 @@ namespace JG_Prospect.Sr_App
                 Panel4.Visible = false;
             }
 
-            #region NewRequiredFields
-            //if (ddlstatus.SelectedValue == "Install Prospect")
-            //{
-            //    rqDesignition.Enabled = false;
-            //    RequiredFieldValidator3.Enabled = false;
-            //    lblReqDesig.Visible = false;
-            //    lblReqPtrade.Visible = true;
-            //    rqPrimaryTrade.Enabled = true;
-            //    lblReqSTrate.Visible = true;
-            //    rqSecondaryTrade.Enabled = true;
-            //    lblReqLastName.Visible = true;
-            //    rqLastName.Enabled = true;
-            //    RequiredFieldValidator5.Enabled = true;
-            //    lblReqFName.Visible = true;
-            //    rqFirstName.Enabled = true;
-            //    RequiredFieldValidator4.Enabled = true;
-            //    lblPhoneReq.Visible = true;
-            //    rqPhone.Enabled = true;
-            //    lblSourceReq.Visible = true;
-            //    rqSource.Enabled = true;
-            //    lblNotesReq.Visible = false;
-            //    rqNotes.Enabled = false;
-            //    lblReqEmail.Visible = false;
-            //    //rqEmail.Enabled = false;
-            //    reEmail.Enabled = true;
-            //    lblReqZip.Visible = false;
-            //    rqZip.Enabled = false;
-            //    lblStateReq.Visible = false;
-            //    rqState.Enabled = false;
-            //    lblCityReq.Visible = false;
-            //    rqCity.Enabled = false;
-            //    lblPassReq.Visible = false;
-            //    //rqPass.Enabled = false;
-            //    lblReqSig.Visible = false;
-            //    rqSign.Enabled = false;
-            //    lblReqMarSt.Visible = false;
-            //    rqMaritalStatus.Enabled = false;
-            //    lblReqPicture.Visible = false;
-            //    lblReqDL.Visible = false;
-            //    lblAddressReq.Visible = false;
-            //    rqAddress.Enabled = false;
-            //    Label1.Visible = false;
-            //    RequiredFieldValidator6.Enabled = false;
-            //    lblConfirmPass.Visible = true;
-            //    //rqConPass.Enabled = false;
-            //    lblReqSSN.Visible = false;
-            //    rqSSN1.Enabled = false;
-            //    rqSSN2.Enabled = false;
-            //    rqSSN3.Enabled = false;
-            //    lblReqDOB.Visible = false;
-            //    rqDOB.Enabled = false;
-            //    lblReqPOP.Visible = false;
-            //    rqPenalty.Enabled = false;
-            //    rqSource.Enabled = true;
-            //    lblConfirmPass.Visible = false;
-            //}
-            //else
+            if ((ddlstatus.SelectedValue == "InterviewDate") 
+                || (ddlstatus.SelectedValue == "Active") 
+                || (ddlstatus.SelectedValue == "Deactive")
+                || (ddlstatus.SelectedValue == "OfferMade"))
+            {
+                showHideNewHireSection(true);
+            }
+                
+
+                    #region NewRequiredFields
+                    //if (ddlstatus.SelectedValue == "Install Prospect")
+                    //{
+                    //    rqDesignition.Enabled = false;
+                    //    RequiredFieldValidator3.Enabled = false;
+                    //    lblReqDesig.Visible = false;
+                    //    lblReqPtrade.Visible = true;
+                    //    rqPrimaryTrade.Enabled = true;
+                    //    lblReqSTrate.Visible = true;
+                    //    rqSecondaryTrade.Enabled = true;
+                    //    lblReqLastName.Visible = true;
+                    //    rqLastName.Enabled = true;
+                    //    RequiredFieldValidator5.Enabled = true;
+                    //    lblReqFName.Visible = true;
+                    //    rqFirstName.Enabled = true;
+                    //    RequiredFieldValidator4.Enabled = true;
+                    //    lblPhoneReq.Visible = true;
+                    //    rqPhone.Enabled = true;
+                    //    lblSourceReq.Visible = true;
+                    //    rqSource.Enabled = true;
+                    //    lblNotesReq.Visible = false;
+                    //    rqNotes.Enabled = false;
+                    //    lblReqEmail.Visible = false;
+                    //    //rqEmail.Enabled = false;
+                    //    reEmail.Enabled = true;
+                    //    lblReqZip.Visible = false;
+                    //    rqZip.Enabled = false;
+                    //    lblStateReq.Visible = false;
+                    //    rqState.Enabled = false;
+                    //    lblCityReq.Visible = false;
+                    //    rqCity.Enabled = false;
+                    //    lblPassReq.Visible = false;
+                    //    //rqPass.Enabled = false;
+                    //    lblReqSig.Visible = false;
+                    //    rqSign.Enabled = false;
+                    //    lblReqMarSt.Visible = false;
+                    //    rqMaritalStatus.Enabled = false;
+                    //    lblReqPicture.Visible = false;
+                    //    lblReqDL.Visible = false;
+                    //    lblAddressReq.Visible = false;
+                    //    rqAddress.Enabled = false;
+                    //    Label1.Visible = false;
+                    //    RequiredFieldValidator6.Enabled = false;
+                    //    lblConfirmPass.Visible = true;
+                    //    //rqConPass.Enabled = false;
+                    //    lblReqSSN.Visible = false;
+                    //    rqSSN1.Enabled = false;
+                    //    rqSSN2.Enabled = false;
+                    //    rqSSN3.Enabled = false;
+                    //    lblReqDOB.Visible = false;
+                    //    rqDOB.Enabled = false;
+                    //    lblReqPOP.Visible = false;
+                    //    rqPenalty.Enabled = false;
+                    //    rqSource.Enabled = true;
+                    //    lblConfirmPass.Visible = false;
+                    //}
+                    //else
 
             if (ddlstatus.SelectedValue == "Applicant")
             {
@@ -3704,6 +3740,19 @@ namespace JG_Prospect.Sr_App
             }
             #endregion
         }
+
+        private void showHideNewHireSection(bool ShowSection)
+        {
+            pnlAll.Visible = ShowSection;
+            pnlFngPrint.Visible = ShowSection;
+            pnlnewHire.Visible = ShowSection;
+            pnlNew2.Visible = ShowSection;
+
+            btnNewPluse.Visible = !ShowSection;
+            btnNewMinus.Visible = ShowSection;
+        }
+
+        
 
         protected void btnPluse_Click(object sender, EventArgs e)
         {
