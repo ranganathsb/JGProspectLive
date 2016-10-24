@@ -973,21 +973,26 @@
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
+    <Content Include="img\excel-icon.png" />
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
+    <Content Include="img\image-icon.png" />
     <Content Include="img\JG-Logo-white.gif" />
     <Content Include="img\JG-Logo.gif" />
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
+    <Content Include="img\movies-icon.png" />
+    <Content Include="img\pdf-icon.png" />
     <Content Include="img\PlusMinus.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
+    <Content Include="img\word-icon.png" />
     <Content Include="Installer\ChangePassword.aspx" />
     <Content Include="Installer\InstallerHeader.ascx" />
     <Content Include="Installer\InstallerHome.aspx" />
@@ -2049,7 +2054,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>

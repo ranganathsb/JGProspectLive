@@ -788,7 +788,7 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-
+        setClickableTooltip('#divTaskMain', $('#taskGrid').html());
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -932,5 +932,26 @@
                 $('#<%=btnSearch.ClientID %>').click();
 
             }
+
+    function setClickableTooltip(target, content) {
+        //$(target).tooltip({
+        //    show: null, // show immediately 
+        //    position: { my: "left top", at: "left top" },
+        //    content: content, //from params
+        //    hide: { effect: "" }, //fadeOut
+        //    close: function (event, ui) {
+        //        ui.tooltip.hover(
+        //            function () {
+        //                $(this).stop(true).fadeTo(400, 1);
+        //            },
+        //            function () {
+        //                $(this).fadeOut("400", function () {
+        //                    $(this).remove();
+        //                })
+        //            }
+        //        );
+        //    }
+        //});
+    }
 
     </script>

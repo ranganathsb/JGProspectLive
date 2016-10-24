@@ -142,7 +142,8 @@ namespace JG_Prospect.Sr_App.Controls
                 controlMode.Value = "0";
                 SetControlDisplay();
                 LoadFilters();
-                SearchTasks(null);
+                //SearchTasks(null);
+                SearchTasks(15);
                 LoadPopupDropdown();
             }
         }
@@ -234,7 +235,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlgvTaskStatus.DataTextField = "Text";
                 ddlgvTaskStatus.DataValueField = "Value";
                 ddlgvTaskStatus.DataBind();
-                ddlgvTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //ddlgvTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 SetStatusSelectedValue(ddlgvTaskStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
@@ -250,7 +251,7 @@ namespace JG_Prospect.Sr_App.Controls
                     #region Admin User
 
                     if (
-                        ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
+                        (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() || ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()) &&
                         string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
                        )
                     {
@@ -289,11 +290,20 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         hypUsers.Visible = true;
-                        ddcbAssigned.Visible =
+                        //ddcbAssigned.Visible =
                         lbtnRequestStatus.Visible = false;
+                        DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
+                        ddcbAssigned.Items.Clear();
+                        ddcbAssigned.DataSource = dsUsers;
+                        ddcbAssigned.DataTextField = "FristName";
+                        ddcbAssigned.DataValueField = "Id";
+                        ddcbAssigned.DataBind();
+
+                        SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
+                        hypUsers.Attributes.Add("style","display:none;");
                     }
 
                     #endregion
@@ -1876,6 +1886,34 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        {
+            String firstAssignedUser = String.Empty;
+            String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string user in users)
+            {
+
+                ListItem item = taskUsers.Items.FindByText(user);
+
+                if (item != null)
+                {
+                    item.Selected = true;
+
+                    if (string.IsNullOrEmpty(firstAssignedUser))
+                    {
+                        firstAssignedUser = item.Text;
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(firstAssignedUser))
+            {
+                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+            }
+
+        }
+
         private void SetTaskDesignationDetails(DataTable dtTaskDesignationDetails)
         {
             String firstDesignation = string.Empty;
@@ -2072,14 +2110,14 @@ namespace JG_Prospect.Sr_App.Controls
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
-                {
-                    ddlStatus.Enabled = false;
-                }
-                else
-                {
-                    ddlStatus.Enabled = true;
-                }
+                //    if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                //    {
+                //        ddlStatus.Enabled = false;
+                //    }
+                //    else
+                //    {
+                ddlStatus.Enabled = true;
+                //    }
                 objListItem.Enabled = true;
                 objListItem.Selected = true;
             }
