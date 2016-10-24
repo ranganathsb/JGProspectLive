@@ -772,10 +772,10 @@
                                             <asp:Literal ID="ltrlLinks" runat="server" />
                                         </FooterTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Description" >
+                                    <asp:TemplateField HeaderText="Description">
                                         <ItemTemplate>
                                             <%--<asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />--%>
-                                            <div style="background-color:white;">
+                                            <div style="background-color: white; min-height: 20px;">
                                                 <asp:Literal ID="lblDescription" runat="server" />
                                             </div>
                                         </ItemTemplate>
