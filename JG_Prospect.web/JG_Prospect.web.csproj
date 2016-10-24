@@ -2049,6 +2049,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -2298,6 +2299,7 @@
     </Compile>
     <Compile Include="UserControl\ucAuditTrailByUser.ascx.cs">
       <DependentUpon>ucAuditTrailByUser.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\ucAuditTrailByUser.ascx.designer.cs">
       <DependentUpon>ucAuditTrailByUser.ascx</DependentUpon>
