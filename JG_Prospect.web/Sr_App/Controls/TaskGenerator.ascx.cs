@@ -251,8 +251,12 @@ namespace JG_Prospect.Sr_App.Controls
                     #region Admin User
 
                     if (
-                        (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() || ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()) &&
-                        string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
+                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Requested).ToString() &&
+                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString() &&
+                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString() 
+                        //|| ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()) 
+                        //&& string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
                        )
                     {
                         ddcbAssigned.Visible = true;
@@ -266,6 +270,20 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.DataTextField = "FristName";
                         ddcbAssigned.DataValueField = "Id";
                         ddcbAssigned.DataBind();
+
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TaskAssignedUserIds").ToString()))
+                        {
+                            string[] arrUserIds = DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (string strId in arrUserIds)
+                            {
+                                ListItem objListItem = ddcbAssigned.Items.FindByValue(strId.Trim());
+                                if (objListItem != null)
+                                {
+                                    objListItem.Selected = true;
+                                    ddcbAssigned.Texts.SelectBoxCaption = objListItem.Text;
+                                }
+                            }
+                        }
 
                         ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                         ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);

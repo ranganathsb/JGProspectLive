@@ -135,14 +135,14 @@ namespace JG_Prospect.Sr_App
                 }
 
                 ltrlStatus.Text = ((JGConstant.TaskStatus)Convert.ToInt32(drTask["Status"])).ToString();
-                
+
                 ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
                 ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
-                SetStatusSelectedValue(ddlStatus,drTask["Status"].ToString());
-                
+                SetStatusSelectedValue(ddlStatus, drTask["Status"].ToString());
+
                 ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
                 ddlPriority.DataTextField = "Text";
                 ddlPriority.DataValueField = "Value";
@@ -163,8 +163,12 @@ namespace JG_Prospect.Sr_App
                     #region Admin User
 
                     if (
-                        ddlStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
-                        string.IsNullOrEmpty(Convert.ToString(drTask["TaskAssignedUsers"]))
+                        ddlStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Requested).ToString() &&
+                        ddlStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString() &&
+                        ddlStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                        ddlStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()
+                        //&&
+                        //string.IsNullOrEmpty(Convert.ToString(drTask["TaskAssignedUsers"]))
                        )
                     {
                         ddcbAssignedUser.Visible = true;
@@ -176,6 +180,20 @@ namespace JG_Prospect.Sr_App
                         ddcbAssignedUser.DataTextField = "FristName";
                         ddcbAssignedUser.DataValueField = "Id";
                         ddcbAssignedUser.DataBind();
+
+                        if (!string.IsNullOrEmpty(drTask["TaskAssignedUserIds"].ToString()))
+                        {
+                            string[] arrUserIds = drTask["TaskAssignedUserIds"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (string strId in arrUserIds)
+                            {
+                                ListItem objListItem = ddcbAssignedUser.Items.FindByValue(strId.Trim());
+                                if (objListItem != null)
+                                {
+                                    objListItem.Selected = true;
+                                    ddcbAssignedUser.Texts.SelectBoxCaption = objListItem.Text;
+                                }
+                            }
+                        }
 
                         ddcbAssignedUser.Attributes.Add("TaskId", drTask["TaskId"].ToString());
                         ddcbAssignedUser.Attributes.Add("TaskStatus", ddlStatus.SelectedValue);
