@@ -923,6 +923,8 @@
                     </asp:UpdatePanel>
                 </ContentTemplate>
             </asp:UpdatePanel>
+            <%--Below div is required to make entire section visible.--%>
+            <div style="float:none;clear:both;"></div>
         </div>
         <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files" data-min-button="Finished Work Files">
             <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
