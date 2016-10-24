@@ -774,8 +774,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Description">
                                         <ItemTemplate>
-                                            <%--<asp:Label ID="lblDescription" CssClass="jqtip" runat="server" Style="display: block;" />--%>
-                                            <div style="background-color: white; min-height: 20px;">
+                                            <div style="background-color: white; min-height: 20px; margin:3px; padding:3px;">
                                                 <asp:Literal ID="lblDescription" runat="server" />
                                             </div>
                                         </ItemTemplate>
@@ -787,9 +786,9 @@
                                             <asp:LinkButton ID="lbtnCancelEditing" runat="server" Text="Cancel" CommandName="cancel-edit-version" />
                                         </EditItemTemplate>
                                         <FooterTemplate>
-                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="false" />
+                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="true" />
                                             <br />
-                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Save" ClientIDMode="AutoID" CausesValidation="false" CommandName="insert-version" />&nbsp;&nbsp;
+                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false" CommandName="insert-version" />&nbsp;&nbsp;
                                             <asp:LinkButton ID="lbtnCancelInsert" runat="server" Text="Cancel" ClientIDMode="AutoID" CausesValidation="false" CommandName="cancel-insert-version" />
                                         </FooterTemplate>
                                     </asp:TemplateField>
