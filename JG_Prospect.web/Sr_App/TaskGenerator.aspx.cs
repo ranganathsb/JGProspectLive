@@ -758,7 +758,7 @@ namespace JG_Prospect.Sr_App
 
             FillWorkSpecifications();
 
-            SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
+            //SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
 
             // expand add work specification section for admin and tech lead users.
             //if (this.IsAdminAndItLeadMode)
@@ -799,7 +799,7 @@ namespace JG_Prospect.Sr_App
 
             FillWorkSpecifications();
 
-            SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
+            //SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
 
             // expand add work specification section for admin and tech lead users.
             //if (this.IsAdminAndItLeadMode)
@@ -842,10 +842,9 @@ namespace JG_Prospect.Sr_App
                 Literal ltrlId = e.Row.FindControl("ltrlId") as Literal;
                 //Label lblDescription = e.Row.FindControl("lblDescription") as Label;
                 Literal lblDescription = e.Row.FindControl("lblDescription") as Literal;
-                
+
                 CKEditorControl txtWorkSpecification = e.Row.FindControl("txtWorkSpecification") as CKEditorControl;
                 Literal ltrlLinks = e.Row.FindControl("ltrlLinks") as Literal;
-                LinkButton lbtnDownloadWireframe = e.Row.FindControl("lbtnDownloadWireframe") as LinkButton;
 
                 DataRowView drWorkSpecification = e.Row.DataItem as DataRowView;
 
@@ -879,37 +878,45 @@ namespace JG_Prospect.Sr_App
 
                 if (!string.IsNullOrEmpty(drWorkSpecification["Wireframe"].ToString()))
                 {
-                    string[] arrWireframe = lbtnDownloadWireframe.CommandArgument.Split('@');
+                    string[] arrWireframe = drWorkSpecification["Wireframe"].ToString().Split('@');
 
                     HyperLink hypWireframe = e.Row.FindControl("hypWireframe") as HyperLink;
-                    hypWireframe.Attributes.Add("data-file-data", lbtnDownloadWireframe.CommandArgument);
+                    hypWireframe.Attributes.Add("data-file-data", drWorkSpecification["Wireframe"].ToString());
                     hypWireframe.Attributes.Add("data-file-name", arrWireframe[1]);
-                    hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + lbtnDownloadWireframe.CommandArgument.Split('@')[0]));
+                    hypWireframe.Attributes.Add("data-file-path", ("/TaskAttachments/" + arrWireframe[0]));
                     hypWireframe.Attributes.Add("onclick", "javascript:return ShowImageDialog(this,'#" + divImagePopup.ClientID + "');");
                     hypWireframe.NavigateUrl = "~/TaskAttachments/" + arrWireframe[0];
                     hypWireframe.Text = arrWireframe[1];
-
-                    lbtnDownloadWireframe.CommandArgument = drWorkSpecification["Wireframe"].ToString();
-                    lbtnDownloadWireframe.Text = arrWireframe[1];
-                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDownloadWireframe);
                 }
 
                 if (this.IsAdminAndItLeadMode)
                 {
-                    // do not allow edit for specifications freezed by both.
-                    if (Convert.ToBoolean(drWorkSpecification["AdminStatus"]) && Convert.ToBoolean(drWorkSpecification["TechLeadStatus"]))
+                    if (!string.IsNullOrEmpty(drWorkSpecification["AdminStatus"].ToString()))
                     {
-                        lbtnId.Visible = false;
+                        // do not allow edit for specifications freezed by both.
+                        if (Convert.ToBoolean(drWorkSpecification["AdminStatus"]) && Convert.ToBoolean(drWorkSpecification["TechLeadStatus"]))
+                        {
+                            lbtnId.Visible = false;
+                        }
+                        else
+                        {
+                            ltrlId.Visible = false;
+                        }
                     }
                     else
                     {
-                        ltrlId.Visible = false;
+                        ltrlId.Visible =
+                        lbtnId.Visible = false;
                     }
                 }
                 else
                 {
                     lbtnId.Visible = false;
                 }
+            }
+            else if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                ((Literal)e.Row.FindControl("ltrlId")).Text = CommonFunction.GetTaskWorkSpecificationSequence(this.TaskWorkSpecificationSequence);
             }
         }
 
@@ -919,6 +926,61 @@ namespace JG_Prospect.Sr_App
             {
                 grdWorkSpecifications.EditIndex = Convert.ToInt32(e.CommandArgument);
                 FillWorkSpecifications();
+            }
+            else if (e.CommandName == "cancel-insert-version")
+            {
+                FillWorkSpecifications();
+            }
+            else if (e.CommandName == "insert-version")
+            {
+                // only admin can update work specification.
+                // only admin can update disabled "specs in progress" status by freezing the work specifications.
+                if (this.IsAdminAndItLeadMode)
+                {
+                    // insert task, if not created yet.
+                    if (controlMode.Value == "0")
+                    {
+                        InsertUpdateTask();
+                    }
+
+                    TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                    objTaskWorkSpecification.Id = LastTaskWorkSpecification.Id;
+                    objTaskWorkSpecification.CustomId = ((Literal)grdWorkSpecifications.FooterRow.FindControl("ltrlId")).Text;
+                    objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+                    objTaskWorkSpecification.Description = ((CKEditorControl)grdWorkSpecifications.FooterRow.FindControl("txtWorkSpecification")).Text;
+                    objTaskWorkSpecification.Links = string.Empty;
+                    objTaskWorkSpecification.WireFrame = string.Empty;
+                    //objTaskWorkSpecification.Links = string.Join(",", LastTaskWorkSpecification.Links.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+                    //if (!string.IsNullOrEmpty(hdnWorkSpecificationFile.Value))
+                    //{
+                    //    objTaskWorkSpecification.WireFrame = hdnWorkSpecificationFile.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    //}
+                    //else
+                    //{
+                    //    objTaskWorkSpecification.WireFrame = LastTaskWorkSpecification.WireFrame;
+                    //}
+
+                    // save will revoke freezed status.
+                    objTaskWorkSpecification.AdminStatus = false;
+                    objTaskWorkSpecification.TechLeadStatus = false;
+
+                    SaveWorkSpecification(objTaskWorkSpecification);
+
+                    // redirect to task generator page or
+                    // hide popup.
+                    if (controlMode.Value == "0")
+                    {
+                        RedirectToViewTasks(null);
+                    }
+                    else
+                    {
+                        FillWorkSpecifications();
+
+                        SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
+
+                        CommonFunction.ShowAlertFromUpdatePanel(this, "Specification updated successfully.");
+                    }
+                }
             }
             else if (e.CommandName == "cancel-edit-version")
             {
@@ -941,20 +1003,6 @@ namespace JG_Prospect.Sr_App
 
                 grdWorkSpecifications.EditIndex = -1;
                 FillWorkSpecifications();
-            }
-            else if (e.CommandName == "download-freezed-copy")
-            {
-                DownloadTaskWorkSpecification(Convert.ToInt32(e.CommandArgument), true);
-            }
-            else if (e.CommandName == "download-working-copy")
-            {
-                DownloadTaskWorkSpecification(Convert.ToInt32(e.CommandArgument), false);
-            }
-            else if (e.CommandName == "download-wireframe-file")
-            {
-                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
         }
 
@@ -1042,9 +1090,9 @@ namespace JG_Prospect.Sr_App
 
                 TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
                 objTaskWorkSpecification.Id = LastTaskWorkSpecification.Id;
-                objTaskWorkSpecification.CustomId = txtCustomId.Text;
+                objTaskWorkSpecification.CustomId = ((Literal)grdWorkSpecifications.FooterRow.FindControl("ltrlId")).Text; //txtCustomId.Text;
                 objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-                objTaskWorkSpecification.Description = txtWorkSpecification.Text;
+                objTaskWorkSpecification.Description = ((CKEditorControl)grdWorkSpecifications.FooterRow.FindControl("txtWorkSpecification")).Text; //txtWorkSpecification.Text;
                 objTaskWorkSpecification.Links = string.Join(",", LastTaskWorkSpecification.Links.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
                 if (!string.IsNullOrEmpty(hdnWorkSpecificationFile.Value))
                 {
@@ -2031,6 +2079,10 @@ namespace JG_Prospect.Sr_App
                     {
                         this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
                     }
+                    else
+                    {
+                        dtWorkSpecifications.Rows.Add(dtWorkSpecifications.NewRow());
+                    }
                 }
                 grdWorkSpecifications.AllowCustomPaging = true;
                 grdWorkSpecifications.VirtualItemCount = intTaskUserFilesCount;
@@ -2447,7 +2499,7 @@ namespace JG_Prospect.Sr_App
                 DataRow drTaskWorkSpecification = dsTaskWorkSpecification.Tables[0].Rows[0];
 
                 #region Store TaskWorkSpecification In ViewState
-                
+
                 objTaskWorkSpecification = new TaskWorkSpecification();
                 objTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
                 objTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);

@@ -734,7 +734,7 @@
                                     placeholder="User Password" AutoPostBack="true" Visible="true" />
                             </div>
                             <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
+                                GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" ShowFooter="true" PageSize="10"
                                 PagerSettings-Position="Bottom" DataKeyNames="Id"
                                 OnRowDataBound="grdWorkSpecifications_RowDataBound"
                                 OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
@@ -755,6 +755,11 @@
                                                 <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
                                             </small>
                                         </EditItemTemplate>
+                                        <FooterTemplate>
+                                            <small>
+                                                <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
+                                            </small>
+                                        </FooterTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px" Visible="false">
                                         <ItemTemplate>
@@ -763,6 +768,9 @@
                                         <EditItemTemplate>
                                             <asp:Literal ID="ltrlLinks" runat="server" />
                                         </EditItemTemplate>
+                                        <FooterTemplate>
+                                            <asp:Literal ID="ltrlLinks" runat="server" />
+                                        </FooterTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Description" >
                                         <ItemTemplate>
@@ -778,22 +786,28 @@
                                                 CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>&nbsp;&nbsp;
                                             <asp:LinkButton ID="lbtnCancelEditing" runat="server" Text="Cancel" CommandName="cancel-edit-version" />
                                         </EditItemTemplate>
+                                        <FooterTemplate>
+                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="false" />
+                                            <br />
+                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Save" ClientIDMode="AutoID" CausesValidation="false" CommandName="insert-version" />&nbsp;&nbsp;
+                                            <asp:LinkButton ID="lbtnCancelInsert" runat="server" Text="Cancel" ClientIDMode="AutoID" CausesValidation="false" CommandName="cancel-insert-version" />
+                                        </FooterTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px" Visible="false">
                                         <ItemTemplate>
                                             <asp:HyperLink ID="hypWireframe" runat="server" />
-                                            <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
-                                                CommandArgument='<%#Eval("Wireframe") %>' Visible="false" />
                                         </ItemTemplate>
                                         <EditItemTemplate>
                                             <asp:HyperLink ID="hypWireframe" runat="server" />
-                                            <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" CommandName="download-wireframe-file"
-                                                CommandArgument='<%#Eval("Wireframe") %>' Visible="false" />
                                         </EditItemTemplate>
+                                        <FooterTemplate>
+                                            <asp:HyperLink ID="hypWireframe" runat="server" />
+                                        </FooterTemplate>
                                     </asp:TemplateField>
                                 </Columns>
                                 <HeaderStyle CssClass="trHeader" />
                                 <RowStyle CssClass="FirstRow" />
+                                <FooterStyle CssClass="FirstRow" />
                                 <AlternatingRowStyle CssClass="AlternateRow" />
                             </asp:GridView>
                             <br />
@@ -802,7 +816,7 @@
                     <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
                             <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="vgSaveWorkSpecification" ShowSummary="False" ShowMessageBox="True" />
-                            <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%">
+                            <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%" visible="false">
                                 <tr id="trWorkSpecificationEditor" runat="server">
                                     <td>
                                         <table width="100%">
