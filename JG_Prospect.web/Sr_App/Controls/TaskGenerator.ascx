@@ -816,36 +816,36 @@
     function setAutoSearch() {
 
         $("#<%=txtSearch.ClientID%>").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetSearchSuggestions",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
+            delay: 500,
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: "ajaxcalls.aspx/GetSearchSuggestions",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ searchterm: request.term }),
+                    success: function (data) {
+                        // Handle 'no match' indicated by [ "" ] response
 
-                            if (data.d) {
+                        if (data.d) {
 
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
+                            response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                        }
 
-                            // remove loading spinner image.                                
-                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        // remove loading spinner image.                                
+                        $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
 
                         }
                     });
                 },
-                minLength: 2,
-                select: function (event, ui) {
-                    //console.log(event);
-                    //console.log(ui);
-                    $("#<%=txtSearch.ClientID%>").val(ui.item.value);
+            minLength: 2,
+            select: function (event, ui) {
+                //console.log(event);
+                //console.log(ui);
+                $("#<%=txtSearch.ClientID%>").val(ui.item.value);
                     TriggerSearch();
                 }
-            });
+        });
             }
 
             function createCategorisedAutoSearch() {
@@ -877,7 +877,7 @@
             function setTaskDivClickTrigger() {
                 //On click of task list it should open tasklist page.
                 $('#taskGrid').click(function (e) {
-                    if ($(e.target).is("a") || $(e.target).is("select")) return;
+                    if ($(e.target).is("a") || $(e.target).is("select") || e.target.id == "caption") return;
                     window.location.href = $("#hypTaskListMore").attr("href");
                 });
             }
@@ -933,25 +933,25 @@
 
             }
 
-    function setClickableTooltip(target, content) {
-        //$(target).tooltip({
-        //    show: null, // show immediately 
-        //    position: { my: "left top", at: "left top" },
-        //    content: content, //from params
-        //    hide: { effect: "" }, //fadeOut
-        //    close: function (event, ui) {
-        //        ui.tooltip.hover(
-        //            function () {
-        //                $(this).stop(true).fadeTo(400, 1);
-        //            },
-        //            function () {
-        //                $(this).fadeOut("400", function () {
-        //                    $(this).remove();
-        //                })
-        //            }
-        //        );
-        //    }
-        //});
-    }
+            function setClickableTooltip(target, content) {
+                //$(target).tooltip({
+                //    show: null, // show immediately 
+                //    position: { my: "left top", at: "left top" },
+                //    content: content, //from params
+                //    hide: { effect: "" }, //fadeOut
+                //    close: function (event, ui) {
+                //        ui.tooltip.hover(
+                //            function () {
+                //                $(this).stop(true).fadeTo(400, 1);
+                //            },
+                //            function () {
+                //                $(this).fadeOut("400", function () {
+                //                    $(this).remove();
+                //                })
+                //            }
+                //        );
+                //    }
+                //});
+            }
 
-    </script>
+</script>
