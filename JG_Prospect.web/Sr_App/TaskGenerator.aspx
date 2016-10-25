@@ -924,35 +924,34 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
             <%--Below div is required to make entire section visible.--%>
-            <div style="float:none;clear:both;"></div>
+            <div style="float: none; clear: both;"></div>
         </div>
         <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files" data-min-button="Finished Work Files">
             <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <asp:GridView ID="grdWorkSpecificationAttachments" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                        GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowFooter="true" PageSize="10"
-                        PagerSettings-Position="Bottom"
-                        OnRowDataBound="grdWorkSpecificationAttachments_RowDataBound"
-                        OnPageIndexChanging="grdWorkSpecificationAttachments_PageIndexChanging"
-                        OnRowCommand="grdWorkSpecificationAttachments_RowCommand">
-                        <Columns>
-                            <asp:TemplateField HeaderText="Attachments">
-                                <ItemTemplate>
+                    <div style="height: 300px; overflow: auto;">
+                        <asp:Repeater ID="grdWorkSpecificationAttachments" runat="server"
+                            OnItemDataBound="grdWorkSpecificationAttachments_ItemDataBound"
+                            OnItemCommand="grdWorkSpecificationAttachments_ItemCommand">
+                            <HeaderTemplate>
+                                <ul style="width:100%;list-style-type:none;margin:0px;padding:0px;">
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <li style="margin:10px;text-align:left;float:left;width:130px;">
+                                    <asp:LinkButton ID="lbtnDelete" runat="server" ForeColor="Blue" Text="Delete" CommandName="delete-attachment" />
+                                    <br />
+                                    <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                    <br />
                                     <small>
-                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue"
-                                            CommandName="DownloadFile" /></small>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Uploaded By" ControlStyle-Width="200px">
-                                <ItemTemplate>
-                                    <%#Eval("FirstName") %>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                        <HeaderStyle CssClass="trHeader" />
-                        <RowStyle CssClass="FirstRow" />
-                        <AlternatingRowStyle CssClass="AlternateRow" />
-                    </asp:GridView>
+                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />-<%# DateTime.Now.ToString("MM/dd/yyyy") %>-<%#Eval("FirstName")%>
+                                    </small>
+                                </li>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                </ul>
+                            </FooterTemplate>
+                        </asp:Repeater>
+                    </div>
                     <%--Only Allow "*.doc" files to be uploaded
                             Add Log with file name "username_datetimeofsubmitionofwork.doc."
                             When user submit their CODE files, it should be auto compiled and if there is any compilation error it should show popup to user 

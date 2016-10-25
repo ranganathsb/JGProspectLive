@@ -770,8 +770,6 @@ namespace JG_Prospect.Sr_App
 
             #region '--Work Specification Attachments--'
 
-            grdWorkSpecificationAttachments.PageIndex = 0;
-
             FillWorkSpecificationAttachments();
 
             #endregion
@@ -810,8 +808,6 @@ namespace JG_Prospect.Sr_App
             #endregion
 
             #region '--Work Specification Attachments--'
-
-            grdWorkSpecificationAttachments.PageIndex = 0;
 
             FillWorkSpecificationAttachments();
 
@@ -1188,6 +1184,46 @@ namespace JG_Prospect.Sr_App
 
         #region Work Specification Attachments
 
+        protected void grdWorkSpecificationAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "attachment"));
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+
+                if (files[1].Length > 40)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+                }
+                else
+                {
+                    lbtnAttchment.Text = files[1];
+                }
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                lbtnAttchment.CommandArgument = file;
+
+                ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "../TaskAttachments/" + files[0].Trim();
+            }
+        }
+
+        protected void grdWorkSpecificationAttachments_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "download-attachment")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "delete-attachment")
+            {
+               
+            }
+        }
+
         protected void btnAddAttachment_ClicK(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
@@ -1251,13 +1287,6 @@ namespace JG_Prospect.Sr_App
 
                 DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
-        }
-
-        protected void grdWorkSpecificationAttachments_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            grdWorkSpecificationAttachments.PageIndex = e.NewPageIndex;
-
-            FillWorkSpecificationAttachments();
         }
 
         #endregion
@@ -2107,18 +2136,15 @@ namespace JG_Prospect.Sr_App
             {
                 dtTaskUserFiles = this.dtTaskUserFiles;
                 intTaskUserFilesCount = dtTaskUserFiles.Rows.Count;
-                grdWorkSpecificationAttachments.AllowCustomPaging = false;
             }
             else
             {
-                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), grdWorkSpecificationAttachments.PageIndex, grdWorkSpecificationAttachments.PageSize);
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value),null, null);
                 if (dsTaskUserFiles != null)
                 {
                     dtTaskUserFiles = dsTaskUserFiles.Tables[0];
                     intTaskUserFilesCount = Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
                 }
-                grdWorkSpecificationAttachments.AllowCustomPaging = true;
-                grdWorkSpecificationAttachments.VirtualItemCount = intTaskUserFilesCount;
             }
 
             grdWorkSpecificationAttachments.DataSource = dtTaskUserFiles;
