@@ -921,6 +921,7 @@
     <Content Include="ckeditor\skins\moono\images\refresh.png" />
     <Content Include="ckeditor\skins\moono\images\spinner.gif" />
     <Content Include="ckeditor\styles.js" />
+    <Content Include="Controls\CustomPager.ascx" />
     <Content Include="Controls\Header.ascx" />
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
@@ -1565,6 +1566,13 @@
     <Compile Include="changepassword.aspx.designer.cs">
       <DependentUpon>changepassword.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CustomPager.ascx.cs">
+      <DependentUpon>CustomPager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomPager.ascx.designer.cs">
+      <DependentUpon>CustomPager.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Header.ascx.cs">
       <DependentUpon>Header.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2054,6 +2062,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
