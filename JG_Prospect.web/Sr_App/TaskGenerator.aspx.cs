@@ -782,8 +782,8 @@ namespace JG_Prospect.Sr_App
                                                     "ShowPopup",
                                                     string.Format(
                                                                     "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
-                                                                    divFinishedWorkFiles.ClientID,
-                                                                    divWorkSpecificationSection.ClientID
+                                                                    divWorkSpecificationSection.ClientID,
+                                                                    divFinishedWorkFiles.ClientID
                                                                 ),
                                                     true
                                               );
@@ -1220,8 +1220,56 @@ namespace JG_Prospect.Sr_App
             }
             else if (e.CommandName == "delete-attachment")
             {
-               
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
             }
+        }
+
+        private void DeleteWorkSpecificationFile(string parameter)
+        {
+            // Seperate DB Id and Filename from parameter.
+            string[]parameters = parameter.Split('|');
+
+            if (parameter.Length > 0)
+            {
+                string id = parameters[0];
+                string[] fileNames = parameters[1].Split('@');//Id
+
+                TaskUser taskUserFiles = new TaskUser();                
+                
+                //Remove file from database
+               bool blnFileDeletedFromDb = TaskGeneratorBLL.Instance.DeleteTaskUserFile(Convert.ToInt64(id));  // save task files
+                
+                //if file removed from database, remove from server file system.
+                if (fileNames.Length > 0 && blnFileDeletedFromDb)
+                {
+                    string filetodelete = fileNames[0];
+                    DeletefilefromServer(filetodelete);
+                }
+
+            }
+
+            //Reload records.
+            FillWorkSpecificationAttachments();
+        }
+
+        private void DeletefilefromServer(string filetodelete)
+        {
+            if (!String.IsNullOrEmpty(filetodelete))
+            {
+                var originalDirectory = new DirectoryInfo(Server.MapPath("~/TaskAttachments"));
+
+                
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), filetodelete);
+
+                bool isExists = System.IO.File.Exists(pathString);
+
+                if (isExists)
+                    File.Delete(pathString);
+               
+                
+            }
+
+
         }
 
         protected void btnAddAttachment_ClicK(object sender, EventArgs e)
@@ -1248,6 +1296,7 @@ namespace JG_Prospect.Sr_App
 
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
 
+                    FillWorkSpecificationAttachments();
                     #endregion
                 }
 
@@ -2150,7 +2199,7 @@ namespace JG_Prospect.Sr_App
             grdWorkSpecificationAttachments.DataSource = dtTaskUserFiles;
             grdWorkSpecificationAttachments.DataBind();
 
-            upWorkSpecificationAttachments.Update();
+            upnlAttachments.Update();
         }
 
         private void SetSubTaskSectionView(bool blnView)

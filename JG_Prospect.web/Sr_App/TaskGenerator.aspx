@@ -164,16 +164,7 @@
                                             <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                                 placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                         </td>
-                                        <td class="valigntop">
-                                            <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
-                                                <div class="fallback">
-                                                    <input name="WorkFile" type="file" multiple />
-                                                    <input type="submit" value="UploadWorkFile" />
-                                                </div>
-                                            </div>
-                                            <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
-                                            </div>
-                                        </td>
+                                        <td class="valigntop"></td>
                                     </tr>
                                 </table>
                             </td>
@@ -733,6 +724,65 @@
                                 <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
                                     placeholder="User Password" AutoPostBack="true" Visible="true" />
                             </div>
+                            <div>
+                                <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <table>
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="vertical-align: top;">
+                                                        <div id="divWorkFileAdmin" class="dropzone work-file" data-hidden="<%=hdnWorkFiles.ClientID%>">
+                                                            <div class="fallback">
+                                                                <input name="WorkFile" type="file" multiple />
+                                                                <input type="submit" value="UploadWorkFile" />
+                                                            </div>
+                                                        </div>
+                                                        <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div style="height: 300px; overflow-y: auto; overflow-x: hidden;">
+                                                            <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
+                                                                <ContentTemplate>
+
+                                                                    <asp:Repeater ID="grdWorkSpecificationAttachments" runat="server"
+                                                                        OnItemDataBound="grdWorkSpecificationAttachments_ItemDataBound"
+                                                                        OnItemCommand="grdWorkSpecificationAttachments_ItemCommand">
+                                                                        <HeaderTemplate>
+                                                                            <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                                                        </HeaderTemplate>
+                                                                        <ItemTemplate>
+                                                                            <li style="margin: 10px; text-align: left; float: left; width: 100px;">
+                                                                                <asp:LinkButton ID="lbtnDelete" runat="server" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                                                <br />
+                                                                                <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                                                <br />
+                                                                                <small>
+                                                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
+                                                                                    <br />
+                                                                                    <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
+                                                                                </small>
+                                                                            </li>
+                                                                        </ItemTemplate>
+                                                                        <FooterTemplate>
+                                                                            </ul>
+                                                                        </FooterTemplate>
+                                                                    </asp:Repeater>
+
+                                                                </ContentTemplate>
+                                                            </asp:UpdatePanel>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
                             <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                                 GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" ShowFooter="true" PageSize="10"
                                 PagerSettings-Position="Bottom" DataKeyNames="Id"
@@ -774,7 +824,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Description">
                                         <ItemTemplate>
-                                            <div style="background-color: white; min-height: 20px; margin:3px; padding:3px;">
+                                            <div style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
                                                 <asp:Literal ID="lblDescription" runat="server" />
                                             </div>
                                         </ItemTemplate>
@@ -927,162 +977,138 @@
             <div style="float: none; clear: both;"></div>
         </div>
         <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files" data-min-button="Finished Work Files">
-            <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
-                <ContentTemplate>
-                    <div style="height: 300px; overflow: auto;">
-                        <asp:Repeater ID="grdWorkSpecificationAttachments" runat="server"
-                            OnItemDataBound="grdWorkSpecificationAttachments_ItemDataBound"
-                            OnItemCommand="grdWorkSpecificationAttachments_ItemCommand">
-                            <HeaderTemplate>
-                                <ul style="width:100%;list-style-type:none;margin:0px;padding:0px;">
-                            </HeaderTemplate>
-                            <ItemTemplate>
-                                <li style="margin:10px;text-align:left;float:left;width:130px;">
-                                    <asp:LinkButton ID="lbtnDelete" runat="server" ForeColor="Blue" Text="Delete" CommandName="delete-attachment" />
-                                    <br />
-                                    <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
-                                    <br />
-                                    <small>
-                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />-<%# DateTime.Now.ToString("MM/dd/yyyy") %>-<%#Eval("FirstName")%>
-                                    </small>
-                                </li>
-                            </ItemTemplate>
-                            <FooterTemplate>
-                                </ul>
-                            </FooterTemplate>
-                        </asp:Repeater>
-                    </div>
-                    <%--Only Allow "*.doc" files to be uploaded
+
+
+            <%--Only Allow "*.doc" files to be uploaded
                             Add Log with file name "username_datetimeofsubmitionofwork.doc."
                             When user submit their CODE files, it should be auto compiled and if there is any compilation error it should show popup to user 
                             with build error and that errors should be logged with attempt count as well. when user resubmit work it should follow same process 
                             as above and there should be max. attempt count.
-                    --%>
-                    <fieldset>
-                        <legend>Log Finished Work</legend>
-                        <hr />
-                        <table width="100%" border="0" cellspacing="3" cellpadding="3">
-                            <tr>
-                                <td width="120" align="right">Est. Hrs. of Task:
-                                </td>
-                                <td width="250">
-                                    <asp:TextBox ID="txtEstHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
-                                </td>
-                                <td width="180" align="right">Actual Hrs. of Task:
-                                </td>
-                                <td style="min-width: 200px;">
-                                    <asp:TextBox ID="txtActualHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <table width="100%">
-                                        <tr>
-                                            <td align="left">User Acceptance:
+            --%>
+            <fieldset>
+                <legend>Log Finished Work</legend>
+                <hr />
+                <table width="100%" border="0" cellspacing="3" cellpadding="3">
+                    <tr>
+                        <td width="120" align="right">Est. Hrs. of Task:
+                        </td>
+                        <td width="250">
+                            <asp:TextBox ID="txtEstHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
+                        </td>
+                        <td width="180" align="right">Actual Hrs. of Task:
+                        </td>
+                        <td style="min-width: 200px;">
+                            <asp:TextBox ID="txtActualHrsOfTaskFWF" runat="server" CssClass="textbox" Width="60" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="100%">
+                                <tr>
+                                    <td align="left">User Acceptance:
                                             <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
                                                 <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
                                                 <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
                                             </asp:DropDownList>
-                                            </td>
-                                            <td align="left">Due Date:
+                                    </td>
+                                    <td align="left">Due Date:
                                                 <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
-                                                <asp:Literal ID="ltlTUDueDate" runat="server" />
-                                            </td>
-                                            <td align="right">Hrs of Task:
+                                        <asp:Literal ID="ltlTUDueDate" runat="server" />
+                                    </td>
+                                    <td align="right">Hrs of Task:
                                                 <asp:Literal ID="ltlTUHrsTask" runat="server" />
-                                                <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
-                                                <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
-                                                    ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">Freeze By:
-                                </td>
-                                <td>Yogesh Keraliya
-                                </td>
-                                <td align="right">Profile:
-                                </td>
-                                <td>
-                                    <a href="InstallCreateUser.aspx?Id=901">901</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">Sub task:
-                                </td>
-                                <td>
-                                    <asp:DropDownList ID="ddlSubTasksFWF" runat="server" CssClass="textbox" Width="100">
-                                        <asp:ListItem>Select</asp:ListItem>
-                                        <asp:ListItem>I-a</asp:ListItem>
-                                        <asp:ListItem>I-b</asp:ListItem>
-                                        <asp:ListItem>II-b</asp:ListItem>
-                                    </asp:DropDownList>
-                                </td>
-                                <td align="right">Sub task status:
-                                </td>
-                                <td>
-                                    <asp:DropDownList ID="ddlSubTaskStatusFWF" runat="server" CssClass="textbox" Width="100">
-                                        <asp:ListItem>Select</asp:ListItem>
-                                        <asp:ListItem>Open</asp:ListItem>
-                                        <asp:ListItem>In Progress</asp:ListItem>
-                                        <asp:ListItem>Closed</asp:ListItem>
-                                    </asp:DropDownList>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" valign="top">File:<br />
-                                    <div class="dropzone">
-                                        <div class="dz-default dz-message"></div>
-                                    </div>
-                                </td>
-                                <td align="right" valign="top">Date of File Submission:
-                                </td>
-                                <td valign="top">
-                                    <asp:TextBox ID="DateOfFileSubmissionFWF" runat="server" CssClass="textbox" Width="80" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">Code files change log: (only doc files)<br />
-                                    <div class="dropzone">
-                                        <div class="dz-default dz-message"></div>
-                                    </div>
-                                </td>
-                                <td colspan="2">Database change script file: (only sql files)<br />
-                                    <div class="dropzone">
-                                        <div class="dz-default dz-message"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" valign="top">Code files: (only aspx, ascx or cs files)<br />
-                                    <div class="dropzone">
-                                        <div class="dz-default dz-message"></div>
-                                    </div>
-                                </td>
-                                <td colspan="2" valign="top">Comment on sub task:
+                                        <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
+                                        <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
+                                            ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Freeze By:
+                        </td>
+                        <td>Yogesh Keraliya
+                        </td>
+                        <td align="right">Profile:
+                        </td>
+                        <td>
+                            <a href="InstallCreateUser.aspx?Id=901">901</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Sub task:
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="ddlSubTasksFWF" runat="server" CssClass="textbox" Width="100">
+                                <asp:ListItem>Select</asp:ListItem>
+                                <asp:ListItem>I-a</asp:ListItem>
+                                <asp:ListItem>I-b</asp:ListItem>
+                                <asp:ListItem>II-b</asp:ListItem>
+                            </asp:DropDownList>
+                        </td>
+                        <td align="right">Sub task status:
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="ddlSubTaskStatusFWF" runat="server" CssClass="textbox" Width="100">
+                                <asp:ListItem>Select</asp:ListItem>
+                                <asp:ListItem>Open</asp:ListItem>
+                                <asp:ListItem>In Progress</asp:ListItem>
+                                <asp:ListItem>Closed</asp:ListItem>
+                            </asp:DropDownList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" valign="top">File:<br />
+                            <div class="dropzone">
+                                <div class="dz-default dz-message"></div>
+                            </div>
+                        </td>
+                        <td align="right" valign="top">Date of File Submission:
+                        </td>
+                        <td valign="top">
+                            <asp:TextBox ID="DateOfFileSubmissionFWF" runat="server" CssClass="textbox" Width="80" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Code files change log: (only doc files)<br />
+                            <div class="dropzone">
+                                <div class="dz-default dz-message"></div>
+                            </div>
+                        </td>
+                        <td colspan="2">Database change script file: (only sql files)<br />
+                            <div class="dropzone">
+                                <div class="dz-default dz-message"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" valign="top">Code files: (only aspx, ascx or cs files)<br />
+                            <div class="dropzone">
+                                <div class="dz-default dz-message"></div>
+                            </div>
+                        </td>
+                        <td colspan="2" valign="top">Comment on sub task:
                                        
                                         <br />
-                                    <asp:TextBox ID="txtSubTaskCommentFWF" runat="server" CssClass="textbox" TextMode="MultiLine" Style="width: 90%;" Rows="4" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">Test page url :<br />
-                                    <asp:TextBox ID="txtTestPageUrl" runat="server" CssClass="textbox" Style="width: 90%" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <div class="btn_sec">
-                                        <asp:Button ID="btnSaveFWF" runat="server" CssClass="ui-button" Text="Save" OnClientClick="javascript:return false;" />
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </fieldset>
-                </ContentTemplate>
-            </asp:UpdatePanel>
+                            <asp:TextBox ID="txtSubTaskCommentFWF" runat="server" CssClass="textbox" TextMode="MultiLine" Style="width: 90%;" Rows="4" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Test page url :<br />
+                            <asp:TextBox ID="txtTestPageUrl" runat="server" CssClass="textbox" Style="width: 90%" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="btn_sec">
+                                <asp:Button ID="btnSaveFWF" runat="server" CssClass="ui-button" Text="Save" OnClientClick="javascript:return false;" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
         </div>
         <div id="divImagePopup" runat="server" title="Work Specification File">
             <b>
@@ -1162,50 +1188,7 @@
         var strUserName = '<%=Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]%>';
 
         var txtWorkSpecification = '<%=txtWorkSpecification.ClientID%>';
-        
-        function LoadTinyMce() {
-            tinymce.init({
-                mode: "exact",
-                elements: txtWorkSpecification,
-                theme: "advanced",
-                plugins: 'ice,icesearchreplace',
-                //theme_advanced_buttons1: "formatselect,|,removeformat,visualaid,|bold,italic,underline,|,bullist,numlist,|,undo,redo,code,|,search,replace,|styleselect,|,ice_togglechanges,ice_toggleshowchanges,iceacceptall,icerejectall,iceaccept,icereject",
-                theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,outdent,indent",
-                theme_advanced_buttons2 : "undo,redo,|,sub,sup,|,charmap,|,link,unlink,anchor,image,cleanup,code,|,help",
-                theme_advanced_buttons3 : "iceaccept,icereject",
-                theme_advanced_toolbar_location: "top",
-                theme_advanced_toolbar_align: "left",
-                extended_valid_elements: "p,span[*],delete[*],insert[*]",
-                ice: {
-                    user: { name: strUserName, id: intUserId },
-                    preserveOnPaste: 'p,a[href],i,em,b,span',
-                    deleteTag: 'delete',
-                    insertTag: 'insert'
-                },
-                height: '350',
-                width:'100%'
-            });
-        }
-
-        function setUserMCE(el) {
-            var name = 'J Grove';
-            var id = 22;
-            tinymce.execCommand('ice_changeuser', { id: id, name: name });
-        }
-
-        function AcceptAllChanges(){
-            tinymce.execCommand('iceacceptall');
-        }
-
-        function RejectAllChanges(){
-            tinymce.execCommand('icerejectall');
-        }
-
-        function SetContentInTextbox(){
-            if($('#'+txtWorkSpecification).length > 0) {
-                $('#'+txtWorkSpecification).val(""+tinymce.get(txtWorkSpecification).getContent());
-            }
-        }
+       
     </script>
     <script type="text/javascript">
 
@@ -1257,21 +1240,35 @@
         }
 
         function ShowPopup(varControlID) {
-            var objDialog = $(varControlID).dialog({ width: "900px", height: "auto"<%--, 
-                open: function( event, ui )
-                { 
-                    console.log(varControlID);
-                    if (varControlID == "#<%=divWorkSpecificationSection.ClientID%>") {
-                        setTimeout(function(){LoadCKEditor();},1000);
-                        
-                    } 
-                }--%>
-            });
+            console.log($( window ).width());
+            var windowWidth = (parseInt($( window ).width()) / 2)-10;
+            
+            console.log(windowWidth);
+
+            var dialogwidth = windowWidth + "px";
+       
+            var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto"});
             
             AppendMinimizeButton(objDialog);
             
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));
+            if (varControlID == '#<%=divFinishedWorkFiles.ClientID%>' ) {
+                
+                $(varControlID).dialog( "option", "position", {
+                    my: 'left top',
+                    at: 'right+5 top',
+                    of: $('#<%=divWorkSpecificationSection.ClientID%>')
+                } );
+            }
+            else {
+                $(varControlID).dialog( "option", "position", {
+                    my: 'left top',
+                    at: 'left top',
+                    of: window
+                } );
+            }
+            
         }
 
         function AppendMinimizeButton(objDialog){
@@ -1330,12 +1327,12 @@
         // check if user has selected any designations or not.
         function checkDesignations(oSrc, args) {
             args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
-        }
+}
 
-        function copytoListID(sender) {
-            var strListID = $.trim($(sender).text());
-            if (strListID.length > 0) {
-                $('#<%= txtTaskListID.ClientID %>').val(strListID);
+function copytoListID(sender) {
+    var strListID = $.trim($(sender).text());
+    if (strListID.length > 0) {
+        $('#<%= txtTaskListID.ClientID %>').val(strListID);
             }
         }
 
@@ -1357,20 +1354,20 @@
 
             if ($('#<%= hdnAttachments.ClientID %>').val()) {
 
-                    //split images added by ^ seperator
-                    var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
+                //split images added by ^ seperator
+                var attachments = $('#<%= hdnAttachments.ClientID %>').val().split("^");
 
+                if (attachments.length > 0) {
+                    //find index of filename and remove it.
+                    var index = attachments.indexOf(filename);
+
+                    if (index > -1) {
+                        attachments.splice(index, 1);
+                    }
+
+                    //join remaining attachments.
                     if (attachments.length > 0) {
-                        //find index of filename and remove it.
-                        var index = attachments.indexOf(filename);
-
-                        if (index > -1) {
-                            attachments.splice(index, 1);
-                        }
-
-                        //join remaining attachments.
-                        if (attachments.length > 0) {
-                            $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
+                        $('#<%= hdnAttachments.ClientID %>').val(attachments.join("^"));
                     }
                     else {
                         $('#<%= hdnAttachments.ClientID %>').val("");

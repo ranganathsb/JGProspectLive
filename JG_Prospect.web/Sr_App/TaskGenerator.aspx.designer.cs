@@ -778,6 +778,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtUserPasswordToFreezeSpecificationPopup;
         
         /// <summary>
+        /// upWorkSpecificationAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
+        
+        /// <summary>
+        /// upnlAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlAttachments;
+        
+        /// <summary>
+        /// grdWorkSpecificationAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater grdWorkSpecificationAttachments;
+        
+        /// <summary>
         /// grdWorkSpecifications control.
         /// </summary>
         /// <remarks>
@@ -920,24 +947,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFinishedWorkFiles;
-        
-        /// <summary>
-        /// upWorkSpecificationAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
-        
-        /// <summary>
-        /// grdWorkSpecificationAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater grdWorkSpecificationAttachments;
         
         /// <summary>
         /// txtEstHrsOfTaskFWF control.

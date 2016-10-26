@@ -2789,3 +2789,137 @@ FinalData AS(
 
 END
 GO
+
+/*
+   Tuesday, October 25, 20164:45:32 PM
+   User: jgrovesa
+   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
+   Database: JGBS_Dev
+   Application: 
+*/
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskUserFiles ADD
+	UpdatedOn datetime NULL
+GO
+ALTER TABLE dbo.tblTaskUserFiles ADD CONSTRAINT
+	DF_tblTaskUserFiles_UpdatedOn DEFAULT getdate() FOR UpdatedOn
+GO
+ALTER TABLE dbo.tblTaskUserFiles SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+UPDATE tblTaskUserFiles SET UpdatedOn = GETDATE()
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[usp_GetTaskUserFiles]    Script Date: 10/25/2016 4:55:24 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all files of a task.
+-- =============================================
+-- usp_GetTaskUserFiles 115
+ALTER PROCEDURE [dbo].[usp_GetTaskUserFiles] 
+(
+	@TaskId INT,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+)	
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskUserFiles
+	AS
+		(
+		SELECT 
+			tuf.Id,
+			CAST(
+					tuf.[Attachment] + '@' + tuf.[AttachmentOriginal] 
+					AS VARCHAR(MAX)
+				) AS attachment,
+			ISNULL(u.FirstName,iu.FristName) AS FirstName,
+			UpdatedOn,
+			ROW_NUMBER() OVER(ORDER BY tuf.ID ASC) AS RowNumber
+		FROM dbo.tblTaskUserFiles tuf
+				LEFT JOIN tblUsers u ON tuf.UserId = u.Id --AND tuf.UserType = u.Usertype
+				LEFT JOIN tblInstallUsers iu ON tuf.UserId = iu.Id --AND tuf.UserType = u.UserType
+		WHERE tuf.TaskId = @TaskId
+		
+	)
+    
+	-- get records
+	SELECT *
+	FROM TaskUserFiles
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+    Order BY UpdatedOn DESC
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM dbo.tblTaskUserFiles tuf
+			LEFT JOIN tblUsers u ON tuf.UserId = u.Id --AND tuf.UserType = u.Usertype
+			LEFT JOIN tblInstallUsers iu ON tuf.UserId = iu.Id --AND tuf.UserType = u.UserType
+	WHERE tuf.TaskId = @TaskId
+
+END
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 10/25/2016
+-- Description:	Delete file attachment
+-- =============================================
+CREATE PROCEDURE usp_DeleteTaskAttachmentFile 
+(	
+	@Id bigint
+)
+AS
+BEGIN
+
+DELETE FROM  tblTaskUserFiles WHERE Id = @Id
+
+END
+GO

@@ -411,6 +411,39 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool DeleteTaskUserFile(Int64 Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_DeleteTaskAttachmentFile");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", SqlDbType.BigInt, Id);
+                    
+                    int result = database.ExecuteNonQuery(command);
+
+
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
         {
             try

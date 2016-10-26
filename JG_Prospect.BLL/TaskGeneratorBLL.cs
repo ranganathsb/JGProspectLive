@@ -62,9 +62,15 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskUserAcceptance(ref objTaskUser);
         }
 
+
         public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskUserFiles(objTaskUser);
+        }
+
+        public bool DeleteTaskUserFile(Int64 Id)
+        {
+            return TaskGeneratorDAL.Instance.DeleteTaskUserFile(Id);
         }
 
         public DataSet GetTaskDetails(Int32 TaskId)
