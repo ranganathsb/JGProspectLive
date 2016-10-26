@@ -757,7 +757,7 @@
                                                                         </HeaderTemplate>
                                                                         <ItemTemplate>
                                                                             <li style="margin: 10px; text-align: left; float: left; width: 100px;">
-                                                                                <asp:LinkButton ID="lbtnDelete" runat="server" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                                                <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
                                                                                 <br />
                                                                                 <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
                                                                                 <br />
