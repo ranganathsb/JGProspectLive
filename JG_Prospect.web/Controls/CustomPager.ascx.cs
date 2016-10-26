@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web.UI.WebControls; 
+using System.Web.UI.WebControls;
 
 #endregion
 
@@ -116,15 +116,11 @@ namespace JG_Prospect.Controls
             {
                 int intStartPageIndex, intEndPageIndex;
 
-                intStartPageIndex = (((int)Math.Ceiling((decimal)(PageIndex + 1) / (decimal)PageSize)) - 1 * PageSize);
+                intStartPageIndex = ((int)Math.Ceiling((decimal)(PageIndex + 1) / (decimal)PageSize) - 1) * PageSize;
 
                 intEndPageIndex = intStartPageIndex + (PageSize - 1);
-                if (intEndPageIndex > (intRecordCount - 1))
-                {
-                    intEndPageIndex = intRecordCount - 1;
-                }
-
-                for (int i = intStartPageIndex; i <= intEndPageIndex; i++)
+                
+                for (int i = intStartPageIndex; i <= intEndPageIndex && ((i) * PageSize) <= intRecordCount; i++)
                 {
                     lstPages.Add(new ListItem((i + 1).ToString(), i.ToString(), i != PageIndex));
                 }
@@ -133,9 +129,10 @@ namespace JG_Prospect.Controls
                 {
                     lstPages.Insert(0, new ListItem("<", (intStartPageIndex - 1).ToString()));
                 }
-                if (intEndPageIndex < (intRecordCount - 1))
+
+                if (((intEndPageIndex + 1) * PageSize) < intRecordCount)
                 {
-                    lstPages.Insert(0, new ListItem(">", (intEndPageIndex + 1).ToString()));
+                    lstPages.Add(new ListItem(">", (intEndPageIndex + 1).ToString()));
                 }
             }
 

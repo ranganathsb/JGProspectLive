@@ -2087,11 +2087,7 @@ namespace JG_Prospect.Sr_App
 
                     if (dtWorkSpecifications.Rows.Count > 0)
                     {
-                        this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[dtWorkSpecifications.Rows.Count - 1]["CustomId"].ToString();
-                    }
-                    else
-                    {
-                        //dtWorkSpecifications.Rows.Add(dtWorkSpecifications.NewRow());
+                        this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[0]["LastCustomId"].ToString();
                     }
                 }
                 repWorkSpecificationsPager.FillPager(intTaskUserFilesCount);

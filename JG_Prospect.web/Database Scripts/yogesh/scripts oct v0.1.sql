@@ -2923,3 +2923,106 @@ DELETE FROM  tblTaskUserFiles WHERE Id = @Id
 
 END
 GO
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 26 Oct
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Get all Task specifications related to a task, 
+--				with optional status filter.
+-- =============================================
+-- EXEC GetTaskWorkSpecifications 151, NULL, 1
+ALTER PROCEDURE [dbo].[GetTaskWorkSpecifications]
+	@TaskId bigint,
+	@Admin bit,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskWorkSpecifications
+	AS
+	(
+		SELECT
+				s.*,
+				ROW_NUMBER() OVER(ORDER BY s.ID ASC) AS RowNumber
+
+		FROM tblTaskWorkSpecifications s
+		WHERE
+			s.TaskId = @TaskId AND 
+			1 = CASE
+					-- load records with all status for admin users.
+					WHEN @Admin = 1 THEN
+						1
+					-- load only approved records for non-admin users.
+					ELSE
+						CASE
+							WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+							ELSE 0
+						END
+				END
+	)
+
+			
+	-- get records
+	SELECT 
+			TaskWorkSpecifications.*,
+			-- get last custom id
+			(
+				SELECT TOP 1 CustomId
+				FROM tblTaskWorkSpecifications s
+				WHERE
+					s.TaskId = @TaskId 
+				ORDER By Id DESC
+			) AS LastCustomId
+	FROM TaskWorkSpecifications
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND 
+		1 = CASE
+				-- load records with all status for admin users.
+				WHEN @Admin = 1 THEN
+					1
+				-- load only approved records for non-admin users.
+				ELSE
+					CASE
+						WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+						ELSE 0
+					END
+			END
+
+END
+GO
