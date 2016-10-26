@@ -4,6 +4,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
+<%@ Register Src="~/Controls/CustomPager.ascx" TagPrefix="uc1" TagName="CustomPager" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -783,82 +785,65 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <asp:GridView ID="grdWorkSpecifications" runat="server" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                GridLines="Vertical" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" ShowFooter="true" PageSize="10"
-                                PagerSettings-Position="Bottom" DataKeyNames="Id"
-                                OnRowDataBound="grdWorkSpecifications_RowDataBound"
-                                OnPageIndexChanging="grdWorkSpecifications_PageIndexChanging"
-                                OnRowCommand="grdWorkSpecifications_RowCommand">
-                                <Columns>
-                                    <asp:TemplateField HeaderText="Id" ItemStyle-Width="30px">
+                            <table width="100%" cellspacing="0" cellpadding="0" class="table">
+                                <thead>
+                                    <tr class="trHeader">
+                                        <th>Id</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <asp:HiddenField ID="repWorkSpecifications_EditIndex" runat="server" Value="-1" />
+                                    <asp:Repeater ID="repWorkSpecifications" runat="server"
+                                        OnItemDataBound="repWorkSpecifications_ItemDataBound"
+                                        OnItemCommand="repWorkSpecifications_ItemCommand">
                                         <ItemTemplate>
-                                            <small>
-                                                <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                    Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>
-                                                <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
-                                            </small>
+                                            <tr id="trWorkSpecification" runat="server" class="">
+                                                <td>
+                                                    <asp:HiddenField ID="hdnId" runat="server" Value='<%#Eval("Id")%>' />
+                                                    <small>
+                                                        <asp:LinkButton ID="lbtnEditWorkSpecification" runat="server" ForeColor="Blue" ClientIDMode="AutoID"
+                                                            CommandName="edit-work-specification" Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.ItemIndex%>' />
+                                                        <asp:Literal ID="ltrlCustomId" runat="server" Text='<%#Eval("CustomId") %>' />
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <div id="divViewDescription" runat="server" style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
+                                                        <asp:Literal ID="ltrlDescription" runat="server" />
+                                                    </div>
+                                                    <div id="divEditDescription" runat="server">
+                                                        <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
+                                                        <br />
+                                                        <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" ClientIDMode="AutoID" Text="Save" 
+                                                            CommandName="save-work-specification" CommandArgument='<%# Container.ItemIndex %>' />&nbsp;&nbsp;<asp:LinkButton
+                                                            ID="lbtnCancelEditing" runat="server" ClientIDMode="AutoID" Text="Cancel" CommandName="cancel-edit-work-specification" />
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </ItemTemplate>
-                                        <EditItemTemplate>
+                                    </asp:Repeater>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="FirstRow">
+                                        <td>
                                             <small>
-                                                <asp:LinkButton ID="lbtnId" runat="server" ForeColor="Blue" ClientIDMode="AutoID" CommandName="edit-version"
-                                                    Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>
-                                                <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
+                                                <asp:Literal ID="ltrlCustomId" runat="server" Text='<%#Eval("CustomId") %>' />
                                             </small>
-                                        </EditItemTemplate>
-                                        <FooterTemplate>
-                                            <small>
-                                                <asp:Literal ID="ltrlId" runat="server" Text='<%#Eval("CustomId") %>' />
-                                            </small>
-                                        </FooterTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Links" ItemStyle-Width="300px" Visible="false">
-                                        <ItemTemplate>
-                                            <asp:Literal ID="ltrlLinks" runat="server" />
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            <asp:Literal ID="ltrlLinks" runat="server" />
-                                        </EditItemTemplate>
-                                        <FooterTemplate>
-                                            <asp:Literal ID="ltrlLinks" runat="server" />
-                                        </FooterTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Description">
-                                        <ItemTemplate>
-                                            <div style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
-                                                <asp:Literal ID="lblDescription" runat="server" />
-                                            </div>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
+                                        </td>
+                                        <td>
+                                            <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="true" />
                                             <br />
-                                            <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" Text="Save" CommandName="save-version"
-                                                CommandArgument='<%# Container.DataItemIndex %>' /><%--CommandArgument='<%#Eval("Id")%>' --%>&nbsp;&nbsp;
-                                            <asp:LinkButton ID="lbtnCancelEditing" runat="server" Text="Cancel" CommandName="cancel-edit-version" />
-                                        </EditItemTemplate>
-                                        <FooterTemplate>
-                                            <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="true" />
-                                            <br />
-                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false" CommandName="insert-version" />&nbsp;&nbsp;
-                                            <asp:LinkButton ID="lbtnCancelInsert" runat="server" Text="Cancel" ClientIDMode="AutoID" CausesValidation="false" CommandName="cancel-insert-version" />
-                                        </FooterTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Wire frame" ItemStyle-Width="100px" Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HyperLink ID="hypWireframe" runat="server" />
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            <asp:HyperLink ID="hypWireframe" runat="server" />
-                                        </EditItemTemplate>
-                                        <FooterTemplate>
-                                            <asp:HyperLink ID="hypWireframe" runat="server" />
-                                        </FooterTemplate>
-                                    </asp:TemplateField>
-                                </Columns>
-                                <HeaderStyle CssClass="trHeader" />
-                                <RowStyle CssClass="FirstRow" />
-                                <FooterStyle CssClass="FirstRow" />
-                                <AlternatingRowStyle CssClass="AlternateRow" />
-                            </asp:GridView>
+                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false" 
+                                                OnClick="lbtnInsertWorkSpecification_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr class="pager">
+                                        <td colspan="2">
+                                            <uc1:CustomPager ID="repWorkSpecificationsPager" runat="server" PageSize="10" PagerSize="10" />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                             <br />
                         </ContentTemplate>
                     </asp:UpdatePanel>

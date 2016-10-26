@@ -1,14 +1,21 @@
-﻿using System;
+﻿#region "-- using --"
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Web.UI.WebControls; 
+
+#endregion
 
 namespace JG_Prospect.Controls
 {
     public partial class CustomPager : System.Web.UI.UserControl
     {
+        #region '--Members--'
+
+        public EventHandler OnPageIndexChanged;
+
+        #endregion
+
         #region '--Properties--'
 
         public Int32 PageSize
@@ -70,12 +77,22 @@ namespace JG_Prospect.Controls
 
         #endregion
 
+        #region '--Control Events--'
+
         protected void Page_Changed(object sender, EventArgs e)
         {
-            int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
+            PageIndex = int.Parse((sender as LinkButton).CommandArgument);
+            if (OnPageIndexChanged != null)
+            {
+                OnPageIndexChanged(sender, e);
+            }
         }
 
-        private void FillPager(int intRecordCount)
+        #endregion
+
+        #region '--Methods--'
+
+        public void FillPager(int intRecordCount)
         {
             //double dblPageCount = (double)((decimal)intRecordCount / Convert.ToDecimal(PageSize));
             //int intPageCount = (int)Math.Ceiling(dblPageCount);
@@ -125,5 +142,7 @@ namespace JG_Prospect.Controls
             rptPager.DataSource = lstPages;
             rptPager.DataBind();
         }
+
+        #endregion
     }
 }

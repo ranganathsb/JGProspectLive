@@ -805,13 +805,58 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Repeater grdWorkSpecificationAttachments;
         
         /// <summary>
-        /// grdWorkSpecifications control.
+        /// repWorkSpecifications_EditIndex control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdWorkSpecifications;
+        protected global::System.Web.UI.WebControls.HiddenField repWorkSpecifications_EditIndex;
+        
+        /// <summary>
+        /// repWorkSpecifications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repWorkSpecifications;
+        
+        /// <summary>
+        /// ltrlCustomId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlCustomId;
+        
+        /// <summary>
+        /// ckeWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CKEditor.NET.CKEditorControl ckeWorkSpecification;
+        
+        /// <summary>
+        /// lbtnInsertWorkSpecification control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnInsertWorkSpecification;
+        
+        /// <summary>
+        /// repWorkSpecificationsPager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.Controls.CustomPager repWorkSpecificationsPager;
         
         /// <summary>
         /// upAddEditWorkSpecification control.
