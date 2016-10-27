@@ -809,7 +809,10 @@
                                                 </td>
                                                 <td>
                                                     <div id="divViewDescription" runat="server" style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
-                                                        <asp:Literal ID="ltrlDescription" runat="server" />
+                                                        <div style="margin-bottom:10px;">
+                                                            <asp:Literal ID="ltrlDescription" runat="server" />
+                                                        </div>
+                                                        <asp:LinkButton ID="lbtnAddSubWorkSpecification" runat="server" Text="Add Sub Section" />
                                                     </div>
                                                     <div id="divEditDescription" runat="server">
                                                         <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
@@ -839,7 +842,7 @@
                                     </tr>
                                     <tr class="pager">
                                         <td colspan="2">
-                                            <uc1:CustomPager ID="repWorkSpecificationsPager" runat="server" PageSize="10" PagerSize="10" />
+                                            <uc1:CustomPager ID="repWorkSpecificationsPager" runat="server" PageSize="5" PagerSize="10" />
                                         </td>
                                     </tr>
                                 </tfoot>

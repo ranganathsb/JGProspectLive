@@ -153,9 +153,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
 
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64? intParentTaskWorkSpecificationId, Int32? intPageIndex, Int32? intPageSize)
         {
-            return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intPageIndex, intPageSize);
+            return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intParentTaskWorkSpecificationId, intPageIndex, intPageSize);
         }
 
         public DataSet GetTaskWorkSpecificationById(Int64 Id)

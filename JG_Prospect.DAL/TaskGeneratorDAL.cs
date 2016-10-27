@@ -946,6 +946,11 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
                     database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
 
+                    if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", SqlDbType.BigInt, objTaskWorkSpecification.ParentTaskWorkSpecificationId.Value);
+                    }
+
                     return database.ExecuteNonQuery(command);
                 }
             }
@@ -972,6 +977,11 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Links", DbType.String, objTaskWorkSpecification.Links);
                     database.AddInParameter(command, "@WireFrame", DbType.String, objTaskWorkSpecification.WireFrame);
 
+                    if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", SqlDbType.BigInt, objTaskWorkSpecification.ParentTaskWorkSpecificationId.Value);
+                    }
+
                     return database.ExecuteNonQuery(command);
                 }
             }
@@ -981,7 +991,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64? intParentTaskWorkSpecificationId, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -992,6 +1002,12 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+
+                    if (intParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", DbType.Int64, intParentTaskWorkSpecificationId.Value);
+                    }
+                    
                     if (intPageIndex.HasValue)
                     {
                         database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);

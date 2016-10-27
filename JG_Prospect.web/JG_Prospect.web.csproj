@@ -1227,6 +1227,7 @@
     <Content Include="Sr_App\ContractFooter.aspx" />
     <Content Include="Sr_App\Controls\AddProductLinesControl.ascx" />
     <Content Include="Sr_App\Controls\TaskGenerator.ascx" />
+    <Content Include="Sr_App\Controls\TaskWorkSpecifications.ascx" />
     <Content Include="Sr_App\CreateSalesUser.aspx" />
     <Content Include="Sr_App\Custom.aspx" />
     <Content Include="Sr_App\customerattachmentupload.aspx" />
@@ -1757,6 +1758,13 @@
     </Compile>
     <Compile Include="Sr_App\Controls\TaskGenerator.ascx.designer.cs">
       <DependentUpon>TaskGenerator.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\Controls\TaskWorkSpecifications.ascx.cs">
+      <DependentUpon>TaskWorkSpecifications.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\Controls\TaskWorkSpecifications.ascx.designer.cs">
+      <DependentUpon>TaskWorkSpecifications.ascx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\CreateSalesUser.aspx.cs">
       <DependentUpon>CreateSalesUser.aspx</DependentUpon>

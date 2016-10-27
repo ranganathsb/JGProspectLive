@@ -9,7 +9,15 @@ namespace JG_Prospect.Common.modal
     [Serializable]
     public partial class TaskWorkSpecification
     {
+        public TaskWorkSpecification()
+        {
+            TaskWorkSpecifications = new List<TaskWorkSpecification>();
+        }
+
+        public List<TaskWorkSpecification> TaskWorkSpecifications;
+
         public long Id { get; set; }
+        public long? ParentTaskWorkSpecificationId { get; set; }
         public string CustomId { get; set; }
         public long TaskId { get; set; }
         public string Description { get; set; }
@@ -33,5 +41,7 @@ namespace JG_Prospect.Common.modal
         public string TechLeadUserFirstname { get; set; }
         public string TechLeadUserLastname { get; set; }
         public string TechLeadUserEmail { get; set; }
+
+
     }
 }
