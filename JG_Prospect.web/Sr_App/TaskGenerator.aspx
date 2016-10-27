@@ -5,6 +5,8 @@
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register Src="~/Controls/CustomPager.ascx" TagPrefix="uc1" TagName="CustomPager" %>
+<%@ Register Src="~/Sr_App/Controls/ucTaskWorkSpecifications.ascx" TagPrefix="uc1" TagName="ucTaskWorkSpecifications" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -785,7 +787,8 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <table width="100%" cellspacing="0" cellpadding="0" class="table">
+                            <uc1:ucTaskWorkSpecifications id="objucTaskWorkSpecifications" runat="server" />
+                            <table width="100%" cellspacing="0" cellpadding="0" class="table" style="display:none;">
                                 <thead>
                                     <tr class="trHeader">
                                         <th>Id</th>

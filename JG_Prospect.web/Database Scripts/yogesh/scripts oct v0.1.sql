@@ -3165,3 +3165,277 @@ BEGIN
   
 END  
 GO
+
+
+/****** Object:  StoredProcedure [dbo].[InsertTaskWorkSpecification]    Script Date: 27-Oct-16 10:47:52 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Links varchar(1000),
+	@WireFrame varchar(300)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[tblTaskWorkSpecifications]
+		([CustomId]
+		,[TaskId]
+		,[Description]
+		,[Links]
+		,[WireFrame]
+		,[AdminStatus]
+		,[TechLeadStatus]
+		,[DateCreated]
+		,[DateUpdated]
+		,[AdminStatusUpdated]
+		,[TechLeadStatusUpdated]
+		,[AdminUserId]
+		,[TechLeadUserId]
+		,[IsAdminInstallUser]
+		,[IsTechLeadInstallUser]
+		,[ParentTaskWorkSpecificationId])
+	VALUES
+		(@CustomId
+		,@TaskId
+		,@Description
+		,@Links
+		,@WireFrame
+		,0
+		,0
+		,GETDATE()
+		,GETDATE()
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,@ParentTaskWorkSpecificationId)
+
+		
+	-- reset status for all, as any change requires 2 level freezing.
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[DateUpdated] = GETDATE()
+		,[AdminStatusUpdated] = NULL
+		,[TechLeadStatusUpdated] = NULL
+		,[AdminUserId] = NULL
+		,[TechLeadUserId] = NULL
+		,[IsAdminInstallUser] = NULL
+		,[IsTechLeadInstallUser] = NULL
+	WHERE [TaskId] = @TaskId
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecification]    Script Date: 27-Oct-16 10:48:25 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Update Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecification]
+	@Id bigint,
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Links varchar(1000),
+	@WireFrame varchar(300)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[CustomId] = @CustomId
+		,[TaskId] = @TaskId
+		,[Description] = @Description
+		,[Links] = @Links
+		,[WireFrame] = @WireFrame
+		,[DateUpdated] = GETDATE()
+		,[ParentTaskWorkSpecificationId] = @ParentTaskWorkSpecificationId
+	WHERE Id = @Id
+
+	-- reset status for all, as any change requires 2 level freezing.
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[DateUpdated] = GETDATE()
+		,[AdminStatusUpdated] = NULL
+		,[TechLeadStatusUpdated] = NULL
+		,[AdminUserId] = NULL
+		,[TechLeadUserId] = NULL
+		,[IsAdminInstallUser] = NULL
+		,[IsTechLeadInstallUser] = NULL
+	WHERE [TaskId] = @TaskId
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GetTaskWorkSpecifications]    Script Date: 27-Oct-16 10:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Get all Task specifications related to a task, 
+--				with optional status filter.
+-- =============================================
+-- EXEC GetTaskWorkSpecifications 115, 1
+ALTER PROCEDURE [dbo].[GetTaskWorkSpecifications]
+	@TaskId bigint,
+	@Admin bit,
+	@ParentTaskWorkSpecificationId bigint = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskWorkSpecifications
+	AS
+	(
+		SELECT
+				s.*,
+				ROW_NUMBER() OVER(ORDER BY s.ID ASC) AS RowNumber
+
+		FROM tblTaskWorkSpecifications s
+		WHERE
+			s.TaskId = @TaskId AND 
+			1 = CASE
+					WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+						CASE
+							WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+							ELSE 0
+						END
+					ELSE
+						CASE
+							WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+							ELSE 0
+						END 
+				END AND
+			1 = CASE
+					-- load records with all status for admin users.
+					WHEN @Admin = 1 THEN
+						1
+					-- load only approved records for non-admin users.
+					ELSE
+						CASE
+							WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+							ELSE 0
+						END
+				END
+	)
+
+			
+	-- get records
+	SELECT 
+			TaskWorkSpecifications.*,
+			-- get last custom id
+			(
+				SELECT TOP 1 CustomId
+				FROM tblTaskWorkSpecifications s
+				WHERE
+					s.TaskId = @TaskId AND
+					1 = CASE
+							WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+								CASE
+									WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+									ELSE 0
+								END
+							ELSE
+								CASE
+									WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+									ELSE 0
+								END 
+						END 
+				ORDER By Id DESC
+			) AS LastCustomId,
+			-- get sub task work specifications count
+			(
+				SELECT COUNT(Id) AS SubTaskWorkSpecificationCount
+				FROM tblTaskWorkSpecifications s
+				WHERE
+					s.ParentTaskWorkSpecificationId = TaskWorkSpecifications.Id 
+			) AS SubTaskWorkSpecificationCount
+	FROM TaskWorkSpecifications
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND 
+		1 = CASE
+				WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+						ELSE 0
+					END
+				ELSE
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+						ELSE 0
+					END 
+			END AND
+		1 = CASE
+				-- load records with all status for admin users.
+				WHEN @Admin = 1 THEN
+					1
+				-- load only approved records for non-admin users.
+				ELSE
+					CASE
+						WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+						ELSE 0
+					END
+			END
+END
+GO

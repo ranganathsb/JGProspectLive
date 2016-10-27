@@ -258,11 +258,25 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
+
+            objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+            objucTaskWorkSpecifications.ParentTaskWorkSpecificationId = null;
+            objucTaskWorkSpecifications.InsertTask += objucTaskWorkSpecifications_InsertTask;
         }
 
         #endregion
 
         #region "--Control Events--"
+
+        protected Int32 objucTaskWorkSpecifications_InsertTask()
+        {
+            if (hdnTaskId.Value == "0")
+            {
+                InsertUpdateTask();
+            }
+            return Convert.ToInt32(hdnTaskId.Value);
+        }
 
         protected void ddlUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -2064,6 +2078,8 @@ namespace JG_Prospect.Sr_App
 
         private void FillWorkSpecifications()
         {
+            objucTaskWorkSpecifications.FillWorkSpecifications();
+
             DataTable dtWorkSpecifications = null;
 
             if (controlMode.Value == "0")

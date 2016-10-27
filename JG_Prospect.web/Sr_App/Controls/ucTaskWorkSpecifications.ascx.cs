@@ -15,6 +15,9 @@ namespace JG_Prospect.Sr_App.Controls
 {
     public partial class ucTaskWorkSpecifications : System.Web.UI.UserControl
     {
+        public delegate Int32 OnInsertTask();
+        public OnInsertTask InsertTask;
+
         public Int32 TaskId
         {
             get
@@ -43,12 +46,12 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        public Int64 ParentTaskWorkSpecificationId
+        public Int64? ParentTaskWorkSpecificationId
         {
             get
             {
                 if (ViewState["ParentTaskWorkSpecificationId"] == null)
-                    return 0;
+                    return null;
                 return Convert.ToInt64(ViewState["ParentTaskWorkSpecificationId"]);
             }
             set
@@ -146,16 +149,19 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (lbtnToggleSubWorkSpecification.CommandName == "show-sub-work-specification")
                 {
+                    lbtnAddSubWorkSpecification.Visible = this.IsAdminAndItLeadMode;
+
                     phSubWorkSpecification.Controls.Clear();
                 }
                 else
                 {
-                    ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
-                    objTaskWorkSpecifications.TaskId = this.TaskId;
-                    objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
-                    objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(drWorkSpecification["Id"]);
-                    objTaskWorkSpecifications.FillWorkSpecifications();
-                    phSubWorkSpecification.Controls.Add(objTaskWorkSpecifications);
+                    lbtnAddSubWorkSpecification.Visible = false;
+                    ucTaskWorkSpecifications objucTaskWorkSpecifications = LoadControl("~/Sr_App/Controls/ucTaskWorkSpecifications.ascx") as ucTaskWorkSpecifications;
+                    objucTaskWorkSpecifications.TaskId = this.TaskId;
+                    objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+                    objucTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(drWorkSpecification["Id"]);
+                    objucTaskWorkSpecifications.FillWorkSpecifications();
+                    phSubWorkSpecification.Controls.Add(objucTaskWorkSpecifications);
                 }
             }
         }
@@ -195,34 +201,36 @@ namespace JG_Prospect.Sr_App.Controls
 
                 #endregion
             }
-            else if (e.CommandName == "add-sub-work-specification")
-            {
-                int intItemIndex = Convert.ToInt32(e.CommandArgument);
-                PlaceHolder phSubWorkSpecification = repWorkSpecifications.Items[intItemIndex].FindControl("phSubWorkSpecification") as PlaceHolder;
-                HiddenField hdnId = repWorkSpecifications.Items[intItemIndex].FindControl("hdnId") as HiddenField;
+            //else if (e.CommandName == "add-sub-work-specification")
+            //{
+            //    int intItemIndex = Convert.ToInt32(e.CommandArgument);
+            //    PlaceHolder phSubWorkSpecification = repWorkSpecifications.Items[intItemIndex].FindControl("phSubWorkSpecification") as PlaceHolder;
+            //    HiddenField hdnId = repWorkSpecifications.Items[intItemIndex].FindControl("hdnId") as HiddenField;
 
-                ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
-                objTaskWorkSpecifications.TaskId = this.TaskId;
-                objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
-                objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
-                objTaskWorkSpecifications.FillWorkSpecifications();
-                phSubWorkSpecification.Controls.Add(objTaskWorkSpecifications);
-            }
-            else if (e.CommandName == "show-sub-work-specification")
+            //    ucTaskWorkSpecifications objucTaskWorkSpecifications = LoadControl("~/Sr_App/Controls/ucTaskWorkSpecifications.ascx") as ucTaskWorkSpecifications;
+            //    objucTaskWorkSpecifications.TaskId = this.TaskId;
+            //    objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+            //    objucTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
+            //    objucTaskWorkSpecifications.FillWorkSpecifications();
+            //    phSubWorkSpecification.Controls.Add(objucTaskWorkSpecifications);
+            //}
+            else if (e.CommandName == "add-sub-work-specification" || e.CommandName == "show-sub-work-specification")
             {
                 int intItemIndex = Convert.ToInt32(e.CommandArgument);
                 PlaceHolder phSubWorkSpecification = repWorkSpecifications.Items[intItemIndex].FindControl("phSubWorkSpecification") as PlaceHolder;
                 HiddenField hdnId = repWorkSpecifications.Items[intItemIndex].FindControl("hdnId") as HiddenField;
                 LinkButton lbtnToggleSubWorkSpecification = e.Item.FindControl("lbtnToggleSubWorkSpecification") as LinkButton;
 
-                ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
-                objTaskWorkSpecifications.TaskId = this.TaskId;
-                objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
-                objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
-                objTaskWorkSpecifications.FillWorkSpecifications();
-                phSubWorkSpecification.Controls.Add(objTaskWorkSpecifications);
+                ucTaskWorkSpecifications objucTaskWorkSpecifications = LoadControl("~/Sr_App/Controls/ucTaskWorkSpecifications.ascx") as ucTaskWorkSpecifications;
+                objucTaskWorkSpecifications.TaskId = this.TaskId;
+                objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+                objucTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
+                objucTaskWorkSpecifications.FillWorkSpecifications();
+                phSubWorkSpecification.Controls.Add(objucTaskWorkSpecifications);
 
                 lbtnToggleSubWorkSpecification.CommandName = "hide-sub-work-specification";
+
+                FillWorkSpecifications();
             }
             else if (e.CommandName == "hide-sub-work-specification")
             {
@@ -243,7 +251,59 @@ namespace JG_Prospect.Sr_App.Controls
             FillWorkSpecifications();
         }
 
-        private void FillWorkSpecifications()
+        protected void lbtnInsertWorkSpecification_Click(object sender, EventArgs e)
+        {
+            btnSaveWorkSpecification_Click(sender, e);
+        }
+
+        protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
+        {
+            // only admin can update work specification.
+            // only admin can update disabled "specs in progress" status by freezing the work specifications.
+            if (this.IsAdminAndItLeadMode)
+            {
+                bool blTaskInserted = false;
+                // insert task, if not created yet.
+                if (TaskId == 0)
+                {
+                    blTaskInserted = true;
+                    if (InsertTask != null)
+                    {
+                        TaskId = InsertTask();
+                    }
+                }
+
+                TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                objTaskWorkSpecification.Id = 0;
+                objTaskWorkSpecification.CustomId = ltrlCustomId.Text;
+                objTaskWorkSpecification.TaskId = TaskId;
+                objTaskWorkSpecification.Description = ckeWorkSpecification.Text;
+                objTaskWorkSpecification.Links = string.Empty;
+                objTaskWorkSpecification.WireFrame = string.Empty;
+                // save will revoke freezed status.
+                objTaskWorkSpecification.AdminStatus = false;
+                objTaskWorkSpecification.TechLeadStatus = false;
+
+                SaveWorkSpecification(objTaskWorkSpecification);
+
+                // redirect to task generator page or
+                // hide popup.
+                if (blTaskInserted)
+                {
+                    RedirectToViewTasks();
+                }
+                else
+                {
+                    FillWorkSpecifications();
+
+                    //SetAddEditWorkSpecificationSection(this.TaskWorkSpecificationId);
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Specification updated successfully.");
+                }
+            }
+        }
+
+        public void FillWorkSpecifications()
         {
             string strTaskWorkSpecificationcustomId = string.Empty;
 
@@ -367,6 +427,11 @@ namespace JG_Prospect.Sr_App.Controls
             //SaveTask();
 
             //#endregion
+        }
+
+        private void RedirectToViewTasks()
+        {
+            Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
         }
 
     }

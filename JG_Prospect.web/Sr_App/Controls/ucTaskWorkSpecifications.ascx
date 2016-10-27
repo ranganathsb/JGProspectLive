@@ -35,7 +35,7 @@
                                     <asp:LinkButton ID="lbtnAddSubWorkSpecification" runat="server" ClientIDMode="AutoID" Text="Add Sub Section" 
                                         CommandName="add-sub-work-specification" CommandArgument='<%# Container.ItemIndex %>' />&nbsp;&nbsp;<asp:LinkButton 
                                         ID="lbtnToggleSubWorkSpecification" runat="server" ClientIDMode="AutoID" Text="View Sub Section" 
-                                        CommandName="toggle-sub-work-specification" CommandArgument='<%# Container.ItemIndex %>' />
+                                        CommandName="show-sub-work-specification" CommandArgument='<%# Container.ItemIndex %>' />
                                     <asp:PlaceHolder ID="phSubWorkSpecification" runat="server" />
                                 </div>
                                 <div id="divEditDescription" runat="server">
