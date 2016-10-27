@@ -83,9 +83,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
         }
 
-        public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
-            return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId, intPageIndex, intPageSize);
+            return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId, objTaskFileDestination, intPageIndex, intPageSize);
         }
 
         public DataSet GetTaskUserDetails(Int16 Mode)

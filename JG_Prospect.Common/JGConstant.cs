@@ -123,6 +123,15 @@ namespace JG_Prospect.Common
             Enhancement = 3
         }
 
+        public enum TaskFileDestination
+        {
+            Task = 1,
+            SubTask = 2,
+            WorkSpecification = 3,
+            FinishedWork = 4,
+            TaskNote = 5
+        }
+
         #region '-- Page Name --'
 
         /// <summary>

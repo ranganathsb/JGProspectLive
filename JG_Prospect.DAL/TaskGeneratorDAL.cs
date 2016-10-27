@@ -8,6 +8,7 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 using JG_Prospect.DAL.Database;
 using JG_Prospect.Common.modal;
+using JG_Prospect.Common;
 
 
 namespace JG_Prospect.DAL
@@ -421,7 +422,7 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", SqlDbType.BigInt, Id);
-                    
+
                     int result = database.ExecuteNonQuery(command);
 
 
@@ -463,6 +464,11 @@ namespace JG_Prospect.DAL
                     else
                     {
                         database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, DBNull.Value);
+                    }
+
+                    if (objTaskUser.TaskFileDestination.HasValue)
+                    {
+                        database.AddInParameter(command, "@FileDestination", SqlDbType.TinyInt, Convert.ToByte(objTaskUser.TaskFileDestination.Value));
                     }
 
                     database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, objTaskUser.TaskId);
@@ -544,7 +550,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskUserFiles(Int32 TaskId, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -555,6 +561,11 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    if (objTaskFileDestination.HasValue)
+                    {
+                        database.AddInParameter(command, "@FileDestination", DbType.Int32, Convert.ToByte(objTaskFileDestination.Value));
+                    }
 
                     if (intPageIndex.HasValue)
                     {
@@ -1019,7 +1030,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification,bool blIsAdminDesig)
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdminDesig)
         {
             try
             {
@@ -1042,7 +1053,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
                         database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
                     }
-                    
+
                     return database.ExecuteNonQuery(command);
                 }
             }

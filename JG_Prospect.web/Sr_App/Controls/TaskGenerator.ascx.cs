@@ -660,7 +660,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), null, null);
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value),JGConstant.TaskFileDestination.WorkSpecification, null, null);
                     if (dsTaskUserFiles != null && dsTaskUserFiles.Tables.Count > 0)
                     {
                         foreach (DataRow drFile in dsTaskUserFiles.Tables[0].Rows)

@@ -1108,18 +1108,18 @@ namespace JG_Prospect.Sr_App
         private void DeleteWorkSpecificationFile(string parameter)
         {
             // Seperate DB Id and Filename from parameter.
-            string[]parameters = parameter.Split('|');
+            string[] parameters = parameter.Split('|');
 
             if (parameter.Length > 0)
             {
                 string id = parameters[0];
                 string[] fileNames = parameters[1].Split('@');//Id
 
-                TaskUser taskUserFiles = new TaskUser();                
-                
+                TaskUser taskUserFiles = new TaskUser();
+
                 //Remove file from database
-               bool blnFileDeletedFromDb = TaskGeneratorBLL.Instance.DeleteTaskUserFile(Convert.ToInt64(id));  // save task files
-                
+                bool blnFileDeletedFromDb = TaskGeneratorBLL.Instance.DeleteTaskUserFile(Convert.ToInt64(id));  // save task files
+
                 //if file removed from database, remove from server file system.
                 if (fileNames.Length > 0 && blnFileDeletedFromDb)
                 {
@@ -1139,15 +1139,15 @@ namespace JG_Prospect.Sr_App
             {
                 var originalDirectory = new DirectoryInfo(Server.MapPath("~/TaskAttachments"));
 
-                
+
                 string pathString = System.IO.Path.Combine(originalDirectory.ToString(), filetodelete);
 
                 bool isExists = System.IO.File.Exists(pathString);
 
                 if (isExists)
                     File.Delete(pathString);
-               
-                
+
+
             }
 
 
@@ -1175,7 +1175,7 @@ namespace JG_Prospect.Sr_App
                 {
                     #region '-- Save To Database --'
 
-                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
+                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value, JGConstant.TaskFileDestination.WorkSpecification);
 
                     FillWorkSpecificationAttachments();
                     #endregion
@@ -1566,7 +1566,7 @@ namespace JG_Prospect.Sr_App
             {
                 foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
                 {
-                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
+                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]), JGConstant.TaskFileDestination.Task);
                 }
             }
 
@@ -1578,7 +1578,7 @@ namespace JG_Prospect.Sr_App
                     // save task master details to database.
                     hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
 
-                    UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment);
+                    UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment, JGConstant.TaskFileDestination.SubTask);
                 }
             }
 
@@ -1703,7 +1703,7 @@ namespace JG_Prospect.Sr_App
                     TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
                 }
 
-                UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment);
+                UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment, JGConstant.TaskFileDestination.SubTask);
                 SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
@@ -1852,7 +1852,7 @@ namespace JG_Prospect.Sr_App
                 Int32 TaskUpdateId = SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), isCreatorUser, null, string.Empty);
 
                 // Save task related user's attachment.
-                UploadUserAttachements(TaskUpdateId, null, string.Empty);
+                UploadUserAttachements(TaskUpdateId, null, string.Empty, JGConstant.TaskFileDestination.TaskNote);
 
                 LoadTaskData(hdnTaskId.Value);
 
@@ -1875,7 +1875,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments)
+        private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
@@ -1904,6 +1904,7 @@ namespace JG_Prospect.Sr_App
                     taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                     taskUserFiles.TaskUpdateId = taskUpdateId;
                     taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
+                    taskUserFiles.TaskFileDestination = objTaskFileDestination;
                     TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
                 }
             }
@@ -2074,8 +2075,8 @@ namespace JG_Prospect.Sr_App
             {
                 DataSet dsWorkSpecifications = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications
                                                                             (
-                                                                                Convert.ToInt32(hdnTaskId.Value), 
-                                                                                this.IsAdminAndItLeadMode, 
+                                                                                Convert.ToInt32(hdnTaskId.Value),
+                                                                                this.IsAdminAndItLeadMode,
                                                                                 repWorkSpecificationsPager.PageIndex,
                                                                                 repWorkSpecificationsPager.PageSize
                                                                             );
@@ -2114,7 +2115,7 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value),null, null);
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), JGConstant.TaskFileDestination.WorkSpecification, null, null);
                 if (dsTaskUserFiles != null)
                 {
                     dtTaskUserFiles = dsTaskUserFiles.Tables[0];
