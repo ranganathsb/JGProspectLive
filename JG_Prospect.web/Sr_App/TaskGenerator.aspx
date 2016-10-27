@@ -747,7 +747,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div style="height: 300px; overflow-y: auto; overflow-x: hidden;">
+                                                        <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">
                                                             <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                                                 <ContentTemplate>
 

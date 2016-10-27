@@ -3026,3 +3026,142 @@ BEGIN
 
 END
 GO
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 27 Oct
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+ALTER TABLE tblTaskWorkSpecifications
+ADD ParentTaskWorkSpecificationId BIGINT NULL REFERENCES tblTaskWorkSpecifications
+GO
+
+ALTER TABLE tblTaskUserFiles
+ADD FileDestination TINYINT NULL
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all files of a task.
+-- =============================================
+-- usp_GetTaskUserFiles 115
+ALTER PROCEDURE [dbo].[usp_GetTaskUserFiles] 
+(
+	@TaskId INT,
+	@FileDestination TINYINT = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+)	
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskUserFiles
+	AS
+		(
+		SELECT 
+			tuf.Id,
+			CAST(
+					tuf.[Attachment] + '@' + tuf.[AttachmentOriginal] 
+					AS VARCHAR(MAX)
+				) AS attachment,
+			ISNULL(u.FirstName,iu.FristName) AS FirstName,
+			UpdatedOn,
+			ROW_NUMBER() OVER(ORDER BY tuf.ID ASC) AS RowNumber
+		FROM dbo.tblTaskUserFiles tuf
+				LEFT JOIN tblUsers u ON tuf.UserId = u.Id --AND tuf.UserType = u.Usertype
+				LEFT JOIN tblInstallUsers iu ON tuf.UserId = iu.Id --AND tuf.UserType = u.UserType
+		WHERE 
+			tuf.TaskId = @TaskId AND 
+			tuf.FileDestination = ISNULL(@FileDestination,FileDestination)
+		
+	)
+    
+	-- get records
+	SELECT *
+	FROM TaskUserFiles
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+    Order BY UpdatedOn DESC
+	
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM dbo.tblTaskUserFiles tuf
+			LEFT JOIN tblUsers u ON tuf.UserId = u.Id --AND tuf.UserType = u.Usertype
+			LEFT JOIN tblInstallUsers iu ON tuf.UserId = iu.Id --AND tuf.UserType = u.UserType
+	WHERE 
+		tuf.TaskId = @TaskId AND 
+		tuf.FileDestination = ISNULL(@FileDestination,FileDestination)
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTaskUserFiles]  
+(   
+	@Mode tinyint, -- 0:Insert, 1: Update 2: Delete  
+	@TaskUpDateId bigint= NULL,  
+	@TaskId bigint,  
+	@FileDestination TINYINT = NULL,
+	@UserId int,  
+	@Attachment varchar(MAX),
+	@OriginalFileName varchar(MAX),
+	@UserType BIT  
+) 
+AS  
+BEGIN  
+  
+	IF @Mode=0 
+	BEGIN  
+		INSERT INTO tblTaskUserFiles (TaskId,UserId,Attachment,TaskUpdateID,IsDeleted, AttachmentOriginal, UserType,FileDestination)   
+		VALUES(@TaskId,@UserId,@Attachment,@TaskUpDateId,0, @OriginalFileName, @UserType,@FileDestination)  
+	END  
+	ELSE IF @Mode=1  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			Attachment=@Attachment  
+		WHERE TaskUpdateID = @TaskUpDateId
+	END  
+	ELSE IF @Mode=2 --DELETE  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			IsDeleted =1  
+		WHERE TaskUpdateID = @TaskUpDateId 
+	END  
+  
+END  
+GO
