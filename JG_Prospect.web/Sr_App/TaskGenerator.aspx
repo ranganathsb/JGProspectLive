@@ -144,33 +144,32 @@
                                 <asp:HiddenField ID="controlMode" runat="server" />
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
-                            <td class="valigntop">
-                                <table width="100%">
-                                    <tr>
-                                        <td>
-                                            <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
-                                                ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
-                                        </td>
-                                        <td>
-                                            <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
-                                                ValidationGroup="Submit" OnClick="lbtnShowFinishedWorkFiles_Click" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="valigntop">
-                                            <div class="block-link-container">
-                                                <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
-                                            </div>
-                                            <br />
-                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                            <br />
-                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                                placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                        </td>
-                                        <td class="valigntop"></td>
-                                    </tr>
-                                </table>
+                            <td  style="vertical-align: middle;">
+
+                                <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
+                                    ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
+                                <asp:LinkButton ID="lbtnShowFinishedWorkFiles" runat="server" Text="Finished Work Files"
+                                    ValidationGroup="Submit" OnClick="lbtnShowFinishedWorkFiles_Click" />
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">Staus:
+                                <asp:DropDownList ID="cmbStatus" runat="server" CssClass="textbox" />
+                                &nbsp;&nbsp;Priority:&nbsp;<asp:DropDownList ID="ddlTaskPriority" runat="server" CssClass="textbox" />
+                            </td>
+                            <td>
+                                <div class="block-link-container">
+                                    <asp:Literal ID="ltrlFreezedSpecificationByUserLinkMain" runat="server" />
+                                </div>
+
+                                <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                    placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+
+                                <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                    placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                <asp:TextBox ID="txtUserPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                    placeholder="User Password" AutoPostBack="true" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                             </td>
                         </tr>
                         <tr>
@@ -411,19 +410,7 @@
                                 </fieldset>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="2" align="left">Staus:
-                               
-                               
 
-                               
-
-
-
-                                <asp:DropDownList ID="cmbStatus" runat="server" CssClass="textbox" />
-                                &nbsp;&nbsp;Priority:&nbsp;<asp:DropDownList ID="ddlTaskPriority" runat="server" CssClass="textbox" />
-                            </td>
-                        </tr>
                         <tr>
                             <td colspan="2">
                                 <div class="btn_sec">
@@ -716,18 +703,7 @@
                 <ContentTemplate>
                     <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
-                            <div style="text-align: right; height: 35px; vertical-align: top;">
-                                <asp:Literal ID="ltrlFreezedSpecificationByUserLinkPopup" runat="server" />
-                                <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                    placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                &nbsp;&nbsp;
-                               
-                                <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                    placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
-                                &nbsp;&nbsp;
-                                <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                    placeholder="User Password" AutoPostBack="true" Visible="true" />
-                            </div>
+
                             <div>
                                 <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
@@ -746,9 +722,23 @@
                                                         <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
                                                         </div>
                                                     </td>
+                                                    <td>
+                                                        <div style="text-align: right; vertical-align: top;">
+                                                            <asp:Literal ID="ltrlFreezedSpecificationByUserLinkPopup" runat="server" />
+                                                            <asp:TextBox ID="txtAdminPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                                                placeholder="Admin Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+
+
+                                                            <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                                                placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+
+                                                            <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                                                placeholder="User Password" AutoPostBack="true" Visible="true" />
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
+                                                    <td colspan="2">
                                                         <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">
                                                             <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                                                 <ContentTemplate>
@@ -787,8 +777,8 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <uc1:ucTaskWorkSpecifications id="objucTaskWorkSpecifications" runat="server" />
-                            <table width="100%" cellspacing="0" cellpadding="0" class="table" style="display:none;">
+                            <uc1:ucTaskWorkSpecifications ID="objucTaskWorkSpecifications" runat="server" />
+                            <table width="100%" cellspacing="0" cellpadding="0" class="table" style="display: none;">
                                 <thead>
                                     <tr class="trHeader">
                                         <th>Id</th>
@@ -812,7 +802,7 @@
                                                 </td>
                                                 <td>
                                                     <div id="divViewDescription" runat="server" style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
-                                                        <div style="margin-bottom:10px;">
+                                                        <div style="margin-bottom: 10px;">
                                                             <asp:Literal ID="ltrlDescription" runat="server" />
                                                         </div>
                                                         <asp:LinkButton ID="lbtnAddSubWorkSpecification" runat="server" Text="Add Sub Section" />
@@ -820,9 +810,9 @@
                                                     <div id="divEditDescription" runat="server">
                                                         <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
                                                         <br />
-                                                        <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" ClientIDMode="AutoID" Text="Save" 
+                                                        <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" ClientIDMode="AutoID" Text="Save"
                                                             CommandName="save-work-specification" CommandArgument='<%# Container.ItemIndex %>' />&nbsp;&nbsp;<asp:LinkButton
-                                                            ID="lbtnCancelEditing" runat="server" ClientIDMode="AutoID" Text="Cancel" CommandName="cancel-edit-work-specification" />
+                                                                ID="lbtnCancelEditing" runat="server" ClientIDMode="AutoID" Text="Cancel" CommandName="cancel-edit-work-specification" />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -839,7 +829,7 @@
                                         <td>
                                             <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="true" />
                                             <br />
-                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false" 
+                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false"
                                                 OnClick="lbtnInsertWorkSpecification_Click" />
                                         </td>
                                     </tr>
@@ -1318,12 +1308,12 @@
         // check if user has selected any designations or not.
         function checkDesignations(oSrc, args) {
             args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
-}
+        }
 
-function copytoListID(sender) {
-    var strListID = $.trim($(sender).text());
-    if (strListID.length > 0) {
-        $('#<%= txtTaskListID.ClientID %>').val(strListID);
+        function copytoListID(sender) {
+            var strListID = $.trim($(sender).text());
+            if (strListID.length > 0) {
+                $('#<%= txtTaskListID.ClientID %>').val(strListID);
             }
         }
 
@@ -1402,20 +1392,20 @@ function copytoListID(sender) {
                     thumbnailWidth: 90,
                     thumbnailHeight: 90,
                     previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            alert('you are reached maximum attachment upload limit.');
-                        });
+            init: function () {
+                this.on("maxfilesexceeded", function (data) {
+                    alert('you are reached maximum attachment upload limit.');
+                });
 
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                this.on("success", function (file, response) {
+                    var filename = response.split("^");
+                    $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                    AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
                         });
                     }
-                });
+        });
             }
         }
 

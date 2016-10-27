@@ -184,6 +184,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
         
         /// <summary>
+        /// cmbStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbStatus;
+        
+        /// <summary>
+        /// ddlTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTaskPriority;
+        
+        /// <summary>
         /// ltrlFreezedSpecificationByUserLinkMain control.
         /// </summary>
         /// <remarks>
@@ -209,6 +227,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
+        
+        /// <summary>
+        /// txtUserPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtUserPasswordToFreezeSpecificationMain;
         
         /// <summary>
         /// txtDescription control.
@@ -472,24 +499,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnSaveSubTask;
         
         /// <summary>
-        /// cmbStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cmbStatus;
-        
-        /// <summary>
-        /// ddlTaskPriority control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTaskPriority;
-        
-        /// <summary>
         /// btnSaveTask control.
         /// </summary>
         /// <remarks>
@@ -742,6 +751,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
         
         /// <summary>
+        /// upWorkSpecificationAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
+        
+        /// <summary>
         /// ltrlFreezedSpecificationByUserLinkPopup control.
         /// </summary>
         /// <remarks>
@@ -776,15 +794,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUserPasswordToFreezeSpecificationPopup;
-        
-        /// <summary>
-        /// upWorkSpecificationAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
         
         /// <summary>
         /// upnlAttachments control.
