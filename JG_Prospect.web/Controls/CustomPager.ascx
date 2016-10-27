@@ -5,6 +5,6 @@
         <asp:LinkButton ID="lnkPage" runat="server" CssClass='<%# Convert.ToBoolean(Eval("Enabled")) ? "page_enabled" : "page_disabled" %>'
             Text='<%#Eval("Text") %>' CommandArgument='<%# Eval("Value") %>'
             OnClientClick='<%# !Convert.ToBoolean(Eval("Enabled")) ? "return false;" : "" %>'
-            OnClick="Page_Changed" ClientIDMode="AutoID" style="margin:5px;" />
+            OnClick="Page_Changed" ClientIDMode="AutoID" Style="margin: 5px;" />
     </ItemTemplate>
 </asp:Repeater>
