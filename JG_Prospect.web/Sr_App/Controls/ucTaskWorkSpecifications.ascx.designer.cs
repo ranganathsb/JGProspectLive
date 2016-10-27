@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App.Controls {
     
     
-    public partial class TaskWorkSpecifications {
+    public partial class ucTaskWorkSpecifications {
         
         /// <summary>
         /// upWorkSpecifications control.

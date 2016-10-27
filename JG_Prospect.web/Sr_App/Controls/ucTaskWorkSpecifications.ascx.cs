@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.Sr_App.Controls
 {
-    public partial class TaskWorkSpecifications : System.Web.UI.UserControl
+    public partial class ucTaskWorkSpecifications : System.Web.UI.UserControl
     {
         public Int32 TaskId
         {
@@ -150,7 +150,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 else
                 {
-                    TaskWorkSpecifications objTaskWorkSpecifications = new TaskWorkSpecifications();
+                    ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
                     objTaskWorkSpecifications.TaskId = this.TaskId;
                     objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
                     objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(drWorkSpecification["Id"]);
@@ -201,7 +201,7 @@ namespace JG_Prospect.Sr_App.Controls
                 PlaceHolder phSubWorkSpecification = repWorkSpecifications.Items[intItemIndex].FindControl("phSubWorkSpecification") as PlaceHolder;
                 HiddenField hdnId = repWorkSpecifications.Items[intItemIndex].FindControl("hdnId") as HiddenField;
 
-                TaskWorkSpecifications objTaskWorkSpecifications = new TaskWorkSpecifications();
+                ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
                 objTaskWorkSpecifications.TaskId = this.TaskId;
                 objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
                 objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
@@ -215,7 +215,7 @@ namespace JG_Prospect.Sr_App.Controls
                 HiddenField hdnId = repWorkSpecifications.Items[intItemIndex].FindControl("hdnId") as HiddenField;
                 LinkButton lbtnToggleSubWorkSpecification = e.Item.FindControl("lbtnToggleSubWorkSpecification") as LinkButton;
 
-                TaskWorkSpecifications objTaskWorkSpecifications = new TaskWorkSpecifications();
+                ucTaskWorkSpecifications objTaskWorkSpecifications = new ucTaskWorkSpecifications();
                 objTaskWorkSpecifications.TaskId = this.TaskId;
                 objTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
                 objTaskWorkSpecifications.ParentTaskWorkSpecificationId = Convert.ToInt64(hdnId.Value);
