@@ -230,7 +230,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 lbtnToggleSubWorkSpecification.CommandName = "hide-sub-work-specification";
 
-                FillWorkSpecifications();
+                //FillWorkSpecifications();
             }
             else if (e.CommandName == "hide-sub-work-specification")
             {
