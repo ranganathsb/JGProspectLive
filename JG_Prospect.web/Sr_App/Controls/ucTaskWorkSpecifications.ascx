@@ -77,7 +77,7 @@
 <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0">
 </div>
 
-<div data-id="WorkSpecificationSectionTemplate" class="hide">
+<script data-id="tmpWorkSpecificationSection" type="text/template" class="hide">
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="0" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
@@ -106,32 +106,33 @@
             </tr>
         </tfoot>
     </table>
-</div>
+</script>
+<script data-id="tmpWorkSpecificationRow" type="text/template" class="hide">
+    <tr data-work-specification-id="0">
+        <td valign="top">
+            <small>
+                <label data-id="lblCustomId" />
+            </small>
+        </td>
+        <td>
+            <div style="margin-bottom: 10px;">
+                <textarea data-id="txtWorkSpecification" rows="4" style="width: 95%;"></textarea>
+                <br />
+                <button data-id="btnSave" data-work-specification-id="0" onclick="javascript:return OnSaveClick(this);">Save</button>&nbsp;
+                <button data-id="btnAddSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;
+                <button data-id="btnViewSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;
+                <button data-id="btnHideSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>
+            </div>
+            <br />
+            <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0"></div>
+        </td>
+    </tr>
+</script>
 
 <script type="text/javascript">
 
-    var strWorkSpecificationSectionTemplate = $('div[data-id="WorkSpecificationSectionTemplate"]').html().toString();
-    //var strWorkSpecificationRowTemplate = $('div[data-id="WorkSpecificationRowTemplate"]').html().toString();
-    var strWorkSpecificationRowTemplate =
-    '    <tr data-work-specification-id="0">'+
-    '        <td valign="top">'+
-    '            <small>'+
-    '                <label data-id="lblCustomId" />'+
-    '            </small>'+
-    '        </td>'+
-    '        <td>'+
-    '            <div style="margin-bottom: 10px;">'+
-    '                <textarea data-id="txtWorkSpecification" rows="4" style="width: 95%;"></textarea>'+
-    '                <br />'+
-    '                <button data-id="btnSave" data-work-specification-id="0" onclick="javascript:return OnSaveClick(this);">Save</button>&nbsp;'+
-    '                <button data-id="btnAddSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;'+
-    '                <button data-id="btnViewSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;'+
-    '                <button data-id="btnHideSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>'+
-    '            </div>'+
-    '            <br />'+
-    '            <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0"></div>'+
-    '        </td>'+
-    '    </tr>';
+    var strWorkSpecificationSectionTemplate = $('script[data-id="tmpWorkSpecificationSection"]').html().toString();
+    var strWorkSpecificationRowTemplate = $('script[data-id="tmpWorkSpecificationRow"]').html().toString();
 
     var TaskId = <%=this.TaskId%>;
     var blIsAdmin= <%=this.IsAdminAndItLeadMode.ToString().ToLower()%>;
