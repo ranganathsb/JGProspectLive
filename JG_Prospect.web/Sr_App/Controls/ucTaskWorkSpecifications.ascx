@@ -95,9 +95,9 @@
                     </small>
                 </td>
                 <td>
-                    <textarea data-id="txtWorkSpecification" rows="4" style="width: 90%;"></textarea>
+                    <textarea data-id="txtWorkSpecification" rows="4" style="width: 95%;"></textarea>
                     <br />
-                    <a data-id="Add" href="javascript:void(0);">Add</a>
+                    <button data-id="btnAddWorkSpecification" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
             </tr>
             <tr class="pager">
@@ -113,7 +113,7 @@
     var strWorkSpecificationSectionTemplate = $('div[data-id="WorkSpecificationSectionTemplate"]').html().toString();
     //var strWorkSpecificationRowTemplate = $('div[data-id="WorkSpecificationRowTemplate"]').html().toString();
     var strWorkSpecificationRowTemplate =
-    '    <tr>'+
+    '    <tr data-work-specification-id="0">'+
     '        <td valign="top">'+
     '            <small>'+
     '                <label data-id="lblCustomId" />'+
@@ -123,11 +123,11 @@
     '            <div style="margin-bottom: 10px;">'+
     '                <textarea data-id="txtWorkSpecification" rows="4" style="width: 95%;"></textarea>'+
     '                <br />'+
-    '                <button data-id="btnSave" data-work-specification-id="0" onclick="javascript:return OnAddSaveClick(this);">Save</button>&nbsp;'+
+    '                <button data-id="btnSave" data-work-specification-id="0" onclick="javascript:return OnSaveClick(this);">Save</button>&nbsp;'+
     '            </div>'+
-    '            <button data-id="btnAddSubSection" data-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;'+
-    '            <button data-id="btnViewSubSection" data-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;'+
-    '            <button data-id="btnHideSubSection" data-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>'+
+    '            <button data-id="btnAddSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;'+
+    '            <button data-id="btnViewSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;'+
+    '            <button data-id="btnHideSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>'+
     '            <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0"></div>'+
     '        </td>'+
     '    </tr>';
@@ -154,22 +154,30 @@
         var $WorkSpecificationSectionTemplate = $(strWorkSpecificationSectionTemplate);
         
         $WorkSpecificationSectionTemplate.attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+        $WorkSpecificationSectionTemplate.find('button[data-id="btnAddWorkSpecification"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
 
         for (var i = 0; i < arrData.length; i++) {
             var $WorkSpecificationRowTemplate = $(strWorkSpecificationRowTemplate);
             if(i%2==0){
-                $WorkSpecificationRowTemplate.find('tr').addClass('AlternateRow');
+                $WorkSpecificationRowTemplate.addClass('AlternateRow');
             }
             else {
-                $WorkSpecificationRowTemplate.find('tr').addClass('FirstRow');
+                $WorkSpecificationRowTemplate.addClass('FirstRow');
             }
+
+            $WorkSpecificationRowTemplate.attr('data-work-specification-id', arrData[i].Id);
             $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId"]').html(arrData[i].CustomId);
             $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification"]').html(arrData[i].Description);
             $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-work-specification-id', arrData[i].Id);
+            $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
 
             $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-work-specification-id', arrData[i].Id);
             $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-work-specification-id', arrData[i].Id);
             $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-work-specification-id', arrData[i].Id);
+            $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+            $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+            $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+
             $WorkSpecificationRowTemplate.find('div[data-id="WorkSpecificationPlaceholder"]').attr('data-parent-work-specification-id', arrData[i].Id);
 
             $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
@@ -203,7 +211,69 @@
         );
     }
     
-    function OnAddSaveClick(sender) { 
+    function OnAddClick(sender) { 
+
+        var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
+        var strCustomId = $table.find('tfoot').find('label[data-id="lblCustomId"]').text();
+        var strDescription = $table.find('tfoot').find('textarea[data-id="txtWorkSpecification"]').text();
+        var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
+
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/SaveTaskWorkSpecification',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data: '{ intId:' + 0 + ', strCustomId: "' + strCustomId + '", strDescription: "' + strDescription + '", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentTaskWorkSpecificationId + ' }',
+                asynch: false,
+                success: function (data) {
+                    console.log(data.d);
+                    console.log(intParentWorkSpecificationId);
+                    if(typeof(callback)==="function"){
+                        //callback(data.d,intParentWorkSpecificationId);
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a);
+                }
+            }
+        );
+
+        return false;
+    }
+
+    function OnSaveClick(sender) {
+    
+        var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
+        var $tr = $('tr[data-work-specification-id="'+$(sender).attr('data-work-specification-id')+'"]');
+        var strCustomId = $tr.find('label[data-id="lblCustomId"]').text();
+        var strDescription = $tr.find('textarea[data-id="txtWorkSpecification"]').text();
+        var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
+        var intTaskWorkSpecificationId = parseInt($tr.attr('data-work-specification-id'));
+
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/SaveTaskWorkSpecification',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data: '{ intId:' + intTaskWorkSpecificationId + ', strCustomId: "' + strCustomId + '", strDescription: "' + strDescription + '", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentTaskWorkSpecificationId + ' }',
+                asynch: false,
+                success: function (data) {
+                    console.log(data.d);
+                    console.log(intParentWorkSpecificationId);
+                    if(typeof(callback)==="function"){
+                        //callback(data.d,intParentWorkSpecificationId);
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a);
+                }
+            }
+        );
+
         return false;
     }
 

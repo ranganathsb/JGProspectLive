@@ -59,7 +59,44 @@ namespace JG_Prospect.WebServices
 
             return arrTaskWorkSpecification;
         }
-    
-    
+
+        [WebMethod]
+        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId)
+        {
+            bool blSuccess = true;
+
+            if (intTaskId > 0)
+            {
+                TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                objTaskWorkSpecification.Id = intId;
+                objTaskWorkSpecification.CustomId = strCustomId;
+                objTaskWorkSpecification.TaskId = intTaskId;
+                objTaskWorkSpecification.Description = strDescription;
+                objTaskWorkSpecification.Links = string.Empty;
+                objTaskWorkSpecification.WireFrame = string.Empty;
+                // save will revoke freezed status.
+                objTaskWorkSpecification.AdminStatus = false;
+                objTaskWorkSpecification.TechLeadStatus = false;
+
+                if (intParentTaskWorkSpecificationId > 0)
+                {
+                    objTaskWorkSpecification.ParentTaskWorkSpecificationId = intParentTaskWorkSpecificationId;
+                }
+
+                if (objTaskWorkSpecification.Id == 0)
+                {
+                    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                }
+            }
+            else
+            {
+                blSuccess = false;
+            }
+            return blSuccess;
+        }
     }
 }
