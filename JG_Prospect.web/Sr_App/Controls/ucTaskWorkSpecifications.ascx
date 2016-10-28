@@ -215,7 +215,7 @@
 
         var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
         var strCustomId = $table.find('tfoot').find('label[data-id="lblCustomId"]').text();
-        var strDescription = $table.find('tfoot').find('textarea[data-id="txtWorkSpecification"]').text();
+        var strDescription = $table.find('tfoot').find('textarea[data-id="txtWorkSpecification"]').val();
         var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
 
         $.ajax
@@ -229,7 +229,7 @@
                 asynch: false,
                 success: function (data) {
                     console.log(data.d);
-                    console.log(intParentWorkSpecificationId);
+                    //console.log(intParentWorkSpecificationId);
                     if(typeof(callback)==="function"){
                         //callback(data.d,intParentWorkSpecificationId);
                     }
@@ -248,7 +248,7 @@
         var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
         var $tr = $('tr[data-work-specification-id="'+$(sender).attr('data-work-specification-id')+'"]');
         var strCustomId = $tr.find('label[data-id="lblCustomId"]').text();
-        var strDescription = $tr.find('textarea[data-id="txtWorkSpecification"]').text();
+        var strDescription = $tr.find('textarea[data-id="txtWorkSpecification"]').val();
         var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
         var intTaskWorkSpecificationId = parseInt($tr.attr('data-work-specification-id'));
 
@@ -263,7 +263,7 @@
                 asynch: false,
                 success: function (data) {
                     console.log(data.d);
-                    console.log(intParentWorkSpecificationId);
+                    //console.log(intParentWorkSpecificationId);
                     if(typeof(callback)==="function"){
                         //callback(data.d,intParentWorkSpecificationId);
                     }
