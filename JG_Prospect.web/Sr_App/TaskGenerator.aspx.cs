@@ -738,7 +738,7 @@ namespace JG_Prospect.Sr_App
                                                     this.GetType(),
                                                     "ShowPopup",
                                                     string.Format(
-                                                                    "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                                    "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
                                                                     divWorkSpecificationSection.ClientID,
                                                                     divFinishedWorkFiles.ClientID
                                                                 ),
@@ -777,7 +777,7 @@ namespace JG_Prospect.Sr_App
                                                     this.GetType(),
                                                     "ShowPopup",
                                                     string.Format(
-                                                                    "ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                                    "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
                                                                     divFinishedWorkFiles.ClientID,
                                                                     divWorkSpecificationSection.ClientID
                                                                 ),
