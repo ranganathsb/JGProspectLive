@@ -223,7 +223,7 @@
                             AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
                             ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
                             EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView" 
-                            CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames"
+                            CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
                             TimelineView-ReadOnly="true" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
                             <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
@@ -233,7 +233,7 @@
                                 <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
                                 <asp:LinkButton ID="lnkEmail" Visible="false" runat="server" Text='<%#Eval("Email") %>'></asp:LinkButton>
-                                <%#Eval("LastName") %>, <%#Eval("Designation") %>, <%#Eval("AssignedUserFristNames") %>
+                                <%#Eval("LastName") %>, <%#Eval("Designation") %>, <%#Eval("AssignedUserFristNames") %> ,
                                 <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server">
                                     <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
                                     <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
@@ -246,6 +246,9 @@
                                 </asp:DropDownList>
 
                                 <asp:LinkButton ID="lbtnReSchedule" runat="server" OnCommand="lbtnReSchedule_Click" Text='Re-Schedule' CommandArgument='<%#Eval("ApplicantId") +","+ Eval("Designation")%> ' ></asp:LinkButton>
+                                /&nbsp;
+                                <a target="_blank" href="/Sr_App/TaskGenerator.aspx?TaskId=<%#Eval("TaskId")%>"><%#Eval("InstallId")%></a>                                
+                                
                             </AppointmentTemplate>
                         </telerik:RadScheduler>
                         <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
