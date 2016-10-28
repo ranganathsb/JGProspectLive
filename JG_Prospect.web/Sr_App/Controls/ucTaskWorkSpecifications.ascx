@@ -144,43 +144,59 @@
     function Initialize_WorkSpecifications() {
         console.log('Initialize_WorkSpecifications');
         
-        var intParentWorkSpecificationId = 0;
+        var intParentTaskWorkSpecificationId = 0;
 
-        GetWorkSpecifications(intParentWorkSpecificationId, OnWorkSpecificationsResponseReceived);
+        GetWorkSpecifications(intParentTaskWorkSpecificationId, OnWorkSpecificationsResponseReceived);
     }
 
-    function OnWorkSpecificationsResponseReceived(arrData,intParentWorkSpecificationId){
-    
+    function OnWorkSpecificationsResponseReceived(result,intParentWorkSpecificationId){
+
         var $WorkSpecificationSectionTemplate = $(strWorkSpecificationSectionTemplate);
         
         $WorkSpecificationSectionTemplate.attr('data-parent-work-specification-id', intParentWorkSpecificationId);
         $WorkSpecificationSectionTemplate.find('button[data-id="btnAddWorkSpecification"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+        $WorkSpecificationSectionTemplate.find('tfoot').find('label[data-id="lblCustomId"]').html(result.NextCustomId);
 
-        for (var i = 0; i < arrData.length; i++) {
-            var $WorkSpecificationRowTemplate = $(strWorkSpecificationRowTemplate);
-            if(i%2==0){
-                $WorkSpecificationRowTemplate.addClass('AlternateRow');
+        if(result.TotalRecordCount > 0) {
+
+            var arrData = result.Records;
+
+            for (var i = 0; i < arrData.length; i++) {
+                var $WorkSpecificationRowTemplate = $(strWorkSpecificationRowTemplate);
+
+                if(i % 2 == 0) {
+                    $WorkSpecificationRowTemplate.addClass('AlternateRow');
+                }
+                else {
+                    $WorkSpecificationRowTemplate.addClass('FirstRow');
+                }
+
+                $WorkSpecificationRowTemplate.attr('data-work-specification-id', arrData[i].Id);
+                $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId"]').html(arrData[i].CustomId);
+                $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification"]').html(arrData[i].Description);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-work-specification-id', arrData[i].Id);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+
+                $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-work-specification-id', arrData[i].Id);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-work-specification-id', arrData[i].Id);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-work-specification-id', arrData[i].Id);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+                $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
+
+                $WorkSpecificationRowTemplate.find('div[data-id="WorkSpecificationPlaceholder"]').attr('data-parent-work-specification-id', arrData[i].Id);
+
+                $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').hide();
+
+                if(arrData[i].TaskWorkSpecificationsCount == 0) {
+                    $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').hide();
+                }
+                else {
+                    $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').hide();
+                }
+
+                $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
             }
-            else {
-                $WorkSpecificationRowTemplate.addClass('FirstRow');
-            }
-
-            $WorkSpecificationRowTemplate.attr('data-work-specification-id', arrData[i].Id);
-            $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId"]').html(arrData[i].CustomId);
-            $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification"]').html(arrData[i].Description);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-work-specification-id', arrData[i].Id);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnSave"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
-
-            $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-work-specification-id', arrData[i].Id);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-work-specification-id', arrData[i].Id);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-work-specification-id', arrData[i].Id);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
-            $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection"]').attr('data-parent-work-specification-id', intParentWorkSpecificationId);
-
-            $WorkSpecificationRowTemplate.find('div[data-id="WorkSpecificationPlaceholder"]').attr('data-parent-work-specification-id', arrData[i].Id);
-
-            $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
         }
 
         $('div[data-parent-work-specification-id="'+intParentWorkSpecificationId+'"]').append($WorkSpecificationSectionTemplate);
@@ -214,8 +230,8 @@
     function OnAddClick(sender) { 
 
         var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
-        var strCustomId = $table.find('tfoot').find('label[data-id="lblCustomId"]').text();
-        var strDescription = $table.find('tfoot').find('textarea[data-id="txtWorkSpecification"]').val();
+        var strCustomId = $.trim($table.find('tfoot').find('label[data-id="lblCustomId"]').text());
+        var strDescription = $.trim($table.find('tfoot').find('textarea[data-id="txtWorkSpecification"]').val());
         var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
 
         $.ajax
@@ -229,7 +245,11 @@
                 asynch: false,
                 success: function (data) {
                     console.log(data.d);
-                    //console.log(intParentWorkSpecificationId);
+                    if(data.d) {
+                        $table.remove();
+                        GetWorkSpecifications(intParentTaskWorkSpecificationId, OnWorkSpecificationsResponseReceived);
+                        alert('Specification updated successfully.');
+                    }
                     if(typeof(callback)==="function"){
                         //callback(data.d,intParentWorkSpecificationId);
                     }
@@ -247,8 +267,8 @@
     
         var $table = $('table[data-parent-work-specification-id="'+$(sender).attr('data-parent-work-specification-id')+'"]');
         var $tr = $('tr[data-work-specification-id="'+$(sender).attr('data-work-specification-id')+'"]');
-        var strCustomId = $tr.find('label[data-id="lblCustomId"]').text();
-        var strDescription = $tr.find('textarea[data-id="txtWorkSpecification"]').val();
+        var strCustomId = $.trim($tr.find('label[data-id="lblCustomId"]').text());
+        var strDescription = $.trim($tr.find('textarea[data-id="txtWorkSpecification"]').val());
         var intParentTaskWorkSpecificationId = parseInt($table.attr('data-parent-work-specification-id'));
         var intTaskWorkSpecificationId = parseInt($tr.attr('data-work-specification-id'));
 
@@ -263,7 +283,9 @@
                 asynch: false,
                 success: function (data) {
                     console.log(data.d);
-                    //console.log(intParentWorkSpecificationId);
+                    if(data.d) {
+                        alert('Specification updated successfully.');
+                    }
                     if(typeof(callback)==="function"){
                         //callback(data.d,intParentWorkSpecificationId);
                     }
@@ -290,6 +312,8 @@
 
         GetWorkSpecifications(parseInt($sender.attr('data-work-specification-id')), OnWorkSpecificationsResponseReceived);
 
+        $sender.hide();
+
         return false;
     }
 
@@ -297,6 +321,10 @@
         $sender = $(sender);
 
         $('table[data-parent-work-specification-id="' + $sender.attr('data-work-specification-id') + '"]').remove();
+
+        $('button[data-id="btnViewSubSection",data-work-specification-id="' + $sender.attr('data-work-specification-id') + '"]').show();
+
+        $sender.hide();
 
         return false;
     }

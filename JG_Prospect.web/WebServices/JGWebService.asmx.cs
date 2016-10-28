@@ -21,7 +21,7 @@ namespace JG_Prospect.WebServices
     {
 
         [WebMethod]
-        public TaskWorkSpecification[] GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64 intParentTaskWorkSpecificationId)
+        public object GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64 intParentTaskWorkSpecificationId)
         {
             List<string> strTableData = new List<string>();
 
@@ -37,6 +37,9 @@ namespace JG_Prospect.WebServices
             }
 
             TaskWorkSpecification[] arrTaskWorkSpecification = null;
+
+            string strLastCustomId = "";
+            int intTotalRecordCount = 0;
 
             if (ds.Tables.Count > 0)
             {
@@ -54,10 +57,21 @@ namespace JG_Prospect.WebServices
                     {
                         arrTaskWorkSpecification[i].ParentTaskWorkSpecificationId = Convert.ToInt64(dr["ParentTaskWorkSpecificationId"]);
                     }
+                    arrTaskWorkSpecification[i].TaskWorkSpecificationsCount = Convert.ToInt32(dr["SubTaskWorkSpecificationCount"]);
+
+                    strLastCustomId = Convert.ToString(dr["LastCustomId"]);
                 }
+                intTotalRecordCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecordCount"]);
             }
 
-            return arrTaskWorkSpecification;
+            var result = new 
+            { 
+                NextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence(strLastCustomId),
+                TotalRecordCount = intTotalRecordCount,
+                Records = arrTaskWorkSpecification
+            };
+
+            return result;
         }
 
         [WebMethod]

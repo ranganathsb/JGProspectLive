@@ -16,6 +16,8 @@ namespace JG_Prospect.Common.modal
 
         public List<TaskWorkSpecification> TaskWorkSpecifications;
 
+        public int TaskWorkSpecificationsCount { get; set; }
+
         public long Id { get; set; }
         public long? ParentTaskWorkSpecificationId { get; set; }
         public string CustomId { get; set; }
