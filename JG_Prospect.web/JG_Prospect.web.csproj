@@ -1514,6 +1514,7 @@
     </Content>
     <Content Include="WebForm1.aspx" />
     <Content Include="ProspectReport.aspx" />
+    <Content Include="WebServices\JGWebService.asmx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation.aspx.cs">
@@ -1529,6 +1530,10 @@
     </Compile>
     <Compile Include="AddResourcesJr.aspx.designer.cs">
       <DependentUpon>AddResourcesJr.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebServices\JGWebService.asmx.cs">
+      <DependentUpon>JGWebService.asmx</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Content Include="App_Code\DropDownListAdapter.cs" />
     <Compile Include="App_Code\CommonFunction.cs" />
@@ -2070,6 +2075,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
