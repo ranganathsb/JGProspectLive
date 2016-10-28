@@ -124,10 +124,11 @@
     '                <textarea data-id="txtWorkSpecification" rows="4" style="width: 95%;"></textarea>'+
     '                <br />'+
     '                <button data-id="btnSave" data-work-specification-id="0" onclick="javascript:return OnSaveClick(this);">Save</button>&nbsp;'+
+    '                <button data-id="btnAddSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;'+
+    '                <button data-id="btnViewSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;'+
+    '                <button data-id="btnHideSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>'+
     '            </div>'+
-    '            <button data-id="btnAddSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;'+
-    '            <button data-id="btnViewSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;'+
-    '            <button data-id="btnHideSubSection" data-work-specification-id="0" data-parent-work-specification-id="0" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>'+
+    '            <br />'+
     '            <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0"></div>'+
     '        </td>'+
     '    </tr>';
