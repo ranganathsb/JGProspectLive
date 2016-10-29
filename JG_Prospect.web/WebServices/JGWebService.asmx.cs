@@ -38,10 +38,11 @@ namespace JG_Prospect.WebServices
 
             TaskWorkSpecification[] arrTaskWorkSpecification = null;
 
+            string strFirstParentCustomId = "";
             string strLastCustomId = "";
             int intTotalRecordCount = 0;
 
-            if (ds.Tables.Count > 0)
+            if (ds.Tables.Count == 4)
             {
                 arrTaskWorkSpecification = new TaskWorkSpecification[ds.Tables[0].Rows.Count];
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -58,15 +59,40 @@ namespace JG_Prospect.WebServices
                         arrTaskWorkSpecification[i].ParentTaskWorkSpecificationId = Convert.ToInt64(dr["ParentTaskWorkSpecificationId"]);
                     }
                     arrTaskWorkSpecification[i].TaskWorkSpecificationsCount = Convert.ToInt32(dr["SubTaskWorkSpecificationCount"]);
-
-                    strLastCustomId = Convert.ToString(dr["LastCustomId"]);
                 }
+
                 intTotalRecordCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecordCount"]);
+
+                if (ds.Tables[2].Rows.Count > 0)
+                {
+                    strFirstParentCustomId = Convert.ToString(ds.Tables[2].Rows[0]["FirstParentCustomId"]);
+                }
+                if (ds.Tables[3].Rows.Count > 0)
+                {
+                    strLastCustomId = Convert.ToString(ds.Tables[3].Rows[0]["LastChildCustomId"]);
+                }
             }
 
-            var result = new 
-            { 
-                NextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence(strLastCustomId),
+            string strNextCustomId = string.Empty;
+
+            if (string.IsNullOrEmpty(strFirstParentCustomId))
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('A', strLastCustomId);
+            }
+            // parent list has roman numbering.
+            else if (strFirstParentCustomId.Equals("i") || strFirstParentCustomId.Equals("I"))
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('a', strLastCustomId);
+            }
+            // parent list has alphabetical numbering.
+            else
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('I', strLastCustomId, true);
+            }
+
+            var result = new
+            {
+                NextCustomId = strNextCustomId,
                 TotalRecordCount = intTotalRecordCount,
                 Records = arrTaskWorkSpecification
             };

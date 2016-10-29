@@ -3301,7 +3301,7 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[GetTaskWorkSpecifications]    Script Date: 27-Oct-16 10:51:46 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetTaskWorkSpecifications]    Script Date: 29-Oct-16 6:58:31 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3312,7 +3312,7 @@ GO
 -- Description:	Get all Task specifications related to a task, 
 --				with optional status filter.
 -- =============================================
--- EXEC GetTaskWorkSpecifications 115, 1
+-- EXEC GetTaskWorkSpecifications 115, 1,NULL
 ALTER PROCEDURE [dbo].[GetTaskWorkSpecifications]
 	@TaskId bigint,
 	@Admin bit,
@@ -3345,7 +3345,6 @@ BEGIN
 		SELECT
 				s.*,
 				ROW_NUMBER() OVER(ORDER BY s.ID ASC) AS RowNumber
-
 		FROM tblTaskWorkSpecifications s
 		WHERE
 			s.TaskId = @TaskId AND 
@@ -3373,31 +3372,10 @@ BEGIN
 						END
 				END
 	)
-
-			
+		
 	-- get records
 	SELECT 
 			TaskWorkSpecifications.*,
-			-- get last custom id
-			(
-				SELECT TOP 1 CustomId
-				FROM tblTaskWorkSpecifications s
-				WHERE
-					s.TaskId = @TaskId AND
-					1 = CASE
-							WHEN @ParentTaskWorkSpecificationId IS NULL THEN
-								CASE
-									WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
-									ELSE 0
-								END
-							ELSE
-								CASE
-									WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
-									ELSE 0
-								END 
-						END 
-				ORDER By Id DESC
-			) AS LastCustomId,
 			-- get sub task work specifications count
 			(
 				SELECT COUNT(Id) AS SubTaskWorkSpecificationCount
@@ -3441,5 +3419,42 @@ BEGIN
 						ELSE 0
 					END
 			END
+
+
+	DECLARE @Temp BIGINT 
+
+	SELECT TOP 1 @Temp = ParentTaskWorkSpecificationId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND Id= @ParentTaskWorkSpecificationId
+
+	-- get first custom id for parent list
+	SELECT TOP 1 CustomId AS FirstParentCustomId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND 
+		(
+			(@Temp IS NULL AND s.ParentTaskWorkSpecificationId IS NULL) OR
+			s.ParentTaskWorkSpecificationId = @Temp
+		)
+
+	-- get last custom id for current list
+	SELECT TOP 1 CustomId AS LastChildCustomId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND
+		1 = CASE
+				WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+						ELSE 0
+					END
+				ELSE
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+						ELSE 0
+					END 
+			END 
+	ORDER By Id DESC
 END
 GO

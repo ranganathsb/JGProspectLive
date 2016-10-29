@@ -2085,14 +2085,14 @@ namespace JG_Prospect.Sr_App
                                                                                 repWorkSpecificationsPager.PageSize
                                                                             );
 
-                if (dsWorkSpecifications != null)
+                if (dsWorkSpecifications != null && dsWorkSpecifications.Tables.Count == 4)
                 {
                     dtWorkSpecifications = dsWorkSpecifications.Tables[0];
                     intTaskUserFilesCount = Convert.ToInt32(dsWorkSpecifications.Tables[1].Rows[0]["TotalRecordCount"]);
 
-                    if (dtWorkSpecifications.Rows.Count > 0)
+                    if (dsWorkSpecifications.Tables[3].Rows.Count > 0)
                     {
-                        this.TaskWorkSpecificationSequence = dtWorkSpecifications.Rows[0]["LastCustomId"].ToString();
+                        this.TaskWorkSpecificationSequence = dsWorkSpecifications.Tables[3].Rows[0]["LastChildCustomId"].ToString();
                     }
                 }
                 repWorkSpecificationsPager.FillPager(intTaskUserFilesCount);
@@ -2102,7 +2102,7 @@ namespace JG_Prospect.Sr_App
             repWorkSpecifications.DataBind();
 
             // footer controls
-            ltrlCustomId.Text = CommonFunction.GetTaskWorkSpecificationSequence(this.TaskWorkSpecificationSequence);
+            ltrlCustomId.Text = CommonFunction.GetTaskWorkSpecificationSequence('A',this.TaskWorkSpecificationSequence);
             ckeWorkSpecification.Text = string.Empty;
 
             upWorkSpecifications.Update();
@@ -2466,7 +2466,7 @@ namespace JG_Prospect.Sr_App
                 LastTaskWorkSpecification.Links = "";
 
                 LastTaskWorkSpecification.CustomId =
-                txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSequence(this.TaskWorkSpecificationSequence);
+                txtCustomId.Text = CommonFunction.GetTaskWorkSpecificationSequence('A',this.TaskWorkSpecificationSequence);
 
                 txtWorkSpecification.Text = string.Empty;
 

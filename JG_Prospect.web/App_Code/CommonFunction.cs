@@ -452,20 +452,19 @@ namespace JG_Prospect.App_Code
         ///    A-  :   A-0
         ///    Z-  :   Z-0
         /// </returns>
-        public static string GetTaskWorkSpecificationSequence(string strCurrentSequence = "")
+        public static string GetTaskWorkSpecificationSequence(char chStartAt, string strCurrentSequence = "", bool blIsRoman = false)
         {
-            string strReturnValue = "A";
+            string strReturnValue = chStartAt.ToString();
 
             if (!string.IsNullOrEmpty(strCurrentSequence))
             {
-                string strInputPrefix = string.Empty;
+                string strPrefix = string.Empty;
+
                 char chInputPostfix = strCurrentSequence[strCurrentSequence.Length - 1];
                 if (strCurrentSequence.Length > 1)
                 {
-                    strInputPrefix = strCurrentSequence.Substring(0, strCurrentSequence.Length - 1);
+                    strPrefix = strCurrentSequence.Substring(0, strCurrentSequence.Length - 1);
                 }
-
-                int intNumber;
 
                 int intaCode = (int)'a';
                 int intzCode = (int)'z';
@@ -473,40 +472,48 @@ namespace JG_Prospect.App_Code
                 int intZCode = (int)'Z';
                 int intInputCode = (int)chInputPostfix;
 
-                if (
-                    (intInputCode >= intaCode && intInputCode <= intzCode) ||
-                    (intInputCode >= intACode && intInputCode <= intZCode)
-                   )
+                int intNumber;
+
+                if (blIsRoman && ExtensionMethods.TryRomanParse(strCurrentSequence, out intNumber))
                 {
-                    if (intInputCode == intzCode || intInputCode == intZCode)
-                    {
-                        strInputPrefix = "A" + strInputPrefix;
-                        chInputPostfix = 'A';
-                    }
-                    else
-                    {
-                        chInputPostfix = (char)(++intInputCode);
-                    }
+                    return ExtensionMethods.ToRoman((++intNumber));
                 }
-                else if (int.TryParse(chInputPostfix.ToString(), out intNumber))
+                else if (Char.IsDigit(chInputPostfix))
                 {
+                    intNumber = Convert.ToInt32(chInputPostfix);
+
                     if (intNumber == 9)
                     {
-                        strInputPrefix = "A" + strInputPrefix;
-                        chInputPostfix = '0';
+                        strPrefix = "A" + strPrefix;
+                        chInputPostfix = chStartAt;
                     }
                     else
                     {
                         chInputPostfix = (++intNumber).ToString()[0];
                     }
                 }
+                else if (
+                            (intInputCode >= intaCode && intInputCode <= intzCode) ||
+                            (intInputCode >= intACode && intInputCode <= intZCode)
+                        )
+                {
+                    if (intInputCode == intzCode || intInputCode == intZCode)
+                    {
+                        strPrefix = "A" + strPrefix;
+                        chInputPostfix = chStartAt;
+                    }
+                    else
+                    {
+                        chInputPostfix = (char)(++intInputCode);
+                    }
+                }
                 else
                 {
-                    strInputPrefix = strInputPrefix + chInputPostfix;
-                    chInputPostfix = '0';
+                    strPrefix = strPrefix + chInputPostfix;
+                    chInputPostfix = chStartAt;
                 }
 
-                strReturnValue = strInputPrefix + chInputPostfix;
+                strReturnValue = strPrefix + chInputPostfix;
             }
 
             return strReturnValue;
