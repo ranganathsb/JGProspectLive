@@ -4,7 +4,7 @@
     <table class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
-                <th style="width:10%;">ID
+                <th style="width: 10%;">ID
                 </th>
                 <th>Description
                 </th>
@@ -52,12 +52,29 @@
         </td>
         <td>
             <div style="margin-bottom: 10px;">
-                <textarea data-id="txtWorkSpecification{id}" rows="4" style="width: 95%;"></textarea>
-                <br />
-                <button data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</button>&nbsp;
-                <button data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">Add Sub Section</button>&nbsp;
-                <button data-id="btnViewSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnViewSubSectionClick(this);">View Sub Section</button>&nbsp;
-                <button data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">Hide Sub Section</button>
+                <div data-id="divViewWorkSpecification{id}">
+                    <div style="float:left;width:75%;">
+                        <label data-id="lblWorkSpecification{id}" style="width: 90%; padding: 3px; display:block; line-height:15px; background-color: white;"></label>
+                    </div>
+                    <div style="float:left;width:20%;">
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);" >Edit</a>&nbsp;
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnDeleteClick(this);" >Delete</a>
+                    </div>
+                    <div style="float:none; clear:both;"></div>
+                </div>
+                <div data-id="divEditWorkSpecification{id}">
+                    <div style="float:left;width:75%;">
+                        <textarea data-id="txtWorkSpecification{id}" rows="4" style="width: 95%;"></textarea>
+                    </div>
+                    <div style="float:left;width:20%;">
+                        <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);" >Cancel</a>
+                    </div>
+                    <div style="float:none; clear:both;"></div>
+                </div>
+                <a href="javascript:void(0);" data-id="btnViewSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnViewSubSectionClick(this);">View More(+)</a>
+                <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>&nbsp;
+                <a href="javascript:void(0);" data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">View More(+)</a>&nbsp;
             </div>
             <br />
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
@@ -105,14 +122,17 @@
 
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
+                $WorkSpecificationRowTemplate.find('label[data-id="lblWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 
-                $WorkSpecificationRowTemplate.find('button[data-id="btnHideSubSection'+arrData[i].Id+'"]').hide();
+                $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
+                $WorkSpecificationRowTemplate.find('a[data-id="btnHideSubSection'+arrData[i].Id+'"]').hide();
 
                 if(arrData[i].TaskWorkSpecificationsCount == 0) {
-                    $WorkSpecificationRowTemplate.find('button[data-id="btnViewSubSection'+arrData[i].Id+'"]').hide();
+                    $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').hide();
                 }
                 else {
-                    $WorkSpecificationRowTemplate.find('button[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide();
+                    $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide();
+                    $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').text('View ' + arrData[i].TaskWorkSpecificationsCount + ' More(+)');
                 }
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
@@ -151,6 +171,40 @@
         );
     }
     
+    function OnEditClick(sender) {
+        $sender = $(sender);
+        
+        var Id = $sender.attr('data-work-specification-id');
+
+        // show edit and hide view section.
+        $('div[data-id="divEditWorkSpecification' + Id + '"]').show();
+        $('div[data-id="divViewWorkSpecification' + Id + '"]').hide();
+
+        return false;
+    }
+
+    function OnDeleteClick(sender) {
+        $sender = $(sender);
+        
+        var Id = $sender.attr('data-work-specification-id');
+
+        alert('This feature is not available.');
+
+        return false;
+    }
+
+    function OnCancelEditClick(sender) {
+        $sender = $(sender);
+        
+        var Id = $sender.attr('data-work-specification-id');
+
+        // show view and hide edit section.
+        $('div[data-id="divViewWorkSpecification' + Id + '"]').show();
+        $('div[data-id="divEditWorkSpecification' + Id + '"]').hide();
+
+        return false;
+    }
+
     function OnAddClick(sender) { 
         
         ShowAjaxLoader();
@@ -211,6 +265,7 @@
                     HideAjaxLoader();
                     if(data.d) {
                         alert('Specification saved successfully.');
+                        OnCancelEditClick(sender);
                     }
                     else {
                         alert('Specification update was not successfull, Please try again later.');
@@ -235,7 +290,7 @@
         GetWorkSpecifications(Id, OnWorkSpecificationsResponseReceived);
         
         // show view sub specifications section button.
-        $('button[data-id="btnHideSubSection' + Id + '"]').show();
+        $('a[data-id="btnHideSubSection' + Id + '"]').show();
 
         $sender.hide();
 
@@ -251,7 +306,7 @@
         GetWorkSpecifications(Id, OnWorkSpecificationsResponseReceived);
         
         // show view sub specifications section button.
-        $('button[data-id="btnHideSubSection' + Id + '"]').show();
+        $('a[data-id="btnHideSubSection' + Id + '"]').show();
 
         $sender.hide();
 
@@ -267,7 +322,7 @@
         $('table[data-parent-work-specification-id="' + Id + '"]').remove();
 
         // show view sub specifications section button.
-        $('button[data-id="btnViewSubSection' + Id + '"]').show();
+        $('a[data-id="btnViewSubSection' + Id + '"]').show();
 
         $sender.hide();
 
