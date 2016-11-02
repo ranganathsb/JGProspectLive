@@ -210,6 +210,7 @@
                             <td>
                                 <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn"
                                     Style="display: none;" OnClick="btnSearch_Click" />
+                                <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
                         </tr>
                     </table>
@@ -255,6 +256,7 @@
                                     <asp:Literal ID="ltrlStatus" runat="server" Visible="false" />
                                     <asp:DropDownList ID="ddlStatus" Width="100%" AutoPostBack="true" runat="server" 
                                         OnSelectedIndexChanged="gvTasks_ddlStatus_SelectedIndexChanged" />
+
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Priority" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">

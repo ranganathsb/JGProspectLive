@@ -933,6 +933,8 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\scripts oct _Calendar_Task 4.sql" />
+    <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\yogesh\scripts oct v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
@@ -2072,7 +2074,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>

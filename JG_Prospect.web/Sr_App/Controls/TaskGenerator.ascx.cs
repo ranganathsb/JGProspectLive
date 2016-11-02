@@ -322,6 +322,9 @@ namespace JG_Prospect.Sr_App.Controls
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("style","display:none;");
+
+                        ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                        ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
                     }
 
                     #endregion

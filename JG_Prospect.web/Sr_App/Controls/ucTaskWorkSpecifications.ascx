@@ -1,5 +1,17 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskWorkSpecifications.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskWorkSpecifications" %>
 
+<div>
+    <table class="table" width="100%" cellspacing="0" cellpadding="0">
+        <thead>
+            <tr class="trHeader">
+                <th style="width:10%;">ID
+                </th>
+                <th>Description
+                </th>
+            </tr>
+        </thead>
+    </table>
+</div>
 <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0">
 </div>
 
@@ -7,8 +19,6 @@
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="{parent-id}" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
-                <th>Id</th>
-                <th>Description</th>
             </tr>
         </thead>
         <tbody>

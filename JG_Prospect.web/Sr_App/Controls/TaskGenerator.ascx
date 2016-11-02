@@ -192,7 +192,7 @@
                     <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:BoundField DataField="InstallId" HeaderText="ID#" HeaderStyle-Width="10%" />
+                        <asp:BoundField DataField="InstallId" ItemStyle-CssClass="tip" HeaderText="ID#" HeaderStyle-Width="10%" />
                         <asp:TemplateField HeaderText="Task Title">
                             <ItemTemplate>
                                 <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_self" />
@@ -934,24 +934,24 @@
             }
 
             function setClickableTooltip(target, content) {
-                //$(target).tooltip({
-                //    show: null, // show immediately 
-                //    position: { my: "left top", at: "left top" },
-                //    content: content, //from params
-                //    hide: { effect: "" }, //fadeOut
-                //    close: function (event, ui) {
-                //        ui.tooltip.hover(
-                //            function () {
-                //                $(this).stop(true).fadeTo(400, 1);
-                //            },
-                //            function () {
-                //                $(this).fadeOut("400", function () {
-                //                    $(this).remove();
-                //                })
-                //            }
-                //        );
-                //    }
-                //});
+                $(target).tooltip({
+                    show: null, // show immediately 
+                    position: { my: "left top", at: "left top" },
+                    content: content, //from params
+                    hide: { effect: "" }, //fadeOut
+                    close: function (event, ui) {
+                        ui.tooltip.hover(
+                            function () {
+                                $(this).stop(true).fadeTo(400, 1);
+                            },
+                            function () {
+                                $(this).fadeOut("400", function () {
+                                    $(this).remove();
+                                })
+                            }
+                        );
+                    }
+                });
             }
 
 </script>

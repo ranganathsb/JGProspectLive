@@ -140,7 +140,7 @@ namespace JG_Prospect.Sr_App
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
                 SetStatusSelectedValue(ddlStatus, drTask["Status"].ToString());
 
                 ddlPriority.DataSource = CommonFunction.GetTaskPriorityList();
@@ -222,8 +222,21 @@ namespace JG_Prospect.Sr_App
                     else
                     {
                         lblAssignedUser.Visible = true;
-                        ddcbAssignedUser.Visible =
+                        
+                        
+                        //ddcbAssigned.Visible =
                         lbtnRequestStatus.Visible = false;
+                        DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+
+                        ddcbAssignedUser.Items.Clear();
+                        ddcbAssignedUser.DataSource = dsUsers;
+                        ddcbAssignedUser.DataTextField = "FristName";
+                        ddcbAssignedUser.DataValueField = "Id";
+                        ddcbAssignedUser.DataBind();
+
+                        SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssignedUser);
+                        ddcbAssignedUser.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                        ddcbAssignedUser.Attributes.Add("TaskStatus", ddlTaskStatus.SelectedValue);
                     }
 
                     ltrlPriority.Visible = false;
@@ -347,7 +360,17 @@ namespace JG_Prospect.Sr_App
 
         protected void gvTasks_ddcbAssignedUser_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            DropDownCheckBoxes ddcbAssigned = sender as DropDownCheckBoxes;
+            if (ddcbAssigned != null)
+            {
+                hdnTaskId.Value = ddcbAssigned.Attributes["TaskId"];
+                if (!string.IsNullOrEmpty(hdnTaskId.Value))
+                {
+                    SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
+                    hdnTaskId.Value = "0";
+                    SearchTasks();
+                }
+            }
         }
 
         protected void gvTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
@@ -636,6 +659,113 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        {
+            String firstAssignedUser = String.Empty;
+            String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string user in users)
+            {
+
+                ListItem item = taskUsers.Items.FindByText(user);
+
+                if (item != null)
+                {
+                    item.Selected = true;
+
+                    if (string.IsNullOrEmpty(firstAssignedUser))
+                    {
+                        firstAssignedUser = item.Text;
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(firstAssignedUser))
+            {
+                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+            }
+
+        }
+
+        /// <summary>
+        /// Save user's to whom task is assigned. 
+        /// </summary>
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus)
+        {
+            //if task id is available to save its note and attachement.
+            if (hdnTaskId.Value != "0")
+            {
+                string strUsersIds = string.Empty;
+
+                foreach (ListItem item in ddcbAssigned.Items)
+                {
+                    if (item.Selected)
+                    {
+                        strUsersIds = strUsersIds + (item.Value + ",");
+                    }
+                }
+
+                // removes any extra comma "," from the end of the string.
+                strUsersIds = strUsersIds.TrimEnd(',');
+
+                // save (insert / delete) assigned users.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), strUsersIds);
+
+                // send email to selected users.
+                if (strUsersIds.Length > 0)
+                {
+                    if (isSuccessful)
+                    {
+                        // Change task status to assigned = 3.
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested || objTaskStatus == JGConstant.TaskStatus.SpecsInProgress)
+                        {
+                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+                        }
+
+                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUsersIds);
+                    }
+                }
+                // send email to all users of the department as task is assigned to designation, but not to any specific user.
+                else
+                {
+                    string strUserIDs = "";
+
+                    foreach (ListItem item in ddcbAssigned.Items)
+                    {
+                        strUserIDs += string.Concat(item.Value, ",");
+                    }
+
+                    SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUserIDs.TrimEnd(','));
+                }
+            }
+        }
+
+        private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = taskId;
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+
+            SearchTasks();
+
+            String AlertMsg;
+
+            if (result > 0)
+            {
+                AlertMsg = "Status changed successfully!";
+
+            }
+            else
+            {
+                AlertMsg = "Status change was not successfull, Please try again later.";
+            }
+
+            CommonFunction.ShowAlertFromUpdatePanel(this.Page, AlertMsg);
+
+        }
+
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
         {
             ddlStatus.ClearSelection();
@@ -643,18 +773,19 @@ namespace JG_Prospect.Sr_App
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
-                {
-                    ddlStatus.Enabled = false;
-                }
-                else
-                {
+                //if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                //{
+                //    ddlStatus.Enabled = false;
+                //}
+                //else
+                //{
                     ddlStatus.Enabled = true;
-                }
+               // }
                 objListItem.Enabled = true;
                 objListItem.Selected = true;
             }
         }
+
 
         #endregion
     }
