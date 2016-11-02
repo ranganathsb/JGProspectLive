@@ -75,7 +75,7 @@ namespace JG_Prospect.WebServices
 
             string strNextCustomId = string.Empty;
 
-            if (string.IsNullOrEmpty(strFirstParentCustomId))
+            if (string.IsNullOrEmpty(strFirstParentCustomId) || intParentTaskWorkSpecificationId == 0)
             {
                 strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('A', strLastCustomId);
             }

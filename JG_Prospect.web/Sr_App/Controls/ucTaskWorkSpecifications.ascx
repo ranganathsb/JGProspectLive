@@ -58,7 +58,7 @@
                     </div>
                     <div style="float:left;width:20%;">
                         <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);" >Edit</a>&nbsp;
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnDeleteClick(this);" >Delete</a>
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);" >Delete</a>
                     </div>
                     <div style="float:none; clear:both;"></div>
                 </div>
@@ -190,6 +190,7 @@
         $sender = $(sender);
         
         var Id = $sender.attr('data-work-specification-id');
+        var intParentId = $sender.attr('data-parent-work-specification-id');
 
         $.ajax
         (
