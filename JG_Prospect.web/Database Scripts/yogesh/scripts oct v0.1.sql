@@ -3458,3 +3458,33 @@ BEGIN
 	ORDER By Id DESC
 END
 GO
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 02 Nov
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 09/02/2016
+-- Description:	Delete task work specifications
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteTaskWorkSpecification] 
+(	
+	@Id bigint
+)
+AS
+BEGIN
+	
+	-- this performs delete cascade based on ParentTaskWorkSpecificationId column.
+	DELETE
+	FROM tblTaskWorkSpecifications
+	WHERE Id = @Id
+
+END
+GO

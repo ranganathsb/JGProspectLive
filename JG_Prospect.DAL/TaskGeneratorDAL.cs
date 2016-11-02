@@ -970,7 +970,7 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@Id", DbType.String, objTaskWorkSpecification.Id);
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskWorkSpecification.Id);
                     database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
@@ -981,6 +981,27 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@ParentTaskWorkSpecificationId", SqlDbType.BigInt, objTaskWorkSpecification.ParentTaskWorkSpecificationId.Value);
                     }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("DeleteTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, intTaskWorkSpecification);
 
                     return database.ExecuteNonQuery(command);
                 }

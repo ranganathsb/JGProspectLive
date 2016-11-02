@@ -153,6 +153,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
 
+        public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.DeleteTaskWorkSpecification(intTaskWorkSpecification);
+        }
+
         public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64? intParentTaskWorkSpecificationId, Int32? intPageIndex, Int32? intPageSize)
         {
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intParentTaskWorkSpecificationId, intPageIndex, intPageSize);

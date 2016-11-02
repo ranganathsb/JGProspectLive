@@ -138,5 +138,15 @@ namespace JG_Prospect.WebServices
             }
             return blSuccess;
         }
+
+        [WebMethod]
+        public bool DeleteTaskWorkSpecification(Int64 intId)
+        {
+            bool blSuccess = true;
+
+            TaskGeneratorBLL.Instance.DeleteTaskWorkSpecification(intId);
+
+            return blSuccess;
+        }
     }
 }

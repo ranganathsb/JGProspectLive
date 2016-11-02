@@ -132,7 +132,7 @@
                 }
                 else {
                     $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide();
-                    $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').text('View ' + arrData[i].TaskWorkSpecificationsCount + ' More(+)');
+                    //$WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').text('View ' + arrData[i].TaskWorkSpecificationsCount + ' More(+)');
                 }
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
@@ -184,11 +184,38 @@
     }
 
     function OnDeleteClick(sender) {
+
+        ShowAjaxLoader();
+
         $sender = $(sender);
         
         var Id = $sender.attr('data-work-specification-id');
 
-        alert('This feature is not available.');
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/DeleteTaskWorkSpecification',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data: '{ intId:' + Id + ' }',
+                asynch: false,
+                success: function (data) {
+                    HideAjaxLoader();
+                    if(data.d) {
+                        GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
+                        alert('Specification deleted successfully.');
+                    }
+                    else {
+                        alert('Specification delete was not successfull, Please try again later.');
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a);
+                    HideAjaxLoader();
+                }
+            }
+        );
 
         return false;
     }
