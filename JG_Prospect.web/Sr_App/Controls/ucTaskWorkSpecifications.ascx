@@ -76,7 +76,6 @@
                 <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>&nbsp;
                 <a href="javascript:void(0);" data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">View More(+)</a>&nbsp;
             </div>
-            <br />
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
     </tr>
