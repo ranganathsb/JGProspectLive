@@ -111,7 +111,7 @@ namespace JG_Prospect.WebServices
                 objTaskWorkSpecification.Id = intId;
                 objTaskWorkSpecification.CustomId = strCustomId;
                 objTaskWorkSpecification.TaskId = intTaskId;
-                objTaskWorkSpecification.Description = strDescription;
+                objTaskWorkSpecification.Description = Server.HtmlDecode(strDescription);
                 objTaskWorkSpecification.Links = string.Empty;
                 objTaskWorkSpecification.WireFrame = string.Empty;
                 // save will revoke freezed status.

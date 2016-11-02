@@ -6,6 +6,7 @@
 CKEDITOR.editorConfig = function( config ) {
     config.skin = 'office2013';
     config.extraPlugins = 'uploadimage';
+    config.htmlEncodeOutput = true;
     config.imageUploadUrl = '../ckeditor/plugins/imageuploader/imgupload.php';
     
     // Define changes to default configuration here. For example:

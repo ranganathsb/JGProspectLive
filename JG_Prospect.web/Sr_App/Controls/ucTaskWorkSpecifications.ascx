@@ -53,24 +53,24 @@
         <td>
             <div style="margin-bottom: 10px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div style="float:left;width:75%;">
-                        <label data-id="lblWorkSpecification{id}" style="width: 90%; padding: 3px; display:block; line-height:15px; background-color: white;"></label>
+                    <div style="float: left; width: 75%;">
+                        <label data-id="lblWorkSpecification{id}" style="width: 90%; padding: 3px; display: block; line-height: 15px; background-color: white;"></label>
                     </div>
-                    <div style="float:left;width:20%;">
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);" >Edit</a>&nbsp;
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);" >Delete</a>
+                    <div style="float: left; width: 20%;">
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>
                     </div>
-                    <div style="float:none; clear:both;"></div>
+                    <div style="float: none; clear: both;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <div style="float:left;width:75%;">
-                        <textarea data-id="txtWorkSpecification{id}" rows="4" style="width: 95%;"></textarea>
+                    <div style="float: left; width: 75%;">
+                        <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
                     </div>
-                    <div style="float:left;width:20%;">
+                    <div style="float: left; width: 20%;">
                         <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);" >Cancel</a>
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>
                     </div>
-                    <div style="float:none; clear:both;"></div>
+                    <div style="float: none; clear: both;"></div>
                 </div>
                 <a href="javascript:void(0);" data-id="btnViewSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnViewSubSectionClick(this);">View More(+)</a>
                 <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>&nbsp;
@@ -174,10 +174,13 @@
         $sender = $(sender);
         
         var Id = $sender.attr('data-work-specification-id');
-
+        console.log($('div[data-id="divEditWorkSpecification' + Id + '"]'));
         // show edit and hide view section.
         $('div[data-id="divEditWorkSpecification' + Id + '"]').show();
         $('div[data-id="divViewWorkSpecification' + Id + '"]').hide();
+
+        setCKEDITORonArea('txtWorkSpecification'+Id);
+        
 
         return false;
     }
@@ -248,7 +251,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ intId:' + Id + ', strCustomId: "' + strCustomId + '", strDescription: "' + strDescription + '", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
+                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
@@ -277,8 +280,13 @@
         var Id= $(sender).attr('data-work-specification-id');
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
-        var strDescription = $.trim($('textarea[data-id="txtWorkSpecification'+Id+'"]').val());
+        // var strDescription = $.trim($('textarea[data-id="txtWorkSpecification'+Id+'"]').val());
         
+        var strDescription = getCKEditorData('txtWorkSpecification'+ Id);
+        var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
+
+        console.log("Data Sent to web service: " + datatoSend);
+
         $.ajax
         (
             {
@@ -286,7 +294,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ intId:' + Id + ', strCustomId: "' + strCustomId + '", strDescription: "' + strDescription + '", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
+                data:  datatoSend,
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
@@ -363,4 +371,54 @@
     function HideAjaxLoader(){
         $('.loading').hide();
     }
+
+    function setCKEDITORonArea(Id)
+    {
+
+        var jqueryId = '#' + Id;
+        
+        // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+        // Otherwise CKEditor will start in read-only mode.
+        
+        $( jqueryId ).attr('contenteditable', true);       
+
+        CKEDITOR.inline( Id,
+            {
+                // Show toolbar on startup (optional).
+                startupFocus: true
+            });
+
+    }
+
+    function getCKEditorData(Id) {
+    
+        var editor =  CKEDITOR.instances[Id];
+
+        editor.updateElement();
+
+        var jqueryId = '#' + Id;
+
+        var htmldata = $(jqueryId).val();
+        
+        $( jqueryId ).attr('contenteditable', false);  
+        
+        editor.destroy();
+        
+        var encodedHTMLData =  htmldata;
+        
+        $('label[data-id="lblWorkSpecification'+ Id).html(htmldata);
+
+        return encodedHTMLData;
+
+    }
+
+    jQuery.fn.EncHTML = function () {
+        return String(this.html())
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    };
+
 </script>
