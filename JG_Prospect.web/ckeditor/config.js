@@ -5,10 +5,8 @@
 
 CKEDITOR.editorConfig = function( config ) {
     config.skin = 'office2013';
-    config.extraPlugins = 'uploadimage';
-    config.htmlEncodeOutput = true;
-    
-    
+    config.extraPlugins = 'uploadimage,image2';
+    config.uploadUrl = '/ckeditor/plugins/uploadimage/fileuploader.aspx';
     // Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';

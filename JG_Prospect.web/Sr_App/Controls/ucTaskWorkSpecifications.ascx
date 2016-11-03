@@ -26,8 +26,7 @@
                     <br />
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
-                <td>
-                    &nbsp;
+                <td>&nbsp;
                 </td>
             </tr>
             <tr class="pager">
@@ -52,11 +51,11 @@
                 <div data-id="divEditWorkSpecification{id}">
                     <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
                 </div>
-                <div data-id="divViewWorkSpecification{id}" style="display:inline;">
+                <div data-id="divViewWorkSpecification{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
                     <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>&nbsp;
                 </div>
-                <div data-id="divEditWorkSpecification{id}" style="display:inline;">
+                <div data-id="divEditWorkSpecification{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>&nbsp;
                 </div>
@@ -67,9 +66,9 @@
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
         <td valign="top" style="width: 65px;">
-            <input data-id="chkAdminApproval{id}" type="checkbox"/>&nbsp;
-            <input data-id="chkITLeadApproval{id}" type="checkbox"/>&nbsp;
-            <input data-id="chkUserApproval{id}" type="checkbox"/>
+            <input data-id="chkAdminApproval{id}" type="checkbox" />&nbsp;
+            <input data-id="chkITLeadApproval{id}" type="checkbox" />&nbsp;
+            <input data-id="chkUserApproval{id}" type="checkbox" />
         </td>
     </tr>
 </script>
@@ -280,7 +279,7 @@
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
         // var strDescription = $.trim($('textarea[data-id="txtWorkSpecification'+Id+'"]').val());
         
-        var strDescription = getCKEditorData('txtWorkSpecification'+ Id);
+        var strDescription = getCKEditorData('txtWorkSpecification'+ Id, 'divWorkSpecification'+ Id);
         var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
 
         console.log("Data Sent to web service: " + datatoSend);
@@ -386,28 +385,49 @@
                 startupFocus: true
             });
 
-    }
-
-    function getCKEditorData(Id) {
-    
         var editor =  CKEDITOR.instances[Id];
 
-        editor.updateElement();
+        editor.on( 'fileUploadResponse', function( evt ) {
+            // Prevent the default response handler.
+            evt.stop();
+            
+            // Ger XHR and response.
+            var data = evt.data,
+                xhr = data.fileLoader.xhr,
+                response = xhr.responseText.split( '|' );
+           
+            var jsonarray = JSON.parse(response[0]);
+            
+            if ( jsonarray && jsonarray.uploaded != "1" ) {
+                // Error occurred during upload.                
+                evt.cancel();
+            } else {
+                data.url = jsonarray.url;
+            }
+        } );
+
+    }
+
+    function getCKEditorData(Id, divWorkSpecsId) {
+    
+        var editor =  CKEDITOR.instances[Id];
+        
+        var encodedHTMLData =  editor.getData();
+
+        //editor.updateElement();
 
         var jqueryId = '#' + Id;
 
-        var htmldata = $(jqueryId).val();
+        $(jqueryId).html(encodedHTMLData);
         
-        $( jqueryId ).attr('contenteditable', false);  
+        $(jqueryId).attr('contenteditable', false);  
+       
+        $('div[data-id=\''+ divWorkSpecsId + '\']').html(encodedHTMLData);
         
-        editor.destroy();
-        
-        var encodedHTMLData =  htmldata;
-        
-        $('div[data-id="divWorkSpecification'+ Id).html(htmldata);
+        CKEDITOR.instances[Id].destroy();
 
         return encodedHTMLData;
 
     }
-    
+   
 </script>
