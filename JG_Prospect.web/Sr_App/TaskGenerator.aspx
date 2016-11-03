@@ -778,178 +778,7 @@
                                 </asp:UpdatePanel>
                             </div>
                             <uc1:ucTaskWorkSpecifications ID="objucTaskWorkSpecifications" runat="server" />
-                            <table width="100%" cellspacing="0" cellpadding="0" class="table" style="display: none;">
-                                <thead>
-                                    <tr class="trHeader">
-                                        <th>Id</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <asp:HiddenField ID="repWorkSpecifications_EditIndex" runat="server" Value="-1" />
-                                    <asp:Repeater ID="repWorkSpecifications" runat="server"
-                                        OnItemDataBound="repWorkSpecifications_ItemDataBound"
-                                        OnItemCommand="repWorkSpecifications_ItemCommand">
-                                        <ItemTemplate>
-                                            <tr id="trWorkSpecification" runat="server" class="">
-                                                <td>
-                                                    <asp:HiddenField ID="hdnId" runat="server" Value='<%#Eval("Id")%>' />
-                                                    <small>
-                                                        <asp:LinkButton ID="lbtnEditWorkSpecification" runat="server" ForeColor="Blue" ClientIDMode="AutoID"
-                                                            CommandName="edit-work-specification" Text='<%#Eval("CustomId")%>' CommandArgument='<%# Container.ItemIndex%>' />
-                                                        <asp:Literal ID="ltrlCustomId" runat="server" Text='<%#Eval("CustomId") %>' />
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <div id="divViewDescription" runat="server" style="background-color: white; min-height: 20px; margin: 3px; padding: 3px;">
-                                                        <div style="margin-bottom: 10px;">
-                                                            <asp:Literal ID="ltrlDescription" runat="server" />
-                                                        </div>
-                                                        <asp:LinkButton ID="lbtnAddSubWorkSpecification" runat="server" Text="Add Sub Section" />
-                                                    </div>
-                                                    <div id="divEditDescription" runat="server">
-                                                        <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" />
-                                                        <br />
-                                                        <asp:LinkButton ID="lbtnSaveWorkSpecification" runat="server" ClientIDMode="AutoID" Text="Save"
-                                                            CommandName="save-work-specification" CommandArgument='<%# Container.ItemIndex %>' />&nbsp;&nbsp;<asp:LinkButton
-                                                                ID="lbtnCancelEditing" runat="server" ClientIDMode="AutoID" Text="Cancel" CommandName="cancel-edit-work-specification" />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </ItemTemplate>
-                                    </asp:Repeater>
-                                </tbody>
-                                <tfoot>
-                                    <tr class="FirstRow">
-                                        <td>
-                                            <small>
-                                                <asp:Literal ID="ltrlCustomId" runat="server" Text='<%#Eval("CustomId") %>' />
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <CKEditor:CKEditorControl ID="ckeWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor" Visible="true" />
-                                            <br />
-                                            <asp:LinkButton ID="lbtnInsertWorkSpecification" runat="server" Text="Add" ClientIDMode="AutoID" CausesValidation="false"
-                                                OnClick="lbtnInsertWorkSpecification_Click" />
-                                        </td>
-                                    </tr>
-                                    <tr class="pager">
-                                        <td colspan="2">
-                                            <uc1:CustomPager ID="repWorkSpecificationsPager" runat="server" PageSize="5" PagerSize="10" />
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
                             <br />
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                    <asp:UpdatePanel ID="upAddEditWorkSpecification" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
-                            <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="vgSaveWorkSpecification" ShowSummary="False" ShowMessageBox="True" />
-                            <table id="tblAddEditWorkSpecification" runat="server" class="table" width="100%" visible="false">
-                                <tr id="trWorkSpecificationEditor" runat="server">
-                                    <td>
-                                        <table width="100%">
-                                            <tr>
-                                                <td align="right">
-                                                    <a href="javascript:void(0);" onclick="javascript:AcceptAllChanges();">Accept</a>&nbsp;
-                                                               
-                                                   
-
-                                                <a href="javascript:void(0);" onclick="javascript:RejectAllChanges();">Reject</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <%--                 <asp:TextBox ID="txtWorkSpecification" TextMode="MultiLine" runat="server" />--%>
-
-                                                    <CKEditor:CKEditorControl ID="txtWorkSpecification" runat="server" Height="200" BasePath="~/ckeditor">
-		
-                                                    </CKEditor:CKEditorControl>
-
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr id="trWorkSpecificationContent" runat="server">
-                                    <td>
-                                        <fieldset style="border: 1px solid gray; margin-bottom: 10px;">
-                                            <legend>Work Specification</legend>
-                                            <asp:Literal ID="ltrlWorkSpecification" runat="server" />
-                                        </fieldset>
-                                    </td>
-                                </tr>
-                                <tr runat="server" visible="false">
-                                    <td>
-                                        <div style="width: 200px; float: left;">
-                                            Sequence Id:
-                                        <br />
-                                            <asp:TextBox ID="txtCustomId" runat="server" CssClass="textbox" Width="100" />
-                                            <asp:RequiredFieldValidator ID="rfvCustomId" runat="server" ControlToValidate="txtCustomId" ValidationGroup="vgSaveWorkSpecification"
-                                                ErrorMessage="CustomId is required." />
-                                        </div>
-                                        <div style="width: 350px; float: left;">
-                                            <div id="divWorkSpecificationFile" class="dropzone work-file" data-hidden="<%=hdnWorkSpecificationFile.ClientID%>" data-accepted-files=".jpg,.jpeg,.png">
-                                                <div class="fallback">
-                                                    <input name="WorkSpecificationFile" type="file" />
-                                                    <input type="submit" value="UploadWorkFile" />
-                                                </div>
-                                            </div>
-                                            <div id="divWorkSpecificationFilePreview" class="dropzone-previews work-file-previews">
-                                            </div>
-                                            <asp:HiddenField ID="hdnWorkSpecificationFile" runat="server" Value="" />
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr runat="server" visible="false">
-                                    <td>
-                                        <asp:UpdatePanel ID="upWorkSpecificationLinks" runat="server">
-                                            <ContentTemplate>
-                                                <asp:Repeater ID="repWorkSpecificationLinks" runat="server"
-                                                    OnItemDataBound="repWorkSpecificationLinks_ItemDataBound"
-                                                    OnItemCommand="repWorkSpecificationLinks_ItemCommand">
-                                                    <HeaderTemplate>
-                                                        <table width="100%">
-                                                            <tr>
-                                                                <td>Links:</td>
-                                                            </tr>
-                                                    </HeaderTemplate>
-                                                    <ItemTemplate>
-                                                        <tr>
-                                                            <td>
-                                                                <asp:TextBox ID="txtWorkSpecificationLink" runat="server" CssClass="textbox"
-                                                                    Text='<%#Container.DataItem.ToString()%>' Width="90%" />
-                                                                <asp:LinkButton ID="lbtnDeleteLink" runat="server" CommandName="delete-link" ClientIDMode="AutoID"
-                                                                    CommandArgument='<%#Container.ItemIndex%>' Text="Delete" />
-                                                            </td>
-                                                        </tr>
-                                                    </ItemTemplate>
-                                                    <FooterTemplate>
-                                                        <tr>
-                                                            <td>
-                                                                <asp:LinkButton ID="lbtnAddNewLink" runat="server" ClientIDMode="AutoID" CommandName="add-new-link"
-                                                                    Text="Add New" />
-                                                            </td>
-                                                        </tr>
-                                                        </table>
-                                                               
-                                                   
-                                                    </FooterTemplate>
-                                                </asp:Repeater>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
-                                    </td>
-                                </tr>
-                                <tr id="trWorkSpecificationSave" runat="server">
-                                    <td>
-                                        <div class="btn_sec">
-                                            <asp:Button ID="btnSaveWorkSpecification" runat="server" Text="Save" CssClass="ui-button"
-                                                OnClick="btnSaveWorkSpecification_Click" ValidationGroup="SaveWorkSpecification" /><%--OnClientClick="javascript:SetContentInTextbox();"--%>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </ContentTemplate>
@@ -1091,16 +920,6 @@
             </fieldset>
 
         </div>
-        <div id="divImagePopup" runat="server" title="Work Specification File">
-            <b>
-                <label id="lblImageName"></label>
-            </b>
-            <br />
-            <img id="imgWorkSpecificationFile" src="javascript:void(0);" />
-            <br />
-            <asp:HiddenField ID="hdnWorkSpecificationFileData" runat="server" ClientIDMode="Static" />
-            <asp:LinkButton ID="lbtnDownloadWireframe" runat="server" ForeColor="Blue" Text="Download" OnClick="lbtnDownloadWireframe_Click" />
-        </div>
         <div id="divSubTaskFeedbackPopup" runat="server" title="Sub Task Feedback">
             <asp:UpdatePanel ID="upSubTaskFeedbackPopup" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -1162,15 +981,7 @@
         </div>
     </div>
     <%--Popup Ends--%>
-    <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
-
-    <script type="text/javascript">
-        var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;
-        var strUserName = '<%=Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]%>';
-
-        var txtWorkSpecification = '<%=txtWorkSpecification.ClientID%>';
-       
-    </script>
+    
     <script type="text/javascript">
 
         var workspecEditor;
@@ -1190,40 +1001,11 @@
 
         function Initialize() {
             ApplyDropZone();
-            // LoadTinyMce();
-            LoadCKEditor();
-        }
-
-        
-        function LoadCKEditor() {                        
-            //// $('#workspecs').ckeditor();
-            //var editor = CKEDITOR.instances['workspecs'];
-            
-            //if (editor) {               
-            //    editor.destroy(true);
-            //}   
-
-            //CKEDITOR.replace( 'workspecs');
-        }
-
-
-        function ShowImageDialog(sender,strControlId) {
-            
-            $(strControlId).find('#lblImageName').html($(sender).attr('data-file-name'));
-
-            $(strControlId).find('#imgWorkSpecificationFile').attr('src',$(sender).attr('href'));
-
-            $(strControlId).find('#hdnWorkSpecificationFileData').val($(sender).attr('data-file-data'));
-
-            ShowPopup(strControlId);
-
-            return false;
         }
 
         function ShowPopup(varControlID) {
             console.log($( window ).width());
             var windowWidth = (parseInt($( window ).width()) / 2)-10;
-            
             console.log(windowWidth);
 
             var dialogwidth = windowWidth + "px";
@@ -1373,10 +1155,6 @@
             if(objWireframeDropzone) {
                 objWireframeDropzone.destroy();
                 objWireframeDropzone = null;
-            }
-
-            if($("#divWorkSpecificationFile").length > 0){
-                objWireframeDropzone = GetWorkFileDropzone("#divWorkSpecificationFile", '#divWorkSpecificationFilePreview','#<%= hdnWorkSpecificationFile.ClientID %>','');
             }
 
             //remove already attached dropzone.
