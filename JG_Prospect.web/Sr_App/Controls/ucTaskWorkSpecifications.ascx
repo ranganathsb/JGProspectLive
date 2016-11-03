@@ -53,19 +53,25 @@
         <td>
             <div style="margin-bottom: 10px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div id="divWorkSpecification{id}" data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
+                    <div style="float: left; width: 75%;">
+                        <label data-id="lblWorkSpecification{id}" style="width: 90%; padding: 3px; display: block; line-height: 15px; background-color: white;"></label>
+                    </div>
+                    <div style="float: left; width: 20%;">
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>
+                    </div>
+                    <div style="float: none; clear: both;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
+                    <div style="float: left; width: 75%;">
+                        <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
+                    </div>
+                    <div style="float: left; width: 20%;">
+                        <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
+                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>
+                    </div>
+                    <div style="float: none; clear: both;"></div>
                 </div>
-                <div data-id="divViewWorkSpecification{id}" style="display:inline;">
-                    <a href="javascript:void(0);" data-id="btnEdit{id}" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
-                </div>
-                <div data-id="divEditWorkSpecification{id}"" style="display:inline;">
-                    <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
-                    <a href="javascript:void(0);" data-id="btnCancelEdit{id}" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>&nbsp;
-                </div>
-                <a href="javascript:void(0);" data-id="btnDelete{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>&nbsp;
                 <a href="javascript:void(0);" data-id="btnViewSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnViewSubSectionClick(this);">View More(+)</a>
                 <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>&nbsp;
                 <a href="javascript:void(0);" data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">View More(+)</a>&nbsp;
@@ -115,7 +121,7 @@
 
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
-                $WorkSpecificationRowTemplate.find('div[data-id="divWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
+                $WorkSpecificationRowTemplate.find('label[data-id="lblWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
                 $WorkSpecificationRowTemplate.find('a[data-id="btnHideSubSection'+arrData[i].Id+'"]').hide();
@@ -400,19 +406,10 @@
         
         var encodedHTMLData =  htmldata;
         
-        $('div[data-id="divWorkSpecification'+ Id).html(htmldata);
+        $('label[data-id="lblWorkSpecification'+ Id).html(htmldata);
 
         return encodedHTMLData;
 
     }
-
-    jQuery.fn.EncHTML = function () {
-        return String(this.html())
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    };
-
+    
 </script>
