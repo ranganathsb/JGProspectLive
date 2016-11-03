@@ -1,17 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskWorkSpecifications.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskWorkSpecifications" %>
 
-<div>
-    <table class="table" width="100%" cellspacing="0" cellpadding="0">
-        <thead>
-            <tr class="trHeader">
-                <th style="width: 10%;">ID
-                </th>
-                <th>Description
-                </th>
-            </tr>
-        </thead>
-    </table>
-</div>
 <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0">
 </div>
 
@@ -19,6 +7,9 @@
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="{parent-id}" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
+                <th style="width: 30px;">ID</th>
+                <th>Description</th>
+                <th style="width: 65px;">Sign Off</th>
             </tr>
         </thead>
         <tbody>
@@ -35,9 +26,12 @@
                     <br />
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
+                <td>
+                    &nbsp;
+                </td>
             </tr>
             <tr class="pager">
-                <td colspan="2">&nbsp;
+                <td colspan="3">&nbsp;
                 </td>
             </tr>
         </tfoot>
@@ -45,38 +39,37 @@
 </script>
 <script data-id="tmpWorkSpecificationRow" type="text/template" class="hide">
     <tr data-work-specification-id="{id}">
-        <td valign="top">
+        <td valign="top" style="width: 30px;">
             <small>
                 <label data-id="lblCustomId{id}" />
             </small>
         </td>
         <td>
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div style="float: left; width: 75%;">
-                        <label data-id="lblWorkSpecification{id}" style="width: 90%; padding: 3px; display: block; line-height: 15px; background-color: white;"></label>
-                    </div>
-                    <div style="float: left; width: 20%;">
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>
-                    </div>
-                    <div style="float: none; clear: both;"></div>
+                    <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <div style="float: left; width: 75%;">
-                        <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
-                    </div>
-                    <div style="float: left; width: 20%;">
-                        <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
-                        <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>
-                    </div>
-                    <div style="float: none; clear: both;"></div>
+                    <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
                 </div>
+                <div data-id="divViewWorkSpecification{id}" style="display:inline;">
+                    <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
+                    <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>&nbsp;
+                </div>
+                <div data-id="divEditWorkSpecification{id}" style="display:inline;">
+                    <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
+                    <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>&nbsp;
+                </div>
+                <a href="javascript:void(0);" data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">View More(+)</a>
                 <a href="javascript:void(0);" data-id="btnViewSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnViewSubSectionClick(this);">View More(+)</a>
-                <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>&nbsp;
-                <a href="javascript:void(0);" data-id="btnAddSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnAddSubSectionClick(this);">View More(+)</a>&nbsp;
+                <a href="javascript:void(0);" data-id="btnHideSubSection{id}" data-work-specification-id="{id}" onclick="javascript:return OnHideSubSectionClick(this);">View Less(-)</a>
             </div>
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
+        </td>
+        <td valign="top" style="width: 65px;">
+            <input data-id="chkAdminApproval{id}" type="checkbox"/>&nbsp;
+            <input data-id="chkITLeadApproval{id}" type="checkbox"/>&nbsp;
+            <input data-id="chkUserApproval{id}" type="checkbox"/>
         </td>
     </tr>
 </script>
@@ -121,7 +114,7 @@
 
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
-                $WorkSpecificationRowTemplate.find('label[data-id="lblWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
+                $WorkSpecificationRowTemplate.find('div[data-id="divWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
                 $WorkSpecificationRowTemplate.find('a[data-id="btnHideSubSection'+arrData[i].Id+'"]').hide();
@@ -136,6 +129,11 @@
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
             }
+        }
+
+        // do not show header for sub sections.
+        if(intParentId != 0) {
+            $WorkSpecificationSectionTemplate.find('thead').remove();
         }
 
         // clear div and append new result.
@@ -406,7 +404,7 @@
         
         var encodedHTMLData =  htmldata;
         
-        $('label[data-id="lblWorkSpecification'+ Id).html(htmldata);
+        $('div[data-id="divWorkSpecification'+ Id).html(htmldata);
 
         return encodedHTMLData;
 
