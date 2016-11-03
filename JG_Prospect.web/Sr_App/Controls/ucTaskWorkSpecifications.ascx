@@ -7,9 +7,9 @@
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="{parent-id}" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
-                <th style="width: 10%;">ID</th>
+                <th style="width: 30px;">ID</th>
                 <th>Description</th>
-                <th style="width: 15%;">Sign Off</th>
+                <th style="width: 65px;">Sign Off</th>
             </tr>
         </thead>
         <tbody>
@@ -26,9 +26,12 @@
                     <br />
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
+                <td>
+                    &nbsp;
+                </td>
             </tr>
             <tr class="pager">
-                <td colspan="2">&nbsp;
+                <td colspan="3">&nbsp;
                 </td>
             </tr>
         </tfoot>
@@ -36,13 +39,13 @@
 </script>
 <script data-id="tmpWorkSpecificationRow" type="text/template" class="hide">
     <tr data-work-specification-id="{id}">
-        <td valign="top">
+        <td valign="top" style="width: 30px;">
             <small>
                 <label data-id="lblCustomId{id}" />
             </small>
         </td>
         <td>
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
                     <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
                 </div>
@@ -63,7 +66,7 @@
             </div>
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
-        <td valign="top">
+        <td valign="top" style="width: 65px;">
             <input data-id="chkAdminApproval{id}" type="checkbox"/>&nbsp;
             <input data-id="chkITLeadApproval{id}" type="checkbox"/>&nbsp;
             <input data-id="chkUserApproval{id}" type="checkbox"/>
