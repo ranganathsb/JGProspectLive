@@ -696,14 +696,16 @@
     </div>
     <div id="divFixedSection" runat="server" style="position: fixed; right: 0px; bottom: 0px; margin: 0px 10px 10px 0px; padding: 3px; background-color: black; color: white;">
     </div>
+
     <%--Popup Starts--%>
     <div class="hide">
+
+        <%--Work Specification Popup--%>
         <div id="divWorkSpecificationSection" runat="server" title="Work Specification Files" data-min-button="Work Specification Files">
             <asp:UpdatePanel ID="upWorkSpecificationSection" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <asp:UpdatePanel ID="upWorkSpecifications" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
-
                             <div>
                                 <asp:UpdatePanel ID="upWorkSpecificationAttachments" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
@@ -742,7 +744,6 @@
                                                         <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">
                                                             <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                                                 <ContentTemplate>
-
                                                                     <asp:Repeater ID="grdWorkSpecificationAttachments" runat="server"
                                                                         OnItemDataBound="grdWorkSpecificationAttachments_ItemDataBound"
                                                                         OnItemCommand="grdWorkSpecificationAttachments_ItemCommand">
@@ -766,7 +767,6 @@
                                                                             </ul>
                                                                         </FooterTemplate>
                                                                     </asp:Repeater>
-
                                                                 </ContentTemplate>
                                                             </asp:UpdatePanel>
                                                         </div>
@@ -786,9 +786,9 @@
             <%--Below div is required to make entire section visible.--%>
             <div style="float: none; clear: both;"></div>
         </div>
+
+        <%--Finished Work Files Popup--%>
         <div id="divFinishedWorkFiles" runat="server" title="Finished Work Files" data-min-button="Finished Work Files">
-
-
             <%--Only Allow "*.doc" files to be uploaded
                             Add Log with file name "username_datetimeofsubmitionofwork.doc."
                             When user submit their CODE files, it should be auto compiled and if there is any compilation error it should show popup to user 
@@ -918,8 +918,9 @@
                     </tr>
                 </table>
             </fieldset>
-
         </div>
+
+        <%--Sub Task Feedback Popup--%>
         <div id="divSubTaskFeedbackPopup" runat="server" title="Sub Task Feedback">
             <asp:UpdatePanel ID="upSubTaskFeedbackPopup" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
