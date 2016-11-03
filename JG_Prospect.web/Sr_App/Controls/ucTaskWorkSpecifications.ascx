@@ -53,7 +53,7 @@
         <td>
             <div style="margin-bottom: 10px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div id="divWorkSpecification{id}" data-id="divWorkSpecification{id}" style="width: 90%; padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
+                    <div id="divWorkSpecification{id}" data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
                     <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
