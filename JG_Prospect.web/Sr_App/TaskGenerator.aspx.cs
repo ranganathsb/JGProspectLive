@@ -753,18 +753,18 @@ namespace JG_Prospect.Sr_App
                         bool blIsAdmin, blIsTechLead, blIsUser;
 
                         blIsAdmin = blIsTechLead = blIsUser = false;
-                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
-                        {
-                            objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                            objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
-                            objTaskWorkSpecification.TechLeadStatus = true;
-                            blIsAdmin = true;
-                        }
-                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
                         {
                             objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                             objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
                             objTaskWorkSpecification.AdminStatus = true;
+                            blIsAdmin = true;
+                        }
+                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                        {
+                            objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                            objTaskWorkSpecification.TechLeadStatus = true;
                             blIsTechLead = true;
                         }
                         else
