@@ -168,14 +168,14 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecificationById(Id);
         }
 
-        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdminDesig)
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
         {
-            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, blIsAdminDesig);
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, blIsAdmin, blIsTechLead, blIsUser);
         }
 
-        public DataSet GetLatestTaskWorkSpecification(Int32 Id, Int32 TaskId, bool blFreezed)
+        public int UpdateTaskWorkSpecificationStatusById(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
         {
-            return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(Id, TaskId, blFreezed);
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecificationStatusById(objTaskWorkSpecification, blIsAdmin, blIsTechLead, blIsUser);
         }
 
         public DataSet GetPendingTaskWorkSpecificationCount(Int32 TaskId)

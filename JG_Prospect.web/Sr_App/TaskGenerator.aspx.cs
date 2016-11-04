@@ -750,20 +750,40 @@ namespace JG_Prospect.Sr_App
                         TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
                         objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
 
+                        bool blIsAdmin, blIsTechLead, blIsUser;
+
+                        blIsAdmin = blIsTechLead = blIsUser = false;
                         if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                         {
                             objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                             objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
                             objTaskWorkSpecification.TechLeadStatus = true;
+                            blIsAdmin = true;
                         }
                         else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
                         {
                             objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                             objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
                             objTaskWorkSpecification.AdminStatus = true;
+                            blIsTechLead = true;
+                        }
+                        else
+                        {
+                            objTaskWorkSpecification.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                            objTaskWorkSpecification.OtherUserStatus = true;
+                            blIsUser = true;
                         }
 
-                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId(objTaskWorkSpecification, HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"));
+
+
+                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId
+                                                    (
+                                                        objTaskWorkSpecification,
+                                                        blIsAdmin,
+                                                        blIsTechLead,
+                                                        blIsUser
+                                                    );
 
                         CommonFunction.ShowAlertFromUpdatePanel(this, "Specification freezed successfully.");
                     }
@@ -2114,8 +2134,6 @@ namespace JG_Prospect.Sr_App
                 objTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
                 objTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
                 objTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
-                objTaskWorkSpecification.Links = Convert.ToString(drTaskWorkSpecification["Links"]);
-                objTaskWorkSpecification.WireFrame = Convert.ToString(drTaskWorkSpecification["WireFrame"]);
 
                 if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
                 {
@@ -2137,8 +2155,19 @@ namespace JG_Prospect.Sr_App
                     objTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
                 }
 
+                if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["OtherUserId"])))
+                {
+                    objTaskWorkSpecification.OtherUserId = Convert.ToInt32(drTaskWorkSpecification["OtherUserId"]);
+                    objTaskWorkSpecification.IsOtherUserInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsOtherUserInstallUser"]);
+                    objTaskWorkSpecification.OtherUsername = Convert.ToString(drTaskWorkSpecification["OtherUsername"]);
+                    objTaskWorkSpecification.OtherUserFirstname = Convert.ToString(drTaskWorkSpecification["OtherUserFirstName"]);
+                    objTaskWorkSpecification.OtherUserLastname = Convert.ToString(drTaskWorkSpecification["OtherUserLastName"]);
+                    objTaskWorkSpecification.OtherUserEmail = Convert.ToString(drTaskWorkSpecification["OtherUserEmail"]);
+                }
+
                 objTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
                 objTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
+                objTaskWorkSpecification.OtherUserStatus = Convert.ToBoolean(drTaskWorkSpecification["OtherUserStatus"]);
                 objTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
                 objTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
 

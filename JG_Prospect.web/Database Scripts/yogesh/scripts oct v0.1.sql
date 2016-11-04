@@ -3495,6 +3495,125 @@ GO
 
 --==========================================================================================================================================================================================
 
+ALTER TABLE [tblTaskWorkSpecifications]
+DROP COLUMN WireFrame, Links
+GO
+
+ALTER TABLE [tblTaskWorkSpecifications]
+ADD
+	[OtherUserId] INT NULL,
+	[IsOtherUserInstallUser] BIT NULL,
+	[OtherUserStatus] BIT NULL,
+	[OtherUserStatusUpdated] DATETIME NULL
+GO
+
+UPDATE [tblTaskWorkSpecifications]
+SET [OtherUserStatus] = 0
+GO
+
+DROP PROCEDURE GetLatestTaskWorkSpecification
+GO
+
+/****** Object:  View [dbo].[TaskWorkSpecificationsView]    Script Date: 04-Nov-16 11:12:23 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[TaskWorkSpecificationsView] as
+
+	SELECT
+			s.*,
+			
+			--AdminUser.Id AS AdminUserId,
+			AdminUser.Username AS AdminUsername,
+			AdminUser.FirstName AS AdminUserFirstName,
+			AdminUser.LastName AS AdminUserLastName,
+			AdminUser.Email AS AdminUserEmail,
+			
+			--TechLeadUser.Id AS TechLeadUserId,
+			TechLeadUser.Username AS TechLeadUsername,
+			TechLeadUser.FirstName AS TechLeadUserFirstName,
+			TechLeadUser.LastName AS TechLeadUserLastName,
+			TechLeadUser.Email AS TechLeadUserEmail,
+
+			--OtherUser.Id AS OtherUserId,
+			OtherUser.Username AS OtherUsername,
+			OtherUser.FirstName AS OtherUserFirstName,
+			OtherUser.LastName AS OtherUserLastName,
+			OtherUser.Email AS OtherUserEmail
+
+	FROM tblTaskWorkSpecifications s
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.AdminUserId AND s.IsAdminInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = s.AdminUserId AND s.IsAdminInstallUser = 0
+			) AS AdminUser
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.TechLeadUserId AND s.IsTechLeadInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = s.TechLeadUserId AND s.IsTechLeadInstallUser = 0
+			) AS TechLeadUser
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.OtherUserId AND s.IsOtherUserInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = s.OtherUserId AND s.IsOtherUserInstallUser = 0
+			) AS OtherUser
+
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[GetTaskWorkSpecificationById]    Script Date: 04-Nov-16 11:09:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Get Task specification by Id.
+-- =============================================
+-- EXEC [GetTaskWorkSpecificationById] 1
+ALTER PROCEDURE [dbo].[GetTaskWorkSpecificationById]
+	@Id		INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM [TaskWorkSpecificationsView]
+	WHERE Id = @Id
+
+END
+GO
+
+
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3528,6 +3647,461 @@ BEGIN
 	DELETE
 	FROM tblTaskWorkSpecifications
 	WHERE Id IN (SELECT ID FROM TWS)
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetPendingTaskWorkSpecificationCount]    Script Date: 04-Nov-16 11:18:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Gets number of pending Task specifications related to a task.
+--				Get Task specification by Id, if admin or techlead status is freezed.
+-- =============================================
+-- EXEC GetPendingTaskWorkSpecificationCount 115
+ALTER PROCEDURE [dbo].[GetPendingTaskWorkSpecificationCount]
+	@TaskId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SELECT COUNT(DISTINCT s.id) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId
+
+	SELECT COUNT(DISTINCT s.id) AS PendingRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId AND 
+		(
+			ISNULL(s.AdminStatus ,0) = 0 OR
+			ISNULL(s.TechLeadStatus ,0) = 0 OR
+			ISNULL(s.OtherUserStatus ,0) = 0
+		)
+
+	SELECT TOP 1
+			s.*
+	FROM [TaskWorkSpecificationsView] s
+	WHERE s.TaskId = @TaskId AND (s.AdminStatus = 1 OR s.TechLeadStatus = 1 OR s.OtherUserStatus = 1)
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GetTaskWorkSpecifications]    Script Date: 04-Nov-16 11:20:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Get all Task specifications related to a task, 
+--				with optional status filter.
+-- =============================================
+-- EXEC GetTaskWorkSpecifications 115, 1,NULL
+ALTER PROCEDURE [dbo].[GetTaskWorkSpecifications]
+	@TaskId bigint,
+	@Admin bit,
+	@ParentTaskWorkSpecificationId bigint = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH TaskWorkSpecifications
+	AS
+	(
+		SELECT
+				s.*,
+				ROW_NUMBER() OVER(ORDER BY s.ID ASC) AS RowNumber
+		FROM [TaskWorkSpecificationsView] s
+		WHERE
+			s.TaskId = @TaskId AND 
+			1 = CASE
+					WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+						CASE
+							WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+							ELSE 0
+						END
+					ELSE
+						CASE
+							WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+							ELSE 0
+						END 
+				END AND
+			1 = CASE
+					-- load records with all status for admin users.
+					WHEN @Admin = 1 THEN
+						1
+					-- load only approved records for non-admin users.
+					ELSE
+						CASE
+							WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+							ELSE 0
+						END
+				END
+	)
+		
+	-- get records
+	SELECT 
+			TaskWorkSpecifications.*,
+			-- get sub task work specifications count
+			(
+				SELECT COUNT(Id) AS SubTaskWorkSpecificationCount
+				FROM tblTaskWorkSpecifications s
+				WHERE
+					s.ParentTaskWorkSpecificationId = TaskWorkSpecifications.Id 
+			) AS SubTaskWorkSpecificationCount
+	FROM TaskWorkSpecifications
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND 
+		1 = CASE
+				WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+						ELSE 0
+					END
+				ELSE
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+						ELSE 0
+					END 
+			END AND
+		1 = CASE
+				-- load records with all status for admin users.
+				WHEN @Admin = 1 THEN
+					1
+				-- load only approved records for non-admin users.
+				ELSE
+					CASE
+						WHEN s.[AdminStatus] = 1 AND s.[TechLeadStatus] = 1 THEN 1
+						ELSE 0
+					END
+			END
+
+
+	DECLARE @Temp BIGINT 
+
+	SELECT TOP 1 @Temp = ParentTaskWorkSpecificationId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND Id= @ParentTaskWorkSpecificationId
+
+	-- get first custom id for parent list
+	SELECT TOP 1 CustomId AS FirstParentCustomId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND 
+		(
+			(@Temp IS NULL AND s.ParentTaskWorkSpecificationId IS NULL) OR
+			s.ParentTaskWorkSpecificationId = @Temp
+		)
+
+	-- get last custom id for current list
+	SELECT TOP 1 CustomId AS LastChildCustomId
+	FROM tblTaskWorkSpecifications s
+	WHERE
+		s.TaskId = @TaskId AND
+		1 = CASE
+				WHEN @ParentTaskWorkSpecificationId IS NULL THEN
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId IS NULL THEN 1
+						ELSE 0
+					END
+				ELSE
+					CASE
+						WHEN s.ParentTaskWorkSpecificationId = @ParentTaskWorkSpecificationId THEN 1
+						ELSE 0
+					END 
+			END 
+	ORDER By Id DESC
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertTaskWorkSpecification]    Script Date: 04-Nov-16 11:24:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[tblTaskWorkSpecifications]
+		([CustomId]
+		,[TaskId]
+		,[Description]
+		,[AdminStatus]
+		,[TechLeadStatus]
+		,[OtherUserStatus]
+		,[DateCreated]
+		,[DateUpdated]
+		,[AdminStatusUpdated]
+		,[TechLeadStatusUpdated]
+		,[OtherUserStatusUpdated]
+		,[AdminUserId]
+		,[TechLeadUserId]
+		,[OtherUserId]
+		,[IsAdminInstallUser]
+		,[IsTechLeadInstallUser]
+		,[IsOtherUserInstallUser]
+		,[ParentTaskWorkSpecificationId])
+	VALUES
+		(@CustomId
+		,@TaskId
+		,@Description
+		,0
+		,0
+		,0
+		,GETDATE()
+		,GETDATE()
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,NULL
+		,@ParentTaskWorkSpecificationId)
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecification]    Script Date: 04-Nov-16 11:38:38 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Update Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecification]
+	@Id bigint,
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[CustomId] = @CustomId
+		,[TaskId] = @TaskId
+		,[Description] = @Description
+		,[ParentTaskWorkSpecificationId] = @ParentTaskWorkSpecificationId
+		,[DateUpdated] = GETDATE()
+
+		-- reset status for all, as any change requires 2 level freezing.
+		,[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[OtherUserStatus] = 0
+		,[AdminStatusUpdated] = NULL
+		,[TechLeadStatusUpdated] = NULL
+		,[OtherUserStatusUpdated] = NULL
+		,[AdminUserId] = NULL
+		,[TechLeadUserId] = NULL
+		,[OtherUserId] = NULL
+		,[IsAdminInstallUser] = NULL
+		,[IsTechLeadInstallUser] = NULL
+		,[IsOtherUserInstallUser] = NULL
+	WHERE Id = @Id
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecificationStatusByTaskId]    Script Date: 04-Nov-16 11:43:30 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Updates status of Task specifications by task Id.
+-- =============================================
+
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecificationStatusByTaskId]
+	@TaskId		BIGINT,
+	@AdminStatus BIT = NULL,
+	@TechLeadStatus BIT = NULL,
+	@OtherUserStatus BIT = NULL,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	IF @AdminStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			AdminStatus = @AdminStatus,
+			AdminUserId= @UserId,
+			IsAdminInstallUser = @IsInstallUser,
+			AdminStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+	ELSE IF @TechLeadStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			TechLeadStatus = @TechLeadStatus,
+			TechLeadUserId= @UserId,
+			IsTechLeadInstallUser = @IsInstallUser,
+			TechLeadStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+	ELSE IF @OtherUserStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			OtherUserStatus = @OtherUserStatus,
+			OtherUserId= @UserId,
+			IsOtherUserInstallUser = @IsInstallUser,
+			OtherUserStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecificationStatusByTaskId]    Script Date: 04-Nov-16 11:43:30 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Updates status of Task specifications including childs by Id.
+-- =============================================
+
+CREATE PROCEDURE [dbo].[UpdateTaskWorkSpecificationStatusById]
+	@Id		BIGINT,
+	@AdminStatus BIT = NULL,
+	@TechLeadStatus BIT = NULL,
+	@OtherUserStatus BIT = NULL,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE	@tblTemp	TABLE(Id BIGINT)
+
+	-- gets current as well as all child specifications.
+	;WITH TWS AS
+	(
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s
+		WHERE Id = @Id
+
+		UNION ALL
+
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s 
+			INNER JOIN TWS t ON s.ParentTaskWorkSpecificationId = t.Id
+	)
+
+	INSERT INTO @tblTemp
+	SELECT ID FROM TWS
+
+	IF @AdminStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			AdminStatus = @AdminStatus,
+			AdminUserId= @UserId,
+			IsAdminInstallUser = @IsInstallUser,
+			AdminStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
+	ELSE IF @TechLeadStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			TechLeadStatus = @TechLeadStatus,
+			TechLeadUserId= @UserId,
+			IsTechLeadInstallUser = @IsInstallUser,
+			TechLeadStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
+	ELSE IF @OtherUserStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			OtherUserStatus = @OtherUserStatus,
+			OtherUserId= @UserId,
+			IsOtherUserInstallUser = @IsInstallUser,
+			OtherUserStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
 
 END
 GO
