@@ -3494,3 +3494,40 @@ GO
 -- Uploaded on live 03 Nov 2016
 
 --==========================================================================================================================================================================================
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 09/02/2016
+-- Description:	Delete task work specifications
+-- =============================================
+ALTER PROCEDURE [dbo].[DeleteTaskWorkSpecification] 
+(	
+	@Id bigint
+)
+AS
+BEGIN
+	
+	;WITH TWS AS
+	(
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s
+		WHERE Id = @Id
+
+		UNION ALL
+
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s 
+			INNER JOIN TWS t ON s.ParentTaskWorkSpecificationId = t.Id
+	)
+
+	-- this performs delete cascade based on ParentTaskWorkSpecificationId column.
+	DELETE
+	FROM tblTaskWorkSpecifications
+	WHERE Id IN (SELECT ID FROM TWS)
+
+END
+GO
