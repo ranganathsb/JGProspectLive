@@ -92,6 +92,7 @@
     });
 
     function Initialize_WorkSpecifications() {
+        console.log('Initialize_WorkSpecifications');
         GetWorkSpecifications(0, OnWorkSpecificationsResponseReceived);
     }
 
@@ -159,6 +160,12 @@
         // clear div and append new result.
         $('div[data-parent-work-specification-id="'+intParentId+'"]').html('');
         $('div[data-parent-work-specification-id="'+intParentId+'"]').append($WorkSpecificationSectionTemplate);
+
+        if(arrData.TotalRecordCount > 0 && arrData.PendingCount == 0) {
+            $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecification"]').remove()
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecification"]').remove()
+        }
     }
 
     function GetWorkSpecifications(intParentId,callback) {
@@ -358,7 +365,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data:  '{ intId:' + Id + ', strPassword:' + $(sender).val() + '}',
+                data:  '{ intId:' + Id + ', strPassword:"' + $(sender).val() + '"}',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();

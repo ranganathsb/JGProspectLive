@@ -90,10 +90,19 @@ namespace JG_Prospect.WebServices
                 strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('I', strLastCustomId, true);
             }
 
+            int intPendingCount = 0;
+
+            DataSet dsTaskSpecificationStatus = TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
+            if (dsTaskSpecificationStatus.Tables.Count > 1 && dsTaskSpecificationStatus.Tables[1].Rows.Count > 0)
+            {
+                intPendingCount = Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]);
+            }
+
             var result = new
             {
                 NextCustomId = strNextCustomId,
                 TotalRecordCount = intTotalRecordCount,
+                PendingCount = intPendingCount,
                 Records = arrTaskWorkSpecification
             };
 
@@ -189,7 +198,7 @@ namespace JG_Prospect.WebServices
                                                 blIsAdmin,
                                                 blIsTechLead,
                                                 blIsUser
-                                            ); 
+                                            );
             }
             else
             {
