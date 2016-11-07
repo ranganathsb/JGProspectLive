@@ -121,13 +121,14 @@
                 $WorkSpecificationRowTemplate.find('div[data-id="divWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
+                $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecificationButtons'+arrData[i].Id+'"]').hide();
                 $WorkSpecificationRowTemplate.find('a[data-id="btnHideSubSection'+arrData[i].Id+'"]').hide();
 
                 if(arrData[i].TaskWorkSpecificationsCount == 0) {
                     $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').hide();
                 }
-                else if(result.PendingCount > 0){
-                    $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide()
+                else {
+                    $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide();
                 }
 
                 if(arrData[i].AdminStatus) {
@@ -163,9 +164,10 @@
         
         if(result.TotalRecordCount > 0 && result.PendingCount == 0) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
-            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecificationButtons"]').remove()
-            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecification"]').remove()
-            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecificationButtons"]').remove()
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecificationButtons"]').remove();
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecification"]').remove();
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecificationButtons"]').remove();
+            $('div[data-parent-work-specification-id="0"]').find('a[data-id*="btnAddSubSection"]').hide();
         }
     }
 
@@ -200,7 +202,7 @@
         $sender = $(sender);
         
         var Id = $sender.attr('data-work-specification-id');
-        console.log($('div[data-id="divEditWorkSpecification' + Id + '"]'));
+
         // show edit and hide view section.
         $('div[data-id="divEditWorkSpecification' + Id + '"]').show();
         $('div[data-id="divEditWorkSpecificationButtons' + Id + '"]').show();
