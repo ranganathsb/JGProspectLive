@@ -775,8 +775,6 @@ namespace JG_Prospect.Sr_App
                             blIsUser = true;
                         }
 
-
-
                         TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId
                                                     (
                                                         objTaskWorkSpecification,
@@ -801,6 +799,14 @@ namespace JG_Prospect.Sr_App
                 SaveTask();
 
                 #endregion
+
+                ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "Initialize_WorkSpecifications_Script",
+                                                    "Initialize_WorkSpecifications();",
+                                                    true
+                                                   );
             }
         }
 

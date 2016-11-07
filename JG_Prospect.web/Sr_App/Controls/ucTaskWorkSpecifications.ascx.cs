@@ -42,7 +42,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ViewState["IsAdminAndItLeadMode"] = value;
             }
         }
-        
+
         #endregion
 
         #region '--Page Events--'
@@ -50,16 +50,34 @@ namespace JG_Prospect.Sr_App.Controls
         protected void Page_Load(object sender, EventArgs e)
         {
 
-        } 
+        }
 
         #endregion
 
         #region '--Control Events--'
-        
+
         #endregion
 
         #region '--Methods--'
-        
+
+        protected string GetPasswordPlaceholder()
+        {
+            string strPlaceholder = string.Empty;
+            if (Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+            {
+                strPlaceholder = "Admin Password";
+            }
+            else if (Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+            {
+                strPlaceholder = "IT Lead Password";
+            }
+            else
+            {
+                strPlaceholder = "User Password";
+            }
+            return strPlaceholder;
+        }
+
         #endregion
     }
 }

@@ -69,6 +69,11 @@
             <input data-id="chkAdminApproval{id}" type="checkbox" />&nbsp;
             <input data-id="chkITLeadApproval{id}" type="checkbox" />&nbsp;
             <input data-id="chkUserApproval{id}" type="checkbox" />
+            <div>
+                <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>'
+                    data-parent-work-specification-id="{parent-id}" data-work-specification-id="{id}"
+                    onchange="javascript:OnPasswordChanged(this);" />
+            </div>
         </td>
     </tr>
 </script>
@@ -79,7 +84,6 @@
     var strWorkSpecificationRowTemplate = $('script[data-id="tmpWorkSpecificationRow"]').html().toString();
 
     var TaskId = <%=this.TaskId%>;
-    var blIsAdmin= <%=this.IsAdminAndItLeadMode.ToString().ToLower()%>;
 
     $(document).ready(function() {
     
@@ -122,8 +126,20 @@
                     $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').hide();
                 }
                 else {
-                    $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide();
-                    //$WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').text('View ' + arrData[i].TaskWorkSpecificationsCount + ' More(+)');
+                    $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide()
+                }
+                
+                if(arrData[i].AdminStatus) {
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkAdminApproval'+arrData[i].Id+'"]').attr('disabled','disabled');
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkAdminApproval'+arrData[i].Id+'"]').attr('checked',true);
+                }
+                if(arrData[i].TechLeadStatus) {
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkITLeadApproval'+arrData[i].Id+'"]').attr('disabled','disabled');
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkITLeadApproval'+arrData[i].Id+'"]').attr('checked',true);
+                }
+                if(arrData[i].OtherUserStatus) {
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkUserApproval'+arrData[i].Id+'"]').attr('disabled','disabled');
+                    $WorkSpecificationRowTemplate.find('input[data-id="chkUserApproval'+arrData[i].Id+'"]').attr('checked',true);
                 }
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
@@ -151,7 +167,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ TaskId: ' +TaskId  + ', blIsAdmin: ' + blIsAdmin + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
+                data: '{ TaskId: ' +TaskId + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
@@ -277,9 +293,8 @@
         var Id= $(sender).attr('data-work-specification-id');
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
-        // var strDescription = $.trim($('textarea[data-id="txtWorkSpecification'+Id+'"]').val());
-        
         var strDescription = getCKEditorData('txtWorkSpecification'+ Id, 'divWorkSpecification'+ Id);
+
         var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
 
         console.log("Data Sent to web service: " + datatoSend);
@@ -298,6 +313,42 @@
                     if(data.d) {
                         alert('Specification saved successfully.');
                         OnCancelEditClick(sender);
+                    }
+                    else {
+                        alert('Specification update was not successfull, Please try again later.');
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a);
+                    HideAjaxLoader();
+                }
+            }
+        );
+
+        return false;
+    }
+
+    function OnPasswordChanged(sender) {
+    
+        ShowAjaxLoader();
+
+        var Id= $(sender).attr('data-work-specification-id');
+        var intParentId = $(sender).attr('data-parent-work-specification-id');
+
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/UpdateTaskWorkSpecificationStatusById',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data:  '{ intId:' + Id + '}',
+                asynch: false,
+                success: function (data) {
+                    HideAjaxLoader();
+                    if(data.d) {
+                        GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
+                        alert('Specification saved successfully.');
                     }
                     else {
                         alert('Specification update was not successfull, Please try again later.');

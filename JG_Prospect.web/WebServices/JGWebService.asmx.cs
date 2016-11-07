@@ -19,9 +19,8 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
-
-        [WebMethod]
-        public object GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64 intParentTaskWorkSpecificationId)
+        [WebMethod(EnableSession=true)]
+        public object GetTaskWorkSpecifications(Int32 TaskId, Int64 intParentTaskWorkSpecificationId)
         {
             List<string> strTableData = new List<string>();
 
@@ -29,11 +28,11 @@ namespace JG_Prospect.WebServices
 
             if (intParentTaskWorkSpecificationId == 0)
             {
-                ds = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, null, 0, null);
+                ds = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(TaskId, App_Code.CommonFunction.CheckAdminAndItLeadMode(), null, 0, null);
             }
             else
             {
-                ds = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intParentTaskWorkSpecificationId, 0, null);
+                ds = TaskGeneratorBLL.Instance.GetTaskWorkSpecifications(TaskId, App_Code.CommonFunction.CheckAdminAndItLeadMode(), intParentTaskWorkSpecificationId, 0, null);
             }
 
             TaskWorkSpecification[] arrTaskWorkSpecification = null;
@@ -53,6 +52,7 @@ namespace JG_Prospect.WebServices
                     arrTaskWorkSpecification[i].CustomId = Convert.ToString(dr["CustomId"]);
                     arrTaskWorkSpecification[i].AdminStatus = Convert.ToBoolean(dr["AdminStatus"]);
                     arrTaskWorkSpecification[i].TechLeadStatus = Convert.ToBoolean(dr["TechLeadStatus"]);
+                    arrTaskWorkSpecification[i].OtherUserStatus = Convert.ToBoolean(dr["OtherUserStatus"]);
                     arrTaskWorkSpecification[i].Description = Convert.ToString(dr["Description"]);
                     if (!string.IsNullOrEmpty(dr["ParentTaskWorkSpecificationId"].ToString()))
                     {
@@ -149,5 +149,45 @@ namespace JG_Prospect.WebServices
 
             return blSuccess;
         }
+
+        public int UpdateTaskWorkSpecificationStatusById(Int64 intId)
+        {
+            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+            objTaskWorkSpecification.Id = intId;
+
+            bool blIsAdmin, blIsTechLead, blIsUser;
+
+            blIsAdmin = blIsTechLead = blIsUser = false;
+            if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+            {
+                objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                objTaskWorkSpecification.AdminStatus = true;
+                blIsAdmin = true;
+            }
+            else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+            {
+                objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                objTaskWorkSpecification.TechLeadStatus = true;
+                blIsTechLead = true;
+            }
+            else
+            {
+                objTaskWorkSpecification.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskWorkSpecification.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                objTaskWorkSpecification.OtherUserStatus = true;
+                blIsUser = true;
+            }
+
+            return TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusById
+                                        (
+                                            objTaskWorkSpecification,
+                                            blIsAdmin,
+                                            blIsTechLead,
+                                            blIsUser
+                                        );
+        }
+
     }
 }
