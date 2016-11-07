@@ -163,7 +163,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecifications(TaskId, blIsAdmin, intParentTaskWorkSpecificationId, intPageIndex, intPageSize);
         }
 
-        public DataSet GetTaskWorkSpecificationById(Int64 Id)
+        public TaskWorkSpecification GetTaskWorkSpecificationById(Int64 Id)
         {
             return TaskGeneratorDAL.Instance.GetTaskWorkSpecificationById(Id);
         }

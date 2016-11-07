@@ -1024,7 +1024,7 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@ParentTaskWorkSpecificationId", DbType.Int64, intParentTaskWorkSpecificationId.Value);
                     }
-                    
+
                     if (intPageIndex.HasValue)
                     {
                         database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
@@ -1043,8 +1043,10 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskWorkSpecificationById(Int64 Id)
+        public TaskWorkSpecification GetTaskWorkSpecificationById(Int64 Id)
         {
+            TaskWorkSpecification objTaskWorkSpecification = null;
+
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
@@ -1054,16 +1056,27 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@Id", DbType.Int64, Id);
 
-                    return database.ExecuteDataSet(command);
+                    DataSet dsTaskWorkSpecification = database.ExecuteDataSet(command);
+
+                    if (
+                        dsTaskWorkSpecification != null &&
+                        dsTaskWorkSpecification.Tables.Count > 0 &&
+                        dsTaskWorkSpecification.Tables[0].Rows.Count > 0
+                       )
+                    {
+                        objTaskWorkSpecification = GetTaskWorkSpecification(dsTaskWorkSpecification.Tables[0].Rows[0]);
+                    }
+
+                    return objTaskWorkSpecification;
                 }
             }
             catch
             {
-                return null;
+                return objTaskWorkSpecification;
             }
         }
 
-        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin,bool blIsTechLead,bool blIsUser)
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
         {
             try
             {
@@ -1160,6 +1173,64 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get a TaskWorkSpecification object based on values in DataRow.
+        /// </summary>
+        /// <param name="drTaskWorkSpecification">possible DataRow containing TaskWorkSpecification data.</param>
+        /// <returns></returns>
+        private TaskWorkSpecification GetTaskWorkSpecification(DataRow drTaskWorkSpecification)
+        {
+            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+
+            #region Prepare TaskWorkSpecification Object
+
+            objTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
+            objTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
+            objTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
+            objTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
+            {
+                objTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["AdminUserId"]);
+                objTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsAdminInstallUser"]);
+                objTaskWorkSpecification.AdminUsername = Convert.ToString(drTaskWorkSpecification["AdminUsername"]);
+                objTaskWorkSpecification.AdminUserFirstname = Convert.ToString(drTaskWorkSpecification["AdminUserFirstName"]);
+                objTaskWorkSpecification.AdminUserLastname = Convert.ToString(drTaskWorkSpecification["AdminUserLastName"]);
+                objTaskWorkSpecification.AdminUserEmail = Convert.ToString(drTaskWorkSpecification["AdminUserEmail"]);
+            }
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["TechLeadUserId"])))
+            {
+                objTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["TechLeadUserId"]);
+                objTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsTechLeadInstallUser"]);
+                objTaskWorkSpecification.TechLeadUsername = Convert.ToString(drTaskWorkSpecification["TechLeadUsername"]);
+                objTaskWorkSpecification.TechLeadUserFirstname = Convert.ToString(drTaskWorkSpecification["TechLeadUserFirstName"]);
+                objTaskWorkSpecification.TechLeadUserLastname = Convert.ToString(drTaskWorkSpecification["TechLeadUserLastName"]);
+                objTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
+            }
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["OtherUserId"])))
+            {
+                objTaskWorkSpecification.OtherUserId = Convert.ToInt32(drTaskWorkSpecification["OtherUserId"]);
+                objTaskWorkSpecification.IsOtherUserInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsOtherUserInstallUser"]);
+                objTaskWorkSpecification.OtherUsername = Convert.ToString(drTaskWorkSpecification["OtherUsername"]);
+                objTaskWorkSpecification.OtherUserFirstname = Convert.ToString(drTaskWorkSpecification["OtherUserFirstName"]);
+                objTaskWorkSpecification.OtherUserLastname = Convert.ToString(drTaskWorkSpecification["OtherUserLastName"]);
+                objTaskWorkSpecification.OtherUserEmail = Convert.ToString(drTaskWorkSpecification["OtherUserEmail"]);
+            }
+
+            objTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
+            objTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
+            objTaskWorkSpecification.OtherUserStatus = Convert.ToBoolean(drTaskWorkSpecification["OtherUserStatus"]);
+            objTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
+            objTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
+
+            #endregion
+
+            return objTaskWorkSpecification;
+        }
+
 
         #endregion
 
