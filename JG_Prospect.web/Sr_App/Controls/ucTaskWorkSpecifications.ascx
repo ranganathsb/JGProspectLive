@@ -51,11 +51,11 @@
                 <div data-id="divEditWorkSpecification{id}">
                     <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
                 </div>
-                <div data-id="divViewWorkSpecification{id}" style="display: inline;">
+                <div data-id="divViewWorkSpecificationButtons{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
                     <a href="javascript:void(0);" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnDeleteClick(this);">Delete</a>&nbsp;
                 </div>
-                <div data-id="divEditWorkSpecification{id}" style="display: inline;">
+                <div data-id="divEditWorkSpecificationButtons{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-id="btnSave{id}" data-work-specification-id="{id}" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnSaveClick(this);">Save</a>&nbsp;
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnCancelEditClick(this);">Cancel</a>&nbsp;
                 </div>
@@ -126,10 +126,10 @@
                 if(arrData[i].TaskWorkSpecificationsCount == 0) {
                     $WorkSpecificationRowTemplate.find('a[data-id="btnViewSubSection'+arrData[i].Id+'"]').hide();
                 }
-                else {
+                else if(result.PendingCount > 0){
                     $WorkSpecificationRowTemplate.find('a[data-id="btnAddSubSection'+arrData[i].Id+'"]').hide()
                 }
-                
+
                 if(arrData[i].AdminStatus) {
                     $WorkSpecificationRowTemplate.find('input[data-id="chkAdminApproval'+arrData[i].Id+'"]').attr('disabled','disabled');
                     $WorkSpecificationRowTemplate.find('input[data-id="chkAdminApproval'+arrData[i].Id+'"]').attr('checked',true);
@@ -160,11 +160,12 @@
         // clear div and append new result.
         $('div[data-parent-work-specification-id="'+intParentId+'"]').html('');
         $('div[data-parent-work-specification-id="'+intParentId+'"]').append($WorkSpecificationSectionTemplate);
-
-        if(arrData.TotalRecordCount > 0 && arrData.PendingCount == 0) {
+        
+        if(result.TotalRecordCount > 0 && result.PendingCount == 0) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
-            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecification"]').remove()
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecificationButtons"]').remove()
             $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecification"]').remove()
+            $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecificationButtons"]').remove()
         }
     }
 
@@ -202,7 +203,9 @@
         console.log($('div[data-id="divEditWorkSpecification' + Id + '"]'));
         // show edit and hide view section.
         $('div[data-id="divEditWorkSpecification' + Id + '"]').show();
+        $('div[data-id="divEditWorkSpecificationButtons' + Id + '"]').show();
         $('div[data-id="divViewWorkSpecification' + Id + '"]').hide();
+        $('div[data-id="divViewWorkSpecificationButtons' + Id + '"]').hide();
 
         setCKEDITORonArea('txtWorkSpecification'+Id);
         
@@ -255,7 +258,9 @@
 
         // show view and hide edit section.
         $('div[data-id="divViewWorkSpecification' + Id + '"]').show();
+        $('div[data-id="divViewWorkSpecificationButtons' + Id + '"]').show();
         $('div[data-id="divEditWorkSpecification' + Id + '"]').hide();
+        $('div[data-id="divEditWorkSpecificationButtons' + Id + '"]').hide();
 
         return false;
     }
