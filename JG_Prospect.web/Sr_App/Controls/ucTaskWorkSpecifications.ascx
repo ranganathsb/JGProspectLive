@@ -66,13 +66,13 @@
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
         <td valign="top" style="width: 65px;">
-            <input data-id="chkAdminApproval{id}" type="checkbox" />&nbsp;
-            <input data-id="chkITLeadApproval{id}" type="checkbox" />&nbsp;
-            <input data-id="chkUserApproval{id}" type="checkbox" />
-            <div>
-                <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>'
+            <input data-id="chkAdminApproval{id}" data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+            <input data-id="chkITLeadApproval{id}" data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+            <input data-id="chkUserApproval{id}" data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+            <div data-id="divPassword{id}">
+                <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
                     data-parent-work-specification-id="{parent-id}" data-work-specification-id="{id}"
-                    onchange="javascript:OnPasswordChanged(this);" />
+                    onchange="javascript:OnApprovalPasswordChanged(this);" />
             </div>
         </td>
     </tr>
@@ -140,6 +140,11 @@
                 if(arrData[i].OtherUserStatus) {
                     $WorkSpecificationRowTemplate.find('input[data-id="chkUserApproval'+arrData[i].Id+'"]').attr('disabled','disabled');
                     $WorkSpecificationRowTemplate.find('input[data-id="chkUserApproval'+arrData[i].Id+'"]').attr('checked',true);
+                }
+
+                $WorkSpecificationRowTemplate.find('div[data-id="divPassword'+arrData[i].Id+'"]').hide();
+                if(arrData[i].AdminStatus && arrData[i].TechLeadStatus && arrData[i].OtherUserStatus) {
+                    $WorkSpecificationRowTemplate.find('div[data-id="divPassword'+arrData[i].Id+'"]').remove();
                 }
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
@@ -328,7 +333,18 @@
         return false;
     }
 
-    function OnPasswordChanged(sender) {
+    function OnApprovalCheckBoxChanged(sender) {
+        var Id= $(sender).attr('data-work-specification-id');
+        
+        if($(sender).prop('checked')) {
+            $('div[data-id="divPassword' + Id + '"]').show();
+        }
+        else {
+            $('div[data-id="divPassword' + Id + '"]').hide();
+        }
+    }
+
+    function OnApprovalPasswordChanged(sender) {
     
         ShowAjaxLoader();
 
@@ -342,16 +358,19 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data:  '{ intId:' + Id + '}',
+                data:  '{ intId:' + Id + ', strPassword:' + $(sender).val() + '}',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
-                    if(data.d) {
+                    if(data.d == -2) {
+                        alert('Specification cannot be freezed as password is not valid.');
+                    }
+                    else if(data.d > 0) {
                         GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
-                        alert('Specification saved successfully.');
+                        alert('Specification freezed successfully.');
                     }
                     else {
-                        alert('Specification update was not successfull, Please try again later.');
+                        alert('Specification cannot be freezed, Please try again later.');
                     }
                 },
                 error: function (a, b, c) {

@@ -78,6 +78,30 @@ namespace JG_Prospect.Sr_App.Controls
             return strPlaceholder;
         }
 
+        protected string GetPasswordCheckBoxChangeEvent(bool blAdmin,bool blITLead,bool blUser)
+        {
+            string strOnChange = "javascript: return false;";
+            if (Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+            {
+                if (blAdmin)
+                {
+                    strOnChange = "javascript: OnApprovalCheckBoxChanged(this);";
+                }
+            }
+            else if (Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+            {
+                if (blITLead)
+                {
+                    strOnChange = "javascript: OnApprovalCheckBoxChanged(this);";
+                }
+            }
+            else if(blUser)
+            {
+                strOnChange = "javascript: OnApprovalCheckBoxChanged(this);";
+            }
+            return strOnChange;
+        }
+
         #endregion
     }
 }
