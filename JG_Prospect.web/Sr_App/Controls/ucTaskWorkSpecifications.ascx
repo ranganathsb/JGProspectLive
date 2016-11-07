@@ -66,9 +66,9 @@
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
         <td valign="top" style="width: 65px;">
-            <input data-id="chkAdminApproval{id}" data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
-            <input data-id="chkITLeadApproval{id}" data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
-            <input data-id="chkUserApproval{id}" data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+            <input data-id="chkAdminApproval{id}" class="fz fz-admin"  data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+            <input data-id="chkITLeadApproval{id}" class="fz fz-techlead"  data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+            <input data-id="chkUserApproval{id}" class="fz fz-user"  data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
             <div data-id="divPassword{id}">
                 <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
                     data-parent-work-specification-id="{parent-id}" data-work-specification-id="{id}"

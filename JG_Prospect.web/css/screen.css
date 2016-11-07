@@ -1456,3 +1456,19 @@ a.page_disabled, a.page_disabled:hover, a.page_disabled:active {
     font-weight: bold;
     color: black;
 }
+
+.fz 
+{
+outline: 2px solid !important ;
+outline-offset: 1px !important;
+}
+.fz-admin {
+outline-color: red !important;
+}
+.fz-techlead {
+outline-color: black !important;
+}
+.fz-user {
+outline-color:blue !important;
+}
+
