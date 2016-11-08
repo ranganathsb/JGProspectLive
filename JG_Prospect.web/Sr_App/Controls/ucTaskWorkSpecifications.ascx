@@ -22,7 +22,7 @@
                     </small>
                 </td>
                 <td>
-                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" rows="4" style="width: 95%;"></textarea>
+                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="4" style="width: 95%;"></textarea>
                     <br />
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
@@ -149,6 +149,8 @@
                     $WorkSpecificationRowTemplate.find('div[data-id="divPassword'+arrData[i].Id+'"]').remove();
                 }
 
+                setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
+
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
             }
         }
@@ -210,7 +212,6 @@
         $('div[data-id="divViewWorkSpecificationButtons' + Id + '"]').hide();
 
         setCKEDITORonArea('txtWorkSpecification'+Id);
-        
 
         return false;
     }
@@ -274,8 +275,8 @@
         var Id= 0;
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+intParentId+'_Footer"]').text());
-        var strDescription = $.trim($('textarea[data-id="txtWorkSpecification'+intParentId+'_Footer"]').val());
-        
+        var strDescription = getCKEditorData('txtWorkSpecification'+intParentId+'_Footer');
+
         $.ajax
         (
             {
@@ -505,9 +506,12 @@
         $(jqueryId).html(encodedHTMLData);
         
         $(jqueryId).attr('contenteditable', false);  
-       
-        $('div[data-id=\''+ divWorkSpecsId + '\']').html(encodedHTMLData);
-        
+
+        console.log(typeof(divWorkSpecsId));
+        if(typeof(divWorkSpecsId) != "undefined") {
+            $('div[data-id=\''+ divWorkSpecsId + '\']').html(encodedHTMLData);
+        }
+
         CKEDITOR.instances[Id].destroy();
 
         return encodedHTMLData;
