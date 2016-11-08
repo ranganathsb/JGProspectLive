@@ -323,9 +323,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.CheckCustomerRegistration(loginid, PhoneNo);
         }
 
-        public bool BulkUpdateIntsallUser(string xmlDoc)
+        public bool BulkUpdateIntsallUser(string xmlDoc,string UpdatedBy)
         {
-            return InstallUserDAL.Instance.BulkUpdateIntsallUser(xmlDoc);
+            return InstallUserDAL.Instance.BulkUpdateIntsallUser(xmlDoc, UpdatedBy);
         }
 
         public DataSet BulkIntsallUser(string xmlDoc)
@@ -441,6 +441,11 @@ namespace JG_Prospect.BLL
         {
 
             return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
+        }
+
+        public DataSet GetAllInterivewUserByPastDate()
+        {
+            return InstallUserDAL.Instance.GetAllInterivewUserByPastDate();
         }
 
         public DataSet ReSchedule_Interivew(int ApplicantId, string ReSheduleDate , string ReSheduleTime, int ReSheduleByUserId)

@@ -29,7 +29,7 @@ namespace JG_Prospect.DAL
 
         #region userlogin
 
-        public bool BulkUpdateIntsallUser(string xmlDoc)
+        public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
         {
             DataSet dsTemp = new DataSet();
 
@@ -39,6 +39,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("UDP_BulkUpdateInstallUser");
                     database.AddInParameter(command, "@XMLDOC2", DbType.Xml, xmlDoc);
+                    database.AddInParameter(command, "@UpdatedBy", DbType.String, UpdatedBy);                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -327,6 +328,26 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
                     }
 
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
+
+        public DataSet GetAllInterivewUserByPastDate()
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetAllInterivewUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                      
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;
                 }

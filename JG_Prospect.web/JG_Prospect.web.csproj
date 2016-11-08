@@ -85,6 +85,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\DropDownCheckBoxes.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\JMGrove_InterviewTasks\JG_Prospect-New\JG_Prospect.web\External Dependencies\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Google.GData.AccessControl, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Google.GData.AccessControl.dll</HintPath>
@@ -1805,6 +1808,7 @@
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
+    <Content Include="UserControl\ucStatusChangePopup.ascx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1847,6 +1851,13 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
+      <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucStatusChangePopup.ascx.designer.cs">
+      <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
