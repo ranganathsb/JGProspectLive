@@ -139,7 +139,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER procedure [dbo].[UDP_BulkUpdateInstallUser]
+CREATE procedure [dbo].[UDP_BulkUpdateInstallUser]
 @XMLDOC2 xml
 , @UpdatedBy varchar(250)
 , @result int out
