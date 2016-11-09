@@ -1472,3 +1472,13 @@ outline-color: black !important;
 outline-color:blue !important;
 }
 
+.cke_textarea_inline {
+    display: block; 
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: #b5b4b4 1px solid;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 5px;
+}

@@ -1,11 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskWorkSpecifications.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskWorkSpecifications" %>
 
-<style type="text/css">
-    .cke_textarea_inline {
-        /*background-color:white;*/
-    }
-</style>
-
 <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0">
 </div>
 
