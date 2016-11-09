@@ -1534,6 +1534,7 @@
     <Content Include="Sr_App\ContractFooter.aspx" />
     <Content Include="Sr_App\Controls\AddProductLinesControl.ascx" />
     <Content Include="Sr_App\Controls\TaskGenerator.ascx" />
+    <Content Include="Sr_App\Controls\ucTaskHistory.ascx" />
     <Content Include="Sr_App\Controls\ucTaskWorkSpecifications.ascx" />
     <Content Include="Sr_App\CreateSalesUser.aspx" />
     <Content Include="Sr_App\Custom.aspx" />
@@ -1852,6 +1853,13 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\Controls\ucTaskHistory.ascx.cs">
+      <DependentUpon>ucTaskHistory.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\Controls\ucTaskHistory.ascx.designer.cs">
+      <DependentUpon>ucTaskHistory.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
@@ -2404,6 +2412,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
