@@ -196,6 +196,12 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
+            objucTaskHistory_Admin.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            objucTaskHistory_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskHistory_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucTaskHistory_Admin.LoadTaskData = LoadTaskData;
+            objucTaskHistory_Admin.Visible = false;
+
             objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
         }
@@ -1783,6 +1789,11 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void LoadTaskData(Int64 intTaskId)
+        {
+            LoadTaskData(intTaskId.ToString());
+        }
+
         private void LoadTaskData(string TaskId)
         {
             DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(TaskId));
@@ -1803,6 +1814,7 @@ namespace JG_Prospect.Sr_App
             SetTaskDesignationDetails(dtTaskDesignationDetails);
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             SetTaskUserNNotesDetails(dtTaskNotesDetails);
+            //objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
             //FillrptWorkFiles(dsTaskDetails.Tables[5]);
 

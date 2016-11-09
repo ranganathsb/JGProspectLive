@@ -6,6 +6,7 @@
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register Src="~/Controls/CustomPager.ascx" TagPrefix="uc1" TagName="CustomPager" %>
 <%@ Register Src="~/Sr_App/Controls/ucTaskWorkSpecifications.ascx" TagPrefix="uc1" TagName="ucTaskWorkSpecifications" %>
+<%@ Register Src="~/Sr_App/Controls/ucTaskHistory.ascx" TagPrefix="uc1" TagName="ucTaskHistory" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -182,6 +183,11 @@
                                 <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
                                     runat="server" ControlToValidate="txtDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
                                 </asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <uc1:ucTaskHistory id="objucTaskHistory_Admin" runat="server" />
                             </td>
                         </tr>
                         <tr id="trSubTaskList" runat="server">
