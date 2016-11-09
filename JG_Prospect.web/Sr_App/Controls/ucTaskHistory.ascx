@@ -456,47 +456,17 @@
                                 </div>
                             </td>
                             <td style="width: 50%">
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td style="width: 10%">
-                                            <asp:ImageButton ImageUrl="~/img/paperclip.png" Height="30px" Width="30px" runat="server" ID="imgBtnLogFiles" OnClientClick="Javascript:return showNotesUploadControl(1);" />
-                                        </td>
-
-                                        <td style="width: 50%; display: none" id="tdLogFiles">
-                                            <div>
-                                                <table style="width: 100%">
-                                                    <tr>
-                                                        <td style="text-align: right">
-                                                            <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
-                                                                <div class="fallback">
-                                                                    <input name="file" type="file" multiple />
-                                                                    <input type="submit" value="Upload" />
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td style="text-align: left">
-                                                            <table>
-                                                                <tr>
-
-                                                                    <td>
-                                                                        <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
-                                                                        </div>
-                                                                    </td>
-
-                                                                    <td style="visibility: hidden">
-                                                                        <div class="btn_sec" style="text-align: right;">
-                                                                            <asp:Button ID="btnUploadLogFiles" runat="server" Text="Upload File" CssClass="ui-button" OnClick="btnUploadLogFiles_Click" ValidationGroup="Submit" />
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                    <div class="fallback">
+                                        <input name="file" type="file" multiple />
+                                        <input type="submit" value="Upload" />
+                                    </div>
+                                </div>
+                                <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
+                                </div>
+                                <div class="hide">
+                                    <asp:Button ID="btnUploadLogFiles" runat="server" Text="Upload File" CssClass="ui-button" OnClick="btnUploadLogFiles_Click" ValidationGroup="Submit" />
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -505,3 +475,133 @@
         </ContentTemplate>
     </asp:UpdatePanel>
 </div>
+<input id="hdnNoteId" runat="server" type="hidden" />
+<input id="hdnNoteAttachments" runat="server" type="hidden" />
+<input id="hdnNoteFileType" runat="server" type="hidden" />
+
+<div class="hide">
+    <div id="divFilePreviewPopup" runat="server" title="File Preview">
+        <table width="100%" cellpadding="0" cellspacing="5">
+            <tr style="background-color: gray">
+                <td align="center" colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px">
+                    <asp:Label ID="lblFileName" ForeColor="White" runat="server" />
+                </td>
+            </tr>
+        </table>
+        <div style="padding: 5px">
+            <asp:Image ID="imgPreview" Height="98%" Width="98%" runat="server" Visible="false" />
+            <div runat="server" height="98%" width="98%" id="divVideo">
+                <video height="98%" width="98%" id="tagVideo" controls>
+                    <source type="video/mp4" runat="server" id="videomp4" />
+                    <source type="video/3gpp" runat="server" id="video3gpp" />
+                    <source type="video/mpeg" runat="server" id="videompeg" />
+                    <source type="video/x-ms-wmv" runat="server" id="videowmv" />
+                    <source type="video/webm" runat="server" id="videowebm" />
+                </video>
+            </div>
+            <div runat="server" height="98%" width="98%" id="divAudio">
+                <audio height="98%" width="98%" controls>
+                    <source type="audio/mp3" runat="server" id="audiomp3" />
+                    <source type="audio/mp4" runat="server" id="audiomp4" />
+                    <source type="audio/x-ms-wma" runat="server" id="audiowma" />
+                </audio>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function showNotesUploadControl(m) {
+
+        if (m == 1) {
+            $('#tdLogFiles').show();
+            $('#tdLogFiles1').hide();
+        }
+
+
+        if (m == 2) {
+            $('#tdLogFiles1').show();
+            $('#tdLogFiles').hide();
+        }
+        return false;
+    }
+
+    function ViewDetails(Id, longName, shortName, fileType) {
+
+        $("#<%=lblFileName.ClientID %>").text(shortName);
+        var filePath = '../TaskAttachments/' + longName;
+
+        var fileName = filePath;
+        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+        var tv_main_channel = "";
+
+        if (fileType == 3) // Video
+        {
+            $('#Vedioplayer').show();
+            $('#Audiolayer').hide();
+            if (fileExtension == "mp4") {
+                tv_main_channel = $('#mp4Source');
+            }
+            tv_main_channel.attr('src', filePath);
+            var video_block = $('#Vedioplayer');
+            video_block.load();
+        }
+
+        if (fileType == 2) // Audio
+        {
+            $('#Vedioplayer').hide();
+            $('#Audiolayer').show();
+            if (fileExtension == "mp4") {
+                tv_main_channel = $('#mp4Source');
+            }
+            if (fileExtension == "mp3") {
+                tv_main_channel = $('#mp3Source');
+            }
+
+            tv_main_channel.attr('src', filePath);
+            var audio_block = $('#Audiolayer');
+            audio_block.load();
+        }
+    }
+    function LoadDiv(url) {
+
+        var img = new Image();
+        var bcgDiv = document.getElementById("divBackground");
+        var imgDiv = document.getElementById("divImage");
+        var imgFull = document.getElementById("imgFull");
+        var imgLoader = document.getElementById("imgLoader");
+        imgLoader.style.display = "block";
+        img.onload = function () {
+            imgFull.src = img.src;
+            imgFull.style.display = "block";
+            imgLoader.style.display = "none";
+        };
+        img.src = url;
+        var width = document.body.clientWidth;
+        if (document.body.clientHeight > document.body.scrollHeight) {
+            bcgDiv.style.height = document.body.clientHeight + "px";
+        }
+        else {
+            bcgDiv.style.height = document.body.scrollHeight + "px";
+        }
+        imgDiv.style.left = (width - 650) / 2 + "px";
+        imgDiv.style.top = "20px";
+        bcgDiv.style.width = "100%";
+
+        bcgDiv.style.display = "block";
+        imgDiv.style.display = "block";
+        return false;
+    }
+    function HideDiv() {
+        var bcgDiv = document.getElementById("divBackground");
+        var imgDiv = document.getElementById("divImage");
+        var imgFull = document.getElementById("imgFull");
+        if (bcgDiv != null) {
+            bcgDiv.style.display = "none";
+            imgDiv.style.display = "none";
+            imgFull.style.display = "none";
+        }
+    }
+</script>
