@@ -52,11 +52,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.AcceptTaskAssignmentRequests(TaskId, UserIds);
         }
-        public bool SaveOrDeleteTaskNotes(ref TaskUser objTaskUser)
-        {
-            return TaskGeneratorDAL.Instance.SaveOrDeleteTaskNotes(ref objTaskUser);
-        }
-
+       
         public bool UpdateTaskAcceptance(ref TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskUserAcceptance(ref objTaskUser);
@@ -140,6 +136,17 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.DeleteTask(TaskId);
         }
+
+        public bool SaveOrDeleteTaskNotes(ref TaskUser objTaskUser)
+        {
+            return TaskGeneratorDAL.Instance.SaveOrDeleteTaskNotes(ref objTaskUser);
+        }
+
+        public bool UpadateTaskNotes(ref TaskUser objTaskUser)
+        {
+            return TaskGeneratorDAL.Instance.UpadateTaskNotes(ref objTaskUser);
+        }
+
 
         #region TaskWorkSpecification
 

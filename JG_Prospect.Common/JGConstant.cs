@@ -12,7 +12,7 @@ namespace JG_Prospect.Common
         public static CultureInfo CULTURE = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
         public const string JUSTIN_LOGIN_ID = "jgrove@jmgroveconstruction.com";//"jgtest2@gmail.com"; //" jgrove@jmgroveconstruction.com"
-                                                                               //public const string JUSTIN_LOGIN_ID ="jgtest2@gmail.com";
+        //public const string JUSTIN_LOGIN_ID ="jgtest2@gmail.com";
         public const string PAGE_STATIC_REPORT = "StaticReport";
         public const string COLOR_RED = "red";
         public const int RETURN_ZERO = 0;
@@ -130,6 +130,16 @@ namespace JG_Prospect.Common
             WorkSpecification = 3,
             FinishedWork = 4,
             TaskNote = 5
+        }
+
+        public enum TaskUserFileType
+        {
+            Notes = 1,
+            Audio = 2, 
+            Video = 3, 
+            Images = 4, 
+            Docu = 5, 
+            Other = 6
         }
 
         #region '-- Page Name --'

@@ -929,6 +929,42 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
+
+        public bool UpadateTaskNotes(ref TaskUser objTaskUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpadateTaskNotes");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
+                    database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
+
+
+                    int result = database.ExecuteNonQuery(command);
+
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         #region TaskWorkSpecification
 
         public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
