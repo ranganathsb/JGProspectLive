@@ -7,7 +7,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER procedure [dbo].[UDP_BulkInstallUser]
+CREATE procedure [dbo].[UDP_BulkInstallUser]
 @XMLDOC2 xml
 as
 begin

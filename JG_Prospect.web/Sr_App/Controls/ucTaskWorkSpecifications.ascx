@@ -148,10 +148,10 @@
                 if(arrData[i].AdminStatus && arrData[i].TechLeadStatus && arrData[i].OtherUserStatus) {
                     $WorkSpecificationRowTemplate.find('div[data-id="divPassword'+arrData[i].Id+'"]').remove();
                 }
-
-                setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
+                          
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
+                setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
             }
         }
 

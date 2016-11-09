@@ -86,7 +86,7 @@
       <HintPath>External Dependencies\DropDownCheckBoxes.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus">
-      <HintPath>..\..\JMGrove_InterviewTasks\JG_Prospect-New\JG_Prospect.web\External Dependencies\EPPlus.dll</HintPath>
+      <HintPath>..\..\InterviewTask\JG_Prospect-New\JG_Prospect.web\External Dependencies\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Google.GData.AccessControl, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -969,6 +969,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\scripts Nov_ITSN032_v1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _Calendar_Task 4.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN034_v0.1.sql" />
@@ -2778,7 +2779,6 @@
     <Content Include="Sr_App\UploadedFile\6162015120945PM" />
     <Content Include="Sr_App\MailDocSample\ForemanJobAcceptancelettertemplate.docx" />
     <Content Include="Sr_App\MailDocSample\DeactivationMail.doc" />
-    <Content Include="UserFile\Sample.xlsx" />
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
@@ -2793,7 +2793,7 @@
     <Content Include="TaskAttachments\c658405d-80dc-4369-98ea-39957a72e999-ACH Payment Processing - Requirements.docx" />
     <Content Include="TaskAttachments\d7861120-6a81-45df-98fa-2ea773964656-shabbir-Task generator detailed - with comment.docx" />
     <Content Include="TaskAttachments\ffa0d83c-59f3-4fa0-a401-946ce6b5f9a9-shabbir-Task generator detailed - with comment.docx" />
-    <None Include="UserFile\Thumbs.db" />
+    <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">
