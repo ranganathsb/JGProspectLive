@@ -1,5 +1,11 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskWorkSpecifications.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskWorkSpecifications" %>
 
+<style type="text/css">
+    .cke_textarea_inline {
+        /*background-color:white;*/
+    }
+</style>
+
 <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="0">
 </div>
 
@@ -151,7 +157,6 @@
                           
 
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
-                setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
             }
         }
 
@@ -163,6 +168,9 @@
         // clear div and append new result.
         $('div[data-parent-work-specification-id="'+intParentId+'"]').html('');
         $('div[data-parent-work-specification-id="'+intParentId+'"]').append($WorkSpecificationSectionTemplate);
+
+        // show ck editor in footer row.
+        setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
         
         if(result.TotalRecordCount > 0 && result.PendingCount == 0) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
