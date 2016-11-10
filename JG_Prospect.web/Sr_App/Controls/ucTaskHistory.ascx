@@ -512,19 +512,34 @@
 
 <script type="text/javascript">
 
-    function showNotesUploadControl(m) {
+    Dropzone.autoDiscover = false;
 
-        if (m == 1) {
-            $('#tdLogFiles').show();
-            $('#tdLogFiles1').hide();
+    $(function () {
+        ucTaskHistory_Initialize();
+    });
+
+    var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+    prmTaskGenerator.add_endRequest(function () {
+        ucTaskHistory_Initialize();
+    });
+
+    function ucTaskHistory_Initialize() {
+        ucTaskHistory_ApplyDropZone();
+    }
+
+    var objNoteDropzone;
+        
+    function ucTaskHistory_ApplyDropZone() {
+        //debugger;
+        ////User's drag and drop file attachment related code
+
+        //remove already attached dropzone.
+        if (objNoteDropzone) {
+            objNoteDropzone.destroy();
+            objNoteDropzone = null;
         }
-
-
-        if (m == 2) {
-            $('#tdLogFiles1').show();
-            $('#tdLogFiles').hide();
-        }
-        return false;
+        objNoteDropzone = GetWorkFileDropzone("#<%=divNoteDropzone.ClientID%>", '#<%=divNoteDropzonePreview.ClientID%>', '#<%= hdnNoteAttachments.ClientID %>', '#<%=btnUploadLogFiles.ClientID%>');
     }
 
     function ViewDetails(Id, longName, shortName, fileType) {
