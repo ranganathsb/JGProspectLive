@@ -589,6 +589,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtTUDesc;
         
         /// <summary>
+        /// objucTaskHistory_User control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.Sr_App.Controls.ucTaskHistory objucTaskHistory_User;
+        
+        /// <summary>
         /// gvSubTasks1 control.
         /// </summary>
         /// <remarks>
@@ -596,114 +605,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvSubTasks1;
-        
-        /// <summary>
-        /// ValidationSummary1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary1;
-        
-        /// <summary>
-        /// upTaskHistory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTaskHistory;
-        
-        /// <summary>
-        /// tcTaskHistory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer tcTaskHistory;
-        
-        /// <summary>
-        /// tpTaskHistory_Notes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Notes;
-        
-        /// <summary>
-        /// gdTaskUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gdTaskUsers;
-        
-        /// <summary>
-        /// txtNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNote;
-        
-        /// <summary>
-        /// btnAddNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddNote;
-        
-        /// <summary>
-        /// tpTaskHistory_FilesAndDocs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_FilesAndDocs;
-        
-        /// <summary>
-        /// tpTaskHistory_Images control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Images;
-        
-        /// <summary>
-        /// tpTaskHistory_Links control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Links;
-        
-        /// <summary>
-        /// tpTaskHistory_Videos control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Videos;
-        
-        /// <summary>
-        /// tpTaskHistory_Audios control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Audios;
         
         /// <summary>
         /// hdnWorkFiles control.

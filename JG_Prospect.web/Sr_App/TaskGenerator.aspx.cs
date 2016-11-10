@@ -158,9 +158,6 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
-            scriptManager.RegisterPostBackControl(this.gdTaskUsers);
-
             if (!IsPostBack)
             {
                 this.IsAdminMode = CommonFunction.CheckAdminMode();
@@ -202,6 +199,12 @@ namespace JG_Prospect.Sr_App
             objucTaskHistory_Admin.LoadTaskData = LoadTaskData;
             objucTaskHistory_Admin.Visible = true;
 
+            objucTaskHistory_User.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            objucTaskHistory_User.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskHistory_User.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucTaskHistory_User.LoadTaskData = LoadTaskData;
+            objucTaskHistory_User.Visible = true;
+
             objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
         }
@@ -230,38 +233,6 @@ namespace JG_Prospect.Sr_App
 
         protected void ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
         {
-            #region 'Commented as Not needed'
-            /*
-            if (controlMode.Value == "0")
-            {
-                DataSet dsUsers = new DataSet();
-                DataSet tempDs;
-                List<string> SelectedUsersID = new List<string>();
-                List<string> SelectedUsers = new List<string>();
-                foreach (System.Web.UI.WebControls.ListItem item in ddcbAssigned.Items)
-                {
-                    if (item.Selected)
-                    {
-                        SelectedUsersID.Add(item.Value);
-                        SelectedUsers.Add(item.Text);
-                        tempDs = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(item.Value));
-                        dsUsers.Merge(tempDs);
-                    }
-                }
-                if (dsUsers.Tables.Count != 0)
-                {
-                    gdTaskUsers.DataSource = dsUsers;
-                    gdTaskUsers.DataBind();
-                }
-                else
-                {
-                    gdTaskUsers.DataSource = null;
-                    gdTaskUsers.DataBind();
-                }
-            } 
-            */
-            #endregion
-
             ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
 
             foreach (ListItem item in ddcbAssigned.Items)
@@ -599,46 +570,6 @@ namespace JG_Prospect.Sr_App
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
         }
 
-        #endregion
-
-        #region '--Task History--'
-        
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            //SaveTaskNotesNAttachments();
-            //hdnAttachments.Value = "";
-        }
-
-        protected void gdTaskUsers_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            //if (e.Row.RowType == DataControlRowType.DataRow)
-            //{
-            //    if (String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachments").ToString()))
-            //    {
-            //        LinkButton lbtnAttachment = (LinkButton)e.Row.FindControl("lbtnAttachment");
-            //        lbtnAttachment.Visible = false;
-            //    }
-
-            //    Label lblStatus = (Label)e.Row.FindControl("lblStatus");
-
-            //    int TaskStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"));
-            //    lblStatus.Text = CommonFunction.GetTaskStatusList().FindByValue(TaskStatus.ToString()).Text;
-            //}
-        }
-
-        protected void gdTaskUsers_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            //if (e.CommandName == "DownLoadFiles")
-            //{
-            //    // Allow download only if files are attached.
-            //    if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-            //    {
-            //        DownloadUserAttachments(e.CommandArgument.ToString());
-            //    }
-            //}
-
-        }
-        
         #endregion
 
         #region '--Work Specification Section--'
@@ -986,23 +917,7 @@ namespace JG_Prospect.Sr_App
         {
             Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value);
         }
-
-        private string getSingleValueFromCommaSeperatedString(string commaSeperatedString)
-        {
-            String strReturnVal;
-
-            if (commaSeperatedString.Contains(","))
-            {
-                strReturnVal = String.Concat(commaSeperatedString.Substring(0, commaSeperatedString.IndexOf(",")), "..");
-            }
-            else
-            {
-                strReturnVal = commaSeperatedString;
-            }
-
-            return strReturnVal;
-        }
-
+        
         /// <summary>
         /// To load Designation to popup dropdown
         /// </summary>
@@ -1053,11 +968,6 @@ namespace JG_Prospect.Sr_App
             TaskGeneratorBLL.Instance.DeleteTask(Convert.ToUInt64(TaskId));
             hdnTaskId.Value = string.Empty;
             RedirectToViewTasks(null);
-        }
-
-        private void doSearch(object sender, EventArgs e)
-        {
-
         }
 
         private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
@@ -1232,29 +1142,6 @@ namespace JG_Prospect.Sr_App
         }
 
         /// <summary>
-        /// Get all designations from department to which user's designation belongs to.
-        /// Ex. if user has designation IT - Network Admin , here all IT related task will be listed.
-        /// </summary>
-        /// <param name="UserDesignation"></param>
-        /// <returns></returns>
-        private string GetUserDepartmentAllDesignations(string UserDesignation)
-        {
-            string returnString = string.Empty;
-            const string ITDesignations = "IT - Network Admin,IT - Jr .Net Developer,IT - Sr .Net Developer,IT - Android Developer,IT - PHP Developer,IT - SEO / BackLinking";
-
-            if (UserDesignation.Contains("IT"))
-            {
-                returnString = ITDesignations;
-            }
-            else
-            {
-                returnString = UserDesignation;
-            }
-
-            return returnString;
-        }
-
-        /// <summary>
         /// To clear the popup details after save
         /// </summary>
         private void clearAllFormData()
@@ -1272,9 +1159,6 @@ namespace JG_Prospect.Sr_App
             ddlTaskPriority.SelectedValue = "0";
             txtDueDate.Text = string.Empty;
             txtHours.Text = string.Empty;
-            gdTaskUsers.DataSource = null;
-            gdTaskUsers.DataBind();
-            txtNote.Text = string.Empty;
             hdnTaskId.Value = "0";
             controlMode.Value = "0";
         }
@@ -1307,8 +1191,6 @@ namespace JG_Prospect.Sr_App
             if (controlMode.Value == "0")
             {
                 // save task description as a first note.
-                txtNote.Text = txtDescription.Text;
-                //SaveTaskNotesNAttachments();
                 objucTaskHistory_Admin.SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), true, null, string.Empty, txtDescription.Text);
             }
 
@@ -1588,49 +1470,6 @@ namespace JG_Prospect.Sr_App
 
         //}
 
-        /// <summary>
-        /// Save task note and attachment added by user.
-        /// </summary>
-        private void SaveTaskNotesNAttachments()
-        {
-            //if task id is available to save its note and attachement.
-            if (hdnTaskId.Value != "0")
-            {
-                Boolean? isCreatorUser = null;
-
-                //if it is task is created than control mode will be 0 and Admin user has created task.
-                if (controlMode.Value == "0")
-                {
-                    isCreatorUser = true;
-                }
-
-                // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.
-                Int32 TaskUpdateId = SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), isCreatorUser, null, string.Empty);
-
-                // Save task related user's attachment.
-                UploadUserAttachements(TaskUpdateId, null, string.Empty, JGConstant.TaskFileDestination.TaskNote);
-
-                LoadTaskData(hdnTaskId.Value);
-
-                txtNote.Text = string.Empty;
-
-                //clearAllFormData();
-
-                // Refresh task list on top header.
-                //SearchTasks(null);
-
-                //if (controlMode.Value == "0")
-                //{
-                //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Task created successfully');", true);
-                //}
-                //else
-                //{
-                //   ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Task updated successfully');", true);
-                //}
-
-            }
-        }
-
         private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
@@ -1664,84 +1503,6 @@ namespace JG_Prospect.Sr_App
                     TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
                 }
             }
-        }
-
-        /// <summary>
-        /// Save task user information.
-        /// </summary>
-        /// <param name="Designame"></param>
-        /// <param name="ItaskId"></param>
-        private Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName)
-        {
-            Int32 TaskUpdateId = 0;
-
-            TaskUser taskUser = new TaskUser();
-
-            if (UserId == null)
-            {
-                // Take logged in user's id for logging note in database.
-                taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                taskUser.UserFirstName = Session["Username"].ToString();
-            }
-            else
-            {
-                taskUser.UserId = Convert.ToInt32(UserId);
-                taskUser.UserFirstName = UserName;
-            }
-
-
-
-            //taskUser.UserType = userType.Text;
-            taskUser.Notes = txtNote.Text;
-
-            // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
-
-            if (IsCreated != null)
-            {
-                taskUser.IsCreatorUser = true;
-            }
-            else
-            {
-                taskUser.IsCreatorUser = false;
-            }
-
-            taskUser.TaskId = ItaskId;
-
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-
-            TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
-
-            TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
-
-            //for (int i = 0; i < gdTaskUsers.Rows.Count; i++)
-            //{
-
-            //    TaskUser taskUser = new TaskUser();
-            //    Label userID = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lbluserId");
-            //    Label userType = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lbluserType");
-            //    Label notes = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lblNotes");
-            //    taskUser.UserId = Convert.ToInt32(userID.Text);
-            //    //taskUser.UserType = userType.Text;
-            //    taskUser.Notes = notes.Text;
-            //    taskUser.TaskId = ItaskId;
-
-            //    taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            //    int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            //    taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            //    TaskGeneratorBLL.Instance.SaveOrDeleteTaskUser(ref taskUser);
-
-            //    TaskUpdateId = taskUser.TaskUpdateId;
-
-            //    //Inform user by email about task assgignment.
-            //    //SendEmail(Designame, taskUser.UserId); // send auto email to selected users
-
-            //}
-
-            return TaskUpdateId;
         }
 
         private void SendEmailToAssignedUsers(string strInstallUserIDs)
@@ -1814,8 +1575,8 @@ namespace JG_Prospect.Sr_App
             SetMasterTaskDetails(dtTaskMasterDetails);
             SetTaskDesignationDetails(dtTaskDesignationDetails);
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
-            SetTaskUserNNotesDetails(dtTaskNotesDetails);
             objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
+            objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
             //FillrptWorkFiles(dsTaskDetails.Tables[5]);
 
@@ -1933,12 +1694,6 @@ namespace JG_Prospect.Sr_App
 
                 ltlTUDesig.Text = String.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
             }
-        }
-
-        private void SetTaskUserNNotesDetails(DataTable dtTaskUserDetails)
-        {
-            gdTaskUsers.DataSource = dtTaskUserDetails;
-            gdTaskUsers.DataBind();
         }
 
         private void SetSubTaskDetails(DataTable dtSubTaskDetails)
@@ -2065,27 +1820,6 @@ namespace JG_Prospect.Sr_App
         {
             string[] files = CommaSeperatedFiles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-            //var archive = Server.MapPath("~/TaskAttachments/archive.zip");
-            //var temp = Server.MapPath("~/TaskAttachments/temp");
-
-            //// clear any existing archive
-            //if (System.IO.File.Exists(archive))
-            //{
-            //    System.IO.File.Delete(archive);
-            //}
-
-            //// empty the temp folder
-            //Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
-
-            //// copy the selected files to the temp folder
-            //foreach (var file in files)
-            //{
-            //    System.IO.File.Copy(file, Path.Combine(temp, Path.GetFileName(file)));
-            //}
-
-            //// create a new archive
-            //ZipFile.CreateFromDirectory(temp, archive);
-
             using (ZipFile zip = new ZipFile())
             {
                 foreach (var file in files)
@@ -2130,11 +1864,6 @@ namespace JG_Prospect.Sr_App
                 tblAdminTaskView.Visible = false;
                 tblUserTaskView.Visible = true;
             }
-        }
-
-        private TaskWorkSpecification GetTaskWorkSpecificationById(Int64 intTaskWorkSpecificationId)
-        {
-            return TaskGeneratorBLL.Instance.GetTaskWorkSpecificationById(intTaskWorkSpecificationId);
         }
 
         private void SetPasswordToFreezeWorkSpecificationUI()
@@ -2241,33 +1970,6 @@ namespace JG_Prospect.Sr_App
                 //tblAddEditWorkSpecification.Visible = false;
                 //trWorkSpecificationContent.Visible = true;
             }
-        }
-
-        private void SaveWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            #region Insert TaskWorkSpecification
-
-            if (objTaskWorkSpecification.Id == 0)
-            {
-                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-            }
-
-            #endregion
-
-            #region Update Task and Status
-
-            // change status only after freezing all specifications.
-            // this will change disabled "specs in progress" status to open on feezing.
-            SetPasswordToFreezeWorkSpecificationUI();
-
-            // update task status.
-            SaveTask();
-
-            #endregion
         }
 
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)

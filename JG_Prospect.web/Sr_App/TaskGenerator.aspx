@@ -477,6 +477,11 @@
                         </tr>
                         <tr>
                             <td colspan="2">
+                                <uc1:ucTaskHistory id="objucTaskHistory_User" runat="server" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
                                 <fieldset class="tasklistfieldset">
                                     <legend>Task List</legend>
                                     <div>
@@ -539,157 +544,6 @@
                             </td>
                         </tr>
                     </table>
-                    <hr />
-                    <br />
-                    <asp:ValidationSummary ID="ValidationSummary1" runat="server" ValidationGroup="Submit" ShowSummary="False" ShowMessageBox="True" />
-                    <asp:UpdatePanel ID="upTaskHistory" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
-                            <asp:TabContainer ID="tcTaskHistory" runat="server" ActiveTabIndex="0" AutoPostBack="false">
-                                <asp:TabPanel ID="tpTaskHistory_Notes" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Notes</HeaderTemplate>
-                                    <ContentTemplate>
-                                        <div class="grid">
-                                            <asp:GridView ID="gdTaskUsers" runat="server" EmptyDataText="No task history available!" ShowHeaderWhenEmpty="true" AutoGenerateColumns="false" Width="100%" HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" AllowSorting="false" BackColor="White" PageSize="3" GridLines="Horizontal" OnRowDataBound="gdTaskUsers_RowDataBound" OnRowCommand="gdTaskUsers_RowCommand">
-                                                <%--<EmptyDataTemplate>
-                    </EmptyDataTemplate>--%>
-                                                <Columns>
-                                                    <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lbluser" runat="server" Text='<%#String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() %>'></asp:Label>
-                                                        </ItemTemplate>
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                        <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                        <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField ShowHeader="false" Visible="false" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lbluserId" runat="server" Text='<%#Eval("Id")%>' Visible="false"></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <%--<asp:TemplateField ShowHeader="false" Visible="false" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                            ItemStyle-HorizontalAlign="Left">
-                            <ItemTemplate>
-                                <asp:Label ID="lbluserType" runat="server" Text='<%#Eval("UserType")%>' Visible="false"></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>--%>
-                                                    <asp:TemplateField ShowHeader="True" HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                        <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField ShowHeader="True" HeaderText="Status" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblStatus" runat="server"></asp:Label>
-                                                        </ItemTemplate>
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                        <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField ShowHeader="True" HeaderText="Files" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                        ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblFiles" runat="server" Text='<%# Eval("AttachmentCount")%>'></asp:Label>
-                                                            <br>
-                                                            <asp:LinkButton ID="lbtnAttachment" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("attachments")%>'></asp:LinkButton>
-                                                        </ItemTemplate>
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <ControlStyle ForeColor="Black" />
-                                                        <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                        <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                    </asp:TemplateField>
-                                                </Columns>
-                                                <HeaderStyle BackColor="Black" ForeColor="White"></HeaderStyle>
-                                            </asp:GridView>
-                                            <%-- OnRowDataBound="GridView1_RowDataBound"    OnPageIndexChanging="GridView1_PageIndexChanging" OnRowCommand="GridView1_RowCommand"--%>
-                                        </div>
-                                        <br />
-                                        <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                            <tr>
-                                                <td>Notes:
-                                                </td>
-                                                <td>
-                                                    <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox"></asp:TextBox>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td colspan="2">
-                                                    <div class="btn_sec">
-                                                        <asp:Button ID="btnAddNote" runat="server" Text="Add Note & Files" CssClass="ui-button" OnClick="btnAddNote_Click" />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                                <asp:TabPanel ID="tpTaskHistory_FilesAndDocs" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Files & docs</HeaderTemplate>
-                                    <ContentTemplate>
-                                        HTML Goes here 1
-                                   
-                                   
-                                   
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                                <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Images</HeaderTemplate>
-                                    <ContentTemplate>
-                                        HTML Goes here 3
-                                   
-                                   
-                                   
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                                <asp:TabPanel ID="tpTaskHistory_Links" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Links</HeaderTemplate>
-                                    <ContentTemplate>
-                                        HTML Goes here 4
-                                   
-                                   
-                                   
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                                <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Videos</HeaderTemplate>
-                                    <ContentTemplate>
-                                        HTML Goes here 5
-                                   
-                                   
-                                   
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                                <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
-                                    <HeaderTemplate>Audios</HeaderTemplate>
-                                    <ContentTemplate>
-                                        HTML Goes here 6
-                                   
-                                   
-                                   
-                                    </ContentTemplate>
-                                </asp:TabPanel>
-                            </asp:TabContainer>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
                 </div>
                 <%--This is a client side hidden section and It is used to trigger server event from java script code.--%>
                 <div class="hide">
