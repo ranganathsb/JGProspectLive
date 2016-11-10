@@ -493,7 +493,7 @@ namespace JG_Prospect.Sr_App.Controls
         /// </summary>
         /// <param name="Designame"></param>
         /// <param name="ItaskId"></param>
-        private Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
+        public Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
         {
             Int32 TaskUpdateId = 0;
 

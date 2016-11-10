@@ -1308,7 +1308,8 @@ namespace JG_Prospect.Sr_App
             {
                 // save task description as a first note.
                 txtNote.Text = txtDescription.Text;
-                SaveTaskNotesNAttachments();
+                //SaveTaskNotesNAttachments();
+                objucTaskHistory_Admin.SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), true, null, string.Empty, txtDescription.Text);
             }
 
             // save assgined designation.

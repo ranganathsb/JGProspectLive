@@ -23,6 +23,9 @@
     <!--tabs jquery ends-->
     <!--accordion jquery-->
     <script type="text/javascript" src="../js/ddaccordion.js"></script>
+
+    <script type="text/javascript" src="../js/jg-common.js"></script>
+
     <script type="text/javascript">
         $(function () {
             $('#tabs').tabs();
