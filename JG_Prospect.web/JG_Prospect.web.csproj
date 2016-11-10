@@ -1476,6 +1476,7 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\JCarousel.js" />
+    <Content Include="js\jg-common.js" />
     <Content Include="js\jquery-latest.js" />
     <Content Include="js\jquery-latest_old.js" />
     <Content Include="js\jquery-migrate-1.0.0.js" />
