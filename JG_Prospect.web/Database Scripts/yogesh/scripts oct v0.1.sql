@@ -4111,3 +4111,227 @@ GO
 -- Uploaded on live 08 Nov 2016
 
 --==========================================================================================================================================================================================
+USE [JGBS_Dev]
+GO
+
+/****** Object:  Table [dbo].[tblTaskUserFiles]    Script Date: 10-Nov-16 9:35:00 AM ******/
+ALTER TABLE [dbo].[tblTaskUserFiles]
+ADD
+	[FileType] [varchar](5) NULL,
+	[AttachedFileDate] [datetime] NULL DEFAULT (getdate())
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[usp_GetTaskDetails]    Script Date: 10-Nov-16 9:23:32 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all details of task for edit.
+-- =============================================
+-- usp_GetTaskDetails 115
+ALTER PROCEDURE [dbo].[usp_GetTaskDetails] 
+(
+	@TaskId int 
+)	  
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	-- task manager detail
+	DECLARE @AssigningUser varchar(50) = NULL
+
+	SELECT @AssigningUser = Users.[Username] 
+	FROM 
+		tblTask AS Task 
+		INNER JOIN [dbo].[tblUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+	WHERE TaskId = @TaskId
+
+	IF(@AssigningUser IS NULL)
+	BEGIN
+		SELECT @AssigningUser = Users.FristName + ' ' + Users.LastName 
+		FROM 
+			tblTask AS Task 
+			INNER JOIN [dbo].[tblInstallUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+		WHERE TaskId = @TaskId
+	END
+
+	-- task's main details
+	SELECT Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.TaskPriority,
+		   Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager ,Tasks.TaskType, Tasks.IsTechTask,
+		   STUFF
+			(
+				(SELECT  CAST(', ' + ttuf.[Attachment] + '@' + ttuf.[AttachmentOriginal] as VARCHAR(max)) AS attachment
+				FROM dbo.tblTaskUserFiles ttuf
+				WHERE ttuf.TaskId = Tasks.TaskId
+				FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+				,1
+				,2
+				,' '
+			) AS attachment
+	FROM tblTask AS Tasks
+	WHERE Tasks.TaskId = @TaskId
+
+	-- task's designation details
+	SELECT Designation
+	FROM tblTaskDesignations
+	WHERE (TaskId = @TaskId)
+
+	-- task's assigned users
+	SELECT UserId, TaskId
+	FROM tblTaskAssignedUsers
+	WHERE (TaskId = @TaskId)
+
+	-- task's notes and attachment information.
+	--SELECT	TaskUsers.Id,TaskUsers.UserId, TaskUsers.UserType, TaskUsers.Notes, TaskUsers.UserAcceptance, TaskUsers.UpdatedOn, 
+	--	    TaskUsers.[Status], TaskUsers.TaskId, tblInstallUsers.FristName,TaskUsers.UserFirstName, tblInstallUsers.Designation,
+	--		(SELECT COUNT(ttuf.[Id]) FROM dbo.tblTaskUserFiles ttuf WHERE ttuf.[TaskUpdateID] = TaskUsers.Id) AS AttachmentCount,
+	--		dbo.UDF_GetTaskUpdateAttachments(TaskUsers.Id) AS attachments
+	--FROM    
+	--	tblTaskUser AS TaskUsers 
+	--	LEFT OUTER JOIN tblInstallUsers ON TaskUsers.UserId = tblInstallUsers.Id
+	--WHERE (TaskUsers.TaskId = @TaskId) 
+	
+	-- Description:	Get All Notes along with Attachments.
+	-- Modify by :: Aavadesh Patel :: 10.08.2016 23:28
+	SELECT	TaskUsers.Id,TaskUsers.UserId, 
+		TaskUsers.UserType, TaskUsers.Notes, 
+		TaskUsers.UserAcceptance, TaskUsers.UpdatedOn, 
+		TaskUsers.[Status], TaskUsers.TaskId, 
+		tblInstallUsers.FristName,TaskUsers.UserFirstName, 
+		tblInstallUsers.Designation,(SELECT COUNT(ttuf.[Id]) FROM dbo.tblTaskUserFiles ttuf WHERE ttuf.[TaskUpdateID] = TaskUsers.Id) AS AttachmentCount,
+		dbo.UDF_GetTaskUpdateAttachments(TaskUsers.Id) AS attachments,
+		'' as AttachmentOriginal , 0 as TaskUserFilesID,
+		'' as Attachment , '' as FileType
+	FROM    
+		tblTaskUser AS TaskUsers 
+		LEFT OUTER JOIN tblInstallUsers ON TaskUsers.UserId = tblInstallUsers.Id
+	WHERE (TaskUsers.TaskId = @TaskId) 
+	
+	
+	Union All 
+		
+	SELECT	tblTaskUserFiles.Id , tblTaskUserFiles.UserId , 
+		'' as UserType , '' as Notes , 
+		'' as UserAcceptance , tblTaskUserFiles.AttachedFileDate,
+		'' as [Status] , tblTaskUserFiles.TaskId , 
+		tblInstallUsers.FristName  , tblInstallUsers.FristName as UserFirstName , 
+		'' as Designation , '' as AttachmentCount , 
+		'' as attachments,
+		 tblTaskUserFiles.AttachmentOriginal,tblTaskUserFiles.Id as  TaskUserFilesID,
+		 tblTaskUserFiles.Attachment, tblTaskUserFiles.FileType
+	FROM   tblTaskUserFiles   
+	LEFT OUTER JOIN tblInstallUsers ON tblInstallUsers.Id = tblTaskUserFiles.UserId
+	WHERE (tblTaskUserFiles.TaskId = @TaskId)
+	
+	-- sub tasks
+	SELECT Tasks.TaskId, Title, [Description], Tasks.[Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.TaskPriority,
+		   Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager , UsersMaster.FristName,
+		   Tasks.TaskType,Tasks.TaskPriority, Tasks.IsTechTask,
+		   STUFF
+			(
+				(SELECT  CAST(', ' + ttuf.[Attachment] + '@' + ttuf.[AttachmentOriginal] as VARCHAR(max)) AS attachment
+				FROM dbo.tblTaskUserFiles ttuf
+				WHERE ttuf.TaskId = Tasks.TaskId
+				FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+				,1
+				,2
+				,' '
+			) AS attachment
+	FROM 
+		tblTask AS Tasks LEFT OUTER JOIN
+        tblTaskAssignedUsers AS TaskUsers ON Tasks.TaskId = TaskUsers.TaskId LEFT OUTER JOIN
+        tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id --LEFT OUTER JOIN
+		--tblTaskDesignations AS TaskDesignation ON Tasks.TaskId = TaskDesignation.TaskId
+	WHERE Tasks.ParentTaskId = @TaskId
+    
+	-- main task attachments
+	SELECT 
+		CAST(
+				--tuf.[Attachment] + '@' + tuf.[AttachmentOriginal] 
+				ISNULL(tuf.[Attachment],'') + '@' + ISNULL(tuf.[AttachmentOriginal],'') 
+				AS VARCHAR(MAX)
+			) AS attachment,
+		ISNULL(u.FirstName,iu.FristName) AS FirstName
+	FROM dbo.tblTaskUserFiles tuf
+			LEFT JOIN tblUsers u ON tuf.UserId = u.Id --AND tuf.UserType = u.Usertype
+			LEFT JOIN tblInstallUsers iu ON tuf.UserId = iu.Id --AND tuf.UserType = u.UserType
+	WHERE tuf.TaskId = @TaskId
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[usp_UpadateTaskNotes]    Script Date: 10-Nov-16 9:37:58 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Aavadesh Patel
+-- Create date: 10/19/2016
+-- Description:	Update task note
+-- =============================================
+CREATE PROCEDURE [dbo].[usp_UpadateTaskNotes] 
+(	
+	@Id int , 	
+	@Notes varchar(MAX)='' 
+)
+AS
+BEGIN
+	
+	UPDATE tblTaskUser
+	SET Notes = @Notes
+	WHERE Id = @Id
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[SP_SaveOrDeleteTaskUserFiles]    Script Date: 10-Nov-16 9:37:58 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTaskUserFiles]  
+(   
+	@Mode tinyint, -- 0:Insert, 1: Update 2: Delete  
+	@TaskUpDateId bigint= NULL,  
+	@TaskId bigint,  
+	@FileDestination TINYINT = NULL,
+	@UserId int,  
+	@Attachment varchar(MAX),
+	@OriginalFileName varchar(MAX),
+	@UserType BIT,
+    @FileType varchar(5)
+) 
+AS  
+BEGIN  
+  
+	IF @Mode=0 
+	BEGIN  
+		INSERT INTO tblTaskUserFiles (TaskId,UserId,Attachment,TaskUpdateID,IsDeleted, AttachmentOriginal, UserType,FileDestination, FileType, AttachedFileDate)   
+		VALUES(@TaskId,@UserId,@Attachment,@TaskUpDateId,0, @OriginalFileName, @UserType,@FileDestination, @FileType ,GETDATE())  
+	END  
+	ELSE IF @Mode=1  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			Attachment=@Attachment  
+		WHERE TaskUpdateID = @TaskUpDateId
+	END  
+	ELSE IF @Mode=2 --DELETE  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			IsDeleted =1  
+		WHERE TaskUpdateID = @TaskUpDateId 
+	END  
+  
+END  
+GO

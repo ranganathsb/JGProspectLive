@@ -476,11 +476,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Attachment", DbType.String, objTaskUser.Attachment);
                     database.AddInParameter(command, "@OriginalFileName", DbType.String, objTaskUser.OriginalFileName);
                     database.AddInParameter(command, "@UserType", DbType.String, objTaskUser.UserType);
-
+                    database.AddInParameter(command, "@FileType", DbType.String, objTaskUser.FileType);
 
                     int result = database.ExecuteNonQuery(command);
-
-
 
                     if (result > 0)
                     {

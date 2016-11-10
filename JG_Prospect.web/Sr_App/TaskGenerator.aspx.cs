@@ -200,7 +200,7 @@ namespace JG_Prospect.Sr_App
             objucTaskHistory_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
             objucTaskHistory_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucTaskHistory_Admin.LoadTaskData = LoadTaskData;
-            objucTaskHistory_Admin.Visible = false;
+            objucTaskHistory_Admin.Visible = true;
 
             objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
@@ -602,43 +602,43 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region '--Task History--'
-
+        
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
-            SaveTaskNotesNAttachments();
-            hdnAttachments.Value = "";
+            //SaveTaskNotesNAttachments();
+            //hdnAttachments.Value = "";
         }
 
         protected void gdTaskUsers_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                if (String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachments").ToString()))
-                {
-                    LinkButton lbtnAttachment = (LinkButton)e.Row.FindControl("lbtnAttachment");
-                    lbtnAttachment.Visible = false;
-                }
+            //if (e.Row.RowType == DataControlRowType.DataRow)
+            //{
+            //    if (String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachments").ToString()))
+            //    {
+            //        LinkButton lbtnAttachment = (LinkButton)e.Row.FindControl("lbtnAttachment");
+            //        lbtnAttachment.Visible = false;
+            //    }
 
-                Label lblStatus = (Label)e.Row.FindControl("lblStatus");
+            //    Label lblStatus = (Label)e.Row.FindControl("lblStatus");
 
-                int TaskStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"));
-                lblStatus.Text = CommonFunction.GetTaskStatusList().FindByValue(TaskStatus.ToString()).Text;
-            }
+            //    int TaskStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"));
+            //    lblStatus.Text = CommonFunction.GetTaskStatusList().FindByValue(TaskStatus.ToString()).Text;
+            //}
         }
 
         protected void gdTaskUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "DownLoadFiles")
-            {
-                // Allow download only if files are attached.
-                if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-                {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
-                }
-            }
+            //if (e.CommandName == "DownLoadFiles")
+            //{
+            //    // Allow download only if files are attached.
+            //    if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
+            //    {
+            //        DownloadUserAttachments(e.CommandArgument.ToString());
+            //    }
+            //}
 
         }
-
+        
         #endregion
 
         #region '--Work Specification Section--'
@@ -1814,7 +1814,7 @@ namespace JG_Prospect.Sr_App
             SetTaskDesignationDetails(dtTaskDesignationDetails);
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             SetTaskUserNNotesDetails(dtTaskNotesDetails);
-            //objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
+            objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
             //FillrptWorkFiles(dsTaskDetails.Tables[5]);
 
