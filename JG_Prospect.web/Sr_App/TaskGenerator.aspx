@@ -595,7 +595,7 @@
                                                                 placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
 
                                                             <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox fz fz-user" Width="110"
-                                                                placeholder="User Password" AutoPostBack="true" Visible="true" />
+                                                                placeholder="User Password" AutoPostBack="true" Visible="true" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                                         </div>
                                                     </td>
                                                 </tr>

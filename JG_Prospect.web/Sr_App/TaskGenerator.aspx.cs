@@ -734,7 +734,11 @@ namespace JG_Prospect.Sr_App
                 SetPasswordToFreezeWorkSpecificationUI();
 
                 // update task status.
-                SaveTask();
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
+                objTask.Status = Convert.ToByte(cmbStatus.SelectedValue);
+
+                TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
 
                 #endregion
 
