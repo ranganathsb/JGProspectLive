@@ -79,7 +79,7 @@
 <div class="hide">
     <asp:UpdatePanel ID="upHidden" runat="server">
         <ContentTemplate>
-            <asp:Button ID="btnUpdateTaskStatus" runat="server" OnClick="btnUpdateTaskStatus_Click" />
+            <asp:Button ID="btnUpdateTaskStatus" runat="server" CausesValidation="false" OnClick="btnUpdateTaskStatus_Click" />
         </ContentTemplate>
     </asp:UpdatePanel>
 </div>
@@ -297,6 +297,8 @@
                 success: function (data) {
                     HideAjaxLoader();
                     if(data.d) {
+                        // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
+                        $('#<%=btnUpdateTaskStatus.ClientID%>').click();
                         GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
                         alert('Specification saved successfully.');
                     }
@@ -340,6 +342,8 @@
                     HideAjaxLoader();
                     if(data.d) {
                         alert('Specification saved successfully.');
+                        // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
+                        $('#<%=btnUpdateTaskStatus.ClientID%>').click();
                         OnCancelEditClick(sender);
                     }
                     else {
