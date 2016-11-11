@@ -4340,3 +4340,48 @@ GO
 -- Uploaded on live 10 Nov 2016
 
 --==========================================================================================================================================================================================
+
+
+/****** Object:  StoredProcedure [dbo].[GetPendingTaskWorkSpecificationCount]    Script Date: 04-Nov-16 11:18:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Gets number of pending Task specifications related to a task.
+--				Get Task specification by Id, if admin or techlead status is freezed.
+-- =============================================
+-- EXEC GetPendingTaskWorkSpecificationCount 115
+ALTER PROCEDURE [dbo].[GetPendingTaskWorkSpecificationCount]
+	@TaskId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SELECT COUNT(DISTINCT s.id) AS TotalRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId
+
+	SELECT COUNT(DISTINCT s.id) AS PendingRecordCount
+	FROM tblTaskWorkSpecifications s
+	WHERE 
+		s.TaskId = @TaskId AND 
+		(
+			ISNULL(s.AdminStatus ,0) = 0 OR
+			ISNULL(s.TechLeadStatus ,0) = 0 
+			-- OR
+			-- ISNULL(s.OtherUserStatus ,0) = 0
+		)
+
+	SELECT TOP 1
+			s.*
+	FROM [TaskWorkSpecificationsView] s
+	WHERE s.TaskId = @TaskId AND (s.AdminStatus = 1 OR s.TechLeadStatus = 1 OR s.OtherUserStatus = 1)
+
+END
+GO

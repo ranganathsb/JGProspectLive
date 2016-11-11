@@ -76,13 +76,20 @@
         </td>
     </tr>
 </script>
-
+<div class="hide">
+    <asp:UpdatePanel ID="upHidden" runat="server">
+        <ContentTemplate>
+            <asp:Button ID="btnUpdateTaskStatus" runat="server" OnClick="btnUpdateTaskStatus_Click" />
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</div>
 <script type="text/javascript">
 
     var strWorkSpecificationSectionTemplate = $('script[data-id="tmpWorkSpecificationSection"]').html().toString();
     var strWorkSpecificationRowTemplate = $('script[data-id="tmpWorkSpecificationRow"]').html().toString();
 
     var TaskId = <%=this.TaskId%>;
+    var AdminMode = <%=this.IsAdminMode.ToString().ToLower()%>;
 
     $(document).ready(function() {
     
@@ -165,7 +172,7 @@
         // show ck editor in footer row.
         setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
         
-        if(result.TotalRecordCount > 0 && result.PendingCount == 0) {
+        if( !AdminMode || (result.TotalRecordCount > 0 && result.PendingCount == 0)) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
             $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecificationButtons"]').remove();
             $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divEditWorkSpecification"]').remove();
@@ -382,6 +389,8 @@
                         alert('Specification cannot be freezed as password is not valid.');
                     }
                     else if(data.d > 0) {
+                        // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
+                        $('#<%=btnUpdateTaskStatus.ClientID%>').click();
                         GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
                         alert('Specification freezed successfully.');
                     }

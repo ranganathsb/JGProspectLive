@@ -206,6 +206,7 @@ namespace JG_Prospect.Sr_App
             objucTaskHistory_User.Visible = true;
 
             objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucTaskWorkSpecifications.IsAdminMode = this.IsAdminMode;
             objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
         }
 
