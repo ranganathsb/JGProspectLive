@@ -15,6 +15,7 @@ namespace JG_Prospect.Sr_App.Controls
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
         public int TaskId { get; set; }
+
         public string controlMode { get; set; }
 
         public bool IsAdminMode { get; set; }
@@ -55,7 +56,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (!IsPostBack)
             {
-                
+
             }
         }
 
@@ -137,7 +138,8 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        public void FillInitialData() {
+        public void FillInitialData()
+        {
             FillDropDrowns();
 
             gvSubTasks.DataSource = this.lstSubTasks;
@@ -452,6 +454,12 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
+        public void SetSubTaskView()
+        {
+            divAddSubTask.Visible = this.IsAdminMode;
+            upAddSubTask.Update();
+        }
+
         public void SaveSubTasks(Int32 intTaskId)
         {
             if (this.lstSubTasks.Any())
@@ -550,7 +558,7 @@ namespace JG_Prospect.Sr_App.Controls
             ClearSubTaskData();
         }
 
-        public  void ClearSubTaskData()
+        public void ClearSubTaskData()
         {
             hdnSubTaskId.Value = "0";
             hdnSubTaskIndex.Value = "-1";
@@ -572,7 +580,7 @@ namespace JG_Prospect.Sr_App.Controls
             ddlSubTaskPriority.SelectedValue = "0";
             upAddSubTask.Update();
         }
-        
+
         private void DownloadUserAttachment(String File, String OriginalFileName)
         {
             Response.Clear();
@@ -602,7 +610,7 @@ namespace JG_Prospect.Sr_App.Controls
                 objListItem.Selected = true;
             }
         }
-        
+
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
@@ -621,7 +629,7 @@ namespace JG_Prospect.Sr_App.Controls
                         taskUserFiles.Attachment = attachements[0];
                         taskUserFiles.OriginalFileName = attachements[1];
                         taskUserFiles.Mode = 0; // insert data.
-                        taskUserFiles.TaskId = TaskId ;
+                        taskUserFiles.TaskId = TaskId;
                         taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                         taskUserFiles.TaskUpdateId = taskUpdateId;
                         taskUserFiles.UserType = JGSession.IsInstallUser ?? false;

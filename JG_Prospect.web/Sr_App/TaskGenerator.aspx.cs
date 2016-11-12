@@ -161,9 +161,11 @@ namespace JG_Prospect.Sr_App
 
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_User.SetSubTaskView();
 
             objucTaskHistory_Admin.TaskId = Convert.ToInt64(hdnTaskId.Value);
             objucTaskHistory_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
