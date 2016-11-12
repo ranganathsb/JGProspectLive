@@ -30,7 +30,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Type" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="85">
                             <ItemTemplate>
-                                <%# string.IsNullOrEmpty(Eval("TaskType").ToString()) == true ? string.Empty : ddlTaskType.Items.FindByValue( Eval("TaskType").ToString()).Text %>
+                                <asp:Literal ID="ltrlTaskType" runat="server" />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="105">

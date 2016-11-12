@@ -55,8 +55,43 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (!IsPostBack)
             {
-                gvSubTasks.DataSource = this.lstSubTasks;
-                gvSubTasks.DataBind();
+                
+            }
+        }
+
+        protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "DownloadFile")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+        }
+
+        protected void rptAttachment_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = Convert.ToString(e.Item.DataItem);
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+
+                if (files[1].Length > 13)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 12), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+
+                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                }
+                else
+                {
+                    lbtnAttchment.Text = files[1];
+                }
+
+                lbtnAttchment.CommandArgument = file;
             }
         }
 
@@ -102,6 +137,13 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        public void FillInitialData() {
+            FillDropDrowns();
+
+            gvSubTasks.DataSource = this.lstSubTasks;
+            gvSubTasks.DataBind();
+        }
+
         private void FillDropDrowns()
         {
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
@@ -136,6 +178,11 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlStatus.DataBind();
                 ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskType").ToString()))
+                {
+                    (e.Row.FindControl("ltrlTaskType") as Literal).Text = CommonFunction.GetTaskTypeList().FindByValue(DataBinder.Eval(e.Row.DataItem, "TaskType").ToString()).Text;
+                }
+
                 DropDownList ddlTaskPriority = e.Row.FindControl("ddlTaskPriority") as DropDownList;
                 if (ddlTaskPriority != null)
                 {
@@ -161,8 +208,14 @@ namespace JG_Prospect.Sr_App.Controls
 
                 SetStatusSelectedValue(ddlStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
-                if (!this.IsAdminMode)
+                if (this.IsAdminMode)
                 {
+                    e.Row.FindControl("ltrlInstallId").Visible = false;
+                }
+                else
+                {
+                    e.Row.FindControl("lbtnInstallId").Visible = false;
+
                     if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
                     {
                         ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
@@ -511,10 +564,23 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskType.SelectedIndex = 0;
             }
             trSubTaskStatus.Visible = false;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
+            if (ddlSubTaskStatus.Items.Count > 0)
+            {
+                ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
+                ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
+            }
             ddlSubTaskPriority.SelectedValue = "0";
             upAddSubTask.Update();
+        }
+        
+        private void DownloadUserAttachment(String File, String OriginalFileName)
+        {
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("Content-Disposition", String.Concat("attachment; filename=", OriginalFileName));
+            Response.WriteFile(Server.MapPath("~/TaskAttachments/" + File));
+            Response.Flush();
+            Response.End();
         }
 
         private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
@@ -536,6 +602,7 @@ namespace JG_Prospect.Sr_App.Controls
                 objListItem.Selected = true;
             }
         }
+        
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
