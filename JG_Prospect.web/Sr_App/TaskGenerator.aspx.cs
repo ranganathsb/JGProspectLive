@@ -140,8 +140,6 @@ namespace JG_Prospect.Sr_App
                 {
                     controlMode.Value = "1";
                     hdnTaskId.Value = Request.QueryString["TaskId"].ToString();
-
-                    LoadTaskData(hdnTaskId.Value);
                 }
                 else
                 {
@@ -189,6 +187,10 @@ namespace JG_Prospect.Sr_App
                 {
                     objucSubTasks_Admin.FillInitialData();
                     objucSubTasks_User.FillInitialData();
+                }
+                else
+                {
+                    LoadTaskData(hdnTaskId.Value);
                 }
             }
         }
