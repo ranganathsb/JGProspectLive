@@ -167,8 +167,21 @@ namespace JG_Prospect.Sr_App.Controls
                 chkAdmin.Enabled = !blAdminStatus;
                 chkITLead.Enabled = !blTechLeadStatus;
                 chkUser.Enabled = !blOtherUserStatus;
-
+                
                 SetFreezeColumnUI(txtPasswordToFreezeSubTask, chkAdmin, chkITLead, chkUser);
+
+                if (chkAdmin.Enabled)
+                {
+                    chkAdmin.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
+                }
+                if (chkITLead.Enabled)
+                {
+                    chkITLead.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
+                }
+                if (chkUser.Enabled)
+                {
+                    chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
+                }
             }
         }
 

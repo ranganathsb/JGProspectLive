@@ -1457,18 +1457,18 @@ a.page_disabled, a.page_disabled:hover, a.page_disabled:active {
     color: black;
 }
 
-.fz 
+input.fz , .fz > input
 {
 outline: 2px solid !important ;
 outline-offset: 1px !important;
 }
-.fz-admin {
+input.fz-admin, .fz-admin > input {
 outline-color: red !important;
 }
-.fz-techlead {
+input.fz-techlead, .fz-techlead > input {
 outline-color: black !important;
 }
-.fz-user {
+input.fz-user, .fz-user > input {
 outline-color:blue !important;
 }
 

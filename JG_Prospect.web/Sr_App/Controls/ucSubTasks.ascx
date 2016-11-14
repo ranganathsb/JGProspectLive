@@ -60,12 +60,13 @@
                                 <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
                                     CommandArgument='<%# Container.DataItemIndex  %>' />
                                 <div>
-                                    <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" onclick="" />
-                                    <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" onclick="" />
-                                    <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" onclick="" />
-                                    <div>
-                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" CssClass="textbox" Width="110"
-                                            OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                    <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
+                                    <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
+                                    <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
+                                    <div data-id="divPasswordToFreezeSubTask" style="display: none;">
+                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" 
+                                            data-id="txtPasswordToFreezeSubTask" AutoPostBack="true"
+                                            CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                     </div>
                                 </div>
                             </ItemTemplate>
@@ -288,4 +289,13 @@
             }
         }
 
+    function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
+        var $sender = $(sender).find("input");
+        if ($sender.prop('checked')) {
+            $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').show();
+        }
+        else {
+            $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').hide();
+        }
+    }
 </script>
