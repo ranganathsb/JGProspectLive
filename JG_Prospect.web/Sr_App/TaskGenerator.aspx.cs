@@ -157,30 +157,40 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
+            #region Task Work Specifications
+
+            objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucTaskWorkSpecifications.IsAdminMode = this.IsAdminMode;
+            objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+
+            #endregion
+
+            #region Sub Tasks
+            
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
             objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
-            objucSubTasks_User.SetSubTaskView();
+            objucSubTasks_User.SetSubTaskView(); 
+            
+            #endregion
+            
+            #region Task History
 
             objucTaskHistory_Admin.TaskId = Convert.ToInt64(hdnTaskId.Value);
             objucTaskHistory_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
             objucTaskHistory_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucTaskHistory_Admin.LoadTaskData = LoadTaskData;
-            objucTaskHistory_Admin.Visible = true;
 
             objucTaskHistory_User.TaskId = Convert.ToInt64(hdnTaskId.Value);
             objucTaskHistory_User.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
             objucTaskHistory_User.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucTaskHistory_User.LoadTaskData = LoadTaskData;
-            objucTaskHistory_User.Visible = true;
-
-            objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
-            objucTaskWorkSpecifications.IsAdminMode = this.IsAdminMode;
-            objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
-
+            
+            #endregion
+            
             if (!IsPostBack)
             {
                 if (hdnTaskId.Value == "0")
