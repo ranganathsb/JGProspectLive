@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -191,5 +191,15 @@ namespace JG_Prospect.BLL
         }
 
         #endregion
+
+        public int UpdateSubTaskStatusById(Task objTask, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
+        {
+            return TaskGeneratorDAL.Instance.UpdateSubTaskStatusById(objTask, blIsAdmin, blIsTechLead, blIsUser);
+        }
+
+        public DataSet GetPendingSubTaskCount(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetPendingSubTaskCount(TaskId);
+        }
     }
 }

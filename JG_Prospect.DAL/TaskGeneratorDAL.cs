@@ -524,7 +524,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin)
         {
             try
             {
@@ -535,6 +535,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -927,7 +928,6 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
-
         public bool UpadateTaskNotes(ref TaskUser objTaskUser)
         {
             try
@@ -1267,6 +1267,65 @@ namespace JG_Prospect.DAL
 
 
         #endregion
+
+        public int UpdateSubTaskStatusById(Task objTask, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateSubTaskStatusById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
+                    if (blIsAdmin)
+                    {
+                        database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTask.AdminStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.AdminUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsAdminInstallUser);
+                    }
+                    else if (blIsTechLead)
+                    {
+                        database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTask.TechLeadStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.TechLeadUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsTechLeadInstallUser);
+                    }
+                    else if (blIsUser)
+                    {
+                        database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTask.OtherUserStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.OtherUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsOtherUserInstallUser);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public DataSet GetPendingSubTaskCount(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPendingSubTaskCount");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
     }
 }

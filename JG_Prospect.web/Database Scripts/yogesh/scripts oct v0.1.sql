@@ -4385,3 +4385,305 @@ BEGIN
 
 END
 GO
+
+
+ALTER TABLE [tblTask]
+ADD
+	[AdminStatus] BIT NULL,
+	[TechLeadStatus] BIT NULL,
+	[OtherUserStatus] BIT NULL,
+	[AdminStatusUpdated] DATETIME NULL,
+	[TechLeadStatusUpdated] DATETIME NULL,
+	[OtherUserStatusUpdated] DATETIME NULL,
+	[AdminUserId] INT NULL,
+	[TechLeadUserId] INT NULL,
+	[OtherUserId] INT NULL,
+	[IsAdminInstallUser] BIT NULL,
+	[IsTechLeadInstallUser] BIT NULL,
+	[IsOtherUserInstallUser] BIT NULL
+GO
+
+UPDATE [dbo].[tblTask]
+SET 
+	[AdminStatus] = 0
+	,[TechLeadStatus] = 0
+	,[OtherUserStatus] = 0
+GO
+
+/****** Object:  StoredProcedure [dbo].[SP_SaveOrDeleteTask]    Script Date: 14-Nov-16 10:53:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Nov 16
+-- Description:	Inserts, Updates or Deletes a task.
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTask]  
+	 @Mode tinyint, -- 0:Insert, 1: Update, 2: Delete  
+	 @TaskId bigint,  
+	 @Title varchar(250),  
+	 @Description varchar(MAX),  
+	 @Status tinyint,  
+	 @DueDate datetime = NULL,  
+	 @Hours varchar(25),
+	 @CreatedBy int,	
+	 @InstallId varchar(50) = NULL,
+	 @ParentTaskId bigint = NULL,
+	 @TaskType tinyint = NULL,
+	 @TaskPriority tinyint = null,
+	 @IsTechTask bit = NULL,
+	 @Result int output 
+AS  
+BEGIN  
+  
+	IF @Mode=0  
+	  BEGIN  
+		INSERT INTO tblTask 
+				(
+					Title,
+					[Description],
+					[Status],
+					DueDate,
+					[Hours],
+					CreatedBy,
+					CreatedOn,
+					IsDeleted,
+					InstallId,
+					ParentTaskId,
+					TaskType,
+					TaskPriority,
+					IsTechTask,
+					AdminStatus,
+					TechLeadStatus,
+					OtherUserStatus
+				)
+		VALUES
+				(
+					@Title,
+					@Description,
+					@Status,
+					@DueDate,
+					@Hours,
+					@CreatedBy,
+					GETDATE(),
+					0,
+					@InstallId,
+					@ParentTaskId,
+					@TaskType,
+					@TaskPriority,
+					@IsTechTask,
+					0,
+					0,
+					0
+				)  
+  
+		SET @Result=SCOPE_IDENTITY ()  
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=1 -- Update  
+	BEGIN    
+		UPDATE tblTask  
+		SET  
+			Title=@Title,  
+			[Description]=@Description,  
+			[Status]=@Status,  
+			DueDate=@DueDate,  
+			[Hours]=@Hours,
+			[TaskType] = @TaskType,
+			[TaskPriority] = @TaskPriority,
+			[IsTechTask] = @IsTechTask
+		WHERE TaskId=@TaskId  
+
+		SET @Result= @TaskId
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=2 --Delete  
+	BEGIN  
+		UPDATE tblTask  
+		SET  
+			IsDeleted=1  
+		WHERE TaskId=@TaskId OR ParentTaskId=@TaskId  
+	END  
+  
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Oct 16
+-- Description:	Gets number of pending sub Tasks related to a task.
+-- =============================================
+-- EXEC GetPendingSubTaskCount 115
+CREATE PROCEDURE [dbo].[GetPendingSubTaskCount]
+	@TaskId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SELECT COUNT(DISTINCT t.TaskId) AS TotalRecordCount
+	FROM tblTask t
+	WHERE 
+		t.ParentTaskId = @TaskId
+
+	SELECT COUNT(DISTINCT t.TaskId) AS PendingRecordCount
+	FROM tblTask t
+	WHERE 
+		t.ParentTaskId = @TaskId AND 
+		(
+			ISNULL(t.AdminStatus ,0) = 0 OR
+			ISNULL(t.TechLeadStatus ,0) = 0 
+			-- OR
+			-- ISNULL(t.OtherUserStatus ,0) = 0
+		)
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Nov 16
+-- Description:	Updates status of sub Task by Id.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateSubTaskStatusById]
+	@TaskId		BIGINT,
+	@AdminStatus BIT = NULL,
+	@TechLeadStatus BIT = NULL,
+	@OtherUserStatus BIT = NULL,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	IF @AdminStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTask
+		SET
+			AdminStatus = @AdminStatus,
+			AdminUserId= @UserId,
+			IsAdminInstallUser = @IsInstallUser,
+			AdminStatusUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+	ELSE IF @TechLeadStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTask
+		SET
+			TechLeadStatus = @TechLeadStatus,
+			TechLeadUserId= @UserId,
+			IsTechLeadInstallUser = @IsInstallUser,
+			TechLeadStatusUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+	ELSE IF @OtherUserStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTask
+		SET
+			OtherUserStatus = @OtherUserStatus,
+			OtherUserId= @UserId,
+			IsOtherUserInstallUser = @IsInstallUser,
+			OtherUserStatusUpdated = GETDATE()
+		WHERE TaskId = @TaskId
+	END
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 14-Nov-16 11:00:02 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 10015
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId int,
+	@Admin bit
+)	  
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	-- task manager detail
+	DECLARE @AssigningUser varchar(50) = NULL
+
+	SELECT @AssigningUser = Users.[Username] 
+	FROM 
+		tblTask AS Task 
+		INNER JOIN [dbo].[tblUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+	WHERE TaskId = @TaskId
+
+	IF(@AssigningUser IS NULL)
+	BEGIN
+		SELECT @AssigningUser = Users.FristName + ' ' + Users.LastName 
+		FROM 
+			tblTask AS Task 
+			INNER JOIN [dbo].[tblInstallUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+		WHERE TaskId = @TaskId
+	END
+
+	-- sub tasks
+	SELECT 
+			Tasks.*,
+			--Tasks.TaskId, Title, [Description], Tasks.[Status], DueDate,Tasks.[Hours], Tasks.CreatedOn,
+			--Tasks.InstallId, Tasks.CreatedBy, Tasks.TaskType,Tasks.TaskPriority,
+			@AssigningUser AS AssigningManager,
+			UsersMaster.FristName, 
+			STUFF
+			(
+				(SELECT  CAST(', ' + ttuf.[Attachment] + '@' + ttuf.[AttachmentOriginal] as VARCHAR(max)) AS attachment
+				FROM dbo.tblTaskUserFiles ttuf
+				WHERE ttuf.TaskId = Tasks.TaskId
+				FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+				,1
+				,2
+				,' '
+			) AS attachment
+	FROM 
+		tblTask AS Tasks LEFT OUTER JOIN
+        tblTaskAssignedUsers AS TaskUsers ON Tasks.TaskId = TaskUsers.TaskId LEFT OUTER JOIN
+        tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id --LEFT OUTER JOIN
+		--tblTaskDesignations AS TaskDesignation ON Tasks.TaskId = TaskDesignation.TaskId
+	WHERE 
+			Tasks.ParentTaskId = @TaskId AND
+			1 = CASE
+					-- load records with all status for admin users.
+					WHEN @Admin = 1 THEN
+						1
+					-- load only approved records for non-admin users.
+					ELSE
+						CASE
+							WHEN Tasks.[AdminStatus] = 1 AND Tasks.[TechLeadStatus] = 1 THEN 1
+							ELSE 0
+						END
+				END
+    
+END
+GO
+

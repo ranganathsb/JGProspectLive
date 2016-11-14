@@ -149,6 +149,26 @@ namespace JG_Prospect.Sr_App.Controls
                     rptAttachments.DataSource = attachment;
                     rptAttachments.DataBind();
                 }
+
+                CheckBox chkAdmin = e.Row.FindControl("chkAdmin") as CheckBox;
+                CheckBox chkITLead = e.Row.FindControl("chkITLead") as CheckBox;
+                CheckBox chkUser = e.Row.FindControl("chkUser") as CheckBox;
+
+                TextBox txtPasswordToFreezeSubTask = e.Row.FindControl("txtPasswordToFreezeSubTask") as TextBox;
+
+                bool blAdminStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "AdminStatus"));
+                bool blTechLeadStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus"));
+                bool blOtherUserStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus"));
+
+                chkAdmin.Checked = blAdminStatus;
+                chkITLead.Checked = blTechLeadStatus;
+                chkUser.Checked = blOtherUserStatus;
+
+                chkAdmin.Enabled = !blAdminStatus;
+                chkITLead.Enabled = !blTechLeadStatus;
+                chkUser.Enabled = !blOtherUserStatus;
+
+                SetFreezeColumnUI(txtPasswordToFreezeSubTask, chkAdmin, chkITLead, chkUser);
             }
         }
 
@@ -270,7 +290,7 @@ namespace JG_Prospect.Sr_App.Controls
                                                 }
                                             );
 
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(TaskId).Tables[0]);
+                SetSubTaskDetails();
             }
         }
 
@@ -304,7 +324,71 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
 
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(TaskId).Tables[0]);
+                SetSubTaskDetails();
+            }
+        }
+
+        protected void gvSubTasks_txtPasswordToFreezeSubTask_TextChanged(object sender, EventArgs e)
+        {
+            TextBox txtPassword = sender as TextBox;
+            GridViewRow objGridViewRow = txtPassword.Parent.Parent as GridViewRow;
+
+            if (txtPassword != null && !string.IsNullOrEmpty(txtPassword.Text))
+            {
+                if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not valid.");
+                }
+                else
+                {
+                    #region Update Task (Freeze, Status)
+
+                    if (objGridViewRow != null)
+                    {
+                        Task objTask = new Task();
+
+                        objTask.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
+
+                        bool blIsAdmin, blIsTechLead, blIsUser;
+
+                        blIsAdmin = blIsTechLead = blIsUser = false;
+                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                        {
+                            objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                            objTask.AdminStatus = true;
+                            blIsAdmin = true;
+                        }
+                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                        {
+                            objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                            objTask.TechLeadStatus = true;
+                            blIsTechLead = true;
+                        }
+                        else
+                        {
+                            objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                            objTask.OtherUserStatus = true;
+                            blIsUser = true;
+                        }
+
+                        TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                                    (
+                                                        objTask,
+                                                        blIsAdmin,
+                                                        blIsTechLead,
+                                                        blIsUser
+                                                    );
+
+                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task freezed successfully.");
+                    }
+
+                    #endregion
+
+                    SetSubTaskDetails();
+                }
             }
         }
 
@@ -399,6 +483,37 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Methods--'
 
+        protected string SetFreezeColumnUI(TextBox objTextBox, CheckBox chkAdmin, CheckBox chkITLead, CheckBox chkUser)
+        {
+            string strPlaceholder = string.Empty;
+            if (Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+            {
+                strPlaceholder = "Admin Password";
+                chkITLead.Enabled = 
+                chkUser.Enabled = false;
+            }
+            else if (Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+            {
+                strPlaceholder = "IT Lead Password";
+                chkAdmin.Enabled =
+                chkUser.Enabled = false;
+            }
+            else
+            {
+                strPlaceholder = "User Password";
+                chkAdmin.Enabled =
+                chkITLead.Enabled = false;
+            }
+
+            objTextBox.Attributes.Add("placeholder", strPlaceholder);
+            return strPlaceholder;
+        }
+
+        private DataTable GetSubTasks()
+        {
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode()).Tables[0];
+        }
+
         public void SetSubTaskDetails(List<Task> lstSubtasks)
         {
             // TaskId,Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
@@ -422,11 +537,16 @@ namespace JG_Prospect.Sr_App.Controls
 
             gvSubTasks.DataSource = dtSubtasks;
             gvSubTasks.DataBind();
+
+            // do not show freezing option while adding new task.
+            gvSubTasks.Columns[6].Visible = false;
+
             upSubTasks.Update();
         }
 
-        public void SetSubTaskDetails(DataTable dtSubTaskDetails)
+        public void SetSubTaskDetails()
         {
+            DataTable dtSubTaskDetails = GetSubTasks();
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
             upSubTasks.Update();
@@ -566,7 +686,8 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment, JGConstant.TaskFileDestination.SubTask);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(TaskId).Tables[0]);
+
+                SetSubTaskDetails();
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();

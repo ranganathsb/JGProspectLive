@@ -254,7 +254,7 @@ namespace JG_Prospect.Sr_App.Controls
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Requested).ToString() &&
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString() &&
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
-                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString() 
+                        ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()
                         //|| ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()) 
                         //&& string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
                        )
@@ -271,7 +271,7 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.DataValueField = "Id";
                         ddcbAssigned.DataBind();
 
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TaskAssignedUserIds").ToString()))
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString()))
                         {
                             string[] arrUserIds = DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             foreach (string strId in arrUserIds)
@@ -321,7 +321,7 @@ namespace JG_Prospect.Sr_App.Controls
                         SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
-                        hypUsers.Attributes.Add("style","display:none;");
+                        hypUsers.Attributes.Add("style", "display:none;");
 
                         ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                         ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
@@ -663,7 +663,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value),JGConstant.TaskFileDestination.WorkSpecification, null, null);
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), JGConstant.TaskFileDestination.WorkSpecification, null, null);
                     if (dsTaskUserFiles != null && dsTaskUserFiles.Tables.Count > 0)
                     {
                         foreach (DataRow drFile in dsTaskUserFiles.Tables[0].Rows)
@@ -1312,7 +1312,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
                 hdnSubTaskId.Value = ItaskId.ToString();
                 UploadUserAttachements(null, ItaskId, task.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode()).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();

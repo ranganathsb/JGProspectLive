@@ -166,17 +166,17 @@ namespace JG_Prospect.Sr_App
             #endregion
 
             #region Sub Tasks
-            
+
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
             objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
-            objucSubTasks_User.SetSubTaskView(); 
-            
+            objucSubTasks_User.SetSubTaskView();
+
             #endregion
-            
+
             #region Task History
 
             objucTaskHistory_Admin.TaskId = Convert.ToInt64(hdnTaskId.Value);
@@ -188,9 +188,9 @@ namespace JG_Prospect.Sr_App
             objucTaskHistory_User.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
             objucTaskHistory_User.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucTaskHistory_User.LoadTaskData = LoadTaskData;
-            
+
             #endregion
-            
+
             if (!IsPostBack)
             {
                 if (hdnTaskId.Value == "0")
@@ -289,8 +289,6 @@ namespace JG_Prospect.Sr_App
             DeletaTask(hdnTaskId.Value);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
-
-
 
         #region '--Work Specification Section--'
 
@@ -1135,8 +1133,8 @@ namespace JG_Prospect.Sr_App
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
             objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails);
-            objucSubTasks_Admin.SetSubTaskDetails(dtSubTaskDetails);
-            objucSubTasks_User.SetSubTaskDetails(dtSubTaskDetails);
+            objucSubTasks_Admin.SetSubTaskDetails();
+            objucSubTasks_User.SetSubTaskDetails();
 
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
 

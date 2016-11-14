@@ -57,8 +57,17 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
-                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Feedback" CommandName="sub-task-feedback"
+                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
                                     CommandArgument='<%# Container.DataItemIndex  %>' />
+                                <div>
+                                    <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" onclick="" />
+                                    <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" onclick="" />
+                                    <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" onclick="" />
+                                    <div>
+                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" CssClass="textbox" Width="110"
+                                            OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                    </div>
+                                </div>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
