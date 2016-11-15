@@ -58,6 +58,24 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.TextBox txtTaskDesc;
         
         /// <summary>
+        /// rfvDesc control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDesc;
+        
+        /// <summary>
+        /// vsDesc control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary vsDesc;
+        
+        /// <summary>
         /// btnSaveDesc control.
         /// </summary>
         /// <remarks>
@@ -65,6 +83,15 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveDesc;
+        
+        /// <summary>
+        /// hdnTaskID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnTaskID;
         
         /// <summary>
         /// gdTaskUsers control.

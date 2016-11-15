@@ -377,6 +377,42 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool SaveTaskDescription(Int64 TaskId,String TaskDescription)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_SaveTaskDescription");
+
+                    command.CommandType = CommandType.StoredProcedure;                  
+                    
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskId);
+                   
+                    database.AddInParameter(command, "@Description", DbType.String, TaskDescription);
+                   
+                    int result = database.ExecuteNonQuery(command);
+                    
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+
         public bool UpdateTaskUserAcceptance(ref TaskUser objTaskUser)
         {
             try

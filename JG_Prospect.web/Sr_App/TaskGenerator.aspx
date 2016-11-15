@@ -39,12 +39,28 @@
 
 
 
+                           
+
+
+
+
+
+
+
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
                            
                            
 
                            
+
+
+
+                           
+
+
+
+
 
 
 
@@ -66,6 +82,22 @@
 
 
                                
+
+
+
+
+
+
+
+                               
+
+
+
+
+
+
+
+
 
 
 
@@ -122,6 +154,22 @@
 
 
 
+                               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
                                         <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
@@ -146,7 +194,7 @@
                                 <asp:HiddenField ID="controlMode" runat="server" />
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
-                            <td  style="vertical-align: middle;">
+                            <td style="vertical-align: middle;">
 
                                 <asp:LinkButton ID="lbtnShowWorkSpecificationSection" runat="server" Text="Work Specification Files"
                                     ValidationGroup="Submit" OnClick="lbtnShowWorkSpecificationSection_Click" />
@@ -157,6 +205,7 @@
                         </tr>
                         <tr>
                             <td align="left">Staus:
+                               
                                 <asp:DropDownList ID="cmbStatus" runat="server" CssClass="textbox" />
                                 &nbsp;&nbsp;Priority:&nbsp;<asp:DropDownList ID="ddlTaskPriority" runat="server" CssClass="textbox" />
                             </td>
@@ -174,26 +223,23 @@
                                     placeholder="User Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="2">Task Description <span style="color: red;">*</span>:
-                                
+                        <tr style="display: none;">
+                            <td colspan="2">Task Description <span style="color: red;">*</span>:                                
+                               
                                 <br />
-
                                 <asp:TextBox ID="txtDescription" TextMode="MultiLine" runat="server" CssClass="textbox" Width="98%" Rows="10"></asp:TextBox>
                                 <%--<ajax:Editor ID="txtDescription" Width="100%" Height="100px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
-                                <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
-                                    runat="server" ControlToValidate="txtDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
-                                </asp:RequiredFieldValidator>
+                                
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <uc1:ucTaskHistory id="objucTaskHistory_Admin" runat="server" />
+                                <uc1:ucTaskHistory ID="objucTaskHistory_Admin" runat="server" />
                             </td>
                         </tr>
                         <tr id="trSubTaskList" runat="server">
                             <td colspan="2">
-                                <uc1:ucSubTasks id="objucSubTasks_Admin" runat="server" />    
+                                <uc1:ucSubTasks ID="objucSubTasks_Admin" runat="server" />
                             </td>
                         </tr>
                         <tr>
@@ -214,6 +260,7 @@
                                 <asp:DropDownList ID="ddlTUStatus" AutoPostBack="true" runat="server" CssClass="textbox">
                                 </asp:DropDownList>
                                 &nbsp;&nbsp;
+                               
                                 <b>Priority:</b>
                                 <asp:Literal ID="ltrlTaskPriority" runat="server" />
                             </td>
@@ -226,6 +273,8 @@
                                 <asp:LinkButton ID="lbtnShowWorkSpecificationSection1" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnShowWorkSpecificationSection_Click" />&nbsp;
                                
+                               
+
                                 <asp:LinkButton ID="lbtnShowFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnShowFinishedWorkFiles_Click" />
                                 <br />
@@ -248,12 +297,12 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <uc1:ucTaskHistory id="objucTaskHistory_User" runat="server" />
+                                <uc1:ucTaskHistory ID="objucTaskHistory_User" runat="server" />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <uc1:ucSubTasks id="objucSubTasks_User" runat="server" />    
+                                <uc1:ucSubTasks ID="objucSubTasks_User" runat="server" />
                             </td>
                         </tr>
                     </table>
@@ -338,6 +387,7 @@
                                                                         </ItemTemplate>
                                                                         <FooterTemplate>
                                                                             </ul>
+                                                                       
                                                                         </FooterTemplate>
                                                                     </asp:Repeater>
                                                                 </ContentTemplate>
@@ -389,17 +439,20 @@
                             <table width="100%">
                                 <tr>
                                     <td align="left">User Acceptance:
-                                            <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
-                                                <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
-                                                <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
-                                            </asp:DropDownList>
+                                           
+                                        <asp:DropDownList ID="ddlUserAcceptance" runat="server" CssClass="textbox">
+                                            <asp:ListItem Text="Accept" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="Reject" Value="0"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </td>
                                     <td align="left">Due Date:
-                                                <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
+                                               
+                                        <asp:TextBox ID="txtDueDate" runat="server" CssClass="textbox datepicker" Width="120" />
                                         <asp:Literal ID="ltlTUDueDate" runat="server" />
                                     </td>
                                     <td align="right">Hrs of Task:
-                                                <asp:Literal ID="ltlTUHrsTask" runat="server" />
+                                               
+                                        <asp:Literal ID="ltlTUHrsTask" runat="server" />
                                         <asp:TextBox ID="txtHours" runat="server" CssClass="textbox" Width="100" />
                                         <asp:RegularExpressionValidator ID="revHours" runat="server" ControlToValidate="txtHours" Display="None"
                                             ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="SaveWorkSpecification" ValidationExpression="(\d+\.\d{1,2})?\d*" />
@@ -473,7 +526,9 @@
                         </td>
                         <td colspan="2" valign="top">Comment on sub task:
                                        
-                                        <br />
+                                       
+
+                            <br />
                             <asp:TextBox ID="txtSubTaskCommentFWF" runat="server" CssClass="textbox" TextMode="MultiLine" Style="width: 90%;" Rows="4" />
                         </td>
                     </tr>
@@ -494,7 +549,7 @@
         </div>
     </div>
     <%--Popup Ends--%>
-    
+
     <script type="text/javascript">
 
         var workspecEditor;
@@ -517,66 +572,66 @@
         }
 
         function ShowPopup(varControlID) {
-            console.log($( window ).width());
-            var windowWidth = (parseInt($( window ).width()) / 2)-10;
+            console.log($(window).width());
+            var windowWidth = (parseInt($(window).width()) / 2) - 10;
             console.log(windowWidth);
 
             var dialogwidth = windowWidth + "px";
-       
-            var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto"});
-            
+
+            var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
+
             AppendMinimizeButton(objDialog);
-            
+
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));
-            if (varControlID == '#<%=divFinishedWorkFiles.ClientID%>' ) {
-                
-                $(varControlID).dialog( "option", "position", {
+            if (varControlID == '#<%=divFinishedWorkFiles.ClientID%>') {
+
+                $(varControlID).dialog("option", "position", {
                     my: 'left top',
                     at: 'right+5 top',
                     of: $('#<%=divWorkSpecificationSection.ClientID%>')
-                } );
+                });
             }
             else {
-                $(varControlID).dialog( "option", "position", {
+                $(varControlID).dialog("option", "position", {
                     my: 'left top',
                     at: 'left top',
                     of: window
-                } );
+                });
             }
         }
 
-        function AppendMinimizeButton(objDialog){
-        
-            var varTarget = $('#'+objDialog.attr('id'));
+        function AppendMinimizeButton(objDialog) {
 
-            if(typeof(varTarget.attr('data-min-button')) != 'undefined' ) {
+            var varTarget = $('#' + objDialog.attr('id'));
 
-                if(objDialog.parent().find('.ui-dialog-titlebar-minimize').length ==0){
+            if (typeof (varTarget.attr('data-min-button')) != 'undefined') {
+
+                if (objDialog.parent().find('.ui-dialog-titlebar-minimize').length == 0) {
                     var varMinimizeButton = $('<button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-minimize" role="button" title="Minimize"><span class="ui-button-icon-primary ui-icon ui-icon-minusthick"></span><span class="ui-button-text">Minimize</span></button>');
-            
-                    varMinimizeButton.click(function() {
+
+                    varMinimizeButton.click(function () {
                         var divFixedSection = $('#<%=divFixedSection.ClientID%>');
 
-                        if(divFixedSection.find('a[data-id="'+varTarget.attr('id')+'"]').length == 0) {
-                            var varLink = $('<a data-id="'+varTarget.attr('id')+'" href="javascript:void(0);" style="margin:0px 6px 0px 0px;color:white;font-weight:bold" onclick="javascript:ShowPopup(\'#'+varTarget.attr('id')+'\');$(this).remove();">'+varTarget.attr('data-min-button')+'</a>');
+                        if (divFixedSection.find('a[data-id="' + varTarget.attr('id') + '"]').length == 0) {
+                            var varLink = $('<a data-id="' + varTarget.attr('id') + '" href="javascript:void(0);" style="margin:0px 6px 0px 0px;color:white;font-weight:bold" onclick="javascript:ShowPopup(\'#' + varTarget.attr('id') + '\');$(this).remove();">' + varTarget.attr('data-min-button') + '</a>');
                             varLink.appendTo(divFixedSection);
                         }
-                        HidePopup('#'+varTarget.attr('id'));
+                        HidePopup('#' + varTarget.attr('id'));
                     });
-                    
+
                     varMinimizeButton.insertBefore(objDialog.parent().find('.ui-dialog-titlebar-close'));
                 }
             }
         }
 
         function ApplyToolTip() {
-            $( document ).tooltip({
+            $(document).tooltip({
                 items: "[data-tooltip]",
-                content: function() {
-                    var element = $( this );
-                   
-                    if ( element.is( "[data-tooltipcontent]" ) ) {
+                content: function () {
+                    var element = $(this);
+
+                    if (element.is("[data-tooltipcontent]")) {
                         return element.attr("data-tooltipcontent");
                     }
                     //if ( element.is( "[title]" ) ) {
@@ -595,7 +650,7 @@
         }
 
         var objWorkFileDropzone;
-        
+
         function ApplyDropZone() {
             //debugger;
             ////User's drag and drop file attachment related code
@@ -605,7 +660,7 @@
                 objWorkFileDropzone.destroy();
                 objWorkFileDropzone = null;
             }
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews','#<%= hdnWorkFiles.ClientID %>','#<%=btnAddAttachment.ClientID%>');
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews', '#<%= hdnWorkFiles.ClientID %>', '#<%=btnAddAttachment.ClientID%>');
         }
 
     </script>

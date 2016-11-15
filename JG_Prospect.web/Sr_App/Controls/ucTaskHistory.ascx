@@ -16,18 +16,32 @@
                                     <table cellspacing="0" rules="rows" border="1" style="background-color: White; width: 100%; border-collapse: collapse;">
                                         <tbody>
                                             <tr class="trHeader " style="color: White; background-color: Black;">
-                                                <th scope="col" style="font-size: Small; width: 20%;">User</th>
-                                                <th scope="col" style="font-size: Small; width: 10%;">Date &amp; Time</th>
-                                                <th scope="col" style="font-size: Small; width: 50%;">Notes</th>
+                                                <th scope="col" style="font-size: Small; width: 10%;">User</th>
+                                                <th scope="col" style="font-size: Small; width: 20%;">Date &amp; Time</th>
+                                                <th scope="col" style="font-size: Small; width: 60%;">Notes</th>
                                                 <th scope="col" style="font-size: Small; width: 10%;">&nbsp;</th>
                                             </tr>
                                             <tr style="background-color: #FFFACD;">
                                                 <td colspan="3">
-                                                    <div style="border-bottom: 1px dashed black; width:100%; clear:both;"><small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small></div>
-                                                    
-                                                    <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox></td>
+                                                    <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
+                                                        <small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>
+                                                        <br />
+                                                        Task Description<span style="color: red;">*</span>:
+                                                    </div>
+
+                                                    <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox>
+                                                    <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
+                                                        runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
+                                                    </asp:RequiredFieldValidator>
+                                                    <asp:ValidationSummary ID="vsDesc" runat="server" ShowMessageBox="True"
+                                                        ShowSummary="False" ValidationGroup="Submit" />
+                                                </td>
+
                                                 <td>
-                                                    <asp:Button ID="btnSaveDesc" runat="server" Text="Save" CssClass="ui-button" /></td>
+                                                    <asp:Button ID="btnSaveDesc" Style="display: none;" runat="server" OnClick="btnSaveDesc_Click" Text="Save" CssClass="ui-button" />
+
+                                                    <input id="hdnTaskID" runat="server" type="hidden" />
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -65,10 +79,10 @@
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
                                             <asp:TemplateField ControlStyle-ForeColor="White"
-                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
+                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%" ItemStyle-Width="10%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
-                                                    <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
+                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
                                                         Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " -", Eval("UserId")) %>' />
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
@@ -77,7 +91,7 @@
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
                                             <asp:TemplateField ControlStyle-ForeColor="White"
-                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%" ItemStyle-Width="20%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
@@ -88,16 +102,19 @@
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
                                             <asp:TemplateField ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="50%">
+                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="60%" ItemStyle-Width="60%">
                                                 <ItemTemplate>
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
 
-                                                        <asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%# String.Concat("/TaskAttachements/",Eval("Attachment"))%>'
-                                                            Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />
+                                                        <a id="hypImage" runat="server">
+                                                            <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" /></a>
 
-                                                        <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'
-                                                            CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                        <%--<asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%# String.Concat("/TaskAttachements/",Eval("Attachment"))%>'
+                                                            Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />--%>
+
+                                                        <%--<asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'
+                                                            CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>--%>
                                                         <%--<asp:Label ID="lableOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'></asp:Label>--%>
                                                     </div>
                                                 </ItemTemplate>
@@ -145,14 +162,14 @@
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
 
-                                            <asp:TemplateField HeaderStyle-Width="10%">
+                                            <asp:TemplateField HeaderStyle-Width="10%" ItemStyle-Width="10%">
                                                 <EditItemTemplate>
                                                     <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                     <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
                                                 </EditItemTemplate>
-                                                <ItemTemplate>
+                                                <ItemTemplate >
                                                     <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
-                                                    <asp:Button ID="ButtonEdit" runat="server" CommandName="Edit" Text="Edit" />
+                                                    <asp:Button ID="ButtonEdit" runat="server" style="display:none;" CommandName="Edit" Text="Edit" />
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
                                                 <ControlStyle ForeColor="Black" />
@@ -447,13 +464,14 @@
                         <div>
                             <table style="width: 100%">
                                 <tr>
-                                    <td style="width: 50px">
-                                        <asp:Label runat="server"> Notes:</asp:Label>
-                                    </td>
-                                    <td style="width: 95%">
-                                        <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox" ValidationGroup="Validation"></asp:TextBox>
+                                   
+                                    <td >
+                                        Notes:
+                                   <div style="clear:both;">
+                                             <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="100%" CssClass="textbox" Rows="7" ValidationGroup="Validation"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
                                             Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
+                                       </div>
                                     </td>
                                 </tr>
                             </table>
@@ -532,107 +550,124 @@
 
     $(function () {
         ucTaskHistory_Initialize();
+
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
     prmTaskGenerator.add_endRequest(function () {
         ucTaskHistory_Initialize();
+
     });
 
     function ucTaskHistory_Initialize() {
         ucTaskHistory_ApplyDropZone();
+        BindDescriptionAutoSaveevent();
     }
 
-    var objNoteDropzone;
+    function BindDescriptionAutoSaveevent() {
 
-    function ucTaskHistory_ApplyDropZone() {
-        //debugger;
-        ////User's drag and drop file attachment related code
+        $('#<%=txtTaskDesc.ClientID %>').blur(
 
-        //remove already attached dropzone.
-        if (objNoteDropzone) {
-            objNoteDropzone.destroy();
-            objNoteDropzone = null;
-        }
-        objNoteDropzone = GetWorkFileDropzone("#<%=divNoteDropzone.ClientID%>", '#<%=divNoteDropzonePreview.ClientID%>', '#<%= hdnNoteAttachments.ClientID %>', '#<%=btnUploadLogFiles.ClientID%>');
-    }
-
-    function ViewDetails(Id, longName, shortName, fileType) {
-
-        $("#<%=lblFileName.ClientID %>").text(shortName);
-        var filePath = '../TaskAttachments/' + longName;
-
-        var fileName = filePath;
-        var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-
-        var tv_main_channel = "";
-
-        if (fileType == 3) // Video
-        {
-            $('#Vedioplayer').show();
-            $('#Audiolayer').hide();
-            if (fileExtension == "mp4") {
-                tv_main_channel = $('#mp4Source');
-            }
-            tv_main_channel.attr('src', filePath);
-            var video_block = $('#Vedioplayer');
-            video_block.load();
-        }
-
-        if (fileType == 2) // Audio
-        {
-            $('#Vedioplayer').hide();
-            $('#Audiolayer').show();
-            if (fileExtension == "mp4") {
-                tv_main_channel = $('#mp4Source');
-            }
-            if (fileExtension == "mp3") {
-                tv_main_channel = $('#mp3Source');
+            function () {
+                var TaskId = $('#<%=hdnTaskID.ClientID%>').val();
+                if (TaskId != "" && TaskId != "0") {
+                    $('#<%=btnSaveDesc.ClientID %>').click();
+                }
             }
 
-            tv_main_channel.attr('src', filePath);
-            var audio_block = $('#Audiolayer');
-            audio_block.load();
+            );
         }
-    }
-    function LoadDiv(url) {
 
-        var img = new Image();
-        var bcgDiv = document.getElementById("divBackground");
-        var imgDiv = document.getElementById("divImage");
-        var imgFull = document.getElementById("imgFull");
-        var imgLoader = document.getElementById("imgLoader");
-        imgLoader.style.display = "block";
-        img.onload = function () {
-            imgFull.src = img.src;
-            imgFull.style.display = "block";
-            imgLoader.style.display = "none";
-        };
-        img.src = url;
-        var width = document.body.clientWidth;
-        if (document.body.clientHeight > document.body.scrollHeight) {
-            bcgDiv.style.height = document.body.clientHeight + "px";
-        }
-        else {
-            bcgDiv.style.height = document.body.scrollHeight + "px";
-        }
-        imgDiv.style.left = (width - 650) / 2 + "px";
-        imgDiv.style.top = "20px";
-        bcgDiv.style.width = "100%";
+        var objNoteDropzone;
 
-        bcgDiv.style.display = "block";
-        imgDiv.style.display = "block";
-        return false;
-    }
-    function HideDiv() {
-        var bcgDiv = document.getElementById("divBackground");
-        var imgDiv = document.getElementById("divImage");
-        var imgFull = document.getElementById("imgFull");
-        if (bcgDiv != null) {
-            bcgDiv.style.display = "none";
-            imgDiv.style.display = "none";
-            imgFull.style.display = "none";
+        function ucTaskHistory_ApplyDropZone() {
+            //debugger;
+            ////User's drag and drop file attachment related code
+
+            //remove already attached dropzone.
+            if (objNoteDropzone) {
+                objNoteDropzone.destroy();
+                objNoteDropzone = null;
+            }
+            objNoteDropzone = GetWorkFileDropzone("#<%=divNoteDropzone.ClientID%>", '#<%=divNoteDropzonePreview.ClientID%>', '#<%= hdnNoteAttachments.ClientID %>', '#<%=btnUploadLogFiles.ClientID%>');
+                        }
+
+                        function ViewDetails(Id, longName, shortName, fileType) {
+
+                            $("#<%=lblFileName.ClientID %>").text(shortName);
+    var filePath = '../TaskAttachments/' + longName;
+
+    var fileName = filePath;
+    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+    var tv_main_channel = "";
+
+    if (fileType == 3) // Video
+    {
+        $('#Vedioplayer').show();
+        $('#Audiolayer').hide();
+        if (fileExtension == "mp4") {
+            tv_main_channel = $('#mp4Source');
         }
+        tv_main_channel.attr('src', filePath);
+        var video_block = $('#Vedioplayer');
+        video_block.load();
     }
+
+    if (fileType == 2) // Audio
+    {
+        $('#Vedioplayer').hide();
+        $('#Audiolayer').show();
+        if (fileExtension == "mp4") {
+            tv_main_channel = $('#mp4Source');
+        }
+        if (fileExtension == "mp3") {
+            tv_main_channel = $('#mp3Source');
+        }
+
+        tv_main_channel.attr('src', filePath);
+        var audio_block = $('#Audiolayer');
+        audio_block.load();
+    }
+}
+function LoadDiv(url) {
+
+    var img = new Image();
+    var bcgDiv = document.getElementById("divBackground");
+    var imgDiv = document.getElementById("divImage");
+    var imgFull = document.getElementById("imgFull");
+    var imgLoader = document.getElementById("imgLoader");
+    imgLoader.style.display = "block";
+    img.onload = function () {
+        imgFull.src = img.src;
+        imgFull.style.display = "block";
+        imgLoader.style.display = "none";
+    };
+    img.src = url;
+    var width = document.body.clientWidth;
+    if (document.body.clientHeight > document.body.scrollHeight) {
+        bcgDiv.style.height = document.body.clientHeight + "px";
+    }
+    else {
+        bcgDiv.style.height = document.body.scrollHeight + "px";
+    }
+    imgDiv.style.left = (width - 650) / 2 + "px";
+    imgDiv.style.top = "20px";
+    bcgDiv.style.width = "100%";
+
+    bcgDiv.style.display = "block";
+    imgDiv.style.display = "block";
+    return false;
+}
+function HideDiv() {
+    var bcgDiv = document.getElementById("divBackground");
+    var imgDiv = document.getElementById("divImage");
+    var imgFull = document.getElementById("imgFull");
+    if (bcgDiv != null) {
+        bcgDiv.style.display = "none";
+        imgDiv.style.display = "none";
+        imgFull.style.display = "none";
+    }
+}
 </script>

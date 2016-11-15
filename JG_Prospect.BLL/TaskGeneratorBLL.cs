@@ -142,6 +142,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskNotes(ref objTaskUser);
         }
 
+        public bool SaveTaskDescription(Int64 TaskId, String TaskDescription)
+        {
+            return TaskGeneratorDAL.Instance.SaveTaskDescription(TaskId,TaskDescription);
+        }
+
         public bool UpadateTaskNotes(ref TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.UpadateTaskNotes(ref objTaskUser);

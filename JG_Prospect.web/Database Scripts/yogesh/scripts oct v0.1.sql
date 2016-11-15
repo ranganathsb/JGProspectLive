@@ -4779,3 +4779,26 @@ BEGIN
 END
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 11092016
+-- Description:	
+-- =============================================
+CREATE PROCEDURE usp_SaveTaskDescription 
+(	
+	@TaskId int , 
+	@Description varchar(4000) 
+)
+AS
+BEGIN
+	
+UPDATE       tblTask
+SET                Description = @Description
+WHERE        (TaskId = @TaskId)
+	
+END
+GO

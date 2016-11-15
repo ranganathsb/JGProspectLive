@@ -866,11 +866,11 @@ namespace JG_Prospect.Sr_App
             // save task master details
             SaveTask();
 
-            if (controlMode.Value == "0")
-            {
-                // save task description as a first note.
-                objucTaskHistory_Admin.SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), true, null, string.Empty, txtDescription.Text);
-            }
+            //if (controlMode.Value == "0")
+            //{
+            //    // save task description as a first note.
+            //    objucTaskHistory_Admin.SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), true, null, string.Empty, txtDescription.Text);
+            //}
 
             // save assgined designation.
             SaveTaskDesignations();
@@ -908,7 +908,8 @@ namespace JG_Prospect.Sr_App
             Task objTask = new Task();
             objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objTask.Title = Server.HtmlEncode(txtTaskTitle.Text);
-            objTask.Description = Server.HtmlEncode(txtDescription.Text);
+            // objTask.Description = Server.HtmlEncode(txtDescription.Text);
+            objTask.Description = objucTaskHistory_Admin.ucTaskDescription;
             objTask.Status = Convert.ToUInt16(cmbStatus.SelectedItem.Value);
             if (ddlTaskPriority.SelectedValue == "0")
             {
@@ -1128,8 +1129,8 @@ namespace JG_Prospect.Sr_App
             SetMasterTaskDetails(dtTaskMasterDetails);
             SetTaskDesignationDetails(dtTaskDesignationDetails);
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
-            objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails);
-            objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails);
+            objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
+            objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
             objucSubTasks_Admin.SetSubTaskDetails();
             objucSubTasks_User.SetSubTaskDetails();
 
@@ -1348,7 +1349,7 @@ namespace JG_Prospect.Sr_App
         private void toggleValidators(bool flag)
         {
             rfvTaskTitle.Visible = flag;
-            rfvDesc.Visible = flag;
+            //rfvDesc.Visible = flag;
             cvDesignations.Visible = flag;
         }
 

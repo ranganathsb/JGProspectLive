@@ -10,6 +10,7 @@ using JG_Prospect.Common;
 using Ionic.Zip;
 using System.IO;
 using System.Data;
+using System.Web.UI.HtmlControls;
 
 namespace JG_Prospect.Sr_App.Controls
 {
@@ -35,6 +36,12 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        public String ucTaskDescription {
+            get {
+                return txtTaskDesc.Text.Trim();
+            }
+        }
+
         public JGConstant.TaskStatus TaskStatus
         {
             get;
@@ -51,6 +58,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
             scriptManager.RegisterPostBackControl(this.gdTaskUsers);
+            hdnTaskID.Value = TaskId.ToString();
         }
 
         protected void linkDownLoadFiles_Click(object sender, EventArgs e)
@@ -173,8 +181,8 @@ namespace JG_Prospect.Sr_App.Controls
                 string AttachmentOriginal = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "AttachmentOriginal"));
 
                 Label labelNotes = (Label)e.Row.FindControl("lblNotes");
-                Image imgFile = (Image)e.Row.FindControl("imgFile");
-                LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
+                HtmlImage  imgFile = (HtmlImage)e.Row.FindControl("imgFile");
+                //LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
                 //Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
                 Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
                 LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
@@ -188,7 +196,7 @@ namespace JG_Prospect.Sr_App.Controls
                         labelNotes.Visible = true;
                         imgFile.Visible = false;
                         linkDownLoadFiles.Visible = false;
-                        linkOriginalfileName.Visible = false;
+                       // linkOriginalfileName.Visible = false;
                     }
                     else
                     {
@@ -200,37 +208,37 @@ namespace JG_Prospect.Sr_App.Controls
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
                             string filePath = "~/TaskAttachments/" + filefullName;
-                            imgFile.ImageUrl = filePath;
-                            linkOriginalfileName.Visible = true;
+                            imgFile.Src = filePath;
+                            //linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Docu) == FileType)
                         {
                             string fileExtension = Path.GetExtension(AttachmentOriginal);
                             if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                                imgFile.ImageUrl = "~/img/word.jpg";
+                                imgFile.Src = "~/img/word.jpg";
                             else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                                imgFile.ImageUrl = "~/img/xls.png";
+                                imgFile.Src = "~/img/xls.png";
                             else if (fileExtension.ToLower().Equals(".pdf"))
-                                imgFile.ImageUrl = "~/img/pdf.jpg";
+                                imgFile.Src = "~/img/pdf.jpg";
                             else if (fileExtension.ToLower().Equals(".csv"))
-                                imgFile.ImageUrl = "~/img/csv.png";
+                                imgFile.Src = "~/img/csv.png";
                             else
-                                imgFile.ImageUrl = "~/img/file.jpg";
-                            linkOriginalfileName.Visible = false;
+                                imgFile.Src = "~/img/file.jpg";
+                            //linkOriginalfileName.Visible = false;
                             //lableOriginalfileName.Visible = true;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Audio) == FileType)
                         {
-                            imgFile.ImageUrl = "~/img/audio.png";
-                            linkOriginalfileName.Visible = true;
+                            imgFile.Src = "~/img/audio.png";
+                            //linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Video) == FileType)
                         {
-                            imgFile.ImageUrl = "~/img/video.png";
+                            imgFile.Src = "~/img/video.png";
 
-                            linkOriginalfileName.Visible = true;
+                           // linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
                         }
                     }
@@ -825,5 +833,15 @@ namespace JG_Prospect.Sr_App.Controls
             gdTaskUsers.DataBind();
             upTaskUsers.Update();
         }
+
+        protected void btnSaveDesc_Click(object sender, EventArgs e)
+        {
+            if ( TaskId > 0 && !String.IsNullOrEmpty(txtTaskDesc.Text))
+            {
+                TaskGeneratorBLL.Instance.SaveTaskDescription(TaskId,txtTaskDesc.Text); 
+            }
+
+
+        }
     }
-}
+} 
