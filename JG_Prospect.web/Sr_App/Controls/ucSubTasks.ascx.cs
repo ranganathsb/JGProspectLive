@@ -66,7 +66,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (!IsPostBack)
             {
-
+                FillInitialData();
             }
         }
 
@@ -181,6 +181,12 @@ namespace JG_Prospect.Sr_App.Controls
                 if (chkUser.Enabled)
                 {
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
+                }
+
+                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus) 
+                {
+                    e.Row.FindControl("ltrlInstallId").Visible = true;
+                    e.Row.FindControl("lbtnInstallId").Visible = false;
                 }
             }
         }
@@ -542,10 +548,28 @@ namespace JG_Prospect.Sr_App.Controls
             dtSubtasks.Columns.Add("TaskType");
             dtSubtasks.Columns.Add("attachment");
             dtSubtasks.Columns.Add("TaskPriority");
+            dtSubtasks.Columns.Add("AdminStatus");
+            dtSubtasks.Columns.Add("TechLeadStatus");
+            dtSubtasks.Columns.Add("OtherUserStatus");
 
             foreach (Task objSubTask in lstSubtasks)
             {
-                dtSubtasks.Rows.Add(objSubTask.TaskId, objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment, objSubTask.TaskPriority);
+                dtSubtasks.Rows.Add(
+                                        objSubTask.TaskId, 
+                                        objSubTask.Title, 
+                                        objSubTask.Description, 
+                                        objSubTask.Status, 
+                                        objSubTask.DueDate, 
+                                        objSubTask.Hours, 
+                                        objSubTask.InstallId, 
+                                        string.Empty, 
+                                        objSubTask.TaskType, 
+                                        objSubTask.Attachment, 
+                                        objSubTask.TaskPriority, 
+                                        objSubTask.AdminStatus,
+                                        objSubTask.TechLeadStatus,
+                                        objSubTask.OtherUserStatus
+                                    );
             }
 
             gvSubTasks.DataSource = dtSubtasks;
@@ -574,12 +598,15 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        public void FillInitialData()
+        private void FillInitialData()
         {
             FillDropDrowns();
 
-            gvSubTasks.DataSource = this.lstSubTasks;
-            gvSubTasks.DataBind();
+            if (controlMode == "0")
+            {
+                gvSubTasks.DataSource = this.lstSubTasks;
+                gvSubTasks.DataBind();
+            }
         }
 
         private void FillDropDrowns()

@@ -1327,5 +1327,51 @@ namespace JG_Prospect.DAL
             }
         }
 
+        #region TaskAcceptance
+
+        public DataSet GetTaskAcceptances(Int64 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskAcceptances");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskId);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public int InsertTaskAcceptance(TaskAcceptance objTaskAcceptance)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskAcceptance");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskAcceptance.TaskId);
+                    database.AddInParameter(command, "@UserId", DbType.Int64, objTaskAcceptance.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskAcceptance.IsInstallUser);
+                    database.AddInParameter(command, "@IsAccepted", DbType.Boolean, objTaskAcceptance.IsAccepted);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        #endregion
     }
 }

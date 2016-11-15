@@ -4687,3 +4687,95 @@ BEGIN
 END
 GO
 
+
+CREATE TABLE tblTaskAcceptance
+(
+Id BIGINT PRIMARY KEY IDENTITY(1,1),
+TaskId BIGINT NOT NULL REFERENCES tblTask,
+UserId	BIGINT NOT NULL,
+IsInstallUser BIT NOT NULL,
+IsAccepted BIT NOT NULL,
+DateCreated DATETIME DEFAULT GETDATE()
+)
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 15 Nov 16
+-- Description:	Insert task acceptance history.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertTaskAcceptance]
+	@TaskId		BIGINT,
+	@UserId int,
+	@IsInstallUser bit,
+	@IsAccepted BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[tblTaskAcceptance]
+           ([TaskId]
+           ,[UserId]
+           ,[IsInstallUser]
+           ,[IsAccepted]
+           ,[DateCreated])
+     VALUES
+           (@TaskId
+           ,@UserId
+           ,@IsInstallUser
+           ,@IsAccepted
+           ,GETDATE())
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 15 Nov 16
+-- Description:	Get task acceptance history.
+-- =============================================
+CREATE PROCEDURE [dbo].[GetTaskAcceptances]
+	@TaskId		BIGINT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT 
+			s.*,
+
+			TaskUser.Username AS Username,
+			TaskUser.FirstName AS UserFirstName,
+			TaskUser.LastName AS UserLastName,
+			TaskUser.Email AS UserEmail
+	FROM [dbo].[tblTaskAcceptance] s
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.UserId AND s.IsInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = s.UserId AND s.IsInstallUser = 0
+			) AS TaskUser
+	WHERE s.TaskId = @TaskId
+	ORDER BY DateCreated ASC
+
+END
+GO
+
