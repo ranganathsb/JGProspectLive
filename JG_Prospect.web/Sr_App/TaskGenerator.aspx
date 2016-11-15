@@ -171,7 +171,7 @@
                                 <asp:TextBox ID="txtITLeadPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox fz fz-techlead" Width="110"
                                     placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                 <asp:TextBox ID="txtUserPasswordToFreezeSpecificationMain" runat="server" TextMode="Password" CssClass="textbox fz fz-user" Width="110"
-                                    placeholder="User Password" AutoPostBack="true" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                    placeholder="User Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                             </td>
                         </tr>
                         <tr>
@@ -308,7 +308,7 @@
                                                                 placeholder="IT Lead Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
 
                                                             <asp:TextBox ID="txtUserPasswordToFreezeSpecificationPopup" runat="server" TextMode="Password" CssClass="textbox fz fz-user" Width="110"
-                                                                placeholder="User Password" AutoPostBack="true" Visible="true" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
+                                                                placeholder="User Password" AutoPostBack="true" Visible="false" OnTextChanged="txtPasswordToFreezeSpecification_TextChanged" />
                                                         </div>
                                                     </td>
                                                 </tr>

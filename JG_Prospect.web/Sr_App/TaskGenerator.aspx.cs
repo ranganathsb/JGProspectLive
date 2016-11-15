@@ -152,7 +152,7 @@ namespace JG_Prospect.Sr_App
                         ListItem objSpecsInProgress = cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
                         objSpecsInProgress.Enabled = true;
                         objSpecsInProgress.Selected = true;
-                        cmbStatus.Enabled = false;
+                        //cmbStatus.Enabled = false;
                     }
                 }
             }
@@ -169,10 +169,12 @@ namespace JG_Prospect.Sr_App
 
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_Admin.controlMode = controlMode.Value;
             objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_User.controlMode = controlMode.Value;
             objucSubTasks_User.SetSubTaskView();
 
             #endregion
@@ -193,12 +195,7 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                if (hdnTaskId.Value == "0")
-                {
-                    objucSubTasks_Admin.FillInitialData();
-                    objucSubTasks_User.FillInitialData();
-                }
-                else
+                if (hdnTaskId.Value != "0")
                 {
                     LoadTaskData(hdnTaskId.Value);
                 }
@@ -649,7 +646,7 @@ namespace JG_Prospect.Sr_App
             cmbStatus.DataTextField = "Text";
             cmbStatus.DataValueField = "Value";
             cmbStatus.DataBind();
-            cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            //cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
             ddlTaskPriority.DataTextField = "Text";
@@ -660,7 +657,7 @@ namespace JG_Prospect.Sr_App
             ddlTUStatus.DataTextField = "Text";
             ddlTUStatus.DataValueField = "Value";
             ddlTUStatus.DataBind();
-            ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            //ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
         }
 
         private void DeletaTask(string TaskId)
@@ -887,9 +884,9 @@ namespace JG_Prospect.Sr_App
                 {
                     UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]), JGConstant.TaskFileDestination.Task);
                 }
-            }
 
-            objucSubTasks_Admin.SaveSubTasks(Convert.ToInt32(hdnTaskId.Value));
+                objucSubTasks_Admin.SaveSubTasks(Convert.ToInt32(hdnTaskId.Value));
+            }
 
             if (controlMode.Value == "0")
             {
@@ -1275,7 +1272,7 @@ namespace JG_Prospect.Sr_App
                     // status will be changed only after freezing the specifications.
                     if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                     {
-                        cmbStatus.Enabled = false;
+                        //cmbStatus.Enabled = false;
                     }
                     else
                     {
@@ -1325,7 +1322,7 @@ namespace JG_Prospect.Sr_App
                     // status will be changed only after freezing the specifications.
                     if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                     {
-                        ddlTUStatus.Enabled = false;
+                        //ddlTUStatus.Enabled = false;
                     }
                     else
                     {
@@ -1405,12 +1402,14 @@ namespace JG_Prospect.Sr_App
         private void SetPasswordToFreezeWorkSpecificationUI()
         {
             // show link to download working copy for preview for admin users only.
-            if (this.IsAdminAndItLeadMode)
+            //if (this.IsAdminAndItLeadMode)
             {
                 txtITLeadPasswordToFreezeSpecificationMain.Visible =
                 txtITLeadPasswordToFreezeSpecificationPopup.Visible =
                 txtAdminPasswordToFreezeSpecificationMain.Visible =
-                txtAdminPasswordToFreezeSpecificationPopup.Visible = true;
+                txtAdminPasswordToFreezeSpecificationPopup.Visible =
+                txtUserPasswordToFreezeSpecificationMain.Visible =
+                txtUserPasswordToFreezeSpecificationPopup.Visible = true;
 
                 DataSet dsTaskSpecificationStatus = TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value));
 
@@ -1421,27 +1420,31 @@ namespace JG_Prospect.Sr_App
                     Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]) > 0
                    )
                 {
-                    //trWorkSpecificationEditor.Visible =
-                    //trWorkSpecificationSave.Visible = true;
-                    //trWorkSpecificationContent.Visible = false;
                     SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
                 }
                 else
                 {
-                    //trWorkSpecificationSave.Visible =
-                    //trWorkSpecificationEditor.Visible = false;
-                    //trWorkSpecificationContent.Visible = true;
-
                     SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.Open).ToString());
                 }
 
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
                 {
+                    txtITLeadPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationPopup.AutoPostBack = false;
+                }
+                else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                {
                     txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
-                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack = false;
+                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
                 else
                 {
+                    txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack =
                     txtITLeadPasswordToFreezeSpecificationMain.AutoPostBack =
                     txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack = false;
                 }
@@ -1488,23 +1491,37 @@ namespace JG_Prospect.Sr_App
                         txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
                     }
 
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserStatus"].ToString()))
+                    {
+                        strLinkText += string.Format(
+                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
+                                                       dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserId"].ToString(),
+                                                       string.Concat
+                                                               (
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserFirstName"].ToString(),
+                                                                   " ",
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserLastName"].ToString()
+                                                               ),
+                                                        Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                    );
+
+                        txtUserPasswordToFreezeSpecificationMain.Visible =
+                        txtUserPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
                     #endregion
 
-                    ltrlFreezedSpecificationByUserLinkMain.Text =
-                    ltrlFreezedSpecificationByUserLinkPopup.Text = strLinkText;
+                    if (this.IsAdminAndItLeadMode)
+                    {
+                        ltrlFreezedSpecificationByUserLinkMain.Text =
+                        ltrlFreezedSpecificationByUserLinkPopup.Text = strLinkText;
+                    }
                 }
                 else
                 {
                     ltrlFreezedSpecificationByUserLinkMain.Text =
                     ltrlFreezedSpecificationByUserLinkPopup.Text = string.Empty;
                 }
-            }
-            else
-            {
-                //trWorkSpecificationEditor.Visible =
-                //trWorkSpecificationSave.Visible =
-                //tblAddEditWorkSpecification.Visible = false;
-                //trWorkSpecificationContent.Visible = true;
             }
         }
 
@@ -1517,7 +1534,7 @@ namespace JG_Prospect.Sr_App
             {
                 if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
                 {
-                    ddlStatus.Enabled = false;
+                    //ddlStatus.Enabled = false;
                 }
                 else
                 {
