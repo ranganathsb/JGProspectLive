@@ -201,5 +201,19 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetPendingSubTaskCount(TaskId);
         }
+
+        #region TaskAcceptance
+
+        public DataSet GetTaskAcceptances(Int64 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskAcceptances(TaskId);
+        }
+
+        public int InsertTaskAcceptance(TaskAcceptance objTaskAcceptance)
+        {
+            return TaskGeneratorDAL.Instance.InsertTaskAcceptance(objTaskAcceptance);
+        }
+
+        #endregion
     }
 }
