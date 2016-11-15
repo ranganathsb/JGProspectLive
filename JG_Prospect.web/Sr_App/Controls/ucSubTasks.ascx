@@ -290,7 +290,7 @@
         }
 
     function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
-        var $sender = $(sender).find("input");
+        var $sender = $(sender);
         if ($sender.prop('checked')) {
             $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').show();
         }
