@@ -175,7 +175,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Label labelNotes = (Label)e.Row.FindControl("lblNotes");
                 Image imgFile = (Image)e.Row.FindControl("imgFile");
                 LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
-                Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
+                //Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
                 Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
                 LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
 
@@ -199,43 +199,43 @@ namespace JG_Prospect.Sr_App.Controls
 
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
-                            string filePath = "../TaskAttachments/" + filefullName;
+                            string filePath = "~/TaskAttachments/" + filefullName;
                             imgFile.ImageUrl = filePath;
                             linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
+                            //lableOriginalfileName.Visible = false;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Docu) == FileType)
                         {
                             string fileExtension = Path.GetExtension(AttachmentOriginal);
                             if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                                imgFile.ImageUrl = "../img/word.jpg";
+                                imgFile.ImageUrl = "~/img/word.jpg";
                             else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                                imgFile.ImageUrl = "../img/xls.png";
+                                imgFile.ImageUrl = "~/img/xls.png";
                             else if (fileExtension.ToLower().Equals(".pdf"))
-                                imgFile.ImageUrl = "../img/pdf.jpg";
+                                imgFile.ImageUrl = "~/img/pdf.jpg";
                             else if (fileExtension.ToLower().Equals(".csv"))
-                                imgFile.ImageUrl = "../img/csv.png";
+                                imgFile.ImageUrl = "~/img/csv.png";
                             else
-                                imgFile.ImageUrl = "../img/file.jpg";
+                                imgFile.ImageUrl = "~/img/file.jpg";
                             linkOriginalfileName.Visible = false;
-                            lableOriginalfileName.Visible = true;
+                            //lableOriginalfileName.Visible = true;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Audio) == FileType)
                         {
-                            imgFile.ImageUrl = "../img/audio.png";
+                            imgFile.ImageUrl = "~/img/audio.png";
                             linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
+                            //lableOriginalfileName.Visible = false;
                         }
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Video) == FileType)
                         {
-                            imgFile.ImageUrl = "../img/video.png";
+                            imgFile.ImageUrl = "~/img/video.png";
 
                             linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
+                            //lableOriginalfileName.Visible = false;
                         }
                     }
 
-                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "IT Lead")
+                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "IT Lead")
                     {
                         if (!string.IsNullOrEmpty(notes))
                         {
@@ -810,12 +810,14 @@ namespace JG_Prospect.Sr_App.Controls
 
         }
 
-        public void SetTaskUserNNotesDetails(DataTable dtTaskUserDetails)
+        public void SetTaskUserNNotesDetails(DataTable dtTaskUserDetails, String TaskDesc)
         {
             for (int i = 0; i < dtTaskUserDetails.Rows.Count; i++)
             {
                 dtTaskUserDetails.Rows[i]["Notes"] = dtTaskUserDetails.Rows[i]["Notes"].ToString().Replace("-", "");
             }
+
+            txtTaskDesc.Text = TaskDesc;
 
             BindTaskUsersNotes(dtTaskUserDetails);
 

@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskHistory.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskHistory" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<link href="../../css/magnific-popup.css" rel="stylesheet" />
+<script src="../../Scripts/jquery.magnific-popup.min.js"></script>
 <div>
     <asp:UpdatePanel ID="upTaskHistory" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
@@ -11,16 +13,32 @@
                         <div class="grid">
                             <asp:UpdatePanel ID="upTaskUsers" runat="server" UpdateMode="Conditional">
                                 <ContentTemplate>
+                                    <table cellspacing="0" rules="rows" border="1" style="background-color: White; width: 100%; border-collapse: collapse;">
+                                        <tbody>
+                                            <tr class="trHeader " style="color: White; background-color: Black;">
+                                                <th scope="col" style="font-size: Small; width: 20%;">User</th>
+                                                <th scope="col" style="font-size: Small; width: 10%;">Date &amp; Time</th>
+                                                <th scope="col" style="font-size: Small; width: 50%;">Notes</th>
+                                                <th scope="col" style="font-size: Small; width: 10%;">&nbsp;</th>
+                                            </tr>
+                                            <tr style="background-color: #FFFACD;">
+                                                <td colspan="3">
+                                                    <div style="border-bottom: 1px dashed black; width:100%; clear:both;"><small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small></div>
+                                                    
+                                                    <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox></td>
+                                                <td>
+                                                    <asp:Button ID="btnSaveDesc" runat="server" Text="Save" CssClass="ui-button" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <asp:GridView ID="gdTaskUsers" runat="server"
                                         EmptyDataText="No task history available!"
-                                        ShowHeaderWhenEmpty="true"
                                         AutoGenerateColumns="false"
                                         Width="100%"
-                                        HeaderStyle-BackColor="Black"
-                                        HeaderStyle-ForeColor="White"
                                         AllowSorting="false"
                                         BackColor="White"
                                         PageSize="3"
+                                        ShowHeader="false"
                                         GridLines="Horizontal"
                                         OnRowDataBound="gdTaskUsers_RowDataBound"
                                         OnRowCommand="gdTaskUsers_RowCommand"
@@ -31,7 +49,7 @@
                                                                 </EmptyDataTemplate>--%>
 
                                         <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                        <HeaderStyle CssClass="trHeader " />
+
                                         <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                                         <AlternatingRowStyle CssClass="AlternateRow " />
                                         <Columns>
@@ -46,7 +64,7 @@
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
-                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White"
+                                            <asp:TemplateField ControlStyle-ForeColor="White"
                                                 HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
@@ -58,7 +76,7 @@
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
-                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White"
+                                            <asp:TemplateField ControlStyle-ForeColor="White"
                                                 HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
@@ -69,20 +87,18 @@
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
+                                            <asp:TemplateField ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
                                                 ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="50%">
                                                 <ItemTemplate>
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
-                                                    </div>
-                                                    <div>
-                                                        <asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%#Eval("Attachment")%>'
+
+                                                        <asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%# String.Concat("/TaskAttachements/",Eval("Attachment"))%>'
                                                             Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />
-                                                    </div>
-                                                    <div>
+
                                                         <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'
                                                             CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
-                                                        <asp:Label ID="lableOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'></asp:Label>
+                                                        <%--<asp:Label ID="lableOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'></asp:Label>--%>
                                                     </div>
                                                 </ItemTemplate>
                                                 <EditItemTemplate>
@@ -529,7 +545,7 @@
     }
 
     var objNoteDropzone;
-        
+
     function ucTaskHistory_ApplyDropZone() {
         //debugger;
         ////User's drag and drop file attachment related code
