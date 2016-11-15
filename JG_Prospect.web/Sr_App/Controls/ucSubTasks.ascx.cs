@@ -182,6 +182,12 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
+
+                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus) 
+                {
+                    e.Row.FindControl("ltrlInstallId").Visible = true;
+                    e.Row.FindControl("lbtnInstallId").Visible = false;
+                }
             }
         }
 
