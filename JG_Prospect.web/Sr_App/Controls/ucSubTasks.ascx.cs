@@ -7,9 +7,11 @@ using JG_Prospect.Common.modal;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 #endregion
@@ -167,7 +169,7 @@ namespace JG_Prospect.Sr_App.Controls
                 chkAdmin.Enabled = !blAdminStatus;
                 chkITLead.Enabled = !blTechLeadStatus;
                 chkUser.Enabled = !blOtherUserStatus;
-                
+
                 SetFreezeColumnUI(txtPasswordToFreezeSubTask, chkAdmin, chkITLead, chkUser);
 
                 if (chkAdmin.Enabled)
@@ -183,7 +185,7 @@ namespace JG_Prospect.Sr_App.Controls
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
 
-                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus) 
+                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus)
                 {
                     e.Row.FindControl("ltrlInstallId").Visible = true;
                     e.Row.FindControl("lbtnInstallId").Visible = false;
@@ -257,6 +259,8 @@ namespace JG_Prospect.Sr_App.Controls
                     {
                         ddlSubTaskPriority.SelectedValue = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
                     }
+
+                    FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
                 }
 
                 upAddSubTask.Update();
@@ -413,6 +417,53 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
+        protected void grdSubTaskAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "attachment"));
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+                LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
+
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+
+                if (files[1].Length > 40)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+                }
+                else
+                {
+                    lbtnAttchment.Text = files[1];
+                }
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                lbtnAttchment.CommandArgument = file;
+
+                ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+            }
+        }
+
+        protected void grdSubTaskAttachments_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "download-attachment")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "delete-attachment")
+            {
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
+
+                //Reload records.
+                FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+            }
+
+        }
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "DownloadFile")
@@ -508,7 +559,7 @@ namespace JG_Prospect.Sr_App.Controls
             if (Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
             {
                 strPlaceholder = "Admin Password";
-                chkITLead.Enabled = 
+                chkITLead.Enabled =
                 chkUser.Enabled = false;
             }
             else if (Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
@@ -555,17 +606,17 @@ namespace JG_Prospect.Sr_App.Controls
             foreach (Task objSubTask in lstSubtasks)
             {
                 dtSubtasks.Rows.Add(
-                                        objSubTask.TaskId, 
-                                        objSubTask.Title, 
-                                        objSubTask.Description, 
-                                        objSubTask.Status, 
-                                        objSubTask.DueDate, 
-                                        objSubTask.Hours, 
-                                        objSubTask.InstallId, 
-                                        string.Empty, 
-                                        objSubTask.TaskType, 
-                                        objSubTask.Attachment, 
-                                        objSubTask.TaskPriority, 
+                                        objSubTask.TaskId,
+                                        objSubTask.Title,
+                                        objSubTask.Description,
+                                        objSubTask.Status,
+                                        objSubTask.DueDate,
+                                        objSubTask.Hours,
+                                        objSubTask.InstallId,
+                                        string.Empty,
+                                        objSubTask.TaskType,
+                                        objSubTask.Attachment,
+                                        objSubTask.TaskPriority,
                                         objSubTask.AdminStatus,
                                         objSubTask.TechLeadStatus,
                                         objSubTask.OtherUserStatus
@@ -786,6 +837,26 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void FillSubtaskAttachments(int SubTaskId)
+        {
+            DataTable dtSubtaskAttachments = null;
+
+            if (SubTaskId > 0)
+            {
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(SubTaskId, JGConstant.TaskFileDestination.SubTask, null, null);
+                if (dsTaskUserFiles != null)
+                {
+                    dtSubtaskAttachments = dsTaskUserFiles.Tables[0];
+                    //Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
+                }
+            }
+
+            grdSubTaskAttachments.DataSource = dtSubtaskAttachments;
+            grdSubTaskAttachments.DataBind();
+
+            upnlAttachments.Update();
+        }
+
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
@@ -815,6 +886,54 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void DeleteWorkSpecificationFile(string parameter)
+        {
+            // Seperate DB Id and Filename from parameter.
+            string[] parameters = parameter.Split('|');
+
+            if (parameter.Length > 0)
+            {
+                string id = parameters[0];
+                string[] fileNames = parameters[1].Split('@');//Id
+
+                TaskUser taskUserFiles = new TaskUser();
+
+                //Remove file from database
+                bool blnFileDeletedFromDb = TaskGeneratorBLL.Instance.DeleteTaskUserFile(Convert.ToInt64(id));  // save task files
+
+                //if file removed from database, remove from server file system.
+                if (fileNames.Length > 0 && blnFileDeletedFromDb)
+                {
+                    string filetodelete = fileNames[0];
+                    DeletefilefromServer(filetodelete);
+                }
+
+            }
+
+        }
+
+        private void DeletefilefromServer(string filetodelete)
+        {
+            if (!String.IsNullOrEmpty(filetodelete))
+            {
+                var originalDirectory = new DirectoryInfo(Server.MapPath("~/TaskAttachments"));
+
+
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), filetodelete);
+
+                bool isExists = System.IO.File.Exists(pathString);
+
+                if (isExists)
+                    File.Delete(pathString);
+
+
+            }
+
+
+        }
+
         #endregion
+
+
     }
 }

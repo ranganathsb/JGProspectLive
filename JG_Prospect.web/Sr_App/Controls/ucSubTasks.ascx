@@ -43,7 +43,7 @@
                                 <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                        <asp:TemplateField HeaderText="Attachments" Visible="false" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
                             <ItemTemplate>
                                 <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
                                     <ItemTemplate>
@@ -64,7 +64,7 @@
                                     <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
                                     <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
                                     <div data-id="divPasswordToFreezeSubTask" style="display: none;">
-                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" 
+                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password"
                                             data-id="txtPasswordToFreezeSubTask" AutoPostBack="true"
                                             CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                     </div>
@@ -101,6 +101,41 @@
                                 <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server" />
                                 &nbsp;&nbsp;Priority:
                                 <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                Attachment(s):
+                                <div style="max-height: 300px;clear:both; background-color:white; overflow-y: auto; overflow-x: hidden;">
+                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <asp:Repeater ID="grdSubTaskAttachments" runat="server"
+                                                OnItemDataBound="grdSubTaskAttachments_ItemDataBound"
+                                                OnItemCommand="grdSubTaskAttachments_ItemCommand">
+                                                <HeaderTemplate>
+                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <li style="margin: 10px; text-align: left; float: left; width: 100px;">
+                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                        <br />
+                                                        <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                        <br />
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
+                                                            <br />
+                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
+                                                        </small>
+                                                    </li>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </ul>
+                                                                       
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>
                             </td>
                         </tr>
                         <tr style="display: none;">
@@ -283,11 +318,11 @@
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-                        });
-                    }
+                    });
+                }
             });
-            }
         }
+    }
 
     function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
         var $sender = $(sender);

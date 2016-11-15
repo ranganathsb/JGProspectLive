@@ -26,7 +26,7 @@
                                                     <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
                                                         <small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>
                                                         <br />
-                                                        Task Description<span style="color: red;">*</span>:
+                                                        <b>Task Description</b><span style="color: red;">*</span>:
                                                     </div>
 
                                                     <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox>

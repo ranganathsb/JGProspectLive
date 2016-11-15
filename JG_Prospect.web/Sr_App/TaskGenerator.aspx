@@ -33,37 +33,9 @@
                             <asp:LinkButton ID="lbtnDeleteTask" runat="server" OnClick="lbtnDeleteTask_Click" Text="Delete" />
                             &nbsp;&nbsp;Task ID#:
                            
-                           
-
-                           
-
-
-
-                           
-
-
-
-
-
-
-
                             <asp:Literal ID="ltrlInstallId" runat="server" /></td>
                         <td align="center">Date Created:
                            
-                           
-
-                           
-
-
-
-                           
-
-
-
-
-
-
-
                             <asp:Literal ID="ltrlDateCreated" runat="server" /></td>
                         <td width="25%" align="right">
                             <asp:Literal ID="ltrlAssigningManager" runat="server" /></td>
@@ -75,35 +47,6 @@
                         <tr>
                             <td style="width: 40%;">Designation <span style="color: red;">*</span>: 
                                
-                               
-
-                               
-
-
-
-                               
-
-
-
-
-
-
-
-                               
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
@@ -139,36 +82,6 @@
                                 </asp:UpdatePanel>
                             </td>
                             <td>Assigned:    
-                               
-                               
-
-                               
-
-
-
-                               
-
-
-
-
-
-
-
-                               
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
@@ -272,8 +185,6 @@
                             <td class="valigntop">
                                 <asp:LinkButton ID="lbtnShowWorkSpecificationSection1" runat="server" Text="Work Specification Files"
                                     OnClick="lbtnShowWorkSpecificationSection_Click" />&nbsp;
-                               
-                               
 
                                 <asp:LinkButton ID="lbtnShowFinishedWorkFiles1" runat="server" Text="Finished Work Files"
                                     OnClick="lbtnShowFinishedWorkFiles_Click" />

@@ -130,6 +130,24 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskPriority;
         
         /// <summary>
+        /// upnlAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlAttachments;
+        
+        /// <summary>
+        /// grdSubTaskAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater grdSubTaskAttachments;
+        
+        /// <summary>
         /// txtSubTaskTitle control.
         /// </summary>
         /// <remarks>
