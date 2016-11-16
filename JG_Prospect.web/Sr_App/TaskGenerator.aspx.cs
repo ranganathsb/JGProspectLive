@@ -286,6 +286,72 @@ namespace JG_Prospect.Sr_App
             DeletaTask(hdnTaskId.Value);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
+        
+        #region '--Task Acceptance--'
+
+        protected void lbtnAcceptTask_Click(object sender, EventArgs e)
+        {
+            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), JG_Prospect.JGSession.UserId.ToString());
+            if (isSuccessful)
+            {
+                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                objTaskAcceptance.IsAccepted = true;
+                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskAcceptance.UserId = JGSession.UserId;
+                objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                {
+                    divAcceptanceLog.Visible = false;
+                }
+
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task acceptance was not successfull, Please try again later.");
+            }
+        }
+
+        protected void lbtnRejectTask_Click(object sender, EventArgs e)
+        {
+            TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+            objTaskAcceptance.IsAccepted = false;
+            objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskAcceptance.UserId = JGSession.UserId;
+            objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+            if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+            {
+                divAcceptanceLog.Visible = false;
+
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejection was not successfull, Please try again later.");
+            }
+        }
+
+        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
+        {
+            FillAcceptanceLog();
+
+            upAcceptanceLog.Update();
+
+            ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup_AcceptanceLog",
+                                                    string.Format(
+                                                                    "ShowPopup(\"#{0}\");",
+                                                                    divAcceptanceLog.ClientID
+                                                                ),
+                                                    true
+                                              );
+        }
+
+        #endregion
 
         #region '--Work Specification Section--'
 
@@ -1601,67 +1667,5 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
-
-        protected void lbtnAcceptTask_Click(object sender, EventArgs e)
-        {
-            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), JG_Prospect.JGSession.UserId.ToString());
-            if (isSuccessful)
-            {
-                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
-                objTaskAcceptance.IsAccepted = true;
-                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
-                objTaskAcceptance.UserId = JGSession.UserId;
-                objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
-                {
-                    divAcceptanceLog.Visible = false;
-                }
-
-                CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this, "Task acceptance was not successfull, Please try again later.");
-            }
-        }
-
-        protected void lbtnRejectTask_Click(object sender, EventArgs e)
-        {
-            TaskAcceptance objTaskAcceptance = new TaskAcceptance();
-            objTaskAcceptance.IsAccepted = false;
-            objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
-            objTaskAcceptance.UserId = JGSession.UserId;
-            objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-            if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
-            {
-                divAcceptanceLog.Visible = false;
-
-                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejection was not successfull, Please try again later.");
-            }
-        }
-
-        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
-        {
-            FillAcceptanceLog();
-
-            upAcceptanceLog.Update();
-
-            ScriptManager.RegisterStartupScript(
-                                                    (sender as Control),
-                                                    this.GetType(),
-                                                    "ShowPopup_AcceptanceLog",
-                                                    string.Format(
-                                                                    "ShowPopup(\"#{0}\");",
-                                                                    divAcceptanceLog.ClientID
-                                                                ),
-                                                    true
-                                              );
-        }
     }
 }
