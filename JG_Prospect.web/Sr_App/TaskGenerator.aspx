@@ -85,11 +85,12 @@
 
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
-                                        <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="true" OnSelectedIndexChanged="ddcbAssigned_SelectedIndexChanged">
+                                        <asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
+                                            AutoPostBack="true" OnSelectedIndexChanged="ddlAssignedUsers_SelectedIndexChanged">
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                             <Texts SelectBoxCaption="--Open--" />
                                         </asp:DropDownCheckBoxes>
+                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                                 <span style="padding-left: 20px;">
@@ -168,6 +169,10 @@
                         <tr>
                             <td><b>Designation:</b>
                                 <asp:Literal ID="ltlTUDesig" runat="server"></asp:Literal>
+                                <div id="divAcceptRejectButtons" runat="server" visible="false">
+                                    <asp:LinkButton ID="lbtnAcceptTask" runat="server" Text="Accept" OnClick="lbtnAcceptTask_Click" />&nbsp;
+                                    <asp:LinkButton ID="lbtnRejectTask" runat="server" Text="Reject" OnClick="lbtnRejectTask_Click" />
+                                </div>
                             </td>
                             <td><b>Status:</b>
                                 <asp:DropDownList ID="ddlTUStatus" AutoPostBack="true" runat="server" CssClass="textbox">
@@ -232,6 +237,37 @@
 
     <%--Popup Starts--%>
     <div class="hide">
+
+        <div id="divAcceptanceLog" runat="server" title="Acceptance Log">
+            <asp:UpdatePanel ID="upAcceptanceLog" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <asp:GridView ID="gvAcceptanceLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                        HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                        EmptyDataText="No acceptance log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                        AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="Id,UserId">
+                        <Columns>
+                            <asp:TemplateField HeaderText="User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <asp:HyperLink runat="server" ForeColor="Blue" 
+                                        NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
+                                        Text='<%# string.Concat(Eval("UserFirstName").ToString() , " - ", Eval("UserId")) %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%# Convert.ToBoolean(Eval("IsAccepted"))? "Accepted" : "Rejected" %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Date" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%#Eval("DateCreated")%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
 
         <%--Work Specification Popup--%>
         <div id="divWorkSpecificationSection" runat="server" title="Work Specification Files" data-min-button="Work Specification Files">

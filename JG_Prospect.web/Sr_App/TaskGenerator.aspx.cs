@@ -210,7 +210,7 @@ namespace JG_Prospect.Sr_App
         {
             LoadUsersByDesgination();
 
-            ddcbAssigned_SelectedIndexChanged(sender, e);
+            ddlAssignedUsers_SelectedIndexChanged(sender, e);
 
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
 
@@ -224,15 +224,15 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
 
-            foreach (ListItem item in ddcbAssigned.Items)
+            foreach (ListItem item in ddlAssignedUsers.Items)
             {
                 if (item.Selected)
                 {
-                    ddcbAssigned.Texts.SelectBoxCaption = item.Text;
+                    ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
                     break;
                 }
             }
@@ -769,20 +769,20 @@ namespace JG_Prospect.Sr_App
         {
             DataSet dsUsers;
 
-            // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
+            // DropDownCheckBoxes ddlAssign = (FindControl("ddlAssignedUsers") as DropDownCheckBoxes);
             // DropDownList ddlDesignation = (DropDownList)sender;
 
             string designations = GetSelectedDesignationsString();
 
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designations);
 
-            ddcbAssigned.Items.Clear();
-            ddcbAssigned.DataSource = dsUsers;
-            ddcbAssigned.DataTextField = "FristName";
-            ddcbAssigned.DataValueField = "Id";
-            ddcbAssigned.DataBind();
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.DataSource = dsUsers;
+            ddlAssignedUsers.DataTextField = "FristName";
+            ddlAssignedUsers.DataValueField = "Id";
+            ddlAssignedUsers.DataBind();
 
-            HighlightInterviewUsers(dsUsers.Tables[0], ddcbAssigned, null);
+            HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
         }
 
         private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
@@ -850,8 +850,8 @@ namespace JG_Prospect.Sr_App
             txtDescription.Text = string.Empty;
             ddlUserDesignation.ClearSelection();
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
-            ddcbAssigned.Items.Clear();
-            ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
             cmbStatus.ClearSelection();
             ddlUserAcceptance.ClearSelection();
             ddlTaskPriority.SelectedValue = "0";
@@ -876,7 +876,7 @@ namespace JG_Prospect.Sr_App
             SaveTaskDesignations();
 
             // save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers(ddlAssignedUsers, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0")
             {
@@ -955,14 +955,14 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddlAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
             {
                 string strUsersIds = string.Empty;
 
-                foreach (ListItem item in ddcbAssigned.Items)
+                foreach (ListItem item in ddlAssigned.Items)
                 {
                     if (item.Selected)
                     {
@@ -995,7 +995,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    string strUserIDs = "";
 
-                //    foreach (ListItem item in ddcbAssigned.Items)
+                //    foreach (ListItem item in ddlAssignedUsers.Items)
                 //    {
                 //        strUserIDs += string.Concat(item.Value, ",");
                 //    }
@@ -1015,7 +1015,7 @@ namespace JG_Prospect.Sr_App
         //    {
         //        Boolean? isCreatorUser = null;
 
-        //        foreach (ListItem item in ddcbAssigned.Items)
+        //        foreach (ListItem item in ddlAssignedUsers.Items)
         //        {
         //            if (item.Selected)
         //            {
@@ -1128,7 +1128,7 @@ namespace JG_Prospect.Sr_App
 
             SetMasterTaskDetails(dtTaskMasterDetails);
             SetTaskDesignationDetails(dtTaskDesignationDetails);
-            SetTaskAssignedUsers(dtTaskAssignedUserDetails);
+            bool blUserAssigned = SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
             objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
             objucSubTasks_Admin.SetSubTaskDetails();
@@ -1137,6 +1137,38 @@ namespace JG_Prospect.Sr_App
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
 
             SetPasswordToFreezeWorkSpecificationUI();
+
+            // show accept / reject task links for normal users, only if 
+            // 1. task belogs to the same designation as user.
+            // 2. task is not assigned to any user.
+            if (!this.IsAdminMode)
+            {
+                bool blSameDesignation = ltlTUDesig.Text
+                                                   .Split(',')
+                                                   .FirstOrDefault
+                                                    (
+                                                        d => d.ToUpper() == HttpContext.Current.Session["DesigNew"].ToString().ToUpper()
+                                                    ) != null;
+
+                if (!blUserAssigned && blSameDesignation)
+                {
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskAcceptances(Convert.ToInt64(hdnTaskId.Value));
+                    if (dsTaskUserFiles != null)
+                    {
+                        DataView dv = dsTaskUserFiles.Tables[0].AsDataView();
+                        dv.RowFilter = string.Format("UserId={0}", JGSession.UserId);
+                        divAcceptRejectButtons.Visible = dv.ToTable().Rows.Count == 0;
+                    }
+                    else
+                    {
+                        divAcceptRejectButtons.Visible = true;
+                    }
+                }
+                else
+                {
+                    divAcceptRejectButtons.Visible = false;
+                }
+            }
         }
 
         private void FillWorkSpecificationAttachments()
@@ -1183,13 +1215,13 @@ namespace JG_Prospect.Sr_App
             tblTaskHeader.Visible = true;
         }
 
-        private void SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
+        private bool SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
         {
-            String firstAssignedUser = String.Empty;
+            string firstAssignedUser = string.Empty;
             foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
             {
 
-                ListItem item = ddcbAssigned.Items.FindByValue(row["UserId"].ToString());
+                ListItem item = ddlAssignedUsers.Items.FindByValue(row["UserId"].ToString());
 
                 if (item != null)
                 {
@@ -1202,13 +1234,15 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
-            if (!String.IsNullOrEmpty(firstAssignedUser))
+            if (!string.IsNullOrEmpty(firstAssignedUser))
             {
-                ddcbAssigned.Texts.SelectBoxCaption = firstAssignedUser;
+                ddlAssignedUsers.Texts.SelectBoxCaption = firstAssignedUser;
+                return true;
             }
             else
             {
-                ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
+                ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+                return false;
             }
         }
 
@@ -1219,7 +1253,6 @@ namespace JG_Prospect.Sr_App
             {
                 foreach (DataRow row in dtTaskDesignationDetails.Rows)
                 {
-
                     ListItem item = ddlUserDesignation.Items.FindByText(row["Designation"].ToString());
 
                     if (item != null)
@@ -1246,11 +1279,9 @@ namespace JG_Prospect.Sr_App
                     designations.Append(String.Concat(row["Designation"].ToString(), ","));
                 }
 
-                ltlTUDesig.Text = String.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
+                ltlTUDesig.Text = string.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
             }
         }
-
-
 
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
@@ -1344,6 +1375,29 @@ namespace JG_Prospect.Sr_App
             }
             // ddlUserDesignation.SelectedValue = dtTaskMasterDetails.Rows[0]["Designation"].ToString();
             //LoadUsersByDesgination();
+        }
+
+        private void FillAcceptanceLog()
+        {
+            DataTable dtAcceptanceLog = null;
+
+            if (controlMode.Value == "0")
+            {
+                dtAcceptanceLog = null;
+            }
+            else
+            {
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskAcceptances(Convert.ToInt64(hdnTaskId.Value));
+                if (dsTaskUserFiles != null)
+                {
+                    dtAcceptanceLog = dsTaskUserFiles.Tables[0];
+                }
+            }
+
+            gvAcceptanceLog.DataSource = dtAcceptanceLog;
+            gvAcceptanceLog.DataBind();
+
+            upAcceptanceLog.Update();
         }
 
         private void toggleValidators(bool flag)
@@ -1547,5 +1601,67 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
+
+        protected void lbtnAcceptTask_Click(object sender, EventArgs e)
+        {
+            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), JG_Prospect.JGSession.UserId.ToString());
+            if (isSuccessful)
+            {
+                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                objTaskAcceptance.IsAccepted = true;
+                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskAcceptance.UserId = JGSession.UserId;
+                objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                {
+                    divAcceptanceLog.Visible = false;
+                }
+
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task acceptance was not successfull, Please try again later.");
+            }
+        }
+
+        protected void lbtnRejectTask_Click(object sender, EventArgs e)
+        {
+            TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+            objTaskAcceptance.IsAccepted = false;
+            objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskAcceptance.UserId = JGSession.UserId;
+            objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+            if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+            {
+                divAcceptanceLog.Visible = false;
+
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejection was not successfull, Please try again later.");
+            }
+        }
+
+        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
+        {
+            FillAcceptanceLog();
+
+            upAcceptanceLog.Update();
+
+            ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup_AcceptanceLog",
+                                                    string.Format(
+                                                                    "ShowPopup(\"#{0}\");",
+                                                                    divAcceptanceLog.ClientID
+                                                                ),
+                                                    true
+                                              );
+        }
     }
 }

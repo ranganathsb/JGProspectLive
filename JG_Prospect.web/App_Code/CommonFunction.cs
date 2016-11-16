@@ -568,12 +568,43 @@ namespace JG_Prospect
 {
     public static class JGSession
     {
+        public static bool IsActive
+        {
+            get
+            {
+                if (HttpContext.Current.Session == null || JGSession.UserId == 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+
+        public static Int32 UserId
+        {
+            get
+            {
+                if (HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] == null)
+                {
+                    return 0;
+                }
+                return Convert.ToInt32(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            }
+            set
+            {
+                HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = value;
+            }
+        }
+
         public static string Username
         {
             get
             {
                 if (HttpContext.Current.Session["Username"] == null)
+                {
                     return null;
+                }
                 return Convert.ToString(HttpContext.Current.Session["Username"]);
             }
             set
@@ -587,7 +618,9 @@ namespace JG_Prospect
             get
             {
                 if (HttpContext.Current.Session["IsInstallUser"] == null)
+                {
                     return null;
+                }
                 return Convert.ToBoolean(HttpContext.Current.Session["IsInstallUser"]);
             }
             set

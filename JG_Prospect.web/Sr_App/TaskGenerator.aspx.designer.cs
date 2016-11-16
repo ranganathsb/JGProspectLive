@@ -112,13 +112,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upnlAssigned;
         
         /// <summary>
-        /// ddcbAssigned control.
+        /// ddlAssignedUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddcbAssigned;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlAssignedUsers;
+        
+        /// <summary>
+        /// lbtnViewAcceptanceLog control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnViewAcceptanceLog;
         
         /// <summary>
         /// chkTechTask control.
@@ -301,6 +310,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUDesig;
         
         /// <summary>
+        /// divAcceptRejectButtons control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAcceptRejectButtons;
+        
+        /// <summary>
+        /// lbtnAcceptTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnAcceptTask;
+        
+        /// <summary>
+        /// lbtnRejectTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnRejectTask;
+        
+        /// <summary>
         /// ddlTUStatus control.
         /// </summary>
         /// <remarks>
@@ -398,6 +434,33 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFixedSection;
+        
+        /// <summary>
+        /// divAcceptanceLog control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAcceptanceLog;
+        
+        /// <summary>
+        /// upAcceptanceLog control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upAcceptanceLog;
+        
+        /// <summary>
+        /// gvAcceptanceLog control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvAcceptanceLog;
         
         /// <summary>
         /// divWorkSpecificationSection control.

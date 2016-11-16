@@ -10,6 +10,17 @@ namespace JG_Prospect
     public class Global : System.Web.HttpApplication
     {
 
+        //void Application_AuthenticateRequest(object sender, EventArgs e)
+        //{
+        //    if (!JGSession.IsActive)
+        //    {
+        //        if (Request.Url.AbsolutePath.EndsWith(".aspx") && !Request.Url.AbsolutePath.EndsWith("login.aspx"))
+        //        {
+        //            Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
+        //        }
+        //    }
+        //}
+
         void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
