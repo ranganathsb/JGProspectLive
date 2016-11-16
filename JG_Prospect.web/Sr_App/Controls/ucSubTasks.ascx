@@ -43,7 +43,7 @@
                                 <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" Visible="false" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
                             <ItemTemplate>
                                 <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
                                     <ItemTemplate>
@@ -116,7 +116,7 @@
                                                     <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
                                                 </HeaderTemplate>
                                                 <ItemTemplate>
-                                                    <li style="margin: 10px; text-align: left; float: left; width: 100px;">
+                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
                                                         <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
                                                         <br />
                                                         <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
@@ -211,7 +211,7 @@
                 <fieldset>
                     <legend>
                         <asp:Literal ID="ltrlSubTaskFeedbackTitle" runat="server" /></legend>
-                    <table cellspacing="3" cellpadding="3" width="100%">
+                    <%--<table cellspacing="3" cellpadding="3" width="100%">
                         <tr>
                             <td>
                                 <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1"
@@ -230,7 +230,7 @@
                                 </table>
                             </td>
                         </tr>
-                    </table>
+                    </table>--%>
                     <table id="tblAddEditSubTaskFeedback" runat="server" cellspacing="3" cellpadding="3" width="100%">
                         <tr>
                             <td colspan="2">&nbsp;
@@ -240,22 +240,33 @@
                             <td width="90" align="right" valign="top">Description:
                             </td>
                             <td>
-                                <asp:TextBox ID="txtSubTaskFeedback" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                <asp:TextBox ID="txtSubtaskComment" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvComment" ValidationGroup="comment"
+                                    runat="server" ControlToValidate="txtSubtaskComment" ForeColor="Red" ErrorMessage="Please comment" Display="None" />
+                                <asp:ValidationSummary ID="vsComment" runat="server" ValidationGroup="comment" ShowSummary="False" ShowMessageBox="True" />
                             </td>
                         </tr>
                         <tr>
                             <td align="right" valign="top">Files:
                             </td>
                             <td>
-                                <div class="dropzone">
-                                    <div class="dz-default dz-message"></div>
+                                <input id="hdnSubTaskNoteAttachments" runat="server" type="hidden" />
+                                <input id="hdnSubTaskNoteFileType" runat="server" type="hidden" />
+                               <div id="divSubTaskNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                    <div class="fallback">
+                                        <input name="file" type="file" multiple />
+                                        <input type="submit" value="Upload" />
+                                    </div>
+                                </div>
+                                <div id="divSubTaskNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <div class="btn_sec">
-                                    <asp:Button ID="btnSaveSubTaskFeedback" runat="server" CssClass="ui-button" Text="Save" OnClientClick="javascript:return false;" />
+                                    <asp:Button ID="btnSaveSubTaskFeedback" runat="server"  ValidationGroup="comment" OnClick="btnSaveSubTaskFeedback_Click" CssClass="ui-button" Text="Save"  />
+                                    <asp:Button ID="btnSaveCommentAttachment" runat="server"   OnClick="btnSaveCommentAttachment_Click" style="display:none;" Text="Save Attachement"  />
                                 </div>
                             </td>
                         </tr>
@@ -291,7 +302,7 @@
         }
     }
 
-    var objSubTaskDropzone;
+    var objSubTaskDropzone, objSubtaskNoteDropzone;
 
     function ucSubTasks_ApplyDropZone() {
         //remove already attached dropzone.
@@ -322,6 +333,13 @@
                 }
             });
         }
+
+        //Apply dropzone for comment section.
+        if (objSubtaskNoteDropzone) {
+            objSubtaskNoteDropzone.destroy();
+            objSubTaskNoteDropzone = null;
+            }
+        objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
     }
 
     function ucSubTasks_OnApprovalCheckBoxChanged(sender) {

@@ -310,13 +310,67 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblAddEditSubTaskFeedback;
         
         /// <summary>
-        /// txtSubTaskFeedback control.
+        /// txtSubtaskComment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSubTaskFeedback;
+        protected global::System.Web.UI.WebControls.TextBox txtSubtaskComment;
+        
+        /// <summary>
+        /// rfvComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvComment;
+        
+        /// <summary>
+        /// vsComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary vsComment;
+        
+        /// <summary>
+        /// hdnSubTaskNoteAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnSubTaskNoteAttachments;
+        
+        /// <summary>
+        /// hdnSubTaskNoteFileType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnSubTaskNoteFileType;
+        
+        /// <summary>
+        /// divSubTaskNoteDropzone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskNoteDropzone;
+        
+        /// <summary>
+        /// divSubTaskNoteDropzonePreview control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskNoteDropzonePreview;
         
         /// <summary>
         /// btnSaveSubTaskFeedback control.
@@ -326,5 +380,14 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveSubTaskFeedback;
+        
+        /// <summary>
+        /// btnSaveCommentAttachment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveCommentAttachment;
     }
 }

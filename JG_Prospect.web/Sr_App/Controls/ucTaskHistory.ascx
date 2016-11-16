@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucTaskHistory.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucTaskHistory" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <link href="../../css/magnific-popup.css" rel="stylesheet" />
 <script src="../../Scripts/jquery.magnific-popup.min.js"></script>
 <div>
@@ -26,9 +27,9 @@
                                                     <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
                                                         <small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>
                                                         <br />
-                                                        <b>Task Description</b><span style="color: red;">*</span>:
+                                                        Task Description<span style="color: red;">*</span>:
                                                     </div>
-
+                                                    <asp:Literal ID="ltlTaskDesc" runat="server"></asp:Literal>
                                                     <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox>
                                                     <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
                                                         runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None">                                 
@@ -107,8 +108,10 @@
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
 
-                                                        <a id="hypImage" runat="server">
-                                                            <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" /></a>
+                                                        <asp:LinkButton ID="linkDownLoadFiles" runat="server" CommandName="DownLoadFile" CommandArgument='<%# Eval("Attachment")%>'>
+                                                            <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" />
+                                                        </asp:LinkButton>
+
 
                                                         <%--<asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%# String.Concat("/TaskAttachements/",Eval("Attachment"))%>'
                                                             Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />--%>
@@ -167,9 +170,9 @@
                                                     <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                     <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
                                                 </EditItemTemplate>
-                                                <ItemTemplate >
-                                                    <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
-                                                    <asp:Button ID="ButtonEdit" runat="server" style="display:none;" CommandName="Edit" Text="Edit" />
+                                                <ItemTemplate>
+
+                                                    <asp:Button ID="ButtonEdit" runat="server" Style="display: none;" CommandName="Edit" Text="Edit" />
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
                                                 <ControlStyle ForeColor="Black" />
@@ -270,7 +273,7 @@
                                                 <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
                                             </EditItemTemplate>
                                             <ItemTemplate>
-                                                <asp:Button ID="ButtonEdit" runat="server" CommandName="Edit" Text="Edit" />
+                                                <asp:Button ID="ButtonEdit" runat="server" Style="display: none;" CommandName="Edit" Text="Edit" />
                                             </ItemTemplate>
                                             <ControlStyle ForeColor="Black" />
                                             <ControlStyle ForeColor="Black" />
@@ -290,7 +293,7 @@
                     <HeaderTemplate>Files & docs</HeaderTemplate>
                     <ContentTemplate>
                         <div>
-                            <asp:Repeater ID="reapeaterLogDoc" runat="server">
+                            <asp:Repeater ID="reapeaterLogDoc" runat="server" OnItemDataBound="reapeaterLogDoc_ItemDataBound">
                                 <ItemTemplate>
                                     <div style="width: 200px; height: 200px; float: left;">
 
@@ -299,15 +302,14 @@
                                             <asp:Label ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:Label>
                                         </div>
                                         <div style="text-align: center;">
-                                            <asp:Image ID="imgDoc" runat="server" ImageUrl='<%#Eval("FilePath")%>'
-                                                Width="120px" Height="120px" />
+                                            <asp:Image ID="imgDoc" runat="server" Width="120px" Height="120px" />
                                             <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
                                         </div>
                                         <div style="text-align: center;">
                                             <%--<asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>--%>
 
                                             <asp:LinkButton ID="linkDownLoadFiles" OnClick="linkDownLoadFiles_Click"
-                                                runat="server" Text="Download" CommandName='<%#Eval("AttachmentOriginal")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                runat="server" Text="Download" CommandName='<%# Eval("AttachmentOriginal")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
 
                                         </div>
                                         <div style="text-align: center;">
@@ -338,7 +340,7 @@
                                             <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
                                         </div>
                                         <div style="text-align: center;">
-                                            <asp:ImageButton ID="imgImages" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                            <asp:ImageButton ID="imgImages" runat="server" ImageUrl='<%# String.Concat("~/TaskAttachments/",Eval("Attachment"))%>'
                                                 Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />
                                             <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
                                         </div>
@@ -346,7 +348,7 @@
                                             <%--<asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>--%>
 
                                             <asp:LinkButton ID="linkDownLoadFiles" OnClick="linkDownLoadFiles_Click"
-                                                runat="server" Text="Download" CommandName='<%#Eval("AttachmentOriginal")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                runat="server" Text="Download" CommandName='<%#Eval("Attachment")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
 
                                         </div>
                                         <div style="text-align: center;">
@@ -376,7 +378,7 @@
                     <HeaderTemplate>Videos</HeaderTemplate>
                     <ContentTemplate>
                         <div>
-                            <asp:Repeater ID="reapeaterLogVideoc" runat="server" OnItemCommand="reapeaterLogImages_ItemCommand">
+                            <asp:Repeater ID="reapeaterLogVideoc" runat="server" OnItemDataBound="reapeaterLogVideoc_ItemDataBound" OnItemCommand="reapeaterLogImages_ItemCommand">
                                 <ItemTemplate>
                                     <div style="width: 200px; height: 200px; float: left;">
                                         <div style="text-align: center;">
@@ -386,7 +388,7 @@
                                             </asp:LinkButton>
                                         </div>
                                         <div style="text-align: center;">
-                                            <asp:Image ID="imgImages" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                            <asp:Image ID="imgImages" runat="server"
                                                 Width="120px" Height="120px" />
                                             <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
                                         </div>
@@ -415,7 +417,7 @@
                     <HeaderTemplate>Audios</HeaderTemplate>
                     <ContentTemplate>
                         <div>
-                            <asp:Repeater ID="reapeaterLogAudio" runat="server"
+                            <asp:Repeater ID="reapeaterLogAudio" runat="server" OnItemDataBound="reapeaterLogAudio_ItemDataBound"
                                 OnItemCommand="reapeaterLogImages_ItemCommand">
                                 <ItemTemplate>
                                     <div style="width: 200px; height: 200px; float: left;">
@@ -464,14 +466,13 @@
                         <div>
                             <table style="width: 100%">
                                 <tr>
-                                   
-                                    <td >
-                                        Notes:
-                                   <div style="clear:both;">
-                                             <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="100%" CssClass="textbox" Rows="7" ValidationGroup="Validation"></asp:TextBox>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
-                                            Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
-                                       </div>
+
+                                    <td>Notes:
+                                   <div style="clear: both;">
+                                       <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="100%" CssClass="textbox" Rows="7" ValidationGroup="Validation"></asp:TextBox>
+                                       <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
+                                           Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
+                                   </div>
                                     </td>
                                 </tr>
                             </table>
@@ -484,7 +485,7 @@
                         <tr>
                             <td style="width: 50%">
                                 <div class="btn_sec" style="text-align: right;">
-                                    <asp:Button ID="btnAddNote" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Validation" />
+                                    <asp:Button ID="btnAddNote" runat="server" Text="Add Note" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Validation" />
                                     <asp:ValidationSummary ID="ValidationSummary2" runat="server" ShowMessageBox="True"
                                         ShowSummary="False" ValidationGroup="Validation" />
                                 </div>
@@ -562,7 +563,7 @@
 
     function ucTaskHistory_Initialize() {
         ucTaskHistory_ApplyDropZone();
-        BindDescriptionAutoSaveevent();
+        //BindDescriptionAutoSaveevent();
     }
 
     function BindDescriptionAutoSaveevent() {
@@ -591,83 +592,83 @@
                 objNoteDropzone = null;
             }
             objNoteDropzone = GetWorkFileDropzone("#<%=divNoteDropzone.ClientID%>", '#<%=divNoteDropzonePreview.ClientID%>', '#<%= hdnNoteAttachments.ClientID %>', '#<%=btnUploadLogFiles.ClientID%>');
-                        }
-
-                        function ViewDetails(Id, longName, shortName, fileType) {
-
-                            $("#<%=lblFileName.ClientID %>").text(shortName);
-    var filePath = '../TaskAttachments/' + longName;
-
-    var fileName = filePath;
-    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-
-    var tv_main_channel = "";
-
-    if (fileType == 3) // Video
-    {
-        $('#Vedioplayer').show();
-        $('#Audiolayer').hide();
-        if (fileExtension == "mp4") {
-            tv_main_channel = $('#mp4Source');
-        }
-        tv_main_channel.attr('src', filePath);
-        var video_block = $('#Vedioplayer');
-        video_block.load();
-    }
-
-    if (fileType == 2) // Audio
-    {
-        $('#Vedioplayer').hide();
-        $('#Audiolayer').show();
-        if (fileExtension == "mp4") {
-            tv_main_channel = $('#mp4Source');
-        }
-        if (fileExtension == "mp3") {
-            tv_main_channel = $('#mp3Source');
         }
 
-        tv_main_channel.attr('src', filePath);
-        var audio_block = $('#Audiolayer');
-        audio_block.load();
-    }
-}
-function LoadDiv(url) {
+        function ViewDetails(Id, longName, shortName, fileType) {
 
-    var img = new Image();
-    var bcgDiv = document.getElementById("divBackground");
-    var imgDiv = document.getElementById("divImage");
-    var imgFull = document.getElementById("imgFull");
-    var imgLoader = document.getElementById("imgLoader");
-    imgLoader.style.display = "block";
-    img.onload = function () {
-        imgFull.src = img.src;
-        imgFull.style.display = "block";
-        imgLoader.style.display = "none";
-    };
-    img.src = url;
-    var width = document.body.clientWidth;
-    if (document.body.clientHeight > document.body.scrollHeight) {
-        bcgDiv.style.height = document.body.clientHeight + "px";
-    }
-    else {
-        bcgDiv.style.height = document.body.scrollHeight + "px";
-    }
-    imgDiv.style.left = (width - 650) / 2 + "px";
-    imgDiv.style.top = "20px";
-    bcgDiv.style.width = "100%";
+            $("#<%=lblFileName.ClientID %>").text(shortName);
+            var filePath = '../TaskAttachments/' + longName;
 
-    bcgDiv.style.display = "block";
-    imgDiv.style.display = "block";
-    return false;
-}
-function HideDiv() {
-    var bcgDiv = document.getElementById("divBackground");
-    var imgDiv = document.getElementById("divImage");
-    var imgFull = document.getElementById("imgFull");
-    if (bcgDiv != null) {
-        bcgDiv.style.display = "none";
-        imgDiv.style.display = "none";
-        imgFull.style.display = "none";
-    }
-}
+            var fileName = filePath;
+            var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            var tv_main_channel = "";
+
+            if (fileType == 3) // Video
+            {
+                $('#Vedioplayer').show();
+                $('#Audiolayer').hide();
+                if (fileExtension == "mp4") {
+                    tv_main_channel = $('#mp4Source');
+                }
+                tv_main_channel.attr('src', filePath);
+                var video_block = $('#Vedioplayer');
+                video_block.load();
+            }
+
+            if (fileType == 2) // Audio
+            {
+                $('#Vedioplayer').hide();
+                $('#Audiolayer').show();
+                if (fileExtension == "mp4") {
+                    tv_main_channel = $('#mp4Source');
+                }
+                if (fileExtension == "mp3") {
+                    tv_main_channel = $('#mp3Source');
+                }
+
+                tv_main_channel.attr('src', filePath);
+                var audio_block = $('#Audiolayer');
+                audio_block.load();
+            }
+        }
+        function LoadDiv(url) {
+
+            var img = new Image();
+            var bcgDiv = document.getElementById("divBackground");
+            var imgDiv = document.getElementById("divImage");
+            var imgFull = document.getElementById("imgFull");
+            var imgLoader = document.getElementById("imgLoader");
+            imgLoader.style.display = "block";
+            img.onload = function () {
+                imgFull.src = img.src;
+                imgFull.style.display = "block";
+                imgLoader.style.display = "none";
+            };
+            img.src = url;
+            var width = document.body.clientWidth;
+            if (document.body.clientHeight > document.body.scrollHeight) {
+                bcgDiv.style.height = document.body.clientHeight + "px";
+            }
+            else {
+                bcgDiv.style.height = document.body.scrollHeight + "px";
+            }
+            imgDiv.style.left = (width - 650) / 2 + "px";
+            imgDiv.style.top = "20px";
+            bcgDiv.style.width = "100%";
+
+            bcgDiv.style.display = "block";
+            imgDiv.style.display = "block";
+            return false;
+        }
+        function HideDiv() {
+            var bcgDiv = document.getElementById("divBackground");
+            var imgDiv = document.getElementById("divImage");
+            var imgFull = document.getElementById("imgFull");
+            if (bcgDiv != null) {
+                bcgDiv.style.display = "none";
+                imgDiv.style.display = "none";
+                imgFull.style.display = "none";
+            }
+        }
 </script>

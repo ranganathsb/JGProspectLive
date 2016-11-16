@@ -11,6 +11,7 @@ using Ionic.Zip;
 using System.IO;
 using System.Data;
 using System.Web.UI.HtmlControls;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.Sr_App.Controls
 {
@@ -36,8 +37,10 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        public String ucTaskDescription {
-            get {
+        public String ucTaskDescription
+        {
+            get
+            {
                 return txtTaskDesc.Text.Trim();
             }
         }
@@ -181,10 +184,10 @@ namespace JG_Prospect.Sr_App.Controls
                 string AttachmentOriginal = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "AttachmentOriginal"));
 
                 Label labelNotes = (Label)e.Row.FindControl("lblNotes");
-                HtmlImage  imgFile = (HtmlImage)e.Row.FindControl("imgFile");
+                HtmlImage imgFile = (HtmlImage)e.Row.FindControl("imgFile");
                 //LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
                 //Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
-                Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
+                // Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
                 LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
 
 
@@ -196,14 +199,13 @@ namespace JG_Prospect.Sr_App.Controls
                         labelNotes.Visible = true;
                         imgFile.Visible = false;
                         linkDownLoadFiles.Visible = false;
-                       // linkOriginalfileName.Visible = false;
+                        // linkOriginalfileName.Visible = false;
                     }
                     else
                     {
                         labelNotes.Visible = false;
                         imgFile.Visible = true;
                         linkDownLoadFiles.Visible = true;
-
 
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
@@ -212,67 +214,94 @@ namespace JG_Prospect.Sr_App.Controls
                             //linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
                         }
-                        if (Convert.ToString((int)JGConstant.TaskUserFileType.Docu) == FileType)
+                        else
                         {
-                            string fileExtension = Path.GetExtension(AttachmentOriginal);
-                            if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                                imgFile.Src = "~/img/word.jpg";
-                            else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                                imgFile.Src = "~/img/xls.png";
-                            else if (fileExtension.ToLower().Equals(".pdf"))
-                                imgFile.Src = "~/img/pdf.jpg";
-                            else if (fileExtension.ToLower().Equals(".csv"))
-                                imgFile.Src = "~/img/csv.png";
+                            string iconFile = string.Empty;
+
+                            // some older data of file table might not have file type.
+                            if (CommonFunction.IsImageFile(AttachmentOriginal))
+                            {
+                                string filePath = "~/TaskAttachments/" + filefullName;
+                                imgFile.Src = filePath;
+                            }
                             else
-                                imgFile.Src = "~/img/file.jpg";
+                            {
+                                imgFile.Src = CommonFunction.GetFileTypeIcon(filefullName);
+                            }
+
                             //linkOriginalfileName.Visible = false;
                             //lableOriginalfileName.Visible = true;
                         }
-                        if (Convert.ToString((int)JGConstant.TaskUserFileType.Audio) == FileType)
-                        {
-                            imgFile.Src = "~/img/audio.png";
-                            //linkOriginalfileName.Visible = true;
-                            //lableOriginalfileName.Visible = false;
-                        }
-                        if (Convert.ToString((int)JGConstant.TaskUserFileType.Video) == FileType)
-                        {
-                            imgFile.Src = "~/img/video.png";
 
-                           // linkOriginalfileName.Visible = true;
-                            //lableOriginalfileName.Visible = false;
-                        }
+                        //if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
+                        //{
+                        //    string filePath = "~/TaskAttachments/" + filefullName;
+                        //    imgFile.Src = filePath;
+                        //    //linkOriginalfileName.Visible = true;
+                        //    //lableOriginalfileName.Visible = false;
+                        //}
+                        //if (Convert.ToString((int)JGConstant.TaskUserFileType.Docu) == FileType)
+                        //{
+                        //    string fileExtension = Path.GetExtension(AttachmentOriginal);
+                        //    if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
+                        //        imgFile.Src = "~/img/word.jpg";
+                        //    else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
+                        //        imgFile.Src = "~/img/xls.png";
+                        //    else if (fileExtension.ToLower().Equals(".pdf"))
+                        //        imgFile.Src = "~/img/pdf.jpg";
+                        //    else if (fileExtension.ToLower().Equals(".csv"))
+                        //        imgFile.Src = "~/img/csv.png";
+                        //    else
+                        //        imgFile.Src = "~/img/file.jpg";
+                        //    //linkOriginalfileName.Visible = false;
+                        //    //lableOriginalfileName.Visible = true;
+                        //}
+                        //if (Convert.ToString((int)JGConstant.TaskUserFileType.Audio) == FileType)
+                        //{
+                        //    imgFile.Src = "~/img/audio.png";
+                        //    //linkOriginalfileName.Visible = true;
+                        //    //lableOriginalfileName.Visible = false;
+                        //}
+                        //if (Convert.ToString((int)JGConstant.TaskUserFileType.Video) == FileType)
+                        //{
+                        //    imgFile.Src = "~/img/video.png";
+
+                        //   // linkOriginalfileName.Visible = true;
+                        //    //lableOriginalfileName.Visible = false;
+                        //}
                     }
 
-                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "IT Lead")
-                    {
-                        if (!string.IsNullOrEmpty(notes))
-                        {
-                            if (notes.Contains("Task Description :"))
-                            {
-                                btnEdit.Visible = false;
-                            }
-                            else
-                            {
-                                btnEdit.Visible = true;
-                            }
-                        }
-                        else
-                        {
-                            btnEdit.Visible = false;
-                        }
-                    }
+                    //if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString() == "IT Lead")
+                    //{
+                    //    if (!string.IsNullOrEmpty(notes))
+                    //    {
+                    //        if (notes.Contains("Task Description :"))
+                    //        {
+                    //            btnEdit.Visible = false;
+                    //        }
+                    //        else
+                    //        {
+                    //            btnEdit.Visible = true;
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        btnEdit.Visible = false;
+                    //    }
+                    //}
+                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(linkDownLoadFiles);
                 }
             }
         }
 
         protected void gdTaskUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "DownLoadFiles")
+            if (e.CommandName == "DownLoadFile")
             {
                 // Allow download only if files are attached.
                 if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
                 {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
+                    DownloadUserAttachment(e.CommandArgument.ToString());
                 }
             }
 
@@ -392,7 +421,7 @@ namespace JG_Prospect.Sr_App.Controls
                 // Allow download only if files are attached.
                 if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
                 {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
+                    DownloadUserAttachment(e.CommandArgument.ToString());
                 }
             }
 
@@ -477,6 +506,16 @@ namespace JG_Prospect.Sr_App.Controls
                 //Test
                 Response.End();
             }
+        }
+
+        private void DownloadUserAttachment(String File)
+        {
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("Content-Disposition", String.Concat("attachment; filename=", File));
+            Response.WriteFile(Server.MapPath("~/TaskAttachments/" + File));
+            Response.Flush();
+            Response.End();
         }
 
         /// <summary>
@@ -582,54 +621,42 @@ namespace JG_Prospect.Sr_App.Controls
                     String[] attachements = attachment.Split('@');
                     string fileExtension = Path.GetExtension(attachment);
 
-                    if (!string.IsNullOrEmpty(hdnNoteFileType.Value))
-                    {
-                        if (hdnNoteFileType.Value == "video")
-                        {
-                            if (
-                                fileExtension.ToLower() == ".mpeg" ||
-                                fileExtension.ToLower() == ".mp4" ||
-                                fileExtension.ToLower() == ".3gpp" ||
-                                fileExtension.ToLower() == ".wmv" ||
-                                fileExtension.ToLower() == ".mkv"
-                               )
-                            {
-
-                                taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Video);
-                            }
-                        }
-
-                        if (hdnNoteFileType.Value == "audio")
-                        {
-                            if (
-                                fileExtension.ToLower() == ".mp3" ||
-                                fileExtension.ToLower() == ".mp4" ||
-                                fileExtension.ToLower() == ".wma"
-                               )
-                            {
-                                taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Audio);
-                            }
-                        }
-                    }
-
                     if (
-                        fileExtension.ToLower() == ".jpg" ||
-                        fileExtension.ToLower() == ".jpeg" ||
-                        fileExtension.ToLower() == ".png"
+                        fileExtension.ToLower() == ".mpeg" ||
+                        fileExtension.ToLower() == ".mp4" ||
+                        fileExtension.ToLower() == ".3gpp" ||
+                        fileExtension.ToLower() == ".wmv" ||
+                        fileExtension.ToLower() == ".mkv"
                        )
+                    {
+
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Video);
+                    }
+                    else if (
+                         fileExtension.ToLower() == ".mp3" ||
+                         fileExtension.ToLower() == ".mp4" ||
+                         fileExtension.ToLower() == ".wma"
+                        )
+                    {
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Audio);
+                    }
+                    else if (
+                         fileExtension.ToLower() == ".jpg" ||
+                         fileExtension.ToLower() == ".jpeg" ||
+                         fileExtension.ToLower() == ".png"
+                        )
                     {
                         taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Images);
                     }
-
-                    if (
-                        fileExtension.ToLower() == ".doc" ||
-                        fileExtension.ToLower() == ".docx" ||
-                        fileExtension.ToLower() == ".xlx" ||
-                        fileExtension.ToLower() == ".xlsx" ||
-                        fileExtension.ToLower() == ".pdf" ||
-                        fileExtension.ToLower() == ".txt" ||
-                        fileExtension.ToLower() == ".csv"
-                       )
+                    else if (
+                         fileExtension.ToLower() == ".doc" ||
+                         fileExtension.ToLower() == ".docx" ||
+                         fileExtension.ToLower() == ".xlx" ||
+                         fileExtension.ToLower() == ".xlsx" ||
+                         fileExtension.ToLower() == ".pdf" ||
+                         fileExtension.ToLower() == ".txt" ||
+                         fileExtension.ToLower() == ".csv"
+                        )
                     {
                         taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Docu);
                     }
@@ -825,7 +852,12 @@ namespace JG_Prospect.Sr_App.Controls
                 dtTaskUserDetails.Rows[i]["Notes"] = dtTaskUserDetails.Rows[i]["Notes"].ToString().Replace("-", "");
             }
 
-            txtTaskDesc.Text = TaskDesc;
+            if (TaskId > 0)
+            {
+                txtTaskDesc.Visible = false;
+                rfvDesc.Visible = false;
+                ltlTaskDesc.Text = TaskDesc;
+            }
 
             BindTaskUsersNotes(dtTaskUserDetails);
 
@@ -836,12 +868,45 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnSaveDesc_Click(object sender, EventArgs e)
         {
-            if ( TaskId > 0 && !String.IsNullOrEmpty(txtTaskDesc.Text))
+            if (TaskId > 0 && !String.IsNullOrEmpty(txtTaskDesc.Text))
             {
-                TaskGeneratorBLL.Instance.SaveTaskDescription(TaskId,txtTaskDesc.Text); 
+                TaskGeneratorBLL.Instance.SaveTaskDescription(TaskId, txtTaskDesc.Text);
             }
 
 
         }
+
+        protected void reapeaterLogDoc_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                Image imgDoc = (Image)e.Item.FindControl("imgDoc");
+
+                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem,"Attachment").ToString());
+
+            }
+        }
+
+        protected void reapeaterLogAudio_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                Image imgImages = (Image)e.Item.FindControl("imgImages");
+
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+
+            }
+        }
+
+        protected void reapeaterLogVideoc_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                Image imgImages = (Image)e.Item.FindControl("imgImages");
+
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+
+            }
+        }
     }
-} 
+}

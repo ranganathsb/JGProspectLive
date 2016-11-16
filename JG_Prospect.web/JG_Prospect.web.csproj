@@ -1273,6 +1273,7 @@
     <Content Include="img\22222.png" />
     <Content Include="img\33333.png" />
     <Content Include="img\4444.png" />
+    <Content Include="img\audio-icon.png" />
     <Content Include="img\Bar.png" />
     <Content Include="img\Bar1.png" />
     <Content Include="img\Bar2.png" />
@@ -1296,12 +1297,17 @@
     <Content Include="img\Logo_BG.png" />
     <Content Include="img\movies-icon.png" />
     <Content Include="img\pdf-icon.png" />
+    <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
+    <Content Include="img\video-icon.png" />
     <Content Include="img\word-icon.png" />
+    <Content Include="img\word.jpg" />
+    <Content Include="img\xls.png" />
+    <Content Include="img\zip-icon.png" />
     <Content Include="Installer\ChangePassword.aspx" />
     <Content Include="Installer\InstallerHeader.ascx" />
     <Content Include="Installer\InstallerHome.aspx" />

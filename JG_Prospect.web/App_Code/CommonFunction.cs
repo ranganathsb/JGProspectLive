@@ -561,6 +561,65 @@ namespace JG_Prospect.App_Code
             return objListItemCollection;
         }
 
+        public static bool IsImageFile(string fileName)
+        {
+            bool isImageFile = false;
+            string fileExtension = Path.GetExtension(fileName).ToLower();
+
+            if (fileExtension.Contains(".jpg") || fileExtension.Contains(".jpeg") || fileExtension.Contains(".bmp") || fileExtension.Contains(".gif") || fileExtension.Contains(".png"))
+            {
+                isImageFile = true;
+            }
+            return isImageFile;
+        }
+
+        public static string GetFileTypeIcon(string FileName)
+        {
+            string fileExtension = Path.GetExtension(FileName).ToLower();
+
+            string iconFile = string.Empty;
+
+            switch (fileExtension)
+            {
+                case ".zip":
+                case ".rar":
+                    iconFile = "/img/zip-icon.png";
+                    break;
+                case ".mp3":
+                case ".wav":
+                case ".m4a":
+                    iconFile = "/img/audio-icon.png";
+                    break;
+                case ".wmv":
+                case ".avi":
+                case ".mov":
+                case ".mpg":
+                case ".mp4":
+                    iconFile = "/img/video-icon";
+                    break;
+                case ".pdf":
+                    iconFile = "/img/pdf-icon.png";
+                    break;
+                case ".xlsx":
+                case ".xls":
+                    iconFile = "/img/excel-icon";
+                    break;
+                case ".txt":
+                case".rtf":
+                case ".docx":
+                case ".doc":
+                    iconFile = "/img/word-icon.png";
+                    break;
+                case ".png":
+                case ".jpg":
+                case ".jpeg":
+                case ".bmp":
+                case ".gif":
+                default:
+                    break;
+            }
+            return iconFile;
+        }
     }
 }
 

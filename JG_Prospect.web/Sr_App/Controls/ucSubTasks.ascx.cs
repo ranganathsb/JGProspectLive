@@ -22,11 +22,27 @@ namespace JG_Prospect.Sr_App.Controls
     {
         #region '--Properties--'
 
+        public delegate void OnLoadTaskData(Int64 intTaskId);
+
+        public OnLoadTaskData LoadTaskData;
+
         public int TaskId { get; set; }
 
         public string controlMode { get; set; }
 
         public bool IsAdminMode { get; set; }
+
+        public JGConstant.TaskStatus TaskStatus
+        {
+            get;
+            set;
+        }
+
+        public bool UserAcceptance
+        {
+            get;
+            set;
+        }
 
         public String LastSubTaskSequence
         {
@@ -417,6 +433,128 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
+
+        protected void btnSaveCommentAttachment_Click(object sender, EventArgs e)
+        {
+            UploadUserAttachements(null, hdnSubTaskNoteAttachments.Value);
+
+            hdnSubTaskNoteAttachments.Value = "";
+
+            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+
+        }
+
+
+        protected void btnSaveSubTaskFeedback_Click(object sender, EventArgs e)
+        {
+            string notes = txtSubtaskComment.Text;
+
+            if (string.IsNullOrEmpty(notes))
+                return;
+
+            SaveTaskNotesNAttachments();
+
+            ScriptManager.RegisterStartupScript(
+                                                   (sender as Control),
+                                                   this.GetType(),
+                                                   "HidePopup",
+                                                   string.Format(
+                                                                   "HidePopup(\"#{0}\");",
+                                                                   divSubTaskFeedbackPopup.ClientID
+                                                               ),
+                                                   true
+                                             );
+
+            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+
+        }
+
+        /// <summary>
+        /// Save task note and attachment added by user.
+        /// </summary>
+        private void SaveTaskNotesNAttachments()
+        {
+            //if task id is available to save its note and attachement.
+            if (TaskId > 0)
+            {
+                // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.\
+                Int32 TaskUpdateId = SaveTaskNote(TaskId, null, null, string.Empty, string.Empty);
+
+                txtSubtaskComment.Text = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Save task user information.
+        /// </summary>
+        /// <param name="Designame"></param>
+        /// <param name="ItaskId"></param>
+        public Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
+        {
+            Int32 TaskUpdateId = 0;
+
+            TaskUser taskUser = new TaskUser();
+
+            if (UserId == null)
+            {
+                // Take logged in user's id for logging note in database.
+                taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                taskUser.UserFirstName = Session["Username"].ToString();
+            }
+            else
+            {
+                taskUser.UserId = Convert.ToInt32(UserId);
+                taskUser.UserFirstName = UserName;
+            }
+
+
+            taskUser.Id = 0;
+
+            if (string.IsNullOrEmpty(taskDescription))
+            {
+                taskUser.Notes = txtSubtaskComment.Text;
+            }
+            else
+            {
+                taskUser.Notes = taskDescription;
+            }
+
+            if (!string.IsNullOrEmpty(taskUser.Notes))
+            {
+                taskUser.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Notes);
+            }
+
+            // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
+            if (IsCreated != null)
+            {
+                taskUser.IsCreatorUser = true;
+            }
+            else
+            {
+                taskUser.IsCreatorUser = false;
+            }
+
+            taskUser.TaskId = ItaskId;
+
+            taskUser.Status = Convert.ToInt16(TaskStatus);
+
+            taskUser.UserAcceptance = UserAcceptance;
+
+            if (taskUser.Id == 0)
+            {
+                TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
+                TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
+            }
+
+
+            return TaskUpdateId;
+        }
+
+
         protected void grdSubTaskAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -428,7 +566,7 @@ namespace JG_Prospect.Sr_App.Controls
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
                 LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
 
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
 
                 if (files[1].Length > 40)// sort name with ....
@@ -443,7 +581,14 @@ namespace JG_Prospect.Sr_App.Controls
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 lbtnAttchment.CommandArgument = file;
 
-                ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+                }
+                else
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                }
             }
         }
 
@@ -553,6 +698,72 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Methods--'
 
+
+        private void UploadUserAttachements(int? taskUpdateId, string attachments)
+        {
+            //User has attached file than save it to database.
+            if (!string.IsNullOrEmpty(attachments))
+            {
+                TaskUser taskUserFiles = new TaskUser();
+
+                string[] files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (String attachment in files)
+                {
+                    String[] attachements = attachment.Split('@');
+                    string fileExtension = Path.GetExtension(attachment);
+
+
+                    if (
+                        fileExtension.ToLower() == ".mpeg" ||
+                        fileExtension.ToLower() == ".mp4" ||
+                        fileExtension.ToLower() == ".3gpp" ||
+                        fileExtension.ToLower() == ".wmv" ||
+                        fileExtension.ToLower() == ".mkv"
+                       )
+                    {
+
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Video);
+                    }
+                    else if (
+                         fileExtension.ToLower() == ".mp3" ||
+                         fileExtension.ToLower() == ".mp4" ||
+                         fileExtension.ToLower() == ".wma"
+                        )
+                    {
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Audio);
+                    }
+                    else if (
+                         fileExtension.ToLower() == ".jpg" ||
+                         fileExtension.ToLower() == ".jpeg" ||
+                         fileExtension.ToLower() == ".png"
+                        )
+                    {
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Images);
+                    }
+                    else if (
+                         fileExtension.ToLower() == ".doc" ||
+                         fileExtension.ToLower() == ".docx" ||
+                         fileExtension.ToLower() == ".xlx" ||
+                         fileExtension.ToLower() == ".xlsx" ||
+                         fileExtension.ToLower() == ".pdf" ||
+                         fileExtension.ToLower() == ".txt" ||
+                         fileExtension.ToLower() == ".csv"
+                        )
+                    {
+                        taskUserFiles.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Docu);
+                    }
+                    taskUserFiles.Attachment = attachements[0];
+                    taskUserFiles.OriginalFileName = attachements[1];
+                    taskUserFiles.Mode = 0; // insert data.
+                    taskUserFiles.TaskId = TaskId;
+                    taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    taskUserFiles.TaskUpdateId = taskUpdateId;
+                    taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
+                    TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
+                }
+            }
+        }
         protected string SetFreezeColumnUI(TextBox objTextBox, CheckBox chkAdmin, CheckBox chkITLead, CheckBox chkUser)
         {
             string strPlaceholder = string.Empty;
@@ -932,8 +1143,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         }
 
-        #endregion
 
+        #endregion
 
     }
 }

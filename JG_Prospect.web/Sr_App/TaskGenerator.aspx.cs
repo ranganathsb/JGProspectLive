@@ -168,6 +168,8 @@ namespace JG_Prospect.Sr_App
             #region Sub Tasks
 
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucSubTasks_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucSubTasks_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
             objucSubTasks_Admin.controlMode = controlMode.Value;
             objucSubTasks_Admin.SetSubTaskView();
@@ -558,7 +560,14 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 lbtnAttchment.CommandArgument = file;
 
-                ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "../TaskAttachments/" + files[0].Trim();
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+                }
+                else
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                }
             }
         }
 
