@@ -583,7 +583,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src =  String.Concat("~/TaskAttachments/" , Server.UrlEncode(files[0].Trim()));
                 }
                 else
                 {

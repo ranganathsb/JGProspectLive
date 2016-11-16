@@ -340,7 +340,7 @@
                                             <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
                                         </div>
                                         <div style="text-align: center;">
-                                            <asp:ImageButton ID="imgImages" runat="server" ImageUrl='<%# String.Concat("~/TaskAttachments/",Eval("Attachment"))%>'
+                                            <asp:ImageButton ID="imgImages" runat="server" ImageUrl='<%# String.Concat("~/TaskAttachments/",Server.UrlEncode(Eval("Attachment").ToString()))%>'
                                                 Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />
                                             <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
                                         </div>

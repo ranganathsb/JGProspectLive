@@ -209,7 +209,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
-                            string filePath = "~/TaskAttachments/" + filefullName;
+                            string filePath = String.Concat("~/TaskAttachments/" , Server.UrlEncode(filefullName));
                             imgFile.Src = filePath;
                             //linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
@@ -221,7 +221,7 @@ namespace JG_Prospect.Sr_App.Controls
                             // some older data of file table might not have file type.
                             if (CommonFunction.IsImageFile(AttachmentOriginal))
                             {
-                                string filePath = "~/TaskAttachments/" + filefullName;
+                                string filePath = String.Concat("~/TaskAttachments/" + Server.UrlEncode(filefullName));
                                 imgFile.Src = filePath;
                             }
                             else

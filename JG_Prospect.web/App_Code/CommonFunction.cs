@@ -595,14 +595,14 @@ namespace JG_Prospect.App_Code
                 case ".mov":
                 case ".mpg":
                 case ".mp4":
-                    iconFile = "/img/video-icon";
+                    iconFile = "/img/video-icon.png";
                     break;
                 case ".pdf":
                     iconFile = "/img/pdf-icon.png";
                     break;
                 case ".xlsx":
                 case ".xls":
-                    iconFile = "/img/excel-icon";
+                    iconFile = "/img/excel-icon.png";
                     break;
                 case ".txt":
                 case".rtf":

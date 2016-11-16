@@ -288,7 +288,7 @@ namespace JG_Prospect.Sr_App
             DeletaTask(hdnTaskId.Value);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
-        
+
         #region '--Task Acceptance--'
 
         protected void lbtnAcceptTask_Click(object sender, EventArgs e)
@@ -562,7 +562,7 @@ namespace JG_Prospect.Sr_App
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = "/TaskAttachments/" + files[0].Trim();
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
                 }
                 else
                 {
