@@ -160,8 +160,6 @@ namespace JG_Prospect.Sr_App.Controls
             SearchTasks(null);
         }
 
-
-
         protected void ddlUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             SearchTasks(null);
@@ -333,17 +331,43 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     #region Install User
 
-                    string strMyDesignation = Convert.ToString(Session["DesigNew"]).Trim().ToLower();
+                    HtmlGenericControl divAcceptRejectButtons = e.Row.FindControl("divAcceptRejectButtons") as HtmlGenericControl;
+
+                    string strMyDesignation = Convert.ToString(Session["DesigNew"]).Trim().ToUpper();
+                    string[] arrTaskDesignations = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Split(',');
+
+                    bool blSameDesignation = false;
+                    if (arrTaskDesignations != null && arrTaskDesignations.Any(d => d.ToUpper().Trim() == strMyDesignation))
+                    {
+                        blSameDesignation = true;
+                    }
 
                     // show request link when,
-                    // task status is open
-                    // task assigned to my designation
-                    if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Open).ToString() &&
-                        strMyDesignation == Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim().ToLower())
+                    // 1. task belongs to my designation
+                    // 2. task is not assigned to any user.
+                    if (
+                        blSameDesignation &&
+                        string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")).Trim())
+                       )
                     {
+                        string strTaskAcceptanceUsers = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAcceptanceUsers"));
+
+                        if (
+                            !string.IsNullOrEmpty(strTaskAcceptanceUsers) && 
+                            strTaskAcceptanceUsers.Split(',').Any(s => s.Trim() == JGSession.UserId.ToString()))
+                        {
+                            divAcceptRejectButtons.Visible = false;
+                        }
+                        else
+                        {
+                            divAcceptRejectButtons.Visible = true;
+                        }
+
                         lbtnRequestStatus.Visible = true;
+
                         ddcbAssigned.Visible =
                         hypUsers.Visible = false;
+
                         lbtnRequestStatus.ForeColor = System.Drawing.Color.Green;
                         lbtnRequestStatus.CommandName = "request";
                         lbtnRequestStatus.CommandArgument = DataBinder.Eval(e.Row.DataItem, "TaskId").ToString() + ":" + DataBinder.Eval(e.Row.DataItem, "CreatedBy").ToString();
@@ -351,11 +375,11 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         ddcbAssigned.Visible =
+                        divAcceptRejectButtons.Visible =
                         lbtnRequestStatus.Visible = false;
+
                         hypUsers.Visible = true;
-
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
-
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                     }
 
@@ -440,6 +464,47 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not assigned successfully! Please try again later.");
+                }
+            }
+            else if (e.CommandName == "accept")
+            {
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(e.CommandArgument), JGSession.UserId.ToString());
+                if (isSuccessful)
+                {
+                    TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                    objTaskAcceptance.IsAccepted = true;
+                    objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                    objTaskAcceptance.UserId = JGSession.UserId;
+                    objTaskAcceptance.TaskId = Convert.ToInt64(e.CommandArgument);
+
+                    if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                    {
+                        SearchTasks(null);
+                    }
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task accepted successfully");
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task acceptance was not successfull, Please try again later.");
+                }
+            }
+            else if (e.CommandName == "reject")
+            {
+                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                objTaskAcceptance.IsAccepted = false;
+                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskAcceptance.UserId = JGSession.UserId;
+                objTaskAcceptance.TaskId = Convert.ToInt64(e.CommandArgument);
+
+                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                {
+                    SearchTasks(null);
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task rejected successfully");
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task rejection was not successfull, Please try again later.");
                 }
             }
             //else if (e.CommandName == "RemoveTask")

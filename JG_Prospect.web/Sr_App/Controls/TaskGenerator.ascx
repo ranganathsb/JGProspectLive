@@ -216,6 +216,10 @@
                                     <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                     <Texts SelectBoxCaption="--Open--" />
                                 </asp:DropDownCheckBoxes>
+                                <div id="divAcceptRejectButtons" runat="server" visible="false">
+                                    <asp:LinkButton ID="lbtnAcceptTask" runat="server" Text="Accept" CommandName="accept" CommandArgument='<%# Eval("TaskId") %>' />&nbsp;
+                                    <asp:LinkButton ID="lbtnRejectTask" runat="server" Text="Reject" CommandName="reject" CommandArgument='<%# Eval("TaskId") %>' />
+                                </div>
                                 <asp:LinkButton ID="lbtnRequestStatus" runat="server" Visible="false" Text="Request" CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
