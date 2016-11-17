@@ -65,9 +65,12 @@
             <div data-id="WorkSpecificationPlaceholder" data-parent-work-specification-id="{id}"></div>
         </td>
         <td valign="top" style="width: 65px;">
-            <input data-id="chkAdminApproval{id}" class="fz fz-admin"  data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
-            <input data-id="chkITLeadApproval{id}" class="fz fz-techlead"  data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
-            <input data-id="chkUserApproval{id}" class="fz fz-user"  data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+            <a href="javascript:void(0);" data-id="btnShowFeedbackPopup{id}" data-work-specification-id="{id}" onclick="javascript:return OnShowFeedbackPopupClick(this);">Comment</a>
+            <div>
+                <input data-id="chkAdminApproval{id}" class="fz fz-admin"  data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+                <input data-id="chkITLeadApproval{id}" class="fz fz-techlead"  data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+                <input data-id="chkUserApproval{id}" class="fz fz-user"  data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+            </div>
             <div data-id="divPassword{id}">
                 <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
                     data-parent-work-specification-id="{parent-id}" data-work-specification-id="{id}"
@@ -80,9 +83,71 @@
     <asp:UpdatePanel ID="upHidden" runat="server">
         <ContentTemplate>
             <asp:Button ID="btnUpdateTaskStatus" runat="server" CausesValidation="false" OnClick="btnUpdateTaskStatus_Click" />
+
+            <asp:HiddenField ID="hdnFeedbackPopup" runat="server" />
+            <asp:Button ID="btnShowFeedbackPopup" runat="server" CausesValidation="false" OnClick="btnShowFeedbackPopup_Click" />
         </ContentTemplate>
     </asp:UpdatePanel>
 </div>
+
+<%--Popup Stars--%>
+<div class="hide">
+
+    <%--Sub Task Feedback Popup--%>
+    <div id="divTwsFeedbackPopup" runat="server" title="Task Work Specification">
+        <asp:UpdatePanel ID="upTwsFeedbackPopup" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <fieldset>
+                    <legend><asp:Literal ID="ltrlTwsFeedbackTitle" runat="server" /></legend>
+                    <table id="tblAddEditTwsFeedback" runat="server" cellspacing="3" cellpadding="3" width="100%">
+                        <tr>
+                            <td colspan="2">&nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="right" valign="top">Description:
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtTwsComment" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvComment" ValidationGroup="comment_tws"
+                                    runat="server" ControlToValidate="txtTwsComment" ForeColor="Red" ErrorMessage="Please comment" Display="None" />
+                                <asp:ValidationSummary ID="vsComment" runat="server" ValidationGroup="comment_tws" ShowSummary="False" ShowMessageBox="True" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top">Files:
+                            </td>
+                            <td>
+                                <input id="hdnTwsAttachments" runat="server" type="hidden" />
+                                <input id="hdnTwsFileType" runat="server" type="hidden" />
+                               <div id="divTwsDropzone" runat="server" class="dropzone ">
+                                    <div class="fallback">
+                                        <input name="file" type="file" multiple />
+                                        <input type="submit" value="Upload" />
+                                    </div>
+                                </div>
+                                <div id="divTwsDropzonePreview" runat="server" class="dropzone-previews ">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="btn_sec">
+                                    <asp:Button ID="btnSaveTwsFeedback" runat="server"  ValidationGroup="comment_tws" OnClick="btnSaveTwsFeedback_Click" CssClass="ui-button" Text="Save"  />
+                                    <asp:Button ID="btnSaveTwsAttachment" runat="server"   OnClick="btnSaveTwsAttachment_Click" style="display:none;" Text="Save Attachement"  />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+
+</div>
+<%--Popup Ends--%>
+
+<%--Task Work Specifications Script--%>
 <script type="text/javascript">
 
     var strWorkSpecificationSectionTemplate = $('script[data-id="tmpWorkSpecificationSection"]').html().toString();
@@ -360,6 +425,13 @@
         return false;
     }
 
+    function OnShowFeedbackPopupClick(sender) {
+        var Id = $(sender).attr('data-work-specification-id');
+
+        $('#<%=hdnFeedbackPopup.ClientID%>').val(Id);
+        $('#<%=btnShowFeedbackPopup.ClientID%>').click();
+    }
+
     function OnApprovalCheckBoxChanged(sender) {
         var Id= $(sender).attr('data-work-specification-id');
         
@@ -532,4 +604,35 @@
 
     }
    
+</script>
+
+<%--Task Work Specifications Feedback Script--%>
+<script type="text/javascript">
+    Dropzone.autoDiscover = false;
+
+    $(function () {
+        ucTaskWorkSpecifications_Initialize();
+    });
+
+    var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+    prmTaskGenerator.add_endRequest(function () {
+        ucTaskWorkSpecifications_Initialize();
+    });
+
+    function ucTaskWorkSpecifications_Initialize() {
+        ucTaskWorkSpecifications_ApplyDropZone();
+    }
+
+    var objTwsNoteDropzone;
+
+    function ucTaskWorkSpecifications_ApplyDropZone() {
+        //Apply dropzone for comment section.
+        if (objTwsNoteDropzone) {
+            objTwsNoteDropzone.destroy();
+            objTwsNoteDropzone = null;
+        }
+        //objTwsNoteDropzone = GetWorkFileDropzone("#<%=divTwsDropzone.ClientID%>", '#<%=divTwsDropzonePreview.ClientID%>', '#<%= hdnTwsAttachments.ClientID %>', '#<%=btnSaveTwsAttachment.ClientID%>');
+    }
+
 </script>

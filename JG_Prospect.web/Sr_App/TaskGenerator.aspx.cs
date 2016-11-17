@@ -160,6 +160,8 @@ namespace JG_Prospect.Sr_App
             #region Task Work Specifications
 
             objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucTaskWorkSpecifications.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskWorkSpecifications.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
             objucTaskWorkSpecifications.IsAdminMode = this.IsAdminMode;
             objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
 

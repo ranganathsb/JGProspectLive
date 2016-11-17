@@ -433,7 +433,6 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
-
         protected void btnSaveCommentAttachment_Click(object sender, EventArgs e)
         {
             UploadUserAttachements(null, hdnSubTaskNoteAttachments.Value);
@@ -443,7 +442,6 @@ namespace JG_Prospect.Sr_App.Controls
             Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
 
         }
-
 
         protected void btnSaveSubTaskFeedback_Click(object sender, EventArgs e)
         {
@@ -468,92 +466,6 @@ namespace JG_Prospect.Sr_App.Controls
             Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
 
         }
-
-        /// <summary>
-        /// Save task note and attachment added by user.
-        /// </summary>
-        private void SaveTaskNotesNAttachments()
-        {
-            //if task id is available to save its note and attachement.
-            if (TaskId > 0)
-            {
-                // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.\
-                Int32 TaskUpdateId = SaveTaskNote(TaskId, null, null, string.Empty, string.Empty);
-
-                txtSubtaskComment.Text = string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Save task user information.
-        /// </summary>
-        /// <param name="Designame"></param>
-        /// <param name="ItaskId"></param>
-        public Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
-        {
-            Int32 TaskUpdateId = 0;
-
-            TaskUser taskUser = new TaskUser();
-
-            if (UserId == null)
-            {
-                // Take logged in user's id for logging note in database.
-                taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                taskUser.UserFirstName = Session["Username"].ToString();
-            }
-            else
-            {
-                taskUser.UserId = Convert.ToInt32(UserId);
-                taskUser.UserFirstName = UserName;
-            }
-
-
-            taskUser.Id = 0;
-
-            if (string.IsNullOrEmpty(taskDescription))
-            {
-                taskUser.Notes = txtSubtaskComment.Text;
-            }
-            else
-            {
-                taskUser.Notes = taskDescription;
-            }
-
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-            {
-                taskUser.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Notes);
-            }
-
-            // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
-            if (IsCreated != null)
-            {
-                taskUser.IsCreatorUser = true;
-            }
-            else
-            {
-                taskUser.IsCreatorUser = false;
-            }
-
-            taskUser.TaskId = ItaskId;
-
-            taskUser.Status = Convert.ToInt16(TaskStatus);
-
-            taskUser.UserAcceptance = UserAcceptance;
-
-            if (taskUser.Id == 0)
-            {
-                TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
-                TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-            }
-
-
-            return TaskUpdateId;
-        }
-
 
         protected void grdSubTaskAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -609,6 +521,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
         }
+        
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "DownloadFile")
@@ -698,7 +611,6 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Methods--'
 
-
         private void UploadUserAttachements(int? taskUpdateId, string attachments)
         {
             //User has attached file than save it to database.
@@ -764,6 +676,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
         }
+        
         protected string SetFreezeColumnUI(TextBox objTextBox, CheckBox chkAdmin, CheckBox chkITLead, CheckBox chkUser)
         {
             string strPlaceholder = string.Empty;
@@ -1143,8 +1056,93 @@ namespace JG_Prospect.Sr_App.Controls
 
         }
 
+        /// <summary>
+        /// Save task note and attachment added by user.
+        /// </summary>
+        private void SaveTaskNotesNAttachments()
+        {
+            //if task id is available to save its note and attachement.
+            if (TaskId > 0)
+            {
+                // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.\
+                Int32 TaskUpdateId = SaveTaskNote(TaskId, null, null, string.Empty, string.Empty);
+
+                txtSubtaskComment.Text = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Save task user information.
+        /// </summary>
+        /// <param name="Designame"></param>
+        /// <param name="ItaskId"></param>
+        public Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
+        {
+            Int32 TaskUpdateId = 0;
+
+            TaskUser taskUser = new TaskUser();
+
+            if (UserId == null)
+            {
+                // Take logged in user's id for logging note in database.
+                taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                taskUser.UserFirstName = Session["Username"].ToString();
+            }
+            else
+            {
+                taskUser.UserId = Convert.ToInt32(UserId);
+                taskUser.UserFirstName = UserName;
+            }
+
+
+            taskUser.Id = 0;
+
+            if (string.IsNullOrEmpty(taskDescription))
+            {
+                taskUser.Notes = txtSubtaskComment.Text;
+            }
+            else
+            {
+                taskUser.Notes = taskDescription;
+            }
+
+            if (!string.IsNullOrEmpty(taskUser.Notes))
+            {
+                taskUser.FileType = Convert.ToString((int)JGConstant.TaskUserFileType.Notes);
+            }
+
+            // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
+            if (IsCreated != null)
+            {
+                taskUser.IsCreatorUser = true;
+            }
+            else
+            {
+                taskUser.IsCreatorUser = false;
+            }
+
+            taskUser.TaskId = ItaskId;
+
+            taskUser.Status = Convert.ToInt16(TaskStatus);
+
+            taskUser.UserAcceptance = UserAcceptance;
+
+            taskUser.TaskFileDestination = JGConstant.TaskFileDestination.SubTask;
+
+            if (taskUser.Id == 0)
+            {
+                TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
+                TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
+            }
+
+
+            return TaskUpdateId;
+        }
 
         #endregion
-
     }
 }

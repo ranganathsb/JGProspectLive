@@ -201,8 +201,8 @@
     </asp:UpdatePanel>
 </fieldset>
 
+<%--Popup Stars--%>
 <div class="hide">
-
 
     <%--Sub Task Feedback Popup--%>
     <div id="divSubTaskFeedbackPopup" runat="server" title="Sub Task Feedback">
@@ -275,6 +275,7 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
+
 </div>
 <%--Popup Ends--%>
 
