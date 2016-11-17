@@ -151,5 +151,14 @@ namespace JG_Prospect.Common
 
 
         #endregion
+
+        /// <summary>
+        /// Gets key names to access ContentSetting from database.
+        /// Keep updating this class to have all KEY values as per database.
+        /// </summary>
+        public static class ContentSettings
+        {
+            public const string TASK_HELP_TEXT = "TASK_HELP_TEXT";
+        }
     }
 }

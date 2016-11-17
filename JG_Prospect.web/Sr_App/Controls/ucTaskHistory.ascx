@@ -24,9 +24,17 @@
                                             </tr>
                                             <tr style="background-color: #FFFACD;">
                                                 <td colspan="3">
+                                                    <asp:UpdatePanel ID="upTaskHelpText" runat="server" UpdateMode="Conditional">
+                                                        <ContentTemplate>
+                                                            <div style="margin-bottom: 2px; width: 100%; clear: both;">
+                                                                <div id="divHelpText" runat="server" onclick="javascript:divHelpText_OnClick(this);"></div>
+                                                                <textarea id="txtHelpTextEditor" runat="server" rows="4" style="width: 100%; display: none;"></textarea>
+                                                                <asp:Button ID="btnSaveHelpText" runat="server" Text="Save Help Text"
+                                                                    OnClientClick="javascript:btnSaveHelpText_Click(this);" OnClick="btnSaveHelpText_Click" />
+                                                            </div>
+                                                        </ContentTemplate>
+                                                    </asp:UpdatePanel>
                                                     <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
-                                                        <small><b>Hi, I am justin grove and i am your manager & creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>
-                                                        <br />
                                                         Task Description<span style="color: red;">*</span>:
                                                     </div>
                                                     <asp:Literal ID="ltlTaskDesc" runat="server"></asp:Literal>
@@ -564,6 +572,23 @@
     function ucTaskHistory_Initialize() {
         ucTaskHistory_ApplyDropZone();
         //BindDescriptionAutoSaveevent();
+    }
+
+    function divHelpText_OnClick(sender) {
+        var txtHelpTextEditor = $('#<%=txtHelpTextEditor.ClientID%>');
+        if (txtHelpTextEditor.length > 0) {
+            txtHelpTextEditor.show();
+            $(sender).hide();
+
+            SetCKEditor(txtHelpTextEditor.attr('id'));
+        }
+    }
+
+    function btnSaveHelpText_Click(sender) {
+        var txtHelpTextEditor = $('#<%=txtHelpTextEditor.ClientID%>');
+        if (txtHelpTextEditor.length > 0) {
+            txtHelpTextEditor.html(GetCKEditorContent(txtHelpTextEditor.attr('id')));
+        }
     }
 
     function BindDescriptionAutoSaveevent() {

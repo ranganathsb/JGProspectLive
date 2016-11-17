@@ -49,6 +49,42 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.UpdatePanel upTaskUsers;
         
         /// <summary>
+        /// upTaskHelpText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upTaskHelpText;
+        
+        /// <summary>
+        /// divHelpText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divHelpText;
+        
+        /// <summary>
+        /// txtHelpTextEditor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea txtHelpTextEditor;
+        
+        /// <summary>
+        /// btnSaveHelpText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveHelpText;
+        
+        /// <summary>
         /// ltlTaskDesc control.
         /// </summary>
         /// <remarks>

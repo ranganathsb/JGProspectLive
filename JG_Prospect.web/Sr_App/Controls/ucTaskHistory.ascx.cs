@@ -62,6 +62,15 @@ namespace JG_Prospect.Sr_App.Controls
             ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
             scriptManager.RegisterPostBackControl(this.gdTaskUsers);
             hdnTaskID.Value = TaskId.ToString();
+
+            if (!IsPostBack)
+            {
+                divHelpText.InnerHtml =
+                txtHelpTextEditor.InnerHtml = UtilityBAL.Instance.GetContentSetting(JGConstant.ContentSettings.TASK_HELP_TEXT);
+
+                txtHelpTextEditor.Visible =
+                btnSaveHelpText.Visible = CommonFunction.CheckAdminMode();
+            }
         }
 
         protected void linkDownLoadFiles_Click(object sender, EventArgs e)
@@ -209,7 +218,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
-                            string filePath = String.Concat("~/TaskAttachments/" , Server.UrlEncode(filefullName));
+                            string filePath = String.Concat("~/TaskAttachments/", Server.UrlEncode(filefullName));
                             imgFile.Src = filePath;
                             //linkOriginalfileName.Visible = true;
                             //lableOriginalfileName.Visible = false;
@@ -882,7 +891,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgDoc = (Image)e.Item.FindControl("imgDoc");
 
-                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem,"Attachment").ToString());
+                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
 
             }
         }
@@ -907,6 +916,15 @@ namespace JG_Prospect.Sr_App.Controls
                 imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
 
             }
+        }
+
+        protected void btnSaveHelpText_Click(object sender, EventArgs e)
+        {
+            UtilityBAL.Instance.UpdateContentSetting(JGConstant.ContentSettings.TASK_HELP_TEXT, HttpUtility.HtmlEncode(txtHelpTextEditor.InnerText));
+
+            divHelpText.InnerHtml = txtHelpTextEditor.InnerHtml;
+
+            upTaskHelpText.Update();
         }
     }
 }

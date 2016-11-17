@@ -5325,3 +5325,108 @@ END
 
 --==========================================================================================================================================================================================
 
+CREATE TABLE tblContentSettings
+(
+[Id] BIGINT PRIMARY KEY IDENTITY(1,1),
+[Key] VARCHAR(100) NOT NULL UNIQUE,
+[Value] TEXT
+)
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 17 Nov 16
+-- Description:	Insert global settings with large content.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertContentSetting]
+	@Key VARCHAR(100),
+	@Value TEXT
+AS
+BEGIN
+
+	INSERT INTO [dbo].[tblContentSettings]
+           ([Key]
+           ,[Value])
+     VALUES
+           (@Key
+           ,@Value)
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 17 Nov 16
+-- Description:	Update global settings with large content.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateContentSetting]
+	@Key VARCHAR(100),
+	@Value TEXT
+AS
+BEGIN
+
+	UPDATE [dbo].[tblContentSettings]
+	SET
+        [Value] = @Value
+	WHERE [Key] = @Key
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 17 Nov 16
+-- Description:	Delete global settings with large content.
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteContentSetting]
+	@Key VARCHAR(100)
+AS
+BEGIN
+
+	DELETE
+	FROM [dbo].[tblContentSettings]
+	WHERE [Key] = @Key
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 17 Nov 16
+-- Description:	Get global settings with large content.
+-- =============================================
+CREATE PROCEDURE [dbo].[GetContentSetting]
+	@Key VARCHAR(100)
+AS
+BEGIN
+
+	SELECT Value
+	FROM [dbo].[tblContentSettings]
+	WHERE [Key] = @Key
+
+END
+GO
+
+EXEC [dbo].[InsertContentSetting] 
+'TASK_HELP_TEXT',
+'<small><b>Hi, I am justin grove and i am your manager &amp; creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>'
+GO
