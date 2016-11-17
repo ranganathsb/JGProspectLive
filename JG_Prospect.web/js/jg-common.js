@@ -1,4 +1,61 @@
-﻿
+﻿/********************************************* CK Editor (Html Editor) ******************************************************/
+function SetCKEditor(Id) {
+
+    var $target = $('#' + Id);
+
+    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+    // Otherwise CKEditor will start in read-only mode.
+
+    $target.attr('contenteditable', true);
+
+    CKEDITOR.inline(Id,
+        {
+            // Show toolbar on startup (optional).
+            startupFocus: true
+        });
+
+    var editor = CKEDITOR.instances[Id];
+
+    editor.on('fileUploadResponse', function (evt) {
+        // Prevent the default response handler.
+        evt.stop();
+
+        // Ger XHR and response.
+        var data = evt.data,
+            xhr = data.fileLoader.xhr,
+            response = xhr.responseText.split('|');
+
+        var jsonarray = JSON.parse(response[0]);
+
+        if (jsonarray && jsonarray.uploaded != "1") {
+            // Error occurred during upload.                
+            evt.cancel();
+        } else {
+            data.url = jsonarray.url;
+        }
+    });
+}
+
+function GetCKEditorContent(Id) {
+
+    var editor = CKEDITOR.instances[Id];
+
+    var encodedHTMLData = editor.getData();
+
+    //editor.updateElement();
+
+    var $target = $('#' + Id);
+
+    $target.html(encodedHTMLData);
+
+    $target.attr('contenteditable', false);
+
+    CKEDITOR.instances[Id].destroy();
+
+    return encodedHTMLData;
+}
+
+/********************************************* Dialog (jQuery Ui Popup) ******************************************************/
 function ShowPopupWithTitle(varControlID, strTitle) {
     var objDialog = ShowPopup(varControlID);
     // this will update title of current dialog.
@@ -9,7 +66,7 @@ function HidePopup(varControlID) {
     $(varControlID).dialog("close");
 }
 
-
+/********************************************* Dropzone (File upload on drag - drop) ******************************************************/
 function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenFieldIdSelector, strButtonIdSelector) {
     var strAcceptedFiles = '';
     if ($(strDropzoneSelector).attr("data-accepted-files")) {

@@ -539,7 +539,7 @@
                     of: $('#<%=divWorkSpecificationSection.ClientID%>')
                 });
             }
-            else {
+            else if (varControlID == '#<%=divWorkSpecificationSection.ClientID%>') {
                 $(varControlID).dialog("option", "position", {
                     my: 'left top',
                     at: 'left top',

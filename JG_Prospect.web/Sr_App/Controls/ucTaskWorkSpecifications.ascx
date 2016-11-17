@@ -235,7 +235,7 @@
         $('div[data-parent-work-specification-id="'+intParentId+'"]').append($WorkSpecificationSectionTemplate);
 
         // show ck editor in footer row.
-        setCKEDITORonArea('txtWorkSpecification' + intParentId + '_Footer');
+        SetCKEditor('txtWorkSpecification' + intParentId + '_Footer');
         
         if( !AdminMode || (result.TotalRecordCount > 0 && result.PendingCount == 0)) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
@@ -284,7 +284,7 @@
         $('div[data-id="divViewWorkSpecification' + Id + '"]').hide();
         $('div[data-id="divViewWorkSpecificationButtons' + Id + '"]').hide();
 
-        setCKEDITORonArea('txtWorkSpecification'+Id);
+        SetCKEditor('txtWorkSpecification'+Id);
 
         return false;
     }
@@ -348,7 +348,7 @@
         var Id= 0;
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+intParentId+'_Footer"]').text());
-        var strDescription = getCKEditorData('txtWorkSpecification'+intParentId+'_Footer');
+        var strDescription = GetCKEditorContent('txtWorkSpecification'+intParentId+'_Footer');
 
         $.ajax
         (
@@ -388,11 +388,9 @@
         var Id= $(sender).attr('data-work-specification-id');
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
-        var strDescription = getCKEditorData('txtWorkSpecification'+ Id, 'divWorkSpecification'+ Id);
+        var strDescription = GetCKEditorContent('txtWorkSpecification'+ Id);
 
         var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
-
-        console.log("Data Sent to web service: " + datatoSend);
 
         $.ajax
         (
@@ -406,6 +404,9 @@
                 success: function (data) {
                     HideAjaxLoader();
                     if(data.d) {
+                        // update div containing work specification content.
+                        $('div[data-id="divWorkSpecification'+Id+'"]').html(strDescription);
+
                         alert('Specification saved successfully.');
                         // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
                         $('#<%=btnUpdateTaskStatus.ClientID%>').click();
@@ -540,70 +541,6 @@
         $('.loading').hide();
     }
 
-    function setCKEDITORonArea(Id)
-    {
-
-        var jqueryId = '#' + Id;
-        
-        // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
-        // Otherwise CKEditor will start in read-only mode.
-        
-        $( jqueryId ).attr('contenteditable', true);       
-
-        CKEDITOR.inline( Id,
-            {
-                // Show toolbar on startup (optional).
-                startupFocus: true
-            });
-
-        var editor =  CKEDITOR.instances[Id];
-
-        editor.on( 'fileUploadResponse', function( evt ) {
-            // Prevent the default response handler.
-            evt.stop();
-            
-            // Ger XHR and response.
-            var data = evt.data,
-                xhr = data.fileLoader.xhr,
-                response = xhr.responseText.split( '|' );
-           
-            var jsonarray = JSON.parse(response[0]);
-            
-            if ( jsonarray && jsonarray.uploaded != "1" ) {
-                // Error occurred during upload.                
-                evt.cancel();
-            } else {
-                data.url = jsonarray.url;
-            }
-        } );
-
-    }
-
-    function getCKEditorData(Id, divWorkSpecsId) {
-    
-        var editor =  CKEDITOR.instances[Id];
-        
-        var encodedHTMLData =  editor.getData();
-
-        //editor.updateElement();
-
-        var jqueryId = '#' + Id;
-
-        $(jqueryId).html(encodedHTMLData);
-        
-        $(jqueryId).attr('contenteditable', false);  
-
-        console.log(typeof(divWorkSpecsId));
-        if(typeof(divWorkSpecsId) != "undefined") {
-            $('div[data-id=\''+ divWorkSpecsId + '\']').html(encodedHTMLData);
-        }
-
-        CKEDITOR.instances[Id].destroy();
-
-        return encodedHTMLData;
-
-    }
-   
 </script>
 
 <%--Task Work Specifications Feedback Script--%>
