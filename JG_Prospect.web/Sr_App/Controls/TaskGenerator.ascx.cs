@@ -352,15 +352,16 @@ namespace JG_Prospect.Sr_App.Controls
                     {
                         string strTaskAcceptanceUsers = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAcceptanceUsers"));
 
+                        // show accept - reject buttons when, acceptance log for current task does not contain current user.
                         if (
-                            !string.IsNullOrEmpty(strTaskAcceptanceUsers) && 
-                            strTaskAcceptanceUsers.Split(',').Any(s => s.Trim() == JGSession.UserId.ToString()))
+                            string.IsNullOrEmpty(strTaskAcceptanceUsers) ||
+                            strTaskAcceptanceUsers.Split(',').Count(s => s.Trim() == JGSession.UserId.ToString()) == 0)
                         {
-                            divAcceptRejectButtons.Visible = false;
+                            divAcceptRejectButtons.Visible = true;
                         }
                         else
                         {
-                            divAcceptRejectButtons.Visible = true;
+                            divAcceptRejectButtons.Visible = false;
                         }
 
                         lbtnRequestStatus.Visible = true;

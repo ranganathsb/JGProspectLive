@@ -304,7 +304,7 @@ namespace JG_Prospect.Sr_App
 
                 if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
                 {
-                    divAcceptanceLog.Visible = false;
+                    divAcceptRejectButtons.Visible = false;
                 }
 
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
@@ -325,7 +325,7 @@ namespace JG_Prospect.Sr_App
 
             if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
             {
-                divAcceptanceLog.Visible = false;
+                divAcceptRejectButtons.Visible = false;
 
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
             }
