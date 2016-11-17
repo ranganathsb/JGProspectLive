@@ -29,8 +29,8 @@
                                                             <div style="margin-bottom: 2px; width: 100%; clear: both;">
                                                                 <div id="divHelpText" runat="server" onclick="javascript:divHelpText_OnClick(this);"></div>
                                                                 <textarea id="txtHelpTextEditor" runat="server" rows="4" style="width: 100%; display: none;"></textarea>
-                                                                <asp:Button ID="btnSaveHelpText" runat="server" Text="Save Help Text"
-                                                                    OnClientClick="javascript:btnSaveHelpText_Click(this);" OnClick="btnSaveHelpText_Click" />
+                                                                <asp:Button ID="btnSaveHelpText" Style="display: none;" runat="server" Text="Save Help Text"
+                                                                    OnClick="btnSaveHelpText_Click" />
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:UpdatePanel>
@@ -580,14 +580,7 @@
             txtHelpTextEditor.show();
             $(sender).hide();
 
-            SetCKEditor(txtHelpTextEditor.attr('id'));
-        }
-    }
-
-    function btnSaveHelpText_Click(sender) {
-        var txtHelpTextEditor = $('#<%=txtHelpTextEditor.ClientID%>');
-        if (txtHelpTextEditor.length > 0) {
-            txtHelpTextEditor.html(GetCKEditorContent(txtHelpTextEditor.attr('id')));
+            SetCKEditorForPageContent(txtHelpTextEditor.attr('id'), '#<%= btnSaveHelpText.ClientID %>');
         }
     }
 
@@ -696,4 +689,6 @@
                 imgFull.style.display = "none";
             }
         }
+
+
 </script>

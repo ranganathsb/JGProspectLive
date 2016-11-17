@@ -36,6 +36,50 @@ function SetCKEditor(Id) {
     });
 }
 
+function SetCKEditorForPageContent(Id,AutosavebuttonId) {
+
+    var $target = $('#' + Id);
+
+    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+    // Otherwise CKEditor will start in read-only mode.
+
+    $target.attr('contenteditable', true);
+
+    CKEDITOR.inline(Id,
+        {
+            // Show toolbar on startup (optional).
+            startupFocus: true,
+            on: {
+                blur: function (event) {
+                    
+                    event.editor.updateElement();
+                    // event.editor.destroy();
+                    $(AutosavebuttonId).click();
+                },
+                fileUploadResponse: function (event) {
+                    // Prevent the default response handler.
+                    event.stop();
+
+                    // Ger XHR and response.
+                    var data = event.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split('|');
+
+                    var jsonarray = JSON.parse(response[0]);
+
+                    if (jsonarray && jsonarray.uploaded != "1") {
+                        // Error occurred during upload.                
+                        event.cancel();
+                    } else {
+                        data.url = jsonarray.url;
+                    }
+                }
+
+            }
+        });
+
+}
+
 function GetCKEditorContent(Id) {
 
     var editor = CKEDITOR.instances[Id];

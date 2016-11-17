@@ -65,8 +65,9 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (!IsPostBack)
             {
-                divHelpText.InnerHtml =
-                txtHelpTextEditor.InnerHtml = UtilityBAL.Instance.GetContentSetting(JGConstant.ContentSettings.TASK_HELP_TEXT);
+                String HelpHtml = UtilityBAL.Instance.GetContentSetting(JGConstant.ContentSettings.TASK_HELP_TEXT);
+                divHelpText.InnerHtml = Server.HtmlDecode(HelpHtml);
+                txtHelpTextEditor.InnerHtml = HelpHtml;
 
                 txtHelpTextEditor.Visible =
                 btnSaveHelpText.Visible = CommonFunction.CheckAdminMode();
@@ -922,7 +923,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             UtilityBAL.Instance.UpdateContentSetting(JGConstant.ContentSettings.TASK_HELP_TEXT, HttpUtility.HtmlEncode(txtHelpTextEditor.InnerText));
 
-            divHelpText.InnerHtml = txtHelpTextEditor.InnerHtml;
+            divHelpText.InnerHtml = Server.HtmlDecode(txtHelpTextEditor.InnerHtml);
 
             upTaskHelpText.Update();
         }
