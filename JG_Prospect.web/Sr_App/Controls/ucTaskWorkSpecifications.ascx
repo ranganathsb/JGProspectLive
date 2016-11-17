@@ -632,7 +632,7 @@
             objTwsNoteDropzone.destroy();
             objTwsNoteDropzone = null;
         }
-        //objTwsNoteDropzone = GetWorkFileDropzone("#<%=divTwsDropzone.ClientID%>", '#<%=divTwsDropzonePreview.ClientID%>', '#<%= hdnTwsAttachments.ClientID %>', '#<%=btnSaveTwsAttachment.ClientID%>');
+        objTwsNoteDropzone = GetWorkFileDropzone("#<%=divTwsDropzone.ClientID%>", '#<%=divTwsDropzonePreview.ClientID%>', '#<%= hdnTwsAttachments.ClientID %>', '#<%=btnSaveTwsAttachment.ClientID%>');
     }
 
 </script>
