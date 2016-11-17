@@ -94,7 +94,7 @@
 <div class="hide">
 
     <%--Sub Task Feedback Popup--%>
-    <div id="divTwsFeedbackPopup" runat="server" title="Task Work Specification">
+    <div id="divTwsFeedbackPopup" runat="server" title="Task Work Specification Feedback">
         <asp:UpdatePanel ID="upTwsFeedbackPopup" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <fieldset>
