@@ -11,7 +11,8 @@ function SetCKEditor(Id) {
     CKEDITOR.inline(Id,
         {
             // Show toolbar on startup (optional).
-            startupFocus: true
+            startupFocus: true,
+            enterMode: CKEDITOR.ENTER_BR
         });
 
     var editor = CKEDITOR.instances[Id];
@@ -49,6 +50,7 @@ function SetCKEditorForPageContent(Id,AutosavebuttonId) {
         {
             // Show toolbar on startup (optional).
             startupFocus: true,
+            enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
                     

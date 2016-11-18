@@ -245,12 +245,17 @@
                         HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                         EmptyDataText="No acceptance log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="Id,UserId">
+                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                        <HeaderStyle CssClass="trHeader " />
+                        <RowStyle CssClass="FirstRow" />
+                        <AlternatingRowStyle CssClass="AlternateRow " />
                         <Columns>
                             <asp:TemplateField HeaderText="User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
-                                    <asp:HyperLink runat="server" ForeColor="Blue" 
+                                    <%# string.Concat(Eval("UserFirstName").ToString()," - ") %>
+                                    <asp:HyperLink runat="server" ForeColor="Blue"
                                         NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
-                                        Text='<%# string.Concat(Eval("UserFirstName").ToString() , " - ", Eval("UserId")) %>' />
+                                        Text='<%# Eval("UserId")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">

@@ -13,7 +13,7 @@ namespace JG_Prospect.UserControl
 {
     public partial class ucAuditTrailByUser : System.Web.UI.UserControl
     {
-        int icount =1 ;
+        int icount = 1;
         #region '--Properties & variables --'
 
         public string UserLoginID { get; set; }
@@ -42,25 +42,28 @@ namespace JG_Prospect.UserControl
         {
             DataSet dsReturn = new DataSet();
 
-            dsReturn= dS.Clone();
-            
-
-            foreach (DataRow datarowProcess in dS.Tables[0].Rows)
+            if (dS != null)
             {
-                //string GrpCSS = GetTimeGrpOnLoginTime(datarowProcess["LastLoginOn"].ToString());
+                dsReturn = dS.Clone();
 
-                //Set Value for Tabs
-                //datarowProcess["TimeTabGrp"] = GrpCSS;
 
-                //Calculate Time Spend inside App.
-                datarowProcess["TotalVisiteTime"] = ConvertTimeToMMSS(Convert.ToString(datarowProcess["TotalVisiteTime"]));
+                foreach (DataRow datarowProcess in dS.Tables[0].Rows)
+                {
+                    //string GrpCSS = GetTimeGrpOnLoginTime(datarowProcess["LastLoginOn"].ToString());
 
-                //Calculate Total
+                    //Set Value for Tabs
+                    //datarowProcess["TimeTabGrp"] = GrpCSS;
 
-                dsReturn.Tables[0].Rows.Add(datarowProcess.ItemArray);
+                    //Calculate Time Spend inside App.
+                    datarowProcess["TotalVisiteTime"] = ConvertTimeToMMSS(Convert.ToString(datarowProcess["TotalVisiteTime"]));
+
+                    //Calculate Total
+
+                    dsReturn.Tables[0].Rows.Add(datarowProcess.ItemArray);
+                } 
             }
 
-            
+
             return dsReturn;
         }
 
@@ -77,7 +80,7 @@ namespace JG_Prospect.UserControl
                 strReturnTime = time.ToString(@"mm\:ss");
 
             }
-            return strReturnTime;   
+            return strReturnTime;
         }
 
         protected void OnItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -91,7 +94,7 @@ namespace JG_Prospect.UserControl
                 rptUserAudit.Visible = true;
                 int customerId = Convert.ToInt32((e.Item.FindControl("hfAuditID") as HiddenField).Value);
                 Label lblVisitCount = (e.Item.FindControl("lblVisitCount") as Label);
-                
+
                 DataTable DtAuditDtl = new DataTable();
 
                 Repeater rptAuditDtl = e.Item.FindControl("rptAuditDtl") as Repeater;
@@ -100,14 +103,14 @@ namespace JG_Prospect.UserControl
                                       where (int)AuditDtlDr["AuditID"] == customerId
                                       select (string)AuditDtlDr["Description"]).FirstOrDefault();
 
-                
+
                 DtAuditDtl = GetDataSourceFromDescription(Description);
 
                 lblVisitCount.Text = DtAuditDtl.Rows.Count.ToString();
 
                 rptAuditDtl.DataSource = DtAuditDtl;
                 rptAuditDtl.DataBind();
-                
+
             }
         }
 
@@ -141,14 +144,14 @@ namespace JG_Prospect.UserControl
             foreach (var newRow in VisitEntry)
             {
                 //string[] split = line.Split('#');
-                string[] split = newRow.Split(new string[] {" |:| "}, StringSplitOptions.None); 
-                    
+                string[] split = newRow.Split(new string[] { " |:| " }, StringSplitOptions.None);
+
                 DataRow row = table.NewRow();
 
                 row.SetField(colID, visitCount);
-                
-                if(split[0] != null)
-                row.SetField(colVisitTime, split[0]);
+
+                if (split[0] != null)
+                    row.SetField(colVisitTime, split[0]);
 
                 if (split.Length > 1)
                     row.SetField(colPageName, split[1]);
