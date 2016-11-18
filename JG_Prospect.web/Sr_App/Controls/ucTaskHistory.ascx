@@ -115,18 +115,21 @@
                                                 <ItemTemplate>
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
+                                                        <div id="divFile" runat="server" visible="false">
+                                                            <div style="text-align: center;">
+                                                                <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                            </div>
+                                                            <div style="text-align: center;">
+                                                                <asp:LinkButton ID="linkDownLoadFiles" runat="server" CommandName="DownLoadFile" CommandArgument='<%# Eval("Attachment")%>'>
+                                                                    <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" />
+                                                                </asp:LinkButton>
+                                                            </div>
+                                                            <div style="text-align: center;">
+                                                                <asp:LinkButton ID="LinkButton1" OnClick="linkDownLoadFiles_Click"
+                                                                    runat="server" Text="Download" CommandName='<%#Eval("Attachment")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
 
-                                                        <asp:LinkButton ID="linkDownLoadFiles" runat="server" CommandName="DownLoadFile" CommandArgument='<%# Eval("Attachment")%>'>
-                                                            <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" />
-                                                        </asp:LinkButton>
-
-
-                                                        <%--<asp:ImageButton ID="imgFile" runat="server" ImageUrl='<%# String.Concat("/TaskAttachements/",Eval("Attachment"))%>'
-                                                            Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />--%>
-
-                                                        <%--<asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'
-                                                            CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>--%>
-                                                        <%--<asp:Label ID="lableOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>'></asp:Label>--%>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </ItemTemplate>
                                                 <EditItemTemplate>

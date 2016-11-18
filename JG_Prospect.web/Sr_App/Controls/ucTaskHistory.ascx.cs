@@ -214,9 +214,10 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         labelNotes.Visible = false;
+                        e.Row.FindControl("divFile").Visible = 
                         imgFile.Visible = true;
                         linkDownLoadFiles.Visible = true;
-
+                        
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
                             string filePath = String.Concat("~/TaskAttachments/", Server.UrlEncode(filefullName));
