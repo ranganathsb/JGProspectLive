@@ -61,6 +61,14 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void AuthenticateUser()
+        {
+            if (!JGSession.IsActive)
+            {
+                HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+            }
+        }
+
         /// <summary>
         /// Used in task related controls to enable / disable features based on user type.
         /// Admin, Office manager, Sales Managers, Tech Leads, IT Enginners, Foremans are given Admin rights for task controls.
@@ -605,7 +613,7 @@ namespace JG_Prospect.App_Code
                     iconFile = "/img/excel-icon.png";
                     break;
                 case ".txt":
-                case".rtf":
+                case ".rtf":
                 case ".docx":
                 case ".doc":
                     iconFile = "/img/word-icon.png";
@@ -638,7 +646,6 @@ namespace JG_Prospect
                 return true;
             }
         }
-
 
         public static Int32 UserId
         {

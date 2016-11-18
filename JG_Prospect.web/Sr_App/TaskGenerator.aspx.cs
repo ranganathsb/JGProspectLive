@@ -124,6 +124,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            CommonFunction.AuthenticateUser();
+
             if (!IsPostBack)
             {
                 clearAllFormData();
@@ -154,6 +156,13 @@ namespace JG_Prospect.Sr_App
                         objSpecsInProgress.Selected = true;
                         //cmbStatus.Enabled = false;
                     }
+                }
+
+                string strAction = Convert.ToString(Request.QueryString["Action"]);
+
+                if (!string.IsNullOrEmpty(strAction) && strAction == "tws") 
+                {
+                    lbtnShowWorkSpecificationSection_Click(sender, e);
                 }
             }
 
@@ -282,7 +291,7 @@ namespace JG_Prospect.Sr_App
         {
             InsertUpdateTask();
 
-            RedirectToViewTasks(null);
+            RedirectToViewTasks();
         }
 
         protected void lbtnDeleteTask_Click(object sender, EventArgs e)
@@ -361,21 +370,30 @@ namespace JG_Prospect.Sr_App
 
         protected void lbtnShowWorkSpecificationSection_Click(object sender, EventArgs e)
         {
-            FillWorkSpecificationAttachments();
+            if (controlMode.Value == "0")
+            {
+                InsertUpdateTask();
 
-            upWorkSpecificationSection.Update();
+                RedirectToViewTasks("tws");
+            }
+            else
+            {
+                FillWorkSpecificationAttachments();
 
-            ScriptManager.RegisterStartupScript(
-                                                    (sender as Control),
-                                                    this.GetType(),
-                                                    "ShowPopup",
-                                                    string.Format(
-                                                                    "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
-                                                                    divWorkSpecificationSection.ClientID,
-                                                                    divFinishedWorkFiles.ClientID
-                                                                ),
-                                                    true
-                                              );
+                upWorkSpecificationSection.Update();
+
+                ScriptManager.RegisterStartupScript(
+                                                        (sender as Control),
+                                                        this.GetType(),
+                                                        "ShowPopup",
+                                                        string.Format(
+                                                                        "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                                        divWorkSpecificationSection.ClientID,
+                                                                        divFinishedWorkFiles.ClientID
+                                                                    ),
+                                                        true
+                                                  );
+            }
         }
 
         protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
@@ -709,9 +727,9 @@ namespace JG_Prospect.Sr_App
 
         #region "--Private Methods--"
 
-        private void RedirectToViewTasks(object o)
+        private void RedirectToViewTasks(string strAction = "")
         {
-            Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value);
+            Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value + "&Action=" + strAction);
         }
 
         /// <summary>
@@ -741,7 +759,7 @@ namespace JG_Prospect.Sr_App
         {
             TaskGeneratorBLL.Instance.DeleteTask(Convert.ToUInt64(TaskId));
             hdnTaskId.Value = string.Empty;
-            RedirectToViewTasks(null);
+            RedirectToViewTasks();
         }
 
         private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
@@ -752,7 +770,7 @@ namespace JG_Prospect.Sr_App
 
             int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
 
-            RedirectToViewTasks(null);
+            RedirectToViewTasks();
 
             String AlertMsg;
 
