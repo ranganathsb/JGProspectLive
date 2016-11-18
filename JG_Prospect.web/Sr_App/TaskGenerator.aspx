@@ -524,9 +524,8 @@
         }
 
         function ShowPopup(varControlID) {
-            console.log($(window).width());
+
             var windowWidth = (parseInt($(window).width()) / 2) - 10;
-            console.log(windowWidth);
 
             var dialogwidth = windowWidth + "px";
 

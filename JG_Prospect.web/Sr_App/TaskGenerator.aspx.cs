@@ -160,9 +160,9 @@ namespace JG_Prospect.Sr_App
 
                 string strAction = Convert.ToString(Request.QueryString["Action"]);
 
-                if (!string.IsNullOrEmpty(strAction) && strAction == "tws") 
+                if (!string.IsNullOrEmpty(strAction) && strAction == "tws")
                 {
-                    lbtnShowWorkSpecificationSection_Click(sender, e);
+                    ShowWorkSpecificationSection(true);
                 }
             }
 
@@ -378,41 +378,22 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                FillWorkSpecificationAttachments();
-
-                upWorkSpecificationSection.Update();
-
-                ScriptManager.RegisterStartupScript(
-                                                        (sender as Control),
-                                                        this.GetType(),
-                                                        "ShowPopup",
-                                                        string.Format(
-                                                                        "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
-                                                                        divWorkSpecificationSection.ClientID,
-                                                                        divFinishedWorkFiles.ClientID
-                                                                    ),
-                                                        true
-                                                  );
+                ShowWorkSpecificationSection(false);
             }
         }
 
         protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
         {
-            FillWorkSpecificationAttachments();
+            if (controlMode.Value == "0")
+            {
+                InsertUpdateTask();
 
-            upWorkSpecificationSection.Update();
-
-            ScriptManager.RegisterStartupScript(
-                                                    (sender as Control),
-                                                    this.GetType(),
-                                                    "ShowPopup",
-                                                    string.Format(
-                                                                    "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
-                                                                    divFinishedWorkFiles.ClientID,
-                                                                    divWorkSpecificationSection.ClientID
-                                                                ),
-                                                    true
-                                              );
+                RedirectToViewTasks("tws");
+            }
+            else
+            {
+                ShowWorkSpecificationSection(false);
+            }
         }
 
         #region Work Specifications
@@ -1288,6 +1269,32 @@ namespace JG_Prospect.Sr_App
             grdWorkSpecificationAttachments.DataBind();
 
             upnlAttachments.Update();
+        }
+
+        private void ShowWorkSpecificationSection(bool IsOnPageLoad)
+        {
+            string strScript = string.Format(
+                                                "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                divWorkSpecificationSection.ClientID,
+                                                divFinishedWorkFiles.ClientID
+                                            );
+
+            if (IsOnPageLoad)
+            {
+                strScript = "$(document).ready(function(){" + strScript + "});";
+            }
+
+            FillWorkSpecificationAttachments();
+
+            upWorkSpecificationSection.Update();
+
+            ScriptManager.RegisterStartupScript(
+                                                    this.Page,
+                                                    this.GetType(),
+                                                    "ShowPopup",
+                                                    strScript,
+                                                    true
+                                              );
         }
 
         private void SetSubTaskSectionView(bool blnView)
