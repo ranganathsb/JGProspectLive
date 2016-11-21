@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
+using static JG_Prospect.App_Code.CommonFunction;
 
 namespace JG_Prospect
 {
@@ -112,6 +113,7 @@ namespace JG_Prospect
                 Session["FirstNameNewSC"] = "";
                 Session["LastNameNewSC"] = "";
                 Session["DesignitionSC"] = "";
+                Session["HighlightUsersForTypes"] = null;
                 binddata();
                 DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
@@ -119,6 +121,13 @@ namespace JG_Prospect
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
+            }
+            else
+            {
+                if (Session["HighlightUsersForTypes"] != null)
+                {
+                    HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
+                }
             }
         }
 
@@ -300,6 +309,40 @@ namespace JG_Prospect
                 string Status = ddlStatus.SelectedValue;
                 bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
             }
+            else if (e.CommandName == "EditAddedByUserInstall")
+            {
+                GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                int index = row.RowIndex;
+                //Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
+                //string designation = desig.Text;
+                string ID1 = e.CommandArgument.ToString();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
+                SqlDataReader rdr = cmd.ExecuteReader();
+                string type = "";
+                while (rdr.Read())
+                {
+                    type = rdr[0].ToString();
+
+                }
+                con.Close();
+                //if (designation != "SubContractor" && type != "Sales")
+                //{
+                //    string ID = e.CommandArgument.ToString();
+                //    Response.Redirect("InstallCreateUser.aspx?id=" + ID);
+                //}
+                //else if (designation == "SubContractor" && type != "Sales")
+                //{
+                //    string ID = e.CommandArgument.ToString();
+                //    Response.Redirect("InstallCreateUser2.aspx?id=" + ID);
+                //}
+                //else if (type == "Sales")
+                //{
+                string ID = e.CommandArgument.ToString();
+                Response.Redirect("CreateSalesUser.aspx?id=" + ID);
+                //}
+
+            }
 
         }
 
@@ -447,6 +490,16 @@ namespace JG_Prospect
                 */
             }
 
+            if (ddl.SelectedValue == "Install Prospect")
+            {
+                if (lblStatus.Value != "")
+                {
+                    ddl.SelectedValue = lblStatus.Value;
+                }
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Install Prospect')", true);
+                return;
+            }
+
             if (lblStatus.Value == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -458,18 +511,13 @@ namespace JG_Prospect
             }
             else
             {
+                // Adding a popUp...
+
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 binddata();
-                return;
-            }
 
-            if (ddl.SelectedValue == "Install Prospect")
-            {
-                if (lblStatus.Value != "")
-                {
-                    ddl.SelectedValue = lblStatus.Value;
-                }
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Install Prospect')", true);
+                if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
                 return;
             }
 
@@ -586,7 +634,7 @@ namespace JG_Prospect
             SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), HireDate, EmpType, PayRates, 104);
 
             //AssignedTask if any or Default
-			AssignedTaskToUser();
+            AssignedTaskToUser();
 
             Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
 
@@ -613,8 +661,8 @@ namespace JG_Prospect
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
-                
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
             }
@@ -627,7 +675,7 @@ namespace JG_Prospect
             task.Status = Status;
 
             int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
-            
+
             //String AlertMsg;
 
             //if (result > 0)
@@ -640,7 +688,7 @@ namespace JG_Prospect
             //}
         }
 
-        private void SendEmailToAssignedUsers(string strInstallUserIDs , string strTaskId)
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId)
         {
             try
             {
@@ -793,17 +841,17 @@ namespace JG_Prospect
                 if (BulkProspectUploader.HasFile)
                 {
                     string ext = Path.GetExtension(BulkProspectUploader.FileName);
-                    if (ext == ".xlsx" || ext ==".csv")
+                    if (ext == ".xlsx" || ext == ".csv")
                     {
                         string FileName = Path.GetFileName(BulkProspectUploader.PostedFile.FileName);
                         string Extension = Path.GetExtension(BulkProspectUploader.PostedFile.FileName);
-                        
+
                         //string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
                         //string FilePath = Server.MapPath(FolderPath + FileName);
 
-                        string GenFolderPath = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Second.ToString(); 
+                        string GenFolderPath = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Second.ToString();
 
-                        string directoryPath = Server.MapPath("/UploadedExcel/" + GenFolderPath+"/");
+                        string directoryPath = Server.MapPath("/UploadedExcel/" + GenFolderPath + "/");
                         if (!Directory.Exists(directoryPath))
                         {
                             Directory.CreateDirectory(directoryPath);
@@ -818,27 +866,26 @@ namespace JG_Prospect
                         {
                             binddata();
                             UcStatusPopUp.changeText();
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);                          
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
                             return;
                         }
                         else
                         {
                             Import_To_Grid(dtExcel);
                             binddata();
-                        }   
+                        }
                     }
                     else
                     {
                         UcStatusPopUp.ucPopUpHeader = "";
                         UcStatusPopUp.ucPopUpMsg = "Please Select xlsx or csv file.";
-                        UcStatusPopUp.changeText();                        
+                        UcStatusPopUp.changeText();
                     }
                 }
             }
             catch (Exception ex)
             {
                 UtilityBAL.AddException("EditUser-btnUpload_Click", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-
             }
         }
 
@@ -916,6 +963,20 @@ namespace JG_Prospect
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Session expired , Please try again.');", true);
             }
+
+
+
+
+
+
+            //if (result)
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Data updated successfully!');ClosePopupUploadBulk();", true);
+            //}
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('There is some error.');", true);
+            //}
         }
 
         protected void btnNoEdit_Click(object sender, EventArgs e)
@@ -1078,7 +1139,7 @@ namespace JG_Prospect
             {
                 string usertype = Session["usertype"].ToString().ToLower();
 
-                if (dt.Columns["OrderStatus"] == null)
+                if (dt != null && dt.Columns["OrderStatus"] == null)
                 {
                     dt.Columns.Add("OrderStatus");
                     int st = 0;
@@ -1101,11 +1162,23 @@ namespace JG_Prospect
                     }
                 }
 
-                DataView dv = dt.DefaultView;
-                dv.Sort = "OrderStatus asc";
+                if (dt != null)
+                {
+                    DataView dv = dt.DefaultView;
+                    dv.Sort = "OrderStatus asc";
+                    grdUsers.DataSource = dv;
+                    grdUsers.DataBind();
+                }
+                else
+                {
+                    grdUsers.DataSource = null;
+                    grdUsers.DataBind();
+                }
 
-                grdUsers.DataSource = dv;
-                grdUsers.DataBind();
+                //DataView dv = dt.DefaultView;
+                //dv.Sort = "OrderStatus asc";
+                //grdUsers.DataSource = dv;
+                //grdUsers.DataBind();
             }
             catch (Exception ex)
             {
@@ -1118,8 +1191,10 @@ namespace JG_Prospect
             DataSet DS = new DataSet();
             //DS = UserBLL.Instance.getallusers(usertype);
             DataSet ds = new DataSet();
+            DataSet dsDesignation = new DataSet();
             ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
             DS = InstallUserBLL.Instance.GetAllEditSalesUser();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
 
             BindPieChart(DS.Tables[0]);
 
@@ -1131,14 +1206,22 @@ namespace JG_Prospect
             //grdUsers.DataSource = DS.Tables[0];
             //grdUsers.DataBind();
 
-            List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
-             where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-             select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+            //List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
+            // where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
+            // select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
 
-            lstDesignation.Sort((x, y) => string.Compare(x, y));
-            ddlDesignation.DataSource = lstDesignation;
+            //lstDesignation.Sort((x, y) => string.Compare(x, y));
+            //ddlDesignation.DataSource = lstDesignation;
 
-            ddlDesignation.DataBind();
+            //ddlDesignation.DataBind();            
+
+            if (dsDesignation.Tables.Count > 0)
+            {
+                ddlDesignation.DataSource = dsDesignation.Tables[0];
+                ddlDesignation.DataTextField = "DesignationName";
+                ddlDesignation.DataValueField = "ID";
+                ddlDesignation.DataBind();
+            }
             ddlDesignation.Items.Insert(0, "--All--");
         }
 
@@ -1146,7 +1229,7 @@ namespace JG_Prospect
         {
 
             fillFilterUserDDL();
-             
+
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
             DataRow drSource = dsSource.Tables[0].NewRow();
@@ -1164,19 +1247,86 @@ namespace JG_Prospect
 
         private void fillFilterUserDDL()
         {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
+            //DataSet dds = new DataSet();
+            //dds = new_customerBLL.Instance.GeUsersForDropDown();
+            //DataRow dr = dds.Tables[0].NewRow();
 
-            dr["Id"] = "0";
-            dr["Username"] = "--All--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
-            if (dds.Tables[0].Rows.Count > 0)
+            //dr["Id"] = "0";
+            //dr["Username"] = "--All--";
+            //dds.Tables[0].Rows.InsertAt(dr, 0);
+            //if (dds.Tables[0].Rows.Count > 0)
+            //{
+            //    drpUser.DataSource = dds.Tables[0];
+            //    drpUser.DataValueField = "Id";
+            //    drpUser.DataTextField = "Username";
+            //    drpUser.DataBind();
+            //}
+
+            DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            drpUser.DataSource = dsInstalledUser.Tables[0];
+            drpUser.DataValueField = "Id";
+            drpUser.DataTextField = "FirstName";
+            drpUser.DataBind();
+            drpUser.Items.Insert(0, new ListItem("--All--", "0"));
+            DataTable dtInstalledUsers = dsInstalledUser.Tables[0];
+            Session["HighlightUsersForTypes"] = dtInstalledUsers;
+            HighlightUsersForTypes(dtInstalledUsers, drpUser);
+        }
+
+        private void HighlightUsersForTypes(DataTable dtUsers, DropDownList ddlUsers)
+        {
+            if (dtUsers.Rows.Count > 0)
             {
-                drpUser.DataSource = dds.Tables[0];
-                drpUser.DataValueField = "Id";
-                drpUser.DataTextField = "Username";
-                drpUser.DataBind();
+                var rows = dtUsers.AsEnumerable();
+
+                //get all users comma seperated ids with interviewdate status
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "Deactive") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:grey;");
+                    }
+
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String OfferMadeUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "OfferMade" || r.Field<string>("Status") == "Offer Made") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in OfferMadeUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+
+                }
+
             }
         }
 
@@ -1236,73 +1386,73 @@ namespace JG_Prospect
         }
 
         private void Import_To_Grid(DataTable dtExcel)
-        {    
-                XmlDocument xmlDoc = new XmlDocument();
-                CreateUserObjectXml(dtExcel, out xmlDoc);
-    
-                DataSet ds = new DataSet();
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            CreateUserObjectXml(dtExcel, out xmlDoc);
 
-                if (xmlDoc.OuterXml != "")
-                    ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
+            DataSet ds = new DataSet();
 
-                pnlAddNewUser.Visible = false;
-                pnlDuplicate.Visible = false;
+            if (xmlDoc.OuterXml != "")
+                ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
 
-                #region '-- Process Excel data --'
-                if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
-                {
+            pnlAddNewUser.Visible = false;
+            pnlDuplicate.Visible = false;
 
-                    int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                    where (string)ReturnDr["ActionTaken"] != "I"
-                                    select (string)ReturnDr["Email"]).Count();
+            #region '-- Process Excel data --'
+            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
+            {
 
-                    if (RowCount > 0) // if found any row not Inserted than
-                    {
-                        DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                                      where (string)ReturnDr["ActionTaken"] != "I"
-                                                      select ReturnDr).CopyToDataTable();
-
-                        Session["DuplicateUsers"] = DuplicateRecords;
-
-                        listDuplicateUsers.DataSource = DuplicateRecords;
-                        listDuplicateUsers.DataBind();
-
-                        lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
-
-                        pnlDuplicate.Visible = true;
-                    }
-
-                    RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                where (string)ReturnDr["ActionTaken"] == "I"
+                int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                where (string)ReturnDr["ActionTaken"] != "I"
                                 select (string)ReturnDr["Email"]).Count();
 
-                    if (RowCount > 0) // if row Inserted / Added
-                    {
-                        DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                                     where (string)ReturnDr["ActionTaken"] == "I"
-                                                     select ReturnDr).CopyToDataTable();
-
-                        lstNewUserAdd.DataSource = InsertedRecords;
-                        lstNewUserAdd.DataBind();
-
-                        lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
-
-                        pnlAddNewUser.Visible = true;
-                        //Session["DuplicateUsers"] = ds.Tables[0];
-                        //listDuplicateUsers.DataSource = ds.Tables[0];
-                        //listDuplicateUsers.DataBind();
-                    }
-
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
-                }
-                else
+                if (RowCount > 0) // if found any row not Inserted than
                 {
-                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
-                    UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
-                    UcStatusPopUp.changeText();
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
+                    DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                                  where (string)ReturnDr["ActionTaken"] != "I"
+                                                  select ReturnDr).CopyToDataTable();
+
+                    Session["DuplicateUsers"] = DuplicateRecords;
+
+                    listDuplicateUsers.DataSource = DuplicateRecords;
+                    listDuplicateUsers.DataBind();
+
+                    lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
+
+                    pnlDuplicate.Visible = true;
                 }
-                #endregion
+
+                RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                            where (string)ReturnDr["ActionTaken"] == "I"
+                            select (string)ReturnDr["Email"]).Count();
+
+                if (RowCount > 0) // if row Inserted / Added
+                {
+                    DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                                 where (string)ReturnDr["ActionTaken"] == "I"
+                                                 select ReturnDr).CopyToDataTable();
+
+                    lstNewUserAdd.DataSource = InsertedRecords;
+                    lstNewUserAdd.DataBind();
+
+                    lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
+
+                    pnlAddNewUser.Visible = true;
+                    //Session["DuplicateUsers"] = ds.Tables[0];
+                    //listDuplicateUsers.DataSource = ds.Tables[0];
+                    //listDuplicateUsers.DataBind();
+                }
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
+            }
+            else
+            {
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
+                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
+                UcStatusPopUp.changeText();
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
+            }
+            #endregion
         }
 
         public DataTable ToDataTable(ExcelPackage package)
@@ -1310,7 +1460,7 @@ namespace JG_Prospect
             DataTable table = new DataTable();
             try
             {
-                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();                
+                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
                 foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
                 {
                     table.Columns.Add(firstRowCell.Text);
@@ -1326,13 +1476,13 @@ namespace JG_Prospect
                     }
                     table.Rows.Add(newRow);
                 }
-                
+
             }
             catch (Exception ex)
             {
                 UtilityBAL.AddException("EditUser-ToDataTable", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
                 return null;
-                
+
             }
 
             return table;
@@ -1350,9 +1500,9 @@ namespace JG_Prospect
 
                     package = new ExcelPackage(BulkProspectUploader.FileContent);
                     dtExcel = ToDataTable(package);
-                    
+
                     break;
-                    
+
                 case ".csv":
                     dtExcel = ReadCsvFile(FilePath);
                     break;
@@ -1371,27 +1521,27 @@ namespace JG_Prospect
 
             DataTable dtCsv = new DataTable();
             string Fulltext;
-             
-                //string FileSaveWithPath = Server.MapPath("\\Files\\Import" + System.DateTime.Now.ToString("ddMMyyyy_hhmmss") + ".csv");
-                //FileUpload1.SaveAs(FileSaveWithPath);
-                using (StreamReader sr = new StreamReader(FileSaveWithPath))
+
+            //string FileSaveWithPath = Server.MapPath("\\Files\\Import" + System.DateTime.Now.ToString("ddMMyyyy_hhmmss") + ".csv");
+            //FileUpload1.SaveAs(FileSaveWithPath);
+            using (StreamReader sr = new StreamReader(FileSaveWithPath))
+            {
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    Fulltext = sr.ReadToEnd().ToString(); //read full file text  
+                    string[] rows = Fulltext.Split('\n'); //split full file text into rows  
+                    for (int i = 0; i < rows.Count() - 1; i++)
                     {
-                        Fulltext = sr.ReadToEnd().ToString(); //read full file text  
-                        string[] rows = Fulltext.Split('\n'); //split full file text into rows  
-                        for (int i = 0; i < rows.Count() - 1; i++)
+                        string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
                         {
-                            string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
-                            {
                             if (i == 0)
                             {
                                 for (int j = 0; j < rowValues.Count(); j++)
                                 {
-                                    if ((j == rowValues.Count()-1) && (rowValues[j].IndexOf("\r")>0)) //CSV last col value many have "/r"
+                                    if ((j == rowValues.Count() - 1) && (rowValues[j].IndexOf("\r") > 0)) //CSV last col value many have "/r"
                                     {
                                         // Remove /r from value 
-                                        dtCsv.Columns.Add(rowValues[j].Replace("\r","")); 
+                                        dtCsv.Columns.Add(rowValues[j].Replace("\r", ""));
                                     }
                                     else
                                     {
@@ -1409,15 +1559,15 @@ namespace JG_Prospect
                                         dr[k] = rowValues[k].ToString().Replace("\r", "");
                                     else
                                         dr[k] = rowValues[k].ToString();
-                                    
+
                                 }
                                 dtCsv.Rows.Add(dr); //add other rows  
-                            }
                             }
                         }
                     }
                 }
-             
+            }
+
             return dtCsv;
         }
 
@@ -1480,7 +1630,7 @@ namespace JG_Prospect
         {
             if (dtExcel == null)
             {
-                
+
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
                 UcStatusPopUp.changeText();
@@ -1499,7 +1649,7 @@ namespace JG_Prospect
                 || dtExcel.Columns.Contains("Notes") == false
                 || dtExcel.Columns.Contains("Designition") == false)
             {
-                
+
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Files / columns. </br> Please refer Sample file";
                 UcStatusPopUp.changeText();
@@ -1565,7 +1715,7 @@ namespace JG_Prospect
 
             return true;
         }
-        
+
         public void CreateUserObjectXml(DataTable dtExcel, out XmlDocument xmlDoc)
         {
             List<user1> list = new List<user1>();
@@ -1655,7 +1805,7 @@ namespace JG_Prospect
 
                     //objuser.LeavingReason = dtExcel.Rows[i][25].ToString().Trim();
 
-                   //helper = dtExcel.Rows[i][26].ToString().Trim().ToLower();
+                    //helper = dtExcel.Rows[i][26].ToString().Trim().ToLower();
 
                     if (helper == "yes" || helper == "true")
                         objuser.PrevApply = true;
@@ -1688,7 +1838,7 @@ namespace JG_Prospect
                     //|| objuser.phonetype == ""
                     //|| objuser.PrimeryTradeId == 0
                     if (objuser.Email == "" || objuser.Designation == "" || objuser.firstname == "" || objuser.lastname == "" || objuser.Source == "" ||
-                        objuser.phone == ""  || objuser.CompanyName == "" )
+                        objuser.phone == "" || objuser.CompanyName == "")
                     {
                         IsValid = false;
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Upload file contains data error or matching data exists, please check and upload again');", true);

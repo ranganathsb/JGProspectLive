@@ -508,5 +508,10 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode , UpdateCurrentSequence);
         }
+        
+        public DataSet GetUsersNDesignationForSalesFilter()
+        {
+            return InstallUserDAL.Instance.GetUsersNDesignationForSalesFilter();
+        }
     }
 }

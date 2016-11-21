@@ -978,8 +978,6 @@
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\Shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
-    <Content Include="Database Scripts\Shekhar\StoredProc_GetAllEditSalesUser_Nov_2016_ITSN0145_v1.0.sql" />
-    <Content Include="Database Scripts\Shekhar\StoredProc_sp_GetHrData_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\yogesh\scripts oct v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\CKEditor.NET.dll" />

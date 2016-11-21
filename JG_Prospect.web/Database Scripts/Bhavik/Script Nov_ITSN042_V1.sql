@@ -260,11 +260,6 @@ from tblInstallUsers where ID=@id
 END
 --modified/created by Other Party
 
-
-
-
-
-
 GO
 /****** Object:  StoredProcedure [dbo].[GetAllEditSalesUser]    Script Date: 11/16/2016 8:38:25 PM ******/
 SET ANSI_NULLS ON
@@ -287,16 +282,18 @@ BEGIN
     -- Insert statements for procedure here
 	
 	SELECT 
-		t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(Source,'') AS Source,
-		SourceUser, ISNULL(U.Username, U.Login_Id)  AS AddedBy, U.Id As AddeBy_UserID , ISNULL (t.UserInstallId ,t.id) As UserInstallId ,
-		InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(RejectionDate,'') + ' ' + coalesce(InterviewTime,'') else '' end,
-		RejectDetail = case when (t.Status='Rejected' ) then coalesce(RejectionDate,'') + ' ' + coalesce(RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
-		t.Email
+		t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+		t.SourceUser, ISNULL(U.Username, U.Login_Id)  AS AddedBy, U.Id As AddeBy_UserID , ISNULL (t.UserInstallId ,t.id) As UserInstallId ,
+		InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+		RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+		t.Email, t1.[UserInstallId] As AddedByUserInstallId
+		--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 
 	FROM 
 		tblInstallUsers t 
 			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
-			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
 	WHERE 
 		(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
 			AND t.Status <> 'Deactive' 
@@ -360,15 +357,17 @@ BEGIN
 	IF(@UserId<>0)
 		Begin
 			SELECT 
-				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(Source,'') AS Source,
-				SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
-				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(RejectionDate,'') + ' ' + coalesce(InterviewTime,'') else '' end,
-				RejectDetail = case when (t.Status='Rejected' ) then coalesce(RejectionDate,'') + ' ' + coalesce(RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
-				t.Email
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t1.[UserInstallId] As AddedByUserInstallId
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
 					LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
-					LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+					LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id  
 			WHERE 
 				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
 					AND t.Status <> 'Deactive' 
@@ -380,15 +379,17 @@ BEGIN
 	Else
 		BEGIN
 			SELECT 
-				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(Source,'') AS Source,
-				SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId,
-				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(RejectionDate,'') + ' ' + coalesce(InterviewTime,'') else '' end,
-				RejectDetail = case when (t.Status='Rejected' ) then coalesce(RejectionDate,'') + ' ' + coalesce(RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
-				t.Email
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId,
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t1.[UserInstallId] As AddedByUserInstallId
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
 					LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
-					LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+					LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
 			WHERE 
 				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
 					AND t.Status <> 'Deactive' 
