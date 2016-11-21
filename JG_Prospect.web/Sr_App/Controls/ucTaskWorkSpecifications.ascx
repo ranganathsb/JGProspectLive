@@ -25,7 +25,16 @@
                     <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="4" style="width: 95%;"></textarea>
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
-                <td>&nbsp;
+                <td>
+                    <div>
+                        <input data-id="chkAdminApproval{parent-id}_Footer" class="fz fz-admin"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+                        <input data-id="chkITLeadApproval{parent-id}_Footer" class="fz fz-techlead"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+                        <input data-id="chkUserApproval{parent-id}_Footer" class="fz fz-user"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+                    </div>
+                    <div data-id="divPassword{parent-id}_Footer">
+                        <input data-id="txtPassword{parent-id}_Footer" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
+                            data-parent-work-specification-id="{parent-id}" />
+                    </div>
                 </td>
             </tr>
             <tr class="pager">
@@ -67,9 +76,9 @@
         <td valign="top" style="width: 65px;">
             <a href="javascript:void(0);" data-id="btnShowFeedbackPopup{id}" data-work-specification-id="{id}" onclick="javascript:return OnShowFeedbackPopupClick(this);">Comment</a>
             <div>
-                <input data-id="chkAdminApproval{id}" class="fz fz-admin"  data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
-                <input data-id="chkITLeadApproval{id}" class="fz fz-techlead"  data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
-                <input data-id="chkUserApproval{id}" class="fz fz-user"  data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+                <input data-id="chkAdminApproval{id}" class="fz fz-admin" data-footer="false" data-work-specification-id="{id}" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+                <input data-id="chkITLeadApproval{id}" class="fz fz-techlead" data-footer="false" data-work-specification-id="{id}" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+                <input data-id="chkUserApproval{id}" class="fz fz-user" data-footer="false" data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
             </div>
             <div data-id="divPassword{id}">
                 <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
@@ -172,6 +181,7 @@
         var $WorkSpecificationSectionTemplate = $(strWorkSpecificationSectionTemplate.replace(/{parent-id}/gi,intParentId));
         
         $WorkSpecificationSectionTemplate.find('label[data-id="lblCustomId'+intParentId+'_Footer"]').html(result.NextCustomId);
+        $WorkSpecificationSectionTemplate.find('div[data-id="divPassword'+intParentId+'_Footer"]').hide();
 
         if(result.TotalRecordCount > 0) {
 
@@ -219,8 +229,7 @@
                 if(arrData[i].AdminStatus && arrData[i].TechLeadStatus && arrData[i].OtherUserStatus) {
                     $WorkSpecificationRowTemplate.find('div[data-id="divPassword'+arrData[i].Id+'"]').remove();
                 }
-                          
-
+                
                 $WorkSpecificationSectionTemplate.find('tbody').append($WorkSpecificationRowTemplate);
             }
         }
@@ -229,14 +238,14 @@
         if(intParentId != 0) {
             $WorkSpecificationSectionTemplate.find('thead').remove();
         }
-
+        
         // clear div and append new result.
         $('div[data-parent-work-specification-id="'+intParentId+'"]').html('');
         $('div[data-parent-work-specification-id="'+intParentId+'"]').append($WorkSpecificationSectionTemplate);
-
+        
         // show ck editor in footer row.
         SetCKEditor('txtWorkSpecification' + intParentId + '_Footer');
-        
+
         if( !AdminMode || (result.TotalRecordCount > 0 && result.PendingCount == 0)) {
             $('div[data-parent-work-specification-id="0"]').find('tfoot').html('');
             $('div[data-parent-work-specification-id="0"]').find('div[data-id*="divViewWorkSpecificationButtons"]').remove();
