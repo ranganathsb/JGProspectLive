@@ -443,13 +443,23 @@
     }
 
     function OnApprovalCheckBoxChanged(sender) {
-        var Id= $(sender).attr('data-work-specification-id');
+        var intId= $(sender).attr('data-work-specification-id');
+        var intParentId= $(sender).attr('data-parent-work-specification-id');
+        var blFooter= $(sender).attr('data-footer');
         
-        if($(sender).prop('checked')) {
-            $('div[data-id="divPassword' + Id + '"]').show();
+        var strSelector = '';
+        if(blFooter == 'true') {
+            strSelector = 'div[data-id="divPassword' + intParentId + '_Footer"]';
         }
         else {
-            $('div[data-id="divPassword' + Id + '"]').hide();
+            strSelector = 'div[data-id="divPassword' + intId + '"]';
+        }
+        
+        if($(sender).prop('checked')) {
+            $(strSelector).show();
+        }
+        else {
+            $(strSelector).hide();
         }
     }
 
