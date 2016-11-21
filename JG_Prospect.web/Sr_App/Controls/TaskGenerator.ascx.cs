@@ -253,8 +253,6 @@ namespace JG_Prospect.Sr_App.Controls
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString() &&
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
                         ddlgvTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()
-                        //|| ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()) 
-                        //&& string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
                        )
                     {
                         ddcbAssigned.Visible = true;

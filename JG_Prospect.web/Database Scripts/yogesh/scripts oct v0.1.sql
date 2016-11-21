@@ -5430,3 +5430,9 @@ EXEC [dbo].[InsertContentSetting]
 'TASK_HELP_TEXT',
 '<small><b>Hi, I am justin grove and i am your manager &amp; creator of this task. Yogesh Keraliya is your direct technical manager. Please use below section to collborate on this task.</b></small>'
 GO
+
+--==========================================================================================================================================================================================
+
+-- Uploaded on live 18 Nov 2016
+
+--==========================================================================================================================================================================================

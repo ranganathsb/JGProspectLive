@@ -160,7 +160,7 @@ namespace JG_Prospect.Sr_App.Controls
                                                    true
                                              );
 
-            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+            //Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
 
         }
 
@@ -170,7 +170,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             hdnTwsAttachments.Value = "";
 
-            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+            //Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
 
         }
 
