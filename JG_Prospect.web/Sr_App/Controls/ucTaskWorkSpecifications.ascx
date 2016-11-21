@@ -133,7 +133,7 @@
                         <tr>
                             <td colspan="2">
                                 <div class="btn_sec">
-                                    <asp:Button ID="btnSaveTwsFeedback" runat="server"  ValidationGroup="comment_tws" OnClick="btnSaveTwsFeedback_Click" CssClass="ui-button" Text="Save"  />
+                                    <asp:Button ID="btnSaveTwsFeedback" runat="server" ClientIDMode="AutoID"  ValidationGroup="comment_tws" OnClick="btnSaveTwsFeedback_Click" CssClass="ui-button" Text="Save"  />
                                     <asp:Button ID="btnSaveTwsAttachment" runat="server"   OnClick="btnSaveTwsAttachment_Click" style="display:none;" Text="Save Attachement"  />
                                 </div>
                             </td>

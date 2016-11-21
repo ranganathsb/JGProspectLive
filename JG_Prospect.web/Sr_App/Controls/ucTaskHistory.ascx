@@ -116,15 +116,17 @@
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
                                                         <div id="divFile" runat="server" visible="false">
-                                                            <div style="text-align: center;">
-                                                                <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
-                                                            </div>
+
                                                             <div style="text-align: center;">
                                                                 <asp:LinkButton ID="linkDownLoadFiles" runat="server" CommandName="DownLoadFile" CommandArgument='<%# Eval("Attachment")%>'>
                                                                     <img id="imgFile" alt='<%#Eval("AttachmentOriginal")%>' runat="server" style="width: 100px; height: 100px;" />
                                                                 </asp:LinkButton>
                                                             </div>
                                                             <div style="text-align: center;">
+                                                                <asp:LinkButton ID="linkOriginalfileName" runat="server" Style="display: none;" CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'><small><%#Eval("AttachmentOriginal")%></small></asp:LinkButton>
+                                                                <small><%#Eval("AttachmentOriginal")%></small>
+                                                            </div>
+                                                            <div style="text-align: center; display: none;">
                                                                 <asp:LinkButton ID="LinkButton1" OnClick="linkDownLoadFiles_Click"
                                                                     runat="server" Text="Download" CommandName='<%#Eval("Attachment")%>' CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
 
