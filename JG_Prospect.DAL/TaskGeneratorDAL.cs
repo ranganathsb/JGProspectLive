@@ -377,7 +377,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public bool SaveTaskDescription(Int64 TaskId,String TaskDescription)
+        public bool SaveTaskDescription(Int64 TaskId, String TaskDescription)
         {
             try
             {
@@ -385,14 +385,14 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_SaveTaskDescription");
 
-                    command.CommandType = CommandType.StoredProcedure;                  
-                    
+                    command.CommandType = CommandType.StoredProcedure;
+
                     database.AddInParameter(command, "@TaskId", DbType.Int64, TaskId);
-                   
+
                     database.AddInParameter(command, "@Description", DbType.String, TaskDescription);
-                   
+
                     int result = database.ExecuteNonQuery(command);
-                    
+
                     if (result > 0)
                     {
                         return true;
@@ -1013,6 +1013,18 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+
+                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                    database.AddInParameter(command, "@AdminUserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
+                    database.AddInParameter(command, "@IsAdminInstallUser", DbType.Boolean, objTaskWorkSpecification.IsAdminInstallUser);
+
+                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                    database.AddInParameter(command, "@TechLeadUserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
+                    database.AddInParameter(command, "@IsTechLeadInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
+
+                    database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTaskWorkSpecification.OtherUserStatus);
+                    database.AddInParameter(command, "@OtherUserId", DbType.Int32, objTaskWorkSpecification.OtherUserId);
+                    database.AddInParameter(command, "@IsOtherUserInstallUser", DbType.Boolean, objTaskWorkSpecification.IsOtherUserInstallUser);
 
                     if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
                     {

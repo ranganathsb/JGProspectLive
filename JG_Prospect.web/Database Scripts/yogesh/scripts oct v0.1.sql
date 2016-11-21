@@ -5436,3 +5436,95 @@ GO
 -- Uploaded on live 18 Nov 2016
 
 --==========================================================================================================================================================================================
+
+USE [JGBS_Dev]
+GO
+/****** Object:  StoredProcedure [dbo].[InsertTaskWorkSpecification]    Script Date: 21-Nov-16 12:13:41 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@AdminStatus BIT = 0,
+	@TechLeadStatus BIT = 0,
+	@OtherUserStatus BIT = 0,
+	@AdminUserId int = NULL,
+	@TechLeadUserId int = NULL,
+	@OtherUserId int = NULL,
+	@IsAdminInstallUser bit = NULL,
+	@IsTechLeadInstallUser bit = NULL,
+	@IsOtherUserInstallUser bit = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE 
+	@AdminStatusUpdated DATETIME = NULL,
+	@TechLeadStatusUpdated DATETIME = NULL,
+	@OtherUserStatusUpdated DATETIME = NULL
+
+	IF @AdminUserId IS NOT NULL
+	BEGIN
+		SET @AdminStatusUpdated = GETDATE()
+	END
+	ELSE IF @TechLeadUserId IS NOT NULL
+	BEGIN
+		SET @TechLeadStatusUpdated = GETDATE()
+	END
+	ELSE IF @OtherUserId IS NOT NULL
+	BEGIN
+		SET @OtherUserStatusUpdated = GETDATE()
+	END
+
+	INSERT INTO [dbo].[tblTaskWorkSpecifications]
+		([CustomId]
+		,[TaskId]
+		,[Description]
+		,[AdminStatus]
+		,[TechLeadStatus]
+		,[OtherUserStatus]
+		,[DateCreated]
+		,[DateUpdated]
+		,[AdminStatusUpdated]
+		,[TechLeadStatusUpdated]
+		,[OtherUserStatusUpdated]
+		,[AdminUserId]
+		,[TechLeadUserId]
+		,[OtherUserId]
+		,[IsAdminInstallUser]
+		,[IsTechLeadInstallUser]
+		,[IsOtherUserInstallUser]
+		,[ParentTaskWorkSpecificationId])
+	VALUES
+		(@CustomId
+		,@TaskId
+		,@Description
+		,@AdminStatus
+		,@TechLeadStatus
+		,@OtherUserStatus
+		,GETDATE()
+		,GETDATE()
+		,@AdminStatusUpdated
+		,@TechLeadStatusUpdated
+		,@OtherUserStatusUpdated
+		,@AdminUserId
+		,@TechLeadUserId
+		,@OtherUserId
+		,@IsAdminInstallUser
+		,@IsTechLeadInstallUser
+		,@IsOtherUserInstallUser
+		,@ParentTaskWorkSpecificationId)
+
+END
+GO

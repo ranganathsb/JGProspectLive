@@ -109,8 +109,8 @@ namespace JG_Prospect.WebServices
             return result;
         }
 
-        [WebMethod]
-        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId)
+        [WebMethod(EnableSession = true)]
+        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword)
         {
             bool blSuccess = true;
 
@@ -124,6 +124,28 @@ namespace JG_Prospect.WebServices
                 // save will revoke freezed status.
                 objTaskWorkSpecification.AdminStatus = false;
                 objTaskWorkSpecification.TechLeadStatus = false;
+
+                if (strPassword.Equals(Convert.ToString(Session["loginpassword"])))
+                {
+                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                    {
+                        objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                        objTaskWorkSpecification.AdminStatus = true;
+                    }
+                    else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                    {
+                        objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                        objTaskWorkSpecification.TechLeadStatus = true;
+                    }
+                    else
+                    {
+                        objTaskWorkSpecification.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTaskWorkSpecification.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                        objTaskWorkSpecification.OtherUserStatus = true;
+                    }
+                }
 
                 if (intParentTaskWorkSpecificationId > 0)
                 {
@@ -146,7 +168,7 @@ namespace JG_Prospect.WebServices
             return blSuccess;
         }
 
-        [WebMethod]
+        [WebMethod(EnableSession = true)]
         public bool DeleteTaskWorkSpecification(Int64 intId)
         {
             bool blSuccess = false;

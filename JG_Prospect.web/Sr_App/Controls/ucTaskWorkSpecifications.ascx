@@ -358,6 +358,7 @@
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+intParentId+'_Footer"]').text());
         var strDescription = GetCKEditorContent('txtWorkSpecification'+intParentId+'_Footer');
+        var strPassword = $('input[data-id="txtPassword'+intParentId+'_Footer"]').val();
 
         $.ajax
         (
@@ -366,7 +367,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }',
+                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
