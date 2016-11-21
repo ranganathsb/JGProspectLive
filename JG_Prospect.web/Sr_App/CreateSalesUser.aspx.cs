@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Word = Microsoft.Office.Interop.Word;
+using System.Web.Services;
 
 namespace JG_Prospect.Sr_App
 {
@@ -76,6 +77,7 @@ namespace JG_Prospect.Sr_App
                 }
 
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
+                hidID.Value = Request.QueryString["ID"].ToString();
 
                 bindGrid();
             }
@@ -84,12 +86,14 @@ namespace JG_Prospect.Sr_App
                 if (!IsPostBack)
                 {
                     Session["ID"] = "";
-                    ucAuditTrail.UserLoginID = string.Empty;
+                    SetUserControlValue(string.Empty);
+                    hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
                 touchPointlogPanel.Visible = false;
             }
             if (!IsPostBack)
             {
+                FillPhoneTypeDropDown();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
@@ -340,10 +344,21 @@ namespace JG_Prospect.Sr_App
                     ds = InstallUserBLL.Instance.getuserdetails(id);
                     if (ds.Tables[0].Rows.Count != 0)
                     {
+                        if (ds.Tables[0].Rows[0]["UserInstallId"].ToString() == "")
+                        {
+                            hlnkUserID.Text = GetInstallIdFromDesignation(ds.Tables[0].Rows[0]["Designation"].ToString()) + "-AXXXX"; ;
+                        }
+                        else
+                        {
+                            hlnkUserID.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
+                            //If Designation is change at edit mode can track it out.
+                            hidDesignationBeforeChange.Value = ds.Tables[0].Rows[0]["Designation"].ToString();
+                        }
+
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
                         lblICardPosition.Text = ds.Tables[0].Rows[0][5].ToString();
-                        lblICardIDNo.Text = ds.Tables[0].Rows[0][62].ToString();
-                        Session["installId"] = ds.Tables[0].Rows[0][62].ToString();
+                        lblICardIDNo.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();                        
+                        Session["installId"] = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
                         Session["IdGenerated"] = ds.Tables[0].Rows[0][62].ToString();
                         GenerateBarCode(Convert.ToString(Session["installId"]));
                         txtfirstname.Text = ds.Tables[0].Rows[0][1].ToString();
@@ -357,7 +372,9 @@ namespace JG_Prospect.Sr_App
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
-                        ucAuditTrail.UserLoginID = ds.Tables[0].Rows[0][3].ToString(); //  For User Audi Trail 
+
+                        SetUserControlValue(ds.Tables[0].Rows[0][3].ToString());
+
                         txtCity.Text = ds.Tables[0].Rows[0][13].ToString();
                         ViewState["City"] = ds.Tables[0].Rows[0][13].ToString();
                         txtState.Text = ds.Tables[0].Rows[0][12].ToString();
@@ -1143,176 +1160,24 @@ namespace JG_Prospect.Sr_App
 
         }
 
+        private void SetUserControlValue(string LoginID)
+        {
+            ucAuditTrail.UserLoginID = LoginID;
+            //ucAudiUpdateUserLog.UserLoginID = LoginID;
+            //ucAudiUpdateUserLog.BindUserData();
+        }
+
         #endregion
 
         #region '--Control Events--'
 
-        protected void btnUploadSkills_Click(object sender, EventArgs e)
-        {
-            //if (flpSkillAssessment.HasFile)
-            //{
-            //    string filename = Path.GetFileName(flpSkillAssessment.PostedFile.FileName);
-            //    filename = DateTime.Now.ToString() + filename;
-            //    filename = filename.Replace("/", "");
-            //    filename = filename.Replace(":", "");
-            //    filename = filename.Replace(" ", "");
-            //    flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-            //    Session["SkillAttachment"] = null;
-            //    Session["SkillAttachmentName"] = null;
-            //    Session["SkillAttachmentName"] = filename;
-            //    Session["SkillAttachment"] = "~/Sr_App/UploadedFile/" + filename;
-            //    FillDocument();
-            //    txtFullTimePos.Enabled = false;
-            //    //txtContractor1.Enabled = false;
-            //    //txtContractor2.Enabled = false;
-            //    //txtContractor3.Enabled = false;
-            //    //txtMajorTools.Enabled = false;
-            //    rdoDrugtestYes.Enabled = false;
-            //    rdoDrugtestNo.Enabled = false;
-            //    //rdoDriveLicenseYes.Enabled = false;
-            //    //rdoDriveLicenseNo.Enabled = false;
-            //    //rdoTruckToolsYes.Enabled = false;
-            //    //rdoTruckToolsNo.Enabled = false;
-            //    rdoJMApplyYes.Enabled = false;
-            //    rdoJMApplyNo.Enabled = false;
-            //    rdoLicenseYes.Enabled = false;
-            //    rdoLicenseNo.Enabled = false;
-            //    //rdoGuiltyNo.Enabled = false;
-            //    //rdoGuiltyYes.Enabled = false;
-            //    //txtStartDateNew.Enabled = false;
-            //    txtSalRequirement.Enabled = false;
-            //    //txtAvailability.Enabled = false;
-            //    //txtWarrantyPolicy.Enabled = false;
-            //    //txtYrs.Enabled = false;
-            //    //txtCurrentComp.Enabled = false;
-            //    //txtWebsiteUrl.Enabled = false;
-            //    //ddlType.Enabled = false;
-            //    //txtName.Enabled = false;
-            //    //txtPrinciple.Enabled = false;
-            //    //btnAddEmpPartner.Enabled = false;
-            //    //rdoAttchmentNo.Checked = false;
-            //    //rdoAttchmentNo.Enabled = false;
-            //    //rdoAttchmentYes.Enabled = false;
-            //    //rdoAttchmentYes.Checked = true;
-            //}
-            //else
-            //{
-            //    lblPL.Text = "";
-            //    Session["SkillAttachment"] = "";
-            //    Session["SkillAttachmentName"] = "";
-            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Skill assessment.');", true);
-            //}
-            //if (Convert.ToString(Session["IdGenerated"]) != "")
-            //{
-            //    GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
-            //}
-            ////Session["UploadFileCountSkill"] = 1;
-            ////FillDocument();
-            ////lblPL.Text = "";
-            ////Session["SkillAttachment"] = "";
-            ////Session["SkillAttachmentName"] = "";
-            ////ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Pq License.');", true);
-            //if (rdoCheque.Checked)
-            //{
-            //    lblAba.Visible = false;
-            //    txtRoutingNo.Visible = false;
-            //    lblAccount.Visible = false;
-            //    txtAccountNo.Visible = false;
-            //    lblAccountType.Visible = false;
-            //    txtAccountType.Visible = false;
-            //    //txtOtherTrade.Visible = false;
-            //}
-            //else
-            //{
-            //    lblAba.Visible = true;
-            //    txtRoutingNo.Visible = true;
-            //    lblAccount.Visible = true;
-            //    txtAccountNo.Visible = true;
-            //    lblAccountType.Visible = true;
-            //    txtAccountType.Visible = true;
-            //    //txtOtherTrade.Visible = true;
-            //}
-            //if (Convert.ToString(Session["IdGenerated"]) != "")
-            //{
-            //    GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
-            //}
-            //if (ddldesignation.SelectedItem.Text == "Installer")
-            //{
-            //    lblInstallerType.Visible = true;
-            //    ddlInstallerType.Visible = true;
-            //}
-            //else
-            //{
-            //    lblInstallerType.Visible = false;
-            //    ddlInstallerType.Visible = false;
-            //}
-        }
+        #region ' -- Button --'
 
         protected void btnreset_Click(object sender, EventArgs e)
         {
             clearcontrols();
             //lblmsg.Visible = false;
             Response.Redirect("../Sr_App/InstallCreateUser.aspx");
-        }
-
-        protected void txtZip_TextChanged(object sender, EventArgs e)
-        {
-            if (txtZip.Text == "")
-            {
-                //
-            }
-            else
-            {
-
-                DataSet ds = new DataSet();
-                ds = UserBLL.Instance.fetchcitystate(txtZip.Text);
-                if (ds != null)
-                {
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        txtCity.Text = ds.Tables[0].Rows[0]["City"].ToString();
-                        txtState.Text = ds.Tables[0].Rows[0]["State"].ToString();
-                    }
-                    else
-                    {
-                        txtCity.Text = txtState.Text = "";
-                    }
-                }
-                string str = ((txtCity.Text != "") ? txtCity.Text : "") + ((txtState.Text != "") ? ", " + txtState.Text : string.Empty) + ((txtZip.Text != "") ? ", " + txtZip.Text : string.Empty);
-                Session["Zip"] = str.ToString();
-                ViewState["zipEsrow"] = txtZip.Text;
-            }
-        }
-
-        protected void ddldesignation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lnkW9.Visible = false;
-                lnkI9.Visible = true;
-                lnkW4.Visible = true;
-                lnkEscrow.Visible = false;
-                lnkFacePage.Visible = false;
-            }
-            else
-            {
-                lnkW9.Visible = true;
-                lnkI9.Visible = true;
-                lnkEscrow.Visible = true;
-                lnkFacePage.Visible = true;
-                lnkI9.Visible = true;
-                lnkW4.Visible = false;
-            }
-            ViewState["pass"] = txtpassword.Text;
-            //if (ddlstatus.SelectedValue == "SubContractor")
-            //{
-            //    pnl4.Visible = true;
-            //}
-            //else
-            //{
-            //    pnl4.Visible = false;
-            //}
         }
 
         protected void No_Click(object sender, EventArgs e)
@@ -1613,7 +1478,7 @@ namespace JG_Prospect.Sr_App
             //    return;
             //}
             btn_UploadFiles_Click(sender, e);
-            if (chkboxcondition.Checked == true)
+            //if (chkboxcondition.Checked == true)
             {
                 InstallId = Convert.ToString(Session["IdGenerated"]);
                 objuser.SourceUser = Convert.ToString(Session["userid"]);
@@ -1639,29 +1504,9 @@ namespace JG_Prospect.Sr_App
                     objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
                 }
                 objuser.DateSourced = txtDateSourced.Text;
-                //if (flpUplaodPicture.FileName != string.Empty)
-                //{
-                // foreach (System.Web.UI.WebControls.ListItem img in lstboxUploadedImages.Items)
-                //     {
-                //         fn = fn + "," + img.Text;
-                //     }
-                //Server.MapPath("~/CustomerDocs/LocationPics/" + flpUplaodPicture.FileName);
-                //objuser.picture = fn.TrimStart(',');
+                 
                 objuser.picture = Convert.ToString(Session["UplaodPicture"]);
-                //}
-                //  else if (lstboxUploadedImages.Items.Count > 0)
-                // {
-                //  foreach (System.Web.UI.WebControls.ListItem img in lstboxUploadedImages.Items)
-                //    {
-                //         fn = fn + "," + img.Text;
-                //     }
-                //     objuser.picture = fn.TrimStart(',');
-                // }
-                //else
-                //{
-                //    objuser.picture = string.Empty;
-                //}
-
+                  
                 string strFileName = string.Empty;
 
                 //if (ViewState["FileName"] != null)
@@ -1989,6 +1834,7 @@ namespace JG_Prospect.Sr_App
                     {
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
+                        UpdateUserInstallID(result.Item2);
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
@@ -2032,13 +1878,75 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Accept Term and Conditions');", true);
-            }
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Accept Term and Conditions');", true);
+            //}
 
         }
 
+        #endregion
+        
+        protected void txtZip_TextChanged(object sender, EventArgs e)
+        {
+            if (txtZip.Text == "")
+            {
+                //
+            }
+            else
+            {
+
+                DataSet ds = new DataSet();
+                ds = UserBLL.Instance.fetchcitystate(txtZip.Text);
+                if (ds != null)
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        txtCity.Text = ds.Tables[0].Rows[0]["City"].ToString();
+                        txtState.Text = ds.Tables[0].Rows[0]["State"].ToString();
+                    }
+                    else
+                    {
+                        txtCity.Text = txtState.Text = "";
+                    }
+                }
+                string str = ((txtCity.Text != "") ? txtCity.Text : "") + ((txtState.Text != "") ? ", " + txtState.Text : string.Empty) + ((txtZip.Text != "") ? ", " + txtZip.Text : string.Empty);
+                Session["Zip"] = str.ToString();
+                ViewState["zipEsrow"] = txtZip.Text;
+            }
+        }
+
+        protected void ddldesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lnkW9.Visible = false;
+                lnkI9.Visible = true;
+                lnkW4.Visible = true;
+                lnkEscrow.Visible = false;
+                lnkFacePage.Visible = false;
+            }
+            else
+            {
+                lnkW9.Visible = true;
+                lnkI9.Visible = true;
+                lnkEscrow.Visible = true;
+                lnkFacePage.Visible = true;
+                lnkI9.Visible = true;
+                lnkW4.Visible = false;
+            }
+            ViewState["pass"] = txtpassword.Text;
+            //if (ddlstatus.SelectedValue == "SubContractor")
+            //{
+            //    pnl4.Visible = true;
+            //}
+            //else
+            //{
+            //    pnl4.Visible = false;
+            //}
+        }
+        
         protected void lnkFacePage_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/face page.pdf"));
@@ -2124,129 +2032,7 @@ namespace JG_Prospect.Sr_App
             txtZip.Focus();
 
         }
-
-        protected void btn_UploadPicture_Click(object sender, EventArgs e)
-        {
-            string ext = "";
-            string fileName = string.Empty;
-            string save = string.Empty;
-            Int32 cnt;
-            Int32 i;
-            if (txtfirstname.Text != "" && txtlastname.Text != "")
-            {
-                if (flpUplaodPicture.FileName != string.Empty)
-                {
-                    ext = Path.GetExtension(flpUplaodPicture.FileName);
-                    if (ext == ".jpeg" || ext == ".png" || ext == ".jpg" || ext == ".tif" || ext == ".gif")
-                    {
-                        fileName = flpUplaodPicture.FileName;
-                        fileName = DateTime.Now.ToString() + fileName;
-                        fileName = fileName.Replace("/", "");
-                        fileName = fileName.Replace(":", "");
-                        fileName = fileName.Replace(" ", "");
-                        //fileName = Path.GetFileName(flpUplaodPicture.FileName);
-                        save = Server.MapPath("~/Sr_App/UploadedFile/") + fileName;
-                        flpUplaodPicture.SaveAs(save);
-                        Session["UplaodPicture"] = null;
-                        Session["UploadedPictureName"] = null;
-                        Session["UplaodPicture"] = "~/Sr_App/UploadedFile/" + fileName;
-                        Session["UploadedPictureName"] = fileName;
-                        // cnt = lstboxUploadedImages.Items.Count;
-                        // if (cnt == 0)
-                        // {
-                        // lstboxUploadedImages.Items.Add(fileName);
-                        //   lstboxUploadedImages.SelectedIndex = 0;
-                        //   string curItem = lstboxUploadedImages.SelectedItem.ToString();
-                        Image2.Visible = true;
-                        Image2.ImageUrl = "~/Sr_App/UploadedFile/" + fileName;
-                        lblICardName.Text = txtfirstname.Text + " " + txtlastname.Text;
-                        lblICardPosition.Text = ddldesignation.SelectedItem.Text;
-                        if (Convert.ToString(Session["installId"]) == "")
-                        {
-                            Session["IdGenerated"] = GetId(ddldesignation.SelectedItem.Text);
-                            lblICardIDNo.Text = Convert.ToString(Session["IdGenerated"]);
-                            GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
-                        }
-                        //else if (Convert.ToString(Session["installId"]) != "")
-                        //{
-                        //    if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
-                        //    {
-                        //        GetUpdatedId(Convert.ToString(Session["installId"]));
-                        //    }
-                        //}
-                        FillDocument();
-                        return;
-
-                        // }
-                        // if (fileName != "")
-                        // {
-                        //  lstboxUploadedImages.Items.Add(fileName);
-                        //   lstboxUploadedImages.SelectedIndex = 0;
-                        // }
-                    }
-                    else
-                    {
-                        ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please select jpeg,png,jpg,tif or gif');", true);
-                        return;
-                    }
-
-                }
-                else
-                {
-                    Session["UploadedPictureName"] = "";
-                    Session["UplaodPicture"] = "";
-                    ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please Upload Image');", true);
-                }
-
-                //lblDtae.Text = DateTime.Now.ToString();
-                //UpdatePanel4.Update();
-                if (rdoCheque.Checked)
-                {
-                    lblAba.Visible = false;
-                    txtRoutingNo.Visible = false;
-                    lblAccount.Visible = false;
-                    txtAccountNo.Visible = false;
-                    lblAccountType.Visible = false;
-                    txtAccountType.Visible = false;
-                    //txtOtherTrade.Visible = false;
-                }
-                else
-                {
-                    lblAba.Visible = true;
-                    txtRoutingNo.Visible = true;
-                    lblAccount.Visible = true;
-                    txtAccountNo.Visible = true;
-                    lblAccountType.Visible = true;
-                    txtAccountType.Visible = true;
-                    //txtOtherTrade.Visible = true;
-                }
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert(Please Select Designition,Enter First Name & last Name)", true);
-                return;
-            }
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-            btnPluse.Visible = true;
-            btnMinus.Visible = false;
-            pnl4.Visible = false;
-        }
-
-        protected void lstbxImages_SelectedIndexChanged1(object sender, EventArgs e)
-        {
-            // string curItem = lstboxUploadedImages.SelectedItem.ToString();
-            //  Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + curItem;
-        }
-
+ 
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             try
@@ -2579,6 +2365,9 @@ namespace JG_Prospect.Sr_App
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
+                    
+                    UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
+                    
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
                         SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
@@ -2692,9 +2481,9 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            if (Convert.ToString(Session["IdGenerated"]) != "")
+            if (Convert.ToString(Session["installId"]) != "")
             {
-                GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+                GenerateBarCode(Convert.ToString(Session["installId"]));
             }
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
@@ -2711,21 +2500,7 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
-
-        protected void btnDelete_Click(object sender, EventArgs e)
-        {
-
-            //  for (int i = lstboxUploadedImages.Items.Count - 1; i >= 0; i--)
-            //   {
-            //      lstboxUploadedImages.Items.Remove(lstboxUploadedImages.Items[i]);
-            //  }
-        }
-        protected void lstbxImages_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // string curItem = lstboxUploadedImages.SelectedItem.ToString();
-            //  Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + curItem;
-            // Image2.ImageUrl = "Images" + "\\" + curItem;
-        }
+         
         protected void gvUploadedFiles_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
         {
             if (e.CommandName == "deleteRecord")
@@ -2804,89 +2579,57 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
-        protected void btndelete_Click1(object sender, EventArgs e)
-        {
-
-            // if (lstboxUploadedImages.SelectedIndex >= 0)
-            // {
-            //     int Index = lstboxUploadedImages.SelectedIndex;
-            //     string strDelete = lstboxUploadedImages.SelectedItem.Text;
-            //     lstboxUploadedImages.Items.Remove(strDelete);
-            //     var path = Server.MapPath("~/CustomerDocs/LocationPics/" + strDelete);
-            //     System.IO.File.Delete(path);
-
-            //     if (lstboxUploadedImages.Items.Count > 0)
-            //     {
-            //         //lstboxUploadedImages.SelectedIndex = Index - 1;
-            //         lstboxUploadedImages.SelectedIndex = 0;
-            //         string Remainfile = lstboxUploadedImages.SelectedItem.Text;
-            //         Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + Remainfile;
-            //     }
-
-            //     if (lstboxUploadedImages.SelectedIndex != -1)
-            //     {
-            //         lstboxUploadedImages.SelectedIndex = 0;
-            //         string Remainfile = lstboxUploadedImages.SelectedItem.Text;
-            //         Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + Remainfile;
-            //     }
-            //     else
-            //     {
-            //         Image2.ImageUrl = "";
-            //     }
-            //}
-        }
+        
         protected void txtemail_TextChanged(object sender, EventArgs e)
         {
             ViewState["Email"] = txtemail.Text;
             txtaddress.Focus();
 
         }
+
         protected void txtPhone_TextChanged(object sender, EventArgs e)
         {
             ViewState["Phone"] = txtPhone.Text;
             ddldesignation.Focus();
         }
+
         protected void txtssn_TextChanged(object sender, EventArgs e)
         {
             ViewState["SSN"] = txtssn.Text;
         }
+
         protected void txtssn0_TextChanged(object sender, EventArgs e)
         {
             ViewState["SSN1"] = txtssn0.Text;
         }
+
         protected void txtssn1_TextChanged(object sender, EventArgs e)
         {
             ViewState["SSN2"] = txtssn1.Text;
             string strssn = ((txtssn.Text != "") ? txtssn.Text : "") + ((txtssn0.Text != "") ? "- " + txtssn0.Text : string.Empty) + ((txtssn1.Text != "") ? "-" + txtssn1.Text : string.Empty);
             ViewState["ssn"] = strssn;
         }
+
         protected void DOBdatepicker_TextChanged(object sender, EventArgs e)
         {
             ViewState["DOB"] = DOBdatepicker.Text;
         }
-        protected void txtBusinessName_TextChanged(object sender, EventArgs e)
-        {
-            //ViewState["BusinessName"] = txtBusinessName.Text;
-        }
+        
         protected void txtSignature_TextChanged(object sender, EventArgs e)
         {
             ViewState["Signature"] = txtSignature.Text;
         }
+
         protected void txtState_TextChanged(object sender, EventArgs e)
         {
             ViewState["State"] = txtSignature.Text;
         }
+
         protected void txtCity_TextChanged(object sender, EventArgs e)
         {
             ViewState["City"] = txtSignature.Text;
         }
-
-        //        protected void txttin_textchanged(object sender, eventargs e)
-        //      {
-        //
-        //  viewstate["tin"] = txttin.text;
-        //}
-
+        
         protected void ddlcitizen_SelectedIndexChanged(object sender, EventArgs e)
         {
             ViewState["citizen"] = ddlcitizen.SelectedValue;
@@ -2933,19 +2676,7 @@ namespace JG_Prospect.Sr_App
             string path = PdflDirectory + "\\" + Filename;
             PDFHelper.ReturnPDF(pdfContents, Filename);
         }
-
-        protected void txtEIN_TextChanged(object sender, EventArgs e)
-        {
-            //ViewState["ein1"] = txtEIN.Text;
-        }
-
-        protected void txtEIN2_TextChanged(object sender, EventArgs e)
-        {
-            //ViewState["ein2"] = txtEIN2.Text;
-            //string strein = ((txtEIN.Text != "") ? txtEIN.Text : "") + ((txtEIN2.Text != "") ? "- " + txtEIN2.Text : string.Empty);
-            //ViewState["ein"] = strein;
-        }
-
+        
         protected void lnkw4Details_Click(object sender, EventArgs e)
         {
             ModalPopupExtender1.Show();
@@ -3388,72 +3119,72 @@ namespace JG_Prospect.Sr_App
                 Panel4.Visible = false;
             }
 
-            if ((ddlstatus.SelectedValue == "InterviewDate") 
-                || (ddlstatus.SelectedValue == "Active") 
+            if ((ddlstatus.SelectedValue == "InterviewDate")
+                || (ddlstatus.SelectedValue == "Active")
                 || (ddlstatus.SelectedValue == "Deactive")
                 || (ddlstatus.SelectedValue == "OfferMade"))
             {
                 showHideNewHireSection(true);
             }
-                
 
-                    #region NewRequiredFields
-                    //if (ddlstatus.SelectedValue == "Install Prospect")
-                    //{
-                    //    rqDesignition.Enabled = false;
-                    //    RequiredFieldValidator3.Enabled = false;
-                    //    lblReqDesig.Visible = false;
-                    //    lblReqPtrade.Visible = true;
-                    //    rqPrimaryTrade.Enabled = true;
-                    //    lblReqSTrate.Visible = true;
-                    //    rqSecondaryTrade.Enabled = true;
-                    //    lblReqLastName.Visible = true;
-                    //    rqLastName.Enabled = true;
-                    //    RequiredFieldValidator5.Enabled = true;
-                    //    lblReqFName.Visible = true;
-                    //    rqFirstName.Enabled = true;
-                    //    RequiredFieldValidator4.Enabled = true;
-                    //    lblPhoneReq.Visible = true;
-                    //    rqPhone.Enabled = true;
-                    //    lblSourceReq.Visible = true;
-                    //    rqSource.Enabled = true;
-                    //    lblNotesReq.Visible = false;
-                    //    rqNotes.Enabled = false;
-                    //    lblReqEmail.Visible = false;
-                    //    //rqEmail.Enabled = false;
-                    //    reEmail.Enabled = true;
-                    //    lblReqZip.Visible = false;
-                    //    rqZip.Enabled = false;
-                    //    lblStateReq.Visible = false;
-                    //    rqState.Enabled = false;
-                    //    lblCityReq.Visible = false;
-                    //    rqCity.Enabled = false;
-                    //    lblPassReq.Visible = false;
-                    //    //rqPass.Enabled = false;
-                    //    lblReqSig.Visible = false;
-                    //    rqSign.Enabled = false;
-                    //    lblReqMarSt.Visible = false;
-                    //    rqMaritalStatus.Enabled = false;
-                    //    lblReqPicture.Visible = false;
-                    //    lblReqDL.Visible = false;
-                    //    lblAddressReq.Visible = false;
-                    //    rqAddress.Enabled = false;
-                    //    Label1.Visible = false;
-                    //    RequiredFieldValidator6.Enabled = false;
-                    //    lblConfirmPass.Visible = true;
-                    //    //rqConPass.Enabled = false;
-                    //    lblReqSSN.Visible = false;
-                    //    rqSSN1.Enabled = false;
-                    //    rqSSN2.Enabled = false;
-                    //    rqSSN3.Enabled = false;
-                    //    lblReqDOB.Visible = false;
-                    //    rqDOB.Enabled = false;
-                    //    lblReqPOP.Visible = false;
-                    //    rqPenalty.Enabled = false;
-                    //    rqSource.Enabled = true;
-                    //    lblConfirmPass.Visible = false;
-                    //}
-                    //else
+
+            #region NewRequiredFields
+            //if (ddlstatus.SelectedValue == "Install Prospect")
+            //{
+            //    rqDesignition.Enabled = false;
+            //    RequiredFieldValidator3.Enabled = false;
+            //    lblReqDesig.Visible = false;
+            //    lblReqPtrade.Visible = true;
+            //    rqPrimaryTrade.Enabled = true;
+            //    lblReqSTrate.Visible = true;
+            //    rqSecondaryTrade.Enabled = true;
+            //    lblReqLastName.Visible = true;
+            //    rqLastName.Enabled = true;
+            //    RequiredFieldValidator5.Enabled = true;
+            //    lblReqFName.Visible = true;
+            //    rqFirstName.Enabled = true;
+            //    RequiredFieldValidator4.Enabled = true;
+            //    lblPhoneReq.Visible = true;
+            //    rqPhone.Enabled = true;
+            //    lblSourceReq.Visible = true;
+            //    rqSource.Enabled = true;
+            //    lblNotesReq.Visible = false;
+            //    rqNotes.Enabled = false;
+            //    lblReqEmail.Visible = false;
+            //    //rqEmail.Enabled = false;
+            //    reEmail.Enabled = true;
+            //    lblReqZip.Visible = false;
+            //    rqZip.Enabled = false;
+            //    lblStateReq.Visible = false;
+            //    rqState.Enabled = false;
+            //    lblCityReq.Visible = false;
+            //    rqCity.Enabled = false;
+            //    lblPassReq.Visible = false;
+            //    //rqPass.Enabled = false;
+            //    lblReqSig.Visible = false;
+            //    rqSign.Enabled = false;
+            //    lblReqMarSt.Visible = false;
+            //    rqMaritalStatus.Enabled = false;
+            //    lblReqPicture.Visible = false;
+            //    lblReqDL.Visible = false;
+            //    lblAddressReq.Visible = false;
+            //    rqAddress.Enabled = false;
+            //    Label1.Visible = false;
+            //    RequiredFieldValidator6.Enabled = false;
+            //    lblConfirmPass.Visible = true;
+            //    //rqConPass.Enabled = false;
+            //    lblReqSSN.Visible = false;
+            //    rqSSN1.Enabled = false;
+            //    rqSSN2.Enabled = false;
+            //    rqSSN3.Enabled = false;
+            //    lblReqDOB.Visible = false;
+            //    rqDOB.Enabled = false;
+            //    lblReqPOP.Visible = false;
+            //    rqPenalty.Enabled = false;
+            //    rqSource.Enabled = true;
+            //    lblConfirmPass.Visible = false;
+            //}
+            //else
 
             if (ddlstatus.SelectedValue == "Applicant")
             {
@@ -3737,6 +3468,14 @@ namespace JG_Prospect.Sr_App
                 #endregion
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 //return;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                return;
+            }
+            else if (ddlstatus.SelectedValue == "Active")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                return;
             }
             #endregion
         }
@@ -3751,8 +3490,6 @@ namespace JG_Prospect.Sr_App
             btnNewPluse.Visible = !ShowSection;
             btnNewMinus.Visible = ShowSection;
         }
-
-        
 
         protected void btnPluse_Click(object sender, EventArgs e)
         {
@@ -3787,45 +3524,7 @@ namespace JG_Prospect.Sr_App
                 ddlInstallerType.Visible = false;
             }
         }
-
-        //protected void btnGeneralLiability_Click(object sender, EventArgs e)
-        //{
-        //    if (flpGeneralLiability.HasFile)
-        //    {
-        //        string filename = Path.GetFileName(flpGeneralLiability.PostedFile.FileName);
-        //        flpGeneralLiability.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-        //        Session["flpGeneralLiability"] = null;
-        //        Session["flpGeneralLiability"] = "~/Sr_App/UploadedFile/" + filename;
-        //        lblGL.Text = "Uploaded file Name: " + filename; 
-        //    }
-        //    else
-        //    {
-        //        lblGL.Text = "";
-        //        Session["flpGeneralLiability"] = "";
-        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload General Liability.');", true);
-        //    }
-        //    if (rdoCheque.Checked)
-        //    {
-        //        lblAba.Visible = false;
-        //        txtRoutingNo.Visible = false;
-        //        lblAccount.Visible = false;
-        //        txtAccountNo.Visible = false;
-        //        lblAccountType.Visible = false;
-        //        txtAccountType.Visible = false;
-        //        txtOtherTrade.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        lblAba.Visible = true;
-        //        txtRoutingNo.Visible = true;
-        //        lblAccount.Visible = true;
-        //        txtAccountNo.Visible = true;
-        //        lblAccountType.Visible = true;
-        //        txtAccountType.Visible = true;
-        //        txtOtherTrade.Visible = true;
-        //    }
-        //}
-
+          
         protected void btnPqLicense_Click(object sender, EventArgs e)
         {
             if (flpPqLicense.HasFile)
@@ -3871,9 +3570,9 @@ namespace JG_Prospect.Sr_App
                 txtAccountType.Visible = true;
                 //txtOtherTrade.Visible = true;
             }
-            if (Convert.ToString(Session["IdGenerated"]) != "")
+            if (Convert.ToString(Session["installId"]) != "")
             {
-                GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+                GenerateBarCode(Convert.ToString(Session["installId"]));
             }
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
@@ -3888,91 +3587,7 @@ namespace JG_Prospect.Sr_App
             btnPluse.Visible = true;
             btnMinus.Visible = false;
             pnl4.Visible = false;
-        }
-
-        //protected void btnWorkersComp_Click(object sender, EventArgs e)
-        //{
-        //    if (flpWorkersComp.HasFile)
-        //    {
-
-        //        string filename = Path.GetFileName(flpWorkersComp.PostedFile.FileName);
-        //        flpWorkersComp.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-        //        Session["WorkersComp"] = null;
-        //        Session["WorkersComp"] = "~/Sr_App/UploadedFile/" + filename;
-
-        //        lblWC.Text = "Uploaded file Name: " + filename;
-        //    }
-        //    else
-        //    {
-        //        lblWC.Text = "";
-        //        Session["WorkersComp"] = "";
-        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Workers Comp.');", true);
-        //    }
-        //    if (rdoCheque.Checked)
-        //    {
-        //        lblAba.Visible = false;
-        //        txtRoutingNo.Visible = false;
-        //        lblAccount.Visible = false;
-        //        txtAccountNo.Visible = false;
-        //        lblAccountType.Visible = false;
-        //        txtAccountType.Visible = false;
-        //        txtOtherTrade.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        lblAba.Visible = true;
-        //        txtRoutingNo.Visible = true;
-        //        lblAccount.Visible = true;
-        //        txtAccountNo.Visible = true;
-        //        lblAccountType.Visible = true;
-        //        txtAccountType.Visible = true;
-        //        txtOtherTrade.Visible = true;
-        //    }
-        //}
-
-        //protected void btn_UploadFiles_Click1(object sender, EventArgs e)
-        //{
-        //    if (flpUploadFiles.HasFile)
-        //    {
-        //        foreach (HttpPostedFile postedFile in FileUpload1.PostedFiles)
-        //        {
-        //            string fileName = Path.GetFileName(postedFile.FileName);
-        //            postedFile.SaveAs(Server.MapPath("~/Uploads/") + fileName);
-        //        }
-        //        string filename = Path.GetFileName(flpUploadFiles.PostedFile.FileName);
-        //        flpUploadFiles.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-        //        Session["UploadFiles"] = null;
-        //        Session["UploadFiles"] = "~/Sr_App/UploadedFile/" + filename;
-
-        //        lblUF.Text = "Uploaded file Name: " + filename;
-        //    }
-        //    else
-        //    {
-        //        lblUF.Text = "";
-        //        Session["UploadFiles"] = "";
-        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Attachment.');", true);
-        //    }
-        //    if (rdoCheque.Checked)
-        //    {
-        //        lblAba.Visible = false;
-        //        txtRoutingNo.Visible = false;
-        //        lblAccount.Visible = false;
-        //        txtAccountNo.Visible = false;
-        //        lblAccountType.Visible = false;
-        //        txtAccountType.Visible = false;
-        //        txtOtherTrade.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        lblAba.Visible = true;
-        //        txtRoutingNo.Visible = true;
-        //        lblAccount.Visible = true;
-        //        txtAccountNo.Visible = true;
-        //        lblAccountType.Visible = true;
-        //        txtAccountType.Visible = true;
-        //        txtOtherTrade.Visible = true;
-        //    }
-        //}
+        } 
 
         protected void btnNewPluse_Click(object sender, EventArgs e)
         {
@@ -4272,6 +3887,8 @@ namespace JG_Prospect.Sr_App
                 //lblSignature.Visible = true;
                 //txtSignature.Visible = true;
             }
+
+            hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
         }
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -4535,9 +4152,9 @@ namespace JG_Prospect.Sr_App
                 txtAccountType.Visible = true;
                 //txtOtherTrade.Visible = true;
             }
-            if (Convert.ToString(Session["IdGenerated"]) != "")
+            if (Convert.ToString(Session["installId"]) != "")
             {
-                GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+                GenerateBarCode(Convert.ToString(Session["installId"]));
             }
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
@@ -4553,69 +4170,7 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
-
-        //protected void btnCirtification_Click(object sender, EventArgs e)
-        //{
-        //    if (flpCirtification.HasFile)
-        //    {
-        //        string filename = Path.GetFileName(flpCirtification.PostedFile.FileName);
-        //        filename = DateTime.Now.ToString() + filename;
-        //        filename = filename.Replace("/", "");
-        //        filename = filename.Replace(":", "");
-        //        filename = filename.Replace(" ", "");
-        //        flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-        //        Session["CirtificationName"] = null;
-        //        Session["CirtificationPath"] = null;
-        //        Session["CirtificationName"] = filename;
-        //        Session["CirtificationPath"] = "~/Sr_App/UploadedFile/" + filename;
-        //        FillDocument();
-        //    }
-        //    else
-        //    {
-        //        lblPL.Text = "";
-        //        Session["CirtificationName"] = "";
-        //        Session["CirtificationPath"] = "";
-        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Cirtification.');", true);
-        //    }
-        //    if (rdoCheque.Checked)
-        //    {
-        //        lblAba.Visible = false;
-        //        txtRoutingNo.Visible = false;
-        //        lblAccount.Visible = false;
-        //        txtAccountNo.Visible = false;
-        //        lblAccountType.Visible = false;
-        //        txtAccountType.Visible = false;
-        //        //txtOtherTrade.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        lblAba.Visible = true;
-        //        txtRoutingNo.Visible = true;
-        //        lblAccount.Visible = true;
-        //        txtAccountNo.Visible = true;
-        //        lblAccountType.Visible = true;
-        //        txtAccountType.Visible = true;
-        //        //txtOtherTrade.Visible = true;
-        //    }
-        //    if (Convert.ToString(Session["IdGenerated"]) != "")
-        //    {
-        //        GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
-        //    }
-        //    if (ddldesignation.SelectedItem.Text == "Installer")
-        //    {
-        //        lblInstallerType.Visible = true;
-        //        ddlInstallerType.Visible = true;
-        //    }
-        //    else
-        //    {
-        //        lblInstallerType.Visible = false;
-        //        ddlInstallerType.Visible = false;
-        //    }
-        //    btnPluse.Visible = true;
-        //    btnMinus.Visible = false;
-        //    pnl4.Visible = false;
-        //}
-
+         
         protected void btnPlusNew_Click(object sender, EventArgs e)
         {
             btnMinusNew.Visible = true;
@@ -4651,132 +4206,7 @@ namespace JG_Prospect.Sr_App
                 ddlInstallerType.Visible = false;
             }
         }
-
-        protected void btnAddEmpPartner_Click(object sender, EventArgs e)
-        {
-            //if (ddlType.SelectedIndex != 0)
-            //{
-            //    DataTable dtNew = (DataTable)(Session["PersonTypeData"]);
-            //    if (Convert.ToString(Session["PersonName"]) == "")
-            //    {
-            //        Session["PersonName"] = txtName.Text;
-            //    }
-            //    else
-            //    {
-            //        Session["PersonName"] = Convert.ToString(Session["PersonName"]) + "," + txtName.Text;
-            //    }
-            //    if (Convert.ToString(Session["PersonType"]) == "")
-            //    {
-            //        Session["PersonType"] = ddlType.SelectedValue;
-            //    }
-            //    else
-            //    {
-            //        Session["PersonType"] = Convert.ToString(Session["PersonType"]) + "," + Convert.ToString(ddlType.SelectedValue);
-            //    }
-            //    DataRow drNew = dtNew.NewRow();
-            //    drNew["PersonName"] = txtName.Text;
-            //    drNew["PersonType"] = ddlType.SelectedValue;
-            //    dtNew.Rows.Add(drNew);
-            //    Session["PersonTypeData"] = dtNew;
-            //    GridView2.DataSource = dtNew;
-            //    GridView2.DataBind();
-            //}
-            //else
-            //{
-            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Select User Type')", true);
-            //    return;
-            //}
-            //if (ddldesignation.SelectedItem.Text == "Installer")
-            //{
-            //    lblInstallerType.Visible = true;
-            //    ddlInstallerType.Visible = true;
-            //}
-            //else
-            //{
-            //    lblInstallerType.Visible = false;
-            //    ddlInstallerType.Visible = false;
-            //}
-            //btnPluse.Visible = true;
-            //btnMinus.Visible = false;
-            //pnl4.Visible = false;
-        }
-
-        protected void rdoAttchmentYes_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (rdoAttchmentYes.Checked)
-            //{
-            //    txtFullTimePos.Enabled = false;
-            //    txtContractor1.Enabled = false;
-            //    txtContractor2.Enabled = false;
-            //    txtContractor3.Enabled = false;
-            //    txtMajorTools.Enabled = false;
-            //    rdoDrugtestYes.Enabled = false;
-            //    rdoDrugtestNo.Enabled = false;
-            //    //rdoDriveLicenseYes.Enabled = false;
-            //    //rdoDriveLicenseNo.Enabled = false;
-            //    rdoTruckToolsYes.Enabled = false;
-            //    rdoTruckToolsNo.Enabled = false;
-            //    rdoJMApplyYes.Enabled = false;
-            //    rdoJMApplyNo.Enabled = false;
-            //    rdoLicenseYes.Enabled = false;
-            //    rdoLicenseNo.Enabled = false;
-            //    rdoGuiltyNo.Enabled = false;
-            //    rdoGuiltyYes.Enabled = false;
-            //    txtStartDateNew.Enabled = false;
-            //    txtSalRequirement.Enabled = false;
-            //    txtAvailability.Enabled = false;
-            //    txtWarrantyPolicy.Enabled = false;
-            //    txtYrs.Enabled = false;
-            //    txtCurrentComp.Enabled = false;
-            //    txtWebsiteUrl.Enabled = false;
-            //    ddlType.Enabled = false;
-            //    txtName.Enabled = false;
-            //    txtPrinciple.Enabled = false;
-            //    btnAddEmpPartner.Enabled = false;
-            //}
-            //else
-            //{
-            //    txtFullTimePos.Enabled = true;
-            //    txtContractor1.Enabled = true;
-            //    txtContractor2.Enabled = true;
-            //    txtContractor3.Enabled = true;
-            //    txtMajorTools.Enabled = true;
-            //    rdoDrugtestYes.Enabled = true;
-            //    rdoDrugtestNo.Enabled = true;
-            //    //rdoDriveLicenseYes.Enabled = true;
-            //    //rdoDriveLicenseNo.Enabled = true;
-            //    rdoTruckToolsYes.Enabled = true;
-            //    rdoTruckToolsNo.Enabled = true;
-            //    rdoJMApplyYes.Enabled = true;
-            //    rdoJMApplyNo.Enabled = true;
-            //    rdoLicenseYes.Enabled = true;
-            //    rdoLicenseNo.Enabled = true;
-            //    rdoGuiltyNo.Enabled = true;
-            //    rdoGuiltyYes.Enabled = true;
-            //    txtStartDateNew.Enabled = true;
-            //    txtSalRequirement.Enabled = true;
-            //    txtAvailability.Enabled = true;
-            //    txtWarrantyPolicy.Enabled = true;
-            //    txtYrs.Enabled = true;
-            //    txtCurrentComp.Enabled = true;
-            //    txtWebsiteUrl.Enabled = true;
-            //    ddlType.Enabled = true;
-            //    txtName.Enabled = true;
-            //    txtPrinciple.Enabled = true;
-            //    btnAddEmpPartner.Enabled = true;
-            //}
-            //if (ddldesignation.SelectedItem.Text == "Installer")
-            //{
-            //    lblInstallerType.Visible = true;
-            //    ddlInstallerType.Visible = true;
-            //}
-            //else
-            //{
-            //    lblInstallerType.Visible = false;
-            //    ddlInstallerType.Visible = false;
-            //}
-        }
-
+        
         protected void rdoAttchmentNo_CheckedChanged(object sender, EventArgs e)
         {
             //if (rdoAttchmentNo.Checked)
@@ -4875,6 +4305,51 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected void ddlPhontType_PreRender(object sender, EventArgs e)
+        {
+            string imageURL = "";
+
+            for (int i = 0; i < ddlPhontType.Items.Count; i++)
+            {
+                switch (ddlPhontType.Items[i].Value.Trim())
+                {
+                    case "skype":
+                        imageURL = "../Sr_App/img/skype.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "whatsapp":
+                        imageURL = "../Sr_App/img/WhatsApp.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "HousePhone":
+                        imageURL = "../Sr_App/img/Phone_home.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "CellPhone":
+                        imageURL = "../Sr_App/img/Cell_Phone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "WorkPhone":
+                        imageURL = "../Sr_App/img/WorkPhone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "AltPhone":
+                        imageURL = "../Sr_App/img/AltPhone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    default:
+                        ddlPhontType.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
+                        break;
+                }
+
+            }
+        }
+
         protected void ddlstatus_PreRender(object sender, EventArgs e)
         {
             string imageURL = "";
@@ -4882,19 +4357,24 @@ namespace JG_Prospect.Sr_App
             {
                 switch (ddlstatus.Items[i].Value)
                 {
-                    case "Applicant": imageURL = "../Sr_App/img/red-astrek.png";
+                    case "Applicant":
+                        imageURL = "../Sr_App/img/red-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "OfferMade": imageURL = "../Sr_App/img/dark-blue-astrek.png";
+                    case "OfferMade":
+                        imageURL = "../Sr_App/img/dark-blue-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "PhoneScreened": imageURL = "../Sr_App/img/yellow-astrek.png";
+                    case "PhoneScreened":
+                        imageURL = "../Sr_App/img/yellow-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "Active": imageURL = "../Sr_App/img/green-astrek.png";
+                    case "Active":
+                        imageURL = "../Sr_App/img/green-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "InterviewDate": imageURL = "../Sr_App/img/purple-astrek.png";
+                    case "InterviewDate":
+                        imageURL = "../Sr_App/img/purple-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     default:
@@ -5119,7 +4599,7 @@ namespace JG_Prospect.Sr_App
                 //return;
             }
         }
-
+        
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
             //binddata();
@@ -5134,7 +4614,7 @@ namespace JG_Prospect.Sr_App
         private void AssignedTaskToUser()
         {
             //If dropdown has any value then Assigned it to user else. return 
-            string ApplicantId = Session["ID"].ToString(); 
+            string ApplicantId = Session["ID"].ToString();
 
             if (ddlTechTask.Items.Count > 0)
             {
@@ -5501,28 +4981,7 @@ namespace JG_Prospect.Sr_App
                 gvUploadedFiles.Visible = false;
             }
         }
-
-        private void FillListBoxImage(string imageName)
-        {
-            string[] arr = imageName.Split(',');
-            if (flpUplaodPicture != null)
-            {
-                foreach (string img in arr)
-                {
-                    //  lstboxUploadedImages.Items.Add(img);
-                }
-                //lstboxUploadedImages.SelectedIndex = 0;
-            }
-            else
-            {
-                foreach (string img in arr)
-                {
-                    //  lstboxUploadedImages.SelectedIndex =-2;
-                }
-
-            }
-        }
-
+        
         private void clearcontrols()
         {
 
@@ -5539,7 +4998,8 @@ namespace JG_Prospect.Sr_App
             txtRoutingNo.Text = txtDeduction.Text = txtDeducReason.Text = txtAccountNo.Text = txtAccountType.Text = txtExtraIncome.Text = dtReviewDate.Text = "";
             ddlExtraEarning.SelectedValue = ddlEmpType.SelectedValue = "0";
             dtLastDate.Text = "";
-            txtPayRates.Text = txtfirstname.Text = txtlastname.Text = dtResignation.Text = txtemail.Text = txtpassword.Text = txtpassword1.Text = txtPhone.Text = txtZip.Text = txtState.Text = txtCity.Text = txtaddress.Text = null;
+            //txtPayRates.Text = txtfirstname.Text = txtlastname.Text = dtResignation.Text = txtemail.Text = txtpassword.Text = txtpassword1.Text = txtPhone.Text = txtZip.Text = txtState.Text = txtCity.Text = txtaddress.Text = null;
+            txtPayRates.Text = txtfirstname.Text = txtlastname.Text = dtResignation.Text = txtemail.Text = txtPhone.Text = txtZip.Text = txtState.Text = txtCity.Text = txtaddress.Text = null;
             gvUploadedFiles.Visible = false;
             // lstboxUploadedImages.Items.Clear();
             Image2.Visible = false;
@@ -5619,6 +5079,9 @@ namespace JG_Prospect.Sr_App
             Session["PersonType"] = Session["PersonTypeData"] = "";
             //GridView2.DataSource = null;
             Session["PersonName"] = "";
+
+            txtpassword.Text = JG_Prospect.Common.JGConstant.Default_PassWord;
+            txtpassword1.Text = JG_Prospect.Common.JGConstant.Default_PassWord;
         }
 
         private void GenerateBarCode(string Id)
@@ -5740,53 +5203,7 @@ namespace JG_Prospect.Sr_App
 
             return SalesId;
         }
-
-        private string GetId(string Desig)
-        {
-            string LastInt = "";
-            DataTable dtId;
-            string SalesId = string.Empty;
-            dtId = InstallUserBLL.Instance.GetMaxSalesId(Desig);
-            if (dtId.Rows.Count > 0)
-            {
-                SalesId = Convert.ToString(dtId.Rows[0][0]);
-            }
-            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    LastInt = SalesId.Substring(SalesId.Length - 4);
-                    SalesId = "ADM000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
-                }
-                else
-                {
-                    SalesId = "ADM0001";
-                }
-            }
-            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    LastInt = SalesId.Substring(SalesId.Length - 4);
-                    SalesId = "SLE000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
-                }
-                else
-                {
-                    SalesId = "SLE0001";
-                }
-            }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-
-            return SalesId;
-        }
-
+        
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason)
         {
             try
@@ -6315,8 +5732,10 @@ namespace JG_Prospect.Sr_App
 
         public void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
         {
-            string fullname = FName + " " + LName;
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+            try
+            {
+                string fullname = FName + " " + LName;
+                DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
 
             if (ds == null)
             {
@@ -6381,7 +5800,829 @@ namespace JG_Prospect.Sr_App
             }
             JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+            }
+        }
+
+        [WebMethod]
+        public static string CheckDuplicateCustomerCredentials(String pValueForValidation, String strCurrentID, Int32 pValidationType)
+        {
+            int intID = 0;
+            Int32.TryParse(strCurrentID, out intID);
+            return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID);
+        }
+
+        [WebMethod]
+        public static string AddNewPhoneTypeToDB(String strNewPhoneType)
+        {
+            InstallUserBLL.Instance.AddNewPhoneType(strNewPhoneType, 1);
+            return "Phone Type '" + strNewPhoneType + "' added successfully ";
+        }
+
+        private string GetInstallIdFromDesignation(string designame)
+        {
+            string prefix = "";
+            switch (designame)
+            {
+                case "Admin":
+                    prefix = "ADM";
+                    break;
+                case "Jr. Sales":
+                    prefix = "JSL";
+                    break;
+                case "Jr Project Manager":
+                    prefix = "JPM";
+                    break;
+                case "Office Manager":
+                    prefix = "OFM";
+                    break;
+                case "Recruiter":
+                    prefix = "REC";
+                    break;
+                case "Sales Manager":
+                    prefix = "SLM";
+                    break;
+                case "Sr. Sales":
+                    prefix = "SSL";
+                    break;
+                case "IT - Network Admin":
+                    prefix = "ITNA";
+                    break;
+                case "IT - Jr .Net Developer":
+                    prefix = "ITJN";
+                    break;
+                case "IT - Sr .Net Developer":
+                    prefix = "ITSN";
+                    break;
+                case "IT - Android Developer":
+                    prefix = "ITAD";
+                    break;
+                case "IT - PHP Developer":
+                    prefix = "ITPH";
+                    break;
+                case "IT - SEO / BackLinking":
+                    prefix = "ITSB";
+                    break;
+                case "Installer - Helper":
+                    prefix = "INH";
+                    break;
+                case "Installer – Journeyman":
+                    prefix = "INJ";
+                    break;
+                case "Installer – Mechanic":
+                    prefix = "INM";
+                    break;
+                case "Installer - Lead mechanic":
+                    prefix = "INLM";
+                    break;
+                case "Installer – Foreman":
+                    prefix = "INF";
+                    break;
+                case "Commercial Only":
+                    prefix = "COM";
+                    break;
+                case "SubContractor":
+                    prefix = "SBC";
+                    break;
+                default:
+                    prefix = "OUID";
+                    break;
+            }
+            return prefix;
+        }
+
+        private void FillPhoneTypeDropDown()
+        {
+
+            DataSet dsPhoneType;
+
+            dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
+
+            if (dsPhoneType.Tables[0].Rows.Count > 0)
+            {
+                ddlPhontType.DataSource = dsPhoneType.Tables[0];
+                ddlPhontType.DataTextField = "ContactName";
+                ddlPhontType.DataValueField = "ContactValue";
+                ddlPhontType.DataBind();
+                //ddlSource.Items.Insert(0, "Select Source");
+                //ddlSource.SelectedIndex = 0;
+            }
+        }
+
+        //Update InstallID for respective user..
+        private void UpdateUserInstallID(int UserID, string OldDesignation = "")
+        {
+            string strDesignationsCode = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text);
+            string OldDesignationCode = GetInstallIdFromDesignation(OldDesignation);
+
+            if (strDesignationsCode != OldDesignationCode)
+            {
+                //Set tblInstallUsers > UserInstallId to null.
+                InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"YES");
+            }
+            else
+            InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"NO");
+        }
+
+        protected void btnAddAttachment_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
+            {   
+                if (txtfirstname.Text != "" && txtlastname.Text != "")
+                {
+                    hdnWorkFiles.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    string strfileName = "";
+
+                    //UploadProfilImg(hdnWorkFiles.Value);
+
+                    //hdnWorkFiles.Value = "";
+                    //upPicture.Update();
+                }
+            }
+        }
+
+
+
+        #endregion
+
+        #region Old code - May not be in use
+
+        //private void FillListBoxImage(string imageName)
+        //{
+        //    string[] arr = imageName.Split(',');
+        //    if (flpUplaodPicture != null)
+        //    {
+        //        foreach (string img in arr)
+        //        {
+        //            //  lstboxUploadedImages.Items.Add(img);
+        //        }
+        //        //lstboxUploadedImages.SelectedIndex = 0;
+        //    }
+        //    else
+        //    {
+        //        foreach (string img in arr)
+        //        {
+        //            //  lstboxUploadedImages.SelectedIndex =-2;
+        //        }
+
+        //    }
+        //}
+
+        protected void btn_UploadPicture_Click(object sender, EventArgs e)
+        {
+            //string ext = "";
+            //string fileName = string.Empty;
+            //string save = string.Empty;
+            //Int32 cnt;
+            //Int32 i;
+            //if (txtfirstname.Text != "" && txtlastname.Text != "")
+            //{
+            //    if (flpUplaodPicture.FileName != string.Empty)
+            //    {
+            //        ext = Path.GetExtension(flpUplaodPicture.FileName);
+            //        if (ext == ".jpeg" || ext == ".png" || ext == ".jpg" || ext == ".tif" || ext == ".gif")
+            //        {
+            //            fileName = flpUplaodPicture.FileName;
+            //            fileName = DateTime.Now.ToString() + fileName;
+            //            fileName = fileName.Replace("/", "");
+            //            fileName = fileName.Replace(":", "");
+            //            fileName = fileName.Replace(" ", "");
+            //            //fileName = Path.GetFileName(flpUplaodPicture.FileName);
+            //            save = Server.MapPath("~/Sr_App/UploadedFile/") + fileName;
+            //            flpUplaodPicture.SaveAs(save);
+            //            Session["UplaodPicture"] = null;
+            //            Session["UploadedPictureName"] = null;
+            //            Session["UplaodPicture"] = "~/Sr_App/UploadedFile/" + fileName;
+            //            Session["UploadedPictureName"] = fileName;
+            //            // cnt = lstboxUploadedImages.Items.Count;
+            //            // if (cnt == 0)
+            //            // {
+            //            // lstboxUploadedImages.Items.Add(fileName);
+            //            //   lstboxUploadedImages.SelectedIndex = 0;
+            //            //   string curItem = lstboxUploadedImages.SelectedItem.ToString();
+            //            Image2.Visible = true;
+            //            Image2.ImageUrl = "~/Sr_App/UploadedFile/" + fileName;
+            //            lblICardName.Text = txtfirstname.Text + " " + txtlastname.Text;
+            //            lblICardPosition.Text = ddldesignation.SelectedItem.Text;
+            //            if (Convert.ToString(Session["installId"]) == "")
+            //            {
+            //                Session["IdGenerated"] = GetId(ddldesignation.SelectedItem.Text);
+            //                lblICardIDNo.Text = Convert.ToString(Session["IdGenerated"]);
+            //                GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+            //            }
+            //            //else if (Convert.ToString(Session["installId"]) != "")
+            //            //{
+            //            //    if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
+            //            //    {
+            //            //        GetUpdatedId(Convert.ToString(Session["installId"]));
+            //            //    }
+            //            //}
+            //            FillDocument();
+            //            return;
+
+            //            // }
+            //            // if (fileName != "")
+            //            // {
+            //            //  lstboxUploadedImages.Items.Add(fileName);
+            //            //   lstboxUploadedImages.SelectedIndex = 0;
+            //            // }
+            //        }
+            //        else
+            //        {
+            //            ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please select jpeg,png,jpg,tif or gif');", true);
+            //            return;
+            //        }
+
+            //    }
+            //    else
+            //    {
+            //        Session["UploadedPictureName"] = "";
+            //        Session["UplaodPicture"] = "";
+            //        ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please Upload Image');", true);
+            //    }
+
+            //    //lblDtae.Text = DateTime.Now.ToString();
+            //    //UpdatePanel4.Update();
+            //    if (rdoCheque.Checked)
+            //    {
+            //        lblAba.Visible = false;
+            //        txtRoutingNo.Visible = false;
+            //        lblAccount.Visible = false;
+            //        txtAccountNo.Visible = false;
+            //        lblAccountType.Visible = false;
+            //        txtAccountType.Visible = false;
+            //        //txtOtherTrade.Visible = false;
+            //    }
+            //    else
+            //    {
+            //        lblAba.Visible = true;
+            //        txtRoutingNo.Visible = true;
+            //        lblAccount.Visible = true;
+            //        txtAccountNo.Visible = true;
+            //        lblAccountType.Visible = true;
+            //        txtAccountType.Visible = true;
+            //        //txtOtherTrade.Visible = true;
+            //    }
+            //}
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert(Please Select Designition,Enter First Name & last Name)", true);
+            //    return;
+            //}
+            //if (ddldesignation.SelectedItem.Text == "Installer")
+            //{
+            //    lblInstallerType.Visible = true;
+            //    ddlInstallerType.Visible = true;
+            //}
+            //else
+            //{
+            //    lblInstallerType.Visible = false;
+            //    ddlInstallerType.Visible = false;
+            //}
+            //btnPluse.Visible = true;
+            //btnMinus.Visible = false;
+            //pnl4.Visible = false;
+        }
+
+        private string GetId(string Desig)
+        {
+            string LastInt = "";
+            DataTable dtId;
+            string SalesId = string.Empty;
+            dtId = InstallUserBLL.Instance.GetMaxSalesId(Desig);
+            if (dtId.Rows.Count > 0)
+            {
+                SalesId = Convert.ToString(dtId.Rows[0][0]);
+            }
+            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    LastInt = SalesId.Substring(SalesId.Length - 4);
+                    SalesId = "ADM000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
+                }
+                else
+                {
+                    SalesId = "ADM0001";
+                }
+            }
+            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    LastInt = SalesId.Substring(SalesId.Length - 4);
+                    SalesId = "SLE000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
+                }
+                else
+                {
+                    SalesId = "SLE0001";
+                }
+            }
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+
+            return SalesId;
+        }
+
+        #endregion
+
+
+        #region Non Used code - commented code
+
+        protected void btnUploadSkills_Click(object sender, EventArgs e)
+        {
+            //if (flpSkillAssessment.HasFile)
+            //{
+            //    string filename = Path.GetFileName(flpSkillAssessment.PostedFile.FileName);
+            //    filename = DateTime.Now.ToString() + filename;
+            //    filename = filename.Replace("/", "");
+            //    filename = filename.Replace(":", "");
+            //    filename = filename.Replace(" ", "");
+            //    flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+            //    Session["SkillAttachment"] = null;
+            //    Session["SkillAttachmentName"] = null;
+            //    Session["SkillAttachmentName"] = filename;
+            //    Session["SkillAttachment"] = "~/Sr_App/UploadedFile/" + filename;
+            //    FillDocument();
+            //    txtFullTimePos.Enabled = false;
+            //    //txtContractor1.Enabled = false;
+            //    //txtContractor2.Enabled = false;
+            //    //txtContractor3.Enabled = false;
+            //    //txtMajorTools.Enabled = false;
+            //    rdoDrugtestYes.Enabled = false;
+            //    rdoDrugtestNo.Enabled = false;
+            //    //rdoDriveLicenseYes.Enabled = false;
+            //    //rdoDriveLicenseNo.Enabled = false;
+            //    //rdoTruckToolsYes.Enabled = false;
+            //    //rdoTruckToolsNo.Enabled = false;
+            //    rdoJMApplyYes.Enabled = false;
+            //    rdoJMApplyNo.Enabled = false;
+            //    rdoLicenseYes.Enabled = false;
+            //    rdoLicenseNo.Enabled = false;
+            //    //rdoGuiltyNo.Enabled = false;
+            //    //rdoGuiltyYes.Enabled = false;
+            //    //txtStartDateNew.Enabled = false;
+            //    txtSalRequirement.Enabled = false;
+            //    //txtAvailability.Enabled = false;
+            //    //txtWarrantyPolicy.Enabled = false;
+            //    //txtYrs.Enabled = false;
+            //    //txtCurrentComp.Enabled = false;
+            //    //txtWebsiteUrl.Enabled = false;
+            //    //ddlType.Enabled = false;
+            //    //txtName.Enabled = false;
+            //    //txtPrinciple.Enabled = false;
+            //    //btnAddEmpPartner.Enabled = false;
+            //    //rdoAttchmentNo.Checked = false;
+            //    //rdoAttchmentNo.Enabled = false;
+            //    //rdoAttchmentYes.Enabled = false;
+            //    //rdoAttchmentYes.Checked = true;
+            //}
+            //else
+            //{
+            //    lblPL.Text = "";
+            //    Session["SkillAttachment"] = "";
+            //    Session["SkillAttachmentName"] = "";
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Skill assessment.');", true);
+            //}
+            //if (Convert.ToString(Session["IdGenerated"]) != "")
+            //{
+            //    GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+            //}
+            ////Session["UploadFileCountSkill"] = 1;
+            ////FillDocument();
+            ////lblPL.Text = "";
+            ////Session["SkillAttachment"] = "";
+            ////Session["SkillAttachmentName"] = "";
+            ////ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Pq License.');", true);
+            //if (rdoCheque.Checked)
+            //{
+            //    lblAba.Visible = false;
+            //    txtRoutingNo.Visible = false;
+            //    lblAccount.Visible = false;
+            //    txtAccountNo.Visible = false;
+            //    lblAccountType.Visible = false;
+            //    txtAccountType.Visible = false;
+            //    //txtOtherTrade.Visible = false;
+            //}
+            //else
+            //{
+            //    lblAba.Visible = true;
+            //    txtRoutingNo.Visible = true;
+            //    lblAccount.Visible = true;
+            //    txtAccountNo.Visible = true;
+            //    lblAccountType.Visible = true;
+            //    txtAccountType.Visible = true;
+            //    //txtOtherTrade.Visible = true;
+            //}
+            //if (Convert.ToString(Session["IdGenerated"]) != "")
+            //{
+            //    GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+            //}
+            //if (ddldesignation.SelectedItem.Text == "Installer")
+            //{
+            //    lblInstallerType.Visible = true;
+            //    ddlInstallerType.Visible = true;
+            //}
+            //else
+            //{
+            //    lblInstallerType.Visible = false;
+            //    ddlInstallerType.Visible = false;
+            //}
+        }
+
+        protected void lstbxImages_SelectedIndexChanged1(object sender, EventArgs e)
+        {
+            // string curItem = lstboxUploadedImages.SelectedItem.ToString();
+            //  Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + curItem;
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            //  for (int i = lstboxUploadedImages.Items.Count - 1; i >= 0; i--)
+            //   {
+            //      lstboxUploadedImages.Items.Remove(lstboxUploadedImages.Items[i]);
+            //  }
+        }
+        protected void lstbxImages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // string curItem = lstboxUploadedImages.SelectedItem.ToString();
+            //  Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + curItem;
+            // Image2.ImageUrl = "Images" + "\\" + curItem;
+        }
+
+        protected void btndelete_Click1(object sender, EventArgs e)
+        {
+
+            // if (lstboxUploadedImages.SelectedIndex >= 0)
+            // {
+            //     int Index = lstboxUploadedImages.SelectedIndex;
+            //     string strDelete = lstboxUploadedImages.SelectedItem.Text;
+            //     lstboxUploadedImages.Items.Remove(strDelete);
+            //     var path = Server.MapPath("~/CustomerDocs/LocationPics/" + strDelete);
+            //     System.IO.File.Delete(path);
+
+            //     if (lstboxUploadedImages.Items.Count > 0)
+            //     {
+            //         //lstboxUploadedImages.SelectedIndex = Index - 1;
+            //         lstboxUploadedImages.SelectedIndex = 0;
+            //         string Remainfile = lstboxUploadedImages.SelectedItem.Text;
+            //         Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + Remainfile;
+            //     }
+
+            //     if (lstboxUploadedImages.SelectedIndex != -1)
+            //     {
+            //         lstboxUploadedImages.SelectedIndex = 0;
+            //         string Remainfile = lstboxUploadedImages.SelectedItem.Text;
+            //         Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + Remainfile;
+            //     }
+            //     else
+            //     {
+            //         Image2.ImageUrl = "";
+            //     }
+            //}
+        }
+
+        protected void txtBusinessName_TextChanged(object sender, EventArgs e)
+        {
+            //ViewState["BusinessName"] = txtBusinessName.Text;
+        }
+
+        // protected void txttin_textchanged(object sender, eventargs e)
+        //      {
+        //
+        //  viewstate["tin"] = txttin.text;
+        //}
+
+        protected void txtEIN_TextChanged(object sender, EventArgs e)
+        {
+            //ViewState["ein1"] = txtEIN.Text;
+        }
+
+        protected void txtEIN2_TextChanged(object sender, EventArgs e)
+        {
+            //ViewState["ein2"] = txtEIN2.Text;
+            //string strein = ((txtEIN.Text != "") ? txtEIN.Text : "") + ((txtEIN2.Text != "") ? "- " + txtEIN2.Text : string.Empty);
+            //ViewState["ein"] = strein;
+        }
+
+        //protected void btnGeneralLiability_Click(object sender, EventArgs e)
+        //{
+        //    if (flpGeneralLiability.HasFile)
+        //    {
+        //        string filename = Path.GetFileName(flpGeneralLiability.PostedFile.FileName);
+        //        flpGeneralLiability.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+        //        Session["flpGeneralLiability"] = null;
+        //        Session["flpGeneralLiability"] = "~/Sr_App/UploadedFile/" + filename;
+        //        lblGL.Text = "Uploaded file Name: " + filename; 
+        //    }
+        //    else
+        //    {
+        //        lblGL.Text = "";
+        //        Session["flpGeneralLiability"] = "";
+        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload General Liability.');", true);
+        //    }
+        //    if (rdoCheque.Checked)
+        //    {
+        //        lblAba.Visible = false;
+        //        txtRoutingNo.Visible = false;
+        //        lblAccount.Visible = false;
+        //        txtAccountNo.Visible = false;
+        //        lblAccountType.Visible = false;
+        //        txtAccountType.Visible = false;
+        //        txtOtherTrade.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        lblAba.Visible = true;
+        //        txtRoutingNo.Visible = true;
+        //        lblAccount.Visible = true;
+        //        txtAccountNo.Visible = true;
+        //        lblAccountType.Visible = true;
+        //        txtAccountType.Visible = true;
+        //        txtOtherTrade.Visible = true;
+        //    }
+        //}
+
+        //protected void btnWorkersComp_Click(object sender, EventArgs e)
+        //{
+        //    if (flpWorkersComp.HasFile)
+        //    {
+
+        //        string filename = Path.GetFileName(flpWorkersComp.PostedFile.FileName);
+        //        flpWorkersComp.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+        //        Session["WorkersComp"] = null;
+        //        Session["WorkersComp"] = "~/Sr_App/UploadedFile/" + filename;
+
+        //        lblWC.Text = "Uploaded file Name: " + filename;
+        //    }
+        //    else
+        //    {
+        //        lblWC.Text = "";
+        //        Session["WorkersComp"] = "";
+        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Workers Comp.');", true);
+        //    }
+        //    if (rdoCheque.Checked)
+        //    {
+        //        lblAba.Visible = false;
+        //        txtRoutingNo.Visible = false;
+        //        lblAccount.Visible = false;
+        //        txtAccountNo.Visible = false;
+        //        lblAccountType.Visible = false;
+        //        txtAccountType.Visible = false;
+        //        txtOtherTrade.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        lblAba.Visible = true;
+        //        txtRoutingNo.Visible = true;
+        //        lblAccount.Visible = true;
+        //        txtAccountNo.Visible = true;
+        //        lblAccountType.Visible = true;
+        //        txtAccountType.Visible = true;
+        //        txtOtherTrade.Visible = true;
+        //    }
+        //}
+
+        //protected void btn_UploadFiles_Click1(object sender, EventArgs e)
+        //{
+        //    if (flpUploadFiles.HasFile)
+        //    {
+        //        foreach (HttpPostedFile postedFile in FileUpload1.PostedFiles)
+        //        {
+        //            string fileName = Path.GetFileName(postedFile.FileName);
+        //            postedFile.SaveAs(Server.MapPath("~/Uploads/") + fileName);
+        //        }
+        //        string filename = Path.GetFileName(flpUploadFiles.PostedFile.FileName);
+        //        flpUploadFiles.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+        //        Session["UploadFiles"] = null;
+        //        Session["UploadFiles"] = "~/Sr_App/UploadedFile/" + filename;
+
+        //        lblUF.Text = "Uploaded file Name: " + filename;
+        //    }
+        //    else
+        //    {
+        //        lblUF.Text = "";
+        //        Session["UploadFiles"] = "";
+        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Attachment.');", true);
+        //    }
+        //    if (rdoCheque.Checked)
+        //    {
+        //        lblAba.Visible = false;
+        //        txtRoutingNo.Visible = false;
+        //        lblAccount.Visible = false;
+        //        txtAccountNo.Visible = false;
+        //        lblAccountType.Visible = false;
+        //        txtAccountType.Visible = false;
+        //        txtOtherTrade.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        lblAba.Visible = true;
+        //        txtRoutingNo.Visible = true;
+        //        lblAccount.Visible = true;
+        //        txtAccountNo.Visible = true;
+        //        lblAccountType.Visible = true;
+        //        txtAccountType.Visible = true;
+        //        txtOtherTrade.Visible = true;
+        //    }
+        //}
+
+        //protected void btnCirtification_Click(object sender, EventArgs e)
+        //{
+        //    if (flpCirtification.HasFile)
+        //    {
+        //        string filename = Path.GetFileName(flpCirtification.PostedFile.FileName);
+        //        filename = DateTime.Now.ToString() + filename;
+        //        filename = filename.Replace("/", "");
+        //        filename = filename.Replace(":", "");
+        //        filename = filename.Replace(" ", "");
+        //        flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+        //        Session["CirtificationName"] = null;
+        //        Session["CirtificationPath"] = null;
+        //        Session["CirtificationName"] = filename;
+        //        Session["CirtificationPath"] = "~/Sr_App/UploadedFile/" + filename;
+        //        FillDocument();
+        //    }
+        //    else
+        //    {
+        //        lblPL.Text = "";
+        //        Session["CirtificationName"] = "";
+        //        Session["CirtificationPath"] = "";
+        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Upload Cirtification.');", true);
+        //    }
+        //    if (rdoCheque.Checked)
+        //    {
+        //        lblAba.Visible = false;
+        //        txtRoutingNo.Visible = false;
+        //        lblAccount.Visible = false;
+        //        txtAccountNo.Visible = false;
+        //        lblAccountType.Visible = false;
+        //        txtAccountType.Visible = false;
+        //        //txtOtherTrade.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        lblAba.Visible = true;
+        //        txtRoutingNo.Visible = true;
+        //        lblAccount.Visible = true;
+        //        txtAccountNo.Visible = true;
+        //        lblAccountType.Visible = true;
+        //        txtAccountType.Visible = true;
+        //        //txtOtherTrade.Visible = true;
+        //    }
+        //    if (Convert.ToString(Session["IdGenerated"]) != "")
+        //    {
+        //        GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
+        //    }
+        //    if (ddldesignation.SelectedItem.Text == "Installer")
+        //    {
+        //        lblInstallerType.Visible = true;
+        //        ddlInstallerType.Visible = true;
+        //    }
+        //    else
+        //    {
+        //        lblInstallerType.Visible = false;
+        //        ddlInstallerType.Visible = false;
+        //    }
+        //    btnPluse.Visible = true;
+        //    btnMinus.Visible = false;
+        //    pnl4.Visible = false;
+        //}
+
+        protected void btnAddEmpPartner_Click(object sender, EventArgs e)
+        {
+            //if (ddlType.SelectedIndex != 0)
+            //{
+            //    DataTable dtNew = (DataTable)(Session["PersonTypeData"]);
+            //    if (Convert.ToString(Session["PersonName"]) == "")
+            //    {
+            //        Session["PersonName"] = txtName.Text;
+            //    }
+            //    else
+            //    {
+            //        Session["PersonName"] = Convert.ToString(Session["PersonName"]) + "," + txtName.Text;
+            //    }
+            //    if (Convert.ToString(Session["PersonType"]) == "")
+            //    {
+            //        Session["PersonType"] = ddlType.SelectedValue;
+            //    }
+            //    else
+            //    {
+            //        Session["PersonType"] = Convert.ToString(Session["PersonType"]) + "," + Convert.ToString(ddlType.SelectedValue);
+            //    }
+            //    DataRow drNew = dtNew.NewRow();
+            //    drNew["PersonName"] = txtName.Text;
+            //    drNew["PersonType"] = ddlType.SelectedValue;
+            //    dtNew.Rows.Add(drNew);
+            //    Session["PersonTypeData"] = dtNew;
+            //    GridView2.DataSource = dtNew;
+            //    GridView2.DataBind();
+            //}
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Select User Type')", true);
+            //    return;
+            //}
+            //if (ddldesignation.SelectedItem.Text == "Installer")
+            //{
+            //    lblInstallerType.Visible = true;
+            //    ddlInstallerType.Visible = true;
+            //}
+            //else
+            //{
+            //    lblInstallerType.Visible = false;
+            //    ddlInstallerType.Visible = false;
+            //}
+            //btnPluse.Visible = true;
+            //btnMinus.Visible = false;
+            //pnl4.Visible = false;
+        }
+
+        protected void rdoAttchmentYes_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (rdoAttchmentYes.Checked)
+            //{
+            //    txtFullTimePos.Enabled = false;
+            //    txtContractor1.Enabled = false;
+            //    txtContractor2.Enabled = false;
+            //    txtContractor3.Enabled = false;
+            //    txtMajorTools.Enabled = false;
+            //    rdoDrugtestYes.Enabled = false;
+            //    rdoDrugtestNo.Enabled = false;
+            //    //rdoDriveLicenseYes.Enabled = false;
+            //    //rdoDriveLicenseNo.Enabled = false;
+            //    rdoTruckToolsYes.Enabled = false;
+            //    rdoTruckToolsNo.Enabled = false;
+            //    rdoJMApplyYes.Enabled = false;
+            //    rdoJMApplyNo.Enabled = false;
+            //    rdoLicenseYes.Enabled = false;
+            //    rdoLicenseNo.Enabled = false;
+            //    rdoGuiltyNo.Enabled = false;
+            //    rdoGuiltyYes.Enabled = false;
+            //    txtStartDateNew.Enabled = false;
+            //    txtSalRequirement.Enabled = false;
+            //    txtAvailability.Enabled = false;
+            //    txtWarrantyPolicy.Enabled = false;
+            //    txtYrs.Enabled = false;
+            //    txtCurrentComp.Enabled = false;
+            //    txtWebsiteUrl.Enabled = false;
+            //    ddlType.Enabled = false;
+            //    txtName.Enabled = false;
+            //    txtPrinciple.Enabled = false;
+            //    btnAddEmpPartner.Enabled = false;
+            //}
+            //else
+            //{
+            //    txtFullTimePos.Enabled = true;
+            //    txtContractor1.Enabled = true;
+            //    txtContractor2.Enabled = true;
+            //    txtContractor3.Enabled = true;
+            //    txtMajorTools.Enabled = true;
+            //    rdoDrugtestYes.Enabled = true;
+            //    rdoDrugtestNo.Enabled = true;
+            //    //rdoDriveLicenseYes.Enabled = true;
+            //    //rdoDriveLicenseNo.Enabled = true;
+            //    rdoTruckToolsYes.Enabled = true;
+            //    rdoTruckToolsNo.Enabled = true;
+            //    rdoJMApplyYes.Enabled = true;
+            //    rdoJMApplyNo.Enabled = true;
+            //    rdoLicenseYes.Enabled = true;
+            //    rdoLicenseNo.Enabled = true;
+            //    rdoGuiltyNo.Enabled = true;
+            //    rdoGuiltyYes.Enabled = true;
+            //    txtStartDateNew.Enabled = true;
+            //    txtSalRequirement.Enabled = true;
+            //    txtAvailability.Enabled = true;
+            //    txtWarrantyPolicy.Enabled = true;
+            //    txtYrs.Enabled = true;
+            //    txtCurrentComp.Enabled = true;
+            //    txtWebsiteUrl.Enabled = true;
+            //    ddlType.Enabled = true;
+            //    txtName.Enabled = true;
+            //    txtPrinciple.Enabled = true;
+            //    btnAddEmpPartner.Enabled = true;
+            //}
+            //if (ddldesignation.SelectedItem.Text == "Installer")
+            //{
+            //    lblInstallerType.Visible = true;
+            //    ddlInstallerType.Visible = true;
+            //}
+            //else
+            //{
+            //    lblInstallerType.Visible = false;
+            //    ddlInstallerType.Visible = false;
+            //}
         }
 
         #endregion

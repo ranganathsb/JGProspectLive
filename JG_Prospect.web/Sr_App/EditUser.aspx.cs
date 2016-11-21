@@ -1131,28 +1131,22 @@ namespace JG_Prospect
             //grdUsers.DataSource = DS.Tables[0];
             //grdUsers.DataBind();
 
-            ddlDesignation.DataSource = (from ptrade in DS.Tables[0].AsEnumerable()
-                                         where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-                                         select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+            List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
+             where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
+             select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+
+            lstDesignation.Sort((x, y) => string.Compare(x, y));
+            ddlDesignation.DataSource = lstDesignation;
+
             ddlDesignation.DataBind();
             ddlDesignation.Items.Insert(0, "--All--");
         }
 
         private void FillCustomer()
         {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
-            dr["Id"] = "0";
-            dr["Username"] = "--All--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
-            if (dds.Tables[0].Rows.Count > 0)
-            {
-                drpUser.DataSource = dds.Tables[0];
-                drpUser.DataValueField = "Id";
-                drpUser.DataTextField = "Username";
-                drpUser.DataBind();
-            }
+
+            fillFilterUserDDL();
+             
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
             DataRow drSource = dsSource.Tables[0].NewRow();
@@ -1165,6 +1159,24 @@ namespace JG_Prospect
                 ddlSource.DataValueField = "Id";
                 ddlSource.DataTextField = "Source";
                 ddlSource.DataBind();
+            }
+        }
+
+        private void fillFilterUserDDL()
+        {
+            DataSet dds = new DataSet();
+            dds = new_customerBLL.Instance.GeUsersForDropDown();
+            DataRow dr = dds.Tables[0].NewRow();
+
+            dr["Id"] = "0";
+            dr["Username"] = "--All--";
+            dds.Tables[0].Rows.InsertAt(dr, 0);
+            if (dds.Tables[0].Rows.Count > 0)
+            {
+                drpUser.DataSource = dds.Tables[0];
+                drpUser.DataValueField = "Id";
+                drpUser.DataTextField = "Username";
+                drpUser.DataBind();
             }
         }
 

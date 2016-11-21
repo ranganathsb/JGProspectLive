@@ -248,7 +248,49 @@ namespace JG_Prospect.DAL
             }
             return tupResult;
         }
-        
+
+        public string AddNewPhoneType(string NewPhoneType , int AddedByID)
+        {
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_AddNewPhoneType");
+                    command.CommandType = CommandType.StoredProcedure;                    
+                    database.AddInParameter(command, "@NewPhoneType", DbType.String, NewPhoneType);
+                    database.AddInParameter(command, "@AddedByID", DbType.Int32, AddedByID);
+                    
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public DataSet GetAllUserPhoneType()
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SP_GetUserPhoneType");
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
 
         public DataSet GetTechTaskByUser(int UserId)
         {
@@ -1907,6 +1949,30 @@ namespace JG_Prospect.DAL
 
             }
             return returndata;
+        }
+
+
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode ,string UpdateCurrentSequence)
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("USP_SetUserDisplayID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@InstallUserID", DbType.String, UserId);
+                    database.AddInParameter(command, "@DesignationsCode", DbType.String, strDesignationsCode);
+                    database.AddInParameter(command, "@UpdateCurrentSequence", DbType.String, UpdateCurrentSequence);
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dsTemp;
         }
     }
 }

@@ -965,11 +965,13 @@
     <Content Include="css\dropzone\images\spritemap%402x.png" />
     <Content Include="css\dropzone\images\spritemap.png" />
     <Content Include="css\dropzone\images\upload.png" />
+    <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\JCarousel.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\Script Nov_ITSN042_V1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts Nov_ITSN032_v1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _Calendar_Task 4.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
@@ -1562,6 +1564,8 @@
     <Content Include="Sr_App\Gutter.aspx" />
     <Content Include="Sr_App\Gutter_Guards.aspx" />
     <Content Include="Sr_App\HRReports.aspx" />
+    <Content Include="Sr_App\img\AltPhone.png" />
+    <Content Include="Sr_App\img\Cell_Phone.png" />
     <Content Include="Sr_App\img\Email art header.png" />
     <Content Include="Sr_App\img\jmFooter.png" />
     <Content Include="Sr_App\img\jmFooterSmall.png" />
@@ -1569,7 +1573,11 @@
     <Content Include="Sr_App\img\Logo_BG.png" />
     <Content Include="Sr_App\img\Logo_BG_JPG.jpg" />
     <Content Include="Sr_App\img\main-header-bg.png" />
+    <Content Include="Sr_App\img\Phone_home.png" />
+    <Content Include="Sr_App\img\skype.ico" />
+    <Content Include="Sr_App\img\skype.png" />
     <Content Include="Sr_App\img\SubmitButton.png" />
+    <Content Include="Sr_App\img\WorkPhone.png" />
     <Content Include="Sr_App\InstallCreateProspect.aspx" />
     <Content Include="Sr_App\InstallCreateUser.aspx" />
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
@@ -1659,6 +1667,7 @@
     <Content Include="Sr_App\UploadedFile\Penguins.jpg" />
     <Content Include="Sr_App\UploadedFile\System-Desktop-icon.png" />
     <Content Include="Sr_App\UploadedFile\Tulips.jpg" />
+    <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
     <Content Include="Sr_App\view_customer.aspx" />
     <Content Include="Sr_App\WebForm1.aspx" />
@@ -1877,6 +1886,13 @@
     </Compile>
     <Compile Include="Sr_App\Controls\ucTaskHistory.ascx.designer.cs">
       <DependentUpon>ucTaskHistory.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\UploadFile.aspx.cs">
+      <DependentUpon>UploadFile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
+      <DependentUpon>UploadFile.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
@@ -2730,6 +2746,7 @@
     <Folder Include="InvoicePdf\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
+    <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>

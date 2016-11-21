@@ -493,5 +493,20 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetTechTaskByUser(UserId);
         }
+
+        public string AddNewPhoneType(string NewPhoneType, int AddedByID)
+        {
+            return InstallUserDAL.Instance.AddNewPhoneType(NewPhoneType, AddedByID);
+        }
+
+        public DataSet GetAllUserPhoneType()
+        {
+            return InstallUserDAL.Instance.GetAllUserPhoneType();
+        }
+
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode,string UpdateCurrentSequence)
+        {
+            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode , UpdateCurrentSequence);
+        }
     }
 }
