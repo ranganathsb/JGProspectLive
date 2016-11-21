@@ -315,7 +315,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2">
-                                                        <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">
+                                                        <div style="max-height: 300px; min-height: 200px; overflow-y: auto; overflow-x: hidden;">
                                                             <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                                                 <ContentTemplate>
                                                                     <asp:Repeater ID="grdWorkSpecificationAttachments" runat="server"
