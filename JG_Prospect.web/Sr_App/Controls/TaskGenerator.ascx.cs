@@ -266,23 +266,6 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.DataTextField = "FristName";
                         ddcbAssigned.DataValueField = "Id";
                         ddcbAssigned.DataBind();
-
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString()))
-                        {
-                            string[] arrUserIds = DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (string strId in arrUserIds)
-                            {
-                                ListItem objListItem = ddcbAssigned.Items.FindByValue(strId.Trim());
-                                if (objListItem != null)
-                                {
-                                    objListItem.Selected = true;
-                                    ddcbAssigned.Texts.SelectBoxCaption = objListItem.Text;
-                                }
-                            }
-                        }
-
-                        ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
-                        ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
                     }
                     else if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Requested).ToString())
                     {
@@ -318,10 +301,26 @@ namespace JG_Prospect.Sr_App.Controls
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("style", "display:none;");
-
-                        ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
-                        ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
                     }
+
+                    // set assigned user selection in dropdown.
+                    if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString()) && ddcbAssigned.Items.Count > 0)
+                    {
+                        string[] arrUserIds = DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string strId in arrUserIds)
+                        {
+                            ListItem objListItem = ddcbAssigned.Items.FindByValue(strId.Trim());
+                            if (objListItem != null)
+                            {
+                                objListItem.Selected = true;
+                                ddcbAssigned.Texts.SelectBoxCaption = objListItem.Text;
+                            }
+                        }
+                    }
+
+                    // below attributes are used in user assignement change.
+                    ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                    ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
 
                     #endregion
                 }
