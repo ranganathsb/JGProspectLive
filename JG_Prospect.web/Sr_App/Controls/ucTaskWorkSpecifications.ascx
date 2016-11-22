@@ -7,7 +7,7 @@
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="{parent-id}" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
             <tr class="trHeader">
-                <th style="width: 30px;">ID</th>
+                <th style="width: 35px;">ID</th>
                 <th>Description</th>
                 <th style="width: 65px;">Sign Off</th>
             </tr>
@@ -46,7 +46,8 @@
 </script>
 <script data-id="tmpWorkSpecificationRow" type="text/template" class="hide">
     <tr data-work-specification-id="{id}">
-        <td valign="top" style="width: 30px;">
+        <td valign="top" style="width: 35px;">
+            <div style="font-size: 9px;">(<em data-id="emIndex"></em> of <em data-id="emTotal"></em>)</div>
             <small>
                 <label data-id="lblCustomId{id}" />
             </small>
@@ -196,6 +197,10 @@
                 else {
                     $WorkSpecificationRowTemplate.addClass('FirstRow');
                 }
+
+                $WorkSpecificationRowTemplate.find('em[data-id="emIndex"]').html(i+1);
+                $WorkSpecificationRowTemplate.find('em[data-id="emTotal"]').html(result.TotalRecordCount);
+                $WorkSpecificationRowTemplate.attr('title', (i+1) + ' of ' + result.TotalRecordCount);
 
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
