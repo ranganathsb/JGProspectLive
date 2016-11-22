@@ -374,8 +374,8 @@
         var strCustomId = $.trim($('label[data-id="lblCustomId'+intParentId+'_Footer"]').text());
         var strDescription = GetCKEditorContent('txtWorkSpecification'+intParentId+'_Footer');
         var strPassword = $('input[data-id="txtPassword'+intParentId+'_Footer"]').val();
-        var strTitle = '';
-        var strURL = ''
+        var strTitle = $('input[data-id="txtTitle'+intParentId+'_Footer"]').val();
+        var strURL = $('input[data-id="txtURL'+intParentId+'_Footer"]').val();
 
         $.ajax
         (
@@ -416,8 +416,8 @@
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
         var strDescription = GetCKEditorContent('txtWorkSpecification'+ Id);
-        var strTitle = '';
-        var strURL = ''
+        var strTitle = $('input[data-id="txtTitle'+Id+'"]').val();
+        var strURL = $('input[data-id="txtURL'+Id+'"]').val();
 
         var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
 
