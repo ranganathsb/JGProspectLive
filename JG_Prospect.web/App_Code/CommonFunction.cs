@@ -464,7 +464,9 @@ namespace JG_Prospect.App_Code
         /// <summary>
         /// Gets next sequence value based on current value.
         /// </summary>
-        /// <param name="strCurrentSequence">current sequence number.</param>
+        /// <param name="strStartAt">First value of sequence. i.e. A, 1, I.</param>
+        /// <param name="strCurrentSequence">current sequence number. i.e. C, 5, III.</param>
+        /// <param name="blIsRoman">I can be an alphabet as well as a romal number. This flag is used to differenciate both.</param>
         /// <returns>
         /// input  : ouput
         ///    ''  :     A
@@ -478,15 +480,16 @@ namespace JG_Prospect.App_Code
         ///    A-  :   A-0
         ///    Z-  :   Z-0
         /// </returns>
-        public static string GetTaskWorkSpecificationSequence(char chStartAt, string strCurrentSequence = "", bool blIsRoman = false)
+        public static string GetTaskWorkSpecificationSequence(string strStartAt, string strCurrentSequence = "", bool blIsRoman = false)
         {
-            string strReturnValue = chStartAt.ToString();
+            string strReturnValue = strStartAt.ToString();
 
             if (!string.IsNullOrEmpty(strCurrentSequence))
             {
                 string strPrefix = string.Empty;
 
                 char chInputPostfix = strCurrentSequence[strCurrentSequence.Length - 1];
+                string strPostfix = chInputPostfix.ToString();
                 if (strCurrentSequence.Length > 1)
                 {
                     strPrefix = strCurrentSequence.Substring(0, strCurrentSequence.Length - 1);
@@ -506,16 +509,18 @@ namespace JG_Prospect.App_Code
                 }
                 else if (Char.IsDigit(chInputPostfix))
                 {
-                    intNumber = Convert.ToInt32(chInputPostfix);
+                    intNumber = (int)Char.GetNumericValue(chInputPostfix);
 
                     if (intNumber == 9)
                     {
                         strPrefix = "A" + strPrefix;
-                        chInputPostfix = chStartAt;
+                        //chInputPostfix = chStartAt;
+                        strPostfix = strStartAt;
                     }
                     else
                     {
-                        chInputPostfix = (++intNumber).ToString()[0];
+                        //chInputPostfix = (++intNumber).ToString()[0];
+                        strPostfix = (++intNumber).ToString();
                     }
                 }
                 else if (
@@ -526,20 +531,24 @@ namespace JG_Prospect.App_Code
                     if (intInputCode == intzCode || intInputCode == intZCode)
                     {
                         strPrefix = "A" + strPrefix;
-                        chInputPostfix = chStartAt;
+                        //chInputPostfix = chStartAt;
+                        strPostfix = strStartAt;
                     }
                     else
                     {
-                        chInputPostfix = (char)(++intInputCode);
+                        //chInputPostfix = (char)(++intInputCode);
+                        strPostfix = ((char)(++intInputCode)).ToString();
                     }
                 }
                 else
                 {
                     strPrefix = strPrefix + chInputPostfix;
-                    chInputPostfix = chStartAt;
+                    //chInputPostfix = chStartAt;
+                    strPostfix = strStartAt;
                 }
 
-                strReturnValue = strPrefix + chInputPostfix;
+                //strReturnValue = strPrefix + chInputPostfix;
+                strReturnValue = strPrefix + strPostfix;
             }
 
             return strReturnValue;

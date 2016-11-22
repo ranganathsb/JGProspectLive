@@ -77,17 +77,31 @@ namespace JG_Prospect.WebServices
 
             if (string.IsNullOrEmpty(strFirstParentCustomId) || intParentTaskWorkSpecificationId == 0)
             {
-                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('A', strLastCustomId);
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("A", strLastCustomId);
+            }
+            // parent list has alphabetical numbering.
+            else if (strFirstParentCustomId.Equals("A"))
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("1", strLastCustomId);
+            }
+            // parent list has decimal numbering.
+            else if (strFirstParentCustomId.Equals("1"))
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("1a", strLastCustomId);
+            }
+            // parent list has custom numbering.
+            else if (strFirstParentCustomId.Equals("1a"))
+            {
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("1", strLastCustomId);
             }
             // parent list has roman numbering.
             else if (strFirstParentCustomId.Equals("i") || strFirstParentCustomId.Equals("I"))
             {
-                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('a', strLastCustomId);
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("a", strLastCustomId);
             }
-            // parent list has alphabetical numbering.
             else
             {
-                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence('I', strLastCustomId, true);
+                strNextCustomId = App_Code.CommonFunction.GetTaskWorkSpecificationSequence("I", strLastCustomId, true);
             }
 
             int intPendingCount = 0;
