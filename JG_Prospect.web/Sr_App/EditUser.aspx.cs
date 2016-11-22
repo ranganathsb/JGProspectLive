@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
-using static JG_Prospect.App_Code.CommonFunction;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect
 {
@@ -661,7 +661,7 @@ namespace JG_Prospect
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
