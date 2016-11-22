@@ -54,6 +54,8 @@ namespace JG_Prospect.WebServices
                     arrTaskWorkSpecification[i].TechLeadStatus = Convert.ToBoolean(dr["TechLeadStatus"]);
                     arrTaskWorkSpecification[i].OtherUserStatus = Convert.ToBoolean(dr["OtherUserStatus"]);
                     arrTaskWorkSpecification[i].Description = Convert.ToString(dr["Description"]);
+                    arrTaskWorkSpecification[i].Title = Convert.ToString(dr["Title"]);
+                    arrTaskWorkSpecification[i].URL = Convert.ToString(dr["URL"]);
                     if (!string.IsNullOrEmpty(dr["ParentTaskWorkSpecificationId"].ToString()))
                     {
                         arrTaskWorkSpecification[i].ParentTaskWorkSpecificationId = Convert.ToInt64(dr["ParentTaskWorkSpecificationId"]);
@@ -124,7 +126,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword)
+        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, string strTitle,string strURL, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword)
         {
             bool blSuccess = true;
 
@@ -135,6 +137,9 @@ namespace JG_Prospect.WebServices
                 objTaskWorkSpecification.CustomId = strCustomId;
                 objTaskWorkSpecification.TaskId = intTaskId;
                 objTaskWorkSpecification.Description = Server.HtmlDecode(strDescription);
+                objTaskWorkSpecification.Title = strTitle;
+                objTaskWorkSpecification.Description = strURL;
+
                 // save will revoke freezed status.
                 objTaskWorkSpecification.AdminStatus = false;
                 objTaskWorkSpecification.TechLeadStatus = false;

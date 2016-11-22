@@ -23,6 +23,8 @@ namespace JG_Prospect.Common.modal
         public string CustomId { get; set; }
         public long TaskId { get; set; }
         public string Description { get; set; }
+        public string Title { get; set; }
+        public string URL { get; set; }
         public int? AdminUserId { get; set; }
         public int? TechLeadUserId { get; set; }
         public int? OtherUserId { get; set; }

@@ -364,6 +364,8 @@
         var strCustomId = $.trim($('label[data-id="lblCustomId'+intParentId+'_Footer"]').text());
         var strDescription = GetCKEditorContent('txtWorkSpecification'+intParentId+'_Footer');
         var strPassword = $('input[data-id="txtPassword'+intParentId+'_Footer"]').val();
+        var strTitle = '';
+        var strURL = ''
 
         $.ajax
         (
@@ -372,7 +374,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }',
+                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }',
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
@@ -404,8 +406,10 @@
         var intParentId = $(sender).attr('data-parent-work-specification-id');
         var strCustomId = $.trim($('label[data-id="lblCustomId'+Id+'"]').text());
         var strDescription = GetCKEditorContent('txtWorkSpecification'+ Id);
+        var strTitle = '';
+        var strURL = ''
 
-        var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
+        var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
 
         $.ajax
         (

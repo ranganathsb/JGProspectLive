@@ -5437,8 +5437,6 @@ GO
 
 --==========================================================================================================================================================================================
 
-USE [JGBS_Dev]
-GO
 /****** Object:  StoredProcedure [dbo].[InsertTaskWorkSpecification]    Script Date: 21-Nov-16 12:13:41 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -5528,3 +5526,168 @@ BEGIN
 
 END
 GO
+
+
+USE [JGBS_Dev]
+GO
+
+ALTER TABLE [dbo].[tblTaskWorkSpecifications]
+ADD
+	Title varchar(300) NULL,
+	URL varchar(300) NULL
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertTaskWorkSpecification]    Script Date: 22-Nov-16 12:03:46 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Insert Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[InsertTaskWorkSpecification]
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Title varchar(300),
+	@URL varchar(300),
+	@AdminStatus BIT = 0,
+	@TechLeadStatus BIT = 0,
+	@OtherUserStatus BIT = 0,
+	@AdminUserId int = NULL,
+	@TechLeadUserId int = NULL,
+	@OtherUserId int = NULL,
+	@IsAdminInstallUser bit = NULL,
+	@IsTechLeadInstallUser bit = NULL,
+	@IsOtherUserInstallUser bit = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE 
+	@AdminStatusUpdated DATETIME = NULL,
+	@TechLeadStatusUpdated DATETIME = NULL,
+	@OtherUserStatusUpdated DATETIME = NULL
+
+	IF @AdminUserId IS NOT NULL
+	BEGIN
+		SET @AdminStatusUpdated = GETDATE()
+	END
+	ELSE IF @TechLeadUserId IS NOT NULL
+	BEGIN
+		SET @TechLeadStatusUpdated = GETDATE()
+	END
+	ELSE IF @OtherUserId IS NOT NULL
+	BEGIN
+		SET @OtherUserStatusUpdated = GETDATE()
+	END
+
+	INSERT INTO [dbo].[tblTaskWorkSpecifications]
+		([CustomId]
+		,[TaskId]
+		,[Description]
+		,[Title]
+		,[URL]
+		,[AdminStatus]
+		,[TechLeadStatus]
+		,[OtherUserStatus]
+		,[DateCreated]
+		,[DateUpdated]
+		,[AdminStatusUpdated]
+		,[TechLeadStatusUpdated]
+		,[OtherUserStatusUpdated]
+		,[AdminUserId]
+		,[TechLeadUserId]
+		,[OtherUserId]
+		,[IsAdminInstallUser]
+		,[IsTechLeadInstallUser]
+		,[IsOtherUserInstallUser]
+		,[ParentTaskWorkSpecificationId])
+	VALUES
+		(@CustomId
+		,@TaskId
+		,@Description
+		,@Title
+		,@URL
+		,@AdminStatus
+		,@TechLeadStatus
+		,@OtherUserStatus
+		,GETDATE()
+		,GETDATE()
+		,@AdminStatusUpdated
+		,@TechLeadStatusUpdated
+		,@OtherUserStatusUpdated
+		,@AdminUserId
+		,@TechLeadUserId
+		,@OtherUserId
+		,@IsAdminInstallUser
+		,@IsTechLeadInstallUser
+		,@IsOtherUserInstallUser
+		,@ParentTaskWorkSpecificationId)
+
+END
+
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecification]    Script Date: 22-Nov-16 12:05:55 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Update Task specification and also record history.
+-- =============================================
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecification]
+	@Id bigint,
+	@ParentTaskWorkSpecificationId bigint = null,
+	@CustomId varchar(10),
+	@TaskId bigint,
+	@Description text,
+	@Title varchar(300),
+	@URL varchar(300)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[tblTaskWorkSpecifications]
+	SET 
+		[CustomId] = @CustomId
+		,[TaskId] = @TaskId
+		,[Description] = @Description
+		,[Title] = @Title
+		,[URL] = @URL
+		,[ParentTaskWorkSpecificationId] = @ParentTaskWorkSpecificationId
+		,[DateUpdated] = GETDATE()
+
+		-- reset status for all, as any change requires 2 level freezing.
+		,[AdminStatus] = 0
+		,[TechLeadStatus] = 0
+		,[OtherUserStatus] = 0
+		,[AdminStatusUpdated] = NULL
+		,[TechLeadStatusUpdated] = NULL
+		,[OtherUserStatusUpdated] = NULL
+		,[AdminUserId] = NULL
+		,[TechLeadUserId] = NULL
+		,[OtherUserId] = NULL
+		,[IsAdminInstallUser] = NULL
+		,[IsTechLeadInstallUser] = NULL
+		,[IsOtherUserInstallUser] = NULL
+	WHERE Id = @Id
+
+END
+GO
+

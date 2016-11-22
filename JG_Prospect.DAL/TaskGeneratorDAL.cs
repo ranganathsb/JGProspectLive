@@ -1013,6 +1013,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Title", DbType.String, objTaskWorkSpecification.Title);
+                    database.AddInParameter(command, "@URL", DbType.String, objTaskWorkSpecification.URL);
 
                     database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
                     database.AddInParameter(command, "@AdminUserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
@@ -1054,6 +1056,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
                     database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Title", DbType.String, objTaskWorkSpecification.Title);
+                    database.AddInParameter(command, "@URL", DbType.String, objTaskWorkSpecification.URL);
 
                     if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
                     {
@@ -1271,6 +1275,8 @@ namespace JG_Prospect.DAL
             objTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
             objTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
             objTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
+            objTaskWorkSpecification.Title = Convert.ToString(drTaskWorkSpecification["Title"]);
+            objTaskWorkSpecification.URL = Convert.ToString(drTaskWorkSpecification["URL"]);
 
             if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
             {
