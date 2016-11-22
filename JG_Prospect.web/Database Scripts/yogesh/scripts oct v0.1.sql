@@ -5527,10 +5527,6 @@ BEGIN
 END
 GO
 
-
-USE [JGBS_Dev]
-GO
-
 ALTER TABLE [dbo].[tblTaskWorkSpecifications]
 ADD
 	Title varchar(300) NULL,
