@@ -23,6 +23,8 @@
                 </td>
                 <td>
                     <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="4" style="width: 95%;"></textarea>
+                    <input data-id="txtTitle{parent-id}_Footer" type="text" style="width: 95%;"/>
+                    <input data-id="txtURL{parent-id}_Footer" type="text" style="width: 95%;"/>
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
                 <td>
@@ -56,9 +58,13 @@
             <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
                     <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
+                    <label data-id="lblTitle{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"/>
+                    <label data-id="lblURL{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"/>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}"></textarea>
+                    <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}" style="width: 95%;"></textarea>
+                    <input data-id="txtTitle{id}" type="text" style="width: 95%;"/>
+                    <input data-id="txtURL{id}" type="text" style="width: 95%;"/>
                 </div>
                 <div data-id="divViewWorkSpecificationButtons{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
@@ -205,6 +211,10 @@
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 $WorkSpecificationRowTemplate.find('div[data-id="divWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
+                $WorkSpecificationRowTemplate.find('input[data-id="txtTitle'+arrData[i].Id+'"]').html(arrData[i].Title);
+                $WorkSpecificationRowTemplate.find('label[data-id="lblTitle'+arrData[i].Id+'"]').html(arrData[i].Title);
+                $WorkSpecificationRowTemplate.find('input[data-id="txtURL'+arrData[i].Id+'"]').html(arrData[i].URL);
+                $WorkSpecificationRowTemplate.find('label[data-id="lblURL'+arrData[i].Id+'"]').html(arrData[i].URL);
                 
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecificationButtons'+arrData[i].Id+'"]').hide();
