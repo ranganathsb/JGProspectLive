@@ -22,9 +22,9 @@
                     </small>
                 </td>
                 <td>
-                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="4" style="width: 95%;"></textarea>
-                    <input data-id="txtTitle{parent-id}_Footer" type="text" style="width: 95%;"/>
-                    <input data-id="txtURL{parent-id}_Footer" type="text" style="width: 95%;"/>
+                <input data-id="txtTitle{parent-id}_Footer" type="text" class="textbox" placeholder="Title" style="width: 25%;"/><input data-id="txtURL{parent-id}_Footer" class="textbox" placeholder="Url" type="text" style="width: 70%;"/>
+                <br/>
+                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="7" style="width: 95%;"></textarea>                    
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
                 <td>
@@ -62,9 +62,9 @@
                     <label data-id="lblURL{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"/>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <textarea data-id="txtWorkSpecification{id}" id="txtWorkSpecification{id}" style="width: 95%;"></textarea>
-                    <input data-id="txtTitle{id}" type="text" style="width: 95%;"/>
-                    <input data-id="txtURL{id}" type="text" style="width: 95%;"/>
+                    <input data-id="txtTitle{id}" placeholder="Title" class="textbox" type="text" style="width: 25%;"/><input data-id="txtURL{id}" placeholder="Url" class="textbox" type="text" style="width: 70%;"/>
+                    <br/> 
+                    <textarea data-id="txtWorkSpecification{id}" row="7" id="txtWorkSpecification{id}" style="width: 95%;"></textarea>
                 </div>
                 <div data-id="divViewWorkSpecificationButtons{id}" style="display: inline;">
                     <a href="javascript:void(0);" data-work-specification-id="{id}" onclick="javascript:return OnEditClick(this);">Edit</a>&nbsp;
