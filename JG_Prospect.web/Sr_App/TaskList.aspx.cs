@@ -222,8 +222,8 @@ namespace JG_Prospect.Sr_App
                     else
                     {
                         lblAssignedUser.Visible = true;
-                        
-                        
+
+
                         //ddcbAssigned.Visible =
                         lbtnRequestStatus.Visible = false;
                         DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
@@ -283,7 +283,14 @@ namespace JG_Prospect.Sr_App
 
                 if (Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsDeleted")))
                 {
-                    e.Row.CssClass = "ui-state-default dark-gray-background";
+                    if (e.Row.RowState == DataControlRowState.Alternate)
+                    {
+                        e.Row.CssClass = "AlternateRow deleted-task-bg";
+                    }
+                    else
+                    {
+                        e.Row.CssClass = "FirstRow deleted-task-bg";
+                    }
                 }
             }
         }
@@ -779,8 +786,8 @@ namespace JG_Prospect.Sr_App
                 //}
                 //else
                 //{
-                    ddlStatus.Enabled = true;
-               // }
+                ddlStatus.Enabled = true;
+                // }
                 objListItem.Enabled = true;
                 objListItem.Selected = true;
             }

@@ -386,7 +386,14 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsDeleted")))
                 {
-                    e.Row.CssClass = "ui-state-default dark-gray-background";
+                    if (e.Row.RowState == DataControlRowState.Alternate)
+                    {
+                        e.Row.CssClass = "AlternateRow deleted-task-bg";
+                    }
+                    else
+                    {
+                        e.Row.CssClass = "FirstRow deleted-task-bg";
+                    }
                 }
             }
         }

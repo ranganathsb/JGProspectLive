@@ -1,4 +1,4 @@
-/*------------------------------------------------------------------
+dark /*------------------------------------------------------------------
 [Table of contents]
 
 1. Reset
@@ -24,7 +24,6 @@
 21. LeftNav
 
 -------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------
 [1. Reset]
 */
@@ -1430,11 +1429,6 @@ table.table tr.dark-gray-background td {
     padding: 5px;
 }
 
-table tr.trPager td,
-table tr.trFooter td {
-    padding: 5px;
-}
-
 .valigntop {
     vertical-align: top;
 }
@@ -1457,23 +1451,25 @@ a.page_disabled, a.page_disabled:hover, a.page_disabled:active {
     color: black;
 }
 
-input.fz , .fz > input
-{
-outline: 2px solid !important ;
-outline-offset: 1px !important;
+input.fz, .fz > input {
+    outline: 2px solid !important;
+    outline-offset: 1px !important;
 }
+
 input.fz-admin, .fz-admin > input {
-outline-color: red !important;
+    outline-color: red !important;
 }
+
 input.fz-techlead, .fz-techlead > input {
-outline-color: black !important;
+    outline-color: black !important;
 }
+
 input.fz-user, .fz-user > input {
-outline-color:blue !important;
+    outline-color: blue !important;
 }
 
 .cke_textarea_inline {
-    display: block; 
+    display: block;
     background-color: white;
     padding: 5px;
     border-radius: 5px;
@@ -1481,4 +1477,9 @@ outline-color:blue !important;
     margin-left: 0;
     margin-right: 0;
     margin-bottom: 5px;
+}
+
+.deleted-task-bg {
+    background: gray !important;
+    background-color: gray !important;
 }
