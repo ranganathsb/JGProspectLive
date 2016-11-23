@@ -55,6 +55,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            CommonFunction.AuthenticateUser();
+
             if (!Page.IsPostBack)
             {
                 CheckIsAdmin();
