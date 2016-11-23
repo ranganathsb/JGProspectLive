@@ -384,7 +384,7 @@ namespace JG_Prospect.Sr_App.Controls
                     #endregion
                 }
 
-                if (Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsDeleted")))
+                if (ddlgvTaskStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Deleted).ToString())
                 {
                     if (e.Row.RowState == DataControlRowState.Alternate)
                     {
@@ -393,6 +393,18 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         e.Row.CssClass = "FirstRow deleted-task-bg";
+                    }
+                }
+
+                if (ddlgvTaskStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Closed).ToString())
+                {
+                    if (e.Row.RowState == DataControlRowState.Alternate)
+                    {
+                        e.Row.CssClass = "AlternateRow closed-task-bg";
+                    }
+                    else
+                    {
+                        e.Row.CssClass = "FirstRow closed-task-bg";
                     }
                 }
             }
