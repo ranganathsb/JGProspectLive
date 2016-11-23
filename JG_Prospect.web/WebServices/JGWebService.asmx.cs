@@ -126,7 +126,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, string strTitle,string strURL, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword)
+        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, string strTitle,string strURL, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword = "")
         {
             bool blSuccess = true;
 
@@ -138,7 +138,7 @@ namespace JG_Prospect.WebServices
                 objTaskWorkSpecification.TaskId = intTaskId;
                 objTaskWorkSpecification.Description = Server.HtmlDecode(strDescription);
                 objTaskWorkSpecification.Title = strTitle;
-                objTaskWorkSpecification.Description = strURL;
+                objTaskWorkSpecification.URL = strURL;
 
                 // save will revoke freezed status.
                 objTaskWorkSpecification.AdminStatus = false;

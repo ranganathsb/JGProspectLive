@@ -57,12 +57,13 @@
         <td>
             <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"></div>
-                    <label data-id="lblTitle{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"/>
-                    <label data-id="lblURL{id}" style="padding: 3px; display: block; line-height: 15px; background-color: white;"/>
+                    <div data-id="divTitle{id}" style="padding: 3px; display: block; line-height: 15px; min-height: 15px; background-color: white;border-bottom: 1px solid silver;"></div>
+                    <div data-id="divURL{id}" style="padding: 3px; display: block; line-height: 15px; min-height: 15px; background-color: white;border-bottom: 1px solid silver;"></div>
+                    <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; min-height: 15px; line-height: 15px; background-color: white;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <input data-id="txtTitle{id}" placeholder="Title" class="textbox" type="text" style="width: 25%;"/><input data-id="txtURL{id}" placeholder="Url" class="textbox" type="text" style="width: 70%;"/>
+                    <input data-id="txtTitle{id}" placeholder="Title" class="textbox" type="text" style="width: 25%;"/>
+                    <input data-id="txtURL{id}" placeholder="Url" class="textbox" type="text" style="width: 70%;"/>
                     <br/> 
                     <textarea data-id="txtWorkSpecification{id}" row="7" id="txtWorkSpecification{id}" style="width: 95%;"></textarea>
                 </div>
@@ -211,10 +212,10 @@
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
                 $WorkSpecificationRowTemplate.find('div[data-id="divWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
-                $WorkSpecificationRowTemplate.find('input[data-id="txtTitle'+arrData[i].Id+'"]').html(arrData[i].Title);
-                $WorkSpecificationRowTemplate.find('label[data-id="lblTitle'+arrData[i].Id+'"]').html(arrData[i].Title);
-                $WorkSpecificationRowTemplate.find('input[data-id="txtURL'+arrData[i].Id+'"]').html(arrData[i].URL);
-                $WorkSpecificationRowTemplate.find('label[data-id="lblURL'+arrData[i].Id+'"]').html(arrData[i].URL);
+                $WorkSpecificationRowTemplate.find('input[data-id="txtTitle'+arrData[i].Id+'"]').val(arrData[i].Title);
+                $WorkSpecificationRowTemplate.find('div[data-id="divTitle'+arrData[i].Id+'"]').html(arrData[i].Title);
+                $WorkSpecificationRowTemplate.find('input[data-id="txtURL'+arrData[i].Id+'"]').val(arrData[i].URL);
+                $WorkSpecificationRowTemplate.find('div[data-id="divURL'+arrData[i].Id+'"]').html(arrData[i].URL);
                 
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecification'+arrData[i].Id+'"]').hide();
                 $WorkSpecificationRowTemplate.find('div[data-id="divEditWorkSpecificationButtons'+arrData[i].Id+'"]').hide();
@@ -377,6 +378,8 @@
         var strTitle = $('input[data-id="txtTitle'+intParentId+'_Footer"]').val();
         var strURL = $('input[data-id="txtURL'+intParentId+'_Footer"]').val();
 
+        var postData = '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }';
+        
         $.ajax
         (
             {
@@ -384,7 +387,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data: '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }',
+                data: postData,
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
@@ -419,8 +422,8 @@
         var strTitle = $('input[data-id="txtTitle'+Id+'"]').val();
         var strURL = $('input[data-id="txtURL'+Id+'"]').val();
 
-        var datatoSend = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ' }';
-
+        var postData = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"\"  }';
+        
         $.ajax
         (
             {
@@ -428,7 +431,7 @@
                 contentType: 'application/json; charset=utf-8;',
                 type: 'POST',
                 dataType: 'json',
-                data:  datatoSend,
+                data:  postData,
                 asynch: false,
                 success: function (data) {
                     HideAjaxLoader();
