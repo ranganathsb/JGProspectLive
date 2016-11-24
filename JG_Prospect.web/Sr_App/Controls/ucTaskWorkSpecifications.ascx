@@ -58,12 +58,10 @@
             <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
                     <div style="background-color: white; border-bottom: 1px solid silver;">
-                        <label><small><i>TITLE:</i></small></label><span data-id="divTitle{id}" style="line-height: 15px; min-height: 15px; background-color: white;"></span><br />
+                        <label><small><i>TITLE:</i></small></label><div data-id="divTitle{id}" style="display: inline; line-height: 15px; min-height: 15px; background-color: white;"></div><br />
                         <label><small><i>URL:</i></small></label>
-                        <span data-id="divURL{id}" style="line-height: 15px; min-height: 15px;"></span>
+                        <div data-id="divURL{id}" style="display: inline; line-height: 15px; min-height: 15px;"></div>
                     </div>
-
-
                     <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; min-height: 15px; line-height: 15px; background-color: white;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
@@ -443,8 +441,10 @@
                     HideAjaxLoader();
                     if(data.d) {
                         // update div containing work specification content.
+                        $('div[data-id="divTitle'+Id+'"]').text(strTitle);
+                        $('div[data-id="divURL'+Id+'"]').text(strURL);
                         $('div[data-id="divWorkSpecification'+Id+'"]').html(strDescription);
-
+                        
                         alert('Specification saved successfully.');
                         // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
                         $('#<%=btnUpdateTaskStatus.ClientID%>').click();
