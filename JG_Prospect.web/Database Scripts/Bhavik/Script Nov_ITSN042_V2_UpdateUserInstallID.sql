@@ -32,6 +32,9 @@ DECLARE c_customers CURSOR FOR
 		ELSE IF @U_designation = 'Jr. Project Manager'
 			SET @U_desc_code = 'JPM'
 
+		ELSE IF @U_designation = 'Jr Project Manager'
+			SET @U_desc_code = 'JPM'
+
 		ELSE IF @U_designation = 'Office Manager'
 			SET @U_desc_code = 'OFM'	
 
@@ -44,7 +47,7 @@ DECLARE c_customers CURSOR FOR
 		ELSE IF @U_designation = 'Sr. Sales'
 			SET @U_desc_code = 'SSL'
 
-		ELSE IF @U_designation = 'IT - Network Admin"'
+		ELSE IF @U_designation = 'IT - Network Admin'
 			SET @U_desc_code = 'ITNA'
 
 		ELSE IF @U_designation = 'IT - Jr .Net Developer'
