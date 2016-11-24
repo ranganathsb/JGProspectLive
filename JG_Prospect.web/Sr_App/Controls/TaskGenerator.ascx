@@ -174,7 +174,8 @@
                         <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" />
                     </td>
                     <td style="width: 8%;">
-                        <asp:LinkButton ID="btnLoadMore" runat="server" Text="View More" OnClick="btnLoadMore_Click" />
+                        <asp:LinkButton ID="btnLoadMore" runat="server" Style="display: none;" Text="View More" OnClick="btnLoadMore_Click" />
+                        <a id="hypViewMore" href="javascript:void(0);" data-expanded="0">View More</a>
                     </td>
                     <td style="display: none">
                         <%--<asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click"  />--%>
@@ -213,7 +214,7 @@
                                 <a id="hypUsers" style="text-decoration: none;" class="tooltip" runat="server"></a>
                                 <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                     AutoPostBack="true" OnSelectedIndexChanged="gvTasks_ddcbAssigned_SelectedIndexChanged">
-                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                    <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
                                     <Texts SelectBoxCaption="--Open--" />
                                 </asp:DropDownCheckBoxes>
                                 <div id="divAcceptRejectButtons" runat="server" visible="false">
@@ -792,7 +793,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#divTaskMain', $('#taskGrid').html());
+        setClickableTooltip('#taskGrid ');
+        bindViewMore();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -804,6 +806,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
+        setClickableTooltip('#divTaskMain', $('#taskGrid').html());
+        bindViewMore();
     });
 
     function RemoveTask(TaskId) {
@@ -839,73 +843,73 @@
                         // remove loading spinner image.                                
                         $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
 
-                        }
-                    });
-                },
+                    }
+                });
+            },
             minLength: 2,
             select: function (event, ui) {
                 //console.log(event);
                 //console.log(ui);
                 $("#<%=txtSearch.ClientID%>").val(ui.item.value);
-                    TriggerSearch();
-                }
+                TriggerSearch();
+            }
         });
-            }
+        }
 
-            function createCategorisedAutoSearch() {
+        function createCategorisedAutoSearch() {
 
-                $.widget("custom.catcomplete", $.ui.autocomplete, {
-                    _create: function () {
-                        this._super();
-                        this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                    },
-                    _renderMenu: function (ul, items) {
-                        var that = this,
-                          currentCategory = "";
-                        $.each(items, function (index, item) {
-                            var li;
-                            if (item.Category != currentCategory) {
-                                ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                                currentCategory = item.Category;
-                            }
-                            li = that._renderItemData(ul, item);
-                            if (item.Category) {
-                                li.attr("aria-label", item.Category + " : " + item.label);
-                            }
-                        });
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
 
-                    }
-                });
-            }
-
-            function setTaskDivClickTrigger() {
-                //On click of task list it should open tasklist page.
-                $('#taskGrid').click(function (e) {
-                    
-                    if ($(e.target).is("a") || $(e.target).is("select") || e.target.id == "caption" || $(e.target).hasClass('dd_chk_select')) {
-                        return;
-                    }
-                    else {
-                        window.location.href = $("#hypTaskListMore").attr("href");
-                    }
-                });
-            }
-
-            // as soon as user will type 2 character it will go for search.
-            function setSearchTextKeyUpSearchTrigger(textbox) {
-
-                var searchText = $(textbox).val();
-
-                if (searchText.length > 1) {
-                    TriggerSearch();
                 }
+            });
+        }
 
-                $(textbox).focus();
+        function setTaskDivClickTrigger() {
+            //On click of task list it should open tasklist page.
+            $('#taskGrid').click(function (e) {
+
+                if ($(e.target).is("a") || $(e.target).is("select") || e.target.id == "caption" || $(e.target).hasClass('dd_chk_select')) {
+                    return;
+                }
+                else {
+                    window.location.href = $("#hypTaskListMore").attr("href");
+                }
+            });
+        }
+
+        // as soon as user will type 2 character it will go for search.
+        function setSearchTextKeyUpSearchTrigger(textbox) {
+
+            var searchText = $(textbox).val();
+
+            if (searchText.length > 1) {
+                TriggerSearch();
             }
 
-            function EditTask(id, tasktitle) {
+            $(textbox).focus();
+        }
 
-                window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
+        function EditTask(id, tasktitle) {
+
+            window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
             }
 
             function setDatePicker() {
@@ -933,8 +937,13 @@
             }
 
             function SetHeaderSectionHeight() {
-                $('.tasklist').css('max-height', '800px');
-                $('.tasklist').animate({ 'max-height': 800 }, 600);
+                //$('.tasklist').css('max-height', '800px');
+                $('.tasklist').animate({ 'maxHeight': 600 }, 1000);
+            }
+
+            function HideHeaderSectionHeight() {
+                //$('.tasklist').css('max-height', '165px');
+                $('.tasklist').animate({ 'maxHeight': 165 }, 1000);
             }
 
             function TriggerSearch() {
@@ -942,25 +951,37 @@
 
             }
 
-            function setClickableTooltip(target, content) {
-                $(target).tooltip({
-                    show: null, // show immediately 
-                    position: { my: "left top", at: "left top" },
-                    content: content, //from params
-                    hide: { effect: "" }, //fadeOut
-                    close: function (event, ui) {
-                        ui.tooltip.hover(
-                            function () {
-                                $(this).stop(true).fadeTo(400, 1);
-                            },
-                            function () {
-                                $(this).fadeOut("400", function () {
-                                    $(this).remove();
-                                })
-                            }
-                        );
+            function setClickableTooltip(target) {
+                $(target).mouseover(function () {
+                    var hyperlinkview = $("#hypViewMore");
+                    var expanded = hyperlinkview.attr("data-expanded");
+                    if (expanded == "0") {
+                        toggleShowMoreResults(expanded, hyperlinkview);
                     }
                 });
+               
+            }
+
+            function bindViewMore() {
+
+                $("#hypViewMore").click(function () {
+                    var expanded = $(this).attr("data-expanded");
+                    toggleShowMoreResults(expanded, this);
+                });
+            }
+
+            function toggleShowMoreResults(view, linkobject) {
+
+                if (view == "0") {// if content is hidden than expand it.
+                    SetHeaderSectionHeight();
+                    $(linkobject).html("Hide");
+                    $(linkobject).attr("data-expanded","1");
+                }
+                else {
+                    HideHeaderSectionHeight()
+                    $(linkobject).html("View More");
+                    $(linkobject).attr("data-expanded", "0");
+                }
             }
 
 </script>

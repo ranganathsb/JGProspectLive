@@ -1376,7 +1376,7 @@ ul.left_nav {
     margin-left: 220px !important;
     width: 75%;
     position: relative;
-    z-index: 9;
+    z-index: 1001;
 }
 
     .tasklist a {

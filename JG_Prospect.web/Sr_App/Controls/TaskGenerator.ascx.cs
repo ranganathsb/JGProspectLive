@@ -143,7 +143,7 @@ namespace JG_Prospect.Sr_App.Controls
                 SetControlDisplay();
                 LoadFilters();
                 //SearchTasks(null);
-                SearchTasks(15);
+                SearchTasks(50);
                 LoadPopupDropdown();
             }
         }
@@ -394,6 +394,10 @@ namespace JG_Prospect.Sr_App.Controls
                     {
                         e.Row.CssClass = "FirstRow deleted-task-bg";
                     }
+
+                    ddcbAssigned.Enabled = false;
+                    ddlgvTaskStatus.Enabled = false;
+                    
                 }
 
                 if (ddlgvTaskStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Closed).ToString())
@@ -406,6 +410,8 @@ namespace JG_Prospect.Sr_App.Controls
                     {
                         e.Row.CssClass = "FirstRow closed-task-bg";
                     }
+                    ddcbAssigned.Enabled = false;
+                    ddlgvTaskStatus.Enabled = false;
                 }
             }
         }

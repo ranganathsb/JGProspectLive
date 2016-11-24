@@ -22,19 +22,19 @@
                     </small>
                 </td>
                 <td>
-                <input data-id="txtTitle{parent-id}_Footer" type="text" class="textbox" placeholder="Title" style="width: 25%;"/><input data-id="txtURL{parent-id}_Footer" class="textbox" placeholder="Url" type="text" style="width: 70%;"/>
-                <br/>
-                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="7" style="width: 95%;"></textarea>                    
+                    <input data-id="txtTitle{parent-id}_Footer" type="text" class="textbox" placeholder="Title" style="width: 25%;" /><input data-id="txtURL{parent-id}_Footer" class="textbox" placeholder="Url" type="text" style="width: 70%;" />
+                    <br />
+                    <textarea data-id="txtWorkSpecification{parent-id}_Footer" id="txtWorkSpecification{parent-id}_Footer" rows="7" style="width: 95%;"></textarea>
                     <button data-id="btnAdd{parent-id}_Footer" data-parent-work-specification-id="{parent-id}" onclick="javascript:return OnAddClick(this);">Add</button>
                 </td>
                 <td>
                     <div>
-                        <input data-id="chkAdminApproval{parent-id}_Footer" class="fz fz-admin"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
-                        <input data-id="chkITLeadApproval{parent-id}_Footer" class="fz fz-techlead"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
-                        <input data-id="chkUserApproval{parent-id}_Footer" class="fz fz-user"  data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
+                        <input data-id="chkAdminApproval{parent-id}_Footer" class="fz fz-admin" data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="Admin" onchange='<%=GetPasswordCheckBoxChangeEvent(true,false,false)%>' />&nbsp;
+                        <input data-id="chkITLeadApproval{parent-id}_Footer" class="fz fz-techlead" data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="IT Lead" onchange='<%=GetPasswordCheckBoxChangeEvent(false,true,false)%>' />&nbsp;
+                        <input data-id="chkUserApproval{parent-id}_Footer" class="fz fz-user" data-parent-work-specification-id="{parent-id}" data-footer="true" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
                     </div>
                     <div data-id="divPassword{parent-id}_Footer">
-                        <input data-id="txtPassword{parent-id}_Footer" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
+                        <input data-id="txtPassword{parent-id}_Footer" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width: 110px;"
                             data-parent-work-specification-id="{parent-id}" />
                     </div>
                 </td>
@@ -57,14 +57,19 @@
         <td>
             <div style="margin-bottom: 5px;">
                 <div data-id="divViewWorkSpecification{id}">
-                    <div data-id="divTitle{id}" style="padding: 3px; display: block; line-height: 15px; min-height: 15px; background-color: white;border-bottom: 1px solid silver;"></div>
-                    <div data-id="divURL{id}" style="padding: 3px; display: block; line-height: 15px; min-height: 15px; background-color: white;border-bottom: 1px solid silver;"></div>
+                    <div style="background-color: white; border-bottom: 1px solid silver;">
+                        <label><small><i>TITLE:</i></small></label><span data-id="divTitle{id}" style="line-height: 15px; min-height: 15px; background-color: white;"></span><br />
+                        <label><small><i>URL:</i></small></label>
+                        <span data-id="divURL{id}" style="line-height: 15px; min-height: 15px;"></span>
+                    </div>
+
+
                     <div data-id="divWorkSpecification{id}" style="padding: 3px; display: block; min-height: 15px; line-height: 15px; background-color: white;"></div>
                 </div>
                 <div data-id="divEditWorkSpecification{id}">
-                    <input data-id="txtTitle{id}" placeholder="Title" class="textbox" type="text" style="width: 25%;"/>
-                    <input data-id="txtURL{id}" placeholder="Url" class="textbox" type="text" style="width: 70%;"/>
-                    <br/> 
+                    <input data-id="txtTitle{id}" placeholder="Title" class="textbox" type="text" style="width: 25%;" />
+                    <input data-id="txtURL{id}" placeholder="Url" class="textbox" type="text" style="width: 70%;" />
+                    <br />
                     <textarea data-id="txtWorkSpecification{id}" row="7" id="txtWorkSpecification{id}" style="width: 95%;"></textarea>
                 </div>
                 <div data-id="divViewWorkSpecificationButtons{id}" style="display: inline;">
@@ -89,7 +94,7 @@
                 <input data-id="chkUserApproval{id}" class="fz fz-user" data-footer="false" data-work-specification-id="{id}" type="checkbox" title="User" onchange='<%=GetPasswordCheckBoxChangeEvent(false,false,true)%>' />
             </div>
             <div data-id="divPassword{id}">
-                <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width:110px;"
+                <input data-id="txtPassword{id}" type="password" placeholder='<%=GetPasswordPlaceholder()%>' class="textbox" style="width: 110px;"
                     data-parent-work-specification-id="{parent-id}" data-work-specification-id="{id}"
                     onchange="javascript:OnApprovalPasswordChanged(this);" />
             </div>
@@ -115,7 +120,8 @@
         <asp:UpdatePanel ID="upTwsFeedbackPopup" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <fieldset>
-                    <legend><asp:Literal ID="ltrlTwsFeedbackTitle" runat="server" /></legend>
+                    <legend>
+                        <asp:Literal ID="ltrlTwsFeedbackTitle" runat="server" /></legend>
                     <table id="tblAddEditTwsFeedback" runat="server" cellspacing="3" cellpadding="3" width="100%">
                         <tr>
                             <td colspan="2">&nbsp;
@@ -137,7 +143,7 @@
                             <td>
                                 <input id="hdnTwsAttachments" runat="server" type="hidden" />
                                 <input id="hdnTwsFileType" runat="server" type="hidden" />
-                               <div id="divTwsDropzone" runat="server" class="dropzone ">
+                                <div id="divTwsDropzone" runat="server" class="dropzone ">
                                     <div class="fallback">
                                         <input name="file" type="file" multiple />
                                         <input type="submit" value="Upload" />
@@ -150,8 +156,8 @@
                         <tr>
                             <td colspan="2">
                                 <div class="btn_sec">
-                                    <asp:Button ID="btnSaveTwsFeedback" runat="server" ClientIDMode="AutoID"  ValidationGroup="comment_tws" OnClick="btnSaveTwsFeedback_Click" CssClass="ui-button" Text="Save"  />
-                                    <asp:Button ID="btnSaveTwsAttachment" runat="server"   OnClick="btnSaveTwsAttachment_Click" style="display:none;" Text="Save Attachement"  />
+                                    <asp:Button ID="btnSaveTwsFeedback" runat="server" ClientIDMode="AutoID" ValidationGroup="comment_tws" OnClick="btnSaveTwsFeedback_Click" CssClass="ui-button" Text="Save" />
+                                    <asp:Button ID="btnSaveTwsAttachment" runat="server" OnClick="btnSaveTwsAttachment_Click" Style="display: none;" Text="Save Attachement" />
                                 </div>
                             </td>
                         </tr>
@@ -394,12 +400,12 @@
                     if(data.d) {
                         // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
                         $('#<%=btnUpdateTaskStatus.ClientID%>').click();
-                        GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
-                        alert('Specification saved successfully.');
-                    }
-                    else {
-                        alert('Specification update was not successfull, Please try again later.');
-                    }
+                    GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
+                    alert('Specification saved successfully.');
+                }
+                else {
+                    alert('Specification update was not successfull, Please try again later.');
+                }
                 },
                 error: function (a, b, c) {
                     console.log(a);
@@ -455,61 +461,61 @@
             }
         );
 
-        return false;
-    }
+            return false;
+        }
 
-    function OnShowFeedbackPopupClick(sender) {
-        var Id = $(sender).attr('data-work-specification-id');
+        function OnShowFeedbackPopupClick(sender) {
+            var Id = $(sender).attr('data-work-specification-id');
 
-        $('#<%=hdnFeedbackPopup.ClientID%>').val(Id);
-        $('#<%=btnShowFeedbackPopup.ClientID%>').click();
-    }
+            $('#<%=hdnFeedbackPopup.ClientID%>').val(Id);
+            $('#<%=btnShowFeedbackPopup.ClientID%>').click();
+        }
 
-    function OnApprovalCheckBoxChanged(sender) {
-        var intId= $(sender).attr('data-work-specification-id');
-        var intParentId= $(sender).attr('data-parent-work-specification-id');
-        var blFooter= $(sender).attr('data-footer');
+        function OnApprovalCheckBoxChanged(sender) {
+            var intId= $(sender).attr('data-work-specification-id');
+            var intParentId= $(sender).attr('data-parent-work-specification-id');
+            var blFooter= $(sender).attr('data-footer');
         
-        var strSelector = '';
-        if(blFooter == 'true') {
-            strSelector = 'div[data-id="divPassword' + intParentId + '_Footer"]';
-        }
-        else {
-            strSelector = 'div[data-id="divPassword' + intId + '"]';
-        }
+            var strSelector = '';
+            if(blFooter == 'true') {
+                strSelector = 'div[data-id="divPassword' + intParentId + '_Footer"]';
+            }
+            else {
+                strSelector = 'div[data-id="divPassword' + intId + '"]';
+            }
         
-        if($(sender).prop('checked')) {
-            $(strSelector).show();
+            if($(sender).prop('checked')) {
+                $(strSelector).show();
+            }
+            else {
+                $(strSelector).hide();
+            }
         }
-        else {
-            $(strSelector).hide();
-        }
-    }
 
-    function OnApprovalPasswordChanged(sender) {
+        function OnApprovalPasswordChanged(sender) {
     
-        ShowAjaxLoader();
+            ShowAjaxLoader();
 
-        var Id= $(sender).attr('data-work-specification-id');
-        var intParentId = $(sender).attr('data-parent-work-specification-id');
+            var Id= $(sender).attr('data-work-specification-id');
+            var intParentId = $(sender).attr('data-parent-work-specification-id');
 
-        $.ajax
-        (
-            {
-                url: '../WebServices/JGWebService.asmx/UpdateTaskWorkSpecificationStatusById',
-                contentType: 'application/json; charset=utf-8;',
-                type: 'POST',
-                dataType: 'json',
-                data:  '{ intId:' + Id + ', strPassword:"' + $(sender).val() + '"}',
-                asynch: false,
-                success: function (data) {
-                    HideAjaxLoader();
-                    if(data.d == -2) {
-                        alert('Specification cannot be freezed as password is not valid.');
-                    }
-                    else if(data.d > 0) {
-                        // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
-                        $('#<%=btnUpdateTaskStatus.ClientID%>').click();
+            $.ajax
+            (
+                {
+                    url: '../WebServices/JGWebService.asmx/UpdateTaskWorkSpecificationStatusById',
+                    contentType: 'application/json; charset=utf-8;',
+                    type: 'POST',
+                    dataType: 'json',
+                    data:  '{ intId:' + Id + ', strPassword:"' + $(sender).val() + '"}',
+                    asynch: false,
+                    success: function (data) {
+                        HideAjaxLoader();
+                        if(data.d == -2) {
+                            alert('Specification cannot be freezed as password is not valid.');
+                        }
+                        else if(data.d > 0) {
+                            // this will update task status from open to specs-in-progress and vice versa based on over all freezing status of work specifications.
+                            $('#<%=btnUpdateTaskStatus.ClientID%>').click();
                         GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
                         alert('Specification freezed successfully.');
                     }

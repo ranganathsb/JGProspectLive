@@ -293,6 +293,10 @@ namespace JG_Prospect.Sr_App
                     {
                         e.Row.CssClass = "FirstRow deleted-task-bg";
                     }
+
+                    ddcbAssignedUser.Visible = false;
+                    ddlStatus.Enabled = false;
+                    ddlPriority.Enabled = false;
                 }
 
                 if (ddlStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Closed).ToString())
@@ -305,6 +309,10 @@ namespace JG_Prospect.Sr_App
                     {
                         e.Row.CssClass = "FirstRow closed-task-bg";
                     }
+
+                    ddcbAssignedUser.Visible = false;
+                    ddlStatus.Enabled = false;
+                    ddlPriority.Enabled = false;
                 }
             }
         }
