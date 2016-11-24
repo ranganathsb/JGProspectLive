@@ -795,7 +795,7 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#taskGrid ');
+        setClickableTooltip('#taskGrid');
         bindViewMore();
     });
 
@@ -808,7 +808,7 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#divTaskMain', $('#taskGrid').html());
+        setClickableTooltip('#taskGrid', $('#taskGrid').html());
         bindViewMore();
     });
 

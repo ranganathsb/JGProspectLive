@@ -160,7 +160,6 @@ namespace JG_Prospect.App_Code
                 MailMessage Msg = new MailMessage();
                 Msg.From = new MailAddress(userName, "JGrove Construction");
                 Msg.To.Add(strToAddress);
-                //Msg.To.Add("christianjackson5168@gmail.com");
                 Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;

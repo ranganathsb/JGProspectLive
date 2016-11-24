@@ -1,4 +1,4 @@
-dark /*------------------------------------------------------------------
+/*------------------------------------------------------------------
 [Table of contents]
 
 1. Reset
@@ -1376,7 +1376,7 @@ ul.left_nav {
     margin-left: 220px !important;
     width: 75%;
     position: relative;
-    z-index: 1001;
+    z-index: 10;
 }
 
     .tasklist a {
@@ -1488,4 +1488,7 @@ input.fz-user, .fz-user > input {
     background: black !important;
     background-color: black !important;
     color: white !important;
+}
+.RadScheduler .rsHeader {
+z-index: 9 !important;
 }

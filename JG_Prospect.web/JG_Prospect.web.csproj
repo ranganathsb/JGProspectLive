@@ -973,6 +973,7 @@
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="Database Scripts\Bhavik\Script Nov_ITSN042_V1.sql" />
+    <Content Include="Database Scripts\Bhavik\Script Nov_ITSN042_V2_UpdateUserInstallID.sql" />
     <Content Include="Database Scripts\Bhavik\scripts Nov_ITSN032_v1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _Calendar_Task 4.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
