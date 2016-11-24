@@ -66,6 +66,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@TaskPriority", DbType.Int16, objTask.TaskPriority.Value);
                     }
                     database.AddInParameter(command, "@IsTechTask", DbType.Int16, objTask.IsTechTask);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     database.AddOutParameter(command, "@Result", DbType.Int32, 0);
 
@@ -156,6 +157,7 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, taskId);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -783,85 +785,6 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    /*
-                    DbCommand command = database.GetStoredProcCommand("usp_SearchUserTasks");
-
-                    if (UserID != null)
-                    {
-                        database.AddInParameter(command, "@UserID", DbType.Int32, Convert.ToInt32(UserID));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@UserID", DbType.Int32, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Title))
-                    {
-                        database.AddInParameter(command, "@Title", DbType.String, Title);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Title", DbType.String, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Designation))
-                    {
-                        database.AddInParameter(command, "@Designation", DbType.String, Designation);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Designation", DbType.String, DBNull.Value);
-                    }
-
-                    if (Status != null)
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, Convert.ToInt16(Status));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, DBNull.Value);
-                    }
-                    if (CreatedFrom != null)
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, Convert.ToDateTime(CreatedFrom));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, DBNull.Value);
-                    }
-                    if (CreatedTo != null)
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, Convert.ToDateTime(CreatedTo));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, DBNull.Value);
-                    }
-
-                    database.AddInParameter(command, "@Start", DbType.Int32, Start);
-                    database.AddInParameter(command, "@PageLimit", DbType.Int32, PageLimit);
-
-                    database.AddInParameter(command, "@IsAdmin", DbType.Boolean, isAdmin);
-
-                    if (!String.IsNullOrEmpty(Designations))
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, Designations);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Statuses))
-                    {
-                        database.AddInParameter(command, "@Statuses", DbType.String, Statuses);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Statuses", DbType.String, DBNull.Value);
-                    }       
-                    */
-
                     DbCommand command = database.GetStoredProcCommand("uspSearchTasks");
 
                     if (!String.IsNullOrEmpty(Designations))
@@ -925,6 +848,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
 
+                    database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+                    
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
                     return returndata;

@@ -6304,3 +6304,132 @@ END
 GO
 
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 07/22/2016
+-- Description:	Soft delete task from task id.
+-- =============================================
+ALTER PROCEDURE [dbo].[usp_DeleteTask] 
+(	
+	@TaskId int,
+	@DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	
+	UPDATE tblTask
+	SET
+		IsDeleted = 1,
+		[Status] = @DeletedStatus
+	WHERE
+		(TaskId = @TaskId) OR (ParentTaskId = @TaskId)
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Nov 16
+-- Description:	Inserts, Updates or Deletes a task.
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTask]  
+	 @Mode tinyint, -- 0:Insert, 1: Update, 2: Delete  
+	 @TaskId bigint,  
+	 @Title varchar(250),  
+	 @Description varchar(MAX),  
+	 @Status tinyint,  
+	 @DueDate datetime = NULL,  
+	 @Hours varchar(25),
+	 @CreatedBy int,	
+	 @InstallId varchar(50) = NULL,
+	 @ParentTaskId bigint = NULL,
+	 @TaskType tinyint = NULL,
+	 @TaskPriority tinyint = null,
+	 @IsTechTask bit = NULL,
+	 @DeletedStatus	TINYINT = 9,
+	 @Result int output 
+AS  
+BEGIN  
+  
+	IF @Mode=0  
+	  BEGIN  
+		INSERT INTO tblTask 
+				(
+					Title,
+					[Description],
+					[Status],
+					DueDate,
+					[Hours],
+					CreatedBy,
+					CreatedOn,
+					IsDeleted,
+					InstallId,
+					ParentTaskId,
+					TaskType,
+					TaskPriority,
+					IsTechTask,
+					AdminStatus,
+					TechLeadStatus,
+					OtherUserStatus
+				)
+		VALUES
+				(
+					@Title,
+					@Description,
+					@Status,
+					@DueDate,
+					@Hours,
+					@CreatedBy,
+					GETDATE(),
+					0,
+					@InstallId,
+					@ParentTaskId,
+					@TaskType,
+					@TaskPriority,
+					@IsTechTask,
+					0,
+					0,
+					0
+				)  
+  
+		SET @Result=SCOPE_IDENTITY ()  
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=1 -- Update  
+	BEGIN    
+		UPDATE tblTask  
+		SET  
+			Title=@Title,  
+			[Description]=@Description,  
+			[Status]=@Status,  
+			DueDate=@DueDate,  
+			[Hours]=@Hours,
+			[TaskType] = @TaskType,
+			[TaskPriority] = @TaskPriority,
+			[IsTechTask] = @IsTechTask
+		WHERE TaskId=@TaskId  
+
+		SET @Result= @TaskId
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=2 --Delete  
+	BEGIN  
+		UPDATE tblTask  
+		SET  
+			IsDeleted=1,
+			[Status] = @DeletedStatus
+		WHERE TaskId=@TaskId OR ParentTaskId=@TaskId  
+	END  
+  
+END
+GO
