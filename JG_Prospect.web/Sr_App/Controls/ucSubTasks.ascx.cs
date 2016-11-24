@@ -103,7 +103,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlStatus.DataTextField = "Text";
                 ddlStatus.DataValueField = "Value";
                 ddlStatus.DataBind();
-                ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskType").ToString()))
                 {
@@ -790,7 +790,7 @@ namespace JG_Prospect.Sr_App.Controls
             ddlSubTaskStatus.DataTextField = "Text";
             ddlSubTaskStatus.DataValueField = "Value";
             ddlSubTaskStatus.DataBind();
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            //ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
             ddlSubTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
             ddlSubTaskPriority.DataTextField = "Text";
@@ -948,14 +948,14 @@ namespace JG_Prospect.Sr_App.Controls
             ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
             if (objListItem != null)
             {
-                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
-                {
-                    ddlStatus.Enabled = false;
-                }
-                else
-                {
-                    ddlStatus.Enabled = true;
-                }
+                //if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                //{
+                //    ddlStatus.Enabled = false;
+                //}
+                //else
+                //{
+                //    ddlStatus.Enabled = true;
+                //}
                 objListItem.Enabled = true;
                 objListItem.Selected = true;
             }

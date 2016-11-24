@@ -1404,14 +1404,14 @@ namespace JG_Prospect.Sr_App
 
                     // disable dropdown and do not allow user to change status
                     // status will be changed only after freezing the specifications.
-                    if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
-                    {
-                        //cmbStatus.Enabled = false;
-                    }
-                    else
-                    {
-                        cmbStatus.Enabled = true;
-                    }
+                    //if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                    //{
+                    //    cmbStatus.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    cmbStatus.Enabled = true;
+                    //}
                 }
                 else
                 {
@@ -1454,14 +1454,14 @@ namespace JG_Prospect.Sr_App
 
                     // disable dropdown and do not allow user to change status
                     // status will be changed only after freezing the specifications.
-                    if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
-                    {
-                        //ddlTUStatus.Enabled = false;
-                    }
-                    else
-                    {
-                        ddlTUStatus.Enabled = true;
-                    }
+                    //if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                    //{
+                    //    ddlTUStatus.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    ddlTUStatus.Enabled = true;
+                    //}
                 }
                 else
                 {

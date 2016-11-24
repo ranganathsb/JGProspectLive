@@ -428,7 +428,7 @@ namespace JG_Prospect.Sr_App.Controls
                 cmbStatus.DataTextField = "Text";
                 cmbStatus.DataValueField = "Value";
                 cmbStatus.DataBind();
-                cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 LoadTaskData(e.CommandArgument.ToString(), true);
             }
@@ -914,10 +914,10 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskStatus.DataBind();
                 ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
-                if (!this.IsAdminMode)
-                {
-                    ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
-                }
+                //if (!this.IsAdminMode)
+                //{
+                //    ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //}
 
                 ddlUsers.DataSource = dtUsers;
                 ddlUsers.DataTextField = "FirstName";

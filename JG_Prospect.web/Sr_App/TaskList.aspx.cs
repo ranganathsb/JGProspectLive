@@ -468,10 +468,10 @@ namespace JG_Prospect.Sr_App
             ddlTaskStatus.DataBind();
             ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
-            if (!this.IsAdminMode)
-            {
-                ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
-            }
+            //if (!this.IsAdminMode)
+            //{
+            //    ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+            //}
 
             ddlUsers.DataSource = dsFilters.Tables[0];
             ddlUsers.DataTextField = "FirstName";
