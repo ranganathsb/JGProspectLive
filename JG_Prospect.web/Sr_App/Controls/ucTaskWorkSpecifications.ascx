@@ -382,8 +382,17 @@
         var strTitle = $('input[data-id="txtTitle'+intParentId+'_Footer"]').val();
         var strURL = $('input[data-id="txtURL'+intParentId+'_Footer"]').val();
 
-        var postData = '{ intId:' + Id + ', strCustomId: \"' + strCustomId + '\", strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"' + strPassword + '\" }';
+        var postData = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', strTitle: \'' + strTitle + '\', strURL: \'' + strURL + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \'' + strPassword + '\'  }';
         
+        console.log(postData.replace(/\\n/g, "\\n")
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, "\\&")
+                            .replace(/\\r/g, "\\r")
+                            .replace(/\\t/g, "\\t")
+                            .replace(/\\b/g, "\\b")
+                            .replace(/\\f/g, "\\f"));
+
         $.ajax
         (
             {
@@ -426,7 +435,16 @@
         var strTitle = $('input[data-id="txtTitle'+Id+'"]').val();
         var strURL = $('input[data-id="txtURL'+Id+'"]').val();
 
-        var postData = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \"' + strDescription + '\", strTitle: \"' + strTitle + '\", strURL: \"' + strURL + '\", intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \"\"  }';
+        var postData = '{ intId:' + Id + ', strCustomId: \'' + strCustomId + '\', strDescription: \'' + strDescription + '\', strTitle: \'' + strTitle + '\', strURL: \'' + strURL + '\', intTaskId: ' + TaskId  + ', intParentTaskWorkSpecificationId: ' + intParentId + ', strPassword: \'\'  }';
+        
+        console.log(postData.replace(/\\n/g, "\\n")
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, "\\&")
+                            .replace(/\\r/g, "\\r")
+                            .replace(/\\t/g, "\\t")
+                            .replace(/\\b/g, "\\b")
+                            .replace(/\\f/g, "\\f"));
         
         $.ajax
         (
@@ -506,7 +524,7 @@
                     contentType: 'application/json; charset=utf-8;',
                     type: 'POST',
                     dataType: 'json',
-                    data:  '{ intId:' + Id + ', strPassword:"' + $(sender).val() + '"}',
+                    data:  '{ intId:' + Id + ', strPassword:\'' + $(sender).val() + '\'}',
                     asynch: false,
                     success: function (data) {
                         HideAjaxLoader();
