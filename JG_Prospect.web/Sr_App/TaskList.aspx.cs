@@ -182,23 +182,6 @@ namespace JG_Prospect.Sr_App
                         ddcbAssignedUser.DataTextField = "FristName";
                         ddcbAssignedUser.DataValueField = "Id";
                         ddcbAssignedUser.DataBind();
-
-                        if (!string.IsNullOrEmpty(drTask["TaskAssignedUserIds"].ToString()))
-                        {
-                            string[] arrUserIds = drTask["TaskAssignedUserIds"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (string strId in arrUserIds)
-                            {
-                                ListItem objListItem = ddcbAssignedUser.Items.FindByValue(strId.Trim());
-                                if (objListItem != null)
-                                {
-                                    objListItem.Selected = true;
-                                    ddcbAssignedUser.Texts.SelectBoxCaption = objListItem.Text;
-                                }
-                            }
-                        }
-
-                        ddcbAssignedUser.Attributes.Add("TaskId", drTask["TaskId"].ToString());
-                        ddcbAssignedUser.Attributes.Add("TaskStatus", ddlStatus.SelectedValue);
                     }
                     else if (ddlStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Requested).ToString())
                     {
@@ -223,10 +206,8 @@ namespace JG_Prospect.Sr_App
                     }
                     else
                     {
-                        lblAssignedUser.Visible = true;
-
-
-                        //ddcbAssigned.Visible =
+                        ddcbAssignedUser.Visible = true;
+                        lblAssignedUser.Visible = 
                         lbtnRequestStatus.Visible = false;
                         DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
@@ -235,15 +216,31 @@ namespace JG_Prospect.Sr_App
                         ddcbAssignedUser.DataTextField = "FristName";
                         ddcbAssignedUser.DataValueField = "Id";
                         ddcbAssignedUser.DataBind();
-
-                        SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssignedUser);
-                        ddcbAssignedUser.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
-                        ddcbAssignedUser.Attributes.Add("TaskStatus", ddlTaskStatus.SelectedValue);
                     }
 
                     ltrlPriority.Visible = false;
                     ddlPriority.Visible = true;
                     ddlPriority.Attributes.Add("TaskId", drTask["TaskId"].ToString());
+
+                    SetTaskAssignedUsers(Convert.ToString(drTask["TaskAssignedUsers"]), ddcbAssignedUser);
+
+                    // set assigned user selection in dropdown.
+                    if (!string.IsNullOrEmpty(drTask["TaskAssignedUserIds"].ToString()) && ddcbAssignedUser.Items.Count > 0)
+                    {
+                        string[] arrUserIds = drTask["TaskAssignedUserIds"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string strId in arrUserIds)
+                        {
+                            ListItem objListItem = ddcbAssignedUser.Items.FindByValue(strId.Trim());
+                            if (objListItem != null)
+                            {
+                                objListItem.Selected = true;
+                                ddcbAssignedUser.Texts.SelectBoxCaption = objListItem.Text;
+                            }
+                        }
+                    }
+
+                    ddcbAssignedUser.Attributes.Add("TaskId", drTask["TaskId"].ToString());
+                    ddcbAssignedUser.Attributes.Add("TaskStatus", ddlStatus.SelectedValue);
 
                     #endregion
                 }
@@ -695,7 +692,6 @@ namespace JG_Prospect.Sr_App
 
             foreach (string user in users)
             {
-
                 ListItem item = taskUsers.Items.FindByText(user);
 
                 if (item != null)

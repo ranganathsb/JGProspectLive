@@ -286,8 +286,8 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                     else
                     {
-                        hypUsers.Visible = true;
-                        //ddcbAssigned.Visible =
+                        ddcbAssigned.Visible = true;
+                        hypUsers.Visible =
                         lbtnRequestStatus.Visible = false;
                         DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
@@ -300,7 +300,6 @@ namespace JG_Prospect.Sr_App.Controls
                         SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
-                        hypUsers.Attributes.Add("style", "display:none;");
                     }
 
                     // set assigned user selection in dropdown.
