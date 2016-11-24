@@ -169,6 +169,7 @@
                                     OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged">
                                     <asp:ListItem Text="--All--" Value="0"></asp:ListItem>
                                     <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                    <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
                                     <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                     <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                     <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>

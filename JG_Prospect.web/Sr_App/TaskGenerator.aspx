@@ -54,6 +54,7 @@
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                             <Items>
                                                 <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                                <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
                                                 <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                                 <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                                 <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
