@@ -56,7 +56,7 @@
         </td>
         <td>
             <div style="margin-bottom: 5px;">
-                <div data-id="divViewWorkSpecification{id}">
+                <div data-id="divViewWorkSpecification{id}" data-work-specification-id="{id}" onclick="javascript:OndivViewWorkSpecificationClick(this);">
                     <div style="background-color: white; border-bottom: 1px solid silver;">
                         <label><small><i>TITLE:</i></small></label><div data-id="divTitle{id}" style="display: inline; line-height: 15px; min-height: 15px; background-color: white;"></div><br />
                         <label><small><i>URL:</i></small></label>
@@ -302,8 +302,18 @@
         );
     }
     
+    function OndivViewWorkSpecificationClick(sender) {
+        var $sender = $(sender);
+
+        var Id = $sender.attr('data-work-specification-id');
+        
+        if($('div[data-id="divEditWorkSpecification'+Id+'"]').length > 0) {
+            OnEditClick(sender);
+        }
+    }
+
     function OnEditClick(sender) {
-        $sender = $(sender);
+        var $sender = $(sender);
         
         var Id = $sender.attr('data-work-specification-id');
 
