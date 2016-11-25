@@ -388,7 +388,7 @@ namespace JG_Prospect.Sr_App
         {
             DropDownCheckBoxes ddcbAssigned = sender as DropDownCheckBoxes;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
-            HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
+            hdnTaskId.Value = ((HiddenField)objGridViewRow.FindControl("hdnTaskId")).Value;
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
 
             if (!string.IsNullOrEmpty(hdnTaskId.Value))
@@ -398,6 +398,7 @@ namespace JG_Prospect.Sr_App
                     SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
                 }
             }
+            hdnTaskId.Value = "0";
             SearchTasks();
         }
 

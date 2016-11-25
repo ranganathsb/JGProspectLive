@@ -539,13 +539,14 @@ namespace JG_Prospect.Sr_App.Controls
         {
             DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
-            HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
+            hdnTaskId.Value = ((HiddenField)objGridViewRow.FindControl("hdnTaskId")).Value;
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
 
             if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
             {
                 SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
             }
+            hdnTaskId.Value = "0";
             SearchTasks(null);
         }
 
