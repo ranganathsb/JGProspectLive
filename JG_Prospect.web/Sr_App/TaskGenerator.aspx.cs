@@ -289,9 +289,12 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveTask_Click(object sender, EventArgs e)
         {
-            InsertUpdateTask();
+            if (ValidateTaskStatus())
+            {
+                InsertUpdateTask();
 
-            RedirectToViewTasks();
+                RedirectToViewTasks();
+            }
         }
 
         protected void lbtnDeleteTask_Click(object sender, EventArgs e)
@@ -372,9 +375,12 @@ namespace JG_Prospect.Sr_App
         {
             if (controlMode.Value == "0")
             {
-                InsertUpdateTask();
+                if (ValidateTaskStatus())
+                {
+                    InsertUpdateTask();
 
-                RedirectToViewTasks("tws");
+                    RedirectToViewTasks("tws");
+                }
             }
             else
             {
@@ -386,9 +392,12 @@ namespace JG_Prospect.Sr_App
         {
             if (controlMode.Value == "0")
             {
-                InsertUpdateTask();
+                if (ValidateTaskStatus())
+                {
+                    InsertUpdateTask();
 
-                RedirectToViewTasks("tws");
+                    RedirectToViewTasks("tws");
+                }
             }
             else
             {
@@ -912,6 +921,39 @@ namespace JG_Prospect.Sr_App
             }
 
             return returnVal;
+        }
+
+        private bool ValidateTaskStatus()
+        {
+            bool blResult = true;
+
+            string strStatus = string.Empty;
+
+            if (this.IsAdminMode)
+            {
+                blResult = false;
+
+                strStatus = cmbStatus.SelectedValue;
+
+                // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                if (!string.IsNullOrEmpty(strStatus) && strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                {
+                    foreach (ListItem objItem in ddlAssignedUsers.Items)
+                    {
+                        if (objItem.Selected)
+                        {
+                            blResult = true;
+                        }
+                    }
+                }
+
+                if (!blResult)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "Task must be assigned to one or more users, to change status to assigned.");
+                }
+            }
+
+            return blResult;
         }
 
         /// <summary>
