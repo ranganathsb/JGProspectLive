@@ -395,7 +395,7 @@ namespace JG_Prospect.Sr_App
             {
                 if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
                 {
-                    SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
+                    SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddlTaskStatus.SelectedValue));
                 }
             }
             hdnTaskId.Value = "0";
@@ -405,14 +405,14 @@ namespace JG_Prospect.Sr_App
         protected void gvTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddlStatus = sender as DropDownList;
-            GridViewRow objGridViewRow = (GridViewRow)ddlTaskStatus.NamingContainer;
+            GridViewRow objGridViewRow = (GridViewRow)ddlStatus.NamingContainer;
             HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
             DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssignedUser") as DropDownCheckBoxes;
 
             if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
             {
                 Task objTask = new Task();
-                objTask.TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString());
+                objTask.TaskId = Convert.ToInt32(hdnTaskId.Value.ToString());
                 objTask.Status = Convert.ToByte(ddlStatus.SelectedItem.Value);
                 TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
             }

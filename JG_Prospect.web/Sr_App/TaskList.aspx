@@ -233,6 +233,7 @@
                             <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="hypTask" runat="server" />
+                                    <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150">
