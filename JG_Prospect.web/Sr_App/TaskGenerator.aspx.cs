@@ -931,13 +931,13 @@ namespace JG_Prospect.Sr_App
 
             if (this.IsAdminMode)
             {
-                blResult = false;
-
                 strStatus = cmbStatus.SelectedValue;
 
                 // if task is in assigned status. it should have assigned user selected there in dropdown. 
                 if (!string.IsNullOrEmpty(strStatus) && strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
                 {
+                    blResult = false;
+
                     foreach (ListItem objItem in ddlAssignedUsers.Items)
                     {
                         if (objItem.Selected)

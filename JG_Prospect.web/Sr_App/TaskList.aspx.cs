@@ -387,26 +387,34 @@ namespace JG_Prospect.Sr_App
         protected void gvTasks_ddcbAssignedUser_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownCheckBoxes ddcbAssigned = sender as DropDownCheckBoxes;
-            if (ddcbAssigned != null)
+            GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
+            HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
+            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
+
+            if (!string.IsNullOrEmpty(hdnTaskId.Value))
             {
-                hdnTaskId.Value = ddcbAssigned.Attributes["TaskId"];
-                if (!string.IsNullOrEmpty(hdnTaskId.Value))
+                if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
                 {
                     SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
-                    hdnTaskId.Value = "0";
-                    SearchTasks();
                 }
             }
+            SearchTasks();
         }
 
         protected void gvTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddlStatus = sender as DropDownList;
+            GridViewRow objGridViewRow = (GridViewRow)ddlTaskStatus.NamingContainer;
+            HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
+            DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssignedUser") as DropDownCheckBoxes;
 
-            Task objTask = new Task();
-            objTask.TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString());
-            objTask.Status = Convert.ToByte(ddlStatus.SelectedItem.Value);
-            TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
+            {
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString());
+                objTask.Status = Convert.ToByte(ddlStatus.SelectedItem.Value);
+                TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
+            }
             SearchTasks();
         }
 
@@ -683,6 +691,39 @@ namespace JG_Prospect.Sr_App
             {
                 Console.WriteLine("{0} Exception caught.", ex);
             }
+        }
+
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser)
+        {
+            bool blResult = true;
+
+            string strStatus = string.Empty;
+
+            if (this.IsAdminMode)
+            {
+                strStatus = ddlTaskStatus.SelectedValue;
+
+                // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                if (!string.IsNullOrEmpty(strStatus) && strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                {
+                    blResult = false;
+
+                    foreach (ListItem objItem in ddlAssignedUser.Items)
+                    {
+                        if (objItem.Selected)
+                        {
+                            blResult = true;
+                        }
+                    }
+                }
+
+                if (!blResult)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task must be assigned to one or more users, to change status to assigned.");
+                }
+            }
+
+            return blResult;
         }
 
         private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)

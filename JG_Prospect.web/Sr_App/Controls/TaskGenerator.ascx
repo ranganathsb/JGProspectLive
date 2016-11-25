@@ -228,7 +228,7 @@
                         <asp:TemplateField HeaderText="Status" HeaderStyle-Width="5%">
                             <ItemTemplate>
                                 <%--<asp:Label ID="lblTaskStatus" runat="server"></asp:Label>--%>
-                                <asp:DropDownList ID="ddlgvTaskStatus" Width="100" OnSelectedIndexChanged="ddlgvTaskStatus_SelectedIndexChanged"
+                                <asp:DropDownList ID="ddlTaskStatus" Width="100" OnSelectedIndexChanged="gvTasks_ddlTaskStatus_SelectedIndexChanged"
                                     AutoPostBack="true" runat="server">
                                     <%--<asp:ListItem Text="Open" Value="1"></asp:ListItem>
                                     <asp:ListItem Text="Assigned" Value="2"></asp:ListItem>
