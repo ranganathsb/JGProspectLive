@@ -330,38 +330,41 @@
 
     function OnDeleteClick(sender) {
 
-        ShowAjaxLoader();
-
-        $sender = $(sender);
+        if(confirm("Do you wish to delete work specification?")) {
         
-        var Id = $sender.attr('data-work-specification-id');
-        var intParentId = $sender.attr('data-parent-work-specification-id');
+            ShowAjaxLoader();
 
-        $.ajax
-        (
-            {
-                url: '../WebServices/JGWebService.asmx/DeleteTaskWorkSpecification',
-                contentType: 'application/json; charset=utf-8;',
-                type: 'POST',
-                dataType: 'json',
-                data: '{ intId:' + Id + ' }',
-                asynch: false,
-                success: function (data) {
-                    HideAjaxLoader();
-                    if(data.d) {
-                        GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
-                        alert('Specification deleted successfully.');
+            $sender = $(sender);
+        
+            var Id = $sender.attr('data-work-specification-id');
+            var intParentId = $sender.attr('data-parent-work-specification-id');
+
+            $.ajax
+            (
+                {
+                    url: '../WebServices/JGWebService.asmx/DeleteTaskWorkSpecification',
+                    contentType: 'application/json; charset=utf-8;',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: '{ intId:' + Id + ' }',
+                    asynch: false,
+                    success: function (data) {
+                        HideAjaxLoader();
+                        if(data.d) {
+                            GetWorkSpecifications(intParentId, OnWorkSpecificationsResponseReceived);
+                            alert('Specification deleted successfully.');
+                        }
+                        else {
+                            alert('Specification delete was not successfull, Please try again later.');
+                        }
+                    },
+                    error: function (a, b, c) {
+                        console.log(a);
+                        HideAjaxLoader();
                     }
-                    else {
-                        alert('Specification delete was not successfull, Please try again later.');
-                    }
-                },
-                error: function (a, b, c) {
-                    console.log(a);
-                    HideAjaxLoader();
                 }
-            }
-        );
+            );
+        }
 
         return false;
     }
