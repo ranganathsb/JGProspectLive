@@ -1022,6 +1022,8 @@ namespace JG_Prospect.Sr_App
         /// </summary>
         private void SaveTask()
         {
+            SetPasswordToFreezeWorkSpecificationUI();
+
             int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
             Task objTask = new Task();
             objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
@@ -1254,7 +1256,7 @@ namespace JG_Prospect.Sr_App
 
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
 
-            SetPasswordToFreezeWorkSpecificationUI();
+            SetPasswordToFreezeWorkSpecificationUI(false);
 
             // show accept / reject task links for normal users, only if 
             // 1. task belogs to the same designation as user.
@@ -1598,7 +1600,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void SetPasswordToFreezeWorkSpecificationUI()
+        private void SetPasswordToFreezeWorkSpecificationUI(bool blResetStatus = true)
         {
             // show link to download working copy for preview for admin users only.
             //if (this.IsAdminAndItLeadMode)
@@ -1615,7 +1617,8 @@ namespace JG_Prospect.Sr_App
                 // change status only after freezing all specifications.
                 // this will change disabled "specs in progress" status to open on feezing.
                 if (
-                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) == 0 ||
+                    blResetStatus &&
+                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) > 0 &&
                     Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]) > 0
                    )
                 {
@@ -1623,7 +1626,7 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.Open).ToString());
+                    //SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.Open).ToString());
                 }
 
                 if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
