@@ -890,6 +890,12 @@ form.inline {
     width: 550px;
 }
 
+.login_header {
+    height: 20px;
+    color: #fff;
+    /*background-color: #AA4143;*/
+}
+
 .login_form_panel {
     background: #efeeee url(../img/form-bg.png) repeat-x top;
     min-height: 200px;
@@ -898,7 +904,7 @@ form.inline {
 }
 
     .login_form_panel ul {
-        margin: 0 0 10px 0;
+        margin: 0 0 0 0;
         padding: 0;
         list-style-type: none;
         overflow: auto;
@@ -909,7 +915,7 @@ form.inline {
             padding: 0;
             width: 99%;
             float: left;
-            border-right: #fff 1px solid;
+            border-right: #fff 0px solid;
         }
 
             .login_form_panel ul li.last {
@@ -1429,6 +1435,10 @@ table.table tr.dark-gray-background td {
     padding: 5px;
 }
 
+table tr.trPager td,
+table tr.trFooter td {
+    padding: 5px;
+}
 .valigntop {
     vertical-align: top;
 }
@@ -1491,4 +1501,20 @@ input.fz-user, .fz-user > input {
 }
 .RadScheduler .rsHeader {
 z-index: 9 !important;
+}
+
+.btnCommon {
+    text-align: center;
+    background: url(../img/btn.png) no-repeat;
+    line-height: 39px;
+    padding: 0;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #a1a0a0;
 }
