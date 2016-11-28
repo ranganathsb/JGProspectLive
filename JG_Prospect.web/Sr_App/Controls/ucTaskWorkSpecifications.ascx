@@ -6,6 +6,13 @@
 <script data-id="tmpWorkSpecificationSection" type="text/template" class="hide">
     <table data-id="tblWorkSpecification" data-parent-work-specification-id="{parent-id}" class="table" width="100%" cellspacing="0" cellpadding="0">
         <thead>
+            <tr data-id="trActiveItemData">
+                <td align="left" colspan="3">
+                    <div style="font-size: 9px; float: left;">
+                        <em data-id="emActiveIndex"></em> of <em data-id="emTotal"></em> specifications
+                    </div>
+                </td>
+            </tr>
             <tr class="trHeader">
                 <th style="width: 35px;">ID</th>
                 <th>Description</th>
@@ -49,7 +56,6 @@
 <script data-id="tmpWorkSpecificationRow" type="text/template" class="hide">
     <tr data-work-specification-id="{id}">
         <td valign="top" style="width: 35px;">
-            <div style="font-size: 9px;">(<em data-id="emIndex"></em> of <em data-id="emTotal"></em>)</div>
             <small>
                 <label data-id="lblCustomId{id}" />
             </small>
@@ -195,6 +201,11 @@
         $WorkSpecificationSectionTemplate.find('label[data-id="lblCustomId'+intParentId+'_Footer"]').html(result.NextCustomId);
         $WorkSpecificationSectionTemplate.find('div[data-id="divPassword'+intParentId+'_Footer"]').hide();
 
+        if(intParentId == 0) {
+            $WorkSpecificationSectionTemplate.find('em[data-id="emActiveIndex"]').html(0);
+            $WorkSpecificationSectionTemplate.find('em[data-id="emTotal"]').html(result.TotalRecordCount);
+        }
+
         if(result.TotalRecordCount > 0) {
 
             var arrData = result.Records;
@@ -208,10 +219,11 @@
                 else {
                     $WorkSpecificationRowTemplate.addClass('FirstRow');
                 }
-
-                $WorkSpecificationRowTemplate.find('em[data-id="emIndex"]').html(i+1);
-                $WorkSpecificationRowTemplate.find('em[data-id="emTotal"]').html(result.TotalRecordCount);
-                $WorkSpecificationRowTemplate.attr('title', (i+1) + ' of ' + result.TotalRecordCount);
+                
+                if(intParentId == 0) {
+                    $WorkSpecificationRowTemplate.attr('data-index',(i+1));
+                    $WorkSpecificationRowTemplate.attr('title', (i+1) + ' of ' + result.TotalRecordCount);
+                }
 
                 $WorkSpecificationRowTemplate.find('label[data-id="lblCustomId'+arrData[i].Id+'"]').html(arrData[i].CustomId);
                 $WorkSpecificationRowTemplate.find('textarea[data-id="txtWorkSpecification'+arrData[i].Id+'"]').html(arrData[i].Description);
@@ -302,6 +314,13 @@
         );
     }
     
+    function SetActiveItemIndex(intId) {
+        var $row = $('tr[data-work-specification-id="'+intId+'"]');
+        if($row.attr('data-index')) {
+            $('em[data-id="emActiveIndex"]').html($row.attr('data-index'));
+        }
+    }
+
     function OndivViewWorkSpecificationClick(sender) {
         var $sender = $(sender);
 
@@ -324,6 +343,8 @@
         $('div[data-id="divViewWorkSpecificationButtons' + Id + '"]').hide();
 
         SetCKEditor('txtWorkSpecification'+Id);
+
+        SetActiveItemIndex(Id);
 
         return false;
     }
@@ -577,6 +598,8 @@
 
         $sender.hide();
 
+        SetActiveItemIndex(Id);
+
         return false;
     }
 
@@ -592,6 +615,8 @@
         $('a[data-id="btnHideSubSection' + Id + '"]').show();
 
         $sender.hide();
+
+        SetActiveItemIndex(Id);
 
         return false;
     }
