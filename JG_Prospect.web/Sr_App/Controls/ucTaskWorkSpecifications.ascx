@@ -222,6 +222,7 @@
                 
                 if(intParentId == 0) {
                     $WorkSpecificationRowTemplate.attr('data-index',(i+1));
+                    $WorkSpecificationRowTemplate.attr('onclick','SetActiveItemIndex('+arrData[i].Id+')');
                     $WorkSpecificationRowTemplate.attr('title', (i+1) + ' of ' + result.TotalRecordCount);
                 }
 
