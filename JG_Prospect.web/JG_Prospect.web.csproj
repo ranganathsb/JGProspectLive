@@ -1848,6 +1848,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />
     <Content Include="Styles\dd.css" />
     <Content Include="Styles\Site.css" />
@@ -1928,6 +1929,13 @@
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stafflogin.aspx.cs">
+      <DependentUpon>stafflogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="stafflogin.aspx.designer.cs">
+      <DependentUpon>stafflogin.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>

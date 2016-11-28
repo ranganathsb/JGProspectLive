@@ -17,6 +17,12 @@ namespace JG_Prospect.Sr_App
             if (Session["loginid"] != null)
             {
                 lbluser.Text = Session["Username"].ToString();
+                imgProfile.ImageUrl = JGSession.UserProfileImg;
+                if (JGSession.LoginUserID != null)                
+                    hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
+                else
+                    hLnkEditProfil.NavigateUrl = "#";
+
                 if ((string)Session["usertype"] == "SSE")
                 {
                     Li_Jr_app.Visible = false;

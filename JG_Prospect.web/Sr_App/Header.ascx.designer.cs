@@ -40,6 +40,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnlogout;
         
         /// <summary>
+        /// lbl_unreadCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_unreadCount;
+        
+        /// <summary>
+        /// imgProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgProfile;
+        
+        /// <summary>
+        /// hLnkEditProfil control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hLnkEditProfil;
+        
+        /// <summary>
         /// Li_Jr_app control.
         /// </summary>
         /// <remarks>
