@@ -7,6 +7,8 @@ using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using System.Data;
 using System.Xml;
+using System.Web.UI.HtmlControls;
+
 namespace JG_Prospect.BLL
 {
     public class InstallUserBLL
@@ -353,9 +355,18 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetPassword(loginid);
         }
 
+        public string GetCustomerPassword(string loginid)
+        {
+            return InstallUserDAL.Instance.GetCustomerPassword(loginid);
+        }
         public string GetUserName(string PhoneNumber)
         {
             return InstallUserDAL.Instance.GetUserName(PhoneNumber);
+        }
+
+        public string GetCustomerName(string PhoneNumber)
+        {
+            return InstallUserDAL.Instance.GetCustomerName(PhoneNumber);
         }
 
         public int IsValidInstallerUser(string loginid, string password)

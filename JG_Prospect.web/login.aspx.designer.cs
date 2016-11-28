@@ -103,6 +103,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.CheckBox chkRememberMe;
         
         /// <summary>
+        /// btnsubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnsubmit;
+        
+        /// <summary>
         /// lnkForgotUsername control.
         /// </summary>
         /// <remarks>
@@ -119,15 +128,6 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkForgotPassword;
-        
-        /// <summary>
-        /// btnsubmit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnsubmit;
         
         /// <summary>
         /// ImageButton1 control.
@@ -157,22 +157,22 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.ImageButton ImageButton3;
         
         /// <summary>
-        /// btnPlus control.
+        /// ImageButton4 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPlus;
+        protected global::System.Web.UI.WebControls.ImageButton ImageButton4;
         
         /// <summary>
-        /// btnMinus control.
+        /// ImageButton5 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMinus;
+        protected global::System.Web.UI.WebControls.ImageButton ImageButton5;
         
         /// <summary>
         /// rdoCustomer control.
@@ -191,15 +191,6 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButton rdoEmp;
-        
-        /// <summary>
-        /// pnlSignup control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSignup;
         
         /// <summary>
         /// txtSignupEmail control.
