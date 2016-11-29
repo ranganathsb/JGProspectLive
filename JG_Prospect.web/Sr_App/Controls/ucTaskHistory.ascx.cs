@@ -694,13 +694,16 @@ namespace JG_Prospect.Sr_App.Controls
 
             dttaskNotes.Columns.Add("ID");
             dttaskNotes.Columns.Add("FristName");
+            dttaskNotes.Columns.Add("LastName");
             dttaskNotes.Columns.Add("UserFirstName");
             dttaskNotes.Columns.Add("UserId");
             dttaskNotes.Columns.Add("UpdatedOn");
             dttaskNotes.Columns.Add("Notes");
+            dttaskNotes.Columns.Add("Picture");
 
             dttaskNotesDoc.Columns.Add("ID");
             dttaskNotesDoc.Columns.Add("FristName");
+            dttaskNotesDoc.Columns.Add("LastName");
             dttaskNotesDoc.Columns.Add("UserFirstName");
             dttaskNotesDoc.Columns.Add("UserId");
             dttaskNotesDoc.Columns.Add("Attachment");
@@ -708,9 +711,11 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotesDoc.Columns.Add("UpdatedOn");
             dttaskNotesDoc.Columns.Add("FileType");
             dttaskNotesDoc.Columns.Add("FilePath");
+            dttaskNotesDoc.Columns.Add("Picture");
 
             dttaskNotesImg.Columns.Add("ID");
             dttaskNotesImg.Columns.Add("FristName");
+            dttaskNotesImg.Columns.Add("LastName");
             dttaskNotesImg.Columns.Add("UserFirstName");
             dttaskNotesImg.Columns.Add("UserId");
             dttaskNotesImg.Columns.Add("Attachment");
@@ -718,9 +723,11 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotesImg.Columns.Add("UpdatedOn");
             dttaskNotesImg.Columns.Add("FileType");
             dttaskNotesImg.Columns.Add("FilePath");
+            dttaskNotesImg.Columns.Add("Picture");
 
             dttaskNotesAudio.Columns.Add("ID");
             dttaskNotesAudio.Columns.Add("FristName");
+            dttaskNotesAudio.Columns.Add("LastName");
             dttaskNotesAudio.Columns.Add("UserFirstName");
             dttaskNotesAudio.Columns.Add("UserId");
             dttaskNotesAudio.Columns.Add("Attachment");
@@ -728,9 +735,11 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotesAudio.Columns.Add("UpdatedOn");
             dttaskNotesAudio.Columns.Add("FileType");
             dttaskNotesAudio.Columns.Add("FilePath");
+            dttaskNotesAudio.Columns.Add("Picture");
 
             dttaskNotesVideo.Columns.Add("ID");
             dttaskNotesVideo.Columns.Add("FristName");
+            dttaskNotesVideo.Columns.Add("LastName");
             dttaskNotesVideo.Columns.Add("UserFirstName");
             dttaskNotesVideo.Columns.Add("UserId");
             dttaskNotesVideo.Columns.Add("Attachment");
@@ -738,6 +747,7 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotesVideo.Columns.Add("UpdatedOn");
             dttaskNotesVideo.Columns.Add("FileType");
             dttaskNotesVideo.Columns.Add("FilePath");
+            dttaskNotesVideo.Columns.Add("Picture");
 
 
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -749,10 +759,12 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     dttaskNotes.Rows.Add(dt.Rows[i]["ID"],
                         Convert.ToString(dt.Rows[i]["FristName"]),
+                        Convert.ToString(dt.Rows[i]["LastName"]),
                         Convert.ToString(dt.Rows[i]["UserFirstName"]),
                         Convert.ToString(dt.Rows[i]["UserId"]),
                         Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                        Convert.ToString(dt.Rows[i]["Notes"]));
+                        Convert.ToString(dt.Rows[i]["Notes"]),
+                        Convert.ToString(dt.Rows[i]["Picture"]));
                 }
                 if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)JGConstant.TaskUserFileType.Docu))
                 {
@@ -767,13 +779,15 @@ namespace JG_Prospect.Sr_App.Controls
 
                     dttaskNotesDoc.Rows.Add(dt.Rows[i]["ID"],
                                             Convert.ToString(dt.Rows[i]["FristName"]),
+                                            Convert.ToString(dt.Rows[i]["LastName"]),
                                             Convert.ToString(dt.Rows[i]["UserFirstName"]),
                                             Convert.ToString(dt.Rows[i]["UserId"]),
                                             Convert.ToString(dt.Rows[i]["Attachment"]),
                                             Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
                                             Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                                             Convert.ToString(dt.Rows[i]["FileType"]),
-                                            Convert.ToString(FilePath));
+                                            Convert.ToString(FilePath),
+                                            Convert.ToString(dt.Rows[i]["Picture"]));
                 }
                 if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)JGConstant.TaskUserFileType.Images))
                 {
@@ -782,13 +796,15 @@ namespace JG_Prospect.Sr_App.Controls
                         FilePath = "../TaskAttachments/" + dt.Rows[i]["Attachment"];
                         dttaskNotesImg.Rows.Add(dt.Rows[i]["ID"],
                                                Convert.ToString(dt.Rows[i]["FristName"]),
+                                               Convert.ToString(dt.Rows[i]["LastName"]),
                                                Convert.ToString(dt.Rows[i]["UserFirstName"]),
                                                Convert.ToString(dt.Rows[i]["UserId"]),
                                                Convert.ToString(dt.Rows[i]["Attachment"]),
                                                Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
                                                Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                                                Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
+                                               Convert.ToString(FilePath),
+                                               Convert.ToString(dt.Rows[i]["Picture"]));
                     }
                 }
 
@@ -802,13 +818,15 @@ namespace JG_Prospect.Sr_App.Controls
                         FilePath = "../img/video.png"; /*"../img/audio.png";*/
                         dttaskNotesVideo.Rows.Add(dt.Rows[i]["ID"],
                                                Convert.ToString(dt.Rows[i]["FristName"]),
+                                               Convert.ToString(dt.Rows[i]["LastName"]),
                                                Convert.ToString(dt.Rows[i]["UserFirstName"]),
                                                Convert.ToString(dt.Rows[i]["UserId"]),
                                                Convert.ToString(dt.Rows[i]["Attachment"]),
                                                Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
                                                Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                                                Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
+                                               Convert.ToString(FilePath),
+                                               Convert.ToString(dt.Rows[i]["Picture"]));
                     }
                 }
 
@@ -821,13 +839,15 @@ namespace JG_Prospect.Sr_App.Controls
                         FilePath = "../img/audio.png"; /*"../img/audio.png";*/
                         dttaskNotesAudio.Rows.Add(dt.Rows[i]["ID"],
                                                Convert.ToString(dt.Rows[i]["FristName"]),
+                                               Convert.ToString(dt.Rows[i]["LastName"]),
                                                Convert.ToString(dt.Rows[i]["UserFirstName"]),
                                                Convert.ToString(dt.Rows[i]["UserId"]),
                                                Convert.ToString(dt.Rows[i]["Attachment"]),
                                                Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
                                                Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                                                Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
+                                               Convert.ToString(FilePath),
+                                               Convert.ToString(dt.Rows[i]["Picture"]));
                     }
                 }
             }

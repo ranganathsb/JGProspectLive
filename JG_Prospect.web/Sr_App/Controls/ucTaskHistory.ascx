@@ -36,6 +36,7 @@
                                                     </asp:UpdatePanel>
                                                     <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
                                                         Task Description<span style="color: red;">*</span>:
+                                                   
                                                     </div>
                                                     <asp:Literal ID="ltlTaskDesc" runat="server"></asp:Literal>
                                                     <asp:TextBox ID="txtTaskDesc" runat="server" TextMode="MultiLine" Rows="7" Style="width: 99%;"></asp:TextBox>
@@ -91,8 +92,12 @@
                                                 HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%" ItemStyle-Width="10%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
-                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
-                                                        Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " -", Eval("UserId")) %>' />
+                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'>
+                                                        <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
+                                                        <br />
+                                                        <asp:Literal ID="ltrlUserData" runat="server"
+                                                            Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " ", Eval("LastName").ToString(), "#", Eval("UserId")) %>' />
+                                                    </asp:HyperLink>
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
                                                 <ControlStyle ForeColor="Black" />
@@ -246,8 +251,12 @@
                                             HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                             ItemStyle-HorizontalAlign="Left">
                                             <ItemTemplate>
-                                                <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
-                                                    Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " -", Eval("UserId")) %>' />
+                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'>
+                                                    <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
+                                                    <br />
+                                                    <asp:Literal ID="ltrlUserData" runat="server"
+                                                        Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " ", Eval("LastName").ToString(), " -", Eval("UserId")) %>' />
+                                                </asp:HyperLink>
                                             </ItemTemplate>
                                             <ControlStyle ForeColor="Black" />
                                             <ControlStyle ForeColor="Black" />
@@ -384,6 +393,7 @@
                     <ContentTemplate>
                         HTML Goes here 4
                                    
+                   
                     </ContentTemplate>
                 </asp:TabPanel>
 
@@ -481,11 +491,12 @@
                                 <tr>
 
                                     <td>Notes:
-                                   <div style="clear: both;">
-                                       <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="100%" CssClass="textbox" Rows="7" ValidationGroup="Validation"></asp:TextBox>
-                                       <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
-                                           Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
-                                   </div>
+                                  
+                                        <div style="clear: both;">
+                                            <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="100%" CssClass="textbox" Rows="7" ValidationGroup="Validation"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
+                                                Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
