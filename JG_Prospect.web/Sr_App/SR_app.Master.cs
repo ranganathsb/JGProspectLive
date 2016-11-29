@@ -31,7 +31,7 @@ namespace JG_Prospect.Sr_App
                     btnNewScript.Visible = false;
                     ScriptEditor.Enabled = false;
                     ScriptEditor.Attributes.Add("readonly", "readonly");
-                    li_department.Visible = false;
+                    li_department.Visible = true;
                 }
                 AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
             }

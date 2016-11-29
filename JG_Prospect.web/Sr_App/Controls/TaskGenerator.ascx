@@ -808,7 +808,7 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#taskGrid', $('#taskGrid').html());
+        setClickableTooltip('#<%=upnlTasks.ClientID%>');
         bindViewMore();
     });
 
@@ -912,23 +912,23 @@
         function EditTask(id, tasktitle) {
 
             window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
-            }
+        }
 
-            function setDatePicker() {
-                // on date selection finish, trigger search, both dates must be selected.
-                $('.filter-datepicker').datepicker({
+        function setDatePicker() {
+            // on date selection finish, trigger search, both dates must be selected.
+            $('.filter-datepicker').datepicker({
 
-                    onSelect: function () {
-                        checkDatePickerDatesNTriggerSearch();
-                    }
-                });
+                onSelect: function () {
+                    checkDatePickerDatesNTriggerSearch();
+                }
+            });
 
-                $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
-            }
+            $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
+        }
 
-            function checkDatePickerDatesNTriggerSearch() {
-                var fromdate, todate;
-                fromdate = $('#<%= txtFromDate.ClientID %>').val();
+        function checkDatePickerDatesNTriggerSearch() {
+            var fromdate, todate;
+            fromdate = $('#<%= txtFromDate.ClientID %>').val();
                 todate = $('#<%= txtToDate.ClientID %>').val();
                 if (fromdate.length > 0 && todate.length > 0) {
                     TriggerSearch();
@@ -954,17 +954,17 @@
             }
 
             function setClickableTooltip(target) {
-                $(target).mouseover(function () {
-                    
+                $(target).mouseenter(function () {
+
                     var hyperlinkview = $("#hypViewMore");
                     var expanded = hyperlinkview.attr("data-expanded");
                     if (expanded == "0") {
                         toggleShowMoreResults(expanded, hyperlinkview);
                     }
                 });
-               
-                $(target).mouseout(function () {
-                   
+
+                $(target).mouseleave(function () {
+
                     HideHeaderSectionHeight();
                     var linkobject = $("#hypViewMore");
                     $(linkobject).html("View More");
@@ -985,7 +985,7 @@
                 if (view == "0") {// if content is hidden than expand it.
                     SetHeaderSectionHeight();
                     $(linkobject).html("Hide");
-                    $(linkobject).attr("data-expanded","1");
+                    $(linkobject).attr("data-expanded", "1");
                 }
                 else {
                     HideHeaderSectionHeight();

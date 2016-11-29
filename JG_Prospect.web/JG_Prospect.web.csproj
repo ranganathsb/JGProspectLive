@@ -1641,6 +1641,10 @@
     <Content Include="Sr_App\customerattachmentupload.aspx" />
     <Content Include="Sr_App\CustomerEmailTemplate.aspx" />
     <Content Include="Sr_App\Custom_MaterialList.aspx" />
+    <Content Include="Sr_App\DepartmentAddEdit.aspx" />
+    <Content Include="Sr_App\DepartmentList.aspx" />
+    <Content Include="Sr_App\DesignationAddEdit.aspx" />
+    <Content Include="Sr_App\DesignationList.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
@@ -1975,6 +1979,34 @@
     </Compile>
     <Compile Include="Sr_App\Controls\ucTaskHistory.ascx.designer.cs">
       <DependentUpon>ucTaskHistory.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\DepartmentAddEdit.aspx.cs">
+      <DependentUpon>DepartmentAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\DepartmentAddEdit.aspx.designer.cs">
+      <DependentUpon>DepartmentAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\DepartmentList.aspx.cs">
+      <DependentUpon>DepartmentList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\DepartmentList.aspx.designer.cs">
+      <DependentUpon>DepartmentList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\DesignationAddEdit.aspx.cs">
+      <DependentUpon>DesignationAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\DesignationAddEdit.aspx.designer.cs">
+      <DependentUpon>DesignationAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\DesignationList.aspx.cs">
+      <DependentUpon>DesignationList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
+      <DependentUpon>DesignationList.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
