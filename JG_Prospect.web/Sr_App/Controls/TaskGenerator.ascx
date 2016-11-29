@@ -955,6 +955,7 @@
 
             function setClickableTooltip(target) {
                 $(target).mouseover(function () {
+                    
                     var hyperlinkview = $("#hypViewMore");
                     var expanded = hyperlinkview.attr("data-expanded");
                     if (expanded == "0") {
@@ -962,6 +963,13 @@
                     }
                 });
                
+                $(target).mouseout(function () {
+                   
+                    HideHeaderSectionHeight();
+                    var linkobject = $("#hypViewMore");
+                    $(linkobject).html("View More");
+                    $(linkobject).attr("data-expanded", "0");
+                });
             }
 
             function bindViewMore() {
@@ -980,7 +988,7 @@
                     $(linkobject).attr("data-expanded","1");
                 }
                 else {
-                    HideHeaderSectionHeight()
+                    HideHeaderSectionHeight();
                     $(linkobject).html("View More");
                     $(linkobject).attr("data-expanded", "0");
                 }
