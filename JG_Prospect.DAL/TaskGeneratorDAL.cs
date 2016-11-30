@@ -630,12 +630,20 @@ namespace JG_Prospect.DAL
             DataSet result = new DataSet();
             try
             {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Key", DbType.Int16, Key);
-                    database.AddInParameter(command, "@Designations", DbType.String, Designastion);
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
