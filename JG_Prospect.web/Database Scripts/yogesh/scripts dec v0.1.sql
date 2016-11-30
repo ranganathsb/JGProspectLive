@@ -169,3 +169,81 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 
 END
 GO
+
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskWorkSpecificationStatusByTaskId]    Script Date: 04-Nov-16 11:43:30 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 13 Sep 16
+-- Description:	Updates status of Task specifications including childs by Id.
+-- =============================================
+
+ALTER PROCEDURE [dbo].[UpdateTaskWorkSpecificationStatusById]
+	@Id		BIGINT,
+	@AdminStatus BIT = NULL,
+	@TechLeadStatus BIT = NULL,
+	@OtherUserStatus BIT = NULL,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+	
+	DECLARE	@tblTemp	TABLE(Id BIGINT)
+
+	-- gets current as well as all child specifications.
+	;WITH TWS AS
+	(
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s
+		WHERE Id = @Id
+
+		UNION ALL
+
+		SELECT s.*
+		FROM tblTaskWorkSpecifications s 
+			INNER JOIN TWS t ON s.ParentTaskWorkSpecificationId = t.Id
+	)
+
+	INSERT INTO @tblTemp
+	SELECT ID FROM TWS
+
+	IF @AdminStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			AdminStatus = @AdminStatus,
+			AdminUserId= @UserId,
+			IsAdminInstallUser = @IsInstallUser,
+			AdminStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
+	ELSE IF @TechLeadStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			TechLeadStatus = @TechLeadStatus,
+			TechLeadUserId= @UserId,
+			IsTechLeadInstallUser = @IsInstallUser,
+			TechLeadStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
+	ELSE IF @OtherUserStatus IS NOT NULL
+	BEGIN
+		UPDATE tblTaskWorkSpecifications
+		SET
+			OtherUserStatus = @OtherUserStatus,
+			OtherUserId= @UserId,
+			IsOtherUserInstallUser = @IsInstallUser,
+			OtherUserStatusUpdated = GETDATE(),
+			DateUpdated = GETDATE()
+		WHERE Id IN (SELECT ID FROM @tblTemp)
+	END
+
+END
+GO
