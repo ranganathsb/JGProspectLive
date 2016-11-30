@@ -849,7 +849,8 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
                     }
 
-                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
+                    //database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
+                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, DBNull.Value);
 
                     database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
 

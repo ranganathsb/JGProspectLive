@@ -207,7 +207,7 @@ namespace JG_Prospect.Sr_App
                     else
                     {
                         ddcbAssignedUser.Visible = true;
-                        lblAssignedUser.Visible = 
+                        lblAssignedUser.Visible =
                         lbtnRequestStatus.Visible = false;
                         DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
@@ -705,16 +705,18 @@ namespace JG_Prospect.Sr_App
             {
                 strStatus = ddlTaskStatus.SelectedValue;
 
-                if (
-                    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
-                    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
-                   )
-                {
-                    blResult = false;
-                    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
-                }
+                //if (
+                //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
+                //   )
+                //{
+                //    blResult = false;
+                //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                //}
+
+                //else
                 // if task is in assigned status. it should have assigned user selected there in dropdown. 
-                else if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
                 {
                     blResult = false;
                     strMessage = "Task must be assigned to one or more users, to change status to assigned.";
