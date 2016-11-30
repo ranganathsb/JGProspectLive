@@ -52,7 +52,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.AcceptTaskAssignmentRequests(TaskId, UserIds);
         }
-       
+
         public bool UpdateTaskAcceptance(ref TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskUserAcceptance(ref objTaskUser);
@@ -144,7 +144,7 @@ namespace JG_Prospect.BLL
 
         public bool SaveTaskDescription(Int64 TaskId, String TaskDescription)
         {
-            return TaskGeneratorDAL.Instance.SaveTaskDescription(TaskId,TaskDescription);
+            return TaskGeneratorDAL.Instance.SaveTaskDescription(TaskId, TaskDescription);
         }
 
         public bool UpadateTaskNotes(ref TaskUser objTaskUser)
@@ -193,6 +193,19 @@ namespace JG_Prospect.BLL
         public DataSet GetPendingTaskWorkSpecificationCount(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
+        }
+
+        public bool IsTaskWorkSpecificationApproved(Int32 TaskId)
+        {
+            int intPendingCount = 0;
+
+            DataSet dsTaskSpecificationStatus = TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(TaskId);
+            if (dsTaskSpecificationStatus.Tables.Count > 1 && dsTaskSpecificationStatus.Tables[1].Rows.Count > 0)
+            {
+                intPendingCount = Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]);
+            }
+
+            return (intPendingCount == 0);
         }
 
         #endregion
