@@ -393,7 +393,7 @@ namespace JG_Prospect.Sr_App
 
             if (!string.IsNullOrEmpty(hdnTaskId.Value))
             {
-                if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
+                if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
                 {
                     SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddlTaskStatus.SelectedValue));
                 }
@@ -409,7 +409,7 @@ namespace JG_Prospect.Sr_App
             HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
             DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssignedUser") as DropDownCheckBoxes;
 
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned))
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
             {
                 Task objTask = new Task();
                 objTask.TaskId = Convert.ToInt32(hdnTaskId.Value.ToString());
@@ -694,33 +694,44 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser)
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
         {
             bool blResult = true;
 
             string strStatus = string.Empty;
+            string strMessage = string.Empty;
 
             if (this.IsAdminMode)
             {
                 strStatus = ddlTaskStatus.SelectedValue;
 
-                // if task is in assigned status. it should have assigned user selected there in dropdown. 
-                if (!string.IsNullOrEmpty(strStatus) && strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                if (
+                    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
+                   )
                 {
                     blResult = false;
+                    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                }
+                // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                else if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                {
+                    blResult = false;
+                    strMessage = "Task must be assigned to one or more users, to change status to assigned.";
 
                     foreach (ListItem objItem in ddlAssignedUser.Items)
                     {
                         if (objItem.Selected)
                         {
                             blResult = true;
+                            break;
                         }
                     }
                 }
 
                 if (!blResult)
                 {
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task must be assigned to one or more users, to change status to assigned.");
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, strMessage);
                 }
             }
 
