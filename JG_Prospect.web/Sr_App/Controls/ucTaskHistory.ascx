@@ -88,8 +88,7 @@
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
-                                            <asp:TemplateField ControlStyle-ForeColor="White"
-                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%" ItemStyle-Width="10%"
+                                            <asp:TemplateField HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%" ItemStyle-Width="10%"
                                                 ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
                                                     <div style="text-align: center;">
@@ -102,8 +101,6 @@
                                                         </asp:HyperLink>
                                                     </div>
                                                 </ItemTemplate>
-                                                <ControlStyle ForeColor="Black" />
-                                                <ControlStyle ForeColor="Black" />
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                             </asp:TemplateField>
@@ -245,7 +242,7 @@
                                             <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                         </asp:TemplateField>
 
-                                        <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White"
+                                        <asp:TemplateField ShowHeader="True" HeaderText="User"
                                             HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                             ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
@@ -259,8 +256,6 @@
                                                     </asp:HyperLink>
                                                 </div>
                                             </ItemTemplate>
-                                            <ControlStyle ForeColor="Black" />
-                                            <ControlStyle ForeColor="Black" />
                                             <HeaderStyle Font-Size="Small"></HeaderStyle>
                                             <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                         </asp:TemplateField>
