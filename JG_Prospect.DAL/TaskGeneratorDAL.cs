@@ -630,12 +630,20 @@ namespace JG_Prospect.DAL
             DataSet result = new DataSet();
             try
             {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Key", DbType.Int16, Key);
-                    database.AddInParameter(command, "@Designations", DbType.String, Designastion);
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
@@ -841,7 +849,8 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
                     }
 
-                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
+                    //database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
+                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, DBNull.Value);
 
                     database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
 

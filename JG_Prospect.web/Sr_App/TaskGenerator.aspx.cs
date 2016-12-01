@@ -928,28 +928,43 @@ namespace JG_Prospect.Sr_App
             bool blResult = true;
 
             string strStatus = string.Empty;
+            string strMessage = string.Empty;
 
             if (this.IsAdminMode)
             {
                 strStatus = cmbStatus.SelectedValue;
 
-                // if task is in assigned status. it should have assigned user selected there in dropdown. 
-                if (!string.IsNullOrEmpty(strStatus) && strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                if (!string.IsNullOrEmpty(strStatus))
                 {
-                    blResult = false;
-
-                    foreach (ListItem objItem in ddlAssignedUsers.Items)
+                    //if (
+                    //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() && 
+                    //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(Convert.ToInt32(hdnTaskId.Value))
+                    //   )
+                    //{
+                    //    blResult = false;
+                    //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                    //}
+                    //else 
+                    // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                    if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
                     {
-                        if (objItem.Selected)
+                        blResult = false;
+                        strMessage = "Task must be assigned to one or more users, to change status to assigned.";
+
+                        foreach (ListItem objItem in ddlAssignedUsers.Items)
                         {
-                            blResult = true;
+                            if (objItem.Selected)
+                            {
+                                blResult = true;
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (!blResult)
                 {
-                    CommonFunction.ShowAlertFromUpdatePanel(this, "Task must be assigned to one or more users, to change status to assigned.");
+                    CommonFunction.ShowAlertFromUpdatePanel(this, strMessage);
                 }
             }
 

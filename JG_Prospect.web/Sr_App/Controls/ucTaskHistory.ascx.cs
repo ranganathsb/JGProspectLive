@@ -700,6 +700,7 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotes.Columns.Add("UpdatedOn");
             dttaskNotes.Columns.Add("Notes");
             dttaskNotes.Columns.Add("Picture");
+            dttaskNotes.Columns.Add("UserInstallId");
 
             dttaskNotesDoc.Columns.Add("ID");
             dttaskNotesDoc.Columns.Add("FristName");
@@ -712,6 +713,7 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotesDoc.Columns.Add("FileType");
             dttaskNotesDoc.Columns.Add("FilePath");
             dttaskNotesDoc.Columns.Add("Picture");
+            dttaskNotesDoc.Columns.Add("UserInstallId");
 
             dttaskNotesImg.Columns.Add("ID");
             dttaskNotesImg.Columns.Add("FristName");
@@ -764,7 +766,8 @@ namespace JG_Prospect.Sr_App.Controls
                         Convert.ToString(dt.Rows[i]["UserId"]),
                         Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                         Convert.ToString(dt.Rows[i]["Notes"]),
-                        Convert.ToString(dt.Rows[i]["Picture"]));
+                        Convert.ToString(dt.Rows[i]["Picture"]),
+                        Convert.ToString(dt.Rows[i]["UserInstallId"]));
                 }
                 if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)JGConstant.TaskUserFileType.Docu))
                 {
@@ -787,7 +790,8 @@ namespace JG_Prospect.Sr_App.Controls
                                             Convert.ToString(dt.Rows[i]["UpdatedOn"]),
                                             Convert.ToString(dt.Rows[i]["FileType"]),
                                             Convert.ToString(FilePath),
-                                            Convert.ToString(dt.Rows[i]["Picture"]));
+                                            Convert.ToString(dt.Rows[i]["Picture"]),
+                                            Convert.ToString(dt.Rows[i]["UserInstallId"]));
                 }
                 if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)JGConstant.TaskUserFileType.Images))
                 {

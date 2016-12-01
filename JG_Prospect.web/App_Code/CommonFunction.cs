@@ -546,10 +546,10 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
+            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
 
             if (CheckAdminAndItLeadMode())
             {
-                objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
                 objListItemCollection.Add(new ListItem("Deleted", Convert.ToByte(JGConstant.TaskStatus.Deleted).ToString()));
             }
 

@@ -5,11 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
       <title>JG Prospect</title>
-    <link href="/css/screen.css" rel="stylesheet" media="screen" type="text/css" />
-    <link href="/css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
-    <script type="text/javascript" src="/js/jquery-latest.js"></script>
+    <link href="css/screen.css" rel="stylesheet" media="screen" type="text/css" />
+    <link href="css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
+    <script type="text/javascript" src="js/jquery-latest.js"></script>
     <!--accordion jquery-->
-    <script type="text/javascript" src="/js/ddaccordion.js"></script>
+    <script type="text/javascript" src="js/ddaccordion.js"></script>
 
 
     <script type="text/javascript">
@@ -34,8 +34,6 @@
             width: 100%;
         }
     </style>
-    <div class="header">
-        <img src="/img/logo.png" alt="logo" width="88" height="89" class="logo" />
 </head>
 <body>
      <form id="form1" runat="server">
@@ -43,6 +41,7 @@
         <div class="container">
             <!--header section-->
             <div class="header">
+                <img src="img/logo.png" alt="logo" width="88" height="89" class="logo" />
             </div>
             <div class="content_panel">
                 <div class="login_right_panel">
