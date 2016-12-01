@@ -21,6 +21,7 @@
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <asp:LinkButton ID="lbtnInstallId" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                     CommandArgument='<%# Container.DataItemIndex  %>' />
+                                <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId") %>' onclick="javascript:OnCopyClick(this);" >Copy</a>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
@@ -352,4 +353,9 @@
             $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').hide();
         }
     }
+
+    function OnCopyClick(sender) {
+        copyToClipboard(window.location + '&SubTaskId=' + $(sender).attr('data-taskid'))
+    }
+
 </script>

@@ -8,6 +8,14 @@ function htmlDecode(value){
   return $('<div/>').html(value).text();
 }
 
+function copyToClipboard(strDataToCopy) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(strDataToCopy).select();
+    document.execCommand("copy");
+    $temp.remove();
+}
+
 /********************************************* CK Editor (Html Editor) ******************************************************/
 function SetCKEditor(Id) {
 
