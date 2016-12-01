@@ -36,5 +36,7 @@ namespace JG_Prospect.Common.modal
         public string NotesTempID;
         public string VendorCategories;
         public string VendorSubCategories;
+        public string UserID;
+
     }
 }

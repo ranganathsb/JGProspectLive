@@ -22,7 +22,7 @@ namespace JG_Prospect.DAL
         public static VendorDAL Instance
         {
             get { return m_VendorDAL; }
-            set { ;}
+            set {; }
         }
         private DataSet DS = new DataSet();
         public DataSet fetchallvendorDetails()
@@ -440,36 +440,217 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
 
-                    DbCommand command = database.GetStoredProcCommand("UPP_savevendor");
+                    DbCommand command = database.GetStoredProcCommand("UDP_SaveVendor");//UPP_savevendor");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
-                    database.AddInParameter(command, "@vendor_name", DbType.String, objvendor.vendor_name);
-                    database.AddInParameter(command, "@vendor_category", DbType.Int32, objvendor.vendor_category_id);
-                    database.AddInParameter(command, "@contact_person", DbType.String, objvendor.contract_person);
-                    database.AddInParameter(command, "@contact_number", DbType.String, objvendor.contract_number);
-                    database.AddInParameter(command, "@fax", DbType.String, objvendor.fax);
-                    database.AddInParameter(command, "@email", DbType.String, objvendor.mail);
-                    database.AddInParameter(command, "@address", DbType.String, objvendor.address);
-                    database.AddInParameter(command, "@notes", DbType.String, objvendor.notes);
-                    database.AddInParameter(command, "@ManufacturerType", DbType.String, objvendor.ManufacturerType);
-                    database.AddInParameter(command, "@BillingAddress", DbType.String, objvendor.BillingAddress);
-                    database.AddInParameter(command, "@TaxId", DbType.String, objvendor.TaxId);
-                    database.AddInParameter(command, "@ExpenseCategory", DbType.String, objvendor.ExpenseCategory);
-                    database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, objvendor.AutoTruckInsurance);
-                    database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, objvendor.vendor_subcategory_id);
-                    database.AddInParameter(command, "@VendorStatus", DbType.String, objvendor.VendorStatus);
-                    database.AddInParameter(command, "@Website", DbType.String, objvendor.Website);
-                    database.AddInParameter(command, "@ContactExten", DbType.String, objvendor.ContactExten);
-
-                    database.AddInParameter(command, "@Vendrosource", DbType.String, objvendor.Vendrosource);
-                    database.AddInParameter(command, "@AddressID", DbType.Int32, objvendor.AddressID);
-                    database.AddInParameter(command, "@PaymentTerms", DbType.String, objvendor.PaymentTerms);
-                    database.AddInParameter(command, "@PaymentMethod", DbType.String, objvendor.PaymentMethod);
-                    database.AddInParameter(command, "@TempID", DbType.String, objvendor.TempID);
-                    database.AddInParameter(command, "@NotesTempID", DbType.String, objvendor.NotesTempID);
-                    database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
-                    database.AddInParameter(command, "@VendorSubCategories", DbType.String, objvendor.VendorSubCategories);
-
+                    if (objvendor.vendor_id > 0)
+                    {
+                        database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_id", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.vendor_name))
+                    {
+                        database.AddInParameter(command, "@vendor_name", DbType.String, objvendor.vendor_name);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_name", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.vendor_category_id > 0)
+                    {
+                        database.AddInParameter(command, "@vendor_category", DbType.Int32, objvendor.vendor_category_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_category", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.contract_person))
+                    {
+                        database.AddInParameter(command, "@contact_person", DbType.String, objvendor.contract_person);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@contact_person", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.contract_number))
+                    {
+                        database.AddInParameter(command, "@contact_number", DbType.String, objvendor.contract_number);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@contact_number", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.fax))
+                    {
+                        database.AddInParameter(command, "@fax", DbType.String, objvendor.fax);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@fax", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.mail))
+                    {
+                        database.AddInParameter(command, "@email", DbType.String, objvendor.mail);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@email", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.address))
+                    {
+                        database.AddInParameter(command, "@address", DbType.String, objvendor.address);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@address", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.notes))
+                    {
+                        database.AddInParameter(command, "@notes", DbType.String, objvendor.notes);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@notes", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.notes))
+                    {
+                        database.AddInParameter(command, "@ManufacturerType", DbType.String, objvendor.notes);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ManufacturerType", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.BillingAddress))
+                    {
+                        database.AddInParameter(command, "@BillingAddress", DbType.String, objvendor.BillingAddress);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@BillingAddress", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.TaxId))
+                    {
+                        database.AddInParameter(command, "@TaxId", DbType.String, objvendor.TaxId);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TaxId", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.ExpenseCategory))
+                    {
+                        database.AddInParameter(command, "@ExpenseCategory", DbType.String, objvendor.ExpenseCategory);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ExpenseCategory", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.AutoTruckInsurance))
+                    {
+                        database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, objvendor.AutoTruckInsurance);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.vendor_subcategory_id > 0)
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, objvendor.vendor_subcategory_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.VendorStatus))
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, objvendor.VendorStatus);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.Website))
+                    {
+                        database.AddInParameter(command, "@Website", DbType.String, objvendor.Website);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Website", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.ContactExten))
+                    {
+                        database.AddInParameter(command, "@ContactExten", DbType.String, objvendor.ContactExten);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ContactExten", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.Vendrosource))
+                    {
+                        database.AddInParameter(command, "@Vendrosource", DbType.String, objvendor.Vendrosource);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Vendrosource", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.AddressID > 0)
+                    {
+                        database.AddInParameter(command, "@AddressID", DbType.Int32, objvendor.AddressID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@AddressID", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.PaymentTerms))
+                    {
+                        database.AddInParameter(command, "@PaymentTerms", DbType.String, objvendor.PaymentTerms);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@PaymentTerms", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.PaymentMethod))
+                    {
+                        database.AddInParameter(command, "@PaymentMethod", DbType.String, objvendor.PaymentMethod);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@PaymentMethod", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.TempID))
+                    {
+                        database.AddInParameter(command, "@TempID", DbType.String, objvendor.TempID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TempID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.NotesTempID))
+                    {
+                        database.AddInParameter(command, "@NotesTempID", DbType.String, objvendor.NotesTempID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@NotesTempID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.VendorCategories))
+                    {
+                        database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorCategories", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.VendorSubCategories))
+                    {
+                        database.AddInParameter(command, "@VendorSubCategories", DbType.String, objvendor.VendorSubCategories);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategories", DbType.String, DBNull.Value);
+                    }
+                    database.AddInParameter(command, "@UserID", DbType.String, objvendor.UserID);
                     database.ExecuteNonQuery(command);
                     return true;
                 }
@@ -558,6 +739,98 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ManufacturerType", DbType.String, ManufacturerType);
                     database.AddInParameter(command, "@VendorCategoryId", DbType.String, VendorCategoryId);
                     database.AddInParameter(command, "@VendorStatus", DbType.String, VendorStatus);
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetVendorList(string strVendorStatus, bool IsRetailWholesale, string iProductCategoryID, string iVendorCategoryID, string iVendorSubCategoryID)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetVendors");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (!string.IsNullOrEmpty(strVendorStatus))
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, strVendorStatus);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, DBNull.Value);
+                    }
+                    database.AddInParameter(command, "@IsRetailWholesale", DbType.Boolean, IsRetailWholesale);
+
+                    if (!string.IsNullOrEmpty(iProductCategoryID))
+                    {
+                        database.AddInParameter(command, "@ProductCategoryID", DbType.String, iProductCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ProductCategoryID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(iVendorCategoryID))
+                    {
+                        database.AddInParameter(command, "@VendorCategoryID", DbType.String, iVendorCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorCategoryID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(iVendorSubCategoryID))
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryID", DbType.String, iVendorSubCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryID", DbType.String, DBNull.Value);
+                    }
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetSearchedVendorByAutoSuggestion(string strCategorySelected, string strCategorySearchValue)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("USP_SelectSearchedVendorByAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (!string.IsNullOrEmpty(strCategorySelected))
+                    {
+                        database.AddInParameter(command, "@SearchCategory", DbType.String, strCategorySelected);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@SearchCategory", DbType.String, DBNull.Value);
+                    }
+
+                    if (!string.IsNullOrEmpty(strCategorySearchValue))
+                    {
+                        database.AddInParameter(command, "@SearchValue", DbType.String, strCategorySearchValue);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@SearchValue", DbType.String, DBNull.Value);
+                    }
+
                     DS = database.ExecuteDataSet(command);
                     return DS;
                 }
@@ -932,32 +1205,78 @@ namespace JG_Prospect.DAL
             }
         }
 
-
-        public DataTable SearchVendor(string searchString, string tableName)
+        public DataSet GetVendorAddressByVendorID(int VendorId)
         {
-            //List<string> searchResult = new List<string>();
-            DataTable dt = new DataTable();
             try
             {
-                string consString = ConfigurationManager.ConnectionStrings[DBConstants.CONFIG_CONNECTION_STRING_KEY].ConnectionString;
-                using (SqlConnection con = new SqlConnection(consString))
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    using (SqlCommand cmd = new SqlCommand("sp_FindStringInTable"))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@stringToFind", "%" + searchString + "%");
-                        cmd.Parameters.AddWithValue("@table", "tblVendors");
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                    }
+                    DbCommand command = database.GetStoredProcCommand("UDP_SelectVendorAddressByVendorID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@VendorID", DbType.Int32, VendorId);
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
                 }
             }
             catch (Exception ex)
             {
-
+                return null;
             }
-            return dt;
+        }
+
+
+        //public DataTable SearchVendor(string searchString, string tableName)
+        //{
+        //    //List<string> searchResult = new List<string>();
+        //    DataTable dt = new DataTable();
+        //    try
+        //    {
+        //        string consString = ConfigurationManager.ConnectionStrings[DBConstants.CONFIG_CONNECTION_STRING_KEY].ConnectionString;
+        //        using (SqlConnection con = new SqlConnection(consString))
+        //        {
+        //            using (SqlCommand cmd = new SqlCommand("sp_FindStringInTable"))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Connection = con;
+        //                cmd.Parameters.AddWithValue("@stringToFind", "%" + searchString + "%");
+        //                cmd.Parameters.AddWithValue("@table", "tblVendors");
+        //                cmd.Parameters.AddWithValue("@stringToFind", searchString);
+        //                SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //                da.Fill(dt);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+
+
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for vendor
+        /// </summary>
+        /// <param name="strSearchString">string to search</param>
+        /// <returns> Categorized search into fields like VendorId, VendorName, VendorCategoryId, ContactPerson, ContactNumber, Fax, Email, Address and BillingAddress </returns>
+        public DataSet GetVendorSearchAutoSuggestion(string strSearchString)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("USP_LoadSearchVendorAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@stringToFind", DbType.String, strSearchString);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
 
@@ -1043,6 +1362,31 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@action", DbType.String, "2");
                     database.AddInParameter(command, "@TempId", DbType.String, TempId);
                     database.AddInParameter(command, "@VendorId", DbType.Int32, VendorId);
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns all Vendor Notes based on VendorID 
+        /// </summary>
+        /// <param name="VendorID">int value</param>
+        /// <returns>All Vendor Notes</returns>
+        public DataSet GetVendorNotes(int VendorID)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetVendorNotes");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@VendorId", DbType.String, VendorID.ToString());
                     DS = database.ExecuteDataSet(command);
                     return DS;
                 }

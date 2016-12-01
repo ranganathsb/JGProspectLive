@@ -118,6 +118,90 @@
                 color: #000;
             }
     </style>
+    <style>
+        table tr th {
+            border: 1px solid;
+            padding: 0px;
+        }
+
+        table.table tr.trHeader {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .FirstRow {
+            background: #f57575;
+            padding: 2px;
+        }
+
+        .AlternateRow {
+            background: #f6f1f3;
+            padding: 2px;
+        }
+
+        .dark-gray-background {
+            background-color: darkgray;
+            background-image: none;
+        }
+
+        .AlternateRow a, .FirstRow a {
+            color: #111;
+        }
+
+        .textbox {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 5px;
+        }
+
+        .tablealign {
+            margin-top: 5px;
+        }
+
+        div.dd_chk_select {
+            height: 30px;
+        }
+
+            div.dd_chk_select div#caption {
+                top: 7px;
+                margin-left: 10px;
+            }
+
+        div.dd_chk_drop {
+            top: 30px;
+        }
+
+        .ui-autocomplete {
+            max-height: 250px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+        }
+
+        .ui-autocomplete-category {
+            font-weight: bold;
+            padding: .2em .4em;
+            margin: .8em 0 .2em;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .ui-autocomplete-loading {
+            background: white url("../img/ui-anim_basic_16x16.png") right center no-repeat;
+        }
+
+        .task-history-tab {
+            min-height: 200px;
+            max-height: 400px;
+            overflow: auto;
+            overflow-x: hidden;
+        }
+
+    </style>
+
     <script type="text/javascript">
 
         function ClosePopup() {
@@ -211,8 +295,33 @@
 
         }
 
-
         function GetVendorDetails(e) {
+            $('#<%=LblSave.ClientID%>').text("");
+            if ($('#<%=txtVendorNm.ClientID%>').val() == '' ) {
+                $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
+                return false;
+            }
+            if ($('#<%=ddlSource.ClientID%>').val() == 'Select Source') {
+                $('#<%=LblSave.ClientID%>').text("Please select source!");
+                return false;
+            }
+            if ($('#<%=txtPrimaryAddress.ClientID%>').val() == '' ) {
+                $('#<%=LblSave.ClientID%>').text("Please enter address!");
+                return false;
+            }
+            var selectedChkProductCategoryListValues = "";
+            $("[id*=chkVendorCategoryList] input:checked").each(function () {
+                //alert($(this).val());
+                selectedChkProductCategoryListValues += $(this).val();
+            });
+            <%--if ($('#<%=ddlVndrCategory.ClientID%>').val() == 'Select' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
+                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
+                return false;
+            }--%>
+            if (selectedChkProductCategoryListValues == '' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
+                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
+                return false;
+            }
             $("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
@@ -256,11 +365,11 @@
                 var EmailData = {
                     EmailType: "Primary",
                     Email: Emails,
-                    FirstName: $("input[name=nametxtPrimaryFName" + index + "]").val(),
-                    LastName: $("input[name=nametxtPrimaryLName" + index + "]").val(),
-                    Title: $("#ddlPrimaryTitle" + index).val() == undefined ? "" : $("#ddlPrimaryTitle" + index).val(),
+                    FirstName:  $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtPrimaryFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -282,11 +391,11 @@
                 var EmailData = {
                     EmailType: "Secondary",
                     Email: Emails,
-                    FirstName: $("#txtSecFName" + index).val(),
-                    LastName: $("#txtSecLName" + index).val(),
-                    Title: $("#ddlSecTitle" + index).val() == undefined ? "" : $("#ddlSecTitle" + index).val(),
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtSecFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -308,11 +417,11 @@
                 var EmailData = {
                     EmailType: "Alternate",
                     Email: Emails,
-                    FirstName: $("#txtAltFName" + index).val(),
-                    LastName: $("#txtAltLName" + index).val(),
-                    Title: $("#ddlAltTitle" + index).val() == undefined ? "" : $("#ddlAltTitle" + index).val(),
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtAltFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -345,12 +454,16 @@
             }
         }
 
+        function setProcSelectedValue(dropdownlist, sVal) {
+            $(dropdownlist).val(sVal);
+        }
+
         function AddVenderEmails(data) {
             var PID = -1;
             var SID = -1;
             var AID = -1;
             try {
-                if (data.length <= 0) { return;}
+                if (data.length <= 0) { return; }
             }
             catch (e2) {
                 return;
@@ -362,6 +475,8 @@
                 var EmailType = data[i].EmailType;
                 var FName = data[i].FName;
                 var LName = data[i].LName;
+                var Fax = data[i].Fax;
+                var Title = data[i].Title;
                 var SeqNo = data[i].SeqNo;
                 var VendorId = data[i].VendorId;
                 var TempID = data[i].TempID;
@@ -369,14 +484,38 @@
                 if (EmailType == "Primary") {
                     ID = "Primary";
                     PID++;
+                    $('#<%=txtPrimaryEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtPrimaryContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtPrimaryContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtPrimaryFax0.ClientID%>').val(Fax);
+                    $('#<%=txtPrimaryFName0.ClientID%>').val(FName);
+                    $('#<%=txtPrimaryLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlPrimaryTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlPrimaryPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
                 if (EmailType == "Secondary") {
                     ID = "Sec";
                     SID++;
+                    $('#<%=txtSecEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtSecContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtSecContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtSecFax0.ClientID%>').val(Fax);
+                    $('#<%=txtSecFName0.ClientID%>').val(FName);
+                    $('#<%=txtSecLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlSecTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlSecPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
                 if (EmailType == "Alternate") {
                     ID = "Alt";
                     AID++;
+                    $('#<%=txtAltEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtAltContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtAltContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtAltFax0.ClientID%>').val(Fax);
+                    $('#<%=txtAltFName0.ClientID%>').val(FName);
+                    $('#<%=txtAltLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlAltTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlAltPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
 
                 var NewRow = 0;
@@ -394,8 +533,8 @@
 
                 GenereateHTML(data[i], ID, NewRow);
             }
-           // $('.clsmaskphone').mask("(999) 999-9999");
-          //  $('.clsmaskphoneexten').mask("999999");
+            // $('.clsmaskphone').mask("(999) 999-9999");
+            //  $('.clsmaskphoneexten').mask("999999");
         }
 
         function GenereateHTML(data, ID, NewRow) {
@@ -760,7 +899,7 @@
                                             <td>
                                                 <asp:TextBox ID="txtAmount" runat="server" EnableViewState="true" onkeypress="return isNumericKey(event);"
                                                     MaxLength="20" ReadOnly="true"></asp:TextBox>
-                                                <asp:CheckBox ID="chkedit" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}"/>
+                                                <asp:CheckBox ID="chkedit" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}" />
                                                 <label>
                                                     <asp:Label ID="lblAmount" runat="server" Text="Please Enter Amount" ForeColor="Red" CssClass="hide"></asp:Label>
                                                 </label>
@@ -802,7 +941,7 @@
                                             <td id="amountvalue" visible="false" runat="server">
                                                 <asp:TextBox ID="txtccamount" runat="server" EnableViewState="true" onkeypress="return isNumericKey(event);"
                                                     MaxLength="20" ReadOnly="true"></asp:TextBox>
-                                                <asp:CheckBox ID="CheckBox1" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}"/>
+                                                <asp:CheckBox ID="CheckBox1" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}" />
                                                 <label>
                                                     <asp:Label ID="Label14" runat="server" Text="Please Enter Amount" ForeColor="Red" CssClass="hide"></asp:Label>
                                                 </label>
@@ -950,7 +1089,7 @@
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator12" runat="server" ControlToValidate="ddlperbus" ErrorMessage="Select Account Type" ForeColor="Red" InitialValue="0" Display="Dynamic" ValidationGroup="sold"></asp:RequiredFieldValidator>
                                                 </td>
                                             </tr>
-                                            
+
 
                                         </asp:Panel>
                                         <tr>
@@ -1134,7 +1273,7 @@
                                 </div>
                             </ProgressTemplate>
                         </asp:UpdateProgress>
-                        <asp:UpdatePanel ID="updtpnlfilter" runat="server">
+                        <asp:UpdatePanel ID="updtpnlfilter" runat="server" UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
                                     <tr>
@@ -1156,10 +1295,12 @@
                                         </td>
 
                                         <td colspan="2">
-                                            <div class="ui-widget">
-                                                <asp:TextBox ID="txtVendorSearchBox" CssClass="VendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
-                                            </div>
+                                            <%--<div class="ui-widget">--%>
+                                            <asp:TextBox ID="txtVendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
+                                            <%--</div>--%>
                                         </td>
+                                        <td>
+                                            <asp:ImageButton ID="btnSearchProcVendor" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" /></td>
                                         <input type="hidden" id="hdnvendorId" name="vendorId" />
                                         <input type="hidden" id="hdnVendorAddId" name="hdnVendorAddId" />
                                         <asp:Button ID="btnEditVendor" runat="server" Text="EditVendor" CssClass="clsbtnEditVendor" OnClick="btneditVendor_Click" />
@@ -1386,22 +1527,18 @@
                                                      </EmptyDataTemplate>
                                                  </asp:GridView>
                                              </div>
-
                                                 </div>
                                                 <div style="width: 50%; float: left; margin-left: 3%; margin-top: 20px; box-sizing: border-box;">
                                                     <div id="googleMap" style="width: 100%; height: 254px;"></div>
                                                 </div>
-
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
                             </ContentTemplate>
                         </asp:UpdatePanel>
-
-
+                        <asp:HiddenField ID="hidIsEditVendor" runat="server" Value="false" />
                     </div>
-
                     <div id="tabs">
                         <ul>
                             <li><a href="#tabs-1">Add/Edit Vendor</a></li>
@@ -1432,7 +1569,7 @@
                                                                 <span>* </span>Vendor Name:
                                                             </label>
                                                             <br />
-                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off"></asp:TextBox>
+                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
 
                                                             <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
                                                                 ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
@@ -1440,12 +1577,12 @@
                                                         <td class="style1">
                                                             <label>
                                                                 Vendor Source<asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Green"></asp:Label></label>
-                                                            <asp:DropDownList ID="ddlSource" runat="server" TabIndex="1" Width="250px">
+                                                            <asp:DropDownList ID="ddlSource" runat="server" TabIndex="3" Width="250px">
                                                             </asp:DropDownList>
-                                                            <asp:TextBox ID="txtSource" runat="server" TabIndex="1" Width="125px"></asp:TextBox>
-                                                            <asp:Button runat="server" ID="btnAddSource" TabIndex="1" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
+                                                            <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
+                                                            <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
                                
-                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="1" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
                                                             <%--<br />
                                                             &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
                                                                 ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
@@ -1873,35 +2010,37 @@
                                                                             Primary Contact Email
                                                                         </label>
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' tabindex="1" id="txtPrimaryEmail0" name="nametxtPrimaryEmail0" placeholder="Email" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtPrimaryEmail0" runat="server" placeholder='Email' class="clsemail" maxlength="50"  />
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Primary" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Email</a>
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <label>
+                                                                        <label> 
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtPrimaryFName0" tabindex="1" name="nametxtPrimaryFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtPrimaryFName0" runat="server" tabindex="1" maxlength="50" class="clsfname"  />
                                                                     </td>
 
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtPrimaryLName0" tabindex="1" name="nametxtPrimaryLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtPrimaryLName0" runat="server" maxlength="50" class="clslname" />
                                                                         <%--    <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlPrimaryTitle0" name="nameddlPrimaryTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlPrimaryTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -1912,13 +2051,13 @@
                                                                             <asp:TextBox ID="txtPrimaryContact0" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone" Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtPrimaryContactExten0" TabIndex="1" runat="server" placeholder="Extension" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" MaxLength="6" Width="34%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlPrimaryPhoneType0" name="nameddlPrimaryPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlPrimaryPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Contact</a><br />
                                                                         </div>
@@ -1927,8 +2066,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtPrimaryFax0" tabindex="1" name="nametxtPrimaryFax0" maxlength="15" onkeypress="return isNumericKey(event);" clientidmode='Static' />
-
+                                                                        <asp:TextBox ID="txtPrimaryFax0" runat="server" maxlength="15" class="clsfax"  onkeypress="return isNumericKey(event);"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -1943,7 +2081,7 @@
                                                                         <label>
                                                                             Secondary Contact Email</label><br />
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' id="txtSecEmail0" tabindex="1" name="nametxtSecEmail0" maxlength="50" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtSecEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Sec" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Sec" data-type="0">Add Email</a>
@@ -1952,27 +2090,29 @@
                                                                     <td>
                                                                         <label>
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtSecFName0" tabindex="1" name="nametxtSecFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtSecFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtSecFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                     </td>
 
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtSecLName0" tabindex="1" name="nametxtSecLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtSecLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
                                                                         <%--  <asp:TextBox ID="txtSecLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlSecTitle0" name="nameddlSecTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlSecTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -1983,13 +2123,13 @@
                                                                             <asp:TextBox ID="txtSecContact0" TabIndex="1" runat="server" MaxLength="10" onkeypress="return isNumericKey(event);" placeholder='___-___-____' CssClass="clsmaskphone" Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtSecContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="35%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlSecPhoneType0" name="nameddlSecPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlSecPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" data-emailtype="Sec" style="cursor: pointer" data-type="0">Add Contact</a>
                                                                             <br />
@@ -1999,7 +2139,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtSecFax0" tabindex="1" name="nametxtSecFax0" onkeypress="return isNumericKey(event);" maxlength="15" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtSecFax0" runat="server" onkeypress="return isNumericKey(event);" maxlength="15" class="clsfax"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -2015,7 +2155,7 @@
                                                                         <label>
                                                                             Alt. Contact Email</label><br />
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' id="txtAltEmail0" tabindex="1" name="nametxtAltEmail0" maxlength="50" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtAltEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Alt" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Email</a>
@@ -2024,7 +2164,7 @@
                                                                     <td>
                                                                         <label>
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtAltFName0" tabindex="1" name="nametxtAltFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtAltFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
@@ -2033,19 +2173,21 @@
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtAltLName0" tabindex="1" name="nametxtAltLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtAltLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlAltTitle0" name="nameddlAltTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlAltTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -2056,13 +2198,13 @@
                                                                             <asp:TextBox ID="txtAltContact0" TabIndex="1" runat="server" MaxLength="10" CssClass="clsmaskphone" onkeypress="return isNumericKey(event);" placeholder='___-___-____' Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtAltContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="32%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlAltPhoneType0" name="nameddlAltPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlAltPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Contact</a>
                                                                             <br />
@@ -2071,7 +2213,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtAltFax0" tabindex="1" name="nametxtAltFax0" onkeypress="return isNumericKey(event);" maxlength="15" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltFax0" runat="server" onkeypress="return isNumericKey(event);" maxlength="15" class="clsfax"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -2097,9 +2239,7 @@
                                         <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="btnOpenCategoryPopup"
                                             PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
                                         </asp:ModalPopupExtender>
-
                                         <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none; background: white; border: 5px solid rgb(179, 71, 74)">
-
                                             <div class="popup_heading">
                                                 <h1>Select Category</h1>
                                             </div>
@@ -2109,37 +2249,32 @@
                                                     <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
-                                                <div id="vendorcategory" class="categorylist_Heading"  style="width: 250px; float: left">
+                                                <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                                     <h4>Vendor Category</h4>
                                                     <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
-                                                <div id="vendorsubcategory" class="categorylist_Heading"  style="width: 250px; float: left">
+                                                <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                                     <h4>Vendor Sub Category</h4>
                                                     <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
                                             </div>
-
                                             <div class="btn_sec">
                                                 <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
-
                                                 <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
                                             </div>
                                         </asp:Panel>
-
                                         <div class="btn_sec">
                                             <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
-                                            <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClick="btnupdateVendor_Click1" />
+                                            <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
                                             <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
                                             <br />
                                             <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                                         </div>
                                     </div>
-
                                 </ContentTemplate>
                             </asp:UpdatePanel>
-
                         </div>
                         <div id="tabs-2">
                             <p>&nbsp</p>
@@ -2471,7 +2606,7 @@
                         </td>
                     </tr>
                 </table>
-
+                <asp:HiddenField ID="hidCategoryVendorSearchText" runat="server" />
             </div>
         </asp:Panel>
         <div id="fade" class="black_overlay">
@@ -2485,7 +2620,20 @@
 
 
     <script type="text/javascript">
-        SearchText();
+        $(function () {
+            //functions for auto search suggestions.
+            CreateProcCategorisedAutoSearch();
+            SearchProcText();
+        });
+
+        var prmProcTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmProcTaskGenerator.add_endRequest(function () {
+            //functions for auto search suggestions.
+            CreateProcCategorisedAutoSearch();
+            SearchProcText();
+        });
+
         SearchZipCode();
 
         $('.clsmaskphone').mask("(999) 999-9999");
@@ -2493,23 +2641,49 @@
 
         $(".cssbtnPageLoad").click();
         setTimeout(function () {
-           // initialize();
+            // initialize();
         }, 500);
 
-      /*  var mapProp;
-        var map;
-        function initialize() {
-            SearchText();
-            SearchZipCode();
-            mapProp = {
-                center: new google.maps.LatLng(40.042838, -75.528559),
-                zoom: 9,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-            getAllAddressOnMap();
+        /*  var mapProp;
+          var map;
+          function initialize() {
+              SearchText();
+              SearchZipCode();
+              mapProp = {
+                  center: new google.maps.LatLng(40.042838, -75.528559),
+                  zoom: 9,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+              };
+              map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+              getAllAddressOnMap();
+          }
+          */
+        function CreateProcCategorisedAutoSearch() {
+            $.widget("custom.proccomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                    currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
         }
-        */
+
+
         function getAllAddressOnMap() {
             var manufacturer = "Manufacturer";
             if ($("#<%=rdoRetailWholesale.ClientID%>").attr("checked") == "checked") {
@@ -2537,111 +2711,112 @@
             });
         }
 
-        function initializeMapIcon(MapJSON) {
-            // Setup the different icons and shadows
-        /*    var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
-
-            var icons = [
-            iconURLPrefix + 'red-dot.png',
-            iconURLPrefix + 'green-dot.png',
-            iconURLPrefix + 'blue-dot.png',
-            iconURLPrefix + 'orange-dot.png',
-            iconURLPrefix + 'purple-dot.png',
-            iconURLPrefix + 'pink-dot.png',
-            iconURLPrefix + 'yellow-dot.png'];
-
-            var icons_length = icons.length;
-
-            for (var i = 0; i < MapJSON.length; i++) {
-                var address = MapJSON[i];
-                var VendorName = address["VendorName"];
-                var Latitude = address["Latitude"];
-                var Longitude = address["Longitude"];
-                var AddressType = address["AddressType"];
-                var VendorStatus = address["VendorStatus"]
-                if (Latitude != null && Latitude != "" && Longitude != null && Longitude != "") {
-                    var iconCounter = 0;
-                    //if (AddressType == "Primary") {
-                    //    iconCounter = 0;
-                    //}
-                    //if (AddressType == "Secondary") {
-                    //    iconCounter = 2;
-                    //}
-                    //if (AddressType == "Billing") {
-                    //    iconCounter = 3;
-                    //}
-                    if (VendorStatus == "Prospect") {
-                        iconCounter = 0;
-                    }
-                    if (VendorStatus == "Active-Past") {
-                        iconCounter = 2;
-                    }
-                    if (VendorStatus == "Deactivate") {
-                        iconCounter = 3;
-                    }
-                    var infowindow = new google.maps.InfoWindow({
-                        maxWidth: 160
-                    });
-
-                    var marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(Latitude, Longitude),
-                        map: map,
-                        icon: icons[iconCounter],
-                        title: VendorName
-                    });
-
-                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                        return function () {
-                            var FullAddress = "";
-                            if (MapJSON[i]['VendorName'] != null)
-                                FullAddress += "<b>" + MapJSON[i]['VendorName'] + "</b>";
-                            FullAddress += "<p>";
-                            if (MapJSON[i]['Address'] != null)
-                                FullAddress += MapJSON[i]['Address'];
-                            if (MapJSON[i]['City'] != null)
-                                FullAddress += ", " + MapJSON[i]['City'];
-                            if (MapJSON[i]['State'] != null)
-                                FullAddress += ", " + MapJSON[i]['State'];
-                            if (MapJSON[i]['Country'] != null)
-                                FullAddress += ", " + MapJSON[i]['Country'];
-                            if (MapJSON[i]['Zip'] != null)
-                                FullAddress += ", " + MapJSON[i]['Zip'];
-                            FullAddress += "</p>";
-
-                            infowindow.setContent(FullAddress);
-                            infowindow.open(map, marker);
-                        }
-                    })(marker, i));
-                }
-            }*/
-        }
-
-        function SearchText() {
-            $(".VendorSearchBox").autocomplete({
-                minLength: 0,
+        function SearchProcText() {
+            $("#<%=txtVendorSearchBox.ClientID%>").proccomplete({
+                delay: 500,
                 source: function (request, response) {
                     $.ajax({
                         type: "POST",
-                        contentType: "application/json; charset=utf-8",
                         url: "Procurement.aspx/SearchVendor",
-                        data: "{'searchstring':'" + $(".VendorSearchBox").val() + "'}",
                         dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchstring: request.term }),
                         success: function (data) {
-                            response($.parseJSON(data.d));
-                        },
-                        error: function (result) {
-                            console.log("No Match");
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtVendorSearchBox.ClientID%>").removeClass("ui-autocomplete-loading");
                         }
                     });
                 },
+                minLength: 2,
                 select: function (event, ui) {
-                    $(".VendorSearchBox").val(ui.item.value);
-                    $("#hdnvendorId").val(ui.item.id);
-                    $("#hdnVendorAddId").val(ui.item.addressId);
-                    $(".clsbtnEditVendor").trigger("click");
-                    return false;
+                    $("#<%=txtVendorSearchBox.ClientID%>").val(ui.item.label);
+                    $("#<%=hidCategoryVendorSearchText.ClientID%>").val(ui.item.Category);
+                    TriggerProcVendorSearch();
                 }
             });
+        }
+
+        function initializeMapIcon(MapJSON) {
+            // Setup the different icons and shadows
+            /*    var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
+    
+                var icons = [
+                iconURLPrefix + 'red-dot.png',
+                iconURLPrefix + 'green-dot.png',
+                iconURLPrefix + 'blue-dot.png',
+                iconURLPrefix + 'orange-dot.png',
+                iconURLPrefix + 'purple-dot.png',
+                iconURLPrefix + 'pink-dot.png',
+                iconURLPrefix + 'yellow-dot.png'];
+    
+                var icons_length = icons.length;
+    
+                for (var i = 0; i < MapJSON.length; i++) {
+                    var address = MapJSON[i];
+                    var VendorName = address["VendorName"];
+                    var Latitude = address["Latitude"];
+                    var Longitude = address["Longitude"];
+                    var AddressType = address["AddressType"];
+                    var VendorStatus = address["VendorStatus"]
+                    if (Latitude != null && Latitude != "" && Longitude != null && Longitude != "") {
+                        var iconCounter = 0;
+                        //if (AddressType == "Primary") {
+                        //    iconCounter = 0;
+                        //}
+                        //if (AddressType == "Secondary") {
+                        //    iconCounter = 2;
+                        //}
+                        //if (AddressType == "Billing") {
+                        //    iconCounter = 3;
+                        //}
+                        if (VendorStatus == "Prospect") {
+                            iconCounter = 0;
+                        }
+                        if (VendorStatus == "Active-Past") {
+                            iconCounter = 2;
+                        }
+                        if (VendorStatus == "Deactivate") {
+                            iconCounter = 3;
+                        }
+                        var infowindow = new google.maps.InfoWindow({
+                            maxWidth: 160
+                        });
+    
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(Latitude, Longitude),
+                            map: map,
+                            icon: icons[iconCounter],
+                            title: VendorName
+                        });
+    
+                        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                            return function () {
+                                var FullAddress = "";
+                                if (MapJSON[i]['VendorName'] != null)
+                                    FullAddress += "<b>" + MapJSON[i]['VendorName'] + "</b>";
+                                FullAddress += "<p>";
+                                if (MapJSON[i]['Address'] != null)
+                                    FullAddress += MapJSON[i]['Address'];
+                                if (MapJSON[i]['City'] != null)
+                                    FullAddress += ", " + MapJSON[i]['City'];
+                                if (MapJSON[i]['State'] != null)
+                                    FullAddress += ", " + MapJSON[i]['State'];
+                                if (MapJSON[i]['Country'] != null)
+                                    FullAddress += ", " + MapJSON[i]['Country'];
+                                if (MapJSON[i]['Zip'] != null)
+                                    FullAddress += ", " + MapJSON[i]['Zip'];
+                                FullAddress += "</p>";
+    
+                                infowindow.setContent(FullAddress);
+                                infowindow.open(map, marker);
+                            }
+                        })(marker, i));
+                    }
+                }*/
         }
 
         function GetCityStateOnBlur(e) {
@@ -2712,13 +2887,12 @@
 
     </script>
     <input type="hidden" id="hdnAmount" runat="server" />
-        <style type="text/css">
-        .style2
-        {
+    <style type="text/css">
+        .style2 {
             width: 100%;
         }
-        #mask
-        {
+
+        #mask {
             position: fixed;
             left: 0px;
             top: 0px;
@@ -2811,24 +2985,25 @@
       else {
           var pagePath = "Custom.aspx/Exists";
           var dataString = "{ 'value':'" + document.getElementById('<%= txtadminCode.ClientID%>').value + "' }";
-                var textboxid = "#<%= txtadminCode.ClientID%>";
-                var errorlableid = "#<%= lblError.ClientID%>";
+          var textboxid = "#<%= txtadminCode.ClientID%>";
+          var errorlableid = "#<%= lblError.ClientID%>";
 
-                IsExists(pagePath, dataString, textboxid, errorlableid);
-                return true;
-            }
-    }
+          IsExists(pagePath, dataString, textboxid, errorlableid);
+          return true;
+      }
+}
+function TriggerProcVendorSearch() {
+    $('#<%=btnSearchProcVendor.ClientID %>').click();
+}
     </script>
     <div id="mask">
     </div>
     <asp:Panel ID="pnlPopupChangeAmt" runat="server" BackColor="White" Height="175px" Width="300px"
-        Style="z-index: 999999; background-color: White; position: fixed; left: 35%;
-        top: 6%; border: outset 2px gray; padding: 5px; display: none">
+        Style="z-index: 999999; background-color: White; position: fixed; left: 35%; top: 6%; border: outset 2px gray; padding: 5px; display: none">
         <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
             <tr style="background-color: #b5494c">
                 <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
-                    align="center">
-                    Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
+                    align="center">Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
                         class="btnClose" href="#">X</a>
                 </td>
             </tr>
@@ -2838,8 +3013,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right" style="width: 45%">
-                    Amount:
+                <td align="right" style="width: 45%">Amount:
                 </td>
                 <td>
                     <asp:TextBox ID="txtChangeAmount" runat="server" onkeypress="return isNumericKey(event);"
@@ -2847,8 +3021,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right">
-                    Admin Password:
+                <td align="right">Admin Password:
                 </td>
                 <td>
                     <asp:TextBox ID="txtadminCode" runat="server" TextMode="Password" Text=""></asp:TextBox>
@@ -2856,8 +3029,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                </td>
+                <td></td>
                 <td>
                     <input type="button" class="btnVerify" value="Verify" onclick="javascript: return focuslost();" />
                     &nbsp;&nbsp;

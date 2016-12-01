@@ -1032,6 +1032,8 @@
     <Content Include="Database Scripts\Bhavik\scripts oct _Calendar_Task 4.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN029_v0.1.sql" />
     <Content Include="Database Scripts\Bhavik\scripts oct _ITSN034_v0.1.sql" />
+    <Content Include="Database Scripts\Shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
+    <Content Include="Database Scripts\Shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\Shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\yogesh\scripts oct v0.1.sql" />
@@ -2574,7 +2576,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
