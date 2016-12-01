@@ -18,10 +18,10 @@ using System.Web.Script.Serialization;
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
 using JG_Prospect.Common;
-//using Owin;
-//using Microsoft.Owin.Builder;
+using Owin;
+using Microsoft.Owin.Builder;
 using System.Globalization;
-//using Microsoft.Owin.Security;
+using Microsoft.Owin.Security;
 using DotNetOpenAuth.AspNet.Clients;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -549,7 +549,7 @@ namespace JG_Prospect
                                 {
                                     Session["loginid"] = emailyahoo;
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                    //Session["loginpassword"] = txtpassword.Text.Trim();
+                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
@@ -662,7 +662,7 @@ namespace JG_Prospect
                     {
                         if (Request.QueryString["error"] == "unauthorized_client")
                         {
-                            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('" + Request.QueryString["error_description"] + "')", true);
+                            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('"+ Request.QueryString["error_description"] + "')", true);
                             return;
                         }
 
@@ -679,8 +679,8 @@ namespace JG_Prospect
 
                         if (res.IsSuccessful)
                         {
-                            string name, emailyahoo, token;
-                            token = res.ExtraData["accesstoken"];
+                            string name, emailyahoo,token;
+                            token= res.ExtraData["accesstoken"];
                             //userData = GetUserData(token);
 
                             name = res.ExtraData["name"];
@@ -705,7 +705,7 @@ namespace JG_Prospect
                                 {
                                     Session["loginid"] = emailyahoo;
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                    //Session["loginpassword"] = txtpassword.Text.Trim();
+                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
@@ -821,18 +821,14 @@ namespace JG_Prospect
         {
             try
             {
-                bool blSuccess = false;
                 string strRedirectUrl = string.Empty;
-
+                int isvaliduser = 0;
+                DataSet ds = new DataSet();
                 if (rdSalesIns.Checked)
                 {
-                    #region Staff User
 
-                    int isvaliduser = 0;
+                    ds = UserBLL.Instance.getUser(txtloginid.Text.Trim());
                     string AdminId = string.Empty;
-
-                    DataSet ds = ds = UserBLL.Instance.getUser(txtloginid.Text.Trim());
-
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
@@ -860,13 +856,13 @@ namespace JG_Prospect
                         {
                             Session["AdminUserId"] = AdminId;
                             Session["usertype"] = "Admin";
-                            // strRedirectUrl = "~/Sr_App/home.aspx";
+                           // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 1)
                         {
                             Session["usertype"] = "Admin";
-                            // strRedirectUrl = "~/Sr_App/home.aspx";
+                           // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 2)
@@ -951,15 +947,15 @@ namespace JG_Prospect
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
                                     {
-                                        if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
+                                        if(Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
                                         {
                                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                                         }
                                         else
                                         {
-                                            strRedirectUrl = "~/Sr_App/home.aspx";
+                                             strRedirectUrl = "~/Sr_App/home.aspx";
                                         }
-
+                                        
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
                                     {
@@ -1005,14 +1001,17 @@ namespace JG_Prospect
                                     // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                 }
                             }
+                            else
+                            {
+                                Session["loginid"] = null;
+                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                            }
                         }
-
                         #endregion
                     }
 
                     // redirects user to the last accessed page.
-                    // when user is authentication is successfull, we set default lending page for the user.
-                    // when authentication fails, we do not set it.
                     if (!string.IsNullOrEmpty(strRedirectUrl))
                     {
                         if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]))
@@ -1026,17 +1025,20 @@ namespace JG_Prospect
                                 strRedirectUrl = Request.QueryString["returnurl"];
                             }
                         }
-                        blSuccess = true;
+                        Response.Redirect(strRedirectUrl);
+                    }else
+                    {
+                        Session["loginid"] = null;
+                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
                     }
-
-                    #endregion
                 }
                 else if (rdCustomer.Checked)
                 {
                     #region Customer User
 
-                    DataSet ds = InstallUserBLL.Instance.getCustomerUserLogin(txtloginid.Text.Trim(), txtpassword.Text.Trim());
-
+                    ds = null;
+                    ds = InstallUserBLL.Instance.getCustomerUserLogin(txtloginid.Text.Trim(), txtpassword.Text.Trim());
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
@@ -1052,31 +1054,25 @@ namespace JG_Prospect
                             string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
                             //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
 
-                            //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-
-                            blSuccess = true;
-                            strRedirectUrl = "~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]);
+                            Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            //Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                         }
+                    }
+                    else
+                    {
+                        Session["loginid"] = null;
+                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect. If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site. If you still can not log in you may recover your user login and password by selecting forget username &/or forgot password link!');", true);
                     }
 
                     #endregion
                 }
-
-                if (blSuccess & !string.IsNullOrEmpty(strRedirectUrl))
-                {
-                    Response.Redirect(strRedirectUrl);
-                }
-                else
-                {
-                    Session["loginid"] = null;
-                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
-                }
             }
             catch (Exception ex)
             {
-                App_Code.CommonFunction.ShowAlertFromPage(this, "alert('Login was not successfull, Please try again later.');");
-                throw ex;
+                //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password! If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site. If you still can not log in you may recover your user login and password by selecting forget username &/or forgot password link!');", true);
+                //  Response.Redirect("ErrorPage.aspx");
             }
         }
 

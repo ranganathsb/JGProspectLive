@@ -1037,6 +1037,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
     <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
@@ -2872,7 +2873,6 @@
     <Folder Include="Database Scripts\Bhavik\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
-    <Folder Include="Database Scripts\yogesh\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
     <Folder Include="fileman\tmp\" />
