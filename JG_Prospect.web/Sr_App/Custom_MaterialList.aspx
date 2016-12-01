@@ -86,9 +86,8 @@
         }
     </style>
     <link href="../css/jquery.multiselect.css" rel="stylesheet" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="../js/jquery.Actual.min.js"></script>
-    <script src="../js/jquery.multiselect.js"></script>
+    <%--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../js/jquery.Actual.min.js"></script>--%>
 
     <script type="text/javascript">
 
@@ -618,6 +617,11 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../js/jquery.Actual.min.js"></script>
+    <script type="text/javascript" src="../js/ddaccordion.js"></script>
+    <script type="text/javascript" src="../js/jg-common.js"></script>
+    <script src="../js/jquery.multiselect.js"></script>
 
     <div id="cover" class="modal">
         <div id="dvLoader" class="center">&nbsp;</div>
