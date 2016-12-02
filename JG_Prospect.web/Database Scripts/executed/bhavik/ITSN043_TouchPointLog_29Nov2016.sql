@@ -1,5 +1,3 @@
-USE [JGBS_Interview]
-GO
 
 /****** Object:  Table [dbo].[tblUserTouchPointLog]    Script Date: 11/29/2016 4:55:08 PM ******/
 SET ANSI_NULLS ON
