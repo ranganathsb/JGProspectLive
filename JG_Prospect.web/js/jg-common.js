@@ -1,11 +1,11 @@
-﻿function htmlEncode(value){
-  //create a in-memory div, set it's inner text(which jQuery automatically encodes)
-  //then grab the encoded contents back out.  The div never exists on the page.
-  return $('<div/>').text(value).html();
+﻿function htmlEncode(value) {
+    //create a in-memory div, set it's inner text(which jQuery automatically encodes)
+    //then grab the encoded contents back out.  The div never exists on the page.
+    return $('<div/>').text(value).html();
 }
 
-function htmlDecode(value){
-  return $('<div/>').html(value).text();
+function htmlDecode(value) {
+    return $('<div/>').html(value).text();
 }
 
 /********************************************* CK Editor (Html Editor) ******************************************************/
@@ -47,7 +47,7 @@ function SetCKEditor(Id) {
     });
 }
 
-function SetCKEditorForPageContent(Id,AutosavebuttonId) {
+function SetCKEditorForPageContent(Id, AutosavebuttonId) {
 
     var $target = $('#' + Id);
 
@@ -63,7 +63,7 @@ function SetCKEditorForPageContent(Id,AutosavebuttonId) {
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
-                    
+
                     event.editor.updateElement();
                     // event.editor.destroy();
                     $(AutosavebuttonId).click();
@@ -200,3 +200,41 @@ function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
     $(hdnControlID).val(attachments);
 }
+
+function copyToClipboard(strDataToCopy) {
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", strDataToCopy);
+
+    //var $temp = $('<button/>', {
+    //    id: 'btnClipBoardContext'
+    //});
+
+    //$temp.attr("data-clipboard-text",strDataToCopy);
+    //$temp.attr("class", "contextcopy");
+
+    //$("body").append($temp);
+
+    //var clipboard = new Clipboard('.contextcopy');
+
+    //clipboard.on('success', function (e) {       
+    //    console.info('Text:', e.text);
+    //   e.clearSelection();
+    //});
+
+   
+   // $temp.remove();
+
+    //clipboard.destroy();
+}
+//common code check query string parameter, if already exists then replace value else add that parameter. 
+function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+        return uri + separator + key + "=" + value;
+    }
+}
+
+

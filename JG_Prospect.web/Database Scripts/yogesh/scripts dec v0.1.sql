@@ -255,6 +255,79 @@ GO
 --=================================================================================================================================================================================================
 
 
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 10015
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId int,
+	@Admin bit
+)	  
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	-- task manager detail
+	DECLARE @AssigningUser varchar(50) = NULL
+
+	SELECT @AssigningUser = Users.[Username] 
+	FROM 
+		tblTask AS Task 
+		INNER JOIN [dbo].[tblUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+	WHERE TaskId = @TaskId
+
+	IF(@AssigningUser IS NULL)
+	BEGIN
+		SELECT @AssigningUser = Users.FristName + ' ' + Users.LastName 
+		FROM 
+			tblTask AS Task 
+			INNER JOIN [dbo].[tblInstallUsers] AS Users  ON Task.[CreatedBy] = Users.Id
+		WHERE TaskId = @TaskId
+	END
+
+	-- sub tasks
+	SELECT 
+			Tasks.*,
+			--Tasks.TaskId, Title, [Description], Tasks.[Status], DueDate,Tasks.[Hours], Tasks.CreatedOn,
+			--Tasks.InstallId, Tasks.CreatedBy, Tasks.TaskType,Tasks.TaskPriority,
+			@AssigningUser AS AssigningManager,
+			UsersMaster.FristName, 
+			STUFF
+			(
+				(SELECT  CAST(', ' + ttuf.[Attachment] + '@' + ttuf.[AttachmentOriginal] as VARCHAR(max)) AS attachment
+				FROM dbo.tblTaskUserFiles ttuf
+				WHERE ttuf.TaskId = Tasks.TaskId
+				FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+				,1
+				,2
+				,' '
+			) AS attachment
+	FROM 
+		tblTask AS Tasks LEFT OUTER JOIN
+        tblTaskAssignedUsers AS TaskUsers ON Tasks.TaskId = TaskUsers.TaskId LEFT OUTER JOIN
+        tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id --LEFT OUTER JOIN
+		--tblTaskDesignations AS TaskDesignation ON Tasks.TaskId = TaskDesignation.TaskId
+	WHERE 
+			Tasks.ParentTaskId = @TaskId 
+			--AND
+			--1 = CASE
+			--		-- load records with all status for admin users.
+			--		WHEN @Admin = 1 THEN
+			--			1
+			--		-- load only approved records for non-admin users.
+			--		ELSE
+			--			CASE
+			--				WHEN Tasks.[AdminStatus] = 1 AND Tasks.[TechLeadStatus] = 1 THEN 1
+			--				ELSE 0
+			--			END
+			--	END
+    
+END
+GO
 
 /****** Object:  StoredProcedure [dbo].[uspSearchTasks]    Script Date: 02-Dec-16 8:44:17 AM ******/
 SET ANSI_NULLS ON

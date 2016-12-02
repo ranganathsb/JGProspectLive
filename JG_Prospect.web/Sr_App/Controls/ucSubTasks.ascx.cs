@@ -28,6 +28,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         public int TaskId { get; set; }
 
+        public int HighlightedTaskId { get; set; }
+
         public string controlMode { get; set; }
 
         public bool IsAdminMode { get; set; }
@@ -205,6 +207,19 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     e.Row.FindControl("ltrlInstallId").Visible = true;
                     e.Row.FindControl("lbtnInstallId").Visible = false;
+                }
+
+                if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId )
+                {
+                    if (e.Row.RowState == DataControlRowState.Alternate)
+                    {
+                        e.Row.CssClass = "yellowthickborder AlternateRow";
+                    }
+                    else
+                    {
+                        e.Row.CssClass = "yellowthickborder FirstRow";
+                    }
+                    
                 }
             }
         }
