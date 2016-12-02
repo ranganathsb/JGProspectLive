@@ -1029,6 +1029,7 @@
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\Nov\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN043_TouchPointLog_29Nov2016.sql" />
@@ -2889,7 +2890,6 @@
     <Folder Include="CustomerDocs\PurchaseOrder\" />
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
-    <Folder Include="Database Scripts\Bhavik\Nov\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
