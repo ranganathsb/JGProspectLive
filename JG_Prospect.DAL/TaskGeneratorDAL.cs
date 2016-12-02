@@ -857,7 +857,14 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
 
+                    database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
+                    database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
+                    database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
+                    database.AddInParameter(command, "@InProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.InProgress);
+                    database.AddInParameter(command, "@PendingStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Pending);
+                    database.AddInParameter(command, "@ReOpenedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.ReOpened);
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
+                    database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
                     
                     command.CommandType = CommandType.StoredProcedure;
