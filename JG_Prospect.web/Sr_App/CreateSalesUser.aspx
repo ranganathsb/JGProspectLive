@@ -9,7 +9,7 @@
     <link href="../css/dropzone/css/dropzone.css?v=1" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
-    <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
+    <%--<link rel="stylesheet" href="../css/intTel/intlTelInput.css" />--%>
 
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
@@ -111,7 +111,7 @@
         }
 
         $(document).ready(function () {
-            $('#<%=txtPhone.ClientID%>').intlTelInput();
+            <%--$('#<%=txtPhone.ClientID%>').intlTelInput();--%>
 
             var text_max = 50;
             $('#textarea_CharCount').html(text_max + ' characters remaining');
@@ -4684,7 +4684,7 @@
                                         </td>
                                         <td align="center"></td>
                                         <td>Time :
-                                    <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
+                                            <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
                                         </td>
                                     </tr>
                                     <tr>
@@ -4951,7 +4951,7 @@
     </script>
 
     
-    <script src="../js/intTel/intlTelInput.js"></script> 
+    <%--<script src="../js/intTel/intlTelInput.js"></script> --%>
 
 
 

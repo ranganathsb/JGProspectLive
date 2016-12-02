@@ -2875,7 +2875,7 @@ namespace JG_Prospect.Sr_App
                 dtInterviewDate.Visible = true;
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
                 ddlInsteviewtime.Visible = true;
-                ddlInsteviewtime.SelectedValue = "10:00";
+                ddlInsteviewtime.SelectedValue = "10:00 AM";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
                 showHideNewHireSection(false);
