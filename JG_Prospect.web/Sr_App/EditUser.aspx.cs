@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
-using JG_Prospect.App_Code;
+using Newtonsoft.Json;
 
 namespace JG_Prospect
 {
@@ -89,6 +89,38 @@ namespace JG_Prospect
 
         #endregion
 
+        #region WebMethods
+        [System.Web.Services.WebMethod]
+        public static List<Task> GetTasksForDesignation(string designationID)
+        {
+            List<Task> taskList = new List<Task>();
+            DataSet dsTechTaskForDesignation;
+
+            if (!string.IsNullOrEmpty(designationID) && !designationID.Equals("All"))
+            {
+                int iDesignationID = Convert.ToInt32(designationID);
+                dsTechTaskForDesignation = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);
+                if (dsTechTaskForDesignation != null & dsTechTaskForDesignation.Tables.Count > 0)
+                {
+                    //taskJSON = JsonConvert.SerializeObject(dsTechTaskForDesignation.Tables[0]);
+                    if (dsTechTaskForDesignation.Tables[0].Rows.Count > 0)
+                    {
+                        for (int iCurrentRow = 0; iCurrentRow < dsTechTaskForDesignation.Tables[0].Rows.Count; iCurrentRow++)
+                        {
+                            taskList.Add(new Task
+                            {
+                                TaskId = Convert.ToInt32(dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["TaskId"]),
+                                Title = dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["Title"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return taskList;
+        }
+
+        #endregion
+
         #region '--Page Events--'
 
         protected void Page_Load(object sender, EventArgs e)
@@ -119,7 +151,8 @@ namespace JG_Prospect
                 //bindPayPeriod(dsCurrentPeriod);
                 FillCustomer();
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
-                txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
+                //txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+                txtfrmdate.Text = "All";
                 ShowHRData();
             }
             else
@@ -661,7 +694,7 @@ namespace JG_Prospect
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
@@ -1191,10 +1224,10 @@ namespace JG_Prospect
             DataSet DS = new DataSet();
             //DS = UserBLL.Instance.getallusers(usertype);
             DataSet ds = new DataSet();
-            DataSet dsDesignation = new DataSet();
+
             ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
             DS = InstallUserBLL.Instance.GetAllEditSalesUser();
-            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+
 
             BindPieChart(DS.Tables[0]);
 
@@ -1214,14 +1247,28 @@ namespace JG_Prospect
             //ddlDesignation.DataSource = lstDesignation;
 
             //ddlDesignation.DataBind();            
+            BindDesignations();
+        }
 
+        private void BindDesignations()
+        {
+            DataSet dsDesignation = new DataSet();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
             if (dsDesignation.Tables.Count > 0)
             {
                 ddlDesignation.DataSource = dsDesignation.Tables[0];
                 ddlDesignation.DataTextField = "DesignationName";
                 ddlDesignation.DataValueField = "ID";
                 ddlDesignation.DataBind();
+
+                ddlDesignationForTask.DataSource = dsDesignation.Tables[0];
+                ddlDesignationForTask.DataTextField = "DesignationName";
+                ddlDesignationForTask.DataValueField = "ID";
+                ddlDesignationForTask.DataBind();
             }
+            ddlDesignation.Items.Insert(0, "--All--");
+            ddlDesignationForTask.Items.Insert(0, "--All--");
+
             ddlDesignation.Items.Insert(0, "--All--");
         }
 
@@ -1280,7 +1327,7 @@ namespace JG_Prospect
                 var rows = dtUsers.AsEnumerable();
 
                 //get all users comma seperated ids with interviewdate status
-                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "Deactive") select r.Field<Int32>("Id").ToString()));
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -1292,14 +1339,28 @@ namespace JG_Prospect
                         item = ddlUsers.Items.FindByValue(user);
                         item.Attributes.Add("style", "color:grey;");
                     }
-
                 }
 
                 //get all users comma seperated ids with interviewdate status
-                String OfferMadeUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "OfferMade" || r.Field<string>("Status") == "Offer Made") select r.Field<Int32>("Id").ToString()));
+                String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in OfferMadeUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:green;");
+                    }
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     ListItem item;
 
@@ -1308,25 +1369,7 @@ namespace JG_Prospect
                         item = ddlUsers.Items.FindByValue(user);
                         item.Attributes.Add("style", "color:red;");
                     }
-
                 }
-
-                //get all users comma seperated ids with interviewdate status
-                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
-
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
-
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:red;");
-                    }
-
-                }
-
             }
         }
 
@@ -2372,10 +2415,19 @@ namespace JG_Prospect
 
             dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
 
-            ddlTechTask.DataSource = dsTechTask;
-            ddlTechTask.DataTextField = "Title";
-            ddlTechTask.DataValueField = "TaskId";
-            ddlTechTask.DataBind();
+            if (dsTechTask != null & dsTechTask.Tables.Count > 0)
+            {
+                DataTable dtTechTask = dsTechTask.Tables[0];
+                //dtTechTask.Columns.Add("TitleWithLink");
+                //for (int iCurrentRow = 0; iCurrentRow < dtTechTask.Rows.Count; iCurrentRow++)
+                //{
+                //    dtTechTask.Rows[iCurrentRow]["TitleWithLink"] = dtTechTask.Rows[iCurrentRow]["Title"] + " - <a href=TaskGenerator.aspx?TaskId=" + dtTechTask.Rows[iCurrentRow]["TaskId"] + ">" + dtTechTask.Rows[iCurrentRow]["TaskId"] +"</a>";
+                //}
+                ddlTechTask.DataSource = dtTechTask;
+                ddlTechTask.DataTextField = "Title";
+                ddlTechTask.DataValueField = "TaskId";
+                ddlTechTask.DataBind();
+            }
         }
 
         private void BindGrid()
@@ -2384,15 +2436,30 @@ namespace JG_Prospect
 
             DataTable dt = (DataTable)(Session["UserGridData"]);
             EnumerableRowCollection<DataRow> query = null;
+            int iSelectedDesignationID = 0;
+            int iAddedByUserID = 0;
+            int iSourceID = 0;
+            if (ddlDesignation.SelectedIndex > 0)
+            {
+                iSelectedDesignationID = string.IsNullOrEmpty(ddlDesignation.SelectedValue) ? 0 : Convert.ToInt32(ddlDesignation.SelectedValue);
+            }
+            //if (drpUser.SelectedIndex > 0)
+            //{
+            //    iAddedByUserID = string.IsNullOrEmpty(drpUser.SelectedValue) ? 0 : Convert.ToInt32(drpUser.SelectedValue);
+            //}
+            //if (ddlSource.SelectedIndex > 0)
+            //{
+            //    iSourceID = string.IsNullOrEmpty(ddlSource.SelectedValue) ? 0 : Convert.ToInt32(ddlSource.SelectedValue);
+            //}
             if ((ddlUserStatus.SelectedIndex != 0 || ddlDesignation.SelectedIndex != 0 || drpUser.SelectedIndex != 0 || ddlSource.SelectedIndex != 0)
                 && dt != null)
             {
                 string Status = ddlUserStatus.SelectedItem.Value;
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
-                       && (userdata.Field<string>("Designation") == ddlDesignation.SelectedItem.Text || ddlDesignation.SelectedIndex == 0)
-                         && (userdata.Field<string>("AddedBy") == drpUser.SelectedItem.Text || drpUser.SelectedIndex == 0)
-                          && (userdata.Field<string>("Source") == ddlSource.SelectedItem.Text || ddlSource.SelectedIndex == 0)
+                        && (userdata.Field<Int32>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
+                        && (userdata.Field<string>("AddedBy") == drpUser.SelectedValue || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
                 {
@@ -2409,11 +2476,17 @@ namespace JG_Prospect
 
         private void ShowHRData()
         {
-            DateTime fromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            DateTime toDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            if (fromDate < toDate)
+            DateTime? fromDate = null;
+            DateTime? toDate = null;
+            if (!chkAllDates.Checked)
             {
-                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt16(drpUser.SelectedValue));
+                fromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                toDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            }
+            string strUserStatus = string.Empty;
+            if (fromDate < toDate || (fromDate == null && toDate == null))
+            {
+                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt32(drpUser.SelectedValue));
                 if (ds != null)
                 {
                     DataTable dtHrData = ds.Tables[0];
@@ -2802,5 +2875,22 @@ namespace JG_Prospect
         //}
 
         #endregion
+
+        protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAllDates.Checked)
+            {
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "All";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+            BindGrid();
+        }
     }
 }

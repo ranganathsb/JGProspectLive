@@ -23,7 +23,7 @@ namespace JG_Prospect.DAL
         public static InstallUserDAL Instance
         {
             get { return m_InstallUserDAL; }
-            private set { ;}
+            private set {; }
         }
 
         public DataSet returndata;
@@ -40,7 +40,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("UDP_BulkUpdateInstallUser");
                     database.AddInParameter(command, "@XMLDOC2", DbType.Xml, xmlDoc);
-                    database.AddInParameter(command, "@UpdatedBy", DbType.String, UpdatedBy);                    
+                    database.AddInParameter(command, "@UpdatedBy", DbType.String, UpdatedBy);
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -94,6 +94,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
                     database.AddInParameter(command, "@State", DbType.String, objuser.state);
                     database.AddInParameter(command, "@City", DbType.String, objuser.city);
+                    
                     database.AddInParameter(command, "@password", DbType.String, objuser.password);
                     database.AddInParameter(command, "@designation", DbType.String, objuser.designation);
                     database.AddInParameter(command, "@status", DbType.String, objuser.status);
@@ -121,7 +122,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@k", DbType.String, objuser.k);
                     database.AddInParameter(command, "@maritalstatus", DbType.String, objuser.maritalstatus);
                     database.AddInParameter(command, "@PrimeryTradeId", DbType.Int32, objuser.PrimeryTradeId);
-                    database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
+                    //database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
+                    
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@StatusReason", DbType.String, objuser.Reason);
@@ -234,8 +236,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, objuser.RejectedUserId);
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
+                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
+
                     #endregion
                     database.ExecuteScalar(command);
                     bool blSuccess = Convert.ToInt32(database.GetParameterValue(command, "@result")) == 1 ? true : false;
@@ -249,8 +253,9 @@ namespace JG_Prospect.DAL
             }
             return tupResult;
         }
+                     
 
-        public string AddNewPhoneType(string NewPhoneType , int AddedByID)
+        public string AddNewPhoneType(string NewPhoneType, int AddedByID)
         {
 
             try
@@ -258,10 +263,10 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_AddNewPhoneType");
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@NewPhoneType", DbType.String, NewPhoneType);
                     database.AddInParameter(command, "@AddedByID", DbType.Int32, AddedByID);
-                    
+
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
                 }
@@ -301,7 +306,7 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("sp_Get_TaskAssignByUserID");
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
 
                     dsTemp = database.ExecuteDataSet(command);
@@ -349,7 +354,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId,bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -390,7 +395,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetAllInterivewUser");
                     command.CommandType = CommandType.StoredProcedure;
-                      
+
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;
                 }
@@ -1174,13 +1179,12 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
 
-
-
                     database.AddInParameter(command, "@RejectionDate", DbType.String, objuser.RejectionDate);
                     database.AddInParameter(command, "@RejectionTime", DbType.String, objuser.RejectionTime);
 
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, objuser.RejectedUserId);
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
+                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -1900,7 +1904,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetHrData(DateTime fromdate, DateTime todate, int userid)
+        public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             returndata = new DataSet();
             try
@@ -1910,8 +1914,22 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@UserId", DbType.Int16, userid);
-                    database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
-                    database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    if (fromdate != null)
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }
@@ -2013,7 +2031,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode ,string UpdateCurrentSequence)
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
             DataSet dsTemp = new DataSet();
             try
@@ -2024,7 +2042,6 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@InstallUserID", DbType.String, UserId);
                     database.AddInParameter(command, "@DesignationsCode", DbType.String, strDesignationsCode);
-                    database.AddInParameter(command, "@UpdateCurrentSequence", DbType.String, UpdateCurrentSequence);
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;
                 }
