@@ -1029,6 +1029,9 @@
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
+    <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
+    <Content Include="Database Scripts\executed\bhavik\ITSN043_TouchPointLog_29Nov2016.sql" />
     <Content Include="Database Scripts\executed\bhavik\Nov\Script_Login_ITSN042_V3.sql" />
     <Content Include="Database Scripts\executed\bhavik\Script Nov_ITSN042_V1.sql" />
     <Content Include="Database Scripts\executed\bhavik\Script Nov_ITSN042_V2_UpdateUserInstallID.sql" />
@@ -1040,8 +1043,8 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
-    <Content Include="Database Scripts\Shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
-    <Content Include="Database Scripts\Shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
+    <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
+    <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
@@ -2886,8 +2889,9 @@
     <Folder Include="CustomerDocs\PurchaseOrder\" />
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
-    <Folder Include="Database Scripts\Bhavik\" />
+    <Folder Include="Database Scripts\Bhavik\Nov\" />
     <Folder Include="Database Scripts\Jaylem\" />
+    <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
     <Folder Include="fileman\tmp\" />
