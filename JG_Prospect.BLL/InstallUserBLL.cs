@@ -21,7 +21,7 @@ namespace JG_Prospect.BLL
         public static InstallUserBLL Instance
         {
             get { return m_InstallUserBLL; }
-            private set { ;}
+            private set {; }
         }
         public string AddHoursToAvailability(DateTime dt)
         {
@@ -325,7 +325,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.CheckCustomerRegistration(loginid, PhoneNo);
         }
 
-        public bool BulkUpdateIntsallUser(string xmlDoc,string UpdatedBy)
+        public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
         {
             return InstallUserDAL.Instance.BulkUpdateIntsallUser(xmlDoc, UpdatedBy);
         }
@@ -359,6 +359,7 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetCustomerPassword(loginid);
         }
+
         public string GetUserName(string PhoneNumber)
         {
             return InstallUserDAL.Instance.GetUserName(PhoneNumber);
@@ -448,7 +449,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateInstallUserStatus(Status, StatusId);
         }
 
-        public DataSet ChangeStatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId,bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        public DataSet ChangeStatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
 
             return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
@@ -459,11 +460,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetAllInterivewUserByPastDate();
         }
 
-        public DataSet ReSchedule_Interivew(int ApplicantId, string ReSheduleDate , string ReSheduleTime, int ReSheduleByUserId)
+        public DataSet ReSchedule_Interivew(int ApplicantId, string ReSheduleDate, string ReSheduleTime, int ReSheduleByUserId)
         {
 
             return InstallUserDAL.Instance.ReSchedule_Interivew(ApplicantId, ReSheduleDate, ReSheduleTime, ReSheduleByUserId);
-        } 
+        }
 
         public void ChangeStatusToInterviewDate(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, string time, string StatusReason = "")
         {
@@ -475,7 +476,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateOfferMade(Id, Email, password);
         }
 
-        public DataSet GetHrData(DateTime fromdate, DateTime todate, int userid)
+        public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             return InstallUserDAL.Instance.GetHrData(fromdate, todate, userid);
         }
@@ -515,14 +516,14 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetAllUserPhoneType();
         }
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode,string UpdateCurrentSequence)
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
-            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode , UpdateCurrentSequence);
+            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode, UpdateCurrentSequence);
         }
-        
+
         public DataSet GetUsersNDesignationForSalesFilter()
         {
             return InstallUserDAL.Instance.GetUsersNDesignationForSalesFilter();
-        }
+        }        
     }
 }

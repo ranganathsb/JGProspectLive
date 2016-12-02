@@ -127,6 +127,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskStatus(objTask);
         }
 
+        public DataSet GetAllActiveTechTaskForDesignationID(int iDesignationID)
+        {
+            return TaskGeneratorDAL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);
+        }
+
         public int UpdateTaskPriority(Task objTask)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskPriority(objTask);

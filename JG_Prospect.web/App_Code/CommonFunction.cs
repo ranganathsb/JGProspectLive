@@ -13,6 +13,24 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.App_Code
 {
+    public enum TaskStatus
+    {
+        Open = 1,
+        Requested = 2,
+        Assigned = 3,
+        InProgress = 4,
+        Pending = 5,
+        ReOpened = 6,
+        Closed = 7
+    }
+
+    public enum TaskType
+    {
+        Bug = 1,
+        BetaError = 2,
+        Enhancement = 3
+    }
+
     public static class CommonFunction
     {
         /// <summary>
