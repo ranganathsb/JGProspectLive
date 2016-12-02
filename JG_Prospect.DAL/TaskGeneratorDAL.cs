@@ -562,7 +562,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
         {
             try
             {
@@ -574,6 +574,18 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
+                    database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
+                    database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
+                    database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
+                    database.AddInParameter(command, "@InProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.InProgress);
+                    database.AddInParameter(command, "@PendingStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Pending);
+                    database.AddInParameter(command, "@ReOpenedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.ReOpened);
+                    database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
+                    database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -785,7 +797,7 @@ namespace JG_Prospect.DAL
         /// <param name="Start"></param>
         /// <param name="PageLimit"></param>
         /// <returns></returns>
-        public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit)
+        public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             returndata = new DataSet();
 
@@ -856,6 +868,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
 
                     database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
                     database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);

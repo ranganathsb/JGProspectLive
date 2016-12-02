@@ -20,6 +20,8 @@ namespace JG_Prospect.Sr_App.Controls
 {
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
+        string strSortExpression = string.Empty;
+
         #region '--Properties--'
 
         public delegate void OnLoadTaskData(Int64 intTaskId);
@@ -256,7 +258,7 @@ namespace JG_Prospect.Sr_App.Controls
                         break;
                 }
 
-                if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId )
+                if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId)
                 {
                     strRowCssClass += " yellowthickborder";
                 }
@@ -551,7 +553,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src =  String.Concat("~/TaskAttachments/" , Server.UrlEncode(files[0].Trim()));
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
                 }
                 else
                 {
@@ -577,7 +579,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
         }
-        
+
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "DownloadFile")
@@ -732,7 +734,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
         }
-        
+
         protected string SetFreezeColumnUI(TextBox objTextBox, CheckBox chkAdmin, CheckBox chkITLead, CheckBox chkUser)
         {
             string strPlaceholder = string.Empty;
@@ -761,7 +763,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         private DataTable GetSubTasks()
         {
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode()).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
         }
 
         public void SetSubTaskDetails(List<Task> lstSubtasks)
@@ -1200,5 +1202,29 @@ namespace JG_Prospect.Sr_App.Controls
         }
 
         #endregion
+
+        protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            if (gvSubTasks.SortExpression == e.SortExpression)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            if (gvSubTasks.SortDirection == SortDirection.Ascending)
+            {
+                strSortExpression = e.SortExpression + " ASC";
+            }
+            else
+            {
+                strSortExpression = e.SortExpression + " DESC";
+            }
+
+            SetSubTaskDetails();
+        }
+
     }
 }

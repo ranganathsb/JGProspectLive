@@ -36,6 +36,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         string strSubtaskSeq = "sbtaskseq";
 
+        string strSortExpression = string.Empty;
+
         /// <summary>
         /// Set control view mode.
         /// </summary>
@@ -979,7 +981,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit);
+            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit, strSortExpression);
 
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
@@ -1472,7 +1474,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
                 hdnSubTaskId.Value = ItaskId.ToString();
                 UploadUserAttachements(null, ItaskId, task.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode()).Tables[0]);
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();
