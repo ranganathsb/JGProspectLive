@@ -208,19 +208,60 @@ namespace JG_Prospect.Sr_App.Controls
                     e.Row.FindControl("ltrlInstallId").Visible = true;
                     e.Row.FindControl("lbtnInstallId").Visible = false;
                 }
+                string strRowCssClass = string.Empty;
+
+                if (e.Row.RowState == DataControlRowState.Alternate)
+                {
+                    strRowCssClass = "AlternateRow";
+                }
+                else
+                {
+                    strRowCssClass = "FirstRow";
+                }
+
+                switch ((JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status")))
+                {
+                    case JGConstant.TaskStatus.Open:
+                        strRowCssClass += " task-open";
+                        if (ddlTaskPriority.SelectedValue != "0")
+                        {
+                            strRowCssClass += " task-with-priority";
+                        }
+                        break;
+                    case JGConstant.TaskStatus.Requested:
+                        strRowCssClass += " task-requested";
+                        break;
+                    case JGConstant.TaskStatus.Assigned:
+                        strRowCssClass += " task-assigned";
+                        break;
+                    case JGConstant.TaskStatus.InProgress:
+                        strRowCssClass += " task-inprogress";
+                        break;
+                    case JGConstant.TaskStatus.Pending:
+                        strRowCssClass += " task-pending";
+                        break;
+                    case JGConstant.TaskStatus.ReOpened:
+                        strRowCssClass += " task-reopened";
+                        break;
+                    case JGConstant.TaskStatus.Closed:
+                        strRowCssClass += " task-closed closed-task-bg";
+                        break;
+                    case JGConstant.TaskStatus.SpecsInProgress:
+                        strRowCssClass += " task-specsinprogress";
+                        break;
+                    case JGConstant.TaskStatus.Deleted:
+                        strRowCssClass += " task-deleted deleted-task-bg";
+                        break;
+                    default:
+                        break;
+                }
 
                 if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId )
                 {
-                    if (e.Row.RowState == DataControlRowState.Alternate)
-                    {
-                        e.Row.CssClass = "yellowthickborder AlternateRow";
-                    }
-                    else
-                    {
-                        e.Row.CssClass = "yellowthickborder FirstRow";
-                    }
-                    
+                    strRowCssClass += " yellowthickborder";
                 }
+                e.Row.CssClass = strRowCssClass;
+
             }
         }
 

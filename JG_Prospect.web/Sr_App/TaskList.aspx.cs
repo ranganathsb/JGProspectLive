@@ -280,37 +280,63 @@ namespace JG_Prospect.Sr_App
                     #endregion
                 }
 
-                if (ddlStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Deleted).ToString())
-                {
-                    if (e.Row.RowState == DataControlRowState.Alternate)
-                    {
-                        e.Row.CssClass = "AlternateRow deleted-task-bg";
-                    }
-                    else
-                    {
-                        e.Row.CssClass = "FirstRow deleted-task-bg";
-                    }
+                string strRowCssClass = string.Empty;
 
-                    ddcbAssignedUser.Visible = false;
-                    ddlStatus.Enabled = false;
-                    ddlPriority.Enabled = false;
+                if (e.Row.RowState == DataControlRowState.Alternate)
+                {
+                    strRowCssClass = "AlternateRow";
+                }
+                else
+                {
+                    strRowCssClass = "FirstRow";
                 }
 
-                if (ddlStatus.SelectedValue == ((byte)JGConstant.TaskStatus.Closed).ToString())
+                switch ((JGConstant.TaskStatus)Convert.ToByte(drTask["Status"]))
                 {
-                    if (e.Row.RowState == DataControlRowState.Alternate)
-                    {
-                        e.Row.CssClass = "AlternateRow closed-task-bg";
-                    }
-                    else
-                    {
-                        e.Row.CssClass = "FirstRow closed-task-bg";
-                    }
-
-                    ddcbAssignedUser.Visible = false;
-                    ddlStatus.Enabled = false;
-                    ddlPriority.Enabled = false;
+                    case JGConstant.TaskStatus.Open:
+                        strRowCssClass += " task-open";
+                        if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()) &&
+                            drTask["TaskPriority"].ToString() != "0"
+                            )
+                        {
+                            strRowCssClass += " task-with-priority";
+                        }
+                        break;
+                    case JGConstant.TaskStatus.Requested:
+                        strRowCssClass += " task-requested";
+                        break;
+                    case JGConstant.TaskStatus.Assigned:
+                        strRowCssClass += " task-assigned";
+                        break;
+                    case JGConstant.TaskStatus.InProgress:
+                        strRowCssClass += " task-inprogress";
+                        break;
+                    case JGConstant.TaskStatus.Pending:
+                        strRowCssClass += " task-pending";
+                        break;
+                    case JGConstant.TaskStatus.ReOpened:
+                        strRowCssClass += " task-reopened";
+                        break;
+                    case JGConstant.TaskStatus.Closed:
+                        strRowCssClass += " task-closed closed-task-bg";
+                        ddcbAssignedUser.Visible = false;
+                        ddlStatus.Enabled = false;
+                        ddlPriority.Enabled = false;
+                        break;
+                    case JGConstant.TaskStatus.SpecsInProgress:
+                        strRowCssClass += " task-specsinprogress";
+                        break;
+                    case JGConstant.TaskStatus.Deleted:
+                        strRowCssClass += " task-deleted deleted-task-bg";
+                        ddcbAssignedUser.Visible = false;
+                        ddlStatus.Enabled = false;
+                        ddlPriority.Enabled = false;
+                        break;
+                    default:
+                        break;
                 }
+
+                e.Row.CssClass = strRowCssClass;
             }
         }
 

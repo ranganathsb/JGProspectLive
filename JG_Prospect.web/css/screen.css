@@ -1528,3 +1528,12 @@ z-index: 9 !important;
 }
 
 
+.task-assigned, .task-requested {
+    border:2px solid red;
+}
+.task-inprogress, .task-pending, .task-reopened {
+    border:2px solid yellow;
+}
+.task-open.task-with-priority {
+    border:2px solid green;
+}
