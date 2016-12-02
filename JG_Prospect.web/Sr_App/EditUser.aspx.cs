@@ -150,9 +150,9 @@ namespace JG_Prospect
                 DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
                 FillCustomer();
-                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 //txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 txtfrmdate.Text = "All";
+                txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
             }
             else
