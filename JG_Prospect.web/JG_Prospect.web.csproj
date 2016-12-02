@@ -1023,6 +1023,7 @@
     <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\JCarousel.css" />
     <Content Include="css\jquery-ui.css" />
+    <Content Include="css\jquery.contextMenu.min.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\pgwslideshow.min.css" />
@@ -1466,6 +1467,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\dropzone.js" />
     <Content Include="js\ice\ice-master.min.js" />
@@ -1581,6 +1583,7 @@
     <Content Include="js\jquery-migrate-1.0.0.js" />
     <Content Include="js\jquery-ui.js" />
     <Content Include="js\Jquery.Actual.min.js" />
+    <Content Include="js\jquery.contextMenu.min.js" />
     <Content Include="js\jquery.datetimepicker.css" />
     <Content Include="js\jquery.datetimepicker.js" />
     <Content Include="js\jquery.dd.min.js" />
@@ -1589,6 +1592,7 @@
     <Content Include="js\jquery.multiselect.js" />
     <Content Include="js\jquery.ui.core.js" />
     <Content Include="js\jquery.ui.core.old.js" />
+    <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
@@ -2920,6 +2924,10 @@
     <Content Include="fileman\lang\sk.json" />
     <Content Include="fileman\lang\tr.json" />
     <Content Include="fileman\web.config" />
+    <Content Include="fonts\context-menu-icons.eot" />
+    <Content Include="fonts\context-menu-icons.ttf" />
+    <Content Include="fonts\context-menu-icons.woff" />
+    <Content Include="fonts\context-menu-icons.woff2" />
     <None Include="img\notes\review.jpg.mno" />
     <Content Include="Sr_App\SR_app.Master" />
     <Content Include="Installer\InstallerMaster.Master" />

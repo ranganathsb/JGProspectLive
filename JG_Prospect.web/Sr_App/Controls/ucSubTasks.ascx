@@ -19,7 +19,7 @@
                         <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60">
                             <ItemTemplate>
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
-                                <asp:LinkButton ID="lbtnInstallId" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
+                                <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                     CommandArgument='<%# Container.DataItemIndex  %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -104,9 +104,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2">
-                                Attachment(s):
-                                <div style="max-height: 300px;clear:both; background-color:white; overflow-y: auto; overflow-x: hidden;">
+                            <td colspan="2">Attachment(s):
+                                <div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
                                     <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                         <ContentTemplate>
                                             <asp:Repeater ID="grdSubTaskAttachments" runat="server"
@@ -252,7 +251,7 @@
                             <td>
                                 <input id="hdnSubTaskNoteAttachments" runat="server" type="hidden" />
                                 <input id="hdnSubTaskNoteFileType" runat="server" type="hidden" />
-                               <div id="divSubTaskNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                <div id="divSubTaskNoteDropzone" runat="server" class="dropzone work-file-Note">
                                     <div class="fallback">
                                         <input name="file" type="file" multiple />
                                         <input type="submit" value="Upload" />
@@ -265,8 +264,8 @@
                         <tr>
                             <td colspan="2">
                                 <div class="btn_sec">
-                                    <asp:Button ID="btnSaveSubTaskFeedback" runat="server"  ValidationGroup="comment" OnClick="btnSaveSubTaskFeedback_Click" CssClass="ui-button" Text="Save"  />
-                                    <asp:Button ID="btnSaveCommentAttachment" runat="server"   OnClick="btnSaveCommentAttachment_Click" style="display:none;" Text="Save Attachement"  />
+                                    <asp:Button ID="btnSaveSubTaskFeedback" runat="server" ValidationGroup="comment" OnClick="btnSaveSubTaskFeedback_Click" CssClass="ui-button" Text="Save" />
+                                    <asp:Button ID="btnSaveCommentAttachment" runat="server" OnClick="btnSaveCommentAttachment_Click" Style="display: none;" Text="Save Attachement" />
                                 </div>
                             </td>
                         </tr>
@@ -284,12 +283,14 @@
 
     $(function () {
         ucSubTasks_Initialize();
+        ApplySubtaskLinkContextMenu();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
     prmTaskGenerator.add_endRequest(function () {
         ucSubTasks_Initialize();
+        ApplySubtaskLinkContextMenu();
     });
 
     function ucSubTasks_Initialize() {
@@ -339,7 +340,7 @@
         if (objSubtaskNoteDropzone) {
             objSubtaskNoteDropzone.destroy();
             objSubTaskNoteDropzone = null;
-            }
+        }
         objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
     }
 
@@ -352,4 +353,23 @@
             $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').hide();
         }
     }
+
+    function ApplySubtaskLinkContextMenu() {
+
+        $(".context-menu").bind("contextmenu", function () {
+            var urltoCopy = updateQueryStringParameter( window.location.href , "hstid" , $(this).attr('data-highlighter'));
+            copyToClipboard(urltoCopy);            
+            return false;
+        });
+        
+        $('html, body').animate({
+            scrollTop: $(".yellowthickborder").offset().top
+        }, 2000);
+
+        $(".yellowthickborder").bind("click", function () {
+            $(this).removeClass("yellowthickborder");
+        });
+    }
+
+    
 </script>

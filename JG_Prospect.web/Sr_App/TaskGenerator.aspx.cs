@@ -178,14 +178,23 @@ namespace JG_Prospect.Sr_App
 
             #region Sub Tasks
 
+            int intHighlightedTaskId = 0;
+
+            if (Request.QueryString["hstid"]!= null)
+            {
+                intHighlightedTaskId = Convert.ToInt32(Request.QueryString["hstid"].ToString());
+            }
+
             objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
             objucSubTasks_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucSubTasks_Admin.HighlightedTaskId = intHighlightedTaskId;
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
             objucSubTasks_Admin.controlMode = controlMode.Value;
             objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucSubTasks_User.HighlightedTaskId = intHighlightedTaskId;
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
             objucSubTasks_User.controlMode = controlMode.Value;
             objucSubTasks_User.SetSubTaskView();
