@@ -236,7 +236,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, objuser.RejectedUserId);
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
-                    
+
+                    database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
 
@@ -253,7 +255,114 @@ namespace JG_Prospect.DAL
             }
             return tupResult;
         }
-                     
+
+        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_InsertTouchPointLog");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userID", DbType.Int32, userID);
+                    database.AddInParameter(command, "@loginUserID", DbType.Int32, loginUserID);
+                    database.AddInParameter(command, "@loginUserInstallID", DbType.String, loginUserInstallID);
+                    database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
+                    database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
+                    
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public DataSet GetTouchPointLogDataByUserID(int userID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("Sp_GetTouchPointLogDataByUserID");
+                    database.AddInParameter(command, "@userID", DbType.Int32, userID);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_InsertUpdateUserPhone");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@isPrimaryPhone", DbType.Boolean, isPrimaryPhone);
+                    database.AddInParameter(command, "@phoneText", DbType.String, phoneText);
+                    database.AddInParameter(command, "@phoneType", DbType.Int32, phoneType);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userID);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public DataSet GetUserEmailByUseId(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SP_GetUserEmailByUserId");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public string AddUserEmails(string ExtEmail, int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_InsertUserEmail");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@EmailID", DbType.String, ExtEmail);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userId);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
         public string AddNewPhoneType(string NewPhoneType, int AddedByID)
         {
@@ -1184,7 +1293,9 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, objuser.RejectedUserId);
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
-                    
+
+                    database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));

@@ -178,6 +178,9 @@ namespace JG_Prospect.Common.modal
         public string City2;
         public string SuiteAptRoom2;
         public string SalesExperience;
+
+        public string PositionAppliedFor;
+        
     }
 
     public class user1

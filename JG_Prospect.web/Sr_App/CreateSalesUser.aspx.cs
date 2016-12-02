@@ -27,6 +27,7 @@ namespace JG_Prospect.Sr_App
 {
     public partial class CreateSalesUser : System.Web.UI.Page
     {
+
         #region '--Members--'
 
         string fn;
@@ -53,6 +54,7 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+             
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -70,7 +72,7 @@ namespace JG_Prospect.Sr_App
             //hide touch ppoint log grid for new customer and make it visible on view profile of customer
             if (Request.QueryString["Id"] != null)
             {
-                touchPointlogPanel.Visible = true;
+               
                 if (Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] != null)
                 {
                     UserId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
@@ -79,7 +81,9 @@ namespace JG_Prospect.Sr_App
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
                 hidID.Value = Request.QueryString["ID"].ToString();
 
-                bindGrid();
+                ///////bindGrid();
+                BindTouchPointLog();
+                // hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
             }
             else
             {
@@ -89,14 +93,18 @@ namespace JG_Prospect.Sr_App
                     SetUserControlValue(string.Empty);
                     hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
-                touchPointlogPanel.Visible = false;
+               
             }
+
+            #region -- Page Load --
+
             if (!IsPostBack)
             {
                 FillPhoneTypeDropDown();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
+
                 chkMaddAdd.Checked = true;
                 CalendarExtender1.StartDate = DateTime.Today;
                 this.BarcodeImage.Visible = false;
@@ -115,10 +123,10 @@ namespace JG_Prospect.Sr_App
                 dtReviewDate.Attributes.Add("readonly", "readonly");
                 dtLastDate.Attributes.Add("readonly", "readonly");
                 txtDateSourced.Attributes.Add("readonly", "readonly");
-                btnMinusNew.Visible = true;
-                btnPlusNew.Visible = false;
-                Panel3.Visible = true;
-                Panel4.Visible = true;
+                //////btnMinusNew.Visible = true;
+                //////btnPlusNew.Visible = false;
+                //////Panel3.Visible = true;
+                //////Panel4.Visible = true;
                 pnl4.Visible = false;
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
@@ -203,17 +211,15 @@ namespace JG_Prospect.Sr_App
                 txtAccountType.Visible = false;
                 //txtOtherTrade.Visible = false;
                 //txtSecTradeOthers.Visible = false;
-                pnlAll.Visible = false;
                 Session["ExtraIncomeName"] = null;
                 Session["ExtraIncomeAmt"] = null;
                 gvYtd.DataSource = null;
                 gvYtd.DataBind();
-                pnlFngPrint.Visible = false;
-                pnlGrid.Visible = false;
-                pnlnewHire.Visible = false;
-                pnlNew2.Visible = false;
-                btnNewPluse.Visible = true;
-                btnNewMinus.Visible = false;
+                //////pnlFngPrint.Visible = false;
+                //pnlGrid.Visible = false;
+                //pnlnewHire.Visible = false;
+                showHideNewHireSection(false);
+
                 txtReson.Visible = false;
                 dtInterviewDate.Visible = false;
                 btnPluse.Visible = true;
@@ -269,7 +275,6 @@ namespace JG_Prospect.Sr_App
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
                 rqMaritalStatus.Enabled = false;
-                // lblReqPicture.Visible = false;
                 // lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -283,7 +288,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -340,6 +345,8 @@ namespace JG_Prospect.Sr_App
                     btn_UploadFiles.Visible = true;
                     gvUploadedFiles.Visible = true;
                     int id = Convert.ToInt32(Request.QueryString["ID"]);
+                    FillEmailIDhin(id);
+                    FillPhoneValueTohid(id);
                     Session["ID"] = id;
                     ds = InstallUserBLL.Instance.getuserdetails(id);
                     if (ds.Tables[0].Rows.Count != 0)
@@ -356,9 +363,14 @@ namespace JG_Prospect.Sr_App
                         }
 
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
+
                         lblICardPosition.Text = ds.Tables[0].Rows[0][5].ToString();
-                        lblICardIDNo.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();                        
+                        lblICardIDNo.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
                         Session["installId"] = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
+
+                        //lblICardIDNo.Text = ds.Tables[0].Rows[0][62].ToString();
+                        //Session["installId"] = ds.Tables[0].Rows[0][62].ToString();
+
                         Session["IdGenerated"] = ds.Tables[0].Rows[0][62].ToString();
                         GenerateBarCode(Convert.ToString(Session["installId"]));
                         txtfirstname.Text = ds.Tables[0].Rows[0][1].ToString();
@@ -384,14 +396,18 @@ namespace JG_Prospect.Sr_App
                         txtpassword.Text = ds.Tables[0].Rows[0][7].ToString();
                         txtpassword1.Text = ds.Tables[0].Rows[0][7].ToString();
 
+                        if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
+                        {
+                            ddlPositionAppliedFor.ClearSelection();
+                            ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
+                        }
+
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
 
                         if (lstDesig != null)
                         {
                             ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
-
                             Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
-
                         }
 
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
@@ -454,7 +470,6 @@ namespace JG_Prospect.Sr_App
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = false;
                                 rqMaritalStatus.Enabled = false;
-                                // lblReqPicture.Visible = false;
                                 // lblReqDL.Visible = false;
                                 lblReqPicture.Style["display"] = "none";
                                 lblReqDL.Style["display"] = "none";
@@ -468,7 +483,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                //////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -511,7 +526,6 @@ namespace JG_Prospect.Sr_App
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = false;
                                 rqMaritalStatus.Enabled = false;
-                                // lblReqPicture.Visible = false;
                                 // lblReqDL.Visible = false;
                                 lblReqPicture.Style["display"] = "none";
                                 lblReqDL.Style["display"] = "none";
@@ -526,7 +540,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -569,7 +583,6 @@ namespace JG_Prospect.Sr_App
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = false;
                                 rqMaritalStatus.Enabled = false;
-                                // lblReqPicture.Visible = false;
                                 //  lblReqDL.Visible = false;
 
                                 lblReqPicture.Style["display"] = "none";
@@ -585,7 +598,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -640,7 +653,6 @@ namespace JG_Prospect.Sr_App
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = true;
                                 rqMaritalStatus.Enabled = true;
-                                //  lblReqPicture.Visible = false;
                                 //  lblReqDL.Visible = false;
                                 lblReqPicture.Style["display"] = "block";
                                 lblReqDL.Style["display"] = "block";
@@ -655,7 +667,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = true;
                                 rqSSN2.Enabled = true;
                                 rqSSN3.Enabled = true;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = true;
                                 rqPenalty.Enabled = true;
@@ -686,22 +698,17 @@ namespace JG_Prospect.Sr_App
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         if (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
                         {
-                            pnlFngPrint.Visible = true;
-                            pnlGrid.Visible = true;
+                            
+                            //pnlGrid.Visible = true;
                             pnl4.Visible = false;
-                            pnlnewHire.Visible = true;
-                            pnlNew2.Visible = true;
-                            btnNewPluse.Visible = false;
-                            btnNewMinus.Visible = true;
+                            showHideNewHireSection(true);
+
                         }
                         else
                         {
-                            pnlFngPrint.Visible = false;
-                            pnlGrid.Visible = false;
-                            pnlnewHire.Visible = false;
-                            pnlNew2.Visible = false;
-                            btnNewPluse.Visible = true;
-                            btnNewMinus.Visible = false;
+                            showHideNewHireSection(false);
+                            //pnlGrid.Visible = false;
+                            showHideNewHireSection(false);
                             pnl4.Visible = false;
                         }
                         if (ds.Tables[0].Rows[0][6].ToString() == "Deactive")
@@ -716,7 +723,7 @@ namespace JG_Prospect.Sr_App
                         }
                         else
                         {
-                            pnlAll.Visible = false;
+                            showHideNewHireSection(false);
                         }
                         if (ds.Tables[0].Rows[0][38].ToString() != "")
                         {
@@ -764,7 +771,6 @@ namespace JG_Prospect.Sr_App
                         {
                             //lstboxUploadedImages.SelectedIndex = -1;
                         }
-
                         Session["attachments"] = ds.Tables[0].Rows[0][10].ToString();
                         //lblUF.Text = "Uploaded file Name: " + Path.GetFileName(ds.Tables[0].Rows[0][10].ToString());
                         Session["UploadFiles"] = ds.Tables[0].Rows[0][10].ToString();
@@ -1004,7 +1010,8 @@ namespace JG_Prospect.Sr_App
                         //    }
                         //}
                         //txtStartDateNew.Text = Convert.ToString(ds.Tables[0].Rows[0][73]);
-                        txtSalRequirement.Text = Convert.ToString(ds.Tables[0].Rows[0][74]);
+                        txtSalaryRequirments.Text = Convert.ToString(ds.Tables[0].Rows[0]["SalaryReq"]);
+                        txtStartDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["StartDate"]);
                         //txtAvailability.Text = Convert.ToString(ds.Tables[0].Rows[0][75]);
                         Session["ResumeName"] = Path.GetFileName(Convert.ToString(ds.Tables[0].Rows[0][76]));
                         Session["ResumePath"] = Convert.ToString(ds.Tables[0].Rows[0][76]);
@@ -1027,9 +1034,6 @@ namespace JG_Prospect.Sr_App
                             ddlInstallerType.Visible = false;
                         }
 
-
-
-
                         if (Convert.ToString(ds.Tables[0].Rows[0][106]) != "")
                         {
                             if (Convert.ToBoolean(ds.Tables[0].Rows[0][106]))
@@ -1041,7 +1045,7 @@ namespace JG_Prospect.Sr_App
                                 rdoCurrentlyEmployeedNo.Checked = true;
                             }
                         }
-                        txtEmpWhere.Text = Convert.ToString(ds.Tables[0].Rows[0][107]);
+                        //txtEmpWhere.Text = Convert.ToString(ds.Tables[0].Rows[0][107]);
                         txtREasonChange.Text = Convert.ToString(ds.Tables[0].Rows[0][108]);
                         if (Convert.ToString(ds.Tables[0].Rows[0][109]) != "")
                         {
@@ -1158,8 +1162,11 @@ namespace JG_Prospect.Sr_App
                 rqAccountType.Enabled = false;
             }
 
-        }
+            #endregion
 
+            pnlFngPrint.Visible = false;            
+        }
+        
         private void SetUserControlValue(string LoginID)
         {
             ucAuditTrail.UserLoginID = LoginID;
@@ -1400,7 +1407,7 @@ namespace JG_Prospect.Sr_App
                 //    objuser.CrimeStatus = false;
                 //}
                 //objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
-                objuser.SalaryReq = txtSalRequirement.Text;
+                objuser.SalaryReq = txtSalaryRequirments.Text;
                 //objuser.Avialability = txtAvailability.Text;
                 //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
                 //if (txtYrs.Text != "")
@@ -1465,10 +1472,12 @@ namespace JG_Prospect.Sr_App
 
             }
         }
+
         protected void btncreate_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
                 return;
+
             string InstallId = string.Empty;
             string str_Status = string.Empty;
             string str_Reason = string.Empty;
@@ -1706,7 +1715,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
                 //}
-                objuser.SalaryReq = txtSalRequirement.Text;
+                
                 //objuser.Avialability = txtAvailability.Text;
                 //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
                 //if (txtYrs.Text != "")
@@ -1779,7 +1788,7 @@ namespace JG_Prospect.Sr_App
                     objuser.CruntEmployement = false;
                 }
 
-                objuser.CurrentEmoPlace = txtEmpWhere.Text;
+                //objuser.CurrentEmoPlace = txtEmpWhere.Text;
                 objuser.LeavingReason = txtREasonChange.Text;
                 if (rdoCompLitYes.Checked)
                 {
@@ -1820,6 +1829,11 @@ namespace JG_Prospect.Sr_App
                 objuser.bThree = txtbThree.Text;
                 objuser.cThree = txtcThree.Text;
                 objuser.UserType = "SalesUser";
+
+                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.StartDate = txtStartDate.Text;
+                objuser.SalaryReq = txtSalaryRequirments.Text;
+
                 DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(txtemail.Text, txtPhone.Text);
                 //  if (dsCheckDuplicate.Tables[0].Rows.Count > 0)
                 if (dsCheckDuplicate.Tables.Count > 0 && dsCheckDuplicate.Tables[0].Rows.Count > 0)
@@ -1834,6 +1848,9 @@ namespace JG_Prospect.Sr_App
                     {
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
+
+                        AddUpdateUserPhoneEmail(true , result.Item2);
+                        
                         UpdateUserInstallID(result.Item2);
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
@@ -1885,8 +1902,56 @@ namespace JG_Prospect.Sr_App
 
         }
 
+        /// <summary>
+        /// Add Update User Phone and email vlaue 
+        /// </summary>
+        /// <param name="IsInsert"></param>
+        private void AddUpdateUserPhoneEmail(bool IsInsert , int UserID)
+        {
+            //If insert than only chk for blank.
+            if (IsInsert != true || hidExtEmail.Value.Trim() != "")
+                    InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+
+            if (IsInsert != true || hidExtPhone.Value.Trim() != "")
+            {
+                string strHidPhoneValue = hidExtPhone.Value;
+                string delimeter = "|,|";
+                string Subdelimeter = "|%|";
+                //PhoneValue = '0' + Subdelimeter + 'Phone1' + Subdelimeter + 'skype' + delimeter + '1' + Subdelimeter + 'Phone2' + Subdelimeter + 'whatsapp';
+                if (strHidPhoneValue.IndexOf(delimeter) < 0)
+                    strHidPhoneValue = strHidPhoneValue + delimeter;
+
+                string[] PhoneTypes = strHidPhoneValue.Split(new string[] { delimeter }, StringSplitOptions.None);
+
+                foreach (string SubItems in PhoneTypes)
+                {
+                    if (SubItems.Trim() != "")
+                    {
+                        string[] PhoneTypeItems = SubItems.Split(new string[] { Subdelimeter }, StringSplitOptions.None);
+                        if (PhoneTypeItems != null)
+                        {
+                            bool IsPrimaryPhone;
+                            Boolean.TryParse(PhoneTypeItems[0].ToString(), out IsPrimaryPhone);
+                            string PhoneText = PhoneTypeItems[1].ToString();
+                            int intPhoneType;
+                            Int32.TryParse(PhoneTypeItems[2].ToString(), out intPhoneType);
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType, UserID);
+                        }
+                    }
+                }
+            }
+            //else
+            //{
+            //    //Update User value
+            //}
+            
+            
+            
+            
+        }
+
         #endregion
-        
+
         protected void txtZip_TextChanged(object sender, EventArgs e)
         {
             if (txtZip.Text == "")
@@ -2257,8 +2322,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    objuser.CrimeStatus = false;
                 //}
-                //objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
-                objuser.SalaryReq = txtSalRequirement.Text;
+
                 //objuser.Avialability = txtAvailability.Text;
                 //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
                 //if (txtYrs.Text != "")
@@ -2270,6 +2334,9 @@ namespace JG_Prospect.Sr_App
                 //    objuser.underPresentComp = Convert.ToDouble(txtCurrentComp.Text);
                 //}
                 //objuser.websiteaddress = txtWebsiteUrl.Text;
+                objuser.StartDate = txtStartDate.Text;
+                objuser.SalaryReq = txtSalaryRequirments.Text;
+
                 objuser.ResumePath = Convert.ToString(Session["ResumePath"]);
                 objuser.CirtificationTraining = Convert.ToString(Session["CirtificationPath"]);
                 objuser.PersonName = Convert.ToString(Session["PersonName"]);
@@ -2307,7 +2374,7 @@ namespace JG_Prospect.Sr_App
                     objuser.CruntEmployement = false;
                 }
 
-                objuser.CurrentEmoPlace = txtEmpWhere.Text;
+                //objuser.CurrentEmoPlace = txtEmpWhere.Text;
                 objuser.LeavingReason = txtREasonChange.Text;
                 if (rdoCompLitYes.Checked)
                 {
@@ -2348,6 +2415,8 @@ namespace JG_Prospect.Sr_App
                 objuser.aThreeTwo = txtaThreeTwo.Text;
                 objuser.bThree = txtbThree.Text;
                 objuser.cThree = txtcThree.Text;
+                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+
                 if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
                 {
                     Session["installId"] = GetUpdatedId(Convert.ToString(Session["installId"]));
@@ -2366,6 +2435,7 @@ namespace JG_Prospect.Sr_App
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
                     
+                    AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
                     
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
@@ -2732,6 +2802,7 @@ namespace JG_Prospect.Sr_App
         protected void ddlstatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
+            fullTouchPointLog();
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -2804,10 +2875,10 @@ namespace JG_Prospect.Sr_App
                 dtInterviewDate.Visible = true;
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
                 ddlInsteviewtime.Visible = true;
-                ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ddlInsteviewtime.SelectedValue = "10:00";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
-                showHideNewHireSection(true);
+                showHideNewHireSection(false);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
@@ -2820,14 +2891,7 @@ namespace JG_Prospect.Sr_App
             }
             else if (ddlstatus.SelectedValue == "OfferMade")
             {
-                ddlInsteviewtime.Visible = false;
-                txtReson.Visible = false;
-                RequiredFieldValidator7.Enabled = false;
-                dtInterviewDate.Visible = false;
-                pnlnewHire.Visible = true;
-                pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
+                ddlOfferMade();
             }
             else
             {
@@ -2841,22 +2905,18 @@ namespace JG_Prospect.Sr_App
                 lblReqDL.Style["display"] = "block";
                 //txtHireDate.Text = DateTime.Now.ToShortDateString();
                 dtReviewDate.Text = DateTime.Now.AddDays(30).ToShortDateString();
-                pnlFngPrint.Visible = true;
-                pnlGrid.Visible = true;
+                //////pnlFngPrint.Visible = true;
+                //pnlGrid.Visible = true;
                 pnl4.Visible = false;
-                pnlnewHire.Visible = true;
-                pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
+                //pnlnewHire.Visible = true;
+                showHideNewHireSection(true);
+
+
             }
             else
             {
-                pnlFngPrint.Visible = false;
-                pnlGrid.Visible = false;
-                pnlnewHire.Visible = false;
-                pnlNew2.Visible = false;
-                btnNewPluse.Visible = true;
-                btnNewMinus.Visible = false;
+                //pnlGrid.Visible = false;
+                showHideNewHireSection(false);
                 pnl4.Visible = false;
             }
             if (ddlstatus.SelectedValue == "Deactive")
@@ -2865,49 +2925,23 @@ namespace JG_Prospect.Sr_App
             }
             if (ddlstatus.SelectedValue == "OfferMade")
             {
-                rqdtResignition.Enabled = false;
-                pnlnewHire.Visible = true;
-                pnlAll.Visible = true;
-                pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
-                //rqDtNewReview.Enabled = false;
-                //rqLastReviewDate.Enabled = false;
-
-                if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
-                {
-                    txtOfferReqMail.Enabled = false;
-                    txtOfferReqMail.ReadOnly = true;
-                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
-                    txtOfferPassword.Attributes.Add("value", "jmgrove");
-                }
-                else
-                {
-                    txtOfferReqMail.Enabled = true;
-                    txtOfferReqMail.ReadOnly = false;
-                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
-                    txtOfferPassword.Attributes.Add("value", "jmgrove");
-                }
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
-                return;
+                ddlOfferMade2();
             }
             else if (ddlstatus.SelectedValue == "Active")
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
                 rqdtResignition.Enabled = true;
-                //rqDtNewReview.Enabled = true;
-                //rqLastReviewDate.Enabled = true;
                 showHideNewHireSection(true);
             }
             else
             {
                 rqdtResignition.Enabled = false;
-                //rqDtNewReview.Enabled = false;
-                //rqLastReviewDate.Enabled = false;
+                showHideNewHireSection(false);
             }
-            if (ddlstatus.SelectedValue == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if (ddlstatus.SelectedValue == "Active" 
+                && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) 
+                && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -2920,6 +2954,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    ddlstatus.SelectedValue = "Applicant";
                 //}
+                showHideNewHireSection(true);
                 return;
             }
 
@@ -2938,7 +2973,7 @@ namespace JG_Prospect.Sr_App
             }
             if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
             {
-                pnlAll.Visible = true;
+                showHideNewHireSection(true);
                 txtReson.Visible = false;
                 //pnlnewHire.Visible = true;
                 RequiredFieldValidator7.Enabled = true;
@@ -2947,14 +2982,14 @@ namespace JG_Prospect.Sr_App
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
-                pnlAll.Visible = true;
+                showHideNewHireSection(true);
                 txtReson.Visible = false;
                 //pnlnewHire.Visible = true;
                 RequiredFieldValidator7.Enabled = false;
             }
             else
             {
-                pnlAll.Visible = false;
+                showHideNewHireSection(false);
             }
             if (rdoCheque.Checked)
             {
@@ -3106,26 +3141,29 @@ namespace JG_Prospect.Sr_App
             }
             if (ddlstatus.SelectedValue == "Applicant" || ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "PhoneScreened")
             {
-                btnMinusNew.Visible = true;
-                btnPlusNew.Visible = false;
-                Panel3.Visible = true;
-                Panel4.Visible = true;
+                //////btnMinusNew.Visible = true;
+                //////btnPlusNew.Visible = false;
+                //////Panel3.Visible = true;
+                //////Panel4.Visible = true;
             }
             else
             {
-                btnMinusNew.Visible = false;
-                btnPlusNew.Visible = true;
-                Panel3.Visible = false;
-                Panel4.Visible = false;
+                ////////btnMinusNew.Visible = false;
+                ////////btnPlusNew.Visible = true;
+                //////Panel3.Visible = false;
+                ////////////Panel4.Visible = false;
             }
 
-            if ((ddlstatus.SelectedValue == "InterviewDate")
-                || (ddlstatus.SelectedValue == "Active")
-                || (ddlstatus.SelectedValue == "Deactive")
+            if ((ddlstatus.SelectedValue == "Active")
                 || (ddlstatus.SelectedValue == "OfferMade"))
             {
                 showHideNewHireSection(true);
             }
+            else
+            {
+                showHideNewHireSection(false);
+            }
+
 
 
             #region NewRequiredFields
@@ -3164,8 +3202,7 @@ namespace JG_Prospect.Sr_App
             //    lblReqSig.Visible = false;
             //    rqSign.Enabled = false;
             //    lblReqMarSt.Visible = false;
-            //    rqMaritalStatus.Enabled = false;
-            //    lblReqPicture.Visible = false;
+            //    rqMaritalStatus.Enabled = false;            
             //    lblReqDL.Visible = false;
             //    lblAddressReq.Visible = false;
             //    rqAddress.Enabled = false;
@@ -3221,8 +3258,7 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;
-                //   lblReqPicture.Visible = false;
+                rqMaritalStatus.Enabled = false;                
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3238,7 +3274,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -3281,8 +3317,7 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;
-                // lblReqPicture.Visible = false;
+                rqMaritalStatus.Enabled = false;                
                 // lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3298,7 +3333,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -3354,8 +3389,7 @@ namespace JG_Prospect.Sr_App
                 //rqConPass.Enabled = true;
                 rqSign.Enabled = true;
                 lblReqMarSt.Visible = true;
-                rqMaritalStatus.Enabled = true;
-                // lblReqPicture.Visible = false;
+                rqMaritalStatus.Enabled = true;                
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -3372,7 +3406,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = true;
                 rqSSN2.Enabled = true;
                 rqSSN3.Enabled = true;
-                lblReqDOB.Visible = true;
+                ////////lblReqDOB.Visible = true;
                 rqDOB.Enabled = true;
                 lblReqPOP.Visible = true;
                 rqPenalty.Enabled = true;
@@ -3430,8 +3464,7 @@ namespace JG_Prospect.Sr_App
                 //rqConPass.Enabled = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;
-                // lblReqPicture.Visible = false;
+                rqMaritalStatus.Enabled = false;                
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3447,7 +3480,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -3480,15 +3513,48 @@ namespace JG_Prospect.Sr_App
             #endregion
         }
 
+        private void ddlOfferMade2()
+        {
+            rqdtResignition.Enabled = false;
+            showHideNewHireSection(true);
+            
+            if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
+            {
+                txtOfferReqMail.Enabled = false;
+                txtOfferReqMail.ReadOnly = true;
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+            }
+            else
+            {
+                txtOfferReqMail.Enabled = true;
+                txtOfferReqMail.ReadOnly = false;
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+            }
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+            return;
+        }
+
+        private void ddlOfferMade()
+        {
+            ddlInsteviewtime.Visible = false;
+            txtReson.Visible = false;
+            RequiredFieldValidator7.Enabled = false;
+            dtInterviewDate.Visible = false;
+            //pnlnewHire.Visible = true;
+            showHideNewHireSection(true);
+            
+        }
+
         private void showHideNewHireSection(bool ShowSection)
         {
             pnlAll.Visible = ShowSection;
-            pnlFngPrint.Visible = ShowSection;
-            pnlnewHire.Visible = ShowSection;
+            //////pnlFngPrint.Visible = ShowSection;
+            //pnlnewHire.Visible = ShowSection;
             pnlNew2.Visible = ShowSection;
-
-            btnNewPluse.Visible = !ShowSection;
-            btnNewMinus.Visible = ShowSection;
+            pnlGrid.Visible = ShowSection;
         }
 
         protected void btnPluse_Click(object sender, EventArgs e)
@@ -3589,85 +3655,7 @@ namespace JG_Prospect.Sr_App
             pnl4.Visible = false;
         } 
 
-        protected void btnNewPluse_Click(object sender, EventArgs e)
-        {
-            pnlnewHire.Visible = true;
-            pnlNew2.Visible = true;
-            btnNewPluse.Visible = false;
-            btnNewMinus.Visible = true;
-            pnlFngPrint.Visible = true;
-            pnlGrid.Visible = true;
-            if (rdoCheque.Checked)
-            {
-                lblAba.Visible = false;
-                txtRoutingNo.Visible = false;
-                lblAccount.Visible = false;
-                txtAccountNo.Visible = false;
-                lblAccountType.Visible = false;
-                txtAccountType.Visible = false;
-                //txtOtherTrade.Visible = false;
-            }
-            else
-            {
-                lblAba.Visible = true;
-                txtRoutingNo.Visible = true;
-                lblAccount.Visible = true;
-                txtAccountNo.Visible = true;
-                lblAccountType.Visible = true;
-                txtAccountType.Visible = true;
-                //txtOtherTrade.Visible = true;
-            }
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-        }
 
-        protected void btnNewMinus_Click(object sender, EventArgs e)
-        {
-            pnlFngPrint.Visible = false;
-            pnlGrid.Visible = false;
-            pnlnewHire.Visible = false;
-            pnlNew2.Visible = false;
-            btnNewPluse.Visible = true;
-            btnNewMinus.Visible = false;
-            if (rdoCheque.Checked)
-            {
-                lblAba.Visible = false;
-                txtRoutingNo.Visible = false;
-                lblAccount.Visible = false;
-                txtAccountNo.Visible = false;
-                lblAccountType.Visible = false;
-                txtAccountType.Visible = false;
-                //txtOtherTrade.Visible = false;
-            }
-            else
-            {
-                lblAba.Visible = true;
-                txtRoutingNo.Visible = true;
-                lblAccount.Visible = true;
-                txtAccountNo.Visible = true;
-                lblAccountType.Visible = true;
-                txtAccountType.Visible = true;
-                //txtOtherTrade.Visible = true;
-            }
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-        }
 
         protected void btnAddExtraIncome_Click(object sender, EventArgs e)
         {
@@ -3853,14 +3841,12 @@ namespace JG_Prospect.Sr_App
 
         protected void ddldesignation_SelectedIndexChanged1(object sender, EventArgs e)
         {
-            if (ddlstatus.SelectedValue == "Active" && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            {
-                pnlAll.Visible = true;
-            }
+            if (ddlstatus.SelectedValue == "Active" && 
+                    (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
+                showHideNewHireSection(true);
             else
-            {
-                pnlAll.Visible = false;
-            }
+                showHideNewHireSection(false);
+
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -4173,10 +4159,10 @@ namespace JG_Prospect.Sr_App
          
         protected void btnPlusNew_Click(object sender, EventArgs e)
         {
-            btnMinusNew.Visible = true;
-            btnPlusNew.Visible = false;
-            Panel3.Visible = true;
-            Panel4.Visible = true;
+            ////////btnMinusNew.Visible = true;
+            ////////btnPlusNew.Visible = false;
+            //////Panel3.Visible = true;
+            //////Panel4.Visible = true;
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -4191,10 +4177,10 @@ namespace JG_Prospect.Sr_App
 
         protected void btnMinusNew_Click(object sender, EventArgs e)
         {
-            btnMinusNew.Visible = false;
-            btnPlusNew.Visible = true;
-            Panel3.Visible = false;
-            Panel4.Visible = false;
+            ////////btnMinusNew.Visible = false;
+            ////////btnPlusNew.Visible = true;
+            //////Panel3.Visible = false;
+            //////Panel4.Visible = false;
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -4311,7 +4297,7 @@ namespace JG_Prospect.Sr_App
 
             for (int i = 0; i < ddlPhontType.Items.Count; i++)
             {
-                switch (ddlPhontType.Items[i].Value.Trim())
+                switch (ddlPhontType.Items[i].Text.Trim())
                 {
                     case "skype":
                         imageURL = "../Sr_App/img/skype.png";
@@ -4323,27 +4309,80 @@ namespace JG_Prospect.Sr_App
                         break;
 
                     case "HousePhone":
+                    case "House Phone":
                         imageURL = "../Sr_App/img/Phone_home.png";
                         ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
                         break;
 
                     case "CellPhone":
+                    case "Cell Phone":
                         imageURL = "../Sr_App/img/Cell_Phone.png";
                         ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
                         break;
 
                     case "WorkPhone":
+                    case "Work Phone":
                         imageURL = "../Sr_App/img/WorkPhone.png";
                         ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
                         break;
 
                     case "AltPhone":
+                    case "Alt. Phone":
                         imageURL = "../Sr_App/img/AltPhone.png";
                         ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
                         break;
 
                     default:
                         ddlPhontType.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
+                        break;
+                }
+
+            }
+        }
+        
+        protected void phoneTypeDropDownList_PreRender(object sender, EventArgs e)
+        {
+            string imageURL = "";
+
+            for (int i = 0; i < phoneTypeDropDownList.Items.Count; i++)
+            {
+                switch (phoneTypeDropDownList.Items[i].Text.Trim())
+                {
+                    case "skype":
+                        imageURL = "../Sr_App/img/skype.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "whatsapp":
+                        imageURL = "../Sr_App/img/WhatsApp.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "HousePhone":
+                    case "House Phone":
+                        imageURL = "../Sr_App/img/Phone_home.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "CellPhone":
+                    case "Cell Phone":
+                        imageURL = "../Sr_App/img/Cell_Phone.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "WorkPhone":
+                    case "Work Phone":
+                        imageURL = "../Sr_App/img/WorkPhone.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "AltPhone":
+                    case "Alt. Phone":
+                        imageURL = "../Sr_App/img/AltPhone.png";
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    default:
+                        phoneTypeDropDownList.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
                         break;
                 }
 
@@ -4358,6 +4397,7 @@ namespace JG_Prospect.Sr_App
                 switch (ddlstatus.Items[i].Value)
                 {
                     case "Applicant":
+                    case "ReferralApplicant":
                         imageURL = "../Sr_App/img/red-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
@@ -4374,7 +4414,7 @@ namespace JG_Prospect.Sr_App
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     case "InterviewDate":
-                        imageURL = "../Sr_App/img/purple-astrek.png";
+                        imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     default:
@@ -4626,7 +4666,7 @@ namespace JG_Prospect.Sr_App
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
@@ -4642,7 +4682,7 @@ namespace JG_Prospect.Sr_App
 
             int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
 
-            
+
         }
 
         private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId)
@@ -4800,7 +4840,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4849,7 +4889,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4868,7 +4908,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4903,7 +4943,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -4981,7 +5021,11 @@ namespace JG_Prospect.Sr_App
                 gvUploadedFiles.Visible = false;
             }
         }
-        
+
+        private void FillListBoxImage(string imageName)
+        {   
+        }
+
         private void clearcontrols()
         {
 
@@ -4990,7 +5034,7 @@ namespace JG_Prospect.Sr_App
             txtReson.Text = ""; dtInterviewDate.Text = "";
             GridView1.DataSource = null;
             ddlcitizen.SelectedValue = "0";
-            ddldesignation.SelectedValue = "Jr. Sales";
+            //ddldesignation.SelectedValue = "Jr. Sales";
             ddlstatus.SelectedValue = "Applicant";
             ddlInstallerType.SelectedValue = "Foreman";
             txtHireDate.Text = DateTime.Today.ToShortDateString();
@@ -5022,7 +5066,7 @@ namespace JG_Prospect.Sr_App
             //rdoGuiltyNo.Enabled = true;
             //rdoGuiltyYes.Enabled = true;
             //txtStartDateNew.Enabled = true;
-            txtSalRequirement.Enabled = true;
+            txtSalaryRequirments.Enabled = true;
             //txtAvailability.Enabled = true;
             //txtWarrantyPolicy.Enabled = true;
             //txtYrs.Enabled = true;
@@ -5060,7 +5104,7 @@ namespace JG_Prospect.Sr_App
             //rdoGuiltyNo.Checked = false;
             //rdoGuiltyYes.Checked = false;
             //txtStartDateNew.Text = "";
-            txtSalRequirement.Text = "";
+            txtSalaryRequirments.Text = "";
             //txtAvailability.Text = "";
             //txtWarrantyPolicy.Text = "";
             //txtYrs.Text = "";
@@ -5720,13 +5764,13 @@ namespace JG_Prospect.Sr_App
 
         protected void bindGrid()
         {
-            if (!String.IsNullOrEmpty(Session["ID"].ToString()))
-            {
-                int CustomerId = Convert.ToInt32(Session["ID"]);
-                DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
-                grdTouchPointLog.DataSource = ds;
-                grdTouchPointLog.DataBind();
-            }
+            //////if (!String.IsNullOrEmpty(Session["ID"].ToString()))
+            //////{
+            //////    int CustomerId = Convert.ToInt32(Session["ID"]);
+            //////    DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
+            //////    grdTouchPointLog.DataSource = ds;
+            //////    grdTouchPointLog.DataBind();
+            //////}
             // txtAddNotes.Text = "";
         }
 
@@ -5737,68 +5781,67 @@ namespace JG_Prospect.Sr_App
                 string fullname = FName + " " + LName;
                 DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
 
-            if (ds == null)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-            else if (ds.Tables[0].Rows.Count == 0)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-            string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
-            string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
-            string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
-            string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
-
-            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
-
-            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
-            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
-            strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-            strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
-            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
-
-            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
-            //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-            //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
-            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
-
-            strBody = strBody.Replace("Lbl Full name", fullname);
-            strBody = strBody.Replace("LBL position", Designition);
-            //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
-            //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
-            strBody = strBody.Replace("Reason", Reason);
-            //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
-            strBody = strHeader + strBody + strFooter;
-
-            EditUser obj = new EditUser();
-            if (status == "OfferMade")
-            {
-                obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
-            }
-            if (status == "Deactive")
-            {
-                obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
-            }
-
-            List<Attachment> lstAttachments = new List<Attachment>();
-
-            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
-            {
-                string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
-                if (File.Exists(sourceDir))
+                if (ds == null)
                 {
-                    Attachment attachment = new Attachment(sourceDir);
-                    attachment.Name = Path.GetFileName(sourceDir);
-                    lstAttachments.Add(attachment);
+                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
                 }
-            }
-            if (Attachments != null)
+                else if (ds.Tables[0].Rows.Count == 0)
+                {
+                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                }
+                string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
+                string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
+                string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
+                string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+                strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+                strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+                strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+                //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+                //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+                strBody = strBody.Replace("Lbl Full name", fullname);
+                strBody = strBody.Replace("LBL position", Designition);
+                //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+                //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+                strBody = strBody.Replace("Reason", Reason);
+                //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
+                strBody = strHeader + strBody + strFooter;
+
+                EditUser obj = new EditUser();
+                if (status == "OfferMade")
+                {
+                    obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                }
+                if (status == "Deactive")
+                {
+                    obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                }
+
+                List<Attachment> lstAttachments = new List<Attachment>();
+
+                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                {
+                    string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+                    if (File.Exists(sourceDir))
+                    {
+                        Attachment attachment = new Attachment(sourceDir);
+                        attachment.Name = Path.GetFileName(sourceDir);
+                        lstAttachments.Add(attachment);
+                    }
+                }
+                if (Attachments != null)
             {
                 lstAttachments.AddRange(Attachments);
             }
-            JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
             }
@@ -5813,7 +5856,9 @@ namespace JG_Prospect.Sr_App
         {
             int intID = 0;
             Int32.TryParse(strCurrentID, out intID);
-            return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID);
+            int PhoneTypeID;
+            Int32.TryParse("0", out PhoneTypeID); //Need to pass PhoneType to validate duplicate records. ==Need to confomed. 
+            return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID, PhoneTypeID);
         }
 
         [WebMethod]
@@ -5906,8 +5951,13 @@ namespace JG_Prospect.Sr_App
             {
                 ddlPhontType.DataSource = dsPhoneType.Tables[0];
                 ddlPhontType.DataTextField = "ContactName";
-                ddlPhontType.DataValueField = "ContactValue";
+                ddlPhontType.DataValueField = "UserContactID";
                 ddlPhontType.DataBind();
+
+                phoneTypeDropDownList.DataSource = dsPhoneType.Tables[0];
+                phoneTypeDropDownList.DataTextField = "ContactName";
+                phoneTypeDropDownList.DataValueField = "UserContactID";
+                phoneTypeDropDownList.DataBind();
                 //ddlSource.Items.Insert(0, "Select Source");
                 //ddlSource.SelectedIndex = 0;
             }
@@ -5946,147 +5996,138 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void FillEmailIDhin(int id)
+        {
+            DataSet DsUserEmail = null;
 
+            DsUserEmail = InstallUserBLL.Instance.GetUserEmailByUseId(id);
+
+            foreach (DataRow DataRow in DsUserEmail.Tables[0].Rows)
+            {
+                if (hidExtEmail.Value.Trim() == "")
+                    hidExtEmail.Value = DataRow["emailID"].ToString() + "|,|";
+                else
+                    hidExtEmail.Value = hidExtEmail.Value + DataRow["emailID"].ToString() + "|,|";
+            }
+        }
+
+        private void FillPhoneValueTohid(int id)
+        {
+
+        }
+
+        private void fullTouchPointLog()
+        {
+            if (Session["ID"] != null && Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
+            {
+                
+                string strUserInstallId = JGSession.LoginUserID;
+
+                if (Session["Username"] != null)
+                {
+                    strUserInstallId = Session["Username"]  +" - "+ JGSession.LoginUserID;
+                }
+
+                InstallUserBLL.Instance.AddTouchPointLogRecord(
+                    Convert.ToInt32(JGSession.LoginUserID)
+                    , Convert.ToInt32(Session["ID"])
+                    , strUserInstallId
+                    , DateTime.Now, " Status To : " + ddlstatus.SelectedItem.Text);
+
+                BindTouchPointLog();
+            }
+            
+        }
+
+        private void BindTouchPointLog()
+        {
+            DataSet DsTouchPointLog;
+            DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+
+            gvTouchPointLog.DataSource = DsTouchPointLog;
+            gvTouchPointLog.DataBind();
+        }
 
         #endregion
 
         #region Old code - May not be in use
 
-        //private void FillListBoxImage(string imageName)
-        //{
-        //    string[] arr = imageName.Split(',');
-        //    if (flpUplaodPicture != null)
-        //    {
-        //        foreach (string img in arr)
-        //        {
-        //            //  lstboxUploadedImages.Items.Add(img);
-        //        }
-        //        //lstboxUploadedImages.SelectedIndex = 0;
-        //    }
-        //    else
-        //    {
-        //        foreach (string img in arr)
-        //        {
-        //            //  lstboxUploadedImages.SelectedIndex =-2;
-        //        }
-
-        //    }
-        //}
-
-        protected void btn_UploadPicture_Click(object sender, EventArgs e)
+        protected void btnNewPluse_Click(object sender, EventArgs e)
         {
-            //string ext = "";
-            //string fileName = string.Empty;
-            //string save = string.Empty;
-            //Int32 cnt;
-            //Int32 i;
-            //if (txtfirstname.Text != "" && txtlastname.Text != "")
-            //{
-            //    if (flpUplaodPicture.FileName != string.Empty)
-            //    {
-            //        ext = Path.GetExtension(flpUplaodPicture.FileName);
-            //        if (ext == ".jpeg" || ext == ".png" || ext == ".jpg" || ext == ".tif" || ext == ".gif")
-            //        {
-            //            fileName = flpUplaodPicture.FileName;
-            //            fileName = DateTime.Now.ToString() + fileName;
-            //            fileName = fileName.Replace("/", "");
-            //            fileName = fileName.Replace(":", "");
-            //            fileName = fileName.Replace(" ", "");
-            //            //fileName = Path.GetFileName(flpUplaodPicture.FileName);
-            //            save = Server.MapPath("~/Sr_App/UploadedFile/") + fileName;
-            //            flpUplaodPicture.SaveAs(save);
-            //            Session["UplaodPicture"] = null;
-            //            Session["UploadedPictureName"] = null;
-            //            Session["UplaodPicture"] = "~/Sr_App/UploadedFile/" + fileName;
-            //            Session["UploadedPictureName"] = fileName;
-            //            // cnt = lstboxUploadedImages.Items.Count;
-            //            // if (cnt == 0)
-            //            // {
-            //            // lstboxUploadedImages.Items.Add(fileName);
-            //            //   lstboxUploadedImages.SelectedIndex = 0;
-            //            //   string curItem = lstboxUploadedImages.SelectedItem.ToString();
-            //            Image2.Visible = true;
-            //            Image2.ImageUrl = "~/Sr_App/UploadedFile/" + fileName;
-            //            lblICardName.Text = txtfirstname.Text + " " + txtlastname.Text;
-            //            lblICardPosition.Text = ddldesignation.SelectedItem.Text;
-            //            if (Convert.ToString(Session["installId"]) == "")
-            //            {
-            //                Session["IdGenerated"] = GetId(ddldesignation.SelectedItem.Text);
-            //                lblICardIDNo.Text = Convert.ToString(Session["IdGenerated"]);
-            //                GenerateBarCode(Convert.ToString(Session["IdGenerated"]));
-            //            }
-            //            //else if (Convert.ToString(Session["installId"]) != "")
-            //            //{
-            //            //    if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
-            //            //    {
-            //            //        GetUpdatedId(Convert.ToString(Session["installId"]));
-            //            //    }
-            //            //}
-            //            FillDocument();
-            //            return;
+            //pnlnewHire.Visible = true;
+            showHideNewHireSection(true);
 
-            //            // }
-            //            // if (fileName != "")
-            //            // {
-            //            //  lstboxUploadedImages.Items.Add(fileName);
-            //            //   lstboxUploadedImages.SelectedIndex = 0;
-            //            // }
-            //        }
-            //        else
-            //        {
-            //            ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please select jpeg,png,jpg,tif or gif');", true);
-            //            return;
-            //        }
+            //////pnlFngPrint.Visible = true;
+            //pnlGrid.Visible = true;
+            if (rdoCheque.Checked)
+            {
+                lblAba.Visible = false;
+                txtRoutingNo.Visible = false;
+                lblAccount.Visible = false;
+                txtAccountNo.Visible = false;
+                lblAccountType.Visible = false;
+                txtAccountType.Visible = false;
+                //txtOtherTrade.Visible = false;
+            }
+            else
+            {
+                lblAba.Visible = true;
+                txtRoutingNo.Visible = true;
+                lblAccount.Visible = true;
+                txtAccountNo.Visible = true;
+                lblAccountType.Visible = true;
+                txtAccountType.Visible = true;
+                //txtOtherTrade.Visible = true;
+            }
+            if (ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lblInstallerType.Visible = true;
+                ddlInstallerType.Visible = true;
+            }
+            else
+            {
+                lblInstallerType.Visible = false;
+                ddlInstallerType.Visible = false;
+            }
+        }
 
-            //    }
-            //    else
-            //    {
-            //        Session["UploadedPictureName"] = "";
-            //        Session["UplaodPicture"] = "";
-            //        ScriptManager.RegisterStartupScript(this, GetType(), "AlertBox", "alert('Please Upload Image');", true);
-            //    }
+        protected void btnNewMinus_Click(object sender, EventArgs e)
+        {
+            //////pnlFngPrint.Visible = false;
+            //pnlGrid.Visible = false;
+            //pnlnewHire.Visible = false;
+            showHideNewHireSection(false);
 
-            //    //lblDtae.Text = DateTime.Now.ToString();
-            //    //UpdatePanel4.Update();
-            //    if (rdoCheque.Checked)
-            //    {
-            //        lblAba.Visible = false;
-            //        txtRoutingNo.Visible = false;
-            //        lblAccount.Visible = false;
-            //        txtAccountNo.Visible = false;
-            //        lblAccountType.Visible = false;
-            //        txtAccountType.Visible = false;
-            //        //txtOtherTrade.Visible = false;
-            //    }
-            //    else
-            //    {
-            //        lblAba.Visible = true;
-            //        txtRoutingNo.Visible = true;
-            //        lblAccount.Visible = true;
-            //        txtAccountNo.Visible = true;
-            //        lblAccountType.Visible = true;
-            //        txtAccountType.Visible = true;
-            //        //txtOtherTrade.Visible = true;
-            //    }
-            //}
-            //else
-            //{
-            //    ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert(Please Select Designition,Enter First Name & last Name)", true);
-            //    return;
-            //}
-            //if (ddldesignation.SelectedItem.Text == "Installer")
-            //{
-            //    lblInstallerType.Visible = true;
-            //    ddlInstallerType.Visible = true;
-            //}
-            //else
-            //{
-            //    lblInstallerType.Visible = false;
-            //    ddlInstallerType.Visible = false;
-            //}
-            //btnPluse.Visible = true;
-            //btnMinus.Visible = false;
-            //pnl4.Visible = false;
+            if (rdoCheque.Checked)
+            {
+                lblAba.Visible = false;
+                txtRoutingNo.Visible = false;
+                lblAccount.Visible = false;
+                txtAccountNo.Visible = false;
+                lblAccountType.Visible = false;
+                txtAccountType.Visible = false;
+                //txtOtherTrade.Visible = false;
+            }
+            else
+            {
+                lblAba.Visible = true;
+                txtRoutingNo.Visible = true;
+                lblAccount.Visible = true;
+                txtAccountNo.Visible = true;
+                lblAccountType.Visible = true;
+                txtAccountType.Visible = true;
+                //txtOtherTrade.Visible = true;
+            }
+            if (ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lblInstallerType.Visible = true;
+                ddlInstallerType.Visible = true;
+            }
+            else
+            {
+                lblInstallerType.Visible = false;
+                ddlInstallerType.Visible = false;
+            }
         }
 
         private string GetId(string Desig)

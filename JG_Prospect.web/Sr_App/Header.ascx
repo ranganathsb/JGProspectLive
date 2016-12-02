@@ -35,9 +35,9 @@
     }
     .ProfilImg {
         left: 1px;
-        top: 47px;        
+        top: 5px;        
         position: absolute;
-        margin-left:-40px;
+        margin-left:-58px;
         width: 181px;
     }
     .img-Profile {
