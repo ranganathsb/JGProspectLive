@@ -664,3 +664,594 @@ BEGIN
 
 END
 GO
+
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 10015
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'Status DESC',
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	;WITH 
+	
+	Tasklist AS
+	(	
+	
+		SELECT 
+			--TaskUserMatch.IsMatch AS TaskUserMatch,
+			--TaskUserRequestsMatch.IsMatch AS TaskUserRequestsMatch,
+			--TaskDesignationMatch.IsMatch AS TaskDesignationMatch,
+			Tasks.*
+		FROM
+			(
+				SELECT 
+					Tasks.*,
+					1 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@AssignedStatus,@RequestedStatus)
+					
+				UNION
+
+				SELECT 
+					Tasks.*,
+					2 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@InProgressStatus,@PendingStatus,@ReOpenedStatus)
+					
+				UNION
+
+				SELECT 
+					Tasks.*,
+					3 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY 
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@OpenStatus) AND ISNULL([TaskPriority],'') <> ''
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					4 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY 
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@OpenStatus, @SpecsInProgressStatus)
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					5 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] = @ClosedStatus
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					6 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] = @DeletedStatus
+			) Tasks
+		WHERE
+			Tasks.ParentTaskId = @TaskId
+	),
+
+	FinalData AS
+	( 
+		SELECT * ,
+			Row_number() OVER(ORDER BY SortOrder ASC) AS RowNo
+		FROM Tasklist 
+	)
+	
+	-- get records
+	SELECT * 
+	FROM FinalData 
+
+END
+GO
+
+
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 8/25/16
+-- Description:	This procedure is used to search tasks by different parameters.
+-- =============================================
+ALTER PROCEDURE [dbo].[uspSearchTasks]
+	@Designations	VARCHAR(4000) = '0',
+	@UserId			INT = NULL,
+	@Status			TINYINT = NULL,
+	@CreatedFrom	DATETIME = NULL,
+	@CreatedTo		DATETIME = NULL,
+	@SearchTerm		VARCHAR(250) = NULL,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@ExcludeStatus	TINYINT = NULL,
+	@Admin			BIT,
+	@PageIndex		INT = 0,
+	@PageSize		INT = 10,
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SET @PageIndex = @PageIndex + 1
+
+	;WITH 
+	
+	Tasklist AS
+	(	
+	
+		SELECT 
+			--TaskUserMatch.IsMatch AS TaskUserMatch,
+			--TaskUserRequestsMatch.IsMatch AS TaskUserRequestsMatch,
+			--TaskDesignationMatch.IsMatch AS TaskDesignationMatch,
+			Tasks.*
+		FROM
+			(
+				SELECT 
+					Tasks.*,
+					1 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@AssignedStatus,@RequestedStatus)
+					
+				UNION
+
+				SELECT 
+					Tasks.*,
+					2 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@InProgressStatus,@PendingStatus,@ReOpenedStatus)
+					
+				UNION
+
+				SELECT 
+					Tasks.*,
+					3 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY 
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@OpenStatus) AND ISNULL([TaskPriority],'') <> ''
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					4 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY 
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] IN (@OpenStatus, @SpecsInProgressStatus)
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					5 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] = @ClosedStatus
+
+				UNION
+
+				SELECT 
+					Tasks.*,
+					6 AS SortOrder,
+					Row_number() OVER
+					(
+						ORDER BY
+							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+							CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+							CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.[Status] END ASC,
+							CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.[Status] END DESC
+					) AS RowNo_Order
+				FROM          
+					[TaskListView] Tasks
+				WHERE 
+					[Status] = @DeletedStatus
+			) Tasks    
+			OUTER APPLY
+			(
+				SELECT TOP 1 
+						1 AS IsMatch,
+						TaskUsers.UserId AS UserId,
+						UsersMaster.FristName AS FristName
+				FROM tblTaskAssignedUsers TaskUsers
+						LEFT JOIN tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id
+				WHERE 
+					TaskUsers.TaskId = Tasks.TaskId AND
+					TaskUsers.[UserId] = ISNULL(@UserId, TaskUsers.[UserId]) AND
+					1 = CASE
+							WHEN @UserId IS NOT NULL THEN 1 -- set true, when user id is provided. so that join will handle record filtering and search term will have no effect on user.
+							WHEN @SearchTerm IS NULL THEN 1 -- set true, when search term is null. so that join will handle record filtering and search term will have no effect on user.
+							WHEN UsersMaster.FristName LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if users with given search terms are available. 
+							ELSE 0
+						END
+			) As TaskUserMatch
+			OUTER APPLY
+			(
+				SELECT TOP 1 
+						1 AS IsMatch,
+						TaskUsers.UserId AS UserId,
+						UsersMaster.FristName AS FristName
+				FROM tblTaskAssignmentRequests TaskUsers
+						LEFT JOIN tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id
+				WHERE 
+					TaskUsers.TaskId = Tasks.TaskId AND
+					TaskUsers.[UserId] = ISNULL(@UserId, TaskUsers.[UserId]) AND
+					1 = CASE
+							WHEN @UserId IS NOT NULL THEN 1 -- set true, when user id is provided. so that join will handle record filtering and search term will have no effect on user.
+							WHEN @SearchTerm IS NULL THEN 1 -- set true, when search term is null. so that join will handle record filtering and search term will have no effect on user.
+							WHEN UsersMaster.FristName LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if users with given search terms are available. 
+							ELSE 0
+						END
+			) As TaskUserRequestsMatch
+			OUTER APPLY
+			(
+				SELECT TOP 1 
+						CASE
+						WHEN @SearchTerm IS NULL THEN
+							CASE
+								WHEN @Designations = '0' THEN 1
+								WHEN EXISTS (SELECT ss.Item  FROM dbo.SplitString(@Designations,',') ss WHERE ss.Item = TaskDesignations.Designation) THEN 1
+								ELSE 0 
+							END
+						ELSE 
+							CASE
+								WHEN @Designations = '0' AND TaskDesignations.Designation LIKE '%' + @SearchTerm + '%' THEN 1
+								WHEN (Tasks.[InstallId] LIKE '%' + @SearchTerm + '%'  OR Tasks.[Title] LIKE '%' + @SearchTerm + '%') THEN 1
+								ELSE 0
+							END
+						END AS IsMatch,
+						TaskDesignations.Designation AS Designation
+				FROM tblTaskDesignations AS TaskDesignations
+				WHERE 
+					TaskDesignations.TaskId = Tasks.TaskId AND
+					1 = CASE
+							WHEN @Designations = '0' AND @SearchTerm IS NULL THEN 1 -- set true, when '0' (all designations) is provided with no search term.
+							WHEN @Designations = '0' AND @SearchTerm IS NOT NULL AND TaskDesignations.Designation LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if designations found by search term.
+							WHEN EXISTS (SELECT ss.Item  FROM dbo.SplitString(@Designations,',') ss WHERE ss.Item = TaskDesignations.Designation) THEN 1 -- filter based on provided designations.
+							ELSE 0
+						END
+			)  AS TaskDesignationMatch
+		WHERE
+			Tasks.ParentTaskId IS NULL 
+			AND
+			1 = CASE
+					WHEN @Admin = 1 THEN 1
+					ELSE
+						CASE
+							WHEN Tasks.[Status] = @ExcludeStatus THEN 0
+							ELSE 1
+					END
+				END
+			AND 
+			1 = CASE 
+					-- filter records only by user, when search term is not provided.
+					WHEN @SearchTerm IS NULL THEN
+						CASE
+							WHEN TaskUserMatch.IsMatch = 1 OR TaskDesignationMatch.IsMatch = 1 THEN 1
+							WHEN TaskUserRequestsMatch.IsMatch = 1 OR TaskDesignationMatch.IsMatch = 1 THEN 1
+							ELSE 0
+						END
+					-- filter records by installid, title, users when search term is provided.
+					ELSE
+						CASE
+							WHEN Tasks.[InstallId] LIKE '%' + @SearchTerm + '%' THEN 1
+							WHEN Tasks.[Title] LIKE '%' + @SearchTerm + '%' THEN 1
+							WHEN TaskUserMatch.IsMatch = 1 THEN 1
+							WHEN TaskUserRequestsMatch.IsMatch = 1 THEN 1
+							ELSE 0
+						END
+				END
+			AND
+			Tasks.[Status] = ISNULL(@Status,Tasks.[Status]) 
+			AND
+			CONVERT(VARCHAR,Tasks.[CreatedOn],101)  >= ISNULL(@CreatedFrom,CONVERT(VARCHAR,Tasks.[CreatedOn],101)) AND
+			CONVERT(VARCHAR,Tasks.[CreatedOn],101)  <= ISNULL(@CreatedTo,CONVERT(VARCHAR,Tasks.[CreatedOn],101))
+	),
+
+	FinalData AS
+	( 
+		SELECT * ,
+			Row_number() OVER(ORDER BY SortOrder ASC) AS RowNo
+		FROM Tasklist 
+	)
+	
+	-- get records
+	SELECT * 
+	FROM FinalData 
+	WHERE  
+		RowNo BETWEEN (@PageIndex - 1) * @PageSize + 1 AND 
+		@PageIndex * @PageSize
+
+	-- get record count
+	SELECT 
+		COUNT(DISTINCT Tasks.TaskId) AS VirtualCount
+	FROM          
+		tblTask AS Tasks 
+		OUTER APPLY
+		(
+			SELECT TOP 1 
+					1 AS IsMatch,
+					TaskUsers.UserId AS UserId,
+					UsersMaster.FristName AS FristName
+			FROM tblTaskAssignedUsers TaskUsers
+					LEFT JOIN tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id
+			WHERE 
+				TaskUsers.TaskId = Tasks.TaskId AND
+				TaskUsers.[UserId] = ISNULL(@UserId, TaskUsers.[UserId]) AND
+				1 = CASE
+						WHEN @UserId IS NOT NULL THEN 1 -- set true, when user id is provided. so that join will handle record filtering and search term will have no effect on user.
+						WHEN @SearchTerm IS NULL THEN 1 -- set true, when search term is null. so that join will handle record filtering and search term will have no effect on user.
+						WHEN UsersMaster.FristName LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if users with given search terms are available. 
+						ELSE 0
+					END
+		) As TaskUserMatch
+		OUTER APPLY
+		(
+			SELECT TOP 1 
+					1 AS IsMatch,
+					TaskUsers.UserId AS UserId,
+					UsersMaster.FristName AS FristName
+			FROM tblTaskAssignmentRequests TaskUsers
+					LEFT JOIN tblInstallUsers AS UsersMaster ON TaskUsers.UserId = UsersMaster.Id
+			WHERE 
+				TaskUsers.TaskId = Tasks.TaskId AND
+				TaskUsers.[UserId] = ISNULL(@UserId, TaskUsers.[UserId]) AND
+				1 = CASE
+						WHEN @UserId IS NOT NULL THEN 1 -- set true, when user id is provided. so that join will handle record filtering and search term will have no effect on user.
+						WHEN @SearchTerm IS NULL THEN 1 -- set true, when search term is null. so that join will handle record filtering and search term will have no effect on user.
+						WHEN UsersMaster.FristName LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if users with given search terms are available. 
+						ELSE 0
+					END
+		) As TaskUserRequestsMatch
+		OUTER APPLY
+		(
+			SELECT TOP 1 
+					1 AS IsMatch,
+					TaskDesignations.Designation AS Designation
+			FROM tblTaskDesignations AS TaskDesignations
+			WHERE 
+				TaskDesignations.TaskId = Tasks.TaskId AND
+				1 = CASE
+						WHEN @Designations = '0' AND @SearchTerm IS NULL THEN 1 -- set true, when '0' (all designations) is provided with no search term.
+						WHEN @Designations = '0' AND @SearchTerm IS NOT NULL AND TaskDesignations.Designation LIKE '%' + @SearchTerm + '%' THEN 1 -- set true if designations found by search term.
+						WHEN EXISTS (SELECT ss.Item  FROM dbo.SplitString(@Designations,',') ss WHERE ss.Item = TaskDesignations.Designation) THEN 1 -- filter based on provided designations.
+						ELSE 0
+					END
+		)  AS TaskDesignationMatch
+	WHERE
+		Tasks.ParentTaskId IS NULL 
+		AND 
+		1 = CASE 
+				-- filter records only by user, when search term is not provided.
+				WHEN @SearchTerm IS NULL THEN
+					CASE
+						WHEN TaskUserMatch.IsMatch = 1 OR TaskDesignationMatch.IsMatch = 1 THEN 1
+						WHEN TaskUserRequestsMatch.IsMatch = 1 OR TaskDesignationMatch.IsMatch = 1THEN 1
+						ELSE 0
+					END
+				-- filter records by installid, title, users when search term is provided.
+				ELSE
+					CASE
+						WHEN Tasks.[InstallId] LIKE '%' + @SearchTerm + '%' THEN 1
+						WHEN Tasks.[Title] LIKE '%' + @SearchTerm + '%' THEN 1
+						WHEN TaskUserMatch.IsMatch = 1 THEN 1
+						WHEN TaskUserRequestsMatch.IsMatch = 1 THEN 1
+						ELSE 0
+					END
+			END
+		AND
+		Tasks.[Status] = ISNULL(@Status,Tasks.[Status]) 
+		AND
+		CONVERT(VARCHAR,Tasks.[CreatedOn],101)  >= ISNULL(@CreatedFrom,CONVERT(VARCHAR,Tasks.[CreatedOn],101)) AND
+		CONVERT(VARCHAR,Tasks.[CreatedOn],101)  <= ISNULL(@CreatedTo,CONVERT(VARCHAR,Tasks.[CreatedOn],101))
+
+END
+GO

@@ -160,9 +160,9 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                 }
 
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString()))
                 {
-                    string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
+                    string attachments = DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString();
                     string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
                     Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
