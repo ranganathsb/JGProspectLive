@@ -362,9 +362,11 @@
             return false;
         });
         
-        $('html, body').animate({
-            scrollTop: $(".yellowthickborder").offset().top
-        }, 2000);
+        if ($(".yellowthickborder").length > 0) {
+            $('html, body').animate({
+                scrollTop: $(".yellowthickborder").offset().top
+            }, 2000);
+        }
 
         $(".yellowthickborder").bind("click", function () {
             $(this).removeClass("yellowthickborder");
