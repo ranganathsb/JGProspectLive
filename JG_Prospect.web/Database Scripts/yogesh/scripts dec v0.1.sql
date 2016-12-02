@@ -711,10 +711,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -735,10 +739,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -759,10 +767,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY 
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -783,10 +795,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY 
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -807,10 +823,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -831,6 +851,8 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
@@ -919,10 +941,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -943,10 +969,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -967,10 +997,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY 
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -991,10 +1025,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY 
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -1015,10 +1053,14 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
 							CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+							CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+							CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
 							CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
 							CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
 							CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
@@ -1039,6 +1081,8 @@ BEGIN
 					Row_number() OVER
 					(
 						ORDER BY
+							CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+							CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
 							CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
 							CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
 							CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
