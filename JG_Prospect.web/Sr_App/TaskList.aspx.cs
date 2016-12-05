@@ -21,7 +21,6 @@ namespace JG_Prospect.Sr_App
         #region '--Members--'
 
         private static string strAdminMode = "ADMINMODE";
-        string strSortExpression = string.Empty;
 
         #endregion
 
@@ -50,6 +49,37 @@ namespace JG_Prospect.Sr_App
 
         }
 
+        private SortDirection TaskSortDirection
+        {
+            get
+            {
+                if (ViewState["TaskSortDirection"] == null)
+                {
+                    return SortDirection.Descending;
+                }
+                return (SortDirection)ViewState["TaskSortDirection"];
+            }
+            set
+            {
+                ViewState["TaskSortDirection"] = value;
+            }
+        }
+
+        private string TaskSortExpression
+        {
+            get
+            {
+                if (ViewState["TaskSortExpression"] == null)
+                {
+                    return "CreatedOn";
+                }
+                return Convert.ToString(ViewState["TaskSortExpression"]);
+            }
+            set
+            {
+                ViewState["TaskSortExpression"] = value;
+            }
+        }
         #endregion
 
         #region "--Page methods--"
@@ -69,7 +99,7 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
-        #region "-Control Events-"
+        #region "--Control Events--"
 
         #region Filters - Search Task
 
@@ -405,6 +435,28 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
+        protected void gvTasks_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            if (this.TaskSortExpression == e.SortExpression)
+            {
+                if (this.TaskSortDirection == SortDirection.Ascending)
+                {
+                    this.TaskSortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    this.TaskSortDirection = SortDirection.Ascending;
+                }
+            }
+            else
+            {
+                this.TaskSortExpression = e.SortExpression;
+                this.TaskSortDirection = SortDirection.Ascending;
+            }
+
+            SearchTasks();
+        }
+
         protected void gvTasks_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvTasks.PageIndex = e.NewPageIndex;
@@ -527,6 +579,8 @@ namespace JG_Prospect.Sr_App
             int Start = gvTasks.PageIndex, PageLimit = gvTasks.PageSize;
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
+
+            string strSortExpression = this.TaskSortExpression + " " + (this.TaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
             DataSet dsResult = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit, strSortExpression);
 
