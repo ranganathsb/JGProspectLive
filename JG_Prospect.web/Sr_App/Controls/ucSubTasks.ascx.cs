@@ -20,8 +20,6 @@ namespace JG_Prospect.Sr_App.Controls
 {
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
-        string strSortExpression = string.Empty;
-
         #region '--Properties--'
 
         public delegate void OnLoadTaskData(Int64 intTaskId);
@@ -77,6 +75,38 @@ namespace JG_Prospect.Sr_App.Controls
             set
             {
                 ViewState["lstSubTasks"] = value;
+            }
+        }
+
+        private SortDirection SubTaskSortDirection
+        {
+            get
+            {
+                if (ViewState["SubTaskSortDirection"] == null)
+                {
+                    return SortDirection.Descending;
+                }
+                return (SortDirection)ViewState["SubTaskSortDirection"];
+            }
+            set
+            {
+                ViewState["SubTaskSortDirection"] = value;
+            }
+        }
+
+        private string SubTaskSortExpression
+        {
+            get
+            {
+                if (ViewState["SubTaskSortExpression"] == null)
+                {
+                    return "CreatedOn";
+                }
+                return Convert.ToString(ViewState["SubTaskSortExpression"]);
+            }
+            set
+            {
+                ViewState["SubTaskSortExpression"] = value;
             }
         }
 
@@ -763,6 +793,10 @@ namespace JG_Prospect.Sr_App.Controls
 
         private DataTable GetSubTasks()
         {
+            string strSortExpression = string.Empty;
+
+            strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+
             return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
         }
 
@@ -1205,22 +1239,21 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
         {
-            if (gvSubTasks.SortExpression == e.SortExpression)
+            if (this.SubTaskSortExpression == e.SortExpression)
             {
-
+                if (this.SubTaskSortDirection == SortDirection.Ascending)
+                {
+                    this.SubTaskSortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    this.SubTaskSortDirection = SortDirection.Ascending;
+                }
             }
             else
             {
-
-            }
-
-            if (gvSubTasks.SortDirection == SortDirection.Ascending)
-            {
-                strSortExpression = e.SortExpression + " ASC";
-            }
-            else
-            {
-                strSortExpression = e.SortExpression + " DESC";
+                this.SubTaskSortExpression = e.SortExpression;
+                this.SubTaskSortDirection = SortDirection.Ascending;
             }
 
             SetSubTaskDetails();
