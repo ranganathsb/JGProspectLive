@@ -890,7 +890,7 @@
             $('#taskGrid').click(function (e) {
 
                 if ($(e.target).is("a") || $(e.target).is("select") || e.target.id == "caption" || $(e.target).hasClass('dd_chk_select')) {
-                    return;
+                    return true;
                 }
                 else {
                     window.location.href = $("#hypTaskListMore").attr("href");
