@@ -219,11 +219,11 @@
                     <%--Task List Section--%>
                     <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" 
                         AllowPaging="true" AllowSorting="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
-                        BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" 
+                        BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" HeaderStyle-ForeColor="White"
                         OnRowDataBound="gvTasks_RowDataBound" 
                         OnRowCommand="gvTasks_RowCommand"
                         OnPageIndexChanging="gvTasks_PageIndexChanging"
-                        OnSorting="gvSubTasks_Sorting">
+                        OnSorting="gvTasks_Sorting">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />

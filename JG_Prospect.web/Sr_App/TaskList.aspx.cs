@@ -49,38 +49,37 @@ namespace JG_Prospect.Sr_App
 
         }
 
-        private SortDirection SubTaskSortDirection
+        private SortDirection TaskSortDirection
         {
             get
             {
-                if (ViewState["SubTaskSortDirection"] == null)
+                if (ViewState["TaskSortDirection"] == null)
                 {
                     return SortDirection.Descending;
                 }
-                return (SortDirection)ViewState["SubTaskSortDirection"];
+                return (SortDirection)ViewState["TaskSortDirection"];
             }
             set
             {
-                ViewState["SubTaskSortDirection"] = value;
+                ViewState["TaskSortDirection"] = value;
             }
         }
 
-        private string SubTaskSortExpression
+        private string TaskSortExpression
         {
             get
             {
-                if (ViewState["SubTaskSortExpression"] == null)
+                if (ViewState["TaskSortExpression"] == null)
                 {
                     return "CreatedOn";
                 }
-                return Convert.ToString(ViewState["SubTaskSortExpression"]);
+                return Convert.ToString(ViewState["TaskSortExpression"]);
             }
             set
             {
-                ViewState["SubTaskSortExpression"] = value;
+                ViewState["TaskSortExpression"] = value;
             }
         }
-
         #endregion
 
         #region "--Page methods--"
@@ -436,23 +435,23 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
-        protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
+        protected void gvTasks_Sorting(object sender, GridViewSortEventArgs e)
         {
-            if (this.SubTaskSortExpression == e.SortExpression)
+            if (this.TaskSortExpression == e.SortExpression)
             {
-                if (this.SubTaskSortDirection == SortDirection.Ascending)
+                if (this.TaskSortDirection == SortDirection.Ascending)
                 {
-                    this.SubTaskSortDirection = SortDirection.Descending;
+                    this.TaskSortDirection = SortDirection.Descending;
                 }
                 else
                 {
-                    this.SubTaskSortDirection = SortDirection.Ascending;
+                    this.TaskSortDirection = SortDirection.Ascending;
                 }
             }
             else
             {
-                this.SubTaskSortExpression = e.SortExpression;
-                this.SubTaskSortDirection = SortDirection.Ascending;
+                this.TaskSortExpression = e.SortExpression;
+                this.TaskSortDirection = SortDirection.Ascending;
             }
 
             SearchTasks();
@@ -581,7 +580,7 @@ namespace JG_Prospect.Sr_App
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+            string strSortExpression = this.TaskSortExpression + " " + (this.TaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
             DataSet dsResult = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit, strSortExpression);
 

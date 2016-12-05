@@ -36,8 +36,6 @@ namespace JG_Prospect.Sr_App.Controls
 
         string strSubtaskSeq = "sbtaskseq";
 
-        string strSortExpression = string.Empty;
-
         /// <summary>
         /// Set control view mode.
         /// </summary>
@@ -124,6 +122,38 @@ namespace JG_Prospect.Sr_App.Controls
             set
             {
                 ViewState["lstTaskUserFiles"] = value;
+            }
+        }
+
+        private SortDirection TaskSortDirection
+        {
+            get
+            {
+                if (ViewState["TaskSortDirection"] == null)
+                {
+                    return SortDirection.Descending;
+                }
+                return (SortDirection)ViewState["TaskSortDirection"];
+            }
+            set
+            {
+                ViewState["TaskSortDirection"] = value;
+            }
+        }
+
+        private string TaskSortExpression
+        {
+            get
+            {
+                if (ViewState["TaskSortExpression"] == null)
+                {
+                    return "CreatedOn";
+                }
+                return Convert.ToString(ViewState["TaskSortExpression"]);
+            }
+            set
+            {
+                ViewState["TaskSortExpression"] = value;
             }
         }
 
@@ -561,6 +591,28 @@ namespace JG_Prospect.Sr_App.Controls
             //}
         }
 
+        protected void gvTasks_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            if (this.TaskSortExpression == e.SortExpression)
+            {
+                if (this.TaskSortDirection == SortDirection.Ascending)
+                {
+                    this.TaskSortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    this.TaskSortDirection = SortDirection.Ascending;
+                }
+            }
+            else
+            {
+                this.TaskSortExpression = e.SortExpression;
+                this.TaskSortDirection = SortDirection.Ascending;
+            }
+
+            SearchTasks(null);
+        }
+
         protected void gvTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
@@ -980,6 +1032,8 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
+
+            string strSortExpression = this.TaskSortExpression + " " + (this.TaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
             DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit, strSortExpression);
 

@@ -187,20 +187,21 @@
             <div id="taskGrid">
                 <asp:GridView ID="gvTasks" runat="server" EmptyDataRowStyle-ForeColor="White" EmptyDataRowStyle-HorizontalAlign="Center"
                     EmptyDataText="No task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-                    AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand"
-                    DataKeyNames="TaskId,CreatedBy">
+                    AutoGenerateColumns="False" AllowSorting="true" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand"
+                    DataKeyNames="TaskId,CreatedBy" HeaderStyle-ForeColor="White"
+                    OnSorting="gvTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:BoundField DataField="InstallId" ItemStyle-CssClass="tip" HeaderText="ID#" HeaderStyle-Width="10%" />
-                        <asp:TemplateField HeaderText="Task Title">
+                        <asp:BoundField DataField="InstallId" ItemStyle-CssClass="tip" HeaderText="ID#" HeaderStyle-Width="10%" SortExpression="InstallId" />
+                        <asp:TemplateField HeaderText="Task Title" SortExpression="Title">
                             <ItemTemplate>
                                 <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_self" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%">
+                        <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%" SortExpression="TaskDesignations">
                             <ItemTemplate>
                                 <a id="hypDesg" style="text-decoration: none;" class="tooltip" runat="server"></a>
                                 <%-- <asp:Label ID="lblUserDesignation" runat="server" Text='<%# Eval("Designation") %>' HeaderStyle-Width="10%"></asp:Label>--%>
@@ -210,7 +211,7 @@
                                         </asp:DropDownList>--%>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="12%">
+                        <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="12%" SortExpression="TaskAssignedUsers">
                             <ItemTemplate>
                                 <a id="hypUsers" style="text-decoration: none;" class="tooltip" runat="server"></a>
                                 <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
@@ -225,7 +226,7 @@
                                 <asp:LinkButton ID="lbtnRequestStatus" runat="server" Visible="false" Text="Request" CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="5%">
+                        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="5%" SortExpression="Status">
                             <ItemTemplate>
                                 <%--<asp:Label ID="lblTaskStatus" runat="server"></asp:Label>--%>
                                 <asp:DropDownList ID="ddlTaskStatus" Width="100" OnSelectedIndexChanged="gvTasks_ddlTaskStatus_SelectedIndexChanged"
