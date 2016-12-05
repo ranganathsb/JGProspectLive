@@ -397,6 +397,28 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            if (this.SubTaskSortExpression == e.SortExpression)
+            {
+                if (this.SubTaskSortDirection == SortDirection.Ascending)
+                {
+                    this.SubTaskSortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    this.SubTaskSortDirection = SortDirection.Ascending;
+                }
+            }
+            else
+            {
+                this.SubTaskSortExpression = e.SortExpression;
+                this.SubTaskSortDirection = SortDirection.Ascending;
+            }
+
+            SetSubTaskDetails();
+        }
+
         protected void gvSubTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddlStatus = sender as DropDownList;
@@ -793,9 +815,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         private DataTable GetSubTasks()
         {
-            string strSortExpression = string.Empty;
-
-            strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+            string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
             return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
         }
@@ -1236,28 +1256,5 @@ namespace JG_Prospect.Sr_App.Controls
         }
 
         #endregion
-
-        protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            if (this.SubTaskSortExpression == e.SortExpression)
-            {
-                if (this.SubTaskSortDirection == SortDirection.Ascending)
-                {
-                    this.SubTaskSortDirection = SortDirection.Descending;
-                }
-                else
-                {
-                    this.SubTaskSortDirection = SortDirection.Ascending;
-                }
-            }
-            else
-            {
-                this.SubTaskSortExpression = e.SortExpression;
-                this.SubTaskSortDirection = SortDirection.Ascending;
-            }
-
-            SetSubTaskDetails();
-        }
-
     }
 }
