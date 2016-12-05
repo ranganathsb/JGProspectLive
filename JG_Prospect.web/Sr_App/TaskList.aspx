@@ -218,30 +218,31 @@
                     <br />
                     <%--Task List Section--%>
                     <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" 
-                        AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
+                        AllowPaging="true" AllowSorting="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
                         BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" 
                         OnRowDataBound="gvTasks_RowDataBound" 
                         OnRowCommand="gvTasks_RowCommand"
-                        OnPageIndexChanging="gvTasks_PageIndexChanging">
+                        OnPageIndexChanging="gvTasks_PageIndexChanging"
+                        OnSorting="gvSubTasks_Sorting">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
                         <FooterStyle CssClass="trFooter" />
                         <PagerStyle CssClass="trPager" />
                         <Columns>
-                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" HeaderStyle-Width="50" />
-                            <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300">
+                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" HeaderStyle-Width="50" SortExpression="InstallId" />
+                            <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300" SortExpression="Title">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="hypTask" runat="server" />
                                     <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150">
+                            <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150" SortExpression="TaskDesignations">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesignation" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150">
+                            <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150" SortExpression="TaskAssignedUsers">
                                 <ItemTemplate>
                                     <asp:Label ID="lblAssignedUser" runat="server" />
                                     <asp:DropDownCheckBoxes ID="ddcbAssignedUser" runat="server" UseSelectAllNode="false"
@@ -253,7 +254,7 @@
                                         CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60">
+                            <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60" SortExpression="Status">
                                 <ItemTemplate>
                                     <asp:Literal ID="ltrlStatus" runat="server" Visible="false" />
                                     <asp:DropDownList ID="ddlStatus" Width="100%" AutoPostBack="true" runat="server" 
