@@ -68,9 +68,10 @@
                                     <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
                                     <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
                                     <div data-id="divPasswordToFreezeSubTask" style="display: none;">
-                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password"
-                                            data-id="txtPasswordToFreezeSubTask" AutoPostBack="true"
-                                            CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                        <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                            placeholder="Estimate" />
+                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask" 
+                                            AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                     </div>
                                 </div>
                             </ItemTemplate>
@@ -170,6 +171,14 @@
                             <td>
                                 <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
                                 </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                Estimated Hours: <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
+                                <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
+                                    ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
+                                    ValidationExpression="(\d+\.\d{1,2})?\d*" />
                             </td>
                         </tr>
                         <tr id="trDateHours" runat="server" visible="false">
