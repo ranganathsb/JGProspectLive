@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucSubTasks.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucSubTasks" %>
-
+<link rel="stylesheet" type="text/css" href="../css/lightslider.css">
+<script type="text/javascript" src="../js/lightslider.js"></script>
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
@@ -122,7 +123,7 @@
                                                     <li style="margin: 10px; text-align: center; float: left; width: 100px;">
                                                         <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
                                                         <br />
-                                                        <img id="imgIcon" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
                                                         <br />
                                                         <small>
                                                             <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
@@ -279,7 +280,47 @@
         </asp:UpdatePanel>
     </div>
 
+
+
 </div>
+
+<div id="divGalleryPopup" style="max-width:700px;" class="lSSlideOuter ">
+    <div class="lSSlideWrapper usingCss">
+        <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
+                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
+            </li>
+            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
+                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
+            </li>
+            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
+                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
+            </li>
+             <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
+                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
+            </li>
+            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
+                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
+            </li>
+            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
+                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
+            </li>
+             <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
+                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
+            </li>
+            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
+                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
+            </li>
+            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
+                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+
 <%--Popup Ends--%>
 
 <script type="text/javascript">
@@ -288,6 +329,7 @@
     $(function () {
         ucSubTasks_Initialize();
         ApplySubtaskLinkContextMenu();
+        ApplyImageGallery();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -295,6 +337,7 @@
     prmTaskGenerator.add_endRequest(function () {
         ucSubTasks_Initialize();
         ApplySubtaskLinkContextMenu();
+        ApplyImageGallery();
     });
 
     function ucSubTasks_Initialize() {
@@ -361,11 +404,11 @@
     function ApplySubtaskLinkContextMenu() {
 
         $(".context-menu").bind("contextmenu", function () {
-            var urltoCopy = updateQueryStringParameter( window.location.href , "hstid" , $(this).attr('data-highlighter'));
-            copyToClipboard(urltoCopy);            
+            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            copyToClipboard(urltoCopy);
             return false;
         });
-        
+
         if ($(".yellowthickborder").length > 0) {
             $('html, body').animate({
                 scrollTop: $(".yellowthickborder").offset().top
@@ -376,6 +419,52 @@
             $(this).removeClass("yellowthickborder");
         });
     }
+    var objGalleryPopup;
 
-    
+    function OpenImageGalleryDialog() {
+
+       // var windowWidth = (parseInt($(window).width())) - 100;
+
+        //var dialogwidth = windowWidth + "px";
+
+        if (objGalleryPopup == null || objGalleryPopup.dialog('isOpen') === false) {
+            objGalleryPopup = $("#divGalleryPopup").dialog({
+                width: "600 px",
+                height: "auto",
+                open: function () {
+                    console.log("gallery loaded");
+                    showGallery();
+                },
+            });
+            //objGalleryPopup.bind("dialogopen", function (event, ui) { showGallery(); });
+        }
+    }
+
+    function showGallery() {
+
+        $('#image-gallery').lightSlider({
+            gallery: true,
+            item: 1,
+            thumbItem: 9,
+            slideMargin: 0,
+            speed: 500,
+            auto: true,
+            loop: true,
+            onSliderLoad: function () {
+                $('#image-gallery').removeClass('cS-hidden');
+            }
+        });
+
+    }
+
+    function ApplyImageGallery() {
+        $('.gallery-ele').bind("click", function () {
+
+            OpenImageGalleryDialog();
+        });
+    }
+
+
+
+
 </script>

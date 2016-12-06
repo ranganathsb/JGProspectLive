@@ -164,7 +164,7 @@
             },
             keyPress: function () {
                 if (settings.keyPress) {
-                    $(document).on('keyup.lightslider', function (e) {
+                    $(document).bind('keyup.lightslider', function (e) {
                         if (!$(':focus').is('input, textarea')) {
                             if (e.preventDefault) {
                                 e.preventDefault();
@@ -192,7 +192,7 @@
                             $slide.find('.lSAction').hide();
                         }
                     }
-                    $slide.find('.lSAction a').on('click', function (e) {
+                    $slide.find('.lSAction a').bind('click', function (e) {
                         if (e.preventDefault) {
                             e.preventDefault();
                         } else {
@@ -396,7 +396,7 @@
                     }
                     var $pager = $cSouter.find('.lSPager').find('li');
                     $pager.first().addClass('active');
-                    $pager.on('click', function () {
+                    $pager.bind('click', function () {
                         if (settings.loop === true && settings.mode === 'slide') {
                             scene = scene + ($pager.index(this) - $cSouter.find('.lSPager').find('li.active').index());
                         } else {
@@ -453,7 +453,7 @@
                             $this.auto();
                         }   
                     }else{
-                        obj.find('img').on('load', function () {
+                        obj.find('img').bind('load', function () {
                             setTimeout(function () {
                                 setCss();
                                 if (!interval) {
@@ -650,12 +650,12 @@
             pauseOnHover: function(){
                 var $this = this;
                 if (settings.auto && settings.pauseOnHover) {
-                    $slide.on('mouseenter', function(){
+                    $slide.bind('mouseenter', function(){
                         $(this).addClass('ls-hover');
                         $el.pause();
                         settings.auto = true;
                     });
-                    $slide.on('mouseleave',function(){
+                    $slide.bind('mouseleave',function(){
                         $(this).removeClass('ls-hover');
                         if (!$slide.find('.lightSlider').hasClass('lsGrabbing')) {
                             $this.auto();
@@ -754,7 +754,7 @@
                         endCoords = 0,
                         isDraging = false;
                     $slide.find('.lightSlider').addClass('lsGrab');
-                    $slide.on('mousedown', function (e) {
+                    $slide.bind('mousedown', function (e) {
                         if (w < elSize) {
                             if (w !== 0) {
                                 return false;
@@ -776,20 +776,20 @@
                             clearInterval(interval);
                         }
                     });
-                    $(window).on('mousemove', function (e) {
+                    $(window).bind('mousemove', function (e) {
                         if (isDraging) {
                             endCoords = (settings.vertical === true) ? e.pageY : e.pageX;
                             $this.touchMove(endCoords, startCoords);
                         }
                     });
-                    $(window).on('mouseup', function (e) {
+                    $(window).bind('mouseup', function (e) {
                         if (isDraging) {
                             $slide.find('.lightSlider').removeClass('lsGrabbing').addClass('lsGrab');
                             isDraging = false;
                             endCoords = (settings.vertical === true) ? e.pageY : e.pageX;
                             var distance = endCoords - startCoords;
                             if (Math.abs(distance) >= settings.swipeThreshold) {
-                                $(window).on('click.ls', function (e) {
+                                $(window).bind('click.ls', function (e) {
                                     if (e.preventDefault) {
                                         e.preventDefault();
                                     } else {
@@ -816,13 +816,13 @@
                 if (isTouch) {
                     var startCoords = {},
                         endCoords = {};
-                    $slide.on('touchstart', function (e) {
+                    $slide.bind('touchstart', function (e) {
                         endCoords = e.originalEvent.targetTouches[0];
                         startCoords.pageX = e.originalEvent.targetTouches[0].pageX;
                         startCoords.pageY = e.originalEvent.targetTouches[0].pageY;
                         clearInterval(interval);
                     });
-                    $slide.on('touchmove', function (e) {
+                    $slide.bind('touchmove', function (e) {
                         if (w < elSize) {
                             if (w !== 0) {
                                 return false;
@@ -845,7 +845,7 @@
                         }
 
                     });
-                    $slide.on('touchend', function () {
+                    $slide.bind('touchend', function () {
                         if (w < elSize) {
                             if (w !== 0) {
                                 return false;
@@ -874,11 +874,11 @@
                     }
                 }
 
-                $(window).on('focus', function(){
+                $(window).bind('focus', function(){
                     $this.auto();
                 });
                 
-                $(window).on('blur', function(){
+                $(window).bind('blur', function(){
                     clearInterval(interval);
                 });
 
@@ -1125,7 +1125,7 @@
         setTimeout(function () {
             settings.onSliderLoad.call(this, $el);
         }, 10);
-        $(window).on('resize orientationchange', function (e) {
+        $(window).bind('resize orientationchange', function (e) {
             setTimeout(function () {
                 if (e.preventDefault) {
                     e.preventDefault();
