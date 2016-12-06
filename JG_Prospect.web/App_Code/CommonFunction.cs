@@ -13,24 +13,6 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.App_Code
 {
-    public enum TaskStatus
-    {
-        Open = 1,
-        Requested = 2,
-        Assigned = 3,
-        InProgress = 4,
-        Pending = 5,
-        ReOpened = 6,
-        Closed = 7
-    }
-
-    public enum TaskType
-    {
-        Bug = 1,
-        BetaError = 2,
-        Enhancement = 3
-    }
-
     public static class CommonFunction
     {
         /// <summary>
@@ -563,6 +545,7 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
             objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
             objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
 

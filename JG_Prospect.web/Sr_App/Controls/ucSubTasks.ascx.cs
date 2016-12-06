@@ -482,62 +482,103 @@ namespace JG_Prospect.Sr_App.Controls
             TextBox txtPassword = sender as TextBox;
             GridViewRow objGridViewRow = txtPassword.Parent.Parent as GridViewRow;
 
-            if (txtPassword != null && !string.IsNullOrEmpty(txtPassword.Text))
+            if (objGridViewRow != null)
             {
-                if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                decimal decEstimatedHours = 0;
+                TextBox txtEstimatedHours = objGridViewRow.FindControl("txtEstimatedHours") as TextBox;
+                HiddenField hdnTaskApprovalId = objGridViewRow.FindControl("hdnTaskApprovalId") as HiddenField;
+
+                if (txtPassword == null || string.IsNullOrEmpty(txtPassword.Text))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not provided.");
+                }
+                else if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not valid.");
                 }
+                else if (txtEstimatedHours == null || string.IsNullOrEmpty(txtEstimatedHours.Text))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not provided.");
+                }
+                else if (!decimal.TryParse(txtEstimatedHours.Text.Trim(), out decEstimatedHours) || decEstimatedHours <= 0)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not valid.");
+                }
                 else
                 {
-                    #region Update Task (Freeze, Status)
+                    #region Update Estimated Hours
 
-                    if (objGridViewRow != null)
+                    TaskApproval objTaskApproval = new TaskApproval();
+                    if (string.IsNullOrEmpty(hdnTaskApprovalId.Value))
                     {
-                        Task objTask = new Task();
+                        objTaskApproval.Id = 0;
+                    }
+                    else
+                    {
+                        objTaskApproval.Id = Convert.ToInt64(hdnTaskApprovalId.Value);
+                    }
+                    objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
+                    objTaskApproval.Description = string.Empty;
+                    objTaskApproval.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
+                    objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
 
-                        objTask.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
-
-                        bool blIsAdmin, blIsTechLead, blIsUser;
-
-                        blIsAdmin = blIsTechLead = blIsUser = false;
-                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
-                        {
-                            objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                            objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
-                            objTask.AdminStatus = true;
-                            blIsAdmin = true;
-                        }
-                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
-                        {
-                            objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                            objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
-                            objTask.TechLeadStatus = true;
-                            blIsTechLead = true;
-                        }
-                        else
-                        {
-                            objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                            objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
-                            objTask.OtherUserStatus = true;
-                            blIsUser = true;
-                        }
-
-                        TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
-                                                    (
-                                                        objTask,
-                                                        blIsAdmin,
-                                                        blIsTechLead,
-                                                        blIsUser
-                                                    );
-
-                        CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task freezed successfully.");
+                    if (objTaskApproval.Id > 0)
+                    {
+                        TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
+                    }
+                    else
+                    {
+                        TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
                     }
 
                     #endregion
 
-                    SetSubTaskDetails();
+                    #region Update Task (Freeze, Status)
+
+                    Task objTask = new Task();
+
+                    objTask.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
+
+                    bool blIsAdmin, blIsTechLead, blIsUser;
+
+                    blIsAdmin = blIsTechLead = blIsUser = false;
+                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                    {
+                        objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.AdminStatus = true;
+                        blIsAdmin = true;
+                    }
+                    else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                    {
+                        objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.TechLeadStatus = true;
+                        blIsTechLead = true;
+                    }
+                    else
+                    {
+                        objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.OtherUserStatus = true;
+                        blIsUser = true;
+                    }
+
+                    TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                                (
+                                                    objTask,
+                                                    blIsAdmin,
+                                                    blIsTechLead,
+                                                    blIsUser
+                                                );
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task freezed successfully.");
+
+                    #endregion
                 }
+
+                SetSubTaskDetails();
             }
         }
 

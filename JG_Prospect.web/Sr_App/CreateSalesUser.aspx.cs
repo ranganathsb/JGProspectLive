@@ -4666,7 +4666,7 @@ namespace JG_Prospect.Sr_App
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
