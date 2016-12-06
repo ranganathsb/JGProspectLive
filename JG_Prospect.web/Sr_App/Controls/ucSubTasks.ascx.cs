@@ -486,6 +486,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 decimal decEstimatedHours = 0;
                 TextBox txtEstimatedHours = objGridViewRow.FindControl("txtEstimatedHours") as TextBox;
+                HiddenField hdnTaskApprovalId = objGridViewRow.FindControl("hdnTaskApprovalId") as HiddenField;
 
                 if (txtPassword == null || string.IsNullOrEmpty(txtPassword.Text))
                 {
@@ -508,7 +509,14 @@ namespace JG_Prospect.Sr_App.Controls
                     #region Update Estimated Hours
 
                     TaskApproval objTaskApproval = new TaskApproval();
-                    objTaskApproval.Id = 0;
+                    if (string.IsNullOrEmpty(hdnTaskApprovalId.Value))
+                    {
+                        objTaskApproval.Id = 0;
+                    }
+                    else
+                    {
+                        objTaskApproval.Id = Convert.ToInt64(hdnTaskApprovalId.Value);
+                    }
                     objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
                     objTaskApproval.Description = string.Empty;
                     objTaskApproval.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
