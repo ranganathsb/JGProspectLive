@@ -1698,3 +1698,294 @@ BEGIN
 
 END
 GO
+
+
+CREATE TABLE [dbo].[tblTaskApprovals](
+	[Id] [bigint] IDENTITY(1,1) PRIMARY KEY,
+	[TaskId] [bigint] NOT NULL REFERENCES tblTask,
+	[EstimatedHours] VARCHAR(5) NOT NULL,
+	[Description] [text] NULL,
+	[UserId] INT NULL,
+	[IsInstallUser] BIT NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[DateUpdated] [datetime] NOT NULL)
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 06 Dec 16
+-- Description:	Insert Task approval.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertTaskApproval]
+	@TaskId bigint,
+	@EstimatedHours varchar(5),
+	@Description text,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+
+	INSERT INTO [dbo].[tblTaskApprovals]
+           ([TaskId]
+           ,[EstimatedHours]
+           ,[Description]
+           ,[UserId]
+           ,[IsInstallUser]
+           ,[DateCreated]
+           ,[DateUpdated])
+     VALUES
+           (@TaskId
+           ,@EstimatedHours
+           ,@Description
+           ,@UserId
+           ,@IsInstallUser
+           ,GETDATE()
+           ,GETDATE())
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 06 Dec 16
+-- Description:	Update Task approval.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateTaskApproval]
+	@Id		bigint,
+	@TaskId bigint,
+	@EstimatedHours VARCHAR(5),
+	@Description text,
+	@UserId int,
+	@IsInstallUser bit
+AS
+BEGIN
+
+	UPDATE [dbo].[tblTaskApprovals]
+    SET
+	    [TaskId] = @TaskId
+       ,[EstimatedHours] = @EstimatedHours
+       ,[Description] = @Description
+       ,[UserId] = @UserId
+       ,[IsInstallUser] = @IsInstallUser
+       ,[DateUpdated] = GETDATE()
+     WHERE
+		Id = @Id
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[UDF_GetIsAdminUser]
+(
+	@Designation VARCHAR(50)
+)
+RETURNS BIT
+AS
+BEGIN
+	declare @IsAdmin BIT
+
+	SELECT 
+		@IsAdmin = CASE UPPER(@Designation)
+			WHEN 'ADMIN' THEN 1
+			WHEN 'OFFICE MANAGER' THEN 1
+			WHEN 'SALES MANAGER' THEN 1
+			WHEN 'ITLEAD' THEN 1
+			WHEN 'FOREMAN' THEN 1
+			ELSE 0 
+		END
+
+	RETURN @IsAdmin
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[UDF_GetIsAdminOrITLeadUser]
+(
+	@Designation VARCHAR(50)
+)
+RETURNS BIT
+AS
+BEGIN
+	declare @IsAdmin BIT
+
+	SELECT 
+		@IsAdmin = CASE UPPER(@Designation)
+			WHEN 'ADMIN' THEN 1
+			WHEN 'ITLEAD' THEN 1
+			ELSE 0 
+		END
+
+	RETURN @IsAdmin
+END
+GO
+
+
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[TaskApprovalsView] as
+
+	SELECT
+			s.*,
+			
+			u.Username AS Username,
+			u.FirstName AS UserFirstName,
+			u.LastName AS UserLastName,
+			u.Email AS UserEmail,
+			u.Designation AS UserDesignation,
+			[dbo].[UDF_GetIsAdminOrITLeadUser](u.Designation) AS IsAdminOrITLead
+
+	FROM tblTaskApprovals s
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email, iu.Designation
+				FROM tblInstallUsers iu
+				WHERE iu.Id = s.UserId AND s.IsInstallUser = 1
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email, u.Designation
+				FROM tblUsers u
+				WHERE u.Id = s.UserId AND s.IsInstallUser = 0
+			) AS u
+
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 06-Dec-16 11:30:16 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 115, 1, 'Description DESC'
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	;WITH 
+	
+	Tasklist AS
+	(	
+		SELECT
+			Tasks.*,
+			Row_number() OVER
+			(
+				ORDER BY
+					CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+					CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+					CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+					CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+					CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+					CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+					CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+					CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+					CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+					CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+					CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+					CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+			) AS RowNo_Order
+		FROM
+			(
+				SELECT 
+					Tasks.*,
+					CASE Tasks.[Status]
+						WHEN @AssignedStatus THEN 1
+						WHEN @RequestedStatus THEN 1
+
+						WHEN @InProgressStatus THEN 2
+						WHEN @PendingStatus THEN 2
+						WHEN @ReOpenedStatus THEN 2
+
+						WHEN @OpenStatus THEN 
+							CASE 
+								WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+								ELSE 4
+							END
+
+						WHEN @SpecsInProgressStatus THEN 4
+
+						WHEN @ClosedStatus THEN 5
+
+						WHEN @DeletedStatus THEN 6
+
+						ELSE 7
+
+					END AS StatusOrder,
+					TaskApprovals.Id AS TaskApprovalId,
+					TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+					TaskApprovals.Description AS TaskApprovalDescription,
+					TaskApprovals.UserId AS TaskApprovalUserId,
+					TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+				FROM 
+					[TaskListView] Tasks 
+						LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+				WHERE
+					Tasks.ParentTaskId = @TaskId
+			) Tasks
+	)
+	
+	-- get records
+	SELECT * 
+	FROM Tasklist 
+
+END
+
+GO
+

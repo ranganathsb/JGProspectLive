@@ -1404,5 +1404,59 @@ namespace JG_Prospect.DAL
         }
 
         #endregion
+
+        #region TaskApprovals
+        
+        public int InsertTaskApproval(TaskApproval objTaskApproval)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskApproval");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
+                    database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskApproval.Description);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskApproval.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskApproval.IsInstallUser);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskApproval(TaskApproval objTaskApproval)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskApproval");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskApproval.Id);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
+                    database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskApproval.Description);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskApproval.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskApproval.IsInstallUser);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        #endregion
     }
 }

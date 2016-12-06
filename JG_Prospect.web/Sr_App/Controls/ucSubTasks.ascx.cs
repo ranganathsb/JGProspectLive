@@ -507,7 +507,22 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     #region Update Estimated Hours
 
+                    TaskApproval objTaskApproval = new TaskApproval();
+                    objTaskApproval.Id = 0;
+                    objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
+                    objTaskApproval.Description = string.Empty;
+                    objTaskApproval.TaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
+                    objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
 
+                    if (objTaskApproval.Id > 0)
+                    {
+                        TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
+                    }
+                    else
+                    {
+                        TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
+                    }
 
                     #endregion
 
