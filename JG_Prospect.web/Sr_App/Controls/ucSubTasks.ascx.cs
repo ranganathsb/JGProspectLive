@@ -487,7 +487,7 @@ namespace JG_Prospect.Sr_App.Controls
                 decimal decEstimatedHours = 0;
                 TextBox txtEstimatedHours = objGridViewRow.FindControl("txtEstimatedHours") as TextBox;
 
-                if (txtPassword != null || string.IsNullOrEmpty(txtPassword.Text))
+                if (txtPassword == null || string.IsNullOrEmpty(txtPassword.Text))
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not provided.");
                 }
@@ -495,7 +495,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not valid.");
                 }
-                else if (txtEstimatedHours != null || string.IsNullOrEmpty(txtEstimatedHours.Text))
+                else if (txtEstimatedHours == null || string.IsNullOrEmpty(txtEstimatedHours.Text))
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not provided.");
                 }
