@@ -159,11 +159,11 @@ namespace JG_Prospect.Sr_App.Controls
                         ddlTaskPriority.SelectedValue = DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString();
                     }
 
-                    if (controlMode == "0")
-                    {
-                        ddlTaskPriority.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
-                    }
-                    else
+                    //if (controlMode == "0")
+                    //{
+                    //    ddlTaskPriority.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
+                    //}
+                    //else
                     {
                         ddlTaskPriority.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                     }
@@ -185,11 +185,11 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                 }
 
-                if (controlMode == "0")
-                {
-                    ddlStatus.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
-                }
-                else
+                //if (controlMode == "0")
+                //{
+                //    ddlStatus.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
+                //}
+                //else
                 {
                     ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                 }
@@ -305,35 +305,39 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 ClearSubTaskData();
 
+                hdnTaskApprovalId.Value = "0";
                 hdnSubTaskId.Value = "0";
                 hdnSubTaskIndex.Value = "-1";
 
-                if (controlMode == "0")
+                //if (controlMode == "0")
+                //{
+                //    hdnSubTaskIndex.Value = e.CommandArgument.ToString();
+
+                //    Task objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
+
+                //    txtTaskListID.Text = objTask.InstallId.ToString();
+                //    txtSubTaskTitle.Text = Server.HtmlDecode(objTask.Title);
+                //    txtSubTaskDescription.Text = Server.HtmlDecode(objTask.Description);
+
+                //    if (objTask.TaskType.HasValue && ddlTaskType.Items.FindByValue(objTask.TaskType.Value.ToString()) != null)
+                //    {
+                //        ddlTaskType.SelectedValue = objTask.TaskType.Value.ToString();
+                //    }
+
+                //    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
+                //    txtSubTaskHours.Text = objTask.Hours;
+                //    ddlSubTaskStatus.SelectedValue = objTask.Status.ToString();
+                //    if (objTask.TaskPriority.HasValue)
+                //    {
+                //        ddlSubTaskPriority.SelectedValue = objTask.TaskPriority.Value.ToString();
+                //    }
+                //}
+                //else
                 {
-                    hdnSubTaskIndex.Value = e.CommandArgument.ToString();
-
-                    Task objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
-
-                    txtTaskListID.Text = objTask.InstallId.ToString();
-                    txtSubTaskTitle.Text = Server.HtmlDecode(objTask.Title);
-                    txtSubTaskDescription.Text = Server.HtmlDecode(objTask.Description);
-
-                    if (objTask.TaskType.HasValue && ddlTaskType.Items.FindByValue(objTask.TaskType.Value.ToString()) != null)
-                    {
-                        ddlTaskType.SelectedValue = objTask.TaskType.Value.ToString();
-                    }
-
-                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
-                    txtSubTaskHours.Text = objTask.Hours;
-                    ddlSubTaskStatus.SelectedValue = objTask.Status.ToString();
-                    if (objTask.TaskPriority.HasValue)
-                    {
-                        ddlSubTaskPriority.SelectedValue = objTask.TaskPriority.Value.ToString();
-                    }
-                }
-                else
-                {
-                    hdnSubTaskId.Value = gvSubTasks.DataKeys[Convert.ToInt32(e.CommandArgument)]["TaskId"].ToString();
+                    int intRowIndex = Convert.ToInt32(e.CommandArgument);
+                    hdnSubTaskId.Value = gvSubTasks.DataKeys[intRowIndex]["TaskId"].ToString();
+                    hdnTaskApprovalId.Value = (gvSubTasks.Rows[intRowIndex].FindControl("hdnTaskApprovalId") as HiddenField).Value;
+                    txtEstimatedHours.Text = (gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
 
                     DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(hdnSubTaskId.Value));
 
@@ -424,13 +428,13 @@ namespace JG_Prospect.Sr_App.Controls
         protected void gvSubTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddlStatus = sender as DropDownList;
-            if (controlMode == "0")
-            {
-                this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
+            //if (controlMode == "0")
+            //{
+            //    this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
 
-                SetSubTaskDetails(this.lstSubTasks);
-            }
-            else
+            //    SetSubTaskDetails(this.lstSubTasks);
+            //}
+            //else
             {
                 TaskGeneratorBLL.Instance.UpdateTaskStatus
                                             (
@@ -448,20 +452,20 @@ namespace JG_Prospect.Sr_App.Controls
         protected void gvSubTasks_ddlTaskPriority_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddlTaskPriority = sender as DropDownList;
-            if (controlMode == "0")
-            {
-                if (ddlTaskPriority.SelectedValue == "0")
-                {
-                    this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = null;
-                }
-                else
-                {
-                    this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedValue);
-                }
+            //if (controlMode == "0")
+            //{
+            //    if (ddlTaskPriority.SelectedValue == "0")
+            //    {
+            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = null;
+            //    }
+            //    else
+            //    {
+            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedValue);
+            //    }
 
-                SetSubTaskDetails(this.lstSubTasks);
-            }
-            else
+            //    SetSubTaskDetails(this.lstSubTasks);
+            //}
+            //else
             {
                 Task objTask = new Task();
                 objTask.TaskId = Convert.ToInt32(ddlTaskPriority.Attributes["TaskId"].ToString());
@@ -946,7 +950,9 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (dtSubTaskDetails.Rows.Count > 0)
             {
-                this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+                DataView dv = dtSubTaskDetails.AsDataView();
+                dv.Sort = "TaskId DESC";
+                this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
             }
             else
             {
@@ -1051,25 +1057,25 @@ namespace JG_Prospect.Sr_App.Controls
                 objTask.TaskType = Convert.ToInt16(ddlTaskType.SelectedValue);
             }
 
-            if (controlMode == "0")
-            {
-                if (hdnSubTaskIndex.Value == "-1")
-                {
-                    this.lstSubTasks.Add(objTask);
-                }
-                else
-                {
-                    this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)] = objTask;
-                }
+            //if (controlMode == "0")
+            //{
+            //    if (hdnSubTaskIndex.Value == "-1")
+            //    {
+            //        this.lstSubTasks.Add(objTask);
+            //    }
+            //    else
+            //    {
+            //        this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)] = objTask;
+            //    }
 
-                SetSubTaskDetails(this.lstSubTasks);
+            //    SetSubTaskDetails(this.lstSubTasks);
 
-                if (!string.IsNullOrEmpty(txtTaskListID.Text))
-                {
-                    this.LastSubTaskSequence = txtTaskListID.Text.Trim();
-                }
-            }
-            else
+            //    if (!string.IsNullOrEmpty(txtTaskListID.Text))
+            //    {
+            //        this.LastSubTaskSequence = txtTaskListID.Text.Trim();
+            //    }
+            //}
+            //else
             {
                 // save task master details to database.
                 if (hdnSubTaskId.Value == "0")
@@ -1082,6 +1088,34 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment, JGConstant.TaskFileDestination.SubTask);
+
+                #region Update Estimated Hours
+
+                TaskApproval objTaskApproval = new TaskApproval();
+                if (string.IsNullOrEmpty(hdnTaskApprovalId.Value))
+                {
+                    objTaskApproval.Id = 0;
+                }
+                else
+                {
+                    objTaskApproval.Id = Convert.ToInt64(hdnTaskApprovalId.Value);
+                }
+                objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
+                objTaskApproval.Description = string.Empty;
+                objTaskApproval.TaskId = Convert.ToInt32(hdnSubTaskId.Value);
+                objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
+
+                if (objTaskApproval.Id > 0)
+                {
+                    TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
+                }
+
+                #endregion
 
                 SetSubTaskDetails();
             }

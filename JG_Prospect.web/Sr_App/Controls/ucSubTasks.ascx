@@ -50,7 +50,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
-                                <%# "ITLead : " + Eval("AdminOrITLeadEstimatedHours") %><br />
+                                <%# this.IsAdminMode ? "ITLead : " + Eval("AdminOrITLeadEstimatedHours") + "<br />" : "" %>
                                 <%# "User : " + Eval("UserEstimatedHours") %>
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -97,6 +97,7 @@
                 <br />
                 <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
                 <div id="divSubTask" runat="server" class="tasklistfieldset" style="display: none;">
+                    <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
                     <table class="tablealign fullwidth">
