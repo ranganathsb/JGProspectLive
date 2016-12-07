@@ -672,7 +672,6 @@ namespace JG_Prospect
                         MicrosoftClient ms = new MicrosoftClient(appId, appSecrets);
                         var httpContextBase = new HttpContextWrapper(HttpContext.Current);
                         string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
-                        returnUrl = "http://jaylem.localtest.me/login.aspx";
                         Uri authUrl = new Uri(returnUrl);
 
                         var res = ms.VerifyAuthentication(httpContextBase, authUrl);
@@ -1048,22 +1047,36 @@ namespace JG_Prospect
                             Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                             Session["loginpassword"] = txtpassword.Text.Trim();
                             Session["Username"] = ds.Tables[0].Rows[0]["CustomerName"].ToString();
+                            Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                             // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
                             Uri uri = Context.Request.Url;
                             string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
                             //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            JGSession.IsCustomer = true;
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                            {
+                                JGSession.IsFirstTime = true;
+                            }
 
-                            //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            if (JGSession.IsFirstTime == true)
+                            {
+                                Response.Redirect("changepassword.aspx", false);
+                            }
+                            else
+                            {
+                                Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                //Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            }
                         }
                     }
                     else
                     {
                         Session["loginid"] = null;
                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
+                        //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                     }
 
                     #endregion
@@ -1072,7 +1085,8 @@ namespace JG_Prospect
             catch (Exception ex)
             {
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                 //  Response.Redirect("ErrorPage.aspx");
             }
         }
@@ -1215,7 +1229,6 @@ namespace JG_Prospect
             string appId = "00000000481C1797";
             string appSecrets = "cec1ShT5FFjexbtm08qv0w8";
             string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
-            returnUrl = "http://jaylem.localtest.me/login.aspx";
 
             MicrosoftClient ms = new DotNetOpenAuth.AspNet.Clients.MicrosoftClient(appId, appSecrets);
             Uri authUrl = new Uri(returnUrl);
