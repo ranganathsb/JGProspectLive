@@ -26,6 +26,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         public OnLoadTaskData LoadTaskData;
 
+        public EventHandler OnAddNewSubTask;
+
         public int TaskId { get; set; }
 
         public int HighlightedTaskId { get; set; }
@@ -711,6 +713,39 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void lbtnAddNewSubTask_Click(object sender, EventArgs e)
         {
+            if (OnAddNewSubTask != null)
+            {
+                OnAddNewSubTask(sender, e);
+            }
+
+            ShowAddNewSubTaskSection(false);
+        }
+
+        protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
+            {
+                trDateHours.Visible = true;
+            }
+            else
+            {
+                trDateHours.Visible = false;
+            }
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+        }
+
+        protected void btnSaveSubTask_Click(object sender, EventArgs e)
+        {
+            SaveSubTask();
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
+        }
+
+        #endregion
+
+        #region '--Methods--'
+
+        public void ShowAddNewSubTaskSection(bool IsOnPageLoad)
+        {
             ClearSubTaskData();
             string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(this.LastSubTaskSequence);
             if (subtaskListIDSuggestion.Length > 0)
@@ -736,31 +771,24 @@ namespace JG_Prospect.Sr_App.Controls
                     //listIDOpt.Text = subtaskListIDSuggestion[0];
                 }
             }
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
-        }
+            string strScript = string.Format(
+                                                "$('#{0}').slideDown('slow');",
+                                                divSubTask.ClientID
+                                            );
 
-        protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
+            if (IsOnPageLoad)
             {
-                trDateHours.Visible = true;
+                strScript = "$(document).ready(function(){" + strScript + "});";
             }
-            else
-            {
-                trDateHours.Visible = false;
-            }
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+
+            ScriptManager.RegisterStartupScript(
+                                                    this.Page,
+                                                    this.GetType(),
+                                                    "ShowSubTaskSection",
+                                                    strScript,
+                                                    true
+                                              );
         }
-
-        protected void btnSaveSubTask_Click(object sender, EventArgs e)
-        {
-            SaveSubTask();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
-        }
-
-        #endregion
-
-        #region '--Methods--'
 
         private void UploadUserAttachements(int? taskUpdateId, string attachments)
         {

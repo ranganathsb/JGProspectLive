@@ -35,6 +35,8 @@ namespace JG_Prospect.Sr_App
 
         string strSubtaskSeq = "sbtaskseq";
 
+        bool blShowAddSubTaskOnLoad = false;
+
         #endregion
 
         #region "--Properties--"
@@ -160,9 +162,16 @@ namespace JG_Prospect.Sr_App
 
                 string strAction = Convert.ToString(Request.QueryString["Action"]);
 
-                if (!string.IsNullOrEmpty(strAction) && strAction == "tws")
+                if (!string.IsNullOrEmpty(strAction))
                 {
-                    ShowWorkSpecificationSection(true);
+                    if (strAction == "tws")
+                    {
+                        ShowWorkSpecificationSection(true);
+                    }
+                    else if (strAction == "st")
+                    {
+                        blShowAddSubTaskOnLoad = true;
+                    }
                 }
             }
 
@@ -180,7 +189,7 @@ namespace JG_Prospect.Sr_App
 
             int intHighlightedTaskId = 0;
 
-            if (Request.QueryString["hstid"]!= null)
+            if (Request.QueryString["hstid"] != null)
             {
                 intHighlightedTaskId = Convert.ToInt32(Request.QueryString["hstid"].ToString());
             }
@@ -191,12 +200,14 @@ namespace JG_Prospect.Sr_App
             objucSubTasks_Admin.HighlightedTaskId = intHighlightedTaskId;
             objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
             objucSubTasks_Admin.controlMode = controlMode.Value;
+            objucSubTasks_Admin.OnAddNewSubTask += objucSubTasks_Admin_OnAddNewSubTask;
             objucSubTasks_Admin.SetSubTaskView();
 
             objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
             objucSubTasks_User.HighlightedTaskId = intHighlightedTaskId;
             objucSubTasks_User.IsAdminMode = this.IsAdminMode;
             objucSubTasks_User.controlMode = controlMode.Value;
+            objucSubTasks_User.OnAddNewSubTask += objucSubTasks_User_OnAddNewSubTask;
             objucSubTasks_User.SetSubTaskView();
 
             #endregion
@@ -719,6 +730,36 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
+
+        #endregion
+
+        #region '--Sub Tasks--'
+
+        protected void objucSubTasks_Admin_OnAddNewSubTask(object sender, EventArgs e)
+        {
+            if (controlMode.Value == "0")
+            {
+                if (ValidateTaskStatus())
+                {
+                    InsertUpdateTask();
+
+                    RedirectToViewTasks("st");
+                }
+            }
+        }
+
+        protected void objucSubTasks_User_OnAddNewSubTask(object sender, EventArgs e)
+        {
+            if (controlMode.Value == "0")
+            {
+                if (ValidateTaskStatus())
+                {
+                    InsertUpdateTask();
+
+                    RedirectToViewTasks("st");
+                }
+            }
+        }
 
         #endregion
 
@@ -1277,6 +1318,11 @@ namespace JG_Prospect.Sr_App
             objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
             objucSubTasks_Admin.SetSubTaskDetails();
             objucSubTasks_User.SetSubTaskDetails();
+            if (blShowAddSubTaskOnLoad)
+            {
+                objucSubTasks_Admin.ShowAddNewSubTaskSection(true);
+                objucSubTasks_User.ShowAddNewSubTaskSection(true);
+            }
 
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
 
