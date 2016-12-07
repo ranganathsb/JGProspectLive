@@ -1125,11 +1125,13 @@ namespace JG_Prospect.Sr_App.Controls
 
         public void ClearSubTaskData()
         {
+            hdnTaskApprovalId.Value = "0";
             hdnSubTaskId.Value = "0";
             hdnSubTaskIndex.Value = "-1";
             txtTaskListID.Text = string.Empty;
             txtSubTaskTitle.Text =
             txtSubTaskDescription.Text =
+            txtEstimatedHours.Text =
             txtSubTaskDueDate.Text =
             txtSubTaskHours.Text = string.Empty;
             if (ddlTaskType.Items.Count > 0)

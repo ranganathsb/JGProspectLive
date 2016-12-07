@@ -151,7 +151,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="display: none;">
+                        <tr>
                             <td colspan="2">Title <span style="color: red;">*</span>:
                                 <br />
                                 <asp:TextBox ID="txtSubTaskTitle" Text="N.A." runat="server" Width="98%" CssClass="textbox" />
