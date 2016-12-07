@@ -2105,3 +2105,194 @@ END
 
 GO
 
+ALTER TABLE tblTask
+ADD Url VARCHAR(250) NULL
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[SP_SaveOrDeleteTask]    Script Date: 07-Dec-16 11:34:49 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Nov 16
+-- Description:	Inserts, Updates or Deletes a task.
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTask]  
+	 @Mode tinyint, -- 0:Insert, 1: Update, 2: Delete  
+	 @TaskId bigint,  
+	 @Title varchar(250),  
+	 @Url varchar(250),
+	 @Description varchar(MAX),  
+	 @Status tinyint,  
+	 @DueDate datetime = NULL,  
+	 @Hours varchar(25),
+	 @CreatedBy int,	
+	 @InstallId varchar(50) = NULL,
+	 @ParentTaskId bigint = NULL,
+	 @TaskType tinyint = NULL,
+	 @TaskPriority tinyint = null,
+	 @IsTechTask bit = NULL,
+	 @DeletedStatus	TINYINT = 9,
+	 @Result int output 
+AS  
+BEGIN  
+  
+	IF @Mode=0  
+	  BEGIN  
+		INSERT INTO tblTask 
+				(
+					Title,
+					Url,
+					[Description],
+					[Status],
+					DueDate,
+					[Hours],
+					CreatedBy,
+					CreatedOn,
+					IsDeleted,
+					InstallId,
+					ParentTaskId,
+					TaskType,
+					TaskPriority,
+					IsTechTask,
+					AdminStatus,
+					TechLeadStatus,
+					OtherUserStatus
+				)
+		VALUES
+				(
+					@Title,
+					@Url,
+					@Description,
+					@Status,
+					@DueDate,
+					@Hours,
+					@CreatedBy,
+					GETDATE(),
+					0,
+					@InstallId,
+					@ParentTaskId,
+					@TaskType,
+					@TaskPriority,
+					@IsTechTask,
+					0,
+					0,
+					0
+				)  
+  
+		SET @Result=SCOPE_IDENTITY ()  
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=1 -- Update  
+	BEGIN    
+		UPDATE tblTask  
+		SET  
+			Title=@Title,  
+			Url = @Url,
+			[Description]=@Description,  
+			[Status]=@Status,  
+			DueDate=@DueDate,  
+			[Hours]=@Hours,
+			[TaskType] = @TaskType,
+			[TaskPriority] = @TaskPriority,
+			[IsTechTask] = @IsTechTask
+		WHERE TaskId=@TaskId  
+
+		SET @Result= @TaskId
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=2 --Delete  
+	BEGIN  
+		UPDATE tblTask  
+		SET  
+			IsDeleted=1,
+			[Status] = @DeletedStatus
+		WHERE TaskId=@TaskId OR ParentTaskId=@TaskId  
+	END  
+  
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[TaskListView] 
+AS
+SELECT 
+	Tasks.*,
+	STUFF
+	(
+		(SELECT  CAST(', ' + td.Designation as VARCHAR) AS Designation
+		FROM tblTaskDesignations td
+		WHERE td.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskDesignations,
+	STUFF
+	(
+		(SELECT  CAST(', ' + u.FristName as VARCHAR) AS Name
+		FROM tblTaskAssignedUsers tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignedUsers,
+	STUFF
+	(
+		(SELECT  ',' + CAST(tu.UserId as VARCHAR) AS Id
+		FROM tblTaskAssignedUsers tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,1
+		,''
+	) AS TaskAssignedUserIds,
+	STUFF
+	(
+		(SELECT  CAST(', ' + CAST(tu.UserId AS VARCHAR) + ':' + u.FristName as VARCHAR) AS Name
+		FROM tblTaskAssignmentRequests tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignmentRequestUsers,
+	STUFF
+	(
+		(SELECT  ', ' + CAST(tu.UserId AS VARCHAR) AS UserId
+		FROM tblTaskAcceptance tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAcceptanceUsers,
+	STUFF
+	(
+		(SELECT  CAST(', ' + tuf.[Attachment] + '@' + tuf.[AttachmentOriginal] as VARCHAR(max)) AS attachment
+		FROM dbo.tblTaskUserFiles tuf
+		WHERE tuf.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskUserFiles
+FROM          
+	tblTask AS Tasks 
+
+GO
+

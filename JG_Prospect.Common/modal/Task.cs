@@ -12,6 +12,7 @@ namespace JG_Prospect.Common.modal
         public int Mode;
         public int TaskId;
         public string Title;
+        public string Url;
         public string Description;
         public int Status;
         public string DueDate;

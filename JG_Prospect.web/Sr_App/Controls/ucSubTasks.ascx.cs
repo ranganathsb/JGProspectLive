@@ -345,6 +345,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                     txtTaskListID.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
                     txtSubTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
+                    txtUrl.Text = dtTaskMasterDetails.Rows[0]["Url"].ToString();
                     txtSubTaskDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
 
                     ListItem item = ddlTaskType.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskType"].ToString());
@@ -1034,6 +1035,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             objTask.Title = txtSubTaskTitle.Text;
+            objTask.Url = txtUrl.Text;
             objTask.Description = txtSubTaskDescription.Text;
             objTask.Status = Convert.ToInt32(ddlSubTaskStatus.SelectedValue);
             if (ddlSubTaskPriority.SelectedValue == "0")
@@ -1130,6 +1132,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdnSubTaskIndex.Value = "-1";
             txtTaskListID.Text = string.Empty;
             txtSubTaskTitle.Text =
+            txtUrl.Text =
             txtSubTaskDescription.Text =
             txtEstimatedHours.Text =
             txtSubTaskDueDate.Text =

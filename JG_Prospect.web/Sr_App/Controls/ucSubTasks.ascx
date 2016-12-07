@@ -152,11 +152,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2">Title <span style="color: red;">*</span>:
+                            <td colspan="2">Title <span style="color: red;"></span>:
                                 <br />
-                                <asp:TextBox ID="txtSubTaskTitle" Text="N.A." runat="server" Width="98%" CssClass="textbox" />
-                                <asp:RequiredFieldValidator ID="rfvSubTaskTitle" Visible="false" ValidationGroup="vgSubTask"
-                                    runat="server" ControlToValidate="txtSubTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None" />
+                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Url <span style="color: red;"></span>:
+                                <br />
+                                <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
                             </td>
                         </tr>
                         <tr>

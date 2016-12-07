@@ -39,6 +39,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Mode", DbType.Int16, objTask.Mode);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
                     database.AddInParameter(command, "@Title", DbType.String, objTask.Title);
+                    database.AddInParameter(command, "@Url", DbType.String, objTask.Url);
                     database.AddInParameter(command, "@Description", DbType.String, objTask.Description);
                     database.AddInParameter(command, "@Status", DbType.Int16, objTask.Status);
 
