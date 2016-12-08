@@ -1049,6 +1049,7 @@
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\Shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
+    <Content Include="Database Scripts\Shekhar\StoredProc_sp_GetHrData_Dec_2016_ITSN013_v1.0.sql" />
     <Content Include="Database Scripts\Shekhar\StoredProc_UDP_GetVendors_Dec_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="Employment_Redirect.aspx" />
