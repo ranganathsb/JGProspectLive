@@ -20,6 +20,12 @@ namespace JG_Prospect.Sr_App.Controls
 {
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
+        #region '--Members--'
+
+        private List<string> lstSubTaskFiles = new List<string>();
+        
+        #endregion
+
         #region '--Properties--'
 
         public delegate void OnLoadTaskData(Int64 intTaskId);
@@ -198,6 +204,11 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     string attachments = DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString();
                     string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (attachment != null && attachment.Length > 0)
+                    {
+                        this.lstSubTaskFiles.AddRange(attachment);
+                    }
 
                     Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
                     rptAttachments.DataSource = attachment;
@@ -591,94 +602,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
-        protected void btnSaveCommentAttachment_Click(object sender, EventArgs e)
-        {
-            UploadUserAttachements(null, hdnSubTaskNoteAttachments.Value);
-
-            hdnSubTaskNoteAttachments.Value = "";
-
-            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
-
-        }
-
-        protected void btnSaveSubTaskFeedback_Click(object sender, EventArgs e)
-        {
-            string notes = txtSubtaskComment.Text;
-
-            if (string.IsNullOrEmpty(notes))
-                return;
-
-            SaveTaskNotesNAttachments();
-
-            ScriptManager.RegisterStartupScript(
-                                                   (sender as Control),
-                                                   this.GetType(),
-                                                   "HidePopup",
-                                                   string.Format(
-                                                                   "HidePopup(\"#{0}\");",
-                                                                   divSubTaskFeedbackPopup.ClientID
-                                                               ),
-                                                   true
-                                             );
-
-            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
-
-        }
-
-        protected void grdSubTaskAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                string file = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "attachment"));
-
-                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
-                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
-                LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
-
-                //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
-
-                if (files[1].Length > 40)// sort name with ....
-                {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
-                    lbtnAttchment.Attributes.Add("title", files[1]);
-                }
-                else
-                {
-                    lbtnAttchment.Text = files[1];
-                }
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
-                lbtnAttchment.CommandArgument = file;
-
-                if (CommonFunction.IsImageFile(files[0].Trim()))
-                {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
-                }
-                else
-                {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
-                }
-            }
-        }
-
-        protected void grdSubTaskAttachments_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "download-attachment")
-            {
-                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
-            }
-            else if (e.CommandName == "delete-attachment")
-            {
-                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
-
-                //Reload records.
-                FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
-            }
-
-        }
+        #region '--gvSubTasks : Attachment Column--'
 
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -723,6 +647,126 @@ namespace JG_Prospect.Sr_App.Controls
 
                 lbtnAttchment.CommandArgument = file;
             }
+        }
+
+        #endregion
+
+        #region '--Add / Edit SubTask : Attachment--'
+
+        protected void rptSubTaskAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "attachment"));
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+                LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
+
+                //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+
+                if (files[1].Length > 40)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+                }
+                else
+                {
+                    lbtnAttchment.Text = files[1];
+                }
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                lbtnAttchment.CommandArgument = file;
+
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
+                }
+                else
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                }
+            }
+        }
+
+        protected void rptSubTaskAttachments_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "download-attachment")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "delete-attachment")
+            {
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
+
+                //Reload records.
+                FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+            }
+
+        }
+
+        #endregion
+
+        #region '--rptImageGallery--'
+
+        protected void rptImageGallery_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                string file = Convert.ToString(e.Item.DataItem);
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    string strUrl = Page.ResolveUrl(string.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim())));
+                    ((HtmlImage)e.Item.FindControl("imgImage")).Src = strUrl;
+                    ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", strUrl);
+                }
+                else
+                {
+                    e.Item.FindControl("liImage").Visible = false;
+                }
+            }
+        }
+
+        #endregion
+
+        protected void btnSaveCommentAttachment_Click(object sender, EventArgs e)
+        {
+            UploadUserAttachements(null, hdnSubTaskNoteAttachments.Value);
+
+            hdnSubTaskNoteAttachments.Value = "";
+
+            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+
+        }
+
+        protected void btnSaveSubTaskFeedback_Click(object sender, EventArgs e)
+        {
+            string notes = txtSubtaskComment.Text;
+
+            if (string.IsNullOrEmpty(notes))
+                return;
+
+            SaveTaskNotesNAttachments();
+
+            ScriptManager.RegisterStartupScript(
+                                                   (sender as Control),
+                                                   this.GetType(),
+                                                   "HidePopup",
+                                                   string.Format(
+                                                                   "HidePopup(\"#{0}\");",
+                                                                   divSubTaskFeedbackPopup.ClientID
+                                                               ),
+                                                   true
+                                             );
+
+            Response.Redirect("~/Sr_App/TaskGenerator.aspx?TaskId=" + TaskId.ToString());
+
         }
 
         protected void lbtnAddNewSubTask_Click(object sender, EventArgs e)
@@ -961,13 +1005,17 @@ namespace JG_Prospect.Sr_App.Controls
             if (dtSubTaskDetails.Rows.Count > 0)
             {
                 DataView dv = dtSubTaskDetails.AsDataView();
-                dv.Sort = "TaskId DESC";
+                dv.Sort = "TaskId ASC";
                 this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
             }
             else
             {
                 this.LastSubTaskSequence = String.Empty;
             }
+
+            rptImageGallery.DataSource = this.lstSubTaskFiles;
+            rptImageGallery.DataBind();
+            upImageGallery.Update();
         }
 
         private void FillInitialData()
@@ -1204,8 +1252,8 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
 
-            grdSubTaskAttachments.DataSource = dtSubtaskAttachments;
-            grdSubTaskAttachments.DataBind();
+            rptSubTaskAttachments.DataSource = dtSubtaskAttachments;
+            rptSubTaskAttachments.DataBind();
 
             upnlAttachments.Update();
         }

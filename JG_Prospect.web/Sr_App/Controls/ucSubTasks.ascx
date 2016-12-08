@@ -81,7 +81,6 @@
                                                 <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
                                             </small>
                                         </li>
-
                                     </ItemTemplate>
                                 </asp:Repeater>
                             </ItemTemplate>
@@ -153,9 +152,9 @@
                                 <div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
                                     <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
                                         <ContentTemplate>
-                                            <asp:Repeater ID="grdSubTaskAttachments" runat="server"
-                                                OnItemDataBound="grdSubTaskAttachments_ItemDataBound"
-                                                OnItemCommand="grdSubTaskAttachments_ItemCommand">
+                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
+                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
+                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
                                                 <HeaderTemplate>
                                                     <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
                                                 </HeaderTemplate>
@@ -327,37 +326,20 @@
 
 <div id="divGalleryPopup" style="max-width: 700px;" class="lSSlideOuter ">
     <div class="lSSlideWrapper usingCss">
-        <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
-            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
-                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
-            </li>
-            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
-                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
-            </li>
-            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
-                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
-            </li>
-            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
-                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
-            </li>
-            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
-                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
-            </li>
-            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
-                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
-            </li>
-            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
-                <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
-            </li>
-            <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
-                <img src="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg" />
-            </li>
-            <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
-                <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
-            </li>
-        </ul>
+        <asp:UpdatePanel ID="upImageGallery" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+                    <asp:Repeater ID="rptImageGallery" runat="server" OnItemDataBound="rptImageGallery_ItemDataBound">
+                        <ItemTemplate>
+                            <li id="liImage" runat="server">
+                                <img id="imgImage" runat="server" src="javascript:void(0);" />
+                            </li>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </ul>
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
-
 </div>
 <%--Popup Ends--%>
 
@@ -500,12 +482,7 @@
 
     function ApplyImageGallery() {
         $('.gallery-ele').bind("click", function () {
-
             OpenImageGalleryDialog();
         });
     }
-
-
-
-
 </script>

@@ -166,13 +166,13 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.UpdatePanel upnlAttachments;
         
         /// <summary>
-        /// grdSubTaskAttachments control.
+        /// rptSubTaskAttachments control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater grdSubTaskAttachments;
+        protected global::System.Web.UI.WebControls.Repeater rptSubTaskAttachments;
         
         /// <summary>
         /// txtSubTaskDescription control.
@@ -416,5 +416,23 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveCommentAttachment;
+        
+        /// <summary>
+        /// upImageGallery control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upImageGallery;
+        
+        /// <summary>
+        /// rptImageGallery control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptImageGallery;
     }
 }
