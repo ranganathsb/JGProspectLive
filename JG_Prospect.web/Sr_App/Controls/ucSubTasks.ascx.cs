@@ -712,6 +712,15 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnAttchment.Text = files[1];
                 }
 
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
+                }
+                else
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                }
+
                 lbtnAttchment.CommandArgument = file;
             }
         }

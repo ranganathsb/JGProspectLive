@@ -26,9 +26,15 @@
                                     CommandArgument='<%# Container.DataItemIndex  %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left"
+                        <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                             SortExpression="Description">
                             <ItemTemplate>
+                                Title: <%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %>
+                                <br>
+                                Url: <a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a>
+                                <br>
+                                Description:
+                                <br />
                                 <%# Eval("Description")%>
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -50,18 +56,26 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
-                                <%# this.IsAdminMode ? "ITLead : " + Eval("AdminOrITLeadEstimatedHours") + "<br />" : "" %>
-                                <%# "User : " + Eval("UserEstimatedHours") %>
+                                <b><%# this.IsAdminMode ? "ITLead : " + (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() ) + "<br />" : "" %></b>
+
+                                <b><%# "User : " + (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString()) %></b>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                             <ItemTemplate>
                                 <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                    <HeaderTemplate>
+                                        <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                    </HeaderTemplate>
                                     <ItemTemplate>
-                                        <small>
-                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
-                                            <asp:Literal ID="ltrlSeprator" runat="server" Text=" ," />
-                                        </small>
+                                        <li style="margin: 10px; text-align: center; float: left; width: 50px;">
+                                            <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
+                                            <br />
+                                            <small>
+                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                            </small>
+                                        </li>
+
                                     </ItemTemplate>
                                 </asp:Repeater>
                             </ItemTemplate>
@@ -78,7 +92,7 @@
                                         <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
                                         <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
                                             placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask" 
+                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
                                             AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                     </div>
                                 </div>
@@ -118,6 +132,17 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Title <span style="color: red;"></span>:
+                                <br />
+                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" />
+                            </td>
+                            <td>Url <span style="color: red;"></span>:
+                                <br />
+                                <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td colspan="2">Attachment(s):
                                 <div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
                                     <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
@@ -151,18 +176,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="2">Title <span style="color: red;"></span>:
-                                <br />
-                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Url <span style="color: red;"></span>:
-                                <br />
-                                <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
-                            </td>
-                        </tr>
+
                         <tr>
                             <td colspan="2">Description <span style="color: red;">*</span>:
                                 <br />
@@ -187,8 +201,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2">
-                                Estimated Hours: <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
+                            <td colspan="2">Estimated Hours:
+                                <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
                                 <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
                                     ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
                                     ValidationExpression="(\d+\.\d{1,2})?\d*" />
@@ -305,7 +319,7 @@
 
 </div>
 
-<div id="divGalleryPopup" style="max-width:700px;" class="lSSlideOuter ">
+<div id="divGalleryPopup" style="max-width: 700px;" class="lSSlideOuter ">
     <div class="lSSlideWrapper usingCss">
         <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
             <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
@@ -317,7 +331,7 @@
             <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
                 <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
             </li>
-             <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
+            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
                 <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
             </li>
             <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
@@ -326,7 +340,7 @@
             <li data-thumb="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png">
                 <img src="../TaskAttachments/1303295a-2fc9-4a86-b71b-a51573d94e4f-live-error-09022016.png" />
             </li>
-             <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
+            <li data-thumb="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG">
                 <img src="../TaskAttachments/2f5c2600-e9e1-42d8-8d63-7f4cd37eb081-SHOPUsa.PNG" />
             </li>
             <li data-thumb="../TaskAttachments/08be5052-3506-4b00-8551-75fe8f9a1d32-kerfinal.jpg">
@@ -444,7 +458,7 @@
 
     function OpenImageGalleryDialog() {
 
-       // var windowWidth = (parseInt($(window).width())) - 100;
+        // var windowWidth = (parseInt($(window).width())) - 100;
 
         //var dialogwidth = windowWidth + "px";
 

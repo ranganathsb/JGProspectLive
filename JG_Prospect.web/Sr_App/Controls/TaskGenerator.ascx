@@ -176,7 +176,7 @@
                     </td>
                     <td style="width: 8%;">
                         <asp:LinkButton ID="btnLoadMore" runat="server" Style="display: none;" Text="View More" OnClick="btnLoadMore_Click" />
-                        <a id="hypViewMore" href="javascript:void(0);" data-expanded="0">View More</a>
+                        <a id="hypViewMore" href="javascript:void(0);" style="display:none;" data-expanded="0">View More</a>
                     </td>
                     <td style="display: none">
                         <%--<asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click"  />--%>
@@ -796,8 +796,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#taskGrid');
-        bindViewMore();
+        //setClickableTooltip('#taskGrid');
+        bindtasklistExpandCollapse();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -809,8 +809,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        setClickableTooltip('#<%=upnlTasks.ClientID%>');
-        bindViewMore();
+        //setClickableTooltip('#<%=upnlTasks.ClientID%>');
+        bindtasklistExpandCollapse();
     });
 
     function RemoveTask(TaskId) {
@@ -939,60 +939,68 @@
                 }
             }
 
-            function SetHeaderSectionHeight() {
-                //$('.tasklist').css('max-height', '800px');
-                $('.tasklist').animate({ 'maxHeight': 600 }, 1000);
-            }
+            //function SetHeaderSectionHeight() {
+            //    //$('.tasklist').css('max-height', '800px');
+            //    $('.tasklist').animate({ 'maxHeight': 600 }, 1000);
+            //}
 
-            function HideHeaderSectionHeight() {
-                //$('.tasklist').css('max-height', '165px');
-                $('.tasklist').animate({ 'maxHeight': 165 }, 1000);
-            }
+            //function HideHeaderSectionHeight() {
+            //    //$('.tasklist').css('max-height', '165px');
+            //    $('.tasklist').animate({ 'maxHeight': 165 }, 1000);
+            //}
 
             function TriggerSearch() {
                 $('#<%=btnSearch.ClientID %>').click();
 
             }
 
-            function setClickableTooltip(target) {
-                $(target).mouseenter(function () {
+            //function setClickableTooltip(target) {
+            //    $(target).mouseenter(function () {
 
-                    var hyperlinkview = $("#hypViewMore");
-                    var expanded = hyperlinkview.attr("data-expanded");
-                    if (expanded == "0") {
-                        toggleShowMoreResults(expanded, hyperlinkview);
-                    }
-                });
+            //        var hyperlinkview = $("#hypViewMore");
+            //        var expanded = hyperlinkview.attr("data-expanded");
+            //        if (expanded == "0") {
+            //            toggleShowMoreResults(expanded, hyperlinkview);
+            //        }
+            //    });
 
-                $(target).mouseleave(function () {
+            //    $(target).mouseleave(function () {
 
-                    HideHeaderSectionHeight();
-                    var linkobject = $("#hypViewMore");
-                    $(linkobject).html("View More");
-                    $(linkobject).attr("data-expanded", "0");
-                });
-            }
+            //        HideHeaderSectionHeight();
+            //        var linkobject = $("#hypViewMore");
+            //        $(linkobject).html("View More");
+            //        $(linkobject).attr("data-expanded", "0");
+            //    });
+            //}
 
-            function bindViewMore() {
+    function bindtasklistExpandCollapse() {
+        $('.tasklist').hover(function () {
+            $(this).stop(true, true).animate({ 'maxHeight': 600 }, 2000);
+        }, function () {
+            $(this).stop(true, true).animate({ 'maxHeight': 165 }, 2000)
+        });
+    }
 
-                $("#hypViewMore").click(function () {
-                    var expanded = $(this).attr("data-expanded");
-                    toggleShowMoreResults(expanded, this);
-                });
-            }
+            //function bindViewMore() {
 
-            function toggleShowMoreResults(view, linkobject) {
+            //    $("#hypViewMore").click(function () {
+            //        var expanded = $(this).attr("data-expanded");
+            //        toggleShowMoreResults(expanded, this);
+            //    });
+            //}
 
-                if (view == "0") {// if content is hidden than expand it.
-                    SetHeaderSectionHeight();
-                    $(linkobject).html("Hide");
-                    $(linkobject).attr("data-expanded", "1");
-                }
-                else {
-                    HideHeaderSectionHeight();
-                    $(linkobject).html("View More");
-                    $(linkobject).attr("data-expanded", "0");
-                }
-            }
+            //function toggleShowMoreResults(view, linkobject) {
+
+            //    if (view == "0") {// if content is hidden than expand it.
+            //        SetHeaderSectionHeight();
+            //        $(linkobject).html("Hide");
+            //        $(linkobject).attr("data-expanded", "1");
+            //    }
+            //    else {
+            //        HideHeaderSectionHeight();
+            //        $(linkobject).html("View More");
+            //        $(linkobject).attr("data-expanded", "0");
+            //    }
+            //}
 
 </script>

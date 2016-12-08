@@ -1382,7 +1382,7 @@ ul.left_nav {
     margin-left: 220px !important;
     width: 75%;
     position: relative;
-    z-index: 10;
+    z-index: 10000;
 }
 
     .tasklist a {
@@ -1536,4 +1536,7 @@ z-index: 9 !important;
 }
 .task-open.task-with-priority {
     border:2px solid green;
+}
+.bluetext {
+color:blue !important;
 }
