@@ -344,21 +344,21 @@ namespace JG_Prospect
             }
             else if (e.CommandName == "EditAddedByUserInstall")
             {
-                GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-                int index = row.RowIndex;
-                //Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
-                //string designation = desig.Text;
-                string ID1 = e.CommandArgument.ToString();
-                con.Open();
-                SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
-                SqlDataReader rdr = cmd.ExecuteReader();
-                string type = "";
-                while (rdr.Read())
-                {
-                    type = rdr[0].ToString();
+                //GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                //int index = row.RowIndex;
+                ////Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
+                ////string designation = desig.Text;
+                //string ID1 = e.CommandArgument.ToString();
+                //con.Open();
+                //SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
+                //SqlDataReader rdr = cmd.ExecuteReader();
+                //string type = "";
+                //while (rdr.Read())
+                //{
+                //    type = rdr[0].ToString();
 
-                }
-                con.Close();
+                //}
+                //con.Close();
                 //if (designation != "SubContractor" && type != "Sales")
                 //{
                 //    string ID = e.CommandArgument.ToString();
@@ -371,8 +371,8 @@ namespace JG_Prospect
                 //}
                 //else if (type == "Sales")
                 //{
-                string ID = e.CommandArgument.ToString();
-                Response.Redirect("CreateSalesUser.aspx?id=" + ID);
+                string AddedById = e.CommandArgument.ToString();
+                Response.Redirect("CreateSalesUser.aspx?id=" + AddedById);
                 //}
 
             }
