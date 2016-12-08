@@ -229,7 +229,7 @@
                             <td colspan="2">
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                        OnClick="btnSaveSubTask_Click" />
+                                        OnClientClick="javascript:OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
                                 </div>
                             </td>
                         </tr>
@@ -353,9 +353,6 @@
     </div>
 
 </div>
-
-
-
 <%--Popup Ends--%>
 
 <script type="text/javascript">
@@ -363,20 +360,19 @@
 
     $(function () {
         ucSubTasks_Initialize();
-        ApplySubtaskLinkContextMenu();
-        ApplyImageGallery();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
     prmTaskGenerator.add_endRequest(function () {
         ucSubTasks_Initialize();
-        ApplySubtaskLinkContextMenu();
-        ApplyImageGallery();
     });
 
     function ucSubTasks_Initialize() {
         ucSubTasks_ApplyDropZone();
+        ApplySubtaskLinkContextMenu();
+        ApplyImageGallery();
+        SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
     }
 
     function copytoListID(sender) {
@@ -384,6 +380,10 @@
         if (strListID.length > 0) {
             $('#<%= txtTaskListID.ClientID %>').val(strListID);
         }
+    }
+
+    function OnSaveSubTaskClick() {
+        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
