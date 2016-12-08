@@ -122,7 +122,7 @@
                     <table class="tablealign fullwidth">
                         <tr>
                             <td>ListID:
-                                <asp:TextBox ID="txtTaskListID" runat="server" />
+                                <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
                                 &nbsp;
                                 <small>
                                     <a href="javascript:void(0);" style="color: #06c;" onclick="copytoListID(this);">
@@ -140,10 +140,14 @@
                             <td>Title <span style="color: red;"></span>:
                                 <br />
                                 <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" />
+                                <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask" 
+                                    ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
                             <td>Url <span style="color: red;"></span>:
                                 <br />
                                 <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
+                                <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask" 
+                                    ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                             </td>
                         </tr>
 
@@ -367,6 +371,8 @@
         var strListID = $.trim($(sender).text());
         if (strListID.length > 0) {
             $('#<%= txtTaskListID.ClientID %>').val(strListID);
+            ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
+            ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
         }
     }
 

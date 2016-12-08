@@ -148,6 +148,15 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.TextBox txtSubTaskTitle;
         
         /// <summary>
+        /// rfvTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTitle;
+        
+        /// <summary>
         /// txtUrl control.
         /// </summary>
         /// <remarks>
@@ -155,6 +164,15 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUrl;
+        
+        /// <summary>
+        /// rfvUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUrl;
         
         /// <summary>
         /// upnlAttachments control.

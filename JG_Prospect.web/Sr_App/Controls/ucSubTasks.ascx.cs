@@ -382,6 +382,18 @@ namespace JG_Prospect.Sr_App.Controls
                         ddlSubTaskPriority.SelectedValue = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
                     }
 
+                    int numbersequence;
+                    if (ExtensionMethods.TryRomanParse(txtTaskListID.Text, out numbersequence))
+                    {
+                        rfvTitle.Enabled =
+                        rfvUrl.Enabled = true;
+                    }
+                    else
+                    {
+                        rfvTitle.Enabled =
+                        rfvUrl.Enabled = false;
+                    }
+
                     FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
                 }
 
@@ -829,6 +841,19 @@ namespace JG_Prospect.Sr_App.Controls
                     //listIDOpt.Text = subtaskListIDSuggestion[0];
                 }
             }
+
+            int numbersequence;
+            if (ExtensionMethods.TryRomanParse(txtTaskListID.Text, out numbersequence))
+            {
+                rfvTitle.Enabled =
+                rfvUrl.Enabled = true;
+            }
+            else
+            {
+                rfvTitle.Enabled =
+                rfvUrl.Enabled = false;
+            }
+
             string strScript = string.Format(
                                                 "$('#{0}').slideDown('slow');",
                                                 divSubTask.ClientID
