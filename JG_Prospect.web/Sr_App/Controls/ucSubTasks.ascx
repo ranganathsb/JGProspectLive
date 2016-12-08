@@ -29,29 +29,35 @@
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                             SortExpression="Description">
                             <ItemTemplate>
-                                Title: <%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %>
-                                <br>
-                                Url: <a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a>
-                                <br>
-                                Description:
-                                <br />
-                                <%# Eval("Description")%>
+                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px;">
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Title:&nbsp;</label><%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %>
+                                    </div>
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Url:&nbsp;</label><a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a>
+                                    </div>
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Description:&nbsp;</label>
+                                        <br />
+                                        <%# Eval("Description")%>
+                                    </div>
+                                </div>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Type" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="85">
-                            <ItemTemplate>
-                                <asp:Literal ID="ltrlTaskType" runat="server" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="105"
+                        <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
                             SortExpression="Status">
                             <ItemTemplate>
-                                <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Priority" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
-                                <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                <div style="padding: 3px;">
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Status:&nbsp;</label><asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
+                                    </div>
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Priority:&nbsp;</label><asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                    </div>
+                                    <div style="padding-bottom: 5px;">
+                                        <label>Type:&nbsp;</label><asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
+                                    </div>
+                                </div>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
