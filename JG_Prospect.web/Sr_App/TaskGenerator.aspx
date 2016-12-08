@@ -17,11 +17,11 @@
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />    
-    <link rel="stylesheet" type="text/css" href="../css/gallery.css">
+    
     <script src="../ckeditor/ckeditor.js"></script>    
     <script src="../js/clipboard.min.js"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
-    <script type="text/javascript" src="../js/gallery.js"></script>
+   
 
     <div class="right_panel">
         <hr />

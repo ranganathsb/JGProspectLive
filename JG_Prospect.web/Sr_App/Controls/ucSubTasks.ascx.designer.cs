@@ -76,6 +76,15 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTask;
         
         /// <summary>
+        /// hdnTaskApprovalId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTaskApprovalId;
+        
+        /// <summary>
         /// hdnSubTaskId control.
         /// </summary>
         /// <remarks>
@@ -130,24 +139,6 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskPriority;
         
         /// <summary>
-        /// upnlAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlAttachments;
-        
-        /// <summary>
-        /// grdSubTaskAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater grdSubTaskAttachments;
-        
-        /// <summary>
         /// txtSubTaskTitle control.
         /// </summary>
         /// <remarks>
@@ -157,13 +148,49 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.TextBox txtSubTaskTitle;
         
         /// <summary>
-        /// rfvSubTaskTitle control.
+        /// rfvTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSubTaskTitle;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTitle;
+        
+        /// <summary>
+        /// txtUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtUrl;
+        
+        /// <summary>
+        /// rfvUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUrl;
+        
+        /// <summary>
+        /// upnlAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlAttachments;
+        
+        /// <summary>
+        /// rptSubTaskAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptSubTaskAttachments;
         
         /// <summary>
         /// txtSubTaskDescription control.
@@ -209,6 +236,24 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzonePreview;
+        
+        /// <summary>
+        /// txtEstimatedHours control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEstimatedHours;
+        
+        /// <summary>
+        /// revEstimatedHours control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revEstimatedHours;
         
         /// <summary>
         /// trDateHours control.
@@ -389,5 +434,23 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveCommentAttachment;
+        
+        /// <summary>
+        /// upImageGallery control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upImageGallery;
+        
+        /// <summary>
+        /// rptImageGallery control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptImageGallery;
     }
 }

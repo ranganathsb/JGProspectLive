@@ -30,7 +30,7 @@ namespace JG_Prospect.Sr_App
     {
 
         #region Variables
-        string flag = "";
+        //string flag = "";
         private Boolean IsPageRefresh = false;
         protected int estimateId
         {
@@ -772,7 +772,7 @@ namespace JG_Prospect.Sr_App
         protected void btnSave_Click(object sender, EventArgs e)
         {
             //Save all Data...
-            flag = "";
+            //flag = "";
             SaveAllData();
             //clearcontrols();
         }
@@ -939,8 +939,8 @@ namespace JG_Prospect.Sr_App
             bool res = VendorBLL.Instance.savevendor(objvendor);
             HttpContext.Current.Session["TempID"] = null;
             lbladdress.Text = "";
-            if (flag == "")
-            {
+            //if (flag == "")
+            //{
                 if (res)
                 {
                     //objvendor.tblVendorEmail = (DataTable)HttpContext.Current.Session["dtVendorEmail"];
@@ -952,6 +952,7 @@ namespace JG_Prospect.Sr_App
                     hidIsEditVendor.Value = "false";
                     clear();
                     BindFilteredVendorList();
+                    pnlcategorypopup.Style.Add("display", "none");
                     //string ManufacturerType = GetManufacturerType();
                     //if (ddlVendorSubCategory.SelectedValue == "Select")
                     //{
@@ -961,8 +962,8 @@ namespace JG_Prospect.Sr_App
                     //{
                     //    FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
                     //}
-                }
             }
+            //}
 
         }
 
@@ -3968,7 +3969,7 @@ namespace JG_Prospect.Sr_App
 
         protected void btnupdateVendor_Click1(object sender, EventArgs e)
         {
-            flag = "";
+            //flag = "";
             SaveAllData();
         }
 

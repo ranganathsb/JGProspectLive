@@ -7,30 +7,13 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace JG_Prospect.App_Code
 {
-    public enum TaskStatus
-    {
-        Open = 1,
-        Requested = 2,
-        Assigned = 3,
-        InProgress = 4,
-        Pending = 5,
-        ReOpened = 6,
-        Closed = 7
-    }
-
-    public enum TaskType
-    {
-        Bug = 1,
-        BetaError = 2,
-        Enhancement = 3
-    }
-
     public static class CommonFunction
     {
         /// <summary>
@@ -563,6 +546,7 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
             objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
             objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
             objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
             objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
 
@@ -659,6 +643,19 @@ namespace JG_Prospect.App_Code
             }
             return iconFile;
         }
+
+        public static string CreatePassword(int length)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
+
     }
 }
 
@@ -755,6 +752,33 @@ namespace JG_Prospect
             }
         }
 
-        
+        public static bool IsFirstTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsFirstTime"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsFirstTime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsFirstTime"] = value;
+            }
+        }
+
+        public static bool IsCustomer
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsCustomer"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsCustomer"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsCustomer"] = value;
+            }
+        }
+
     }
 }

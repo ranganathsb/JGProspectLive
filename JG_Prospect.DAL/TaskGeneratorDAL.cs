@@ -39,6 +39,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Mode", DbType.Int16, objTask.Mode);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
                     database.AddInParameter(command, "@Title", DbType.String, objTask.Title);
+                    database.AddInParameter(command, "@Url", DbType.String, objTask.Url);
                     database.AddInParameter(command, "@Description", DbType.String, objTask.Description);
                     database.AddInParameter(command, "@Status", DbType.Int16, objTask.Status);
 
@@ -1393,6 +1394,60 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@UserId", DbType.Int64, objTaskAcceptance.UserId);
                     database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskAcceptance.IsInstallUser);
                     database.AddInParameter(command, "@IsAccepted", DbType.Boolean, objTaskAcceptance.IsAccepted);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        #endregion
+
+        #region TaskApprovals
+        
+        public int InsertTaskApproval(TaskApproval objTaskApproval)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskApproval");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
+                    database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskApproval.Description);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskApproval.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskApproval.IsInstallUser);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskApproval(TaskApproval objTaskApproval)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskApproval");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskApproval.Id);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
+                    database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskApproval.Description);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskApproval.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskApproval.IsInstallUser);
 
                     return database.ExecuteNonQuery(command);
                 }

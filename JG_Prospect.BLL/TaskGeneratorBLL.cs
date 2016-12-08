@@ -238,5 +238,19 @@ namespace JG_Prospect.BLL
         }
 
         #endregion
+
+        #region TaskApprovals
+
+        public int InsertTaskApproval(TaskApproval objTaskApproval)
+        {
+            return TaskGeneratorDAL.Instance.InsertTaskApproval(objTaskApproval);
+        }
+
+        public int UpdateTaskApproval(TaskApproval objTaskApproval)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskApproval(objTaskApproval);
+        }
+
+        #endregion
     }
 }
