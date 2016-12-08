@@ -7,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -642,6 +643,19 @@ namespace JG_Prospect.App_Code
             }
             return iconFile;
         }
+
+        public static string CreatePassword(int length)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
+
     }
 }
 
@@ -738,6 +752,33 @@ namespace JG_Prospect
             }
         }
 
-        
+        public static bool IsFirstTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsFirstTime"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsFirstTime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsFirstTime"] = value;
+            }
+        }
+
+        public static bool IsCustomer
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsCustomer"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsCustomer"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsCustomer"] = value;
+            }
+        }
+
     }
 }
