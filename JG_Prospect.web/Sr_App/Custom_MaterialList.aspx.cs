@@ -119,10 +119,16 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-          
-            jobId = Session[SessionKey.Key.JobId.ToString()].ToString();
-            LoggedinUserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            salesmanCode = Session["loginpassword"].ToString();
+
+            if (Session[SessionKey.Key.JobId.ToString()] != null)
+                jobId = Session[SessionKey.Key.JobId.ToString()].ToString();
+
+            if (Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] != null)
+                LoggedinUserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+
+            if (Session["loginpassword"] != null)
+                salesmanCode = Session["loginpassword"].ToString();
+
             if (Request.QueryString[QueryStringKey.Key.ProductId.ToString()] != null)
             {
                 estimateId = Convert.ToInt16(Request.QueryString[QueryStringKey.Key.ProductId.ToString()]);
