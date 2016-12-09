@@ -92,12 +92,22 @@
                                                 ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
                                                     <div style="text-align: center;">
-                                                        <%# string.Concat(string.IsNullOrEmpty(Eval("FristName").ToString())== true ? 
-                                                            Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " ", Eval("LastName").ToString()) %><br />
                                                         <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
                                                         <br />
                                                         <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                            <%# string.IsNullOrEmpty(Eval("UserInstallId").ToString())? Eval("UserId") : Eval("UserInstallId") %>
+                                                            <%# 
+                                                                string.Concat(
+                                                                                string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
+                                                                                    Eval("UserId") : 
+                                                                                    Eval("UserInstallId"),
+                                                                                "#",
+                                                                                string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
+                                                                                    Eval("UserFirstName").ToString() : 
+                                                                                    Eval("FristName").ToString(),
+                                                                                " ", 
+                                                                                Eval("LastName").ToString()
+                                                                            )
+                                                            %>
                                                         </asp:HyperLink>
                                                     </div>
                                                 </ItemTemplate>
@@ -247,12 +257,22 @@
                                             ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
                                                 <div style="text-align: center;">
-                                                    <%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? 
-                                                            Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " ", Eval("LastName").ToString()) %><br />
                                                     <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
                                                     <br />
                                                     <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                        <%# string.IsNullOrEmpty(Eval("UserInstallId").ToString())? Eval("UserId") : Eval("UserInstallId") %>
+                                                        <%# 
+                                                                string.Concat(
+                                                                                string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
+                                                                                    Eval("UserId") : 
+                                                                                    Eval("UserInstallId"),
+                                                                                "#",
+                                                                                string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
+                                                                                    Eval("UserFirstName").ToString() : 
+                                                                                    Eval("FristName").ToString(),
+                                                                                " ", 
+                                                                                Eval("LastName").ToString()
+                                                                            )
+                                                        %>
                                                     </asp:HyperLink>
                                                 </div>
                                             </ItemTemplate>
