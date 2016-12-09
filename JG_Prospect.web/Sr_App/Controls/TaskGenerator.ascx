@@ -174,13 +174,13 @@
                     <td>
                         <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" />
                     </td>
-                    <td style="width: 8%;">
+                    <td style="display: none;">
                         <asp:LinkButton ID="btnLoadMore" runat="server" Style="display: none;" Text="View More" OnClick="btnLoadMore_Click" />
                         <a id="hypViewMore" href="javascript:void(0);" style="display:none;" data-expanded="0">View More</a>
                     </td>
-                    <td style="display: none">
+                    <td style="width: 8%;">
                         <%--<asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click"  />--%>
-                        <a id="hypTaskListMore" href="../Sr_App/TaskList.aspx">View All</a>
+                        <a id="hypTaskListMore" href="../Sr_App/TaskList.aspx">View More</a>
                     </td>
                 </tr>
             </table>

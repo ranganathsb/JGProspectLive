@@ -18,12 +18,13 @@
                     <RowStyle CssClass="FirstRow" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
+                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
                             SortExpression="InstallId">
                             <ItemTemplate>
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
-                                <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
-                                    CommandArgument='<%# Container.DataItemIndex  %>' />
+                                <h5>
+                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
+                                        CommandArgument='<%# Container.DataItemIndex  %>' /></h5>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
@@ -31,78 +32,155 @@
                             <ItemTemplate>
                                 <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px;">
                                     <div style="padding-bottom: 5px;">
-                                        <label>Title:&nbsp;</label><%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %>
+                                        <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
+
                                     </div>
                                     <div style="padding-bottom: 5px;">
-                                        <label>Url:&nbsp;</label><a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a>
+                                        <h5>Url:&nbsp;<a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a></h5>
+
                                     </div>
                                     <div style="padding-bottom: 5px;">
-                                        <label>Description:&nbsp;</label>
-                                        <br />
+                                        <h5>Description:&nbsp;</h5>
                                         <%# Eval("Description")%>
+                                    </div>
+                                    <div>
+                                        <br />
+                                        <hr />
+
+                                        <h5>Attachments</h5>
+
+                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                            <HeaderTemplate>
+                                                <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <li style="margin: 10px; text-align: center; float: left; width: 50px;" class="noborder">
+                                                    <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
+                                                    <br />
+                                                    <small>
+                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                                    </small>
+                                                </li>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
                                     </div>
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
+                        <asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
                             SortExpression="Status">
                             <ItemTemplate>
                                 <div style="padding: 3px;">
-                                    <div style="padding-bottom: 5px;">
-                                        <label>Status:&nbsp;</label><asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
-                                    </div>
-                                    <div style="padding-bottom: 5px;">
-                                        <label>Priority:&nbsp;</label><asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
-                                    </div>
-                                    <div style="padding-bottom: 5px;">
-                                        <label>Type:&nbsp;</label><asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
-                                    </div>
-                                </div>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
-                                <b><%# this.IsAdminMode ? "ITLead : " + (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() ) + "<br />" : "" %></b>
+                                    <table>
+                                        <tr>
+                                            <td class="noborder">
+                                                <h5>Status</h5>
+                                            </td>
 
-                                <b><%# "User : " + (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString()) %></b>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
-                            <ItemTemplate>
-                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate>
-                                        <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li style="margin: 10px; text-align: center; float: left; width: 50px;">
-                                            <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
-                                            <br />
-                                            <small>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
-                                            </small>
-                                        </li>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
-                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
-                                    CommandArgument='<%# Container.DataItemIndex  %>' />
-                                <div>
-                                    <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
-                                    <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
-                                    <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
-                                    <div data-id="divPasswordToFreezeSubTask" style="display: none;">
-                                        <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                        <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                            placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                            AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
-                                    </div>
+                                        </tr>
+                                        <tr>
+                                            <td class="noborder">
+                                                <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" /></td>
+                                        </tr>
+                                    </table>
+                                    <hr />
+                                    <table>
+                                        <tr>
+                                            <td class="noborder">
+                                                <h5>Priority</h5>
+                                            </td>
+                                            <td class="noborder">
+                                                <h5>Type</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="noborder">
+                                                <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" /></td>
+                                            <td class="noborder">
+                                                <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
+                                        </tr>
+                                    </table>
+                                    <hr />
+                                    <table>
+                                        <tr>
+                                            <td class="noborder" colspan="2">
+                                                <h5>Estimated Hours</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="noborder">ITLead
+                                            </td>
+                                            <td class="noborder">
+                                                <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="noborder">User</td>
+                                            <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
+                                        </tr>
+                                    </table>
+                                    <hr />
+                                    <table>
+                                        <tr>
+                                            <td colspan="3" class="noborder">
+                                                <h5>Freeze Task</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="redtext haligncenter noborder">
+                                                <b>Admin</b>
+                                            </td>
+                                            <td class="noborder">
+                                                <b>Tech Lead</b>
+                                            </td>
+                                            <td class="bluetext haligncenter noborder">
+                                                <b>User</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="haligncenter noborder">
+                                                <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" /></td>
+                                            <td class="haligncenter noborder">
+                                                <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" /></td>
+                                            <td class="haligncenter noborder">
+                                                <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" /></td>
+                                        </tr>
+                                        <tr style="display: none;">
+                                            <td colspan="3">
+
+                                                <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
+                                                <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                                    placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
+                                                    AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="noborder" align="center">
+                                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
+                                                    CommandArgument='<%# Container.DataItemIndex  %>' /></td>
+                                        </tr>
+                                    </table>
+
+
+
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
+                        <%-- <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                            <ItemTemplate>
+                            </ItemTemplate>
+                        </asp:TemplateField>--%>
+                        <%-- <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
+                            <ItemTemplate>
+                            </ItemTemplate>
+                        </asp:TemplateField>--%>
+                        <%--<asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                            <ItemTemplate>
+                            </ItemTemplate>
+                        </asp:TemplateField>--%>
                     </Columns>
                 </asp:GridView>
             </div>
@@ -140,13 +218,13 @@
                             <td>Title <span style="color: red;"></span>:
                                 <br />
                                 <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="MultiLine" />
-                                <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask" 
+                                <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
                                     ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
                             <td>Url <span style="color: red;"></span>:
                                 <br />
                                 <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
-                                <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask" 
+                                <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
                                     ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                             </td>
                         </tr>
@@ -428,12 +506,12 @@
     }
 
     function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
-        var $sender = $(sender);
-        if ($sender.prop('checked')) {
-            $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').show();
+        var sender = $(sender);
+        if (sender.prop('checked')) {
+            sender.closest('tr').next('tr').show();
         }
         else {
-            $sender.parent().parent().find('div[data-id="divPasswordToFreezeSubTask"]').hide();
+            sender.closest('tr').next('tr').hide();
         }
     }
 
@@ -463,16 +541,21 @@
 
         //var dialogwidth = windowWidth + "px";
 
-        if (objGalleryPopup == null || objGalleryPopup.dialog('isOpen') === false) {
+        if (objGalleryPopup == null) {
             objGalleryPopup = $("#divGalleryPopup").dialog({
                 width: "600 px",
                 height: "auto",
                 open: function () {
-                    console.log("gallery loaded");
                     showGallery();
-                },
+                }
             });
             //objGalleryPopup.bind("dialogopen", function (event, ui) { showGallery(); });
+        }
+        else if (objGalleryPopup.dialog('isOpen') === false) {
+            objGalleryPopup = $("#divGalleryPopup").dialog({
+                width: "600 px",
+                height: "auto"
+            });
         }
     }
 

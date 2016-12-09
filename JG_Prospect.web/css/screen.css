@@ -56,12 +56,13 @@ html .ajax__tab_xp .ajax__tab_body, html {
     font-size: 100.01%;
 }
 
-html .ajax__tab_xp .ajax__tab_body, body {
-    font-size: 12px;
-    color: #4d4a33;
-    background: #1b1b1b;
-    font-family: Arial, Helvetica, sans-serif;
-}
+    html .ajax__tab_xp .ajax__tab_body, body {
+        font-size: 12px;
+        color: #4d4a33;
+        background: #1b1b1b;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
     html .ajax__tab_xp .ajax__tab_body {
         background: #ffffff;
     }
@@ -1385,7 +1386,7 @@ ul.left_nav {
     margin-left: 220px !important;
     width: 75%;
     position: relative;
-    z-index: 10000;
+    z-index: 9;
 }
 
     .tasklist a {
@@ -1442,6 +1443,7 @@ table tr.trPager td,
 table tr.trFooter td {
     padding: 5px;
 }
+
 .valigntop {
     vertical-align: top;
 }
@@ -1502,8 +1504,9 @@ input.fz-user, .fz-user > input {
     background-color: black !important;
     color: white !important;
 }
+
 .RadScheduler .rsHeader {
-z-index: 9 !important;
+    z-index: 6 !important;
 }
 
 .btnCommon {
@@ -1526,20 +1529,44 @@ z-index: 9 !important;
     animation: blink 1s step-end infinite alternate;
 }
 
-@keyframes blink { 
-   50% { background-color:yellow; } 
+@keyframes blink {
+    50% {
+        background-color: yellow;
+    }
 }
 
 
 .task-assigned, .task-requested {
-    border:2px solid red;
+    border: 2px solid red;
 }
+
 .task-inprogress, .task-pending, .task-reopened {
-    border:2px solid yellow;
+    border: 2px solid yellow;
 }
+
 .task-open.task-with-priority {
-    border:2px solid green;
+    border: 2px solid green;
 }
+
 .bluetext {
-color:blue !important;
+    color: blue !important;
+}
+
+.redtext {
+    color: red !important;
+}
+
+.haligncenter {
+    text-align: center;
+}
+.noborder {
+border: none !important;
+}
+
+.FirstRow h5 {
+margin:0 0 0 0;
+}
+
+.AlternateRow h5 {
+margin:0 0 0 0;
 }
