@@ -139,7 +139,7 @@
                         <tr>
                             <td>Title <span style="color: red;"></span>:
                                 <br />
-                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" />
+                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="MultiLine" />
                                 <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask" 
                                     ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
@@ -365,6 +365,7 @@
         ApplySubtaskLinkContextMenu();
         ApplyImageGallery();
         SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
+        SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
     }
 
     function copytoListID(sender) {
@@ -379,6 +380,7 @@
     function OnSaveSubTaskClick() {
         if(Page_ClientValidate('vgSubTask')){
             $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
+            $('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
         }
     }
 
