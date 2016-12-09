@@ -378,10 +378,13 @@
     }
 
     function OnSaveSubTaskClick() {
-        if(Page_ClientValidate('vgSubTask')){
-            $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
-            $('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
-        }
+        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
+        $('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
+
+        SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
+        SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+
+        return Page_ClientValidate('vgSubTask')
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
