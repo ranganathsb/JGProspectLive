@@ -238,7 +238,7 @@
                             <td colspan="2">
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                        OnClientClick="javascript:OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
+                                        OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
                                 </div>
                             </td>
                         </tr>
@@ -377,7 +377,9 @@
     }
 
     function OnSaveSubTaskClick() {
-        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
+        if(Page_ClientValidate('vgSubTask')){
+            $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
+        }
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
