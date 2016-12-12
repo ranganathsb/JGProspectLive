@@ -50,9 +50,6 @@
         });
     </script>--%>
 
-
-     
-
     <style type="text/css">
         .ui-widget-header {
             border: 0;
@@ -95,10 +92,16 @@
         }
         
         function loginFailMessage() {
-            var loginFailMsg = 'We could not found Username and Password you entered. Please check possible resion for that.\n\n';
-            loginFailMsg += '1) Caps Lock on your keyboard might be open.\n\n';
-            loginFailMsg += '2) You might have selected "Customer" radio button isteade of Staff radio button to login for your staff account.\n\n';
-            loginFailMsg += '3) You might have entered wrong Username or passwor.\n';
+            //var loginFailMsg = 'We could not found Username and Password you entered. Please check possible resion for that.\n\n';
+            //loginFailMsg += '1) Caps Lock on your keyboard might be open.\n\n';
+            //loginFailMsg += '2) You might have selected "Customer" radio button isteade of Staff radio button to login for your staff account.\n\n';
+            //loginFailMsg += '3) You might have entered wrong Username or passwor.\n';
+
+            var loginFailMsg ='';
+            loginFailMsg += 'User Name or Password is incorrect.\n';
+            loginFailMsg += 'If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site.\n';
+            loginFailMsg += 'If you still can not log in you may recover your user login and password by selecting forgot username &/or forgot password link!';
+
             alert(loginFailMsg);
         }
         

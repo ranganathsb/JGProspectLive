@@ -1858,8 +1858,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@NewPassword", DbType.String, newPassword);
                     database.AddInParameter(command, "@IsCustomer", DbType.Byte, isCustomer);
                     database.AddOutParameter(command, "@result", DbType.String, 1);
-                    returndata = database.ExecuteDataSet(command);
-                    result = returndata.Tables[0].Rows[0][0].ToString();
+                    database.ExecuteScalar(command);
+                    result = database.GetParameterValue(command, "@result").ToString();
                 }
             }
             catch (Exception ex)

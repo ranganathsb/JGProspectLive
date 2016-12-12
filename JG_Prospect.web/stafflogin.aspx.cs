@@ -1005,7 +1005,7 @@ namespace JG_Prospect
                             {
                                 Session["loginid"] = null;
                                 Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                             }
                         }
                         #endregion
@@ -1031,7 +1031,7 @@ namespace JG_Prospect
                     {
                         Session["loginid"] = null;
                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                     }
                 }
                 else if (rdCustomer.Checked)
@@ -1072,7 +1072,7 @@ namespace JG_Prospect
             catch (Exception ex)
             {
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                 //  Response.Redirect("ErrorPage.aspx");
             }
         }
