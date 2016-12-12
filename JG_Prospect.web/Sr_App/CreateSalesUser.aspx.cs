@@ -6009,12 +6009,15 @@ namespace JG_Prospect.Sr_App
 
             DsUserEmail = InstallUserBLL.Instance.GetUserEmailByUseId(id);
 
-            foreach (DataRow DataRow in DsUserEmail.Tables[0].Rows)
+            if (DsUserEmail != null && DsUserEmail.Tables.Count > 0)
             {
-                if (hidExtEmail.Value.Trim() == "")
-                    hidExtEmail.Value = DataRow["emailID"].ToString() + "|,|";
-                else
-                    hidExtEmail.Value = hidExtEmail.Value + DataRow["emailID"].ToString() + "|,|";
+                foreach (DataRow DataRow in DsUserEmail.Tables[0].Rows)
+                {
+                    if (hidExtEmail.Value.Trim() == "")
+                        hidExtEmail.Value = DataRow["emailID"].ToString() + "|,|";
+                    else
+                        hidExtEmail.Value = hidExtEmail.Value + DataRow["emailID"].ToString() + "|,|";
+                }
             }
         }
 
