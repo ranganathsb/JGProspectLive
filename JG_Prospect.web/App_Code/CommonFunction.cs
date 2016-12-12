@@ -203,6 +203,68 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Send email.
+        /// </summary>
+        /// <param name="smtpUserName"></param>
+        /// <param name="smtpPassword"></param>
+        /// <param name="strToAddress"></param>
+        /// <param name="strSubject"></param>
+        /// <param name="strBody"></param>
+        /// <param name="lstAttachments"></param>
+        public static void SendEmail(string smtpUserName, string smtpPassword, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments)
+        {
+            try
+            {
+                string userName = smtpUserName;
+                string password = smtpPassword;
+
+                MailMessage Msg = new MailMessage();
+                Msg.From = new MailAddress(userName, "JGrove Construction");
+                Msg.To.Add(strToAddress);
+                Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
+                Msg.Subject = strSubject;// "JG Prospect Notification";
+                Msg.Body = strBody;
+                Msg.IsBodyHtml = true;
+
+                //// your remote SMTP server IP.
+                if (lstAttachments != null && lstAttachments.Count > 0)
+                {
+                    foreach (Attachment objAttachment in lstAttachments)
+                    {
+                        Msg.Attachments.Add(objAttachment);
+                    }
+                }
+                SmtpClient sc = new SmtpClient(
+                                                ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                              );
+                NetworkCredential ntw = new NetworkCredential(userName, password);
+                sc.UseDefaultCredentials = false;
+                sc.Credentials = ntw;
+                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                try
+                {
+                    sc.Send(Msg);
+                }
+                catch (Exception ex)
+                {
+                    // throw will call application error event, which will log error details.
+                    throw ex;
+                }
+
+                Msg = null;
+                sc.Dispose();
+                sc = null;
+            }
+            catch (Exception ex)
+            {
+                // throw will call application error event, which will log error details.
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// Sends an internal email.
         /// </summary>
         /// <param name="strEmailTemplate"></param>

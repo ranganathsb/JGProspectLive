@@ -1017,11 +1017,11 @@ namespace JG_Prospect
                         {
                             if (strRedirectUrl.ToLower().Contains("sr_app") && Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
                             {
-                                strRedirectUrl = Request.QueryString["returnurl"];
+                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                             }
                             else if (!strRedirectUrl.ToLower().Contains("sr_app") && !Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
                             {
-                                strRedirectUrl = Request.QueryString["returnurl"];
+                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                             }
                         }
                         Response.Redirect(strRedirectUrl);
@@ -1251,15 +1251,21 @@ namespace JG_Prospect
 
         protected void rdUserType_CheckedChanged(object sender, EventArgs e)
         {
+            string returnUrl = string.Empty;
+            if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]))
+            {
+                returnUrl = HttpUtility.UrlDecode(Request.Url.Query);
+            }
+
             RadioButton rb = (RadioButton)sender;
             string pageName = Path.GetFileName(Request.Url.AbsolutePath);
             if (rb.Text == "Customer" && pageName == "stafflogin.aspx")
             {
-                Response.Redirect("login.aspx", false);
+                Response.Redirect("login.aspx" + returnUrl, false);
             }
             if (rb.Text == "Staff" && pageName == "login.aspx")
             {
-                Response.Redirect("stafflogin.aspx", false);
+                Response.Redirect("stafflogin.aspx" + returnUrl, false);
             }
         }
 

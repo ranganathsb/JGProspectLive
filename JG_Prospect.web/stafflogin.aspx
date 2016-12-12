@@ -95,6 +95,16 @@
             alert('Your session has expired,login to continue');
         }
         
+        function loginFailMessage() {
+
+            var loginFailMsg = '';
+            loginFailMsg += 'User Name or Password is incorrect.\n';
+            loginFailMsg += 'If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site.\n';
+            loginFailMsg += 'If you still can not log in you may recover your user login and password by selecting forgot username &/or forgot password link!';
+
+            alert(loginFailMsg);
+        }
+
     </script>
     
 </head>

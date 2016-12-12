@@ -96,7 +96,7 @@ namespace JG_Prospect
             List<Task> taskList = new List<Task>();
             DataSet dsTechTaskForDesignation;
 
-            if (!string.IsNullOrEmpty(designationID) && !designationID.Equals("All"))
+            if (!string.IsNullOrEmpty(designationID) && !designationID.ToLower().Contains("all"))
             {
                 int iDesignationID = Convert.ToInt32(designationID);
                 dsTechTaskForDesignation = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);

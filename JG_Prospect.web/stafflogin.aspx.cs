@@ -1005,7 +1005,7 @@ namespace JG_Prospect
                             {
                                 Session["loginid"] = null;
                                 Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                             }
                         }
                         #endregion
@@ -1018,11 +1018,11 @@ namespace JG_Prospect
                         {
                             if (strRedirectUrl.ToLower().Contains("sr_app") && Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
                             {
-                                strRedirectUrl = Request.QueryString["returnurl"];
+                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                             }
                             else if (!strRedirectUrl.ToLower().Contains("sr_app") && !Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
                             {
-                                strRedirectUrl = Request.QueryString["returnurl"];
+                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                             }
                         }
                         Response.Redirect(strRedirectUrl);
@@ -1031,7 +1031,7 @@ namespace JG_Prospect
                     {
                         Session["loginid"] = null;
                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                     }
                 }
                 else if (rdCustomer.Checked)
@@ -1072,7 +1072,7 @@ namespace JG_Prospect
             catch (Exception ex)
             {
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                 //  Response.Redirect("ErrorPage.aspx");
             }
         }
@@ -1181,15 +1181,21 @@ namespace JG_Prospect
 
         protected void rdUserType_CheckedChanged(object sender, EventArgs e)
         {
+            string returnUrl = string.Empty;
+            if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]))
+            {
+                returnUrl = HttpUtility.UrlDecode(Request.Url.Query);
+            }
+
             RadioButton rb = (RadioButton)sender;
             string pageName = Path.GetFileName(Request.Url.AbsolutePath);
             if (rb.Text == "Customer" && pageName == "stafflogin.aspx")
             {
-                Response.Redirect("login.aspx", false);
+                Response.Redirect("login.aspx" + returnUrl, false);
             }
             if (rb.Text == "Staff" && pageName == "login.aspx")
             {
-                Response.Redirect("stafflogin.aspx", false);
+                Response.Redirect("stafflogin.aspx" + returnUrl, false);
             }
         }
 
