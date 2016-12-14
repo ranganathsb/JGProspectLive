@@ -29,9 +29,6 @@ namespace JG_Prospect
             newPassword = CommonFunction.CreatePassword(6);
             string toEmail = txtloginid.Text;
             
-            string forgotPassEmail = System.Configuration.ConfigurationManager.AppSettings["ForgotPassEmail"].ToString();
-            string forgotPass = System.Configuration.ConfigurationManager.AppSettings["ForgotPass"].ToString();
-
             if (newPassword != "")
             {
                 string str_Body = "<table><tr><td>Hello,<span style=\"background-color: orange;\">User</span></td></tr><tr><td>your password for the GM Grove Construction is : " + newPassword;
@@ -47,7 +44,7 @@ namespace JG_Prospect
                         string res = InstallUserBLL.Instance.Update_ForgotPassword(toEmail, newPassword, rdCustomer.Checked);
                         if (res == "1")
                         {
-                            JG_Prospect.App_Code.CommonFunction.SendEmail(forgotPassEmail, forgotPass, toEmail, "JM Grove Construction:Forgot Password", str_Body, null);
+                            JG_Prospect.App_Code.CommonFunction.SendEmail("",toEmail, "JM Grove Construction:Forgot Password", str_Body, new List<Attachment>());
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.');window.location ='login.aspx';", true);
                         }
                     }

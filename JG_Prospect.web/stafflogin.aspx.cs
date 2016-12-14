@@ -810,183 +810,77 @@ namespace JG_Prospect
             try
             {
                 string strRedirectUrl = string.Empty;
-                int isvaliduser = 0;
                 DataSet ds = new DataSet();
                 if (rdSalesIns.Checked)
                 {
+                    JGSession.IsInstallUser = true;
+            
+                    #region 'Install User'
 
-                    ds = UserBLL.Instance.getUser(txtloginid.Text.Trim());
-                    string AdminId = string.Empty;
+                    ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                        JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
-                        JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
-                        Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
-                        AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
-                        Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
-                        isvaliduser = UserBLL.Instance.chklogin(txtloginid.Text.Trim(), txtpassword.Text);
-                        if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
-                        {
-                            JGSession.IsFirstTime = true;
-                        }
-                    }
-
-                    if (isvaliduser > 0)
-                    {
-                        JGSession.IsInstallUser = false;
-
-                        #region 'Admin User'
-
-                        Session["loginid"] = txtloginid.Text.Trim();
-                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                        Session["loginpassword"] = txtpassword.Text.Trim();
-                        RememberMe();
-
-                        #region Redirect to home Or Sr_App/home
-
-                        if (JGSession.IsFirstTime == true)
-                        {
-                            strRedirectUrl = "changepassword.aspx";
-                        }
-
-                        if (txtloginid.Text.Trim() == AdminId && JGSession.IsFirstTime == false)
-                        {
-                            Session["AdminUserId"] = AdminId;
-                            Session["usertype"] = "Admin";
-                            // strRedirectUrl = "~/Sr_App/home.aspx";
-                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
-                        }
-                        else if (isvaliduser == 1 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "Admin";
-                            // strRedirectUrl = "~/Sr_App/home.aspx";
-                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
-                        }
-                        else if (isvaliduser == 2 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "JSE";
-                            strRedirectUrl = "~/home.aspx";
-                        }
-                        else if (isvaliduser == 3 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "SSE";
-                            strRedirectUrl = "~/Sr_App/home.aspx";
-                        }
-                        else if (isvaliduser == 4 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "MM";
-                            strRedirectUrl = "~/home.aspx";
-                        }
-                        else if (isvaliduser == 5 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "SM";
-                            strRedirectUrl = "~/Sr_App/home.aspx";
-                        }
-                        else if (isvaliduser == 6 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "AdminSec";
-                            strRedirectUrl = "~/home.aspx";
-                        }
-                        else if (isvaliduser == 7 && JGSession.IsFirstTime == false)
-                        {
-                            Session["usertype"] = "Employee";
-                            strRedirectUrl = "~/home.aspx";
-                        }
-
-                        #endregion
-
-                        #endregion
-                    }
-                    else // added this else clause if user is admin and found earlier.
-                    {
-                        JGSession.IsInstallUser = true;
-
-                        #region 'Install User'
-
-                        ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                         if (ds.Tables[0].Rows.Count > 0)
                         {
-                            if (ds.Tables[0].Rows.Count > 0)
+                            Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                            JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
+                            Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
                             {
-                                Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
-                                Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
-                                JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
-                                // Session["UserTypeNew"] = ds.Tables[0].Rows[0]["usertype"].ToString().Trim();
-                                Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                                JGSession.IsFirstTime = true;
                             }
-                            string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
-                            int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
-                            if (IsValidInstallerUser > 0)
+                        }
+
+                        string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                        int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
+                        if (IsValidInstallerUser > 0)
+                        {
+                            Session["loginid"] = txtloginid.Text.Trim();
+                            Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            Session["loginpassword"] = txtpassword.Text.Trim();
+
+                            if (txtloginid.Text.Trim() == AdminInstallerId)
                             {
-                                Session["loginid"] = txtloginid.Text.Trim();
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                Session["loginpassword"] = txtpassword.Text.Trim();
+                                Session["AdminUserId"] = AdminInstallerId;
+                            }
 
+                            Session["usertype"] = "Installer";
+                            RememberMe();
 
-                                if (txtloginid.Text.Trim() == AdminInstallerId)
+                            if (JGSession.IsFirstTime == true)
+                            {
+                                strRedirectUrl = "changepassword.aspx";
+                            }
+
+                            if (Convert.ToString(Session["DesigNew"]) != "" && JGSession.IsFirstTime == false)
+                            {
+                                #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
+
+                                if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales" || Convert.ToString(Session["DesigNew"]) == "Jr Project Manager")
                                 {
-                                    Session["AdminUserId"] = AdminInstallerId;
+                                    strRedirectUrl = "~/home.aspx";
                                 }
-
-                                Session["usertype"] = "Installer";
-                                RememberMe();
-
-                                if (Convert.ToString(Session["DesigNew"]) != "")
+                                else if (Convert.ToString(Session["DesigNew"]) == "sales" || Convert.ToString(Session["DesigNew"]) == "SalesUser" || Convert.ToString(Session["DesigNew"]) == "SSE")
                                 {
-                                    #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
-
-                                    if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales" || Convert.ToString(Session["DesigNew"]) == "Jr Project Manager")
+                                    strRedirectUrl = "~/Sr_App/home.aspx";
+                                }
+                                else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
+                                {
+                                    if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
                                     {
-                                        strRedirectUrl = "~/home.aspx";
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "sales" || Convert.ToString(Session["DesigNew"]) == "SalesUser" || Convert.ToString(Session["DesigNew"]) == "SSE")
-                                    {
-                                        strRedirectUrl = "~/Sr_App/home.aspx";
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
-                                    {
-                                        if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
-                                        {
-                                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
-                                        }
-                                        else
-                                        {
-                                            strRedirectUrl = "~/Sr_App/home.aspx";
-                                        }
-
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
-                                    {
-                                        Response.Redirect("~/Installer/InstallerHome.aspx", false);
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "SSE")
-                                    {
-                                        strRedirectUrl = "~/Sr_App/home.aspx";
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "Forman" || Convert.ToString(Session["DesigNew"]) == "ForeMan")
-                                    {
-                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                                    }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "SubContractor")
-                                    {
-                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                        strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                                     }
                                     else
                                     {
-                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                        strRedirectUrl = "~/Sr_App/home.aspx";
                                     }
 
-                                    #endregion
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Installer")
+                                else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
                                 {
-                                    strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                                }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales")
-                                {
-                                    strRedirectUrl = "~/home.aspx";
+                                    Response.Redirect("~/Installer/InstallerHome.aspx", false);
                                 }
                                 else if (Convert.ToString(Session["DesigNew"]) == "SSE")
                                 {
@@ -996,20 +890,46 @@ namespace JG_Prospect
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
+                                else if (Convert.ToString(Session["DesigNew"]) == "SubContractor")
+                                {
+                                    strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                }
                                 else
                                 {
-                                    // Response.Redirect("~/Installer/InstallerHome.aspx");//
+                                    strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
+
+                                #endregion
+                            }
+                            else if (Convert.ToString(Session["DesigNew"]) == "Installer" && JGSession.IsFirstTime == false)
+                            {
+                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                            }
+                            else if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales" && JGSession.IsFirstTime == false)
+                            {
+                                strRedirectUrl = "~/home.aspx";
+                            }
+                            else if (Convert.ToString(Session["DesigNew"]) == "SSE" && JGSession.IsFirstTime == false)
+                            {
+                                strRedirectUrl = "~/Sr_App/home.aspx";
+                            }
+                            else if ((Convert.ToString(Session["DesigNew"]) == "Forman" || Convert.ToString(Session["DesigNew"]) == "ForeMan") && JGSession.IsFirstTime == false)
+                            {
+                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
                             }
                             else
                             {
-                                Session["loginid"] = null;
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
+                                // Response.Redirect("~/Installer/InstallerHome.aspx");//
                             }
                         }
-                        #endregion
+                        else
+                        {
+                            Session["loginid"] = null;
+                            Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
+                        }
                     }
+                    #endregion
 
                     // redirects user to the last accessed page.
                     if (!string.IsNullOrEmpty(strRedirectUrl))

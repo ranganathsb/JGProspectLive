@@ -280,7 +280,8 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.UserType = "sales";
                 }
-                objuser.designation = ddldesignation.SelectedValue;
+                objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 string strFileName = string.Empty;
 
                 //if (ViewState["FileName"] != null)
@@ -776,28 +777,28 @@ namespace JG_Prospect.Sr_App
             salesUserDesignationList = new List<KeyValuePair<string, string>>();
             InstallUserDesignationList = new List<KeyValuePair<string, string>>();
 
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Admin", "Admin"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Jr. Sales", "Jr. Sales"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Jr Project Manager", "Jr Project Manager"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Office Manager", "Office Manager"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Recruiter", "Recruiter"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Sales Manager", "Sales Manager"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("Sr. Sales", "Sr. Sales"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Network Admin", "ITNetworkAdmin"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Jr .Net Developer", "ITJr.NetDeveloper"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Sr .Net Developer", "ITSr.NetDeveloper"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Android Developer", "ITAndroidDeveloper"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - PHP Developer", "ITPHPDeveloper"));
-            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - SEO / BackLinking", "ITSEOBackLinking"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Admin", "1"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Jr. Sales", "2"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Jr Project Manager", "3"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Office Manager", "4"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Recruiter", "5"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Sales Manager", "6"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("Sr. Sales", "7"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Network Admin", "8"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Jr .Net Developer", "9"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Sr .Net Developer", "10"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - Android Developer", "11"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - PHP Developer", "12"));
+            salesUserDesignationList.Add(new KeyValuePair<string, string>("IT - SEO / BackLinking", "13"));
 
 
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Helper", "InstallerHelper"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Journeyman", "InstallerJourneyman"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Mechanic", "InstallerMechanic"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Lead mechanic", "InstallerLeadMechanic"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Foreman", "InstallerForeman"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Commercial Only", "CommercialOnly"));
-            InstallUserDesignationList.Add(new KeyValuePair<string, string>("SubContractor", "SubContractor"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Helper", "14"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Journeyman", "15"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Mechanic", "16"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Lead mechanic", "17"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Installer - Foreman", "18"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("Commercial Only", "19"));
+            InstallUserDesignationList.Add(new KeyValuePair<string, string>("SubContractor", "20"));
 
             var DesignationList = new List<KeyValuePair<string, string>>();
 
@@ -809,10 +810,11 @@ namespace JG_Prospect.Sr_App
             {
                 DesignationList.Add(new KeyValuePair<string, string>(item.Key, item.Value));
             }
-
-            ddldesignation.DataSource = DesignationList;
-            ddldesignation.DataTextField = "Key";
-            ddldesignation.DataValueField = "Value";
+            DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddldesignation.Items.Clear();
+            ddldesignation.DataSource = ds.Tables[0]; 
+            ddldesignation.DataTextField = "DesignationName";
+            ddldesignation.DataValueField = "ID";
             ddldesignation.DataBind();
             CheckUserType();
         }

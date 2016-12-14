@@ -144,6 +144,30 @@ namespace JG_Prospect.Common
             Other = 6
         }
 
+        public enum DesignationType
+        {
+            Admin = 1,
+            Jr_Sales = 2,
+            Jr_Project_Manager = 3,
+            Office_Manager = 4,
+            Recruiter = 5,
+            Sales_Manager = 6,
+            Sr_Sales = 7,
+            IT_Network_Admin = 8,
+            IT_Jr_Net_Developer = 9,
+            IT_Sr_Net_Developer = 10,
+            IT_Android_Developer = 11,
+            IT_PHP_Developer = 12,
+            IT_SEO_OR_BackLinking = 13,
+            Installer_Helper = 14,
+            Installer_Journeyman = 15,
+            Installer_Mechanic = 16,
+            Installer_Lead_Mechanic = 17,
+            Installer_Foreman = 18,
+            Commercial_Only = 19,
+            SubContractor = 20
+        }
+
         #region '-- Page Name --'
 
         /// <summary>

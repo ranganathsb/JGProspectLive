@@ -45,6 +45,16 @@ namespace JG_Prospect.Sr_App
                 ddlUsers.DataBind();
             }
 
+            DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            if (dsDesignation != null && dsDesignation.Tables.Count > 0)
+            {
+                ddldesignation.Items.Clear();
+                ddldesignation.DataValueField = "Id";
+                ddldesignation.DataTextField = "DesignationName";
+                ddldesignation.DataSource = dsDesignation.Tables[0];
+                ddldesignation.DataBind();
+                ddldesignation.Items.Insert(0, new ListItem("All", "0"));
+            }
         }
 
         private void bindPayPeriod(DataSet dsCurrentPeriod)

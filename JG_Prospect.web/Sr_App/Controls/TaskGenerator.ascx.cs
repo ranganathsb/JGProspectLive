@@ -1006,6 +1006,12 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlUsers.DataBind();
 
                 ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
+                DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+                ddlDesignation.Items.Clear();
+                ddlDesignation.DataValueField = "Id";
+                ddlDesignation.DataTextField = "DesignationName";
+                ddlDesignation.DataSource = dsDesignation.Tables[0];
+                ddlDesignation.DataBind();
                 ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
                 HighlightInterviewUsers(dtUsers, null, ddlUsers);
             }
@@ -1051,12 +1057,13 @@ namespace JG_Prospect.Sr_App.Controls
         private void LoadPopupDropdown()
         {
             BindTaskTypeDropDown();
-            //DataSet dsdesign = TaskGeneratorBLL.Instance.GetInstallUsers(1, "");
-            //DataSet ds = TaskGeneratorBLL.Instance.GetTaskUserDetails(1);
-            //ddlUserDesignation.DataSource = dsdesign;
-            //ddlUserDesignation.DataTextField = "Designation";
-            //ddlUserDesignation.DataValueField = "Designation";
-            //ddlUserDesignation.DataBind();
+            DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddlUserDesignation.Items.Clear();
+            ddlUserDesignation.DataSource = ds.Tables[0];
+            ddlUserDesignation.DataTextField = "DesignationName";
+            ddlUserDesignation.DataValueField = "ID";
+            ddlUserDesignation.DataBind();
+            ddlUserDesignation.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         private void BindTaskTypeDropDown()
@@ -1111,64 +1118,64 @@ namespace JG_Prospect.Sr_App.Controls
             string prefix = "";
             switch (designame)
             {
-                case "Admin":
+                case "1":
                     prefix = "ADM";
                     break;
-                case "Jr. Sales":
+                case "2":
                     prefix = "JSL";
                     break;
-                case "Jr Project Manager":
+                case "3":
                     prefix = "JPM";
                     break;
-                case "Office Manager":
+                case "4":
                     prefix = "OFM";
                     break;
-                case "Recruiter":
+                case "5":
                     prefix = "REC";
                     break;
-                case "Sales Manager":
+                case "6":
                     prefix = "SLM";
                     break;
-                case "Sr. Sales":
+                case "7":
                     prefix = "SSL";
                     break;
-                case "IT - Network Admin":
+                case "8":
                     prefix = "ITNA";
                     break;
-                case "IT - Jr .Net Developer":
+                case "9":
                     prefix = "ITJN";
                     break;
-                case "IT - Sr .Net Developer":
+                case "10":
                     prefix = "ITSN";
                     break;
-                case "IT - Android Developer":
+                case "11":
                     prefix = "ITAD";
                     break;
-                case "IT - PHP Developer":
+                case "12":
                     prefix = "ITPH";
                     break;
-                case "IT - SEO / BackLinking":
+                case "13":
                     prefix = "ITSB";
                     break;
-                case "Installer - Helper":
+                case "14":
                     prefix = "INH";
                     break;
-                case "Installer – Journeyman":
+                case "15":
                     prefix = "INJ";
                     break;
-                case "Installer – Mechanic":
+                case "16":
                     prefix = "INM";
                     break;
-                case "Installer - Lead mechanic":
+                case "17":
                     prefix = "INLM";
                     break;
-                case "Installer – Foreman":
+                case "18":
                     prefix = "INF";
                     break;
-                case "Commercial Only":
+                case "19":
                     prefix = "COM";
                     break;
-                case "SubContractor":
+                case "20":
                     prefix = "SBC";
                     break;
                 default:
@@ -1239,7 +1246,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 if (item.Selected)
                 {
-                    sbDesignations.Append(String.Concat(item.Text, ","));
+                    sbDesignations.Append(String.Concat(item.Value, ","));
                 }
             }
 
@@ -1455,7 +1462,7 @@ namespace JG_Prospect.Sr_App.Controls
             task.Hours = txtHours.Text;
             task.CreatedBy = userId;
             task.Mode = Convert.ToInt32(controlMode.Value);
-            task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
+            task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedValue);
 
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
 

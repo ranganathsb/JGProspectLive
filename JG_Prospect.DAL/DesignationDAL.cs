@@ -64,6 +64,27 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetActiveDesignationByFilter(int? DesignationID, int? DepartmentID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetAllActiveDesignationByFilter");
+                    database.AddInParameter(command, "@DepartmentID", DbType.Int32, DepartmentID);
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationID);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public int DesignationInsertUpdate(Designation objDec)
         {
             int result = JGConstant.RETURN_ZERO;

@@ -72,8 +72,8 @@ namespace JG_Prospect.Sr_App
                     ddlPrimaryTrade.DataBind();
                     ddlPrimaryTrade.Items.Insert(0, "--Select--");
                     ddlDesignation.DataSource = (from ptrade in dsNew.Tables[0].AsEnumerable()
-                                                 where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-                                                 select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+                                                 where !string.IsNullOrEmpty(ptrade.Field<string>("DesignationName"))
+                                                 select Convert.ToString(ptrade["DesignationName"])).Distinct().ToList();
                     ddlDesignation.DataBind();
                     ddlDesignation.Items.Insert(0, "--Select--");
                 }
@@ -1773,7 +1773,7 @@ namespace JG_Prospect.Sr_App
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == UStatus || ddlUserStatus.SelectedIndex == 0)
                         && (userdata.Field<string>("PTradeName") == PTrade || ddlPrimaryTrade.SelectedIndex == 0)
-                        && (userdata.Field<string>("Designation") == Designation || ddlDesignation.SelectedIndex == 0)
+                        && (userdata.Field<string>("DesignationName") == Designation || ddlDesignation.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
                 {
