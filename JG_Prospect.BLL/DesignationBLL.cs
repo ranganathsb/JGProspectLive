@@ -46,6 +46,11 @@ namespace JG_Prospect.BLL
             return DesignationDAL.Instance.GetDesignationByFilter(DesignationID, DepartmentID);
         }
 
+        public DataSet GetActiveDesignationByID(int? DesignationID, int? DepartmentID)
+        {
+            return DesignationDAL.Instance.GetActiveDesignationByFilter(DesignationID, DepartmentID);
+        }
+
         public int DesignationInsertUpdate(Designation objDep)
         {
             return DesignationDAL.Instance.DesignationInsertUpdate(objDep);

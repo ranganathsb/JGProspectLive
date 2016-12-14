@@ -259,8 +259,6 @@ namespace JG_Prospect.Sr_App
                 #endregion
 
 
-
-
                 if (Request.QueryString["Desig"] != null)
                 {
                     ddldesignation.SelectedValue = Convert.ToString(Request.QueryString["Desig"]);
@@ -279,6 +277,18 @@ namespace JG_Prospect.Sr_App
                     ddlSource.Items.Add("Select Source");
                     ddlSource.SelectedIndex = 0;
                 }
+
+                DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+                if (dsDesignation != null && dsDesignation.Tables.Count > 0)
+                {
+                    ddldesignation.Items.Clear();
+                    ddldesignation.DataValueField = "Id";
+                    ddldesignation.DataTextField = "DesignationName";
+                    ddldesignation.DataSource = dsDesignation.Tables[0];
+                    ddldesignation.DataBind();
+                    ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+                }
+
                 if (dsTrade.Tables.Count > 0)
                 {
                     DataRow dr = dsTrade.Tables[0].NewRow();
@@ -343,9 +353,14 @@ namespace JG_Prospect.Sr_App
                         Session["Zip"] = str;
                         txtpassword.Text = ds.Tables[0].Rows[0][7].ToString();
                         txtpassword1.Text = ds.Tables[0].Rows[0][7].ToString();
-                        ddldesignation.SelectedValue = ds.Tables[0].Rows[0][5].ToString();
-                        Session["PrevDesig"] = ds.Tables[0].Rows[0][5].ToString();
-                        if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
+
+                        ddldesignation.SelectedValue = "0";
+                        if (ds.Tables[0].Rows[0]["DesignationID"] != null && string.IsNullOrWhiteSpace(ds.Tables[0].Rows[0]["DesignationID"].ToString()))
+                            ddldesignation.SelectedValue = ds.Tables[0].Rows[0]["DesignationID"].ToString();
+
+                        var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+                        Session["PrevDesig"] = ddldesignation.SelectedValue;
+                        if (selDesignation == JGConstant.DesignationType.Installer_Foreman || ddldesignation.SelectedItem.Text == "Installer")
                         {
                             lnkW9.Visible = false;
                             lnkI9.Visible = true;
@@ -1908,7 +1923,7 @@ namespace JG_Prospect.Sr_App
             txtReson.Text = ""; dtInterviewDate.Text = "";
             GridView1.DataSource = null;
             ddlcitizen.SelectedValue = "0";
-            ddldesignation.SelectedValue = "Installer";
+            ddldesignation.SelectedValue = "0";
             ddlstatus.SelectedValue = "Applicant";
             //ddlInstallerType.SelectedValue = "Labor";
             //txtHireDate.Text = DateTime.Today.ToShortDateString();
@@ -2099,6 +2114,7 @@ namespace JG_Prospect.Sr_App
                 objuser.city = txtCity.Text;
                 objuser.password = txtpassword.Text;
                 objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.status = ddlstatus.SelectedValue;
                 objuser.phone = txtPhone.Text;
                 // if (lstboxUploadedImages.Items.Count != 0)
@@ -2442,6 +2458,7 @@ namespace JG_Prospect.Sr_App
                     objuser.password = txtpassword.Text;
                     ViewState["pass"] = txtpassword.Text;
                     objuser.designation = ddldesignation.SelectedItem.Text;
+                    objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                     objuser.phone = txtPhone.Text;
                     objuser.DateSourced = txtDateSourced.Text;
                     //if (flpUplaodPicture.FileName != string.Empty)
@@ -3004,7 +3021,8 @@ namespace JG_Prospect.Sr_App
             string SalesId = PrevId;
             string PrevDesig = string.Empty;
             string newId = string.Empty;
-            if (ddldesignation.SelectedValue == "ForeMan" && ddlstatus.SelectedValue != "Deactive")
+            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+            if (selDesignation == JGConstant.DesignationType.Installer_Foreman && ddlstatus.SelectedValue != "Deactive")
             {
                 if (SalesId != "")
                 {
@@ -3044,7 +3062,7 @@ namespace JG_Prospect.Sr_App
                     SalesId = "FRM0001";
                 }
             }
-            else if ((ddldesignation.SelectedValue == "ForeMan") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation == JGConstant.DesignationType.Installer_Foreman) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
@@ -3092,7 +3110,7 @@ namespace JG_Prospect.Sr_App
             {
                 SalesId = SalesId + "-X";
             }
-            else if (ddldesignation.SelectedValue == "SubContractor" && ddlstatus.SelectedValue != "Deactive")
+            else if (selDesignation == JGConstant.DesignationType.SubContractor && ddlstatus.SelectedValue != "Deactive")
             {
                 if (SalesId != "")
                 {
@@ -4009,6 +4027,7 @@ namespace JG_Prospect.Sr_App
                 objuser.city = txtCity.Text;
                 objuser.password = txtpassword.Text;
                 objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.status = ddlstatus.SelectedValue;
                 objuser.phone = txtPhone.Text;
 

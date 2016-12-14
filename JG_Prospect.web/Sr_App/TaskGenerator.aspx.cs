@@ -793,6 +793,13 @@ namespace JG_Prospect.Sr_App
             ddlTUStatus.DataValueField = "Value";
             ddlTUStatus.DataBind();
             //ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+
+            DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddlUserDesignation.Items.Clear();
+            ddlUserDesignation.DataSource = ds.Tables[0];
+            ddlUserDesignation.DataTextField = "DesignationName";
+            ddlUserDesignation.DataValueField = "ID";
+            ddlUserDesignation.DataBind();
         }
 
         private void DeletaTask(string TaskId)
@@ -833,64 +840,64 @@ namespace JG_Prospect.Sr_App
             string prefix = "";
             switch (designame)
             {
-                case "Admin":
+                case "1":
                     prefix = "ADM";
                     break;
-                case "Jr. Sales":
+                case "2":
                     prefix = "JSL";
                     break;
-                case "Jr Project Manager":
+                case "3":
                     prefix = "JPM";
                     break;
-                case "Office Manager":
+                case "4":
                     prefix = "OFM";
                     break;
-                case "Recruiter":
+                case "5":
                     prefix = "REC";
                     break;
-                case "Sales Manager":
+                case "6":
                     prefix = "SLM";
                     break;
-                case "Sr. Sales":
+                case "7":
                     prefix = "SSL";
                     break;
-                case "IT - Network Admin":
+                case "8":
                     prefix = "ITNA";
                     break;
-                case "IT - Jr .Net Developer":
+                case "9":
                     prefix = "ITJN";
                     break;
-                case "IT - Sr .Net Developer":
+                case "10":
                     prefix = "ITSN";
                     break;
-                case "IT - Android Developer":
+                case "11":
                     prefix = "ITAD";
                     break;
-                case "IT - PHP Developer":
+                case "12":
                     prefix = "ITPH";
                     break;
-                case "IT - SEO / BackLinking":
+                case "13":
                     prefix = "ITSB";
                     break;
-                case "Installer - Helper":
+                case "14":
                     prefix = "INH";
                     break;
-                case "Installer – Journeyman":
+                case "15":
                     prefix = "INJ";
                     break;
-                case "Installer – Mechanic":
+                case "16":
                     prefix = "INM";
                     break;
-                case "Installer - Lead mechanic":
+                case "17":
                     prefix = "INLM";
                     break;
-                case "Installer – Foreman":
+                case "18":
                     prefix = "INF";
                     break;
-                case "Commercial Only":
+                case "19":
                     prefix = "COM";
                     break;
-                case "SubContractor":
+                case "20":
                     prefix = "SBC";
                     break;
                 default:
@@ -961,7 +968,7 @@ namespace JG_Prospect.Sr_App
             {
                 if (item.Selected)
                 {
-                    sbDesignations.Append(String.Concat(item.Text, ","));
+                    sbDesignations.Append(String.Concat(item.Value, ","));
                 }
             }
 
@@ -1108,7 +1115,7 @@ namespace JG_Prospect.Sr_App
             objTask.Hours = txtHours.Text;
             objTask.CreatedBy = userId;
             objTask.Mode = Convert.ToInt32(controlMode.Value);
-            objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
+            objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedValue);
             objTask.IsTechTask = chkTechTask.Checked;
 
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);    // save task master details

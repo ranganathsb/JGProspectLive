@@ -1268,8 +1268,6 @@ namespace JG_Prospect
             }
             ddlDesignation.Items.Insert(0, "--All--");
             ddlDesignationForTask.Items.Insert(0, "--All--");
-
-            ddlDesignation.Items.Insert(0, "--All--");
         }
 
         private void FillCustomer()
@@ -2467,7 +2465,7 @@ namespace JG_Prospect
                 string Status = ddlUserStatus.SelectedItem.Value;
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
-                        && (userdata.Field<Int32>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
+                        && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
                         && (userdata.Field<string>("AddedBy") == drpUser.SelectedValue || drpUser.SelectedIndex == 0)
                         && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;

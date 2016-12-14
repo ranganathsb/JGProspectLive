@@ -238,6 +238,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -1295,6 +1296,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);

@@ -180,6 +180,7 @@ namespace JG_Prospect.Common.modal
         public string SalesExperience;
 
         public string PositionAppliedFor;
+        public int DesignationID;
         
     }
 

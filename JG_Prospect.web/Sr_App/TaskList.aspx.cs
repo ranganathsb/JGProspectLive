@@ -563,6 +563,14 @@ namespace JG_Prospect.Sr_App
             ddlUsers.DataValueField = "Id";
             ddlUsers.DataBind();
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
+
+            DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddlDesignation.Items.Clear();
+            ddlDesignation.DataValueField = "Id";
+            ddlDesignation.DataTextField = "DesignationName";
+            ddlDesignation.DataSource = dsDesignation.Tables[0];
+            ddlDesignation.DataBind();
+            ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         /// <summary>
@@ -610,7 +618,7 @@ namespace JG_Prospect.Sr_App
                 if (ddlDesignation.SelectedIndex > 0)
                 {
                     Designations =
-                    Designation = ddlDesignation.SelectedItem.Value;
+                    Designation = ddlDesignation.SelectedItem.Text;
                 }
                 else
                 {

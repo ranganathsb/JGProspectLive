@@ -313,6 +313,18 @@ namespace JG_Prospect.Sr_App
                     ddlSource.Items.Add("Select Source");
                     ddlSource.SelectedIndex = 0;
                 }
+
+                DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+                if (dsDesignation != null && dsDesignation.Tables.Count > 0)
+                {
+                    ddldesignation.Items.Clear();
+                    ddldesignation.DataValueField = "Id";
+                    ddldesignation.DataTextField = "DesignationName";
+                    ddldesignation.DataSource = dsDesignation.Tables[0];
+                    ddldesignation.DataBind();
+                    ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+                }
+
                 //if (dsTrade.Tables.Count > 0)
                 //{
                 //    DataRow dr = dsTrade.Tables[0].NewRow();
@@ -1212,6 +1224,7 @@ namespace JG_Prospect.Sr_App
                 objuser.city = txtCity.Text;
                 objuser.password = txtpassword.Text;
                 objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.status = ddlstatus.SelectedValue;
                 objuser.phone = txtPhone.Text;
                 // if (lstboxUploadedImages.Items.Count != 0)
@@ -1503,6 +1516,7 @@ namespace JG_Prospect.Sr_App
                 objuser.password = txtpassword.Text;
                 ViewState["pass"] = txtpassword.Text;
                 objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.phone = txtPhone.Text;
                 if (phoneTypeDropDownList.SelectedItem.Text == "Select")
                 {
@@ -2112,6 +2126,7 @@ namespace JG_Prospect.Sr_App
                 objuser.city = txtCity.Text;
                 objuser.password = txtpassword.Text;
                 objuser.designation = ddldesignation.SelectedItem.Text;
+                objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.status = ddlstatus.SelectedValue;
                 objuser.phone = txtPhone.Text;
                 // if (lstboxUploadedImages.Items.Count != 0)
@@ -5176,7 +5191,9 @@ namespace JG_Prospect.Sr_App
             string SalesId = PrevId;
             string PrevDesig = string.Empty;
             string newId = string.Empty;
-            if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
+
+            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+            if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (ddlstatus.SelectedValue != "Deactive"))
             {
                 if (SalesId != "")
                 {
@@ -5206,11 +5223,11 @@ namespace JG_Prospect.Sr_App
                     SalesId = "ADM0001";
                 }
             }
-            else if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
-            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
+            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue != "Deactive"))
             {
                 if (SalesId != "")
                 {
@@ -5240,7 +5257,7 @@ namespace JG_Prospect.Sr_App
                     SalesId = "SLE0001";
                 }
             }
-            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation ==  JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
