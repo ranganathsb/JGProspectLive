@@ -23,7 +23,7 @@ namespace JG_Prospect.Sr_App.Controls
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
-        
+
         #endregion
 
         #region '--Properties--'
@@ -124,9 +124,11 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
             {
                 FillInitialData();
+                hdnAdminMode.Value = this.IsAdminMode.ToString();
             }
         }
 
@@ -248,11 +250,12 @@ namespace JG_Prospect.Sr_App.Controls
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
 
-                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus)
+                if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
                     e.Row.FindControl("ltrlInstallId").Visible = true;
                     e.Row.FindControl("lbtnInstallId").Visible = false;
                 }
+
                 string strRowCssClass = string.Empty;
 
                 if (e.Row.RowState == DataControlRowState.Alternate)
@@ -405,14 +408,17 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 ltrlSubTaskFeedbackTitle.Text = "Sub Task : " + gvSubTasks.DataKeys[Convert.ToInt32(e.CommandArgument)]["InstallId"].ToString();
 
-                if (this.IsAdminMode)
-                {
-                    tblAddEditSubTaskFeedback.Visible = true;
-                }
-                else
-                {
-                    tblAddEditSubTaskFeedback.Visible = false;
-                }
+                //Commented By: Yogesh Keraliya
+                //Date: 12132016
+                // All users can add comment to task now.
+                //if (this.IsAdminMode)
+                //{
+                //    tblAddEditSubTaskFeedback.Visible = true;
+                //}
+                //else
+                //{
+                //    tblAddEditSubTaskFeedback.Visible = false;
+                //}
                 upSubTaskFeedbackPopup.Update();
                 ScriptManager.RegisterStartupScript(
                                                     (sender as Control),
@@ -650,7 +656,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim())));
                 }
                 else
                 {
@@ -693,7 +699,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim())));
                 }
                 else
                 {
@@ -734,7 +740,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    string strUrl = Page.ResolveUrl(string.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim())));
+                    string strUrl = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim()))));
                     ((HtmlImage)e.Item.FindControl("imgImage")).Src = strUrl;
                     ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", strUrl);
                 }

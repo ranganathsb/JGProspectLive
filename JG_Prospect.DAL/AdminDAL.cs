@@ -124,7 +124,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("USP_GetEmailTemplate");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@TemplateName", DbType.String, pTemplateName);
+                    database.AddInParameter(command, "@TemplateName", DbType.String, pTemplateName.Trim());
                     database.AddInParameter(command, "@HTMLTemplateID", DbType.Int32, htmlTemplateID);
                     result = database.ExecuteDataSet(command);
                 }

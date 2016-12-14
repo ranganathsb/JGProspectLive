@@ -333,9 +333,12 @@ namespace JG_Prospect.App_Code
             string strHtml = string.Empty;
             if (ds1 != null)
             {
+                var datatable = from myRow in ds1.Tables[1].AsEnumerable()
+                                where myRow.Field<string>("Designation").Trim().Equals(designation.Trim()) == true
+                                select myRow;
 
                 DataTable htmlData = (from myRow in ds1.Tables[1].AsEnumerable()
-                                      where myRow.Field<string>("Designation") == designation
+                                      where myRow.Field<string>("Designation").Trim().Equals(designation.Trim()) == true
                                       select myRow).CopyToDataTable();
 
                 if (htmlData.Rows.Count > 0)
@@ -631,6 +634,11 @@ namespace JG_Prospect.App_Code
 
             //objListItemCollection[1].Enabled = false;
             return objListItemCollection;
+        }
+
+        public static string ReplaceEncodeWhiteSpace(string urlstring)
+        {
+            return urlstring.Replace("+","%20");
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskPriorityList()

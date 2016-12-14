@@ -325,6 +325,7 @@
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <asp:HiddenField ID="hdnAdminMode" runat="server" />
 </fieldset>
 
 <%--Popup Stars--%>
@@ -439,11 +440,19 @@
     });
 
     function ucSubTasks_Initialize() {
-        ucSubTasks_ApplyDropZone();
         ApplySubtaskLinkContextMenu();
         ApplyImageGallery();
-        SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-        SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+
+        var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+
+       // alert(controlmode);
+
+        if (controlmode == "true") {
+            ucSubTasks_ApplyDropZone();
+            SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
+            SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+        }
+
     }
 
     function copytoListID(sender) {
