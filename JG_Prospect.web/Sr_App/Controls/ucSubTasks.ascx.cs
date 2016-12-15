@@ -4,11 +4,13 @@ using JG_Prospect.App_Code;
 using JG_Prospect.BLL;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
+using Saplin.Controls;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -142,6 +144,33 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
+                DropDownCheckBoxes ddcbAssigned = e.Row.FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
+
+                if (this.IsAdminMode)
+                {
+                    DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+
+                    ddcbAssigned.Items.Clear();
+                    ddcbAssigned.DataSource = dsUsers;
+                    ddcbAssigned.DataTextField = "FristName";
+                    ddcbAssigned.DataValueField = "Id";
+                    ddcbAssigned.DataBind();
+
+                    ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                    ddcbAssigned.Attributes.Add("TaskStatus", DataBinder.Eval(e.Row.DataItem, "Status").ToString());
+
+                    SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
+
+                    lblAssigned.Visible = false;
+                }
+                else
+                {
+                    lblAssigned.Text = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
+                    lblAssigned.ToolTip = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers"));
+                    ddcbAssigned.Visible = false;
+                }
+
                 DropDownList ddlStatus = e.Row.FindControl("ddlStatus") as DropDownList;
                 ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlStatus.DataTextField = "Text";
@@ -450,6 +479,21 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 this.SubTaskSortExpression = e.SortExpression;
                 this.SubTaskSortDirection = SortDirection.Ascending;
+            }
+
+            SetSubTaskDetails();
+        }
+
+        protected void gvSubTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
+            GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
+            int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
+            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
+
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, intTaskId))
+            {
+                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]), intTaskId);
             }
 
             SetSubTaskDetails();
@@ -823,6 +867,198 @@ namespace JG_Prospect.Sr_App.Controls
         #endregion
 
         #region '--Methods--'
+
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
+        {
+            bool blResult = true;
+
+            string strStatus = string.Empty;
+            string strMessage = string.Empty;
+
+            if (this.IsAdminMode)
+            {
+                strStatus = ddlTaskStatus.SelectedValue;
+
+                //if (
+                //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
+                //   )
+                //{
+                //    blResult = false;
+                //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                //}
+                //else
+                // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                {
+                    blResult = false;
+                    strMessage = "Task must be assigned to one or more users, to change status to assigned.";
+
+                    foreach (ListItem objItem in ddlAssignedUser.Items)
+                    {
+                        if (objItem.Selected)
+                        {
+                            blResult = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!blResult)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, strMessage);
+                }
+            }
+
+            return blResult;
+        }
+
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus, Int32 intTaskId)
+        {
+            //if task id is available to save its note and attachement.
+            if (intTaskId != 0)
+            {
+                string strUsersIds = string.Empty;
+
+                foreach (ListItem item in ddcbAssigned.Items)
+                {
+                    if (item.Selected)
+                    {
+                        strUsersIds = strUsersIds + (item.Value + ",");
+                    }
+                }
+
+                // removes any extra comma "," from the end of the string.
+                strUsersIds = strUsersIds.TrimEnd(',');
+
+                // save (insert / delete) assigned users.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(intTaskId), strUsersIds);
+
+                // send email to selected users.
+                if (strUsersIds.Length > 0)
+                {
+                    if (isSuccessful)
+                    {
+                        // Change task status to assigned = 3.
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
+                        {
+                            TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = intTaskId,
+                                                    Status = Convert.ToUInt16(JGConstant.TaskStatus.Assigned)
+                                                }
+                                            );
+                        }
+
+                        SendEmailToAssignedUsers(intTaskId, strUsersIds);
+                    }
+                }
+                // send email to all users of the department as task is assigned to designation, but not to any specific user.
+                else
+                {
+                    string strUserIDs = "";
+
+                    foreach (ListItem item in ddcbAssigned.Items)
+                    {
+                        strUserIDs += string.Concat(item.Value, ",");
+                    }
+
+                    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                }
+            }
+        }
+
+        private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        private string getSingleValueFromCommaSeperatedString(string commaSeperatedString)
+        {
+            String strReturnVal;
+
+            if (commaSeperatedString.Contains(","))
+            {
+                strReturnVal = String.Concat(commaSeperatedString.Substring(0, commaSeperatedString.IndexOf(",")), "..");
+            }
+            else
+            {
+                strReturnVal = commaSeperatedString;
+            }
+
+            return strReturnVal;
+        }
+
+        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        {
+            String firstAssignedUser = String.Empty;
+            String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string user in users)
+            {
+
+                ListItem item = taskUsers.Items.FindByText(user);
+
+                if (item != null)
+                {
+                    item.Selected = true;
+
+                    if (string.IsNullOrEmpty(firstAssignedUser))
+                    {
+                        firstAssignedUser = item.Text;
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(firstAssignedUser))
+            {
+                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+            }
+
+        }
 
         public void ShowAddNewSubTaskSection(bool IsOnPageLoad)
         {

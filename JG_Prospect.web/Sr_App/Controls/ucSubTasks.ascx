@@ -1,4 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucSubTasks.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucSubTasks" %>
+
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
+
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
 <fieldset class="tasklistfieldset">
@@ -161,7 +164,12 @@
                                 <table>
                                     <tr>
                                         <td class="noborder">
-                                            Assigned
+                                            <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
+                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
+                                                <Texts SelectBoxCaption="--Open--" />
+                                            </asp:DropDownCheckBoxes>
+                                            <asp:Label ID="lblAssigned" runat="server" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -495,7 +503,7 @@
 
     function ucSubTasks_Initialize() {
         ApplySubtaskLinkContextMenu();
-        ApplyImageGallery();
+        //ApplyImageGallery();
 
         LoadImageGallery('.sub-task-attachments-list');
 
