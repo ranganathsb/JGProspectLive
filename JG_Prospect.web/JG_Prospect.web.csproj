@@ -1717,7 +1717,9 @@
     <Content Include="Sr_App\OverheadExp.aspx" />
     <Content Include="Sr_App\Price_control.aspx" />
     <Content Include="Sr_App\Procurement.aspx" />
+    <Content Include="Sr_App\profilepictureupload.aspx" />
     <Content Include="Sr_App\r.aspx" />
+    <Content Include="Sr_App\resumeupload.aspx" />
     <Content Include="Sr_App\s.aspx" />
     <Content Include="Sr_App\ShowResources.aspx" />
     <Content Include="Sr_App\shutter-work-order.html" />
@@ -2044,6 +2046,20 @@
     </Compile>
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\profilepictureupload.aspx.cs">
+      <DependentUpon>profilepictureupload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\profilepictureupload.aspx.designer.cs">
+      <DependentUpon>profilepictureupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\resumeupload.aspx.cs">
+      <DependentUpon>resumeupload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\resumeupload.aspx.designer.cs">
+      <DependentUpon>resumeupload.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
