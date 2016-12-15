@@ -181,6 +181,8 @@ namespace JG_Prospect.Common.modal
 
         public string PositionAppliedFor;
         public int DesignationID;
+        public string PhoneISDCode;
+        public string PhoneExtNo;
         
     }
 

@@ -239,6 +239,8 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -281,6 +283,32 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public string CheckForNewUserByEmaiID(string userEmail, int userID ,string DefaultPW)
+        {
+            DataSet dsResult = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_CheckNewUserFromOtherSite");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userEmail", DbType.String, userEmail);
+                    database.AddInParameter(command, "@userID", DbType.Int32, userID);
+                    database.AddInParameter(command, "@DefaultPassWord", DbType.String, DefaultPW);
+                    
+
+                    dsResult = database.ExecuteDataSet(command);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public DataSet GetTouchPointLogDataByUserID(int userID)
         {
             try
@@ -301,7 +329,8 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID)
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID,
+                                    string PhoneExtNo,string PhoneISDCode, bool ClearDataBeforInsert)
         {
             try
             {
@@ -313,6 +342,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@phoneText", DbType.String, phoneText);
                     database.AddInParameter(command, "@phoneType", DbType.Int32, phoneType);
                     database.AddInParameter(command, "@UserID", DbType.Int32, userID);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, PhoneExtNo);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, PhoneISDCode);
+                    database.AddInParameter(command, "@ClearPastRecord", DbType.Boolean, ClearDataBeforInsert);
 
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
@@ -343,6 +375,28 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetUserPhoneByUseId(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SP_GetUserPhoneUserId");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        
 
         public string AddUserEmails(string ExtEmail, int userId)
         {
@@ -1297,6 +1351,8 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);

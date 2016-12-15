@@ -252,7 +252,6 @@
     <Content Include="AddResourcesJr.aspx" />
     <Content Include="AssignProspect.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
-    <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\aspsnippets.facebookapi.dll" />
     <Content Include="bin\ASPSnippets.GoogleAPI.dll" />
     <Content Include="bin\ASPSnippets.SmsAPI.dll" />
@@ -262,17 +261,12 @@
     <Content Include="bin\DropDownCheckBoxes.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EPPlus.dll" />
-    <Content Include="bin\GMaps.dll" />
     <Content Include="bin\Google.GData.AccessControl.dll" />
     <Content Include="bin\Google.GData.Calendar.dll" />
     <Content Include="bin\Google.GData.Client.dll" />
     <Content Include="bin\Google.GData.Extensions.dll" />
     <Content Include="bin\GoogleMaps.LocationServices.dll" />
     <Content Include="bin\Ionic.Zip.dll" />
-    <Content Include="bin\JG_Prospect.BLL.dll" />
-    <Content Include="bin\JG_Prospect.Common.dll" />
-    <Content Include="bin\JG_Prospect.DAL.dll" />
-    <Content Include="bin\JG_Prospect.WebAPI.dll" />
     <Content Include="bin\Microsoft.Data.Edm.dll" />
     <Content Include="bin\Microsoft.Data.OData.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
@@ -287,26 +281,14 @@
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
-    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
-    <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
-    <Content Include="bin\System.Web.Http.dll" />
     <Content Include="bin\System.Web.Http.OData.dll" />
-    <Content Include="bin\System.Web.Http.Tracing.dll" />
-    <Content Include="bin\System.Web.Http.WebHost.dll" />
-    <Content Include="bin\System.Web.Mvc.dll" />
-    <Content Include="bin\System.Web.Optimization.dll" />
     <Content Include="bin\System.Web.Providers.dll" />
-    <Content Include="bin\System.Web.Razor.dll" />
-    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
-    <Content Include="bin\System.Web.WebPages.dll" />
-    <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
-    <Content Include="bin\WebGrease.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
@@ -1486,6 +1468,7 @@
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
+    <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
@@ -1615,6 +1598,11 @@
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
+    <Content Include="MCQTest\ExamSummary.aspx" />
+    <Content Include="MCQTest\McqTestPage.aspx" />
+    <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
+    <Content Include="MCQTest\StartExam.aspx" />
+    <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="project.net\css\cupertino\images\animated-overlay.gif" />
     <Content Include="project.net\css\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
     <Content Include="project.net\css\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
@@ -1732,70 +1720,9 @@
     <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
-    <Content Include="Sr_App\UploadedFile\6162015 114211 AMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015120405PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015120854PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121224PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121236PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121303PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121315PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122840PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122848PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122856PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123431PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123603PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123910PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522107PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522128PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522136PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522144PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522204PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522228PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522841PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522855PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522907PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522915PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201524324PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201524439PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201540717PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201540729PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201541130PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201541622PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201525549PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201525634PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530002PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530011PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530323PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530332PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530341PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201532718PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201532728PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533313PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533325PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533429PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201545141PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201550325PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201550728PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551116PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551130PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551314PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551343PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551354PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551405PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201570315PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201570356PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\CreditChex.png" />
-    <Content Include="Sr_App\UploadedFile\Hydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\icons-390.jpg" />
-    <Content Include="Sr_App\UploadedFile\Jellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\Koala.jpg" />
-    <Content Include="Sr_App\UploadedFile\Lighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\Penguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\System-Desktop-icon.png" />
-    <Content Include="Sr_App\UploadedFile\Tulips.jpg" />
     <Content Include="Sr_App\UploadFile.aspx" />
+    <Content Include="Sr_App\ViewSalesUser.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
-    <Content Include="Sr_App\view_customer.aspx" />
     <Content Include="Sr_App\WebForm1.aspx" />
     <Content Include="Sr_App\ZipFile.aspx" />
     <Content Include="css\default.css" />
@@ -2000,6 +1927,41 @@
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
     </Compile>
+    <Compile Include="MCQTest\ExamSummary.aspx.cs">
+      <DependentUpon>ExamSummary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MCQTest\ExamSummary.aspx.designer.cs">
+      <DependentUpon>ExamSummary.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MCQTest\McqTestPage.aspx.cs">
+      <DependentUpon>McqTestPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MCQTest\McqTestPage.aspx.designer.cs">
+      <DependentUpon>McqTestPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MCQTest\ObjectiveExamSummary.aspx.cs">
+      <DependentUpon>ObjectiveExamSummary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MCQTest\ObjectiveExamSummary.aspx.designer.cs">
+      <DependentUpon>ObjectiveExamSummary.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MCQTest\StartExam.aspx.cs">
+      <DependentUpon>StartExam.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MCQTest\StartExam.aspx.designer.cs">
+      <DependentUpon>StartExam.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MCQTest\ViewResults.aspx.cs">
+      <DependentUpon>ViewResults.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
+      <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\Controls\ucSubTasks.ascx.cs">
       <DependentUpon>ucSubTasks.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2049,6 +2011,13 @@
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\ViewSalesUser.aspx.cs">
+      <DependentUpon>ViewSalesUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ViewSalesUser.aspx.designer.cs">
+      <DependentUpon>ViewSalesUser.aspx</DependentUpon>
+    </Compile>
     <Compile Include="stafflogin.aspx.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2063,6 +2032,7 @@
     <Compile Include="UserControl\ucStatusChangePopup.ascx.designer.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Utilits\SessionsCommon.cs" />
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -2577,13 +2547,6 @@
     <Compile Include="Sr_App\viewshutters1.aspx.designer.cs">
       <DependentUpon>viewshutters1.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sr_App\view_customer.aspx.cs">
-      <DependentUpon>view_customer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Sr_App\view_customer.aspx.designer.cs">
-      <DependentUpon>view_customer.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Sr_App\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2911,6 +2874,7 @@
     <Folder Include="InvoicePdf\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
+    <Folder Include="Sr_App\UploadedFile\" />
     <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
@@ -2921,7 +2885,6 @@
     <Content Include="App_Browsers\BrowserFile.browser" />
     <Content Include="css\dropzone\css\stylus\basic.styl" />
     <Content Include="css\dropzone\css\stylus\dropzone.styl" />
-    <Content Include="bin\AjaxControlToolkit.dll.refresh" />
     <Content Include="ckeditor\plugins\scayt\CHANGELOG.md" />
     <Content Include="ckeditor\plugins\scayt\LICENSE.md" />
     <Content Include="ckeditor\plugins\scayt\README.md" />
@@ -2986,8 +2949,6 @@
     <None Include="PDFTemplates\I-9.pdf" />
     <None Include="PDFTemplates\w4.pdf" />
     <None Include="PDFTemplates\w9.pdf" />
-    <Content Include="Sr_App\UploadedFile\6162015120413PM" />
-    <Content Include="Sr_App\UploadedFile\6162015120945PM" />
     <Content Include="Sr_App\MailDocSample\ForemanJobAcceptancelettertemplate.docx" />
     <Content Include="Sr_App\MailDocSample\DeactivationMail.doc" />
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />

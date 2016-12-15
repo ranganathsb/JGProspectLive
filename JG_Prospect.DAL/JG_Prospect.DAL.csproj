@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminDAL.cs" />
+    <Compile Include="AptitudeTestDAL.cs" />
     <Compile Include="CustomDAL.cs" />
     <Compile Include="Database\MSSQLDataBase.cs" />
     <Compile Include="DepartmentDAL.cs" />

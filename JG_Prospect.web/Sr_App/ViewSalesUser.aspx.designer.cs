@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App {
     
     
-    public partial class CreateSalesUser {
+    public partial class ViewSalesUser {
         
         /// <summary>
         /// hidID control.

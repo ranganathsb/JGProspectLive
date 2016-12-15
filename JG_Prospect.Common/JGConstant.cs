@@ -71,7 +71,7 @@ namespace JG_Prospect.Common
 
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
         public const string ProfilPic_Upload_Folder = "~/UploadeProfile";
-        public const string Default_PassWord = "jgrove";
+        public const string Default_PassWord = "jmgrove";
         /// <summary>
         /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
         /// </summary>

@@ -325,7 +325,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.CheckCustomerRegistration(loginid, PhoneNo);
         }
 
-        public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
+        public bool BulkUpdateIntsallUser(string xmlDoc,string UpdatedBy)
         {
             return InstallUserDAL.Instance.BulkUpdateIntsallUser(xmlDoc, UpdatedBy);
         }
@@ -533,9 +533,13 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUserEmailByUseId(UserId);
         }
-        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID)
+        public DataSet GetUserPhoneByUseId(int UserId)
         {
-            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID);
+            return InstallUserDAL.Instance.GetUserPhoneByUseId(UserId);
+        }
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID , string PhoneExtNo, string PhoneISDCode ,bool ClearDataBeforInsert)
+        {
+            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID, PhoneExtNo , PhoneISDCode, ClearDataBeforInsert);
         }
 
         public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog)
@@ -551,6 +555,11 @@ namespace JG_Prospect.BLL
         public string Update_ForgotPassword(string loginId, string newPassword, bool isCustomer)
         {
             return InstallUserDAL.Instance.Update_ForgotPassword(loginId, newPassword, isCustomer);
+        }
+
+        public string CheckForNewUserByEmaiID(string userEmail, int userID,string DefaultPW)
+        {
+            return InstallUserDAL.Instance.CheckForNewUserByEmaiID(userEmail, userID,DefaultPW);
         }
     }
 }

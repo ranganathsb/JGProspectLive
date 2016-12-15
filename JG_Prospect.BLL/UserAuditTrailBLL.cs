@@ -37,5 +37,10 @@ namespace JG_Prospect.BLL
         {
            return  UserAuditTrailDAL.Instance.GetAuditsTrailLstByLoginID(userLoginID);
         }
+
+        public DataSet GetUpdateUserAuditsTrailLstByLoginID(string userLoginID)
+        {
+            return UserAuditTrailDAL.Instance.GetUpdateUserAuditsTrailLstByLoginID(userLoginID);
+        }
     }
 }

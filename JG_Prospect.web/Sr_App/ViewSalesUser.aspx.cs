@@ -25,7 +25,7 @@ using System.Web.Services;
 
 namespace JG_Prospect.Sr_App
 {
-    public partial class CreateSalesUser : System.Web.UI.Page
+    public partial class ViewSalesUser : System.Web.UI.Page
     {
 
         #region '--Members--'

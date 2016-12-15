@@ -19,6 +19,7 @@ using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
 using DotNetOpenAuth.AspNet.Clients;
 using JG_Prospect.Common;
+using System.Web.Services;
 
 namespace JG_Prospect
 {
@@ -1160,6 +1161,16 @@ namespace JG_Prospect
             }
             Response.Cookies["UserName"].Value = txtloginid.Text.Trim();
             Response.Cookies["Password"].Value = txtpassword.Text.Trim();
+        }
+
+        [WebMethod]
+        public static string CheckForNewUserFromOtherSite(String UserEmail, int UserID)
+        {
+            string strReturnValue;
+
+            strReturnValue = InstallUserBLL.Instance.CheckForNewUserByEmaiID(UserEmail, UserID, JG_Prospect.Common.JGConstant.Default_PassWord);
+
+            return strReturnValue;
         }
 
         #endregion

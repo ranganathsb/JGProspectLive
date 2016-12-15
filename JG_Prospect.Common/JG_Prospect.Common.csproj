@@ -85,6 +85,7 @@
     <Compile Include="AppConfiguration.cs" />
     <Compile Include="CustomMaterialList.cs" />
     <Compile Include="DBConstants.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="exceltoXml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -92,6 +93,7 @@
     <Compile Include="Logger\ErrorLog.cs" />
     <Compile Include="Logger\LogCategory.cs" />
     <Compile Include="Logger\LogManager.cs" />
+    <Compile Include="modal\Aptitude.cs" />
     <Compile Include="modal\AttachedQuotes.cs" />
     <Compile Include="modal\Availability.cs" />
     <Compile Include="modal\clsSku.cs" />
