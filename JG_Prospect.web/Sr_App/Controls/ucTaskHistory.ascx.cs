@@ -214,10 +214,10 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         labelNotes.Visible = false;
-                        e.Row.FindControl("divFile").Visible = 
+                        e.Row.FindControl("divFile").Visible =
                         imgFile.Visible = true;
                         linkDownLoadFiles.Visible = true;
-                        
+
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
                             string filePath = String.Concat("~/TaskAttachments/", Server.UrlEncode(filefullName));
@@ -237,7 +237,7 @@ namespace JG_Prospect.Sr_App.Controls
                             }
                             else
                             {
-                                imgFile.Src = CommonFunction.GetFileTypeIcon(filefullName);
+                                imgFile.Src = CommonFunction.GetFileTypeIcon(filefullName, this.Page);
                             }
 
                             //linkOriginalfileName.Visible = false;
@@ -697,7 +697,7 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotes.Columns.Add("LastName");
             dttaskNotes.Columns.Add("UserFirstName");
             dttaskNotes.Columns.Add("UserId");
-            dttaskNotes.Columns.Add("UpdatedOn");
+            dttaskNotes.Columns.Add("UpdatedOn", typeof(DateTime));
             dttaskNotes.Columns.Add("Notes");
             dttaskNotes.Columns.Add("Picture");
             dttaskNotes.Columns.Add("UserInstallId");
@@ -764,7 +764,7 @@ namespace JG_Prospect.Sr_App.Controls
                         Convert.ToString(dt.Rows[i]["LastName"]),
                         Convert.ToString(dt.Rows[i]["UserFirstName"]),
                         Convert.ToString(dt.Rows[i]["UserId"]),
-                        Convert.ToString(dt.Rows[i]["UpdatedOn"]),
+                        dt.Rows[i]["UpdatedOn"],
                         Convert.ToString(dt.Rows[i]["Notes"]),
                         Convert.ToString(dt.Rows[i]["Picture"]),
                         Convert.ToString(dt.Rows[i]["UserInstallId"]));
@@ -917,7 +917,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgDoc = (Image)e.Item.FindControl("imgDoc");
 
-                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }
@@ -928,7 +928,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgImages = (Image)e.Item.FindControl("imgImages");
 
-                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }
@@ -939,7 +939,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgImages = (Image)e.Item.FindControl("imgImages");
 
-                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }

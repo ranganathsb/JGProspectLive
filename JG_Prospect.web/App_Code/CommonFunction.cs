@@ -85,6 +85,8 @@ namespace JG_Prospect.App_Code
                 switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
                 {
                     case "ADMIN": // admin
+                    case "ADMIN-SALES":
+                    case "ADMIN RECRUITER":
                     case "OFFICE MANAGER": // office manager
                     case "SALES MANAGER": // sales manager
                     case "ITLEAD": // it engineer | tech lead
@@ -119,6 +121,8 @@ namespace JG_Prospect.App_Code
                 switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
                 {
                     case "ADMIN": // admin
+                    case "ADMIN-SALES":
+                    case "ADMIN RECRUITER":
                     case "ITLEAD": // it engineer | tech lead
                         returnVal = true;
                         break;
@@ -666,7 +670,7 @@ namespace JG_Prospect.App_Code
             return isImageFile;
         }
 
-        public static string GetFileTypeIcon(string FileName)
+        public static string GetFileTypeIcon(string FileName, Page objPage)
         {
             string fileExtension = Path.GetExtension(FileName).ToLower();
 
@@ -676,32 +680,32 @@ namespace JG_Prospect.App_Code
             {
                 case ".zip":
                 case ".rar":
-                    iconFile = "/img/zip-icon.png";
+                    iconFile = "~/img/zip-icon.png";
                     break;
                 case ".mp3":
                 case ".wav":
                 case ".m4a":
-                    iconFile = "/img/audio-icon.png";
+                    iconFile = "~/img/audio-icon.png";
                     break;
                 case ".wmv":
                 case ".avi":
                 case ".mov":
                 case ".mpg":
                 case ".mp4":
-                    iconFile = "/img/video-icon.png";
+                    iconFile = "~/img/video-icon.png";
                     break;
                 case ".pdf":
-                    iconFile = "/img/pdf-icon.png";
+                    iconFile = "~/img/pdf-icon.png";
                     break;
                 case ".xlsx":
                 case ".xls":
-                    iconFile = "/img/excel-icon.png";
+                    iconFile = "~/img/excel-icon.png";
                     break;
                 case ".txt":
                 case ".rtf":
                 case ".docx":
                 case ".doc":
-                    iconFile = "/img/word-icon.png";
+                    iconFile = "~/img/word-icon.png";
                     break;
                 case ".png":
                 case ".jpg":
@@ -711,7 +715,7 @@ namespace JG_Prospect.App_Code
                 default:
                     break;
             }
-            return iconFile;
+            return objPage.ResolveUrl(iconFile);
         }
 
         public static string CreatePassword(int length)

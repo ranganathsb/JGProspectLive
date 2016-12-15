@@ -596,7 +596,7 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
                 }
             }
         }

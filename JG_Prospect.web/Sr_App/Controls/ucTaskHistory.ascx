@@ -93,32 +93,32 @@
                                                 <ItemTemplate>
                                                     <div style="text-align: center;">
                                                         <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
-                                                        <br />
-                                                        <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                            <%# 
-                                                                string.Concat(
-                                                                                string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
-                                                                                    Eval("UserId") : 
-                                                                                    Eval("UserInstallId"),
-                                                                                "#",
-                                                                                string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
-                                                                                    Eval("UserFirstName").ToString() : 
-                                                                                    Eval("FristName").ToString(),
-                                                                                " ", 
-                                                                                Eval("LastName").ToString()
-                                                                            )
-                                                            %>
-                                                        </asp:HyperLink>
                                                     </div>
                                                 </ItemTemplate>
                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                 <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                             </asp:TemplateField>
                                             <asp:TemplateField ControlStyle-ForeColor="White"
-                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%" ItemStyle-Width="20%"
+                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="25%" ItemStyle-Width="25%"
                                                 ItemStyle-HorizontalAlign="Left">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                        <%# 
+                                                            string.Concat(
+                                                                            string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
+                                                                                Eval("UserId") : 
+                                                                                Eval("UserInstallId"),
+                                                                            "<br/>",
+                                                                            string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
+                                                                                Eval("UserFirstName").ToString() : 
+                                                                                Eval("FristName").ToString(),
+                                                                            " ", 
+                                                                            Eval("LastName").ToString()
+                                                                        )
+                                                        %>
+                                                    </asp:HyperLink>
+                                                    <br />
+                                                    <span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span>
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
                                                 <ControlStyle ForeColor="Black" />
@@ -126,7 +126,7 @@
                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                             </asp:TemplateField>
                                             <asp:TemplateField ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="60%" ItemStyle-Width="60%">
+                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="55%" ItemStyle-Width="55%">
                                                 <ItemTemplate>
                                                     <div>
                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
@@ -258,22 +258,6 @@
                                             <ItemTemplate>
                                                 <div style="text-align: center;">
                                                     <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" ImageUrl='<%# String.IsNullOrEmpty(Eval("Picture").ToString())== true ? "~/img/JG-Logo-white.gif": Eval("Picture").ToString() %>' />
-                                                    <br />
-                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                        <%# 
-                                                                string.Concat(
-                                                                                string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
-                                                                                    Eval("UserId") : 
-                                                                                    Eval("UserInstallId"),
-                                                                                "#",
-                                                                                string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
-                                                                                    Eval("UserFirstName").ToString() : 
-                                                                                    Eval("FristName").ToString(),
-                                                                                " ", 
-                                                                                Eval("LastName").ToString()
-                                                                            )
-                                                        %>
-                                                    </asp:HyperLink>
                                                 </div>
                                             </ItemTemplate>
                                             <HeaderStyle Font-Size="Small"></HeaderStyle>
@@ -281,10 +265,26 @@
                                         </asp:TemplateField>
 
                                         <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White"
-                                            HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                            HeaderStyle-Font-Size="Small" HeaderStyle-Width="25%"
                                             ItemStyle-HorizontalAlign="Left">
                                             <ItemTemplate>
-                                                <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("UserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                    <%# 
+                                                            string.Concat(
+                                                                            string.IsNullOrEmpty(Eval("UserInstallId").ToString())?
+                                                                                Eval("UserId") : 
+                                                                                Eval("UserInstallId"),
+                                                                            "<br/>",
+                                                                            string.IsNullOrEmpty(Eval("FristName").ToString())== true? 
+                                                                                Eval("UserFirstName").ToString() : 
+                                                                                Eval("FristName").ToString(),
+                                                                            " ", 
+                                                                            Eval("LastName").ToString()
+                                                                        )
+                                                    %>
+                                                </asp:HyperLink>
+                                                <br />
+                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span>
                                             </ItemTemplate>
                                             <ControlStyle ForeColor="Black" />
                                             <ControlStyle ForeColor="Black" />
@@ -292,7 +292,7 @@
                                             <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                         </asp:TemplateField>
 
-                                        <asp:TemplateField HeaderText="Employee Name" HeaderStyle-Width="50%">
+                                        <asp:TemplateField HeaderText="Employee Name" HeaderStyle-Width="35%">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes") %>'></asp:Label>
                                             </ItemTemplate>
