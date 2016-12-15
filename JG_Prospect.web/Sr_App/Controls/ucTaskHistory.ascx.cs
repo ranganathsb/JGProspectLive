@@ -214,10 +214,10 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         labelNotes.Visible = false;
-                        e.Row.FindControl("divFile").Visible = 
+                        e.Row.FindControl("divFile").Visible =
                         imgFile.Visible = true;
                         linkDownLoadFiles.Visible = true;
-                        
+
                         if (Convert.ToString((int)JGConstant.TaskUserFileType.Images) == FileType)
                         {
                             string filePath = String.Concat("~/TaskAttachments/", Server.UrlEncode(filefullName));
@@ -697,7 +697,7 @@ namespace JG_Prospect.Sr_App.Controls
             dttaskNotes.Columns.Add("LastName");
             dttaskNotes.Columns.Add("UserFirstName");
             dttaskNotes.Columns.Add("UserId");
-            dttaskNotes.Columns.Add("UpdatedOn");
+            dttaskNotes.Columns.Add("UpdatedOn", typeof(DateTime));
             dttaskNotes.Columns.Add("Notes");
             dttaskNotes.Columns.Add("Picture");
             dttaskNotes.Columns.Add("UserInstallId");
@@ -764,7 +764,7 @@ namespace JG_Prospect.Sr_App.Controls
                         Convert.ToString(dt.Rows[i]["LastName"]),
                         Convert.ToString(dt.Rows[i]["UserFirstName"]),
                         Convert.ToString(dt.Rows[i]["UserId"]),
-                        Convert.ToString(dt.Rows[i]["UpdatedOn"]),
+                        dt.Rows[i]["UpdatedOn"],
                         Convert.ToString(dt.Rows[i]["Notes"]),
                         Convert.ToString(dt.Rows[i]["Picture"]),
                         Convert.ToString(dt.Rows[i]["UserInstallId"]));
