@@ -121,7 +121,6 @@ function ShowPopupWithTitle(varControlID, strTitle) {
 function HidePopup(varControlID) {
     $(varControlID).dialog("close");
 }
-
 /********************************************* Dropzone (File upload on drag - drop) ******************************************************/
 function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenFieldIdSelector, strButtonIdSelector) {
     var strAcceptedFiles = '';
@@ -225,6 +224,7 @@ function copyToClipboard(strDataToCopy) {
 
     //clipboard.destroy();
 }
+
 //common code check query string parameter, if already exists then replace value else add that parameter. 
 function updateQueryStringParameter(uri, key, value) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -237,4 +237,18 @@ function updateQueryStringParameter(uri, key, value) {
     }
 }
 
-
+/********************************************* Image Gallery ******************************************************/
+function LoadImageGallery(strSelector) {
+    $(strSelector).lightSlider({
+        gallery: true,
+        item: 1,
+        thumbItem: 9,
+        slideMargin: 0,
+        speed: 500,
+        auto: true,
+        loop: true,
+        onSliderLoad: function () {
+            $(strSelector).removeClass('cS-hidden');
+        }
+    });
+}

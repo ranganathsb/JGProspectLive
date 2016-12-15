@@ -33,41 +33,27 @@
                                 <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px;">
                                     <div style="padding-bottom: 5px;">
                                         <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
-
                                     </div>
                                     <div style="padding-bottom: 5px;">
-                                        <h5>Url:&nbsp;<a target="_blank" class="bluetext" href='<%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "javascript:void(0);" : Eval("Url").ToString()%>'><%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? "N.A." : Eval("Url").ToString()%> </a></h5>
-
+                                        <h5>
+                                            Url:&nbsp;<a target="_blank" class="bluetext" 
+                                                        href='<%# string.IsNullOrEmpty(Eval("Url").ToString()) == true ? 
+                                                                        "javascript:void(0);" : 
+                                                                        Eval("Url").ToString()%>'>
+                                                        <%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? 
+                                                                "N.A." : 
+                                                                Eval("Url").ToString()%> 
+                                                      </a>
+                                        </h5>
                                     </div>
                                     <div style="padding-bottom: 5px;">
                                         <h5>Description:&nbsp;</h5>
                                         <%# Eval("Description")%>
                                     </div>
-                                    <div>
-                                        <br />
-                                        <hr />
-
-                                        <h5>Attachments</h5>
-
-                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                            <HeaderTemplate>
-                                                <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-                                                <li style="margin: 10px; text-align: center; float: left; width: 50px;" class="noborder">
-                                                    <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
-                                                    <br />
-                                                    <small>
-                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
-                                                    </small>
-                                                </li>
-                                            </ItemTemplate>
-                                        </asp:Repeater>
-                                    </div>
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
+                        <%--<asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
                             SortExpression="Status">
                             <ItemTemplate>
                                 <div style="padding: 3px;">
@@ -163,24 +149,92 @@
                                                     CommandArgument='<%# Container.DataItemIndex  %>' /></td>
                                         </tr>
                                     </table>
-
-
-
                                 </div>
                             </ItemTemplate>
-                        </asp:TemplateField>
+                        </asp:TemplateField>--%>
                         <%-- <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
                             </ItemTemplate>
                         </asp:TemplateField>--%>
-                        <%-- <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
+                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                             <ItemTemplate>
+                                <table>
+                                    <tr>
+                                        <td class="noborder">
+                                            Assigned
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">
+                                            <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">
+                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">
+                                            <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
+                                    </tr>
+                                </table>
                             </ItemTemplate>
-                        </asp:TemplateField>--%>
-                        <%--<asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" 
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
                             <ItemTemplate>
+                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                    <HeaderTemplate>
+                                        <div class="lSSlideOuter sub-task-attachments" style="width:150px;">
+                                            <div class="lSSlideWrapper usingCss">
+                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <li id="liImage" runat="server" class="noborder">
+                                            <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
+                                            <br />
+                                            <small>
+                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                            </small>
+                                        </li>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </FooterTemplate>
+                                </asp:Repeater>
                             </ItemTemplate>
-                        </asp:TemplateField>--%>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                            <ItemTemplate>
+                                <table>
+                                    <tr>
+                                        <td colspan="3" class="noborder" align="center">
+                                            <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
+                                                CommandArgument='<%# Container.DataItemIndex  %>' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" /></td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" /></td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" /></td>
+                                    </tr>
+                                    <tr style="display: none;">
+                                        <td colspan="3">
+                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
+                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
+                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
             </div>
@@ -443,6 +497,8 @@
         ApplySubtaskLinkContextMenu();
         ApplyImageGallery();
 
+        LoadImageGallery('.sub-task-attachments-list');
+
         var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
        // alert(controlmode);
@@ -570,18 +626,7 @@
 
     function showGallery() {
 
-        $('#image-gallery').lightSlider({
-            gallery: true,
-            item: 1,
-            thumbItem: 9,
-            slideMargin: 0,
-            speed: 500,
-            auto: true,
-            loop: true,
-            onSliderLoad: function () {
-                $('#image-gallery').removeClass('cS-hidden');
-            }
-        });
+        LoadImageGallery('#image-gallery');
 
     }
 

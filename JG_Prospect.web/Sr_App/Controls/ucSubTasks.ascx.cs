@@ -654,14 +654,18 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnAttchment.Text = files[1];
                 }
 
+                HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
+
                 if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim())));
+                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim()))));
                 }
                 else
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
                 }
+
+                ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", imgIcon.Src);
 
                 lbtnAttchment.CommandArgument = file;
             }
@@ -703,7 +707,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 else
                 {
-                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
                 }
             }
         }

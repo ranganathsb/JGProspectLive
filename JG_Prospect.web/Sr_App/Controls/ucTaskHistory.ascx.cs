@@ -237,7 +237,7 @@ namespace JG_Prospect.Sr_App.Controls
                             }
                             else
                             {
-                                imgFile.Src = CommonFunction.GetFileTypeIcon(filefullName);
+                                imgFile.Src = CommonFunction.GetFileTypeIcon(filefullName, this.Page);
                             }
 
                             //linkOriginalfileName.Visible = false;
@@ -917,7 +917,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgDoc = (Image)e.Item.FindControl("imgDoc");
 
-                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgDoc.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }
@@ -928,7 +928,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgImages = (Image)e.Item.FindControl("imgImages");
 
-                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }
@@ -939,7 +939,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 Image imgImages = (Image)e.Item.FindControl("imgImages");
 
-                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString());
+                imgImages.ImageUrl = CommonFunction.GetFileTypeIcon(DataBinder.Eval(e.Item.DataItem, "Attachment").ToString(), this.Page);
 
             }
         }
