@@ -2469,3 +2469,82 @@ END
 -- Published on live 12072016 
 
 --=================================================================================================================================================================================================
+INSERT INTO [dbo].[tbl_Designation]
+           ([DesignationName]
+           ,[IsActive]
+           ,[DepartmentID])
+     VALUES
+           ('Admin-Sales'
+           ,1
+           ,1)
+
+
+INSERT INTO [dbo].[tbl_Designation]
+           ([DesignationName]
+           ,[IsActive]
+           ,[DepartmentID])
+     VALUES
+           ('Admin Recruiter'
+           ,1
+           ,1)
+
+GO
+
+/****** Object:  UserDefinedFunction [dbo].[UDF_GetIsAdminOrITLeadUser]    Script Date: 15-Dec-16 12:33:00 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER FUNCTION [dbo].[UDF_GetIsAdminOrITLeadUser]
+(
+	@Designation VARCHAR(50)
+)
+RETURNS BIT
+AS
+BEGIN
+	declare @IsAdmin BIT
+
+	SELECT 
+		@IsAdmin = CASE UPPER(@Designation)
+			WHEN 'ADMIN' THEN 1
+			WHEN 'ITLEAD' THEN 1
+			WHEN 'ADMIN-SALES' THEN 1
+			WHEN 'ADMIN RECRUITER' THEN 1
+			ELSE 0 
+		END
+
+	RETURN @IsAdmin
+END
+GO
+
+/****** Object:  UserDefinedFunction [dbo].[UDF_GetIsAdminUser]    Script Date: 15-Dec-16 12:34:43 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER FUNCTION [dbo].[UDF_GetIsAdminUser]
+(
+	@Designation VARCHAR(50)
+)
+RETURNS BIT
+AS
+BEGIN
+	declare @IsAdmin BIT
+
+	SELECT 
+		@IsAdmin = CASE UPPER(@Designation)
+			WHEN 'ADMIN' THEN 1
+			WHEN 'OFFICE MANAGER' THEN 1
+			WHEN 'SALES MANAGER' THEN 1
+			WHEN 'ITLEAD' THEN 1
+			WHEN 'FOREMAN' THEN 1
+			WHEN 'ADMIN-SALES' THEN 1
+			WHEN 'ADMIN RECRUITER' THEN 1
+			ELSE 0 
+		END
+
+	RETURN @IsAdmin
+END
+GO

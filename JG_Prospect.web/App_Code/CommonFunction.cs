@@ -85,6 +85,8 @@ namespace JG_Prospect.App_Code
                 switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
                 {
                     case "ADMIN": // admin
+                    case "ADMIN-SALES":
+                    case "ADMIN RECRUITER":
                     case "OFFICE MANAGER": // office manager
                     case "SALES MANAGER": // sales manager
                     case "ITLEAD": // it engineer | tech lead
@@ -119,6 +121,8 @@ namespace JG_Prospect.App_Code
                 switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
                 {
                     case "ADMIN": // admin
+                    case "ADMIN-SALES":
+                    case "ADMIN RECRUITER":
                     case "ITLEAD": // it engineer | tech lead
                         returnVal = true;
                         break;
