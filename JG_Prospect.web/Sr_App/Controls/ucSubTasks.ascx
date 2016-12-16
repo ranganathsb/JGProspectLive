@@ -290,7 +290,21 @@
                                     ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                             </td>
                         </tr>
-
+                        <tr>
+                            <td>
+                                <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
+                                    <ContentTemplate>
+                                        Designation <span style="color: red;">*</span>:
+                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
+                                             AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
+                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                        </asp:DropDownCheckBoxes>
+                                        <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None" 
+                                            ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </td>
+                        </tr>
                         <tr>
                             <td colspan="2">Attachment(s):
                                 <div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
@@ -643,4 +657,11 @@
             OpenImageGalleryDialog();
         });
     }
+
+
+    // check if user has selected any designations or not.
+    function SubTasks_checkDesignations(oSrc, args) {
+        args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
+    }
+
 </script>
