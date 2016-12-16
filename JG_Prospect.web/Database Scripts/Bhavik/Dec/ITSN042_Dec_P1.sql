@@ -251,6 +251,46 @@ END
 GO
 
 
+GO
+
+
+
+IF OBJECT_ID('dbo.tblUserPhone', 'U') IS NOT NULL 
+  DROP TABLE dbo.tblUserPhone; 
+
+
+/****** Object:  Table [dbo].[tblUserPhone]    Script Date: 12/16/2016 10:00:11 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[tblUserPhone](
+	[UserPhoneID] [int] IDENTITY(1,1) NOT NULL,
+	[Phone] [varchar](50) NULL,
+	[IsPrimary] [bit] NULL,
+	[PhoneTypeID] [int] NULL,
+	[UserID] [int] NULL,
+	[PhoneExtNo] [varchar](20) NULL,
+	[PhoneISDCode] [varchar](8) NULL,
+ CONSTRAINT [PK_tblUserPhone] PRIMARY KEY CLUSTERED 
+(
+	[UserPhoneID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
 /****** Object:  StoredProcedure [dbo].[Sp_InsertUpdateUserPhone]    Script Date: 12/15/2016 8:27:09 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -263,7 +303,7 @@ GO
 -- Create date: 23-11-2016
 -- Description:	Insert/ Update User Phone
 -- =============================================
-CREATE PROCEDURE [dbo].[Sp_InsertUpdateUserPhone] 
+ALTER PROCEDURE [dbo].[Sp_InsertUpdateUserPhone] 
 	-- Add the parameters for the stored procedure here
 	@isPrimaryPhone bit,
 	@phoneText varchar(256),
@@ -346,11 +386,17 @@ GO
 
 
 -----------------------------------------------------------------------------------------------------------------------------
-
-
-
-USE [JGBS_Dev]
 GO
+
+ALTER Table tblInstallUsers ADD
+
+[PhoneISDCode] [varchar](10) NULL,
+[PhoneExtNo] [varchar](30) NULL
+
+GO
+
+
+
 /****** Object:  StoredProcedure [dbo].[UDP_AddInstallUser]    Script Date: 12/15/2016 8:37:18 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -583,6 +629,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 ALTER PROCEDURE [dbo].[UDP_UpdateInstallUsers]  
 	@id int,  
 	@FristName varchar(50),  
@@ -862,3 +909,83 @@ BEGIN
 	RETURN @result  
  END
 --modified/created by Other Party
+
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[Sp_InsertUpdateUserPhone]    Script Date: 12/16/2016 10:04:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- ============================================= 
+ -- Description:	Insert/ Update User Phone
+-- =============================================
+ALTER PROCEDURE [dbo].[Sp_InsertUpdateUserPhone] 
+	-- Add the parameters for the stored procedure here
+	@isPrimaryPhone bit,
+	@phoneText varchar(256),
+	@phoneType varchar(50),
+	@UserID int,
+	@PhoneExtNo varchar(50),
+	@PhoneISDCode varchar(50),
+	@ClearPastRecord bit
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	if (@ClearPastRecord = 1)
+	BEGIN
+		DELETE FROM tblUserPhone WHERE UserID = @UserID
+	END
+ELSE
+  BEGIN
+    INSERT INTO [dbo].[tblUserPhone]
+           ([Phone]
+           ,[IsPrimary]
+           ,[PhoneTypeID]
+           ,[UserID]
+		   ,[PhoneExtNo]
+		   ,[PhoneISDCode])
+     VALUES
+           (@phoneText
+           ,@isPrimaryPhone
+           ,@phoneType
+           ,@UserID
+		   ,@PhoneExtNo
+		   ,@PhoneISDCode)
+  END	
+END
+
+
+SET ANSI_NULLS ON
+
+
+
+/****** Object:  StoredProcedure [dbo].[UDP_GETInstallUserDetails]    Script Date: 12/16/2016 10:14:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[UDP_GETInstallUserDetails]
+	@id int
+As 
+BEGIN
+
+	SELECT Id,FristName,Lastname,Email,[Address],Designation,
+	[Status],[Password],Phone,Picture,Attachements,zip,[state],city,
+	Bussinessname,SSN,SSN1,SSN2,[Signature],DOB,Citizenship,' ',
+	EIN1,EIN2,A,B,C,D,E,F,G,H,[5],[6],[7],maritalstatus,PrimeryTradeId,SecondoryTradeId,Source,Notes,StatusReason,GeneralLiability,PCLiscense,WorkerComp,HireDate,TerminitionDate,WorkersCompCode,NextReviewDate,EmpType,LastReviewDate,PayRates,ExtraEarning,ExtraEarningAmt,PayMethod,Deduction,DeductionType,AbaAccountNo,AccountNo,AccountType,PTradeOthers,
+	STradeOthers,DeductionReason,InstallId,SuiteAptRoom,FullTimePosition,ContractorsBuilderOwner,MajorTools,DrugTest,ValidLicense,TruckTools,PrevApply,LicenseStatus,CrimeStatus,StartDate,SalaryReq,Avialability,ResumePath,skillassessmentstatus,assessmentPath,WarrentyPolicy,CirtificationTraining,businessYrs,underPresentComp,websiteaddress,PersonName,PersonType,CompanyPrinciple,UserType,Email2,Phone2,CompanyName,SourceUser,DateSourced,InstallerType,BusinessType,CEO,LegalOfficer,President,Owner,AllParteners,MailingAddress,Warrantyguarantee,WarrantyYrs,MinorityBussiness,WomensEnterprise,InterviewTime,CruntEmployement,CurrentEmoPlace,LeavingReason,CompLit,FELONY,shortterm,LongTerm,BestCandidate,TalentVenue,Boardsites,NonTraditional,ConSalTraning,BestTradeOne,BestTradeTwo,BestTradeThree
+	,aOne,aOneTwo,bOne,cOne,aTwo,aTwoTwo,bTwo,cTwo,aThree,aThreeTwo,bThree,cThree,TC,ExtraIncomeType,RejectionDate ,UserInstallId
+        ,PositionAppliedFor, PhoneExtNo, PhoneISDCode ,DesignationID
+	DesignationID
+	FROM tblInstallUsers 
+	WHERE ID=@id
+
+END
+
+
