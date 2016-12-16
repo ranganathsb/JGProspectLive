@@ -251,6 +251,46 @@ END
 GO
 
 
+GO
+
+
+
+IF OBJECT_ID('dbo.tblUserPhone', 'U') IS NOT NULL 
+  DROP TABLE dbo.tblUserPhone; 
+
+
+/****** Object:  Table [dbo].[tblUserPhone]    Script Date: 12/16/2016 10:00:11 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[tblUserPhone](
+	[UserPhoneID] [int] IDENTITY(1,1) NOT NULL,
+	[Phone] [varchar](50) NULL,
+	[IsPrimary] [bit] NULL,
+	[PhoneTypeID] [int] NULL,
+	[UserID] [int] NULL,
+	[PhoneExtNo] [varchar](20) NULL,
+	[PhoneISDCode] [varchar](8) NULL,
+ CONSTRAINT [PK_tblUserPhone] PRIMARY KEY CLUSTERED 
+(
+	[UserPhoneID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
 /****** Object:  StoredProcedure [dbo].[Sp_InsertUpdateUserPhone]    Script Date: 12/15/2016 8:27:09 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -263,7 +303,7 @@ GO
 -- Create date: 23-11-2016
 -- Description:	Insert/ Update User Phone
 -- =============================================
-CREATE PROCEDURE [dbo].[Sp_InsertUpdateUserPhone] 
+ALTER PROCEDURE [dbo].[Sp_InsertUpdateUserPhone] 
 	-- Add the parameters for the stored procedure here
 	@isPrimaryPhone bit,
 	@phoneText varchar(256),
@@ -346,11 +386,17 @@ GO
 
 
 -----------------------------------------------------------------------------------------------------------------------------
-
-
-
-USE [JGBS_Dev]
 GO
+
+ALTER Table tblInstallUsers ADD
+
+[PhoneISDCode] [varchar](10) NULL,
+[PhoneExtNo] [varchar](30) NULL
+
+GO
+
+
+
 /****** Object:  StoredProcedure [dbo].[UDP_AddInstallUser]    Script Date: 12/15/2016 8:37:18 PM ******/
 SET ANSI_NULLS ON
 GO
