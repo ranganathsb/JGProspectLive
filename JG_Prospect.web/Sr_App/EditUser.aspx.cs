@@ -316,7 +316,7 @@ namespace JG_Prospect
                 //else if (type == "Sales")
                 //{
                 string ID = e.CommandArgument.ToString();
-                Response.Redirect("CreateSalesUser.aspx?id=" + ID);
+                Response.Redirect("ViewSalesUser.aspx?id=" + ID);
                 //}
 
             }
@@ -372,7 +372,7 @@ namespace JG_Prospect
                 //else if (type == "Sales")
                 //{
                 string AddedById = e.CommandArgument.ToString();
-                Response.Redirect("CreateSalesUser.aspx?id=" + AddedById);
+                Response.Redirect("ViewSalesUser.aspx?id=" + AddedById);
                 //}
 
             }
