@@ -989,3 +989,111 @@ BEGIN
 END
 
 
+-------------------------------------------------------------------------------------------
+
+GO
+
+ALTER TABLE tblUserTouchPointLog
+ADD CurrentUserGUID VARCHAR(40)
+
+
+GO
+
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[Sp_InsertTouchPointLog]    Script Date: 12/16/2016 3:22:23 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Bhavik J. Vaishnani
+-- Create date: 29-11-2016
+-- Description:	Insert value of Touch Point log
+-- =============================================
+ALTER PROCEDURE [dbo].[Sp_InsertTouchPointLog] 
+	-- Add the parameters for the stored procedure here
+	@userID int = 0, 
+	@loginUserID int = 0
+	, @loginUserInstallID varchar (50) =''
+	, @LogTime datetime
+	, @changeLog varchar(max)
+	,@CurrGUID varchar(40)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	INSERT INTO [dbo].[tblUserTouchPointLog]
+           ([UserID]  ,[UpdatedByUserID] ,[UpdatedUserInstallID]
+           ,[ChangeDateTime]
+           ,[LogDescription]
+		   ,[CurrentUserGUID])
+     VALUES
+           (@userID , @loginUserID ,@loginUserInstallID            
+           , @LogTime
+           ,@changeLog
+		   ,@CurrGUID)
+END
+
+
+/****** Object:  StoredProcedure [dbo].[Sp_UpdateNewUserIDInTouchPointLog]    Script Date: 12/16/2016 3:47:38 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Bhavik J
+-- Create date: 
+-- Description:	Update Guid of New user From And set GUID a
+-- =============================================
+CREATE PROCEDURE [dbo].[Sp_UpdateNewUserIDInTouchPointLog] 
+	-- Add the parameters for the stored procedure here
+	@NewuserID int , 
+	@CurrGUID VARCHAR(40)  
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	UPDATE tblUserTouchPointLog 
+
+	SET UserID = @NewuserID
+	WHERE CurrentUserGUID = @CurrGUID
+
+END
+
+GO
+
+
+
+
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Bhavik J.
+-- Create date: 15 - 12- 2016
+-- Description:	Get Data of Touch Point Log
+-- =============================================
+CREATE PROCEDURE [dbo].[Sp_GetTouchPointLogDataByGUID]
+	-- Add the parameters for the stored procedure here 
+	@CurrentGID VARCHAR(40)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT * from tblUserTouchPointLog where CurrentUserGUID = @CurrentGID
+	
+	END
