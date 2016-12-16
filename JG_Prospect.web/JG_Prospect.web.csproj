@@ -1039,6 +1039,9 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\Jaylem\Script Dec_ITJN016_II_b_V1-UnExecuted.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
+    <Content Include="datetime\jq\jquery.ui.position.min.js" />
+    <Content Include="datetime\jq\jquery.ui.timepicker.css" />
+    <Content Include="datetime\jq\jquery.ui.timepicker.js" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
     <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
