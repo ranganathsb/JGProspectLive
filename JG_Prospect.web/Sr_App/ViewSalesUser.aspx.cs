@@ -81,7 +81,7 @@ namespace JG_Prospect.Sr_App
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
                 hidID.Value = Request.QueryString["ID"].ToString();
 
-                ///////bindGrid();
+                hidTouchPointGUID.Value = "";
                 BindTouchPointLog();
                 // hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
             }
@@ -90,6 +90,8 @@ namespace JG_Prospect.Sr_App
                 if (!IsPostBack)
                 {
                     Session["ID"] = "";
+                    // Store GIUD when user is in create mode and save Touch Point Log..
+                    hidTouchPointGUID.Value = Guid.NewGuid().ToString();
                     SetUserControlValue(string.Empty);
                     hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
@@ -1828,6 +1830,13 @@ namespace JG_Prospect.Sr_App
                         
                         UpdateUserInstallID(result.Item2);
 
+                        hidTouchPointGUID.Value = hidTouchPointGUID.Value.Trim();
+                        if (hidTouchPointGUID.Value !="")
+                        {
+                            InstallUserBLL.Instance.UpdateTouchPointLog(hidTouchPointGUID.Value, result.Item2);
+                        }
+                        
+
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
                         //lblmsg.CssClass = "success";
@@ -2790,7 +2799,8 @@ namespace JG_Prospect.Sr_App
         protected void ddlstatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
-            fullTouchPointLog();
+            fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
+
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -3286,6 +3296,11 @@ namespace JG_Prospect.Sr_App
             #endregion
         }
 
+        protected void ddlEmpType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            fullTouchPointLog(" Employee Type : " + ddlEmpType.SelectedItem.Text.ToString());
+        }
+
         private void ddlOfferMade2()
         {
             rqdtResignition.Enabled = false;
@@ -3650,20 +3665,61 @@ namespace JG_Prospect.Sr_App
 
         private void ShowHideAptitudeTestLink()
         {
-            if (Session["ID"] != null && Session["ID"].ToString() != "")
-            switch (ddldesignation.SelectedValue)
-            {
-                case "ITJr.NetDeveloper":
-                case "ITSr.NetDeveloper":
-                    lbtnAptTestLink.Text = "Aptitude test for .Net";
-                    lbtnAptTestLink.PostBackUrl = "";
-                    break;
 
-                default:
-                    lbtnAptTestLink.Text = "";
-                    lbtnAptTestLink.PostBackUrl = "";
-                    break;
-            }
+            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+
+            if (Session["ID"] != null && Session["ID"].ToString() != "")
+                switch ((JGConstant.DesignationType)selDesignation)
+                {
+                    case JGConstant.DesignationType.Admin:
+                        break;
+                    case JGConstant.DesignationType.Jr_Sales:
+                        break;
+                    case JGConstant.DesignationType.Jr_Project_Manager:
+                        break;
+                    case JGConstant.DesignationType.Office_Manager:
+                        break;
+                    case JGConstant.DesignationType.Recruiter:
+                        break;
+                    case JGConstant.DesignationType.Sales_Manager:
+                        break;
+                    case JGConstant.DesignationType.Sr_Sales:
+                        break;
+                    case JGConstant.DesignationType.IT_Network_Admin:
+                        break;
+                    case JGConstant.DesignationType.IT_Jr_Net_Developer:
+                    case JGConstant.DesignationType.IT_Sr_Net_Developer:
+                        lbtnAptTestLink.Text = "Aptitude test for .Net";
+                        lbtnAptTestLink.PostBackUrl = "";
+
+                        break;
+                    case JGConstant.DesignationType.IT_Android_Developer:
+                        break;
+                    case JGConstant.DesignationType.IT_PHP_Developer:
+                        break;
+                    case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
+                        break;
+                    case JGConstant.DesignationType.Installer_Helper:
+                        break;
+                    case JGConstant.DesignationType.Installer_Journeyman:
+                        break;
+                    case JGConstant.DesignationType.Installer_Mechanic:
+                        break;
+                    case JGConstant.DesignationType.Installer_Lead_Mechanic:
+                        break;
+                    case JGConstant.DesignationType.Installer_Foreman:
+                        break;
+                    case JGConstant.DesignationType.Commercial_Only:
+                        break;
+                    case JGConstant.DesignationType.SubContractor:
+                        break;
+                    default:
+
+                        lbtnAptTestLink.Text = "";
+                        lbtnAptTestLink.PostBackUrl = "";
+                        break;
+                }
+
         }
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -5844,9 +5900,11 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void fullTouchPointLog()
+        private void fullTouchPointLog(string strValueToAdd)
         {
-            if (Session["ID"] != null && Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
+            if ((Session["ID"] != null 
+                && Session["ID"].ToString() != "")
+                ||(hidTouchPointGUID.Value.Trim() !=""))//Fill Touch Point Log only if it is edit mode.
             {
                 
                 string strUserInstallId = JGSession.LoginUserID;
@@ -5856,11 +5914,27 @@ namespace JG_Prospect.Sr_App
                     strUserInstallId = Session["Username"]  +" - "+ JGSession.LoginUserID;
                 }
 
+                int InstallUserID = 0;
+                string UserGuid = "";
+
+                if (hidTouchPointGUID.Value.Trim() != "")
+                {
+                    //Store Zero if New user as we need to store Log at carea time also. 
+                    InstallUserID = 0;
+                    UserGuid = hidTouchPointGUID.Value;
+                }   
+                else
+                {
+                    InstallUserID = Convert.ToInt32(Session["ID"]);
+                } 
+
                 InstallUserBLL.Instance.AddTouchPointLogRecord(
                     Convert.ToInt32(JGSession.LoginUserID)
-                    , Convert.ToInt32(Session["ID"])
+                    , InstallUserID
                     , strUserInstallId
-                    , DateTime.Now, " Status To : " + ddlstatus.SelectedItem.Text);
+                    , DateTime.Now  
+                    ,strValueToAdd
+                    , UserGuid);
 
                 BindTouchPointLog();
             }

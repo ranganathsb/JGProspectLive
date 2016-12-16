@@ -81,7 +81,7 @@ namespace JG_Prospect.Sr_App
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
                 hidID.Value = Request.QueryString["ID"].ToString();
 
-                ///////bindGrid();
+                hidTouchPointGUID.Value = "";
                 BindTouchPointLog();
                 // hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
             }
@@ -90,6 +90,8 @@ namespace JG_Prospect.Sr_App
                 if (!IsPostBack)
                 {
                     Session["ID"] = "";
+                    // Store GIUD when user is in create mode and save Touch Point Log..
+                    hidTouchPointGUID.Value = Guid.NewGuid().ToString();
                     SetUserControlValue(string.Empty);
                     hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
@@ -1641,22 +1643,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.DrugTest = false;
                 }
-                //if (rdoDriveLicenseYes.Checked)
-                //{
-                //    objuser.ValidLicense = true;
-                //}
-                //else if (rdoDriveLicenseNo.Checked)
-                //{
-                //    objuser.ValidLicense = false;
-                //}
-                //if (rdoTruckToolsYes.Checked)
-                //{
-                //    objuser.TruckTools = true;
-                //}
-                //else if (rdoTruckToolsNo.Checked)
-                //{
-                //    objuser.TruckTools = false;
-                //}
+                 
                 if (rdoJMApplyYes.Checked)
                 {
                     objuser.PrevApply = true;
@@ -1673,58 +1660,20 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.LicenseStatus = false;
                 }
-                //if (rdoGuiltyYes.Checked)
-                //{
-                //    objuser.CrimeStatus = true;
-                //}
-                //else if (rdoGuiltyNo.Checked)
-                //{
-                //    objuser.CrimeStatus = false;
-                //}
-                //if (Convert.ToString(txtStartDateNew.Text) != "")
-                //{
-                //    objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
-                //}
-                
-                //objuser.Avialability = txtAvailability.Text;
-                //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
-                //if (txtYrs.Text != "")
-                //{
-                //    objuser.businessYrs = Convert.ToDouble(txtYrs.Text);
-                //}
-                //if (txtCurrentComp.Text != "")
-                //{
-                //    objuser.underPresentComp = Convert.ToDouble(txtCurrentComp.Text);
-                //}
-                //objuser.websiteaddress = txtWebsiteUrl.Text;
+                 
+                 
                 objuser.ResumePath = Convert.ToString(Session["ResumePath"]);
                 objuser.CirtificationTraining = Convert.ToString(Session["CirtificationPath"]);
                 if (Convert.ToString(Session["PersonName"]) != "")
                 {
                     objuser.PersonName = Convert.ToString(Session["PersonName"]);
                 }
-                else
-                {
-                    //objuser.PersonName = txtName.Text;
-                }
+                
                 if (Convert.ToString(Session["PersonType"]) != "")
                 {
                     objuser.PersonType = Convert.ToString(Session["PersonType"]);
                 }
-                //else if (txtName.Text != "")
-                //{
-                //    if (ddlType.SelectedIndex != 0)
-                //    {
-                //        objuser.PersonType = ddlType.SelectedValue;
-                //    }
-                //    else
-                //    {
-                //        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Select person type')", true);
-                //        ddlType.Focus();
-                //        return;
-                //    }
-                //}
-                //objuser.CompanyPrinciple = txtPrinciple.Text;
+                 
                 if (ddldesignation.SelectedValue != "0" && ddlInstallerType.Visible == true)
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
@@ -1827,6 +1776,13 @@ namespace JG_Prospect.Sr_App
                         AddUpdateUserPhoneEmail(true , result.Item2);
                         
                         UpdateUserInstallID(result.Item2);
+
+                        hidTouchPointGUID.Value = hidTouchPointGUID.Value.Trim();
+                        if (hidTouchPointGUID.Value !="")
+                        {
+                            InstallUserBLL.Instance.UpdateTouchPointLog(hidTouchPointGUID.Value, result.Item2);
+                        }
+                        
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
@@ -2790,7 +2746,8 @@ namespace JG_Prospect.Sr_App
         protected void ddlstatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
-            fullTouchPointLog();
+            fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
+
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -3286,6 +3243,11 @@ namespace JG_Prospect.Sr_App
             #endregion
         }
 
+        protected void ddlEmpType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            fullTouchPointLog(" Employee Type : " + ddlEmpType.SelectedItem.Text.ToString());
+        }
+
         private void ddlOfferMade2()
         {
             rqdtResignition.Enabled = false;
@@ -3614,12 +3576,6 @@ namespace JG_Prospect.Sr_App
 
         protected void ddldesignation_SelectedIndexChanged1(object sender, EventArgs e)
         {
-            //if (ddlstatus.SelectedValue == "Active" && 
-            //        (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            //    showHideNewHireSection(true);
-            //else
-            //    showHideNewHireSection(false);
-
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -5885,9 +5841,11 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void fullTouchPointLog()
+        private void fullTouchPointLog(string strValueToAdd)
         {
-            if (Session["ID"] != null && Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
+            if ((Session["ID"] != null 
+                && Session["ID"].ToString() != "")
+                ||(hidTouchPointGUID.Value.Trim() !=""))//Fill Touch Point Log only if it is edit mode.
             {
                 
                 string strUserInstallId = JGSession.LoginUserID;
@@ -5897,11 +5855,27 @@ namespace JG_Prospect.Sr_App
                     strUserInstallId = Session["Username"]  +" - "+ JGSession.LoginUserID;
                 }
 
+                int InstallUserID = 0;
+                string UserGuid = "";
+
+                if (hidTouchPointGUID.Value.Trim() != "")
+                {
+                    //Store Zero if New user as we need to store Log at carea time also. 
+                    InstallUserID = 0;
+                    UserGuid = hidTouchPointGUID.Value;
+                }   
+                else
+                {
+                    InstallUserID = Convert.ToInt32(Session["ID"]);
+                } 
+
                 InstallUserBLL.Instance.AddTouchPointLogRecord(
                     Convert.ToInt32(JGSession.LoginUserID)
-                    , Convert.ToInt32(Session["ID"])
+                    , InstallUserID
                     , strUserInstallId
-                    , DateTime.Now, " Status To : " + ddlstatus.SelectedItem.Text);
+                    , DateTime.Now  
+                    ,strValueToAdd
+                    , UserGuid);
 
                 BindTouchPointLog();
             }
@@ -5910,8 +5884,16 @@ namespace JG_Prospect.Sr_App
 
         private void BindTouchPointLog()
         {
-            DataSet DsTouchPointLog;
-            DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+            DataSet DsTouchPointLog = null;
+
+            if (Session["ID"].ToString() != "")
+            {
+                DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+            }
+            else if (hidTouchPointGUID.Value.Trim() !="")
+            {
+                DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByGUID(hidTouchPointGUID.Value);
+            }
 
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
@@ -6536,5 +6518,7 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
+
+        
     }
 }
