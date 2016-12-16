@@ -219,8 +219,8 @@ function copyToClipboard(strDataToCopy) {
     //   e.clearSelection();
     //});
 
-   
-   // $temp.remove();
+
+    // $temp.remove();
 
     //clipboard.destroy();
 }
@@ -238,8 +238,10 @@ function updateQueryStringParameter(uri, key, value) {
 }
 
 /********************************************* Image Gallery ******************************************************/
+var subtaskSliders;
 function LoadImageGallery(strSelector) {
-    $(strSelector).lightSlider({
+
+    subtaskSliders = $(strSelector).lightSlider({
         gallery: true,
         item: 1,
         thumbItem: 9,
@@ -251,4 +253,13 @@ function LoadImageGallery(strSelector) {
             $(strSelector).removeClass('cS-hidden');
         }
     });
+
+}
+
+function DestroyGallery() {
+    if (subtaskSliders) {
+        subtaskSliders.destroy();
+    }
+
+
 }

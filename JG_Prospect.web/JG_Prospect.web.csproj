@@ -1379,6 +1379,7 @@
     <Content Include="img\btn1.png" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
+    <Content Include="img\controls.png" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />

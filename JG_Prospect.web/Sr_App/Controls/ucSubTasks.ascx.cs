@@ -1365,9 +1365,9 @@ namespace JG_Prospect.Sr_App.Controls
                 this.LastSubTaskSequence = String.Empty;
             }
 
-            rptImageGallery.DataSource = this.lstSubTaskFiles;
-            rptImageGallery.DataBind();
-            upImageGallery.Update();
+            //rptImageGallery.DataSource = this.lstSubTaskFiles;
+            //rptImageGallery.DataBind();
+            //upImageGallery.Update();
         }
 
         private void FillInitialData()
