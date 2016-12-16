@@ -19,6 +19,10 @@ INSERT [dbo].[MCQ_CorrectAnswer] ([AnswerID], [AnswerText], [QuestionID]) VALUES
 SET IDENTITY_INSERT [dbo].[MCQ_CorrectAnswer] OFF
  
 
+Truncate Table [MCQ_Exam]
+SET IDENTITY_INSERT [dbo].[MCQ_Exam] ON 
+INSERT [dbo].[MCQ_Exam] ([ExamID], [ExamTitle], [ExamDescription], [ExamType], [IsActive], [CourseID], [ExamDuration], [PassPercentage]) VALUES (20, N'.Net Test JG Aptitude Screen Test ', N' Test for .Net Sr. and Jr. Developer ', 2, 1, 1, 17, 0)
+SET IDENTITY_INSERT [dbo].[MCQ_Exam] OFF 
 
 TRUNCATE TABLE [MCQ_Option]
 SET IDENTITY_INSERT [dbo].[MCQ_Option] ON 
