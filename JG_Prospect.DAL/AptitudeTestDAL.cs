@@ -154,7 +154,7 @@ namespace JG_Prospect.DAL
 
         public DataTable GetQuestionsForExamByID(string examID)
         {
-            examID = "20";
+           
             string SQL = "SELECT * FROM [MCQ_Question] WHERE ExamID = " + examID;
 
             using (SqlConnection con = new SqlConnection(constr))
@@ -181,7 +181,7 @@ namespace JG_Prospect.DAL
         public DataTable GetExamByExamID(Enums.Aptitude_ExamType examType, int userID)
         {
             string SQL = "SELECT * FROM [MCQ_Exam] Ex WHERE ExamID NOT IN ( "
-                        + "select ExamID from [MCQ_Performance] where StudentName = "
+                        + "select ExamID from [MCQ_Performance] where UserID = "
                         + "'" + userID + "'"+")";
 
             using (SqlConnection con = new SqlConnection(constr))

@@ -3650,20 +3650,61 @@ namespace JG_Prospect.Sr_App
 
         private void ShowHideAptitudeTestLink()
         {
-            if (Session["ID"] != null && Session["ID"].ToString() != "")
-            switch (ddldesignation.SelectedValue)
-            {
-                case "ITJr.NetDeveloper":
-                case "ITSr.NetDeveloper":
-                    lbtnAptTestLink.Text = "Aptitude test for .Net";
-                    lbtnAptTestLink.PostBackUrl = "";
-                    break;
 
-                default:
-                    lbtnAptTestLink.Text = "";
-                    lbtnAptTestLink.PostBackUrl = "";
-                    break;
-            }
+            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+
+            if (Session["ID"] != null && Session["ID"].ToString() != "")
+                switch ((JGConstant.DesignationType)selDesignation)
+                {
+                    case JGConstant.DesignationType.Admin:
+                        break;
+                    case JGConstant.DesignationType.Jr_Sales:
+                        break;
+                    case JGConstant.DesignationType.Jr_Project_Manager:
+                        break;
+                    case JGConstant.DesignationType.Office_Manager:
+                        break;
+                    case JGConstant.DesignationType.Recruiter:
+                        break;
+                    case JGConstant.DesignationType.Sales_Manager:
+                        break;
+                    case JGConstant.DesignationType.Sr_Sales:
+                        break;
+                    case JGConstant.DesignationType.IT_Network_Admin:
+                        break;
+                    case JGConstant.DesignationType.IT_Jr_Net_Developer:
+                    case JGConstant.DesignationType.IT_Sr_Net_Developer:
+                        lbtnAptTestLink.Text = "Aptitude test for .Net";
+                        lbtnAptTestLink.PostBackUrl = "";
+
+                        break;
+                    case JGConstant.DesignationType.IT_Android_Developer:
+                        break;
+                    case JGConstant.DesignationType.IT_PHP_Developer:
+                        break;
+                    case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
+                        break;
+                    case JGConstant.DesignationType.Installer_Helper:
+                        break;
+                    case JGConstant.DesignationType.Installer_Journeyman:
+                        break;
+                    case JGConstant.DesignationType.Installer_Mechanic:
+                        break;
+                    case JGConstant.DesignationType.Installer_Lead_Mechanic:
+                        break;
+                    case JGConstant.DesignationType.Installer_Foreman:
+                        break;
+                    case JGConstant.DesignationType.Commercial_Only:
+                        break;
+                    case JGConstant.DesignationType.SubContractor:
+                        break;
+                    default:
+
+                        lbtnAptTestLink.Text = "";
+                        lbtnAptTestLink.PostBackUrl = "";
+                        break;
+                }
+
         }
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
