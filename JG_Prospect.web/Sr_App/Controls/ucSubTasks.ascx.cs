@@ -11,6 +11,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -385,6 +386,7 @@ namespace JG_Prospect.Sr_App.Controls
                     DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(hdnSubTaskId.Value));
 
                     DataTable dtTaskMasterDetails = dsTaskDetails.Tables[0];
+                    DataTable dtTaskDesignationDetails = dsTaskDetails.Tables[1];
 
                     txtTaskListID.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
                     txtSubTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
@@ -425,6 +427,8 @@ namespace JG_Prospect.Sr_App.Controls
                         rfvTitle.Enabled =
                         rfvUrl.Enabled = false;
                     }
+
+                    SetTaskDesignationDetails(dtTaskDesignationDetails);
 
                     FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
                 }
@@ -858,6 +862,25 @@ namespace JG_Prospect.Sr_App.Controls
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
         }
 
+        protected void ddlUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //LoadUsersByDesgination();
+
+            //ddlAssignedUsers_SelectedIndexChanged(sender, e);
+
+            ddlUserDesignation.Texts.SelectBoxCaption = "Select";
+
+            foreach (ListItem item in ddlUserDesignation.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlUserDesignation.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+        }
+
         protected void btnSaveSubTask_Click(object sender, EventArgs e)
         {
             SaveSubTask();
@@ -867,6 +890,64 @@ namespace JG_Prospect.Sr_App.Controls
         #endregion
 
         #region '--Methods--'
+
+        private void SetTaskDesignationDetails(DataTable dtTaskDesignationDetails)
+        {
+            String firstDesignation = string.Empty;
+            if (this.IsAdminMode)
+            {
+                foreach (DataRow row in dtTaskDesignationDetails.Rows)
+                {
+                    ListItem item = ddlUserDesignation.Items.FindByText(row["Designation"].ToString());
+
+                    if (item != null)
+                    {
+                        item.Selected = true;
+
+                        if (string.IsNullOrEmpty(firstDesignation))
+                        {
+                            firstDesignation = item.Text;
+                        }
+                    }
+                }
+
+                ddlUserDesignation.Texts.SelectBoxCaption = firstDesignation;
+
+                //LoadUsersByDesgination();
+            }
+            else
+            {
+                StringBuilder designations = new StringBuilder(string.Empty);
+
+                foreach (DataRow row in dtTaskDesignationDetails.Rows)
+                {
+                    designations.Append(String.Concat(row["Designation"].ToString(), ","));
+                }
+
+                //ltlTUDesig.Text = string.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
+            }
+        }
+
+        private string GetSelectedDesignationsString()
+        {
+            String returnVal = string.Empty;
+            StringBuilder sbDesignations = new StringBuilder();
+
+            foreach (ListItem item in ddlUserDesignation.Items)
+            {
+                if (item.Selected)
+                {
+                    sbDesignations.Append(String.Concat(item.Value, ","));
+                }
+            }
+
+            if (sbDesignations.Length > 0)
+            {
+                returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
+            }
+
+            return returnVal;
+        }
 
         private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
         {
@@ -1302,6 +1383,14 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void FillDropDrowns()
         {
+            DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddlUserDesignation.Items.Clear();
+            ddlUserDesignation.DataSource = ds.Tables[0];
+            ddlUserDesignation.DataTextField = "DesignationName";
+            ddlUserDesignation.DataValueField = "ID";
+            ddlUserDesignation.DataBind();
+            ddlUserDesignation.Texts.SelectBoxCaption = "Select";
+
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
             ddlSubTaskStatus.DataTextField = "Text";
             ddlSubTaskStatus.DataValueField = "Value";
@@ -1417,6 +1506,9 @@ namespace JG_Prospect.Sr_App.Controls
                     TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
                 }
 
+                // save assgined designation.
+                SaveTaskDesignations();
+
                 UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment, JGConstant.TaskFileDestination.SubTask);
 
                 #region Update Estimated Hours
@@ -1453,6 +1545,25 @@ namespace JG_Prospect.Sr_App.Controls
             ClearSubTaskData();
         }
 
+        private void SaveTaskDesignations()
+        {
+            //if task id is available to save its note and attachement.
+            if (hdnSubTaskId.Value != "0")
+            {
+                String designations = GetSelectedDesignationsString();
+                if (!string.IsNullOrEmpty(designations))
+                {
+                    int indexofComma = designations.IndexOf(',');
+                    int copyTill = indexofComma > 0 ? indexofComma : designations.Length;
+
+                    //string designationcode = GetInstallIdFromDesignation(designations.Substring(0, copyTill));
+                    string designationcode = txtTaskListID.Text.Trim();
+
+                    TaskGeneratorBLL.Instance.SaveTaskDesignations(Convert.ToUInt64(hdnSubTaskId.Value), designations, designationcode);
+                }
+            }
+        }
+
         public void ClearSubTaskData()
         {
             hdnTaskApprovalId.Value = "0";
@@ -1464,7 +1575,9 @@ namespace JG_Prospect.Sr_App.Controls
             txtSubTaskDescription.Text =
             txtEstimatedHours.Text =
             txtSubTaskDueDate.Text =
-            txtSubTaskHours.Text = string.Empty;
+            txtSubTaskHours.Text = string.Empty; 
+            ddlUserDesignation.ClearSelection();
+            ddlUserDesignation.Texts.SelectBoxCaption = "Select";
             if (ddlTaskType.Items.Count > 0)
             {
                 ddlTaskType.SelectedIndex = 0;
