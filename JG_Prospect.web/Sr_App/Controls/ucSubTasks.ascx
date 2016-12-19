@@ -162,6 +162,12 @@
                             <ItemTemplate>
                                 <table>
                                     <tr>
+                                        <td class="noborder">Assigned
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+
                                         <td class="noborder">
                                             <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
@@ -172,8 +178,19 @@
                                         </td>
                                     </tr>
                                     <tr>
+
+                                        <td class="noborder">Status:
+                                        </td>
+                                    </tr>
+                                    <tr>
+
                                         <td class="noborder">
                                             <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+                                        <td class="noborder">Priority:
                                         </td>
                                     </tr>
                                     <tr>
@@ -182,10 +199,55 @@
                                         </td>
                                     </tr>
                                     <tr>
+
+                                        <td class="noborder">Type:
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="noborder">
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
                                 </table>
+
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
+                            <ItemTemplate>
+                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                    <HeaderTemplate>
+                                        <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                            <div class="lSSlideWrapper usingCss">
+                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
+                                            <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
+                                            <br />
+                                            <h5>
+                                                <asp:Literal ID="ltlFileName" runat="server"></asp:Literal></h5>
+                                            <h5>
+                                                <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
+                                            <h5>
+                                                <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
+                                            <div style="display: none;">
+                                                <br />
+                                                <small>
+                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                                </small>
+                                            </div>
+                                        </li>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </ul>
+                                            </div>
+                                        </div>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                            <ItemTemplate>
                                 <table>
                                     <tr>
                                         <td colspan="3" class="noborder" align="center">
@@ -212,37 +274,6 @@
                                 </table>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
-                            <ItemTemplate>
-                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate>
-                                        <div class="lSSlideOuter sub-task-attachments" style="max-width: 400px;">
-                                            <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
-                                            <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
-                                            <br />
-                                            <small>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
-                                            </small>
-                                        </li>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </ul>
-                                            </div>
-                                        </div>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <%-- <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
-                                
-                            </ItemTemplate>
-                        </asp:TemplateField>--%>
                     </Columns>
                 </asp:GridView>
             </div>
