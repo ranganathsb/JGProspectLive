@@ -2798,7 +2798,77 @@ SELECT
 FROM          
 	tblTask AS Tasks 
 
+GO
 
 
 
+/****** Object:  StoredProcedure [dbo].[SP_SaveOrDeleteTaskUserFiles]    Script Date: 19-Dec-16 9:25:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTaskUserFiles]  
+(   
+	@Mode tinyint, -- 0:Insert, 1: Update 2: Delete  
+	@TaskUpDateId bigint= NULL,  
+	@TaskId bigint,  
+	@FileDestination TINYINT = NULL,
+	@UserId int,  
+	@Attachment varchar(MAX),
+	@OriginalFileName varchar(MAX),
+	@UserType BIT,
+    @FileType varchar(5)
+) 
+AS  
+BEGIN  
+  
+	IF @Mode=0 
+	BEGIN  
+
+		/* Generate an image name starts */
+		DECLARE @NextId INT = 1
+		DECLARE @ParentTaskId BIGINT = NULL
+
+		SELECT @ParentTaskId = t.ParentTaskId
+		FROM tblTask t
+		WHERE t.TaskId = @TaskId
+
+		SELECT @NextId = (COUNT(*) + 1)
+		FROM tblTaskUserFiles t
+		WHERE 
+			  t.TaskId = ISNULL(@ParentTaskId, @TaskId) OR
+			  t.TaskId IN (SELECT TaskId FROM tblTask WHERE ParentTaskId = ISNULL(@ParentTaskId, @TaskId))
+
+		SELECT @OriginalFileName = 
+						ISNULL(
+								CAST(t.InstallId AS VARCHAR), 
+								'TASK' + CAST(t.TaskId AS VARCHAR)
+							  ) 
+						+ '-IMG'
+						+ RIGHT('000'+CAST(@NextId AS VARCHAR),3)
+						+ '.' + REVERSE(SUBSTRING(REVERSE(@OriginalFileName),0,CHARINDEX('.',REVERSE(@OriginalFileName))))
+		FROM tblTask t
+		WHERE t.TaskId = ISNULL(@ParentTaskId, @TaskId)
+
+		/* Generate an image name ends */
+		
+		INSERT INTO tblTaskUserFiles (TaskId,UserId,Attachment,TaskUpdateID,IsDeleted, AttachmentOriginal, UserType,FileDestination, FileType, AttachedFileDate)   
+		VALUES(@TaskId,@UserId,@Attachment,@TaskUpDateId,0, @OriginalFileName, @UserType,@FileDestination, @FileType ,GETDATE())  
+	END  
+	ELSE IF @Mode=1  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			Attachment=@Attachment  
+		WHERE TaskUpdateID = @TaskUpDateId
+	END  
+	ELSE IF @Mode=2 --DELETE  
+	BEGIN  
+		UPDATE tblTaskUserFiles  
+		SET 
+			IsDeleted =1  
+		WHERE TaskUpdateID = @TaskUpDateId 
+	END  
+  
+END  
 GO
