@@ -38,15 +38,14 @@
                                         <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
                                     </div>
                                     <div style="padding-bottom: 5px;">
-                                        <h5>
-                                            Url:&nbsp;<a target="_blank" class="bluetext" 
-                                                        href='<%# string.IsNullOrEmpty(Eval("Url").ToString()) == true ? 
+                                        <h5>Url:&nbsp;<a target="_blank" class="bluetext"
+                                            href='<%# string.IsNullOrEmpty(Eval("Url").ToString()) == true ? 
                                                                         "javascript:void(0);" : 
                                                                         Eval("Url").ToString()%>'>
-                                                        <%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? 
+                                            <%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? 
                                                                 "N.A." : 
                                                                 Eval("Url").ToString()%> 
-                                                      </a>
+                                        </a>
                                         </h5>
                                     </div>
                                     <div style="padding-bottom: 5px;">
@@ -187,36 +186,6 @@
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
                                 </table>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" 
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
-                            <ItemTemplate>
-                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate>
-                                        <div class="lSSlideOuter sub-task-attachments" style="width:150px;">
-                                            <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder">
-                                            <img id="imgIcon" class="gallery-ele" runat="server" height="50" width="50" src="javascript:void(0);" />
-                                            <br />
-                                            <small>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
-                                            </small>
-                                        </li>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
                                 <table>
                                     <tr>
                                         <td colspan="3" class="noborder" align="center">
@@ -243,6 +212,37 @@
                                 </table>
                             </ItemTemplate>
                         </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
+                            <ItemTemplate>
+                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                    <HeaderTemplate>
+                                        <div class="lSSlideOuter sub-task-attachments" style="max-width: 400px;">
+                                            <div class="lSSlideWrapper usingCss">
+                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
+                                            <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
+                                            <br />
+                                            <small>
+                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                            </small>
+                                        </li>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </ul>
+                                            </div>
+                                        </div>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <%-- <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
+                            <ItemTemplate>
+                                
+                            </ItemTemplate>
+                        </asp:TemplateField>--%>
                     </Columns>
                 </asp:GridView>
             </div>
@@ -296,10 +296,10 @@
                                     <ContentTemplate>
                                         Designation <span style="color: red;">*</span>:
                                         <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
-                                             AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
+                                            AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                         </asp:DropDownCheckBoxes>
-                                        <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None" 
+                                        <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
                                             ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
@@ -483,23 +483,7 @@
 
 </div>
 
-<div id="divGalleryPopup" style="max-width: 700px;" class="lSSlideOuter ">
-    <div class="lSSlideWrapper usingCss">
-        <asp:UpdatePanel ID="upImageGallery" runat="server" UpdateMode="Conditional">
-            <ContentTemplate>
-                <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
-                    <asp:Repeater ID="rptImageGallery" runat="server" OnItemDataBound="rptImageGallery_ItemDataBound">
-                        <ItemTemplate>
-                            <li id="liImage" runat="server">
-                                <img id="imgImage" runat="server" src="javascript:void(0);" />
-                            </li>
-                        </ItemTemplate>
-                    </asp:Repeater>
-                </ul>
-            </ContentTemplate>
-        </asp:UpdatePanel>
-    </div>
-</div>
+
 <%--Popup Ends--%>
 
 <script type="text/javascript">
@@ -515,6 +499,10 @@
         ucSubTasks_Initialize();
     });
 
+    prmTaskGenerator.add_beginRequest(function () {
+        DestroyGallery();
+    });
+
     function ucSubTasks_Initialize() {
         ApplySubtaskLinkContextMenu();
         //ApplyImageGallery();
@@ -523,7 +511,7 @@
 
         var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
-       // alert(controlmode);
+        // alert(controlmode);
 
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
@@ -620,44 +608,6 @@
             $(this).removeClass("yellowthickborder");
         });
     }
-    var objGalleryPopup;
-
-    function OpenImageGalleryDialog() {
-
-        // var windowWidth = (parseInt($(window).width())) - 100;
-
-        //var dialogwidth = windowWidth + "px";
-
-        if (objGalleryPopup == null) {
-            objGalleryPopup = $("#divGalleryPopup").dialog({
-                width: "600 px",
-                height: "auto",
-                open: function () {
-                    showGallery();
-                }
-            });
-            //objGalleryPopup.bind("dialogopen", function (event, ui) { showGallery(); });
-        }
-        else if (objGalleryPopup.dialog('isOpen') === false) {
-            objGalleryPopup = $("#divGalleryPopup").dialog({
-                width: "600 px",
-                height: "auto"
-            });
-        }
-    }
-
-    function showGallery() {
-
-        LoadImageGallery('#image-gallery');
-
-    }
-
-    function ApplyImageGallery() {
-        $('.gallery-ele').bind("click", function () {
-            OpenImageGalleryDialog();
-        });
-    }
-
 
     // check if user has selected any designations or not.
     function SubTasks_checkDesignations(oSrc, args) {

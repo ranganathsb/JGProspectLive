@@ -1526,6 +1526,7 @@
     <input type="hidden" id="hidExtEmail" runat="server" />
     <input type="hidden" id="hidExtPhone" runat="server" />
     <input type="hidden" id="hidPhoneISDCode" runat="server" /> <%--for Default Phone no. old one--%>
+    <input type="hidden" id="hidTouchPointGUID" runat="server" />
 
     <%--<div class="loading" style="display: none">Loading&#8230;</div>--%>
     <asp:UpdatePanel ID="UpdatePanel8" runat="server">
@@ -1776,7 +1777,7 @@
                                         <span>
                                             <asp:Label ID="lblReqEmpType" Text="*" ForeColor="Blue" runat="server"></asp:Label></span>
                                         <br />
-                                        <asp:DropDownList ID="ddlEmpType" runat="server" Width="170px">
+                                        <asp:DropDownList ID="ddlEmpType" runat="server" Width="170px" AutoPostBack="true" OnSelectedIndexChanged="ddlEmpType_SelectedIndexChanged">
                                             <%--TabIndex="155"--%>
                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
                                             <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
@@ -4997,6 +4998,7 @@
             <asp:PostBackTrigger ControlID="btncreate" />
             <asp:PostBackTrigger ControlID="txtZip" />
             <asp:PostBackTrigger ControlID="ddlstatus" />
+            <asp:PostBackTrigger ControlID="ddlEmpType" />
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>

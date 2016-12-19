@@ -35,7 +35,7 @@ namespace JG_Prospect.MCQTest
                 foreach (DataRow row in performanceTable.Rows)
                 {   
                     String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
-                    String studentName = row["StudentName"].ToString();
+                    String studentName = row["UserID"].ToString();
                     String aggregate = row["Aggregate"].ToString();
                     String marksEarned = row["MarksEarned"].ToString();
                     String totalMarks = row["TotalMarks"].ToString();
@@ -56,11 +56,11 @@ namespace JG_Prospect.MCQTest
             if (examsNotWrittenYet.Rows.Count == 0)
             {
                 Label1.ForeColor = Color.DarkBlue;
-                Label1.Text = "No Exams more scheduled for you.!";
+                Label1.Text = "";
             }
             else
             {
-                string buff = "<table bgcolor=white>";
+                string buff = "<table class='tblExamStartup' bgcolor=white>";
 
                 foreach (DataRow ExamRow in examsNotWrittenYet.Rows)
                 {

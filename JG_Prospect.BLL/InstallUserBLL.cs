@@ -542,14 +542,24 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID, PhoneExtNo , PhoneISDCode, ClearDataBeforInsert);
         }
 
-        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog)
+        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog , string strGUID)
         {
-            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog);
+            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog , strGUID);
         }
 
         public DataSet GetTouchPointLogDataByUserID(int UserID)
         {
             return InstallUserDAL.Instance.GetTouchPointLogDataByUserID(UserID);
+        }
+
+        public DataSet GetTouchPointLogDataByGUID(string StrGUID)
+        {
+            return InstallUserDAL.Instance.GetTouchPointLogDataByGUID(StrGUID);
+        }
+
+        public void UpdateTouchPointLog(string strGUID, int InstallUserID)
+        {
+            InstallUserDAL.Instance.UpdateTouchPointLog(strGUID, InstallUserID);
         }
 
         public string Update_ForgotPassword(string loginId, string newPassword, bool isCustomer)
@@ -561,5 +571,7 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.CheckForNewUserByEmaiID(userEmail, userID,DefaultPW);
         }
+
+        
     }
 }

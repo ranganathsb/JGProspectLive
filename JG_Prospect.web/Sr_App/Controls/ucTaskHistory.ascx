@@ -118,7 +118,7 @@
                                                         %>
                                                     </asp:HyperLink>
                                                     <br />
-                                                    <span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span>
+                                                    <div class="yellowbackground"><span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span></div>
                                                 </ItemTemplate>
                                                 <ControlStyle ForeColor="Black" />
                                                 <ControlStyle ForeColor="Black" />
@@ -284,7 +284,7 @@
                                                     %>
                                                 </asp:HyperLink>
                                                 <br />
-                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span>
+                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("UpdatedOn"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("UpdatedOn"))%></span>&nbsp<span>(EST)</span>
                                             </ItemTemplate>
                                             <ControlStyle ForeColor="Black" />
                                             <ControlStyle ForeColor="Black" />

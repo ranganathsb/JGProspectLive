@@ -259,7 +259,7 @@ namespace JG_Prospect.DAL
             return tupResult;
         }
 
-        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog)
+        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog , string strGUID)
         {
             try
             {
@@ -272,7 +272,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@loginUserInstallID", DbType.String, loginUserInstallID);
                     database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
-                    
+                    database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
+
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
                 }
@@ -280,6 +281,26 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        public void UpdateTouchPointLog(string strGUID, int installUserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_UpdateNewUserIDInTouchPointLog");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@NewuserID", DbType.Int32, installUserID);                    
+                    database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                
             }
         }
 
@@ -328,6 +349,27 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetTouchPointLogDataByGUID(string strGUID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("Sp_GetTouchPointLogDataByGUID");
+                    database.AddInParameter(command, "@CurrentGID", DbType.String, strGUID);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            } 
+        }
+        
 
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID,
                                     string PhoneExtNo,string PhoneISDCode, bool ClearDataBeforInsert)

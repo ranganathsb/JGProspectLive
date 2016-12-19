@@ -18,6 +18,12 @@
             background : url('../img/line.png') repeat-x 50% bottom;
             padding: 10px 15px 12px 15px;
         }
+        .tblExamStartup
+        {
+            width: 100%;
+                padding: 50px;
+        }
+
     </style>
 </head>
 <body style="background:none;">
