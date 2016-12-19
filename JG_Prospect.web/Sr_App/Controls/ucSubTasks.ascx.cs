@@ -689,17 +689,23 @@ namespace JG_Prospect.Sr_App.Controls
                 string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
+                Literal ltlFileName = (Literal)e.Item.FindControl("ltlFileName");
+                Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
+                Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
                 if (files[1].Length > 13)// sort name with ....
                 {
                     lbtnAttchment.Text = String.Concat(files[1].Substring(0, 12), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
 
+                    ltlFileName.Text = lbtnAttchment.Text;
+
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 }
                 else
                 {
                     lbtnAttchment.Text = files[1];
+                    ltlFileName.Text = lbtnAttchment.Text;
                 }
 
                 HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
@@ -716,6 +722,13 @@ namespace JG_Prospect.Sr_App.Controls
                 ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", imgIcon.Src);
 
                 lbtnAttchment.CommandArgument = file;
+
+                if (files.Length > 2)// if there are attachements available.
+                {
+                    ltlCreatedUser.Text = files[3]; // created user name
+                    ltlUpdateTime.Text = String.Concat("<span>", String.Format("{0:M/d/yyyy}", Convert.ToDateTime(files[2])), "</span>&nbsp", "<span style=\"color: red\">", String.Format("{0:hh:mm:ss tt}", Convert.ToDateTime(files[2])), "</span>&nbsp<span>(EST)</span>"); 
+                }
+                
             }
         }
 
@@ -1575,7 +1588,7 @@ namespace JG_Prospect.Sr_App.Controls
             txtSubTaskDescription.Text =
             txtEstimatedHours.Text =
             txtSubTaskDueDate.Text =
-            txtSubTaskHours.Text = string.Empty; 
+            txtSubTaskHours.Text = string.Empty;
             ddlUserDesignation.ClearSelection();
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
             if (ddlTaskType.Items.Count > 0)
