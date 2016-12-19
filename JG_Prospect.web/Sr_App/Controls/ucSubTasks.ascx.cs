@@ -493,7 +493,7 @@ namespace JG_Prospect.Sr_App.Controls
             DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
             int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
-            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
+            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
 
             if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, intTaskId))
             {

@@ -1,3 +1,61 @@
+GO
+/****** Object:  StoredProcedure [dbo].[SP_InsertUserEmail]    Script Date: 12/4/2016 12:58:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Bhavik
+-- Create date: 22-11-2016
+-- Description:	Insert email data
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_InsertUserEmail] 
+	-- Add the parameters for the stored procedure here
+	@EmailID varchar(max), 
+	@UserID int = 0
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+
+---SPLIT THE VALUE --- START--
+DECLARE @Split char(3),
+        @X xml
+
+SELECT @Split = '|,|'
+
+
+
+SELECT @X = CONVERT(xml,' <root> <s>' + REPLACE(@EmailID,@Split,'</s> <s>') + '</s>   </root> ')
+---SPLIT THE VALUE --- END--
+
+
+DELETE FROM tblUserEmail WHERE UserID = @UserID
+
+IF @EmailID <> ''
+BEGIN
+		INSERT INTO [dbo].[tblUserEmail]
+				   ([emailID]
+				   ,[IsPrimary]
+				   ,[UserID])
+		 SELECT [Value] = T.c.value('.','varchar(255)') , 0 ,@UserID
+		FROM @X.nodes('/root/s') T(c)
+		where T.c.value('.','varchar(255)') <> ''
+
+END
+
+
+END
+
+
+GO
+
+ALTER TABLE tblUserPhone ADD PhoneExtNo VARCHAR(20)
+ALTER TABLE tblUserPhone ADD PhoneISDCode VARCHAR(8)
+
+GO
+
+
 SET ANSI_NULLS ON
 GO
 
