@@ -241,25 +241,24 @@ function updateQueryStringParameter(uri, key, value) {
 var subtaskSliders;
 function LoadImageGallery(strSelector) {
 
-    subtaskSliders = $(strSelector).lightSlider({
-        gallery: true,
-        item: 1,
-        thumbItem: 9,
-        slideMargin: 0,
-        speed: 500,
-        auto: true,
-        loop: true,
-        onSliderLoad: function () {
-            $(strSelector).removeClass('cS-hidden');
-        }
-    });
-
+    if (typeof ($.fn.lightSlider) == 'function') {
+        subtaskSliders = $(strSelector).lightSlider({
+            gallery: true,
+            item: 1,
+            thumbItem: 9,
+            slideMargin: 0,
+            speed: 500,
+            auto: true,
+            loop: true,
+            onSliderLoad: function () {
+                $(strSelector).removeClass('cS-hidden');
+            }
+        });
+    }
 }
 
 function DestroyGallery() {
-    if (subtaskSliders) {
+    if (subtaskSliders && typeof (subtaskSliders.destroy) == 'function') {
         subtaskSliders.destroy();
     }
-
-
 }
