@@ -678,6 +678,12 @@ namespace JG_Prospect.Sr_App.Controls
 
                 DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
+            else if (e.CommandName == "delete-attachment")
+            {
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
+
+                SetSubTaskDetails();
+            }
         }
 
         protected void rptAttachment_ItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -688,47 +694,62 @@ namespace JG_Prospect.Sr_App.Controls
 
                 string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
+                LinkButton lbtnDelete = (LinkButton)e.Item.FindControl("lbtnDelete");
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
-                Literal ltlFileName = (Literal)e.Item.FindControl("ltlFileName");
+                //Literal ltlFileName = (Literal)e.Item.FindControl("ltlFileName");
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                if (files[1].Length > 13)// sort name with ....
-                {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 12), "..");
-                    lbtnAttchment.Attributes.Add("title", files[1]);
+                lbtnDelete.CommandArgument = file[0] + "|" + file[1];
 
-                    ltlFileName.Text = lbtnAttchment.Text;
+                if (files[2].Length > 13)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[2].Substring(0, 12), "..");
+                    lbtnAttchment.Attributes.Add("title", files[2]);
+
+                    //ltlFileName.Text = lbtnAttchment.Text;
 
                     ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 }
                 else
                 {
-                    lbtnAttchment.Text = files[1];
-                    ltlFileName.Text = lbtnAttchment.Text;
+                    lbtnAttchment.Text = files[2];
+                    //ltlFileName.Text = lbtnAttchment.Text;
                 }
 
                 HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
 
-                if (CommonFunction.IsImageFile(files[0].Trim()))
+                if (CommonFunction.IsImageFile(files[1].Trim()))
                 {
-                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim()))));
+                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[1].Trim()))));
                 }
                 else
                 {
-                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
+                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[1].Trim(), this.Page);
                 }
 
                 ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", imgIcon.Src);
 
                 lbtnAttchment.CommandArgument = file;
 
-                if (files.Length > 2)// if there are attachements available.
+                if (files.Length > 3)// if there are attachements available.
                 {
-                    ltlCreatedUser.Text = files[3]; // created user name
-                    ltlUpdateTime.Text = String.Concat("<span>", String.Format("{0:M/d/yyyy}", Convert.ToDateTime(files[2])), "</span>&nbsp", "<span style=\"color: red\">", String.Format("{0:hh:mm:ss tt}", Convert.ToDateTime(files[2])), "</span>&nbsp<span>(EST)</span>"); 
+                    ltlCreatedUser.Text = files[4]; // created user name
+                    ltlUpdateTime.Text = string.Concat(
+                                                        "<span>",
+                                                        string.Format(
+                                                                        "{0:M/d/yyyy}",
+                                                                        Convert.ToDateTime(files[3])
+                                                                     ),
+                                                        "</span>&nbsp",
+                                                        "<span style=\"color: red\">",
+                                                        string.Format(
+                                                                        "{0:hh:mm:ss tt}",
+                                                                        Convert.ToDateTime(files[3])
+                                                                        ),
+                                                        "</span>&nbsp<span>(EST)</span>"
+                                                     );
                 }
-                
             }
         }
 

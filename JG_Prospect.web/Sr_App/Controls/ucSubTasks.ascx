@@ -222,10 +222,13 @@
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
+                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" 
+                                                 CommandName="delete-attachment" />
+                                            <br />
                                             <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
                                             <br />
                                             <h5>
-                                                <asp:Literal ID="ltlFileName" runat="server"></asp:Literal></h5>
+                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
                                             <h5>
                                                 <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
                                             <h5>
@@ -233,7 +236,7 @@
                                             <div style="display: none;">
                                                 <br />
                                                 <small>
-                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                                    
                                                 </small>
                                             </div>
                                         </li>
