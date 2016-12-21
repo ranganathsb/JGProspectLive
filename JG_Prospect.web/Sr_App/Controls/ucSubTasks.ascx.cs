@@ -676,7 +676,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
             }
             else if (e.CommandName == "delete-attachment")
             {
@@ -700,7 +700,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                lbtnDelete.CommandArgument = file[0] + "|" + file[1];
+                lbtnDelete.CommandArgument = files[0] + "|" + files[1];
 
                 if (files[2].Length > 13)// sort name with ....
                 {
@@ -769,7 +769,9 @@ namespace JG_Prospect.Sr_App.Controls
                 LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
 
                 //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+                //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+
+                lbtnDeleteAttchment.CommandArgument = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "Id")) + "|" + files[0];
 
                 if (files[1].Length > 40)// sort name with ....
                 {
@@ -808,6 +810,9 @@ namespace JG_Prospect.Sr_App.Controls
 
                 //Reload records.
                 FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+
+                SetSubTaskDetails();
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
             }
 
         }

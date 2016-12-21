@@ -241,7 +241,7 @@
                                             <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" 
                                                  CommandName="delete-attachment" />
                                             <br />
-                                            <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
+                                            <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
                                             <br />
                                             <h5>
                                                 <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
