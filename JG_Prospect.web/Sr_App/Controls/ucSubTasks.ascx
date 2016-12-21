@@ -207,6 +207,22 @@
                                         <td class="noborder">
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
+                                    <tr>
+                                        <td class="noborder" colspan="2">
+                                            <h5>Estimated Hours</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">ITLead
+                                        </td>
+                                        <td class="noborder">
+                                            <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">User</td>
+                                        <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
+                                    </tr>
                                 </table>
 
                             </ItemTemplate>

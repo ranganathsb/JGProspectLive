@@ -3045,3 +3045,110 @@ BEGIN
   
 END  
 GO
+
+
+UPDATE tblTaskUserFiles
+SET 
+[AttachedFileDate] = UpdatedOn
+WHERE [AttachedFileDate] IS NULL
+
+
+
+/****** Object:  View [dbo].[TaskListView]    Script Date: 20-Dec-16 8:26:36 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[TaskListView] 
+AS
+SELECT 
+	Tasks.*,
+	STUFF
+	(
+		(SELECT  CAST(', ' + td.Designation as VARCHAR) AS Designation
+		FROM tblTaskDesignations td
+		WHERE td.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskDesignations,
+	STUFF
+	(
+		(SELECT  CAST(', ' + u.FristName + ' ' + u.LastName as VARCHAR) AS Name
+		FROM tblTaskAssignedUsers tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignedUsers,
+	STUFF
+	(
+		(SELECT  ',' + CAST(tu.UserId as VARCHAR) AS Id
+		FROM tblTaskAssignedUsers tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,1
+		,''
+	) AS TaskAssignedUserIds,
+	STUFF
+	(
+		(SELECT  CAST(', ' + CAST(tu.UserId AS VARCHAR) + ':' + u.FristName as VARCHAR) AS Name
+		FROM tblTaskAssignmentRequests tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignmentRequestUsers,
+	STUFF
+	(
+		(SELECT  ', ' + CAST(tu.UserId AS VARCHAR) AS UserId
+		FROM tblTaskAcceptance tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAcceptanceUsers,
+	STUFF
+	(
+		(SELECT  CAST(
+						', ' + CAST(tuf.[Id] AS VARCHAR) + 
+						'@' + tuf.[Attachment] + 
+						'@' + tuf.[AttachmentOriginal]  + 
+						'@' + CAST( tuf.[AttachedFileDate] AS VARCHAR(100)) + 
+						'@' + (
+								CASE 
+									WHEN ctuser.Id IS NULL THEN 'N.A.' 
+									ELSE ISNULL(ctuser.FristName,'') + ' ' + ISNULL(ctuser.LastName ,'')
+								END
+							) as VARCHAR(max)) AS attachment
+		FROM dbo.tblTaskUserFiles tuf  
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = tuf.UserId
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = tuf.UserId
+			) AS ctuser
+		WHERE tuf.TaskId = Tasks.TaskId AND tuf.IsDeleted <> 1
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskUserFiles
+FROM          
+	tblTask AS Tasks 
+GO
