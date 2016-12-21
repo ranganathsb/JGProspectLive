@@ -704,18 +704,18 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (files[2].Length > 13)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat(files[2].Substring(0, 12), "..");
+                    lbtnAttchment.Text = files[2];// String.Concat(files[2].Substring(0, 12), "..");
                     lbtnAttchment.Attributes.Add("title", files[2]);
 
                     //ltlFileName.Text = lbtnAttchment.Text;
-
-                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 }
                 else
                 {
                     lbtnAttchment.Text = files[2];
                     //ltlFileName.Text = lbtnAttchment.Text;
                 }
+
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
 
                 HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
 
@@ -773,7 +773,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (files[1].Length > 40)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Text = files[1]; // String.Concat(files[1].Substring(0, 40), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
                 }
                 else
