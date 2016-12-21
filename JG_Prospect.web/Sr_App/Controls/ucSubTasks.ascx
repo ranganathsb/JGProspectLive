@@ -551,9 +551,12 @@
 
     prmTaskGenerator.add_beginRequest(function () {
         DestroyGallery();
+        DestroyDropzones();
+        DestroyCKEditors();
     });
 
     function ucSubTasks_Initialize() {
+
         ApplySubtaskLinkContextMenu();
         //ApplyImageGallery();
 
