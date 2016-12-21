@@ -1013,6 +1013,8 @@
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\Dec\ITSN042_Dec_P1.sql" />
+    <Content Include="Database Scripts\Bhavik\Dec\ITSN042_Dec_P1_DonNE_SampleTest2Q.sql" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
@@ -1038,6 +1040,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\Jaylem\Script Dec_ITJN016_II_b_V1-UnExecuted.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V2.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1602,6 +1605,7 @@
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
+    <Content Include="js\TimerFunctions.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />

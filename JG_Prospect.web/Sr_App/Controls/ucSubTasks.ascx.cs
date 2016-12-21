@@ -1134,7 +1134,7 @@ namespace JG_Prospect.Sr_App.Controls
             foreach (string user in users)
             {
 
-                ListItem item = taskUsers.Items.FindByText(user);
+                ListItem item = taskUsers.Items.FindByText(user.Trim());
 
                 if (item != null)
                 {

@@ -2720,15 +2720,6 @@ END
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-/****** Object:  View [dbo].[TaskListView]    Script Date: 12/17/2016 2:38:27 PM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
 CREATE VIEW [dbo].[TaskListView] 
 AS
 SELECT 
@@ -2745,7 +2736,7 @@ SELECT
 	) AS TaskDesignations,
 	STUFF
 	(
-		(SELECT  CAST(', ' + u.FristName as VARCHAR) AS Name
+		(SELECT  CAST(', ' + u.FristName + ' ' + u.LastName as VARCHAR) AS Name
 		FROM tblTaskAssignedUsers tu
 			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
 		WHERE tu.TaskId = Tasks.TaskId
@@ -2799,7 +2790,6 @@ FROM
 	tblTask AS Tasks 
 
 GO
-
 
 
 /****** Object:  StoredProcedure [dbo].[SP_SaveOrDeleteTaskUserFiles]    Script Date: 19-Dec-16 9:25:00 AM ******/
@@ -2872,3 +2862,9 @@ BEGIN
   
 END  
 GO
+
+--=======================================================================================================================================================================================================
+
+-- Published on Live 19 Dec 2016
+
+--=======================================================================================================================================================================================================
