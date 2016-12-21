@@ -1015,6 +1015,7 @@
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="Database Scripts\Bhavik\Dec\ITSN042_Dec_P1.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\ITSN042_Dec_P1_DonNE_SampleTest2Q.sql" />
+    <Content Include="Database Scripts\DataScripts\12212016-ImageRef#.txt" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />

@@ -797,7 +797,7 @@
                                     }
                                     e.stopImmediatePropagation();
                                     e.stopPropagation();
-                                    $(window).off('click.ls');
+                                    $(window).unbind('click.ls');
                                 });
                             }
 

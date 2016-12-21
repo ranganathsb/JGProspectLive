@@ -162,12 +162,21 @@
                             <ItemTemplate>
                                 <table>
                                     <tr>
-                                        <td class="noborder">Assigned
+                                        <td class="noborder">
+                                            <h5>Priority</h5>
                                         </td>
-
                                     </tr>
                                     <tr>
-
+                                        <td class="noborder">
+                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">
+                                            <h5>Assigned</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="noborder">
                                             <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
@@ -178,49 +187,41 @@
                                         </td>
                                     </tr>
                                     <tr>
-
-                                        <td class="noborder">Status:
+                                        <td class="noborder">
+                                            <h5>Status</h5>
                                         </td>
                                     </tr>
                                     <tr>
-
                                         <td class="noborder">
                                             <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
                                         </td>
                                     </tr>
                                     <tr>
-
-                                        <td class="noborder">Priority:
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td class="noborder">
-                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <td class="noborder">Type:
+                                            <h5>Type</h5>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="noborder">
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
+
+                                </table>
+                                <table>
                                     <tr>
                                         <td class="noborder" colspan="2">
                                             <h5>Estimated Hours</h5>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="noborder">ITLead
+                                        <td class="noborder" width="30%"><b>ITLead</b>
                                         </td>
                                         <td class="noborder">
                                             <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="noborder">User</td>
+                                        <td class="noborder"><b>User</b></td>
                                         <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
                                     </tr>
                                 </table>
@@ -238,10 +239,8 @@
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
-                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" 
-                                                 CommandName="delete-attachment" />
-                                            <br />
-                                            <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
+
+                                            <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
                                             <br />
                                             <h5>
                                                 <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
@@ -249,11 +248,9 @@
                                                 <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
                                             <h5>
                                                 <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
-                                            <div style="display: none;">
-                                                <br />
-                                                <small>
-                                                    
-                                                </small>
+                                            <div>
+                                                <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
+                                                    CommandName="delete-attachment" />
                                             </div>
                                         </li>
                                     </ItemTemplate>
