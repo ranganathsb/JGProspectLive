@@ -3053,7 +3053,6 @@ SET
 WHERE [AttachedFileDate] IS NULL
 
 
-
 /****** Object:  View [dbo].[TaskListView]    Script Date: 20-Dec-16 8:26:36 AM ******/
 SET ANSI_NULLS ON
 GO
@@ -3127,7 +3126,7 @@ SELECT
 						'@' + (
 								CASE 
 									WHEN ctuser.Id IS NULL THEN 'N.A.' 
-									ELSE ISNULL(ctuser.FristName,'') + ' ' + ISNULL(ctuser.LastName ,'')
+									ELSE ISNULL(ctuser.FirstName,'') + ' ' + ISNULL(ctuser.LastName ,'')
 								END
 							) as VARCHAR(max)) AS attachment
 		FROM dbo.tblTaskUserFiles tuf  
