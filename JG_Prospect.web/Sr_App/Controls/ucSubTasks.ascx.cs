@@ -676,7 +676,13 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
+            }
+            else if (e.CommandName == "delete-attachment")
+            {
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
+
+                SetSubTaskDetails();
             }
         }
 
@@ -688,47 +694,62 @@ namespace JG_Prospect.Sr_App.Controls
 
                 string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
+                LinkButton lbtnDelete = (LinkButton)e.Item.FindControl("lbtnDelete");
                 LinkButton lbtnAttchment = (LinkButton)e.Item.FindControl("lbtnDownload");
-                Literal ltlFileName = (Literal)e.Item.FindControl("ltlFileName");
+                //Literal ltlFileName = (Literal)e.Item.FindControl("ltlFileName");
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                if (files[1].Length > 13)// sort name with ....
+                lbtnDelete.CommandArgument = files[0] + "|" + files[1];
+
+                if (files[2].Length > 13)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 12), "..");
-                    lbtnAttchment.Attributes.Add("title", files[1]);
+                    lbtnAttchment.Text = files[2];// String.Concat(files[2].Substring(0, 12), "..");
+                    lbtnAttchment.Attributes.Add("title", files[2]);
 
-                    ltlFileName.Text = lbtnAttchment.Text;
-
-                    ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                    //ltlFileName.Text = lbtnAttchment.Text;
                 }
                 else
                 {
-                    lbtnAttchment.Text = files[1];
-                    ltlFileName.Text = lbtnAttchment.Text;
+                    lbtnAttchment.Text = files[2];
+                    //ltlFileName.Text = lbtnAttchment.Text;
                 }
+
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
 
                 HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
 
-                if (CommonFunction.IsImageFile(files[0].Trim()))
+                if (CommonFunction.IsImageFile(files[1].Trim()))
                 {
-                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim()))));
+                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[1].Trim()))));
                 }
                 else
                 {
-                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
+                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[1].Trim(), this.Page);
                 }
 
                 ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", imgIcon.Src);
 
                 lbtnAttchment.CommandArgument = file;
 
-                if (files.Length > 2)// if there are attachements available.
+                if (files.Length > 3)// if there are attachements available.
                 {
-                    ltlCreatedUser.Text = files[3]; // created user name
-                    ltlUpdateTime.Text = String.Concat("<span>", String.Format("{0:M/d/yyyy}", Convert.ToDateTime(files[2])), "</span>&nbsp", "<span style=\"color: red\">", String.Format("{0:hh:mm:ss tt}", Convert.ToDateTime(files[2])), "</span>&nbsp<span>(EST)</span>"); 
+                    ltlCreatedUser.Text = files[4]; // created user name
+                    ltlUpdateTime.Text = string.Concat(
+                                                        "<span>",
+                                                        string.Format(
+                                                                        "{0:M/d/yyyy}",
+                                                                        Convert.ToDateTime(files[3])
+                                                                     ),
+                                                        "</span>&nbsp",
+                                                        "<span style=\"color: red\">",
+                                                        string.Format(
+                                                                        "{0:hh:mm:ss tt}",
+                                                                        Convert.ToDateTime(files[3])
+                                                                        ),
+                                                        "</span>&nbsp<span>(EST)</span>"
+                                                     );
                 }
-                
             }
         }
 
@@ -748,11 +769,13 @@ namespace JG_Prospect.Sr_App.Controls
                 LinkButton lbtnDeleteAttchment = (LinkButton)e.Item.FindControl("lbtnDelete");
 
                 //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
-                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+                //ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnDeleteAttchment);
+
+                lbtnDeleteAttchment.CommandArgument = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "Id")) + "|" + files[0];
 
                 if (files[1].Length > 40)// sort name with ....
                 {
-                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Text = files[1]; // String.Concat(files[1].Substring(0, 40), "..");
                     lbtnAttchment.Attributes.Add("title", files[1]);
                 }
                 else
@@ -787,6 +810,9 @@ namespace JG_Prospect.Sr_App.Controls
 
                 //Reload records.
                 FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+
+                SetSubTaskDetails();
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
             }
 
         }

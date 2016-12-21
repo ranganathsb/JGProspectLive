@@ -1,14 +1,6 @@
-﻿function htmlEncode(value) {
-    //create a in-memory div, set it's inner text(which jQuery automatically encodes)
-    //then grab the encoded contents back out.  The div never exists on the page.
-    return $('<div/>').text(value).html();
-}
+﻿/********************************************* CK Editor (Html Editor) ******************************************************/
+var arrCKEditor = new Array();
 
-function htmlDecode(value) {
-    return $('<div/>').html(value).text();
-}
-
-/********************************************* CK Editor (Html Editor) ******************************************************/
 function SetCKEditor(Id) {
 
     var $target = $('#' + Id);
@@ -26,6 +18,8 @@ function SetCKEditor(Id) {
         });
 
     var editor = CKEDITOR.instances[Id];
+
+    arrCKEditor.push(editor);
 
     editor.on('fileUploadResponse', function (evt) {
         // Prevent the default response handler.
@@ -90,6 +84,9 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
             }
         });
 
+    var editor = CKEDITOR.instances[Id];
+
+    arrCKEditor.push(editor);
 }
 
 function GetCKEditorContent(Id) {
@@ -111,6 +108,13 @@ function GetCKEditorContent(Id) {
     return encodedHTMLData;
 }
 
+function DestroyCKEditors() {
+    for (var i = 0; i < arrCKEditor.length; i++) {
+        arrCKEditor[i].destroy();
+    }
+    arrCKEditor = new Array();
+}
+
 /********************************************* Dialog (jQuery Ui Popup) ******************************************************/
 function ShowPopupWithTitle(varControlID, strTitle) {
     var objDialog = ShowPopup(varControlID);
@@ -121,14 +125,17 @@ function ShowPopupWithTitle(varControlID, strTitle) {
 function HidePopup(varControlID) {
     $(varControlID).dialog("close");
 }
+
 /********************************************* Dropzone (File upload on drag - drop) ******************************************************/
+var arrDropzone = new Array();
+
 function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenFieldIdSelector, strButtonIdSelector) {
     var strAcceptedFiles = '';
     if ($(strDropzoneSelector).attr("data-accepted-files")) {
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
 
-    return new Dropzone(strDropzoneSelector,
+    var objDropzone =  new Dropzone(strDropzoneSelector,
         {
             maxFiles: 5,
             url: "taskattachmentupload.aspx",
@@ -184,6 +191,55 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
             }
 
         });
+
+    arrDropzone.push(objDropzone);
+
+    return objDropzone;
+}
+
+function DestroyDropzones() {
+    for (var i = 0; i < arrDropzone.length; i++) {
+        arrDropzone[i].destroy();
+    }
+    arrDropzone = new Array();
+}
+
+/********************************************* Image Gallery ******************************************************/
+var subtaskSliders;
+
+function LoadImageGallery(strSelector) {
+
+    if (typeof ($.fn.lightSlider) == 'function') {
+        subtaskSliders = $(strSelector).lightSlider({
+            gallery: true,
+            item: 1,
+            thumbItem: 9,
+            slideMargin: 0,
+            speed: 500,
+            auto: true,
+            loop: true,
+            onSliderLoad: function () {
+                $(strSelector).removeClass('cS-hidden');
+            }
+        });
+    }
+}
+
+function DestroyGallery() {
+    if (subtaskSliders && typeof (subtaskSliders.destroy) == 'function') {
+        subtaskSliders.destroy();
+    }
+}
+
+/********************************************* General Functions ******************************************************/
+function htmlEncode(value) {
+    //create a in-memory div, set it's inner text(which jQuery automatically encodes)
+    //then grab the encoded contents back out.  The div never exists on the page.
+    return $('<div/>').text(value).html();
+}
+
+function htmlDecode(value) {
+    return $('<div/>').html(value).text();
 }
 
 function AddAttachmenttoViewState(serverfilename, hdnControlID) {
@@ -234,31 +290,5 @@ function updateQueryStringParameter(uri, key, value) {
     }
     else {
         return uri + separator + key + "=" + value;
-    }
-}
-
-/********************************************* Image Gallery ******************************************************/
-var subtaskSliders;
-function LoadImageGallery(strSelector) {
-
-    if (typeof ($.fn.lightSlider) == 'function') {
-        subtaskSliders = $(strSelector).lightSlider({
-            gallery: true,
-            item: 1,
-            thumbItem: 9,
-            slideMargin: 0,
-            speed: 500,
-            auto: true,
-            loop: true,
-            onSliderLoad: function () {
-                $(strSelector).removeClass('cS-hidden');
-            }
-        });
-    }
-}
-
-function DestroyGallery() {
-    if (subtaskSliders && typeof (subtaskSliders.destroy) == 'function') {
-        subtaskSliders.destroy();
     }
 }

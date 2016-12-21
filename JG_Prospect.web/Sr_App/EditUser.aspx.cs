@@ -1320,7 +1320,7 @@ namespace JG_Prospect
 
         private void HighlightUsersForTypes(DataTable dtUsers, DropDownList ddlUsers)
         {
-            if (dtUsers.Rows.Count > 0)
+            if (dtUsers != null && dtUsers.Rows.Count > 0)
             {
                 var rows = dtUsers.AsEnumerable();
 

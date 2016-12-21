@@ -207,6 +207,22 @@
                                         <td class="noborder">
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
+                                    <tr>
+                                        <td class="noborder" colspan="2">
+                                            <h5>Estimated Hours</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">ITLead
+                                        </td>
+                                        <td class="noborder">
+                                            <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="noborder">User</td>
+                                        <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
+                                    </tr>
                                 </table>
 
                             </ItemTemplate>
@@ -222,10 +238,13 @@
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
-                                            <img id="imgIcon" class="gallery-ele" runat="server" style="width: 100% !important;" src="javascript:void(0);" />
+                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" 
+                                                 CommandName="delete-attachment" />
+                                            <br />
+                                            <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
                                             <br />
                                             <h5>
-                                                <asp:Literal ID="ltlFileName" runat="server"></asp:Literal></h5>
+                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
                                             <h5>
                                                 <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
                                             <h5>
@@ -233,7 +252,7 @@
                                             <div style="display: none;">
                                                 <br />
                                                 <small>
-                                                    <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" />
+                                                    
                                                 </small>
                                             </div>
                                         </li>
@@ -532,9 +551,12 @@
 
     prmTaskGenerator.add_beginRequest(function () {
         DestroyGallery();
+        DestroyDropzones();
+        DestroyCKEditors();
     });
 
     function ucSubTasks_Initialize() {
+
         ApplySubtaskLinkContextMenu();
         //ApplyImageGallery();
 
