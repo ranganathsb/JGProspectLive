@@ -34,6 +34,12 @@
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:UpdatePanel>
+                                                </td>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
                                                     <div style="border-bottom: 1px dashed black; margin-bottom: 2px; width: 100%; clear: both;">
                                                         Task Description<span style="color: red;">*</span>:
                                                    
@@ -46,7 +52,6 @@
                                                     <asp:ValidationSummary ID="vsDesc" runat="server" ShowMessageBox="True"
                                                         ShowSummary="False" ValidationGroup="Submit" />
                                                 </td>
-
                                                 <td>
                                                     <asp:Button ID="btnSaveDesc" Style="display: none;" runat="server" OnClick="btnSaveDesc_Click" Text="Save" CssClass="ui-button" />
 
