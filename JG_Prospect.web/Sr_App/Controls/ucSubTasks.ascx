@@ -326,7 +326,7 @@
                         <tr>
                             <td>Title <span style="color: red;"></span>:
                                 <br />
-                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="MultiLine" />
+                                <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
                                 <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
                                     ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
@@ -566,7 +566,7 @@
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-            SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+            //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
         }
 
     }
@@ -582,10 +582,10 @@
 
     function OnSaveSubTaskClick() {
         $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
-        $('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
+        //$('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
 
         SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-        SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+        //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
 
         return Page_ClientValidate('vgSubTask')
     }
