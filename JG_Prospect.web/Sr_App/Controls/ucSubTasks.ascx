@@ -274,6 +274,29 @@
                                     <tr>
                                         <td class="haligncenter noborder">
                                             <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
+
+                                        </td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
+
+                                        </td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
+
+                                        </td>
+                                    </tr>
+                                    <tr style="display: none;">
+                                        <td colspan="3">
+                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
+                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
+                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="haligncenter noborder">
                                             <div id="divAdmin" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -293,8 +316,9 @@
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="haligncenter noborder">
                                             <div id="divITLead" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -314,8 +338,9 @@
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="haligncenter noborder">
                                             <div id="divUser" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -334,15 +359,6 @@
                                                 </asp:HyperLink>
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td colspan="3">
-                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                         </td>
                                     </tr>
                                 </table>
