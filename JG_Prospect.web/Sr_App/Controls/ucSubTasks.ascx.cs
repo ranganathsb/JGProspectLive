@@ -271,13 +271,25 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     chkAdmin.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
+                if(blAdminStatus)
+                {
+                    e.Row.FindControl("divAdmin").Visible = true;
+                }
                 if (chkITLead.Enabled)
                 {
                     chkITLead.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
+                if(blTechLeadStatus)
+                {
+                    e.Row.FindControl("divITLead").Visible = true;
+                }
                 if (chkUser.Enabled)
                 {
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
+                }
+                if(blOtherUserStatus)
+                {
+                    e.Row.FindControl("divUser").Visible = true;
                 }
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
