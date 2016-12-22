@@ -271,7 +271,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     chkAdmin.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
-                if(blAdminStatus)
+                if (blAdminStatus)
                 {
                     e.Row.FindControl("divAdmin").Visible = true;
                 }
@@ -279,7 +279,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     chkITLead.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
-                if(blTechLeadStatus)
+                if (blTechLeadStatus)
                 {
                     e.Row.FindControl("divITLead").Visible = true;
                 }
@@ -287,7 +287,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     chkUser.Attributes.Add("onclick", "ucSubTasks_OnApprovalCheckBoxChanged(this);");
                 }
-                if(blOtherUserStatus)
+                if (blOtherUserStatus)
                 {
                     e.Row.FindControl("divUser").Visible = true;
                 }
@@ -676,6 +676,19 @@ namespace JG_Prospect.Sr_App.Controls
 
                 SetSubTaskDetails();
             }
+        }
+
+        protected void gvSubTasks_chkUiRequested_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chkUiRequested = sender as CheckBox;
+            GridViewRow objGridViewRow = chkUiRequested.Parent.Parent as GridViewRow;
+
+            if (objGridViewRow != null)
+            {
+                Int64 intTaskId = Convert.ToInt32(gvSubTasks.DataKeys[objGridViewRow.RowIndex]["TaskId"].ToString());
+                TaskGeneratorBLL.Instance.UpdateTaskUiRequested(intTaskId, chkUiRequested.Checked);
+            }
+            SetSubTaskDetails();
         }
 
         #endregion

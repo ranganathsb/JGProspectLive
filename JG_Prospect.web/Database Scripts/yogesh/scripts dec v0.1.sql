@@ -3064,6 +3064,45 @@ GO
 -- Published on Live 21 Dec 2016
 
 --=======================================================================================================================================================================================================
+
+
+ALTER table tblTask
+ADD IsUiRequested BIT DEFAULT 0
+GO
+
+Update tblTask
+Set
+	IsUiRequested = 0
+
+
+/****** Object:  StoredProcedure [dbo].[UpdateTaskUiRequestedById]    Script Date: 22-Dec-16 10:48:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Nov 16
+-- Description:	Updates ui requested status of sub Task by Id.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateTaskUiRequestedById]
+	@TaskId		BIGINT,
+	@IsUiRequested BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE tblTask
+	SET
+		IsUiRequested = @IsUiRequested
+	WHERE TaskId = @TaskId
+END
+GO
+
+
+
 /****** Object:  View [dbo].[TaskListView]    Script Date: 22-Dec-16 9:28:33 AM ******/
 SET ANSI_NULLS ON
 GO

@@ -157,6 +157,10 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpadateTaskNotes(ref objTaskUser);
         }
 
+        public bool UpdateTaskUiRequested(Int64 intTaskId, bool blUiRequesed)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskUiRequested(intTaskId, blUiRequesed);
+        }
 
         #region TaskWorkSpecification
 

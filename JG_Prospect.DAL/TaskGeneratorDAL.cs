@@ -976,6 +976,30 @@ namespace JG_Prospect.DAL
             }
 
         }
+       
+        public bool UpdateTaskUiRequested(Int64 intTaskId, bool blUiRequesed)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskUiRequestedById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskId);
+                    database.AddInParameter(command, "@IsUiRequested", DbType.Boolean, blUiRequesed);
+
+                    database.ExecuteNonQuery(command);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         #region TaskWorkSpecification
 
