@@ -161,6 +161,8 @@ namespace JG_Prospect.Sr_App
                             ddlSource.SelectedIndex = 0;
                         }
                         BindVendorNotes();
+                        BindProductNotes();
+                        BindPSNotes();
                     }
                     catch (Exception ex)
                     {
@@ -1005,6 +1007,8 @@ namespace JG_Prospect.Sr_App
             HttpContext.Current.Session["TempID"] = "";
             HttpContext.Current.Session["NotesTempID"] = "";
             BindVendorNotes();
+            BindProductNotes();
+            BindPSNotes();
         }
 
         #endregion
@@ -3460,6 +3464,7 @@ namespace JG_Prospect.Sr_App
                 DrpPaymentMode.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["PaymentMethod"]);
             }
             BindVendorNotes();
+
             LoadVendorEmails(VendorIdToEdit, Convert.ToInt32(AddressID));
 
             bindVendorMaterialList();
@@ -3823,6 +3828,50 @@ namespace JG_Prospect.Sr_App
             txtAddNotes.Text = string.Empty;
         }
 
+        public void BindProductNotes()
+        {
+            int VendorID = Convert.ToInt32(string.IsNullOrEmpty(txtVendorId.Text) ? "0" : txtVendorId.Text);
+            string TempId = "";
+            if (VendorID == 0)
+            {
+                if (HttpContext.Current.Session["NotesTempID"] == null)
+                {
+                    TempId = Guid.NewGuid().ToString();
+                }
+                else
+                {
+                    TempId = Convert.ToString(HttpContext.Current.Session["NotesTempID"]);
+                }
+                HttpContext.Current.Session["NotesTempID"] = TempId;
+            }
+            DataSet ds = VendorBLL.Instance.GetVendorNotes(VendorID);//VendorBLL.Instance.GetVendorNotes(VendorID, TempId);
+            grdTouchPointProductLog.DataSource = ds;
+            grdTouchPointProductLog.DataBind();
+            txtAddNotes.Text = string.Empty;
+        }
+
+        public void BindPSNotes()
+        {
+            int VendorID = Convert.ToInt32(string.IsNullOrEmpty(txtVendorId.Text) ? "0" : txtVendorId.Text);
+            string TempId = "";
+            if (VendorID == 0)
+            {
+                if (HttpContext.Current.Session["NotesTempID"] == null)
+                {
+                    TempId = Guid.NewGuid().ToString();
+                }
+                else
+                {
+                    TempId = Convert.ToString(HttpContext.Current.Session["NotesTempID"]);
+                }
+                HttpContext.Current.Session["NotesTempID"] = TempId;
+            }
+            DataSet ds = VendorBLL.Instance.GetVendorNotes(VendorID);//VendorBLL.Instance.GetVendorNotes(VendorID, TempId);
+            grdTouchPointPSLog.DataSource = ds;
+            grdTouchPointPSLog.DataBind();
+            txtAddNotes.Text = string.Empty;
+        }
+
         protected void btnAddNotes_Click(object sender, EventArgs e)
         {
             int VendorID = Convert.ToInt32(string.IsNullOrEmpty(txtVendorId.Text) ? "0" : txtVendorId.Text);
@@ -3847,6 +3896,8 @@ namespace JG_Prospect.Sr_App
             }
             Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
             BindVendorNotes();
+            BindProductNotes();
+            BindPSNotes();
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
@@ -4290,6 +4341,11 @@ namespace JG_Prospect.Sr_App
             {
                 //  Response.Redirect("~/Sr_App/Procurement.aspx");
             }
+        }
+
+        protected void btnAddNewProduct_Click(object sender, EventArgs e)
+        {
+
         }
 
         protected void lnkCharge_Click(object sender, EventArgs e)
