@@ -395,7 +395,7 @@
                                     ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                             </td>
                         </tr>
-                        <tr>
+                        <tr runat="server" visible="false">
                             <td>
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
