@@ -89,6 +89,7 @@
     <Compile Include="exceltoXml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />
     <Compile Include="Logger\ErrorLog.cs" />
     <Compile Include="Logger\LogCategory.cs" />
