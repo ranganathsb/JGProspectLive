@@ -103,14 +103,17 @@ function GetCKEditorContent(Id) {
 
     $target.attr('contenteditable', false);
 
-    CKEDITOR.instances[Id].destroy();
+    //CKEDITOR.instances[Id].destroy();
 
     return encodedHTMLData;
 }
 
 function DestroyCKEditors() {
     for (var i = 0; i < arrCKEditor.length; i++) {
-        arrCKEditor[i].destroy();
+        console.log(typeof (arrCKEditor[i]) + ' ' + arrCKEditor[i].name);
+        if (typeof (arrCKEditor[i]) != 'undefined') {
+            arrCKEditor[i].destroy();
+        }
     }
     arrCKEditor = new Array();
 }
