@@ -174,8 +174,7 @@ namespace JG_Prospect.Sr_App.Controls
                 controlMode.Value = "0";
                 SetControlDisplay();
                 LoadFilters();
-                //SearchTasks(null);
-                SearchTasks(50);
+                SearchTasks(null);
                 LoadPopupDropdown();
             }
         }
@@ -239,7 +238,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnLoadMore_Click(object sender, EventArgs e)
         {
-            SearchTasks(50);
+            SearchTasks(null);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "expand", "SetHeaderSectionHeight();", true);
         }
 
@@ -1030,7 +1029,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
             // this is for paging based data fetch, in header view case it will be always page numnber 0 and page size 5
-            int Start = 0, PageLimit = 5;
+            int Start = 0, PageLimit = 50;
 
             if (RecordstoPull != null)
             {
