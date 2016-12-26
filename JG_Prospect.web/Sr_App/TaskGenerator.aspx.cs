@@ -241,6 +241,9 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
         {
+            objucSubTasks_Admin.DisableSubTaskAssignment(false);
+            objucSubTasks_User.DisableSubTaskAssignment(false);
+
             LoadUsersByDesgination();
 
             ddlAssignedUsers_SelectedIndexChanged(sender, e);

@@ -1868,6 +1868,18 @@ namespace JG_Prospect.Sr_App.Controls
             return TaskUpdateId;
         }
 
+        public void DisableSubTaskAssignment(bool blEnabled)
+        {
+            for (int i = 0; i < gvSubTasks.Rows.Count; i++)
+            {
+                DropDownCheckBoxes ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                
+                ddcbAssigned.AutoPostBack = 
+                ddcbAssigned.Enabled = blEnabled;
+            }
+            upSubTasks.Update();
+        }
+
         #endregion
     }
 }

@@ -3485,4 +3485,103 @@ BEGIN
 	ORDER BY RowNo_Order
 
 END
+GO
 
+
+/****** Object:  StoredProcedure [dbo].[usp_InsertTaskDesignations]    Script Date: 26-Dec-16 8:29:54 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 07152016
+-- Description:	Will insert assigned designations for given task
+-- =============================================
+
+ALTER PROCEDURE [dbo].[usp_InsertTaskDesignations] 
+(
+	@TaskId int ,
+	@Designations varchar(4000) ,
+	@TaskIDCode varchar(5)
+)	
+AS
+BEGIN
+
+	DECLARE @InstallId VARCHAR(50) = NULL
+
+	SELECT @InstallId = InstallId
+	FROM tblTask
+	WHERE TaskId = @TaskId
+
+	IF @InstallId IS NULL
+	BEGIN
+		-- get sequence of last entered task for perticular designation.
+		DECLARE @DesSequence bigint
+
+		SELECT @DesSequence = ttds.LastSequenceNo FROM dbo.tblTaskDesignationSequence ttds WHERE ttds.DesignationCode = @TaskIDCode
+
+		-- if it is first time task is entered for designation start from 001.
+		IF(@DesSequence IS NULL)
+		BEGIN
+			SET @DesSequence = 0  
+		END
+
+		SET @DesSequence = @DesSequence + 1  
+
+		UPDATE tblTask
+			SET InstallId = @TaskIDCode + Right('00' + CONVERT(NVARCHAR, @DesSequence), 3)
+		WHERE TaskId=@TaskId
+
+		-- INCREMENT SEQUENCE NUMBER FOR DESIGNATION TO USE NEXT TIME
+		IF NOT EXISTS( 
+						SELECT ttds.TaskDesigSequenceId 
+						FROM dbo.tblTaskDesignationSequence ttds 
+						WHERE ttds.DesignationCode = @TaskIDCode 
+					 )
+		BEGIN
+			INSERT INTO dbo.tblTaskDesignationSequence
+			(
+    
+				DesignationCode,
+				LastSequenceNo
+			)
+			VALUES
+			(
+				@TaskIDCode,
+				@DesSequence
+			) 
+		END
+		ELSE		
+		BEGIN
+			UPDATE dbo.tblTaskDesignationSequence
+			SET
+				dbo.tblTaskDesignationSequence.LastSequenceNo = @DesSequence
+			WHERE dbo.tblTaskDesignationSequence.DesignationCode = @TaskIDCode 
+		END
+	END
+
+	-- REMOVE ALREADY ADDED DESIGNATIONS IF ANY
+	DELETE FROM tblTaskDesignations
+	WHERE  (TaskId = @TaskId)
+
+	-- insert comma seperated multiple designations for given task.
+	INSERT INTO tblTaskDesignations (TaskId, Designation,DesignationID)
+	SELECT @TaskId , (Select top 1 DesignationName From tbl_Designation Where ID=item), item 
+	FROM dbo.SplitString(@Designations,',') ss 
+
+	--*********** SUB TASK DESIGNATIONS ****************--
+	-- REMOVE ALREADY ADDED DESIGNATIONS IF ANY, FOR ALL SUB TASKS
+	DELETE FROM tblTaskDesignations
+	WHERE TaskId IN (Select TaskId 
+						FROM tblTask 
+						WHERE ParentTaskId = @TaskId)
+
+	-- insert comma seperated multiple designations for sub tasks of given task.
+	INSERT INTO tblTaskDesignations (TaskId, Designation,DesignationID)
+	SELECT st.TaskId , (Select top 1 DesignationName From tbl_Designation Where ID=item), item 
+	FROM dbo.SplitString(@Designations,',') ss, tblTask st
+	WHERE st.ParentTaskId = @TaskId
+
+END
+GO
