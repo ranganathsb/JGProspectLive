@@ -241,6 +241,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
                     database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -1395,7 +1396,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
                     database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
-
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
+                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));

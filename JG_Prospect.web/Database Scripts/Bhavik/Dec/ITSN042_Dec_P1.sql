@@ -645,7 +645,7 @@ BEGIN
 	VALUES  
 		(  
 			@FristName,@LastName,@Email,@phone,@phonetype,@address,@Zip,@State,@City,
-			@Zip2,@State2,@City2,
+			--@Zip2,@State2,@City2,
 			@password,@designation,@status,@Picture,@Attachements,@bussinessname,@ssn,@ssn1,@ssn2,@signature
 			,@dob,@citizenship,@ein1,@ein2,@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@maritalstatus,@PrimeryTradeId,@SecondoryTradeId,@Source,@Notes,@StatusReason,@GeneralLiability
 			,@PCLiscense,@WorkerComp,@HireDate,@TerminitionDate,@WorkersCompCode,@NextReviewDate,@EmpType,@LastReviewDate

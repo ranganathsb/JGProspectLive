@@ -102,7 +102,7 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                FillPhoneTypeDropDown();
+                FillControls();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
@@ -419,6 +419,13 @@ namespace JG_Prospect.Sr_App
                             ddlPositionAppliedFor.ClearSelection();
                             ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
                         }
+
+                        if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
+                        {
+                            ddlCountry.ClearSelection();
+                            ddlCountry.SelectedValue = ds.Tables[0].Rows[0]["CountryCode"].ToString();                            
+                        }
+
 
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
 
@@ -1750,6 +1757,7 @@ namespace JG_Prospect.Sr_App
                 objuser.UserType = "SalesUser";
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
                 objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
@@ -2358,6 +2366,7 @@ namespace JG_Prospect.Sr_App
                 objuser.cThree = txtcThree.Text;
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
 
@@ -4177,39 +4186,40 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlstatus_PreRender(object sender, EventArgs e)
         {
-            string imageURL = "";
-            for (int i = 0; i < ddlstatus.Items.Count; i++)
-            {
-                switch (ddlstatus.Items[i].Value)
-                {
-                    case "Applicant":
-                    case "ReferralApplicant":
-                        imageURL = "../Sr_App/img/red-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "OfferMade":
-                        imageURL = "../Sr_App/img/dark-blue-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "PhoneScreened":
-                        imageURL = "../Sr_App/img/yellow-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "Active":
-                        imageURL = "../Sr_App/img/green-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "InterviewDate":
-                        imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    default:
-                        ddlstatus.Items[i].Attributes["data-image"] = "../Sr_App/img/white-astrek.png";
-                        break;
-                }
-                //System.Web.UI.WebControls.ListItem item = ddlCountry.Items[i];
-                //item.Attributes["data-image"] = imageURL;
-            }
+            ddlstatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlstatus);
+            //string imageURL = "";
+            //for (int i = 0; i < ddlstatus.Items.Count; i++)
+            //{
+            //    switch (ddlstatus.Items[i].Value)
+            //    {
+            //        case "Applicant":
+            //        case "ReferralApplicant":
+            //            imageURL = "../Sr_App/img/red-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "OfferMade":
+            //            imageURL = "../Sr_App/img/dark-blue-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "PhoneScreened":
+            //            imageURL = "../Sr_App/img/yellow-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "Active":
+            //            imageURL = "../Sr_App/img/green-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "InterviewDate":
+            //            imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        default:
+            //            ddlstatus.Items[i].Attributes["data-image"] = "../Sr_App/img/white-astrek.png";
+            //            break;
+            //    }
+            //    //System.Web.UI.WebControls.ListItem item = ddlCountry.Items[i];
+            //    //item.Attributes["data-image"] = imageURL;
+            //}
         }
 
         protected void grdTouchPointLog_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -5735,6 +5745,11 @@ namespace JG_Prospect.Sr_App
             return prefix;
         }
 
+        private void FillControls()
+        {
+            FillPhoneTypeDropDown();
+            FillCountryDropDown();
+        }
         private void FillPhoneTypeDropDown()
         {
 
@@ -5755,6 +5770,26 @@ namespace JG_Prospect.Sr_App
                 phoneTypeDropDownList.DataBind();
                 //ddlSource.Items.Insert(0, "Select Source");
                 //ddlSource.SelectedIndex = 0;
+            }
+        }
+
+        private void FillCountryDropDown()
+        {
+
+            DataSet dsCountry;
+
+            dsCountry = CountryBLL.Instance.GetAllCountry();
+
+            if (dsCountry.Tables[0].Rows.Count > 0)
+            {
+                ddlCountry.DataSource = dsCountry.Tables[0];
+                ddlCountry.DataTextField = "CountryName";
+                ddlCountry.DataValueField = "CountryCode";
+                ddlCountry.DataBind();
+
+                //-- SET Default Value
+                ddlCountry.SelectedValue = "US";
+
             }
         }
 

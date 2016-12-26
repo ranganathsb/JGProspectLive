@@ -15,6 +15,8 @@
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
     <link href="../Styles/dd.css" rel="stylesheet" />
+    <link type="text/css" href="../css/flags24.css" rel="Stylesheet"/>
+
 
     <script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>
 
@@ -36,6 +38,11 @@
 </script>
 
     <script type="text/javascript">
+
+        function changeFlag(countrolD) {            
+            $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
+        }
+
         function hidePnl() {
             $("#ContentPlaceHolder1_pnlpopup").hide();
             return true;
@@ -129,6 +136,16 @@
         }
 
         $(document).ready(function () {
+
+           changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+
+           $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+            });
+
+            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+            });--%>
             
             $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                 var url = window.location.href
@@ -1780,10 +1797,16 @@
                                         <asp:DropDownList ID="ddlEmpType" runat="server" Width="170px" AutoPostBack="true" OnSelectedIndexChanged="ddlEmpType_SelectedIndexChanged">
                                             <%--TabIndex="155"--%>
                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
+                                            <asp:ListItem Text="Internship" Value="Internship"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Remote" Value="Part Time - Remote"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Onsite" Value="Part Time - Onsite"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Remote" Value="Full Time - Remote"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Onsite" Value="Full Time - Onsite"></asp:ListItem>
                                             <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
                                             <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
                                             <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
-                                            <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
+                                            <asp:ListItem Text="Sub" Value="Sub"></asp:ListItem>
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
@@ -3100,8 +3123,14 @@
                                                         <tr>
                                                             <td>
 															Country
-                                                                    <br />
-                                                                <asp:TextBox ID="txtCountry" Width="240" runat="server"></asp:TextBox>
+                                                                    <br />                                                                  
+                                                                <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
+                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
+                                                                    <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
+                                                                    </select>
+                                                                </div>
+                                                                
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -4761,7 +4790,7 @@
                         <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" />
                         <%--TabIndex="210"--%>
-                        <asp:Button ID="btnUpdate" Text="Update" runat="server" ValidationGroup="submit"
+                        <asp:Button ID="btnUpdate" Text="Update" runat="server" 
                             OnClick="btnUpdate_Click" /><%--TabIndex="211"--%>
                     </div>
                 </div>
