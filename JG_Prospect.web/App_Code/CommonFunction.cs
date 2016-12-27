@@ -658,6 +658,53 @@ namespace JG_Prospect.App_Code
             return objListItemCollection;
         }
 
+        public static string GetTaskRowCssClass(JGConstant.TaskStatus objTaskStatus, JGConstant.TaskPriority? objTaskPriority)
+        {
+            string strRowCssClass = string.Empty;
+
+            switch (objTaskStatus)
+            {
+                case JGConstant.TaskStatus.Open:
+                    strRowCssClass += " task-open";
+                    if (objTaskPriority.HasValue)
+                    {
+                        strRowCssClass += " task-with-priority";
+                    }
+                    break;
+                case JGConstant.TaskStatus.Requested:
+                    strRowCssClass += " task-requested";
+                    break;
+                case JGConstant.TaskStatus.Assigned:
+                    strRowCssClass += " task-assigned";
+                    break;
+                case JGConstant.TaskStatus.InProgress:
+                    strRowCssClass += " task-inprogress";
+                    break;
+                case JGConstant.TaskStatus.Pending:
+                    strRowCssClass += " task-pending";
+                    break;
+                case JGConstant.TaskStatus.ReOpened:
+                    strRowCssClass += " task-reopened";
+                    break;
+                case JGConstant.TaskStatus.Closed:
+                    strRowCssClass += " task-closed closed-task-bg";
+                    break;
+                case JGConstant.TaskStatus.Finished:
+                    strRowCssClass += " task-finished finished-task-bg";
+                    break;
+                case JGConstant.TaskStatus.SpecsInProgress:
+                    strRowCssClass += " task-specsinprogress";
+                    break;
+                case JGConstant.TaskStatus.Deleted:
+                    strRowCssClass += " task-deleted deleted-task-bg";
+                    break;
+                default:
+                    break;
+            }
+
+            return strRowCssClass;
+        }
+
         public static bool IsImageFile(string fileName)
         {
             bool isImageFile = false;

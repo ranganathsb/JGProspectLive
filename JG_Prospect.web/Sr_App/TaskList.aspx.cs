@@ -322,48 +322,30 @@ namespace JG_Prospect.Sr_App
                     strRowCssClass = "FirstRow";
                 }
 
-                switch ((JGConstant.TaskStatus)Convert.ToByte(drTask["Status"]))
+                JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(drTask["Status"]);
+                JGConstant.TaskPriority ? objTaskPriority = null;
+
+                if (
+                    !string.IsNullOrEmpty(drTask["TaskPriority"].ToString()) &&
+                    drTask["TaskPriority"].ToString() != "0"
+                   )
                 {
-                    case JGConstant.TaskStatus.Open:
-                        strRowCssClass += " task-open";
-                        if (!string.IsNullOrEmpty(drTask["TaskPriority"].ToString()) &&
-                            drTask["TaskPriority"].ToString() != "0"
-                            )
-                        {
-                            strRowCssClass += " task-with-priority";
-                        }
-                        break;
-                    case JGConstant.TaskStatus.Requested:
-                        strRowCssClass += " task-requested";
-                        break;
-                    case JGConstant.TaskStatus.Assigned:
-                        strRowCssClass += " task-assigned";
-                        break;
-                    case JGConstant.TaskStatus.InProgress:
-                        strRowCssClass += " task-inprogress";
-                        break;
-                    case JGConstant.TaskStatus.Pending:
-                        strRowCssClass += " task-pending";
-                        break;
-                    case JGConstant.TaskStatus.ReOpened:
-                        strRowCssClass += " task-reopened";
-                        break;
+                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(drTask["TaskPriority"]);
+                }
+
+                strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
+
+                switch (objTaskStatus)
+                {
                     case JGConstant.TaskStatus.Closed:
-                        strRowCssClass += " task-closed closed-task-bg";
                         ddcbAssignedUser.Visible = false;
                         ddlStatus.Enabled = false;
                         ddlPriority.Enabled = false;
-                        break;
-                    case JGConstant.TaskStatus.SpecsInProgress:
-                        strRowCssClass += " task-specsinprogress";
                         break;
                     case JGConstant.TaskStatus.Deleted:
-                        strRowCssClass += " task-deleted deleted-task-bg";
                         ddcbAssignedUser.Visible = false;
                         ddlStatus.Enabled = false;
                         ddlPriority.Enabled = false;
-                        break;
-                    default:
                         break;
                 }
 

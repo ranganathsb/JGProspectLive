@@ -309,40 +309,28 @@ namespace JG_Prospect.Sr_App.Controls
                     strRowCssClass = "FirstRow";
                 }
 
-                switch ((JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status")))
+                JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status"));
+                JGConstant.TaskPriority? objTaskPriority = null;
+
+                if (
+                    !string.IsNullOrEmpty(ddlTaskPriority.SelectedValue) &&
+                    ddlTaskPriority.SelectedValue != "0"
+                   )
                 {
-                    case JGConstant.TaskStatus.Open:
-                        strRowCssClass += " task-open";
-                        if (ddlTaskPriority.SelectedValue != "0")
-                        {
-                            strRowCssClass += " task-with-priority";
-                        }
-                        break;
-                    case JGConstant.TaskStatus.Requested:
-                        strRowCssClass += " task-requested";
-                        break;
-                    case JGConstant.TaskStatus.Assigned:
-                        strRowCssClass += " task-assigned";
-                        break;
-                    case JGConstant.TaskStatus.InProgress:
-                        strRowCssClass += " task-inprogress";
-                        break;
-                    case JGConstant.TaskStatus.Pending:
-                        strRowCssClass += " task-pending";
-                        break;
-                    case JGConstant.TaskStatus.ReOpened:
-                        strRowCssClass += " task-reopened";
-                        break;
+                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(ddlTaskPriority.SelectedValue);
+                }
+
+                strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
+
+                switch (objTaskStatus)
+                {
                     case JGConstant.TaskStatus.Closed:
-                        strRowCssClass += " task-closed closed-task-bg";
-                        break;
-                    case JGConstant.TaskStatus.SpecsInProgress:
-                        strRowCssClass += " task-specsinprogress";
+                        ddcbAssigned.Enabled = false;
+                        ddlStatus.Enabled = false;
                         break;
                     case JGConstant.TaskStatus.Deleted:
-                        strRowCssClass += " task-deleted deleted-task-bg";
-                        break;
-                    default:
+                        ddcbAssigned.Enabled = false;
+                        ddlStatus.Enabled = false;
                         break;
                 }
 
@@ -350,6 +338,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     strRowCssClass += " yellowthickborder";
                 }
+
                 e.Row.CssClass = strRowCssClass;
 
             }
