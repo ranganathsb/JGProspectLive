@@ -19,6 +19,8 @@ function SetCKEditor(Id, onBlurCallBack) {
 
     var editor = CKEDITOR.instances[Id];
 
+    console.log(editor.name + ' editor created.');
+
     arrCKEditor.push(editor);
 
     editor.on('blur', function (event) {
@@ -26,6 +28,7 @@ function SetCKEditor(Id, onBlurCallBack) {
         event.editor.updateElement();
         
         if (typeof (onBlurCallBack) == 'function') {
+            console.log(event.editor.name + ' editor lost focus.');
             onBlurCallBack(event.editor);
         }
     });
@@ -113,7 +116,7 @@ function GetCKEditorContent(Id) {
 
 function DestroyCKEditors() {
     for (var i = 0; i < arrCKEditor.length; i++) {
-        console.log(typeof (arrCKEditor[i]) + ' ' + arrCKEditor[i].name);
+        console.log(arrCKEditor[i].name + ' editor destroyed.');
         if (typeof (arrCKEditor[i]) != 'undefined') {
             arrCKEditor[i].destroy();
         }
