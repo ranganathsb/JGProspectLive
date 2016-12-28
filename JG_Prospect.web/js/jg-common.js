@@ -115,9 +115,11 @@ function GetCKEditorContent(Id) {
 }
 
 function DestroyCKEditors() {
+    //CKEDITOR.instances.editor.removeAllListeners();
     for (var i = 0; i < arrCKEditor.length; i++) {
         console.log(arrCKEditor[i].name + ' editor destroyed.');
         if (typeof (arrCKEditor[i]) != 'undefined') {
+            arrCKEditor[i].removeAllListeners();
             arrCKEditor[i].destroy();
         }
     }
