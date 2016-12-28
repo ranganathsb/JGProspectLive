@@ -1,7 +1,7 @@
 ﻿/********************************************* CK Editor (Html Editor) ******************************************************/
 var arrCKEditor = new Array();
 
-function SetCKEditor(Id) {
+function SetCKEditor(Id, onBlurCallBack) {
 
     var $target = $('#' + Id);
 
@@ -20,6 +20,15 @@ function SetCKEditor(Id) {
     var editor = CKEDITOR.instances[Id];
 
     arrCKEditor.push(editor);
+
+    editor.on('blur', function (event) {
+
+        event.editor.updateElement();
+        
+        if (typeof (onBlurCallBack) == 'function') {
+            onBlurCallBack(event.editor);
+        }
+    });
 
     editor.on('fileUploadResponse', function (evt) {
         // Prevent the default response handler.
@@ -97,12 +106,6 @@ function GetCKEditorContent(Id) {
 
     //editor.updateElement();
 
-    var $target = $('#' + Id);
-
-    $target.html(encodedHTMLData);
-
-    $target.attr('contenteditable', false);
-
     //CKEDITOR.instances[Id].destroy();
 
     return encodedHTMLData;
@@ -138,7 +141,7 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
 
-    var objDropzone =  new Dropzone(strDropzoneSelector,
+    var objDropzone = new Dropzone(strDropzoneSelector,
         {
             maxFiles: 5,
             url: "taskattachmentupload.aspx",
