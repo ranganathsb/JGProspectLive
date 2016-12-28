@@ -466,6 +466,7 @@
                             <td>
                                 <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
                                 </div>
+                                <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
                             </td>
                         </tr>
                         <tr>
@@ -675,6 +676,12 @@
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
                     });
                 }
             });

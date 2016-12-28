@@ -354,6 +354,8 @@ namespace JG_Prospect.Sr_App.Controls
                 hdnSubTaskId.Value = "0";
                 hdnSubTaskIndex.Value = "-1";
 
+                btnSaveSubTaskAttachment.Visible = true;
+
                 //if (controlMode == "0")
                 //{
                 //    hdnSubTaskIndex.Value = e.CommandArgument.ToString();
@@ -931,6 +933,18 @@ namespace JG_Prospect.Sr_App.Controls
                     break;
                 }
             }
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+        }
+
+        protected void btnSaveSubTaskAttachment_Click(object sender, EventArgs e)
+        {
+            if (hdnSubTaskId.Value != "0" && !string.IsNullOrEmpty(hdnAttachments.Value))
+            {
+                UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
+
+                FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+            }
+
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
         }
 
@@ -1642,6 +1656,9 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
             }
             ddlSubTaskPriority.SelectedValue = "0";
+            btnSaveSubTaskAttachment.Visible = false;
+            rptSubTaskAttachments.DataSource = null;
+            rptSubTaskAttachments.DataBind();
             upAddSubTask.Update();
         }
 
