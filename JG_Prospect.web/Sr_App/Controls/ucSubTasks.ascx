@@ -602,10 +602,12 @@
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
     prmTaskGenerator.add_endRequest(function () {
+        console.log('end req.');
         ucSubTasks_Initialize();
     });
 
     prmTaskGenerator.add_beginRequest(function () {
+        console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
         DestroyCKEditors();
@@ -624,10 +626,21 @@
 
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
-            SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-            //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+            SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
         }
 
+    }
+
+    function txtSubTaskDescription_Blur(editor) {
+        if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+            if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
+                $('#<%=btnSaveSubTask.ClientID%>').click();
+            }
+        }
+    }
+
+    function OnSaveSubTaskClick() {
+        return Page_ClientValidate('vgSubTask');
     }
 
     function copytoListID(sender) {
@@ -637,16 +650,6 @@
             ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
             ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
         }
-    }
-
-    function OnSaveSubTaskClick() {
-        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
-        //$('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
-
-        SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-        //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
-
-        return Page_ClientValidate('vgSubTask')
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
