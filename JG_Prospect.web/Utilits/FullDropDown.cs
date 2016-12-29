@@ -77,6 +77,10 @@ namespace JG_Prospect.Utilits
             }
 
             objUserStatus = new UserStatus();
+            objUserStatus.Status = "Referral applicant"; objUserStatus.StatusValue = "ReferralApplicant";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
             objUserStatus.Status = "Applicant"; objUserStatus.StatusValue = "Applicant";
             lstUserStatus.Add(objUserStatus);
 
