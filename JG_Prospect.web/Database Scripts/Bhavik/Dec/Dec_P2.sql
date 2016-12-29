@@ -106,7 +106,7 @@ GO
 
 
 GO
-/****** Object:  StoredProcedure [dbo].[GetAllEditSalesUser]    Script Date: 12/22/2016 8:12:53 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetAllEditSalesUser]    Script Date: 12/28/2016 12:04:30 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -130,7 +130,7 @@ BEGIN
 		InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
 		RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
 		t.Email, t1.[UserInstallId] As AddedByUserInstallId
-		, t1.Id As AddedById, mcq.[Aggregate] , t.EmpType , dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode
+		, t1.Id As AddedById, mcq.[Aggregate] , t.EmpType , dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
 		--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 
 	FROM 
@@ -147,8 +147,7 @@ BEGIN
  
 END
 
-
- /****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 12/23/2016 7:46:24 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 12/28/2016 12:02:50 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -206,7 +205,7 @@ BEGIN
 				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
 				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
 				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById
-				, mcq.[Aggregate] , t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode
+				, mcq.[Aggregate] , t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
 				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
@@ -231,7 +230,7 @@ BEGIN
 				then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
 				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
 				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById
-				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
 				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
@@ -282,7 +281,7 @@ BEGIN
 				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
 				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
 				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById 
-				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
 				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
@@ -305,7 +304,7 @@ BEGIN
 				then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
 				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
 				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById 
-				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
 				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
 			FROM 
 				tblInstallUsers t 
@@ -322,7 +321,6 @@ BEGIN
 
  
 END
-
 
 
 
