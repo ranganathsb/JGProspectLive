@@ -572,6 +572,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.CheckForNewUserByEmaiID(userEmail, userID,DefaultPW);
         }
 
-        
+        public int InsertUserOTP(int userID, int userType, string OTP)
+        {
+            return InstallUserDAL.Instance.InsertUserOTP(userID, userType, OTP);
+        }
+
     }
 }
