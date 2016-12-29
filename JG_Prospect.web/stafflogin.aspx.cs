@@ -799,6 +799,31 @@ namespace JG_Prospect
                     }
                 }
                 #endregion
+
+                if (!JGSession.IsActive)
+                {
+                    if (JGSession.IsCustomer)
+                    {
+                        rdCustomer.Checked = true;
+                        rdSalesIns.Checked = false;
+                        rdUserType_CheckedChanged(rdCustomer, e);
+                    }
+                    else
+                    {
+                        rdCustomer.Checked = false;
+                        rdSalesIns.Checked = true;
+                        rdUserType_CheckedChanged(rdSalesIns, e);
+                    }
+
+                    txtloginid.Text = JGSession.UserLoginId;
+                    txtpassword.Text = JGSession.UserPassword;
+                    txtpassword.Attributes.Add("value", JGSession.UserPassword);
+
+                    if (!string.IsNullOrEmpty(txtloginid.Text) && !string.IsNullOrEmpty(txtpassword.Text))
+                    {
+                        btnsubmit_Click(sender, e);
+                    }
+                }
             }
         }
 

@@ -116,7 +116,7 @@ namespace JG_Prospect
                             if (ds.Tables[0].Rows.Count > 0)
                             {
                                 Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                                Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 isvaliduser = UserBLL.Instance.chklogin(email, txtpassword.Text);
@@ -126,7 +126,7 @@ namespace JG_Prospect
                             {
                                 Session["loginid"] = email;
                                 Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                //JGSession.UserPassword = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
                                 {
@@ -176,7 +176,7 @@ namespace JG_Prospect
                                 ds = null;
                                 ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                                 Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
@@ -185,7 +185,7 @@ namespace JG_Prospect
                                     Session["loginid"] = txtloginid.Text.Trim();
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
-                                    //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    //JGSession.UserPassword = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
                                         Session["AdminUserId"] = AdminInstallerId;
@@ -256,7 +256,7 @@ namespace JG_Prospect
                             if (ds.Tables[0].Rows.Count > 0)
                             {
                                 Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                                Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 isvaliduser = UserBLL.Instance.chklogin(emailGPlus, txtpassword.Text);
@@ -266,7 +266,7 @@ namespace JG_Prospect
                             {
                                 Session["loginid"] = emailGPlus;
                                 Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                //JGSession.UserPassword = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
                                 {
@@ -316,7 +316,7 @@ namespace JG_Prospect
                                 ds = null;
                                 ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                                 Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
@@ -325,7 +325,7 @@ namespace JG_Prospect
                                     Session["loginid"] = txtloginid.Text.Trim();
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
-                                    //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    //JGSession.UserPassword = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
                                         Session["AdminUserId"] = AdminInstallerId;
@@ -402,7 +402,7 @@ namespace JG_Prospect
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
                                     Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     isvaliduser = UserBLL.Instance.chklogin(email, txtpassword.Text);
@@ -412,7 +412,7 @@ namespace JG_Prospect
                                 {
                                     Session["loginid"] = email;
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                    //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
@@ -462,7 +462,7 @@ namespace JG_Prospect
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                                     Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
@@ -471,7 +471,7 @@ namespace JG_Prospect
                                         Session["loginid"] = txtloginid.Text.Trim();
                                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
-                                        //Session["loginpassword"] = txtpassword.Text.Trim();
+                                        //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
                                             Session["AdminUserId"] = AdminInstallerId;
@@ -539,7 +539,7 @@ namespace JG_Prospect
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
                                     Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     isvaliduser = UserBLL.Instance.chklogin(emailyahoo, txtpassword.Text);
@@ -549,7 +549,7 @@ namespace JG_Prospect
                                 {
                                     Session["loginid"] = emailyahoo;
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
@@ -599,7 +599,7 @@ namespace JG_Prospect
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                                     Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
@@ -608,7 +608,7 @@ namespace JG_Prospect
                                         Session["loginid"] = txtloginid.Text.Trim();
                                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
-                                        //Session["loginpassword"] = txtpassword.Text.Trim();
+                                        //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
                                             Session["AdminUserId"] = AdminInstallerId;
@@ -694,7 +694,7 @@ namespace JG_Prospect
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
                                     Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     isvaliduser = UserBLL.Instance.chklogin(emailyahoo, txtpassword.Text);
@@ -704,7 +704,7 @@ namespace JG_Prospect
                                 {
                                     Session["loginid"] = emailyahoo;
                                     Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
@@ -754,7 +754,7 @@ namespace JG_Prospect
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                                     Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
-                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
@@ -763,7 +763,7 @@ namespace JG_Prospect
                                         Session["loginid"] = txtloginid.Text.Trim();
                                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
-                                        //Session["loginpassword"] = txtpassword.Text.Trim();
+                                        //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
                                             Session["AdminUserId"] = AdminInstallerId;
@@ -809,6 +809,31 @@ namespace JG_Prospect
                     }
                 }
                 #endregion
+
+                if (!JGSession.IsActive)
+                {
+                    if (JGSession.IsCustomer)
+                    {
+                        rdCustomer.Checked = true;
+                        rdSalesIns.Checked = false;
+                        rdUserType_CheckedChanged(rdCustomer, e);
+                    }
+                    else
+                    {
+                        rdCustomer.Checked = false;
+                        rdSalesIns.Checked = true;
+                        rdUserType_CheckedChanged(rdSalesIns, e);
+                    }
+
+                    txtloginid.Text = JGSession.UserLoginId;
+                    txtpassword.Text = JGSession.UserPassword;
+                    txtpassword.Attributes.Add("value", JGSession.UserPassword);
+
+                    if (!string.IsNullOrEmpty(txtloginid.Text) && !string.IsNullOrEmpty(txtpassword.Text))
+                    {
+                        btnsubmit_Click(sender, e);
+                    }
+                }
             }
         }
 
@@ -846,7 +871,7 @@ namespace JG_Prospect
 
                         Session["loginid"] = txtloginid.Text.Trim();
                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                        Session["loginpassword"] = txtpassword.Text.Trim();
+                        JGSession.UserPassword = txtpassword.Text.Trim();
                         RememberMe();
 
                         #region Redirect to home Or Sr_App/home
@@ -921,7 +946,7 @@ namespace JG_Prospect
                             {
                                 Session["loginid"] = txtloginid.Text.Trim();
                                 Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                                Session["loginpassword"] = txtpassword.Text.Trim();
+                                JGSession.UserPassword = txtpassword.Text.Trim();
 
 
                                 if (txtloginid.Text.Trim() == AdminInstallerId)
@@ -1045,7 +1070,7 @@ namespace JG_Prospect
                         {
                             Session["loginid"] = txtloginid.Text.Trim();
                             Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                            Session["loginpassword"] = txtpassword.Text.Trim();
+                            JGSession.UserPassword = txtpassword.Text.Trim();
                             Session["Username"] = ds.Tables[0].Rows[0]["CustomerName"].ToString();
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                             // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);

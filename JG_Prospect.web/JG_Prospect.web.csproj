@@ -1897,6 +1897,7 @@
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
+    <Content Include="UserControl\ucRenewSession.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
@@ -2052,6 +2053,13 @@
     </Compile>
     <Compile Include="stafflogin.aspx.designer.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucRenewSession.ascx.cs">
+      <DependentUpon>ucRenewSession.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucRenewSession.ascx.designer.cs">
+      <DependentUpon>ucRenewSession.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
