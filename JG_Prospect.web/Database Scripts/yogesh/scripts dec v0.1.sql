@@ -3261,3 +3261,203 @@ FROM
 GO
 
 
+--=======================================================================================================================================================================================================
+
+-- Published on Live 22 Dec 2016
+
+--=======================================================================================================================================================================================================
+/*
+   Tuesday, December 27, 20168:58:25 PM
+   User: jgrovesa
+   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
+   Database: JGBS_Dev
+   Application: 
+*/
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTask
+	DROP CONSTRAINT DF__tblTask__IsUiReq__2CC890AD
+GO
+CREATE TABLE dbo.Tmp_tblTask
+	(
+	TaskId bigint NOT NULL IDENTITY (1, 1),
+	Title varchar(250) NOT NULL,
+	Description varchar(MAX) NOT NULL,
+	Status tinyint NOT NULL,
+	DueDate datetime NULL,
+	Hours varchar(25) NULL,
+	CreatedBy int NOT NULL,
+	CreatedOn datetime NOT NULL,
+	IsDeleted bit NOT NULL,
+	InstallId varchar(50) NULL,
+	ParentTaskId bigint NULL,
+	TaskType tinyint NULL,
+	TaskPriority tinyint NULL,
+	IsTechTask bit NULL,
+	AdminStatus bit NULL,
+	TechLeadStatus bit NULL,
+	OtherUserStatus bit NULL,
+	AdminStatusUpdated datetime NULL,
+	TechLeadStatusUpdated datetime NULL,
+	OtherUserStatusUpdated datetime NULL,
+	AdminUserId int NULL,
+	TechLeadUserId int NULL,
+	OtherUserId int NULL,
+	IsAdminInstallUser bit NULL,
+	IsTechLeadInstallUser bit NULL,
+	IsOtherUserInstallUser bit NULL,
+	Url varchar(250) NULL,
+	IsUiRequested bit NULL
+	)  ON [PRIMARY]
+	 TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_tblTask SET (LOCK_ESCALATION = TABLE)
+GO
+ALTER TABLE dbo.Tmp_tblTask ADD CONSTRAINT
+	DF__tblTask__IsUiReq__2CC890AD DEFAULT ((0)) FOR IsUiRequested
+GO
+SET IDENTITY_INSERT dbo.Tmp_tblTask ON
+GO
+IF EXISTS(SELECT * FROM dbo.tblTask)
+	 EXEC('INSERT INTO dbo.Tmp_tblTask (TaskId, Title, Description, Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested)
+		SELECT TaskId, Title, CONVERT(varchar(MAX), Description), Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested FROM dbo.tblTask WITH (HOLDLOCK TABLOCKX)')
+GO
+SET IDENTITY_INSERT dbo.Tmp_tblTask OFF
+GO
+ALTER TABLE dbo.tblTaskApprovals
+	DROP CONSTRAINT FK__tblTaskAp__TaskI__31C24FF4
+GO
+ALTER TABLE dbo.tblTaskWorkSpecifications
+	DROP CONSTRAINT FK__tblTaskWo__TaskI__4CAB505A
+GO
+ALTER TABLE dbo.tblTaskAcceptance
+	DROP CONSTRAINT FK__tblTaskAc__TaskI__61A66D40
+GO
+ALTER TABLE dbo.tblTaskDesignations
+	DROP CONSTRAINT FK_tblTaskDesignations_tblTask
+GO
+ALTER TABLE dbo.tblTaskAssignmentRequests
+	DROP CONSTRAINT FK_tblTaskAssignmentRequests_tblTask
+GO
+ALTER TABLE dbo.tblTaskAssignedUsers
+	DROP CONSTRAINT FK_tblTaskAssignedUsers_tblTask
+GO
+DROP TABLE dbo.tblTask
+GO
+EXECUTE sp_rename N'dbo.Tmp_tblTask', N'tblTask', 'OBJECT' 
+GO
+ALTER TABLE dbo.tblTask ADD CONSTRAINT
+	PK_tblTask PRIMARY KEY CLUSTERED 
+	(
+	TaskId
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskAssignedUsers ADD CONSTRAINT
+	FK_tblTaskAssignedUsers_tblTask FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskAssignedUsers SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskAssignmentRequests ADD CONSTRAINT
+	FK_tblTaskAssignmentRequests_tblTask FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskAssignmentRequests SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskDesignations ADD CONSTRAINT
+	FK_tblTaskDesignations_tblTask FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskDesignations SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskAcceptance ADD CONSTRAINT
+	FK__tblTaskAc__TaskI__61A66D40 FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskAcceptance SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskWorkSpecifications ADD CONSTRAINT
+	FK__tblTaskWo__TaskI__4CAB505A FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskWorkSpecifications SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTaskApprovals ADD CONSTRAINT
+	FK__tblTaskAp__TaskI__31C24FF4 FOREIGN KEY
+	(
+	TaskId
+	) REFERENCES dbo.tblTask
+	(
+	TaskId
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblTaskApprovals SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
