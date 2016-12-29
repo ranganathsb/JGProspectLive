@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 
+using System.Collections.Generic;
+
 namespace JG_Prospect.Utilits
 {
     /// <summary>
@@ -55,6 +57,117 @@ namespace JG_Prospect.Utilits
             ddlInsteviewtime.DataBind();
 
             return ddlInsteviewtime;
+        }
+
+        /// <summary>
+        /// Fill UserStatus a Static Method in future can replace with DB
+        /// </summary>
+        /// <param name="ddlUserStatus"></param>
+        /// <returns></returns>
+        public static DropDownList FillUserStatus(DropDownList ddlUserStatus, string FirstItem = "", string FirstItemValue = "")
+        {
+            List<UserStatus> lstUserStatus = new List<UserStatus>();
+            UserStatus objUserStatus;
+
+            if (FirstItem != "" && FirstItemValue != "")
+            {
+                objUserStatus = new UserStatus();
+                objUserStatus.Status = FirstItem; objUserStatus.StatusValue = FirstItemValue;
+                lstUserStatus.Add(objUserStatus);
+            }
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Referral applicant"; objUserStatus.StatusValue = "ReferralApplicant";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Applicant"; objUserStatus.StatusValue = "Applicant";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Phone/Video Screened"; objUserStatus.StatusValue = "PhoneScreened";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Rejected"; objUserStatus.StatusValue = "Rejected";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Interview Date"; objUserStatus.StatusValue = "InterviewDate";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Offer Made"; objUserStatus.StatusValue = "OfferMade";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Active"; objUserStatus.StatusValue = "Active";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Deactive"; objUserStatus.StatusValue = "Deactive";
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Install Prospect"; objUserStatus.StatusValue = "Install Prospect";
+            lstUserStatus.Add(objUserStatus);
+
+            ddlUserStatus.DataSource = lstUserStatus;
+            ddlUserStatus.DataTextField = "Status";
+            ddlUserStatus.DataValueField = "StatusValue";
+            ddlUserStatus.DataBind();
+
+            return ddlUserStatus;
+        }
+
+        /// <summary>
+        /// Set value of Image Attributes on the base of the status
+        /// Currently Image Path only for Sr_App Pages.
+        /// </summary>
+        public static DropDownList UserStatusDropDown_Set_ImageAtt(DropDownList ddlstatus)
+        {
+            string imageURL = "";
+
+            for (int i = 0; i < ddlstatus.Items.Count; i++)
+            {
+                switch (ddlstatus.Items[i].Value)
+                {
+                    case "Applicant":
+                    case "ReferralApplicant":
+                        imageURL = "../Sr_App/img/red-astrek.png";
+                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "OfferMade":
+                        imageURL = "../Sr_App/img/dark-blue-astrek.png";
+                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "PhoneScreened":
+                        imageURL = "../Sr_App/img/yellow-astrek.png";
+                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "Active":
+                        imageURL = "../Sr_App/img/green-astrek.png";
+                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "InterviewDate":
+                        imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
+                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    default:
+                        //ddlstatus.Items[i].Attributes["data-image"] = "../Sr_App/img/white-astrek.png";
+                        break;
+                }
+                //System.Web.UI.WebControls.ListItem item = ddlCountry.Items[i];
+                //item.Attributes["data-image"] = imageURL;
+            }
+            return ddlstatus;
+        }
+
+
+        class UserStatus
+        {
+            public string Status { get; set; }
+            public string StatusValue { get; set; }
         }
     }
 }

@@ -241,6 +241,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
                     database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -1395,7 +1396,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, objuser.DesignationID);
                     database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
-
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
+                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -1967,6 +1969,33 @@ namespace JG_Prospect.DAL
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
             return result;
+        }
+
+        public int InsertUserOTP(int userID, int userType, string OTP)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertUserOTP");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@OTP", DbType.String, OTP);
+                    database.AddInParameter(command, "@UserID", DbType.Int32 , userID);
+                    database.AddInParameter(command, "@UserType", DbType.Int32, userType);
+                    database.AddOutParameter(command, "@result", DbType.Int32, 1);
+                    database.ExecuteScalar(command);
+                    int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
+
+                    return res;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
         }
 
         #endregion

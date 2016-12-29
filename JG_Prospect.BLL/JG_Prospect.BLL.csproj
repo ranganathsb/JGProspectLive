@@ -86,6 +86,7 @@
     <Compile Include="BLLAttendence.cs" />
     <Compile Include="CalendarEvent.cs" />
     <Compile Include="clsProcurementData.cs" />
+    <Compile Include="CountryBLL.cs" />
     <Compile Include="CustomBLL.cs" />
     <Compile Include="DepartmentBLL.cs" />
     <Compile Include="DesignationBLL.cs" />

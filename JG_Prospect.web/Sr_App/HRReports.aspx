@@ -4,6 +4,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="Scripts/ScrollableTablePlugin_1.0_min.js" type="text/javascript"></script>
+
+    <link href="../Styles/dd.css" rel="stylesheet" />
+    
+
     <script type="text/javascript">
         $(function () {
             $('#Table1').Scrollable({
@@ -12,6 +16,10 @@
         });
     </script>
     <style type="text/css">
+        .ddChild li 
+        {
+            width:150px !important;
+        }
         .auto-style1 {
             width: 100%;
         }
@@ -248,22 +256,14 @@
                     <br />
                     <br />
 
-                    <asp:UpdatePanel ID="updtpnlgrid" runat="server">
-                        <ContentTemplate>
+                    <%--<asp:UpdatePanel ID="updtpnlgrid" runat="server">
+                        <ContentTemplate>--%>
                             <table>
                                 <tr>
                                     <td>Status:
                                     </td>
                                     <td>
-                                        <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server">
-                                            <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
-                                            <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
-                                            <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
-                                            <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
-                                            <asp:ListItem Text="Offer Made" Value="OfferMade" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
-                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
-                                            <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
+                                        <asp:DropDownList ID="ddlStatus" Width="150" CssClass="ddlStatus-main" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlStatus_PreRender">                                            
                                         </asp:DropDownList>
                                     </td>
                                     <td>User:
@@ -382,8 +382,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
+                        <%--</ContentTemplate>
+                        <Triggers>
+                            <asp:PostBackTrigger ControlID="ddlStatus" />
+                        </Triggers>
+                    </asp:UpdatePanel>--%>
                     <br />
                     <br />
 
@@ -577,4 +580,12 @@
             </div>
         </div>
     </div>
+    <script src="../js/jquery.dd.min.js"></script>
+    <script>
+        try {
+            $("#<%=ddlStatus.ClientID%>").msDropDown();
+        } catch (e) {
+            alert(e.message);
+        }
+    </script>
 </asp:Content>

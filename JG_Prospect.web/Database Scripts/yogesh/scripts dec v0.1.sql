@@ -3260,8 +3260,6 @@ FROM
 
 GO
 
-
-<<<<<<< HEAD
 /****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 23-Dec-16 8:57:23 AM ******/
 SET ANSI_NULLS ON
 GO
@@ -3586,7 +3584,7 @@ BEGIN
 
 END
 GO
-=======
+
 --=======================================================================================================================================================================================================
 
 -- Published on Live 22 Dec 2016
@@ -3787,4 +3785,3 @@ GO
 ALTER TABLE dbo.tblTaskApprovals SET (LOCK_ESCALATION = TABLE)
 GO
 COMMIT
->>>>>>> developers

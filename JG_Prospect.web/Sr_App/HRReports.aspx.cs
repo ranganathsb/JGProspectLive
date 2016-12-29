@@ -20,6 +20,7 @@ namespace JG_Prospect.Sr_App
             }
             if (!IsPostBack)
             {
+                BindControls();
                 FillCustomer();
                 DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 bindPayPeriod(dsCurrentPeriod);
@@ -27,6 +28,11 @@ namespace JG_Prospect.Sr_App
                 GetActiveUsers();
                 GetActiveContractors();
             }
+        }
+
+        private void BindControls()
+        {
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
         }
 
         private void FillCustomer()
@@ -392,7 +398,9 @@ namespace JG_Prospect.Sr_App
             }
 
         }
-
-
+        protected void ddlStatus_PreRender(object sender, EventArgs e)
+        {
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
+        }
     }
 }
