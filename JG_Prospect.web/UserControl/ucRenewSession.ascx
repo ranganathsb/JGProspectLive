@@ -1,0 +1,48 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucRenewSession.ascx.cs" Inherits="JG_Prospect.UserControl.ucRenewSession" %>
+
+<label id="intSecondsRemaining" style="color: white;"></label>
+<div class="hide">
+    <div id="divRenewSession" runat="server" title="Relogin">
+        <p>
+            You session is expired. Do you wish to re-login?
+        </p>
+        <p style="text-align: center;">
+            <asp:Button ID="btnYes" runat="server" Text="Yes" OnClick="btnYes_Click" />
+            <asp:Button ID="btnNo" runat="server" Text="No" OnClick="btnNo_Click" />
+        </p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var intSecondsRemaining = <%=GetSessionTimeoutSeconds()%>;
+    var sessionExpiryInterval;
+
+    function CheckSessionExpiry() {
+        intSecondsRemaining--;
+        $('#intSecondsRemaining').html(GetHour() + ':' + GetMinutes() + ':' + GetSeconds());
+        if(intSecondsRemaining <= 60) {
+            clearInterval(sessionExpiryInterval);
+            //ShowPopupWithTitle('<%=divRenewSession.ClientID%>','Relogin');
+            var objDialog = $('#<%=divRenewSession.ClientID%>').dialog();
+            // this will enable postback from dialog buttons.
+            objDialog.parent().appendTo(jQuery("form:first"));
+        }
+    }
+    
+    function GetHour() {
+        var h = parseInt(intSecondsRemaining/3600);
+        return h > 0? h : 0;
+    }
+
+    function GetMinutes() {
+        var m = parseInt((intSecondsRemaining % 3600)/60);
+        return m > 0 ? m: 0;
+    }
+
+    function GetSeconds() {
+        return (intSecondsRemaining % 60);
+    }
+
+    sessionExpiryInterval = setInterval(CheckSessionExpiry, 1000);
+
+</script>

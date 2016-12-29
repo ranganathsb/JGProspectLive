@@ -796,6 +796,22 @@ namespace JG_Prospect
             }
         }
 
+        public static DateTime StartDateTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["StartDateTime"] == null)
+                {
+                    return DateTime.MinValue;
+                }
+                return Convert.ToDateTime(HttpContext.Current.Session["StartDateTime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["StartDateTime"] = value;
+            }
+        }
+
         public static Int32 UserId
         {
             get
@@ -825,6 +841,38 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["Username"] = value;
+            }
+        }
+
+        public static string UserLoginId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["loginid"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["loginid"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["loginid"] = value;
+            }
+        }
+
+        public static string UserPassword
+        {
+            get
+            {
+                if (HttpContext.Current.Session["loginpassword"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["loginpassword"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["loginpassword"] = value;
             }
         }
 

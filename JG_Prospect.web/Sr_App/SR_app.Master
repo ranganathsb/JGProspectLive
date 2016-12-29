@@ -5,6 +5,8 @@
 <%@ Register Src="~/Sr_App/LeftPanel.ascx" TagName="LeftPanel" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor"
     TagPrefix="cc1" %>
+<%@ Register Src="~/UserControl/ucRenewSession.ascx" TagPrefix="uc1" TagName="ucRenewSession" %>
+
 <!DOCTYPE html>
 <html>
 <head id="Head1" runat="server">
@@ -509,6 +511,9 @@
                 <div class="search_google">
                     <input name="qfront" id="qfront" value="Google Web Search" runat="server" type="text" /><asp:Button ID="searchbutton"
                         runat="server" value="Search" Text="Search" />
+                </div>
+                <div style="top:150px; right:0px; position:absolute;">
+                    <uc1:ucRenewSession runat="server" id="ucRenewSession" />
                 </div>
             </div>
             <div class="content_panel">

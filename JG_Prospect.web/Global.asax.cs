@@ -121,7 +121,7 @@ namespace JG_Prospect
         void Session_Start(object sender, EventArgs e)
         {
             // Code that runs when a new session is started
-
+            JGSession.StartDateTime = DateTime.Now;
         }
 
         void Session_End(object sender, EventArgs e)
