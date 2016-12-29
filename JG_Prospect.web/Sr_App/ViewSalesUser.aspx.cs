@@ -102,7 +102,7 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                FillPhoneTypeDropDown();
+                FillControls();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
@@ -419,6 +419,13 @@ namespace JG_Prospect.Sr_App
                             ddlPositionAppliedFor.ClearSelection();
                             ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
                         }
+
+                        if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
+                        {
+                            ddlCountry.ClearSelection();
+                            ddlCountry.SelectedValue = ds.Tables[0].Rows[0]["CountryCode"].ToString();                            
+                        }
+
 
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
 
@@ -1643,22 +1650,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.DrugTest = false;
                 }
-                //if (rdoDriveLicenseYes.Checked)
-                //{
-                //    objuser.ValidLicense = true;
-                //}
-                //else if (rdoDriveLicenseNo.Checked)
-                //{
-                //    objuser.ValidLicense = false;
-                //}
-                //if (rdoTruckToolsYes.Checked)
-                //{
-                //    objuser.TruckTools = true;
-                //}
-                //else if (rdoTruckToolsNo.Checked)
-                //{
-                //    objuser.TruckTools = false;
-                //}
+                 
                 if (rdoJMApplyYes.Checked)
                 {
                     objuser.PrevApply = true;
@@ -1675,58 +1667,20 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.LicenseStatus = false;
                 }
-                //if (rdoGuiltyYes.Checked)
-                //{
-                //    objuser.CrimeStatus = true;
-                //}
-                //else if (rdoGuiltyNo.Checked)
-                //{
-                //    objuser.CrimeStatus = false;
-                //}
-                //if (Convert.ToString(txtStartDateNew.Text) != "")
-                //{
-                //    objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
-                //}
-                
-                //objuser.Avialability = txtAvailability.Text;
-                //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
-                //if (txtYrs.Text != "")
-                //{
-                //    objuser.businessYrs = Convert.ToDouble(txtYrs.Text);
-                //}
-                //if (txtCurrentComp.Text != "")
-                //{
-                //    objuser.underPresentComp = Convert.ToDouble(txtCurrentComp.Text);
-                //}
-                //objuser.websiteaddress = txtWebsiteUrl.Text;
+                 
+                 
                 objuser.ResumePath = Convert.ToString(Session["ResumePath"]);
                 objuser.CirtificationTraining = Convert.ToString(Session["CirtificationPath"]);
                 if (Convert.ToString(Session["PersonName"]) != "")
                 {
                     objuser.PersonName = Convert.ToString(Session["PersonName"]);
                 }
-                else
-                {
-                    //objuser.PersonName = txtName.Text;
-                }
+                
                 if (Convert.ToString(Session["PersonType"]) != "")
                 {
                     objuser.PersonType = Convert.ToString(Session["PersonType"]);
                 }
-                //else if (txtName.Text != "")
-                //{
-                //    if (ddlType.SelectedIndex != 0)
-                //    {
-                //        objuser.PersonType = ddlType.SelectedValue;
-                //    }
-                //    else
-                //    {
-                //        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Select person type')", true);
-                //        ddlType.Focus();
-                //        return;
-                //    }
-                //}
-                //objuser.CompanyPrinciple = txtPrinciple.Text;
+                 
                 if (ddldesignation.SelectedValue != "0" && ddlInstallerType.Visible == true)
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
@@ -1803,6 +1757,7 @@ namespace JG_Prospect.Sr_App
                 objuser.UserType = "SalesUser";
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
                 objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
@@ -2411,6 +2366,7 @@ namespace JG_Prospect.Sr_App
                 objuser.cThree = txtcThree.Text;
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
 
@@ -3629,12 +3585,6 @@ namespace JG_Prospect.Sr_App
 
         protected void ddldesignation_SelectedIndexChanged1(object sender, EventArgs e)
         {
-            //if (ddlstatus.SelectedValue == "Active" && 
-            //        (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            //    showHideNewHireSection(true);
-            //else
-            //    showHideNewHireSection(false);
-
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -5794,6 +5744,11 @@ namespace JG_Prospect.Sr_App
             return prefix;
         }
 
+        private void FillControls()
+        {
+            FillPhoneTypeDropDown();
+            FillCountryDropDown();
+        }
         private void FillPhoneTypeDropDown()
         {
 
@@ -5814,6 +5769,26 @@ namespace JG_Prospect.Sr_App
                 phoneTypeDropDownList.DataBind();
                 //ddlSource.Items.Insert(0, "Select Source");
                 //ddlSource.SelectedIndex = 0;
+            }
+        }
+
+        private void FillCountryDropDown()
+        {
+
+            DataSet dsCountry;
+
+            dsCountry = CountryBLL.Instance.GetAllCountry();
+
+            if (dsCountry.Tables[0].Rows.Count > 0)
+            {
+                ddlCountry.DataSource = dsCountry.Tables[0];
+                ddlCountry.DataTextField = "CountryName";
+                ddlCountry.DataValueField = "CountryCode";
+                ddlCountry.DataBind();
+
+                //-- SET Default Value
+                ddlCountry.SelectedValue = "US";
+
             }
         }
 
@@ -5943,8 +5918,16 @@ namespace JG_Prospect.Sr_App
 
         private void BindTouchPointLog()
         {
-            DataSet DsTouchPointLog;
-            DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+            DataSet DsTouchPointLog = null;
+
+            if (Session["ID"].ToString() != "")
+            {
+                DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+            }
+            else if (hidTouchPointGUID.Value.Trim() !="")
+            {
+                DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByGUID(hidTouchPointGUID.Value);
+            }
 
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
@@ -6569,5 +6552,7 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
+
+        
     }
 }

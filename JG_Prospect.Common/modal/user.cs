@@ -183,7 +183,8 @@ namespace JG_Prospect.Common.modal
         public int DesignationID;
         public string PhoneISDCode;
         public string PhoneExtNo;
-        
+        public string CountryCode;
+
     }
 
     public class user1
