@@ -130,8 +130,6 @@
     <Compile Include="Session.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\JG_Prospect.Common.dll" />
-    <Content Include="bin\Debug\JG_Prospect.Common.pdb" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.dll" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.SqlCe.dll" />
