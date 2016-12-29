@@ -800,7 +800,7 @@ namespace JG_Prospect
                 }
                 #endregion
 
-                if (!JGSession.IsActive)
+                //if (!JGSession.IsActive)
                 {
                     if (JGSession.IsCustomer)
                     {
