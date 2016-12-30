@@ -274,6 +274,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Label lblActiveDeactiveRatio;
         
         /// <summary>
+        /// txtSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        
+        /// <summary>
         /// lblUserStatus control.
         /// </summary>
         /// <remarks>
@@ -668,7 +677,7 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlUsers;
-
+        
         /// <summary>
         /// ddlDesignationForTask control.
         /// </summary>
@@ -677,7 +686,7 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDesignationForTask;
-
+        
         /// <summary>
         /// ddlTechTask control.
         /// </summary>

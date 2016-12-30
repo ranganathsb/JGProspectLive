@@ -414,6 +414,37 @@ namespace JG_Prospect.Sr_App
                         txtPhone.Text = ds.Tables[0].Rows[0]["Phone"].ToString();
                         txtPhoneExt.Text = ds.Tables[0].Rows[0]["PhoneExtNo"].ToString();
 
+                        txtMiddleInitial.Text = ds.Tables[0].Rows[0]["NameMiddleInitial"].ToString();
+
+                        if (ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString() != "")
+                            chkPrimaryEmailMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString());
+                        else
+                            chkPrimaryEmailMain.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString() != "")
+                            chkPrimaryPhoneMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString());
+                        else
+                            chkPrimaryPhoneMain.Checked = false;
+                        if (ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString() != "")
+                            ContactPreferenceChkEmail.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkEmail.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsCallContactPreference"].ToString() != "")
+                            ContactPreferenceChkCall.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsCallContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkCall.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsTextContactPreference"].ToString() != "")
+                            ContactPreferenceChkText.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsTextContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkText.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsMailContactPreference"].ToString() != "")
+                            ContactPreferenceChkMail.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsMailContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkMail.Checked = false;
+
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
@@ -1761,7 +1792,15 @@ namespace JG_Prospect.Sr_App
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
                 objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
-                
+
+                objuser.NameMiddleInitial = txtMiddleInitial.Text;
+                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
+                objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
+                objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
+                objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
+                 
 
                 objuser.StartDate = txtStartDate.Text;
                 objuser.SalaryReq = txtSalaryRequirments.Text;
@@ -2369,6 +2408,14 @@ namespace JG_Prospect.Sr_App
                 objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
+
+                objuser.NameMiddleInitial = txtMiddleInitial.Text;
+                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
+                objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
+                objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
+                objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
 
                 if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
                 {
@@ -4241,11 +4288,11 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNotes_Click(object sender, EventArgs e)
         {
-            string note = txtAddNotes.Text.Trim();
-            int CustomerId = Convert.ToInt32(Session["ID"]);
-            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
-            txtAddNotes.Text = string.Empty;
-            bindGrid();
+            //string note = txtAddNotes.Text.Trim();
+            //int CustomerId = Convert.ToInt32(Session["ID"]);
+            //InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
+            //txtAddNotes.Text = string.Empty;
+            //bindGrid();
         }
 
         protected void btnSaveOfferMade_Click(object sender, EventArgs e)
@@ -5662,7 +5709,7 @@ namespace JG_Prospect.Sr_App
             int intID = 0;
             Int32.TryParse(strCurrentID, out intID);
             int PhoneTypeID;
-            Int32.TryParse("0", out PhoneTypeID); //Need to pass PhoneType to validate duplicate records. ==Need to confomed. 
+            Int32.TryParse("0", out PhoneTypeID); //Need to pass PhoneType to validate duplicate records. ==Before that Need to ask
             return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID, PhoneTypeID);
         }
 
@@ -6552,8 +6599,16 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
+
         #endregion
 
-        
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() !="")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
     }
 }

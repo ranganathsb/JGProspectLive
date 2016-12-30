@@ -475,6 +475,11 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.UpdateOfferMade(Id, Email, password);
         }
+        
+        public string AddNewEmailForUser(string EmailID, bool IsPrimary, int UserID)
+        {
+            return InstallUserDAL.Instance.AddNewEmailForUser(EmailID, IsPrimary, UserID);
+        }
 
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
