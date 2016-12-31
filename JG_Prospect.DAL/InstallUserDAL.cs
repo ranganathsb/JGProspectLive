@@ -243,6 +243,14 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
                     database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
 
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@IsEmailPrimaryEmail", DbType.Boolean, objuser.IsEmailPrimaryEmail);
+                    database.AddInParameter(command, "@IsPhonePrimaryPhone", DbType.Boolean, objuser.IsPhonePrimaryPhone);
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
 
@@ -451,6 +459,28 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@EmailID", DbType.String, ExtEmail);
                     database.AddInParameter(command, "@UserID", DbType.Int32, userId);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public string AddNewEmailForUser(string EmailID, bool IsPrimary, int UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_InsertUserEmailByUserID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@EmailID", DbType.String, EmailID);
+                    database.AddInParameter(command, "@IsPrimary", DbType.Boolean, IsPrimary);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
 
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
@@ -1397,7 +1427,15 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
                     database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
                     database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
-                    
+
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@IsEmailPrimaryEmail", DbType.Boolean, objuser.IsEmailPrimaryEmail);
+                    database.AddInParameter(command, "@IsPhonePrimaryPhone", DbType.Boolean, objuser.IsPhonePrimaryPhone);                    
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));

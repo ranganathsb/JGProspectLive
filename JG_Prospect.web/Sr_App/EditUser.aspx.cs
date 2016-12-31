@@ -230,13 +230,31 @@ namespace JG_Prospect
 
         protected void grdUsers_RowDataBound(object sender, GridViewRowEventArgs e)
         {
+
             try
             {
                 if (e.Row.RowType == DataControlRowType.DataRow)
                 {
-                    DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row                    
+                    Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
+                    DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
+                    DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
+
+                    ddlContactType = BindContactDllForGrid(ddlContactType);
+
+                    System.Web.UI.HtmlControls.HtmlAnchor aReasumePath = (e.Row.FindControl("aReasumePath") as System.Web.UI.HtmlControls.HtmlAnchor);
+
                     string Status = Convert.ToString((e.Row.FindControl("lblStatus") as HiddenField).Value);//Select the status in DropDownList
                     string orderStatus = Convert.ToString((e.Row.FindControl("lblOrderStatus") as HiddenField).Value);
+
+                    //==TODO Removing Prefix - Need to fix from Creat User page.
+                    if (aReasumePath.InnerText.Trim() != "" && aReasumePath.InnerText.Length > 12)
+                        aReasumePath.InnerText = aReasumePath.InnerText.Substring(14, aReasumePath.InnerText.Length - 14);
+
+                    char chaDelimiter = '$';
+
+                    if (lblPrimaryPhone.Text.IndexOf(chaDelimiter) > 0)
+                        lblPrimaryPhone = ManiPulatePrimaryPhone(lblPrimaryPhone, chaDelimiter);
+
 
                     if (Status != "")
                     {
@@ -277,6 +295,109 @@ namespace JG_Prospect
             }
         }
 
+        private DropDownList BindContactDllForGrid(DropDownList ddlContactType)
+        {
+            // To Avoid multi call to DB
+            if(ViewState["ContactDllForGrid"] != null)
+            {   // Bind dropdown 
+                ddlContactType =  BindContactDllForVS(ddlContactType);
+            }
+            else
+            {
+                // Fill ViewState from DB.
+                DataSet dsPhoneType;
+               
+                dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
+                
+                foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
+                {
+                    if(RowItem["ContactName"].ToString().ToUpper() == "OTHER")
+                    {
+                        RowItem["ContactName"] = "EMAIL";
+                        RowItem["ContactValue"] = "EMAIL";
+                        RowItem["UserContactID"] = "0";
+                    }
+                }
+
+                ViewState["ContactDllForGrid"] = dsPhoneType;
+
+                ddlContactType = BindContactDllForVS(ddlContactType);
+
+            }
+            return ddlContactType;
+        }
+
+        /// <summary>
+        /// Bind DropDown on from the ViewState.
+        /// </summary>
+        /// <param name="ddlContactType"></param>
+        /// <returns></returns>
+        private DropDownList BindContactDllForVS(DropDownList ddlContactType)
+        {
+            DataSet dsPhoneType;
+            dsPhoneType = (DataSet)ViewState["ContactDllForGrid"];
+
+            if (dsPhoneType.Tables[0].Rows.Count > 0)
+            {
+                ddlContactType.DataSource = dsPhoneType.Tables[0];
+                ddlContactType.DataTextField = "ContactName";
+                ddlContactType.DataValueField = "UserContactID";
+                ddlContactType.DataBind();
+            }
+
+            return ddlContactType;
+        }
+
+        /// <summary>
+        /// If PromaryPhone with Phone Type will Inject Phone Type Image.
+        /// </summary>
+        /// <param name="lblPrimaryPhone"></param>
+        /// <param name="chaDelimiter"></param>
+        /// <returns></returns>
+        private Label ManiPulatePrimaryPhone(Label lblPrimaryPhone , char chaDelimiter)
+        {
+            string[] strPrimaryPhone = lblPrimaryPhone.Text.Split(chaDelimiter);
+            string strPhoneType = "";
+
+            if (!string.IsNullOrEmpty(strPrimaryPhone[1]))
+            {
+                strPhoneType = strPrimaryPhone[1].ToString().Trim();
+
+                switch (strPhoneType)
+                {
+                    case "skype":
+                        strPhoneType = "../Sr_App/img/skype.png";
+                        break;
+                    case "whatsapp":
+                        strPhoneType = "../Sr_App/img/WhatsApp.png";
+                        break;
+                    case "HousePhone":
+                    case "House Phone":
+                        strPhoneType = "../Sr_App/img/Phone_home.png";
+                        break;
+                    case "CellPhone":
+                    case "Cell Phone":
+                        strPhoneType = "../Sr_App/img/Cell_Phone.png";
+                        break;
+                    case "WorkPhone":
+                    case "Work Phone":
+                        strPhoneType = "../Sr_App/img/WorkPhone.png";
+                        break;
+                    case "AltPhone":
+                    case "Alt. Phone":
+                        strPhoneType = "../Sr_App/img/AltPhone.png";
+                        break;
+                    default:
+                        strPhoneType = "../Sr_App/img/WorkPhone.png";
+                        break;
+                }
+                strPhoneType = "<img src='" + strPhoneType + "' alt='' />";
+                lblPrimaryPhone.Text = "<a style='color:red' class='PrimaryPhone'>" + strPrimaryPhone[0] + "</a>" + strPhoneType;
+            }
+
+            return lblPrimaryPhone;
+        }
+
         protected void grdUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -286,7 +407,64 @@ namespace JG_Prospect
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
             SqlConnection con = new SqlConnection(str);
-            if (e.CommandName == "Edit")
+
+            if (e.CommandName == "AddNewContact")
+            {
+                GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewContact");
+                CheckBox chkIsPrimaryPhone = (CheckBox)gvRow.FindControl("chkIsPrimaryPhone");
+                DropDownList ddlContactType = (DropDownList)gvRow.FindControl("ddlContactType");
+                //int Index = gvRow.RowIndex;
+                bool IsPrimary = chkIsPrimaryPhone.Checked;
+
+                String PhoneType = ddlContactType.SelectedItem.Text;
+                int id = Convert.ToInt32(e.CommandArgument);
+
+                if (txtNewContact.Text.Trim() != "")
+                {
+
+
+                    if (PhoneType == "EMAIL")
+                    {
+                        string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 2, id, 0);
+                        if (strReturnValue != "")
+                        {
+                            binddata();
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User with email already Exist')", true);
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
+                        }
+                        else
+                        {
+                            InstallUserBLL.Instance.AddNewEmailForUser(txtNewContact.Text, IsPrimary, id);
+                            binddata();
+                        }
+                    }
+                    else
+                    {
+                        string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 1, id, 0);
+                        if (strReturnValue != "")
+                        {
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this Phone already Exist','Phone Alert')", true);
+                        }
+                        else
+                        {
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimary, txtNewContact.Text, Convert.ToInt32(ddlContactType.SelectedValue), id, null, null, false);
+                            binddata();
+                        }
+                    }
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
+                }
+                
+                //DropDownList ddlStatus = (DropDownList)gvRow.FindControl("ddlStatus");
+                //int StatusId = Convert.ToInt32(e.CommandArgument);
+                ////string Status = ddlStatus.SelectedValue;
+                //bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
+
+            }
+            else if (e.CommandName == "Edit")
             {
                 GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
                 int index = row.RowIndex;
@@ -1274,6 +1452,8 @@ namespace JG_Prospect
         {
 
             fillFilterUserDDL();
+
+            ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "--Select--");
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -2466,7 +2646,7 @@ namespace JG_Prospect
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
                         && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
-                        && (userdata.Field<string>("AddedBy") == drpUser.SelectedValue || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<Int32>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
                         && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
@@ -2899,6 +3079,12 @@ namespace JG_Prospect
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
             }
             BindGrid();
+        }
+
+        protected void ddlUserStatus_PreRender(object sender, EventArgs e)
+        {
+            DropDownList ddlStatus = (DropDownList) sender;
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
     }
 }
