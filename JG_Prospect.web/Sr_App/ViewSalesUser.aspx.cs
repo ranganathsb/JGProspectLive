@@ -414,6 +414,37 @@ namespace JG_Prospect.Sr_App
                         txtPhone.Text = ds.Tables[0].Rows[0]["Phone"].ToString();
                         txtPhoneExt.Text = ds.Tables[0].Rows[0]["PhoneExtNo"].ToString();
 
+                        txtMiddleInitial.Text = ds.Tables[0].Rows[0]["NameMiddleInitial"].ToString();
+
+                        if (ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString() != "")
+                            chkPrimaryEmailMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString());
+                        else
+                            chkPrimaryEmailMain.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString() != "")
+                            chkPrimaryPhoneMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString());
+                        else
+                            chkPrimaryPhoneMain.Checked = false;
+                        if (ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString() != "")
+                            ContactPreferenceChkEmail.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkEmail.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsCallContactPreference"].ToString() != "")
+                            ContactPreferenceChkCall.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsCallContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkCall.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsTextContactPreference"].ToString() != "")
+                            ContactPreferenceChkText.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsTextContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkText.Checked = false;
+
+                        if (ds.Tables[0].Rows[0]["IsMailContactPreference"].ToString() != "")
+                            ContactPreferenceChkMail.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsMailContactPreference"].ToString());
+                        else
+                            ContactPreferenceChkMail.Checked = false;
+
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
@@ -1761,7 +1792,15 @@ namespace JG_Prospect.Sr_App
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
                 objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
-                
+
+                objuser.NameMiddleInitial = txtMiddleInitial.Text;
+                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
+                objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
+                objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
+                objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
+                 
 
                 objuser.StartDate = txtStartDate.Text;
                 objuser.SalaryReq = txtSalaryRequirments.Text;
@@ -2369,6 +2408,14 @@ namespace JG_Prospect.Sr_App
                 objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
+
+                objuser.NameMiddleInitial = txtMiddleInitial.Text;
+                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
+                objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
+                objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
+                objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
 
                 if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
                 {
@@ -4186,39 +4233,40 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlstatus_PreRender(object sender, EventArgs e)
         {
-            string imageURL = "";
-            for (int i = 0; i < ddlstatus.Items.Count; i++)
-            {
-                switch (ddlstatus.Items[i].Value)
-                {
-                    case "Applicant":
-                    case "ReferralApplicant":
-                        imageURL = "../Sr_App/img/red-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "OfferMade":
-                        imageURL = "../Sr_App/img/dark-blue-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "PhoneScreened":
-                        imageURL = "../Sr_App/img/yellow-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "Active":
-                        imageURL = "../Sr_App/img/green-astrek.png";
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "InterviewDate":
-                        imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
-                        ddlstatus.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    default:
-                        ddlstatus.Items[i].Attributes["data-image"] = "../Sr_App/img/white-astrek.png";
-                        break;
-                }
-                //System.Web.UI.WebControls.ListItem item = ddlCountry.Items[i];
-                //item.Attributes["data-image"] = imageURL;
-            }
+            ddlstatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlstatus);
+            //string imageURL = "";
+            //for (int i = 0; i < ddlstatus.Items.Count; i++)
+            //{
+            //    switch (ddlstatus.Items[i].Value)
+            //    {
+            //        case "Applicant":
+            //        case "ReferralApplicant":
+            //            imageURL = "../Sr_App/img/red-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "OfferMade":
+            //            imageURL = "../Sr_App/img/dark-blue-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "PhoneScreened":
+            //            imageURL = "../Sr_App/img/yellow-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "Active":
+            //            imageURL = "../Sr_App/img/green-astrek.png";
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        case "InterviewDate":
+            //            imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
+            //            ddlstatus.Items[i].Attributes["data-image"] = imageURL;
+            //            break;
+            //        default:
+            //            ddlstatus.Items[i].Attributes["data-image"] = "../Sr_App/img/white-astrek.png";
+            //            break;
+            //    }
+            //    //System.Web.UI.WebControls.ListItem item = ddlCountry.Items[i];
+            //    //item.Attributes["data-image"] = imageURL;
+            //}
         }
 
         protected void grdTouchPointLog_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -4240,11 +4288,11 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNotes_Click(object sender, EventArgs e)
         {
-            string note = txtAddNotes.Text.Trim();
-            int CustomerId = Convert.ToInt32(Session["ID"]);
-            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
-            txtAddNotes.Text = string.Empty;
-            bindGrid();
+            //string note = txtAddNotes.Text.Trim();
+            //int CustomerId = Convert.ToInt32(Session["ID"]);
+            //InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
+            //txtAddNotes.Text = string.Empty;
+            //bindGrid();
         }
 
         protected void btnSaveOfferMade_Click(object sender, EventArgs e)
@@ -4501,7 +4549,7 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat( Request.Url.Scheme,Uri.SchemeDelimiter,Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -5661,7 +5709,7 @@ namespace JG_Prospect.Sr_App
             int intID = 0;
             Int32.TryParse(strCurrentID, out intID);
             int PhoneTypeID;
-            Int32.TryParse("0", out PhoneTypeID); //Need to pass PhoneType to validate duplicate records. ==Need to confomed. 
+            Int32.TryParse("0", out PhoneTypeID); //Need to pass PhoneType to validate duplicate records. ==Before that Need to ask
             return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID, PhoneTypeID);
         }
 
@@ -6551,8 +6599,16 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
+
         #endregion
 
-        
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() !="")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
     }
 }

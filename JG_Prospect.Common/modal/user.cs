@@ -184,6 +184,13 @@ namespace JG_Prospect.Common.modal
         public string PhoneISDCode;
         public string PhoneExtNo;
         public string CountryCode;
+        public string NameMiddleInitial;
+        public bool IsEmailPrimaryEmail;
+        public bool IsPhonePrimaryPhone;
+        public bool IsEmailContactPreference;
+        public bool IsCallContactPreference;
+        public bool IsTextContactPreference;
+        public bool IsMailContactPreference;
 
     }
 
@@ -229,6 +236,7 @@ namespace JG_Prospect.Common.modal
         public string SuiteAptRoom2;
         public string SalesExperience;
         public string UserType;
+        
     }
 
     public class LoginUser
