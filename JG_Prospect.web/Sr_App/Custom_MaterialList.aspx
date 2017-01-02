@@ -615,10 +615,10 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+       <%--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
       <script src="../js/jquery.Actual.min.js"></script>
       <script type="text/javascript" src="../js/ddaccordion.js"></script>
-      <script type="text/javascript" src="../js/jg-common.js"></script>
+      <script type="text/javascript" src="../js/jg-common.js"></script>--%>
       <script src="../js/jquery.multiselect.js"></script>
 
 
