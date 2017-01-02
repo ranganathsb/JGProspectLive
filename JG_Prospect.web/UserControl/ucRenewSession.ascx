@@ -21,11 +21,14 @@
         intSecondsRemaining--;
         $('#intSecondsRemaining').html(GetHour() + ':' + GetMinutes() + ':' + GetSeconds());
         if(intSecondsRemaining <= 60) {
-            clearInterval(sessionExpiryInterval);
+            clearTimeout(sessionExpiryInterval);
             //ShowPopupWithTitle('<%=divRenewSession.ClientID%>','Relogin');
             var objDialog = $('#<%=divRenewSession.ClientID%>').dialog();
             // this will enable postback from dialog buttons.
             objDialog.parent().appendTo(jQuery("form:first"));
+        }
+        else {
+            sessionExpiryInterval = setTimeout(CheckSessionExpiry, 1000);
         }
     }
     
@@ -43,6 +46,6 @@
         return (intSecondsRemaining % 60);
     }
 
-    sessionExpiryInterval = setInterval(CheckSessionExpiry, 1000);
+    sessionExpiryInterval = setTimeout(CheckSessionExpiry, 1000);
 
 </script>
