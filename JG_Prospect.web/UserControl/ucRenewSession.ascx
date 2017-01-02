@@ -4,7 +4,7 @@
 <div class="hide">
     <div id="divRenewSession" runat="server" title="Relogin">
         <p>
-            You session is expired. Do you wish to re-login?
+            You session is expired. Do you want to re-login?
         </p>
         <p style="text-align: center;">
             <asp:Button ID="btnYes" runat="server" Text="Yes" OnClick="btnYes_Click" />
@@ -19,7 +19,7 @@
 
     function CheckSessionExpiry() {
         intSecondsRemaining--;
-        $('#intSecondsRemaining').html(GetHour() + ':' + GetMinutes() + ':' + GetSeconds());
+        $('#intSecondsRemaining').html('You will logged out in next : ' + GetHour() + ':' + GetMinutes() + ':' + GetSeconds());
         if(intSecondsRemaining <= 60) {
             clearTimeout(sessionExpiryInterval);
             //ShowPopupWithTitle('<%=divRenewSession.ClientID%>','Relogin');
