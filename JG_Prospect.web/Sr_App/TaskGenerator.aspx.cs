@@ -1485,11 +1485,18 @@ namespace JG_Prospect.Sr_App
                     {
                         item.Selected = true;
 
+                        objucSubTasks_Admin.SubTaskDesignations += "," + item.Value;
+
                         if (string.IsNullOrEmpty(firstDesignation))
                         {
                             firstDesignation = item.Text;
                         }
                     }
+                }
+
+                if (objucSubTasks_Admin.SubTaskDesignations.Length > 0)
+                {
+                    objucSubTasks_Admin.SubTaskDesignations = objucSubTasks_Admin.SubTaskDesignations.Substring(1);
                 }
 
                 ddlUserDesignation.Texts.SelectBoxCaption = firstDesignation;

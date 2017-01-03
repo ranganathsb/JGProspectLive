@@ -121,6 +121,22 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        public string SubTaskDesignations
+        {
+            get
+            {
+                if (ViewState["SubTaskDesignations"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(ViewState["SubTaskDesignations"]);
+            }
+            set
+            {
+                ViewState["SubTaskDesignations"] = value;
+            }
+        }
+
         #endregion
 
         #region '--Page Events--'
@@ -997,23 +1013,24 @@ namespace JG_Prospect.Sr_App.Controls
 
         private string GetSelectedDesignationsString()
         {
-            String returnVal = string.Empty;
-            StringBuilder sbDesignations = new StringBuilder();
+            //String returnVal = string.Empty;
+            //StringBuilder sbDesignations = new StringBuilder();
 
-            foreach (ListItem item in ddlUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    sbDesignations.Append(String.Concat(item.Value, ","));
-                }
-            }
+            //foreach (ListItem item in ddlUserDesignation.Items)
+            //{
+            //    if (item.Selected)
+            //    {
+            //        sbDesignations.Append(String.Concat(item.Value, ","));
+            //    }
+            //}
 
-            if (sbDesignations.Length > 0)
-            {
-                returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
-            }
+            //if (sbDesignations.Length > 0)
+            //{
+            //    returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
+            //}
 
-            return returnVal;
+            //return returnVal;
+            return this.SubTaskDesignations;
         }
 
         private bool ValidateTaskStatus(DropDownList ddlTaskStatus, ListBox ddlAssignedUser, Int32 intTaskId)
