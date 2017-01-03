@@ -183,7 +183,8 @@
                                                 <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
                                                 <Texts SelectBoxCaption="--Open--" />
                                             </asp:DropDownCheckBoxes>--%>
-                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" CssClass="chosen-select"
+                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" 
+                                                CssClass="chosen-select" data-placeholder="Select"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
                                             </asp:ListBox>
                                             <asp:Label ID="lblAssigned" runat="server" />

@@ -1577,3 +1577,8 @@ margin:0 0 0 0;
 .nooverflow {
 overflow: inherit !important;
 }
+
+.chosen-container .chosen-results li {
+    width: auto;
+    float: none;
+}

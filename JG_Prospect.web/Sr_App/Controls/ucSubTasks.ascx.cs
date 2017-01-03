@@ -493,7 +493,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void gvSubTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
+            ListBox ddcbAssigned = (ListBox)sender;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
             int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
@@ -1016,7 +1016,7 @@ namespace JG_Prospect.Sr_App.Controls
             return returnVal;
         }
 
-        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, ListBox ddlAssignedUser, Int32 intTaskId)
         {
             bool blResult = true;
 
@@ -1061,7 +1061,7 @@ namespace JG_Prospect.Sr_App.Controls
             return blResult;
         }
 
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus, Int32 intTaskId)
+        private void SaveAssignedTaskUsers(ListBox ddcbAssigned, JGConstant.TaskStatus objTaskStatus, Int32 intTaskId)
         {
             //if task id is available to save its note and attachement.
             if (intTaskId != 0)
@@ -1878,7 +1878,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             for (int i = 0; i < gvSubTasks.Rows.Count; i++)
             {
-                DropDownCheckBoxes ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                ListBox ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as ListBox;
                 
                 ddcbAssigned.AutoPostBack = 
                 ddcbAssigned.Enabled = blEnabled;
