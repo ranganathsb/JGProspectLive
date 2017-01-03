@@ -241,7 +241,11 @@ function DestroyGallery() {
         subtaskSliders.destroy();
     }
 }
-
+/********************************************* General Functions ******************************************************/
+function ChosenDropDown(options) {
+    var _options = options || {};
+    $('.chosen-select').chosen(_options);
+}
 /********************************************* General Functions ******************************************************/
 function htmlEncode(value) {
     //create a in-memory div, set it's inner text(which jQuery automatically encodes)
