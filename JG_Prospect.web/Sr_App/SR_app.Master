@@ -23,6 +23,8 @@
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
 
+    <link href="../css/chosen.css" rel="stylesheet" />
+
 
     <%--<script type="text/javascript" src="../js/jquery.js"></script>
     <script type="text/javascript" src="../js/jquery-latest.js" ></script>--%>

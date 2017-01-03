@@ -145,7 +145,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                DropDownCheckBoxes ddcbAssigned = e.Row.FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
 
                 if (this.IsAdminMode)
@@ -1180,7 +1180,7 @@ namespace JG_Prospect.Sr_App.Controls
             return strReturnVal;
         }
 
-        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        private void SetTaskAssignedUsers(String strAssignedUser, ListBox taskUsers)
         {
             String firstAssignedUser = String.Empty;
             String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1203,7 +1203,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (!String.IsNullOrEmpty(firstAssignedUser))
             {
-                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+                //taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
             }
 
         }
