@@ -2646,7 +2646,7 @@ namespace JG_Prospect
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
                         && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
-                        && (userdata.Field<Int32>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<Int32?>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
                         && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
