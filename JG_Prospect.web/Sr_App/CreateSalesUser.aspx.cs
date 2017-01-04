@@ -1888,7 +1888,44 @@ namespace JG_Prospect.Sr_App
         {
             //If insert than only chk for blank.
             if (IsInsert != true || hidExtEmail.Value.Trim() != "")
-                    InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+            {
+                string strHidEmailValue = hidExtEmail.Value;
+                string delimeter = "|,|";
+                string Subdelimeter = "|%|";
+                //PhoneValue = '0' + Subdelimeter + 'Phone1' + Subdelimeter + 'skype' + delimeter + '1' + Subdelimeter + 'Phone2' + Subdelimeter + 'whatsapp';
+                if (strHidEmailValue.IndexOf(delimeter) < 0)
+                    strHidEmailValue = strHidEmailValue + delimeter;
+
+                string[] PhoneTypes = strHidEmailValue.Split(new string[] { delimeter }, StringSplitOptions.None);
+
+                InstallUserBLL.Instance.AddUserPhone(false, "", 0, UserID, "", "", true);
+
+                foreach (string SubItems in PhoneTypes)
+                {
+                    if (SubItems.Trim() != "")
+                    {
+                        string[] PhoneTypeItems = SubItems.Split(new string[] { Subdelimeter }, StringSplitOptions.None);
+                        if (PhoneTypeItems != null)
+                        {
+                            bool IsPrimaryPhone = false;
+
+                            if (PhoneTypeItems[0].ToString() == "1")
+                                IsPrimaryPhone = true;
+
+                            string PhoneISDCode = PhoneTypeItems[1].ToString();
+                            string PhoneText = PhoneTypeItems[2].ToString();
+                            string PhoneExtNo = PhoneTypeItems[3].ToString();
+                            int intPhoneType;
+                            Int32.TryParse(PhoneTypeItems[4].ToString(), out intPhoneType);
+
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType
+                                , UserID, PhoneExtNo, PhoneISDCode, false);
+                        }
+                    }
+                }
+            }
+            //InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+                  
 
             if (IsInsert != true || hidExtPhone.Value.Trim() != "")
             {
@@ -1931,9 +1968,6 @@ namespace JG_Prospect.Sr_App
             //{
             //    //Update User value
             //}
-            
-            
-            
             
         }
 

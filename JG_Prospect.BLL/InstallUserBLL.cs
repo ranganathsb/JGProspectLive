@@ -542,6 +542,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUserPhoneByUseId(UserId);
         }
+        
+        public string AddUserEmail(bool isPrimaryEmail, string strEmail, int UserID, bool ClearDataBeforInsert)
+        {
+            return InstallUserDAL.Instance.AddUserEmail(isPrimaryEmail, strEmail, UserID, ClearDataBeforInsert);
+        }
+
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID , string PhoneExtNo, string PhoneISDCode ,bool ClearDataBeforInsert)
         {
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID, PhoneExtNo , PhoneISDCode, ClearDataBeforInsert);
