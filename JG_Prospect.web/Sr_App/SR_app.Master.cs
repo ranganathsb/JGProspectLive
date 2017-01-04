@@ -43,8 +43,8 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
-                AddUpdateUserAuditTrailRecord("Session Expired", Session["loginid"].ToString());
+                //Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
+                //AddUpdateUserAuditTrailRecord("Session Expired", Session["loginid"].ToString());
             }
         }
 
