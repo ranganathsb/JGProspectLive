@@ -56,7 +56,6 @@ namespace JG_Prospect.UserControl
             }
         }
 
-
         public string UserPassword
         {
             get
@@ -83,6 +82,15 @@ namespace JG_Prospect.UserControl
                 this.UserLoginId = JGSession.UserLoginId;
                 this.UserPassword = JGSession.UserPassword;
             }
+            else
+            {
+                // set session values from veiw state to prevent any redirectes made from individual page load event.
+                // master page should not redirect user to login page. individual page should contain check for re-login.
+                if (_hdnResetSession.Value == "1") 
+                {
+                    btnYes_Click(sender, e);
+                }
+            }
         }
 
         protected void btnYes_Click(object sender, EventArgs e)
@@ -93,7 +101,11 @@ namespace JG_Prospect.UserControl
             JGSession.UserPassword = this.UserPassword;
             JGSession.UserId = 0;
 
-            CommonFunction.AuthenticateUser();
+            //_hdnResetSession.Value = "0";
+
+            //CommonFunction.AuthenticateUser();
+
+            HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery); 
         }
 
         protected void btnNo_Click(object sender, EventArgs e)

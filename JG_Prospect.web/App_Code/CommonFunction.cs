@@ -11,7 +11,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using System.Linq;
 
 namespace JG_Prospect.App_Code
 {
@@ -67,7 +67,11 @@ namespace JG_Prospect.App_Code
         {
             if (!JGSession.IsActive)
             {
-                HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                string strKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnResetSession"));
+                if (!string.IsNullOrEmpty(strKey) && HttpContext.Current.Request.Params[strKey] != "1")
+                {
+                    HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                }
             }
         }
 
