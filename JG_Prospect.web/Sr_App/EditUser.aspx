@@ -1224,16 +1224,18 @@
 
     <script src="../js/jquery.dd.min.js"></script>
     <script>
-        try {
-            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
+        function pageLoad() {
+            try {
+                $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
 
-        try {
-            $(".grd-status").msDropDown();
-        } catch (e) {
-            alert(e.message);
+            try {
+                $(".grd-status").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
         }
     </script>
 </asp:Content>
