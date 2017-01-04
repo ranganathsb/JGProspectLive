@@ -178,11 +178,15 @@
                                     </tr>
                                     <tr>
                                         <td class="noborder">
-                                            <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
+                                            <%--<asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
                                                 <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
                                                 <Texts SelectBoxCaption="--Open--" />
-                                            </asp:DropDownCheckBoxes>
+                                            </asp:DropDownCheckBoxes>--%>
+                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" SelectionMode="Multiple"
+                                                CssClass="chosen-select" data-placeholder="Select"
+                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
+                                            </asp:ListBox>
                                             <asp:Label ID="lblAssigned" runat="server" />
                                         </td>
                                     </tr>
@@ -591,6 +595,7 @@
 
 
 <%--Popup Ends--%>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
@@ -614,6 +619,8 @@
     });
 
     function ucSubTasks_Initialize() {
+
+        ChosenDropDown();
 
         ApplySubtaskLinkContextMenu();
         //ApplyImageGallery();

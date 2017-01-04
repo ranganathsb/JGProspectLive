@@ -994,6 +994,7 @@
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
     <Content Include="CreateUser.aspx" />
+    <Content Include="css\chosen.css" />
     <Content Include="css\connected-carousel.css" />
     <Content Include="css\dropzone\css\basic.css" />
     <Content Include="css\dropzone\css\dropzone.css" />
@@ -1479,6 +1480,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\chosen.jquery.js" />
     <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />

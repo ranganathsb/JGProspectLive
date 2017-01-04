@@ -121,6 +121,22 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        public string SubTaskDesignations
+        {
+            get
+            {
+                if (ViewState["SubTaskDesignations"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(ViewState["SubTaskDesignations"]);
+            }
+            set
+            {
+                ViewState["SubTaskDesignations"] = value;
+            }
+        }
+
         #endregion
 
         #region '--Page Events--'
@@ -145,7 +161,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                DropDownCheckBoxes ddcbAssigned = e.Row.FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
 
                 if (this.IsAdminMode)
@@ -493,7 +509,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void gvSubTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
+            ListBox ddcbAssigned = (ListBox)sender;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
             int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
@@ -997,26 +1013,27 @@ namespace JG_Prospect.Sr_App.Controls
 
         private string GetSelectedDesignationsString()
         {
-            String returnVal = string.Empty;
-            StringBuilder sbDesignations = new StringBuilder();
+            //String returnVal = string.Empty;
+            //StringBuilder sbDesignations = new StringBuilder();
 
-            foreach (ListItem item in ddlUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    sbDesignations.Append(String.Concat(item.Value, ","));
-                }
-            }
+            //foreach (ListItem item in ddlUserDesignation.Items)
+            //{
+            //    if (item.Selected)
+            //    {
+            //        sbDesignations.Append(String.Concat(item.Value, ","));
+            //    }
+            //}
 
-            if (sbDesignations.Length > 0)
-            {
-                returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
-            }
+            //if (sbDesignations.Length > 0)
+            //{
+            //    returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
+            //}
 
-            return returnVal;
+            //return returnVal;
+            return this.SubTaskDesignations;
         }
 
-        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, ListBox ddlAssignedUser, Int32 intTaskId)
         {
             bool blResult = true;
 
@@ -1061,7 +1078,7 @@ namespace JG_Prospect.Sr_App.Controls
             return blResult;
         }
 
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus, Int32 intTaskId)
+        private void SaveAssignedTaskUsers(ListBox ddcbAssigned, JGConstant.TaskStatus objTaskStatus, Int32 intTaskId)
         {
             //if task id is available to save its note and attachement.
             if (intTaskId != 0)
@@ -1180,7 +1197,7 @@ namespace JG_Prospect.Sr_App.Controls
             return strReturnVal;
         }
 
-        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        private void SetTaskAssignedUsers(String strAssignedUser, ListBox taskUsers)
         {
             String firstAssignedUser = String.Empty;
             String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1203,7 +1220,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (!String.IsNullOrEmpty(firstAssignedUser))
             {
-                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+                //taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
             }
 
         }
@@ -1878,7 +1895,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             for (int i = 0; i < gvSubTasks.Rows.Count; i++)
             {
-                DropDownCheckBoxes ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as DropDownCheckBoxes;
+                ListBox ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as ListBox;
                 
                 ddcbAssigned.AutoPostBack = 
                 ddcbAssigned.Enabled = blEnabled;
