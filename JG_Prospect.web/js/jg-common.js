@@ -13,7 +13,8 @@ function SetCKEditor(Id, onBlurCallBack) {
     CKEDITOR.inline(Id,
         {
             // Show toolbar on startup (optional).
-            startupFocus: true,
+            //startupFocus: true,
+            startupFocus: false,
             enterMode: CKEDITOR.ENTER_BR
         });
 
@@ -65,7 +66,8 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
     CKEDITOR.inline(Id,
         {
             // Show toolbar on startup (optional).
-            startupFocus: true,
+            //startupFocus: true,
+            startupFocus: false,
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
