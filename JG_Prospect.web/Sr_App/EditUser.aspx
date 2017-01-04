@@ -1224,7 +1224,7 @@
 
     <script src="../js/jquery.dd.min.js"></script>
     <script>
-        function pageLoad() {
+        
             try {
                 $("#<%=ddlUserStatus.ClientID%>").msDropDown();
             } catch (e) {
@@ -1236,6 +1236,6 @@
             } catch (e) {
                 alert(e.message);
             }
-        }
+        
     </script>
 </asp:Content>
