@@ -33,7 +33,7 @@
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                             SortExpression="Description">
                             <ItemTemplate>
-                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px;">
+                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
                                     <div style="padding-bottom: 5px;">
                                         <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
                                     </div>
