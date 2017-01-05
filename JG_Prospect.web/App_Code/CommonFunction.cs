@@ -67,8 +67,9 @@ namespace JG_Prospect.App_Code
         {
             if (!JGSession.IsActive)
             {
-                string strKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnResetSession"));
-                if (!string.IsNullOrEmpty(strKey) && HttpContext.Current.Request.Params[strKey] != "1")
+                // redirect user to login page, only when session renewal is not requested.
+                string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
+                if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
                 {
                     HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
                 }

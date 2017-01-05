@@ -86,7 +86,7 @@ namespace JG_Prospect.UserControl
             {
                 // set session values from veiw state to prevent any redirectes made from individual page load event.
                 // master page should not redirect user to login page. individual page should contain check for re-login.
-                if (_hdnResetSession.Value == "1") 
+                if (_hdnRenewSession.Value == "1") 
                 {
                     btnYes_Click(sender, e);
                 }
@@ -101,7 +101,7 @@ namespace JG_Prospect.UserControl
             JGSession.UserPassword = this.UserPassword;
             JGSession.UserId = 0;
 
-            //_hdnResetSession.Value = "0";
+            //_hdnRenewSession.Value = "0";
 
             //CommonFunction.AuthenticateUser();
 
