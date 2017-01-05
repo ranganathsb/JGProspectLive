@@ -7,7 +7,7 @@
             You session is expired. Do you want to re-login?
         </p>
         <p style="text-align: center;">
-            <input type="hidden" name="_hdnResetSession" id="_hdnResetSession" runat="server" value="0" />
+            <input type="hidden" name="_hdnRenewSession" id="_hdnRenewSession" runat="server" value="0" />
             <asp:Button ID="btnYes" runat="server" Text="Yes" OnClientClick="return btnYes_Click(this);" OnClick="btnYes_Click" />
             <asp:Button ID="btnNo" runat="server" Text="No" OnClick="btnNo_Click" />
         </p>
@@ -50,7 +50,7 @@
     sessionExpiryInterval = setTimeout(CheckSessionExpiry, 1000);
 
     function btnYes_Click(sender) {
-        $('#<%=_hdnResetSession.ClientID%>').val('1');
+        $('#<%=_hdnRenewSession.ClientID%>').val('1');
 
         return true;
     }
