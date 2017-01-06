@@ -117,15 +117,24 @@ function GetCKEditorContent(Id) {
 }
 
 function DestroyCKEditors() {
-    //CKEDITOR.instances.editor.removeAllListeners();
     for (var i = 0; i < arrCKEditor.length; i++) {
-        console.log(arrCKEditor[i].name + ' editor destroyed.');
         if (typeof (arrCKEditor[i]) != 'undefined') {
+            arrCKEditor[i].updateElement();
             arrCKEditor[i].removeAllListeners();
-            arrCKEditor[i].destroy();
         }
     }
-    arrCKEditor = new Array();
+
+    setTimeout(StartDestroying, 1);
+
+    function StartDestroying() {
+        for (var i = 0; i < arrCKEditor.length; i++) {
+            if (typeof (arrCKEditor[i]) != 'undefined') {
+                arrCKEditor[i].destroy();
+            }
+            console.log(arrCKEditor[i].name + ' editor destroyed.');
+        }
+        arrCKEditor = new Array();
+    }
 }
 
 /********************************************* Dialog (jQuery Ui Popup) ******************************************************/
