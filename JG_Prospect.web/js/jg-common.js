@@ -120,7 +120,7 @@ function DestroyCKEditors() {
     for (var i = 0; i < arrCKEditor.length; i++) {
         if (typeof (arrCKEditor[i]) != 'undefined') {
             arrCKEditor[i].updateElement();
-            arrCKEditor[i].removeAllListeners();
+            //arrCKEditor[i].removeAllListeners();
         }
     }
 
