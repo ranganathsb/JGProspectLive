@@ -459,7 +459,11 @@
                         </tr>
                         <tr>
                             <td>Attachment(s):<br>
-                                <input id="hdnAttachments" runat="server" type="hidden" />
+                                <asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <input id="hdnAttachments" runat="server" type="hidden" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div id="divSubTaskDropzone" runat="server" class="dropzone">
                                     <div class="fallback">
                                         <input name="file" type="file" multiple />
