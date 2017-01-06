@@ -2061,7 +2061,10 @@
     <Compile Include="UserControl\ucStatusChangePopup.ascx.designer.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Utilits\AppSettingsValues.cs" />
+    <Compile Include="Utilits\EmailCommonHelper.cs" />
     <Compile Include="Utilits\SessionsCommon.cs" />
+    <Compile Include="Utilits\YandexManager.cs" />
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
       <SubType>Component</SubType>

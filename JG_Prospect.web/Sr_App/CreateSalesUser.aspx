@@ -62,8 +62,7 @@
             });
             
             TheConfirm_OkOnly('Kindly select any one email as PrimaryEmail', 'Email Validation Alert');
-            $('#<%=chkPrimaryEmailMain.ClientID%>').focus();
-
+            
             return false;
         }
 
@@ -1683,7 +1682,7 @@
                                         <label>
                                             <asp:Label ID="lblUser" runat="server" ForeColor="Black" Text="User Status"></asp:Label>
                                             <asp:Label ID="lblReqDesig" ForeColor="Red" runat="server" Text="*"></asp:Label>></label>
-
+                                              
                                             <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
                                             <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
                                             <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>

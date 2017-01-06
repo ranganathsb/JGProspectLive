@@ -1182,6 +1182,15 @@ namespace JG_Prospect.Sr_App
             //ucAudiUpdateUserLog.BindUserData();
         }
 
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() != "")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
+
         #endregion
 
         #region '--Control Events--'
@@ -1820,9 +1829,9 @@ namespace JG_Prospect.Sr_App
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
 
-                        AddUpdateUserPhoneEmail(true , result.Item2);
-                        
-                        UpdateUserInstallID(result.Item2);
+                        AddUpdateUserPhoneEmail(true , result.Item2);                        
+                        UpdateUserInstallID(result.Item2);                        
+                        CreateUserEmailID();
 
                         hidTouchPointGUID.Value = hidTouchPointGUID.Value.Trim();
                         if (hidTouchPointGUID.Value !="")
@@ -2471,7 +2480,8 @@ namespace JG_Prospect.Sr_App
                     
                     AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
-                    
+                    CreateUserEmailID();
+
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
                         SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
@@ -2838,6 +2848,7 @@ namespace JG_Prospect.Sr_App
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
             fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
 
+
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -2950,6 +2961,7 @@ namespace JG_Prospect.Sr_App
                 showHideNewHireSection(true);
 
                 rqdtResignition.Enabled = true;
+                
             }
             else
             {
@@ -6014,6 +6026,20 @@ namespace JG_Prospect.Sr_App
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
         }
+        
+        /// <summary>
+        /// Create email on the base of FirestName & Last Name
+        /// </summary>
+        private void CreateUserEmailID()
+        {
+            // so On Create and Update will check if user was not active or so. on the bae of the same create accoutn.
+            if (Convert.ToString(Session["PreviousStatusNew"]) != "Active" && ddlstatus.SelectedValue == "Active")
+            {
+                string strNewEmailId = txtfirstname.Text + txtlastname.Text;
+
+                Utilits.EmailCommonHelper.CreateUserEmailAccount(strNewEmailId);
+            }
+        }
 
         #endregion
 
@@ -6635,14 +6661,6 @@ namespace JG_Prospect.Sr_App
 
 
         #endregion
-
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            if (txtTouchPointLogNote.Text.Trim() !="")
-            {
-                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
-                txtTouchPointLogNote.Text = "";
-            }
-        }
+        
     }
 }
