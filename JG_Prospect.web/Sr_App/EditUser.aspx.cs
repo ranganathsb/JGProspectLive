@@ -238,6 +238,7 @@ namespace JG_Prospect
                     Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
+                    HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
 
                     ddlContactType = BindContactDllForGrid(ddlContactType);
 
@@ -259,6 +260,17 @@ namespace JG_Prospect
                     if (Status != "")
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
+
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TechTaskId").ToString()))
+                        {
+                            hypTechTask.Text = string.Concat(
+                                                                                string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
+                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskId") :
+                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
+                                                                            );
+                            hypTechTask.NavigateUrl = Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
+                            hypTechTask.Visible = true; 
+                        }
 
                         switch (Status)
                         {
