@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" ValidateRequest="false"
     CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" MaintainScrollPositionOnPostback="true" %>
 
 <%@ Register Assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI.DataVisualization.Charting" TagPrefix="asp" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-
+<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -309,7 +309,7 @@
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
                 $('.GrdPrimaryEmail').click(function () {
-                    showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
+                    //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 });
 
 
@@ -456,6 +456,7 @@
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <script src="<%=Page.ResolveUrl("~/ckeditor/ckeditor.js") %>"></script>
     <div class="right_panel">
         <!-- appointment tabs section start -->
         <ul class="appointment_tab">
@@ -846,7 +847,7 @@
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" ItemStyle-HorizontalAlign="Center" SortExpression="Phone" ControlStyle-Width="70px" HeaderStyle-Width="151px" ItemStyle-Width="150px" >
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%> 
-                                        <div class="GrdPrimaryEmail">
+                                        <div class="GrdPrimaryEmail" onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');" %>">
                                             <%--<asp:Label ID="lblEmail" CssClass="wordBreak"  Width="145" runat="server" Text='<%# Eval("Email") %>'></asp:Label>--%>
                                             <asp:Label ID="lblEmail" ToolTip='<%# Eval("Email") %>'  runat="server" Text='<%# Eval("Email") %>'></asp:Label>
                                         </div>                                        
@@ -953,8 +954,6 @@
         <br />
         <asp:Button ID="btnClose" runat="server" Text="Close" />
     </asp:Panel>
-
-
 
     <asp:Panel ID="panelPopup" runat="server">
         <div id="light" class="white_content">
@@ -1237,8 +1236,64 @@
     <div id="interviewDatefade" class="black_overlay">
     </div>
 
+<%--Popup Stars--%>
+<div class="hide">
+    <%--Send Email To User Popup--%>
+    <div id="divSendEmailToUser" runat="server" title="Send Email">
+        <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <asp:ValidationSummary ID="vsEmailToUser" runat="server" ValidationGroup="vgEmailToUser" ShowSummary="False" ShowMessageBox="True" />
+                <fieldset>
+                    <legend><asp:Label ID="lblEmailTo" runat="server" /><asp:HiddenField ID="hdnEmailTo" runat="server" /></legend>
+                    <table cellspacing="3" cellpadding="3" width="100%">
+                        <tr>
+                            <td>Subject:<br />
+                                <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailSubject" ForeColor="Red" ErrorMessage="Please enter email subject." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Header:<br />
+                                <asp:TextBox ID="txtEmailHeader" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailHeader" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailHeader" ForeColor="Red" ErrorMessage="Please enter email header." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Email Body:<br />
+                                <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Footer:<br />
+                                <asp:TextBox ID="txtEmailFooter" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailFooter" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailFooter" ForeColor="Red" ErrorMessage="Please enter email footer." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn_sec">
+                                    <asp:Button ID="btnSendEmailToUser" runat="server" ValidationGroup="vgEmailToUser" OnClick="btnSendEmailToUser_Click" 
+                                        CssClass="ui-button" Text="Send" />
+                                    <asp:Button ID="btnCancelSendEmailToUser" runat="server" OnClick="btnCancelSendEmailToUser_Click"
+                                        Text="Cancel" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+</div>
+<%--Popup Ends--%>
+
     <script src="../js/jquery.dd.min.js"></script>
-    <script>
+    <script type="text/javascript">
         
             try {
                 $("#<%=ddlUserStatus.ClientID%>").msDropDown();
@@ -1252,5 +1307,13 @@
                 alert(e.message);
             }
         
+            function grdUsers_Email_OnClick(sender, email) {
+                $('#<%=lblEmailTo.ClientID%>').html(email);
+                $('#<%=hdnEmailTo.ClientID%>').val(email);
+                SetCKEditor('<%=txtEmailHeader.ClientID%>');
+                SetCKEditor('<%=txtEmailBody.ClientID%>');
+                SetCKEditor('<%=txtEmailFooter.ClientID%>');
+                ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
+            }
     </script>
 </asp:Content>

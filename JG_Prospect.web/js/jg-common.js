@@ -139,9 +139,17 @@ function DestroyCKEditors() {
 
 /********************************************* Dialog (jQuery Ui Popup) ******************************************************/
 function ShowPopupWithTitle(varControlID, strTitle) {
-    var objDialog = ShowPopup(varControlID);
+    var windowWidth = (parseInt($(window).width()) / 2) - 10;
+
+    var dialogwidth = windowWidth + "px";
+
+    var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
+
     // this will update title of current dialog.
     objDialog.parent().find('.ui-dialog-title').html(strTitle);
+
+    // this will enable postback from dialog buttons.
+    objDialog.parent().appendTo(jQuery("form:first"));
 }
 
 function HidePopup(varControlID) {

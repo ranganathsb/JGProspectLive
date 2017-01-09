@@ -3849,3 +3849,24 @@ BEGIN
  
 END
 GO
+
+
+INSERT INTO [dbo].[tblSubHTMLTemplates]
+           ([HTMLTemplateID]
+           ,[SubHTMLName]
+           ,[HTMLSubject]
+           ,[HTMLHeader]
+           ,[HTMLBody]
+           ,[HTMLFooter]
+           ,[Updated_On])
+     SELECT
+           110
+           ,SubHTMLName
+           ,HTMLSubject
+           ,HTMLHeader
+           ,HTMLBody
+           ,HTMLFooter
+           ,GETDATE()
+	FROM tblSubHtmlTemplates
+	WHERE HTMLTemplateID = 104
+GO

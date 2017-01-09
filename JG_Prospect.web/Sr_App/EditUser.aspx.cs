@@ -125,10 +125,7 @@ namespace JG_Prospect
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Username"] == null)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
-            }
+            CommonFunction.AuthenticateUser();
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
             {
@@ -154,6 +151,7 @@ namespace JG_Prospect
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
+                LoadEmailContentToSentToUser();
             }
             else
             {
@@ -866,7 +864,6 @@ namespace JG_Prospect
             //return;
         }
 
-
         #region 'Private Methods - Assigned Task ToUser '
 
         private void AssignedTaskToUser()
@@ -960,7 +957,6 @@ namespace JG_Prospect
 
         #endregion
 
-
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
             binddata();
@@ -1053,6 +1049,51 @@ namespace JG_Prospect
             binddata();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             return;
+        }
+
+        protected void btnSendEmailToUser_Click(object sender, EventArgs e)
+        {
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
+
+            if (ds == null)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+            else if (ds.Tables[0].Rows.Count == 0)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+
+            List<Attachment> lstAttachments = new List<Attachment>();
+
+            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+            {
+                string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+                if (File.Exists(sourceDir))
+                {
+                    Attachment attachment = new Attachment(sourceDir);
+                    attachment.Name = Path.GetFileName(sourceDir);
+                    lstAttachments.Add(attachment);
+                }
+            }
+
+            string strBody = txtEmailHeader.Text + txtEmailBody.Text + txtEmailFooter.Text;
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(JGSession.Designation, hdnEmailTo.Value, txtEmailSubject.Text, strBody, lstAttachments);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + hdnEmailTo.Value + ".');", true);
+            }
+            catch
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + hdnEmailTo.Value + ".');", true);
+            }
+        }
+
+        protected void btnCancelSendEmailToUser_Click(object sender, EventArgs e)
+        {
+            LoadEmailContentToSentToUser();
         }
 
         #endregion
@@ -3074,6 +3115,29 @@ namespace JG_Prospect
         //    return installId;
         //}
 
+        private void LoadEmailContentToSentToUser()
+        {
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
+
+            if (ds == null)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+            else if (ds.Tables[0].Rows.Count == 0)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+
+            txtEmailSubject.Text = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+            txtEmailHeader.Text = ds.Tables[0].Rows[0]["HTMLHeader"].ToString();
+            txtEmailBody.Text = ds.Tables[0].Rows[0]["HTMLBody"].ToString();
+            txtEmailFooter.Text = ds.Tables[0].Rows[0]["HTMLFooter"].ToString();
+
+            upSendEmailToUser.Update();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('", divSendEmailToUser.ClientID, "');"), true);
+        }
+
         #endregion
 
         protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
@@ -3098,5 +3162,6 @@ namespace JG_Prospect
             DropDownList ddlStatus = (DropDownList) sender;
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
+
     }
 }

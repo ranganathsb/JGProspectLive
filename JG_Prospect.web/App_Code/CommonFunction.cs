@@ -36,7 +36,7 @@ namespace JG_Prospect.App_Code
         {
             ScriptManager.RegisterStartupScript(page, page.GetType(), "alert", String.Concat("alert('", MessageString, "');"), true);
         }
-
+        
         public static string FormatToShortDateString(object dateobject)
         {
             string formateddatetime = string.Empty;
@@ -86,9 +86,9 @@ namespace JG_Prospect.App_Code
             // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
 
             bool returnVal = false;
-            if (HttpContext.Current.Session["DesigNew"] != null)
+            if (JGSession.Designation != null)
             {
-                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                switch (JGSession.Designation.ToUpper())
                 {
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
@@ -122,9 +122,9 @@ namespace JG_Prospect.App_Code
             // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
 
             bool returnVal = false;
-            if (HttpContext.Current.Session["DesigNew"] != null)
+            if (JGSession.Designation != null)
             {
-                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                switch (JGSession.Designation.ToUpper())
                 {
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
@@ -908,6 +908,20 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
+            }
+        }
+
+        public static string Designation
+        {
+            get
+            {
+                if (HttpContext.Current.Session["DesigNew"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["DesigNew"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["DesigNew"] = value;
             }
         }
 
