@@ -313,23 +313,38 @@
                 });
 
 
-                $('#btnSearchGridData').mousedown(function () {
-                    $('#imgSearchLoad').show();
-                });
+                //$('#btnSearchGridData').mousedown(function () {
+                    //$('#imgSearchLoad').show();
+                //});
 
-                $('#btnSearchGridData').click(function () {
-                    SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
-                    $('#imgSearchLoad').hide();
-                });
-
-
-                <%--$('#<%=txtSearch.ClientID%>').keyup(function () {
-                $('#imgSearchLoad').show();
-                SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
-                $('#imgSearchLoad').hide();;--%>
+                //$('#btnSearchGridData').click(function () {
+                    //SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
+                    //$('#imgSearchLoad').hide();
+                //});
 
             });
 
+        }
+
+        function btnSearchGridData_OnClick(sender) {
+            var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
+
+            if (strSearchTerm.length > 0) {
+                $('.loading').show();
+
+                var $tblUsers = $('#<%=grdUsers.ClientID%>');
+                $tblUsers.find('tbody>tr').show();
+
+                $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
+                    var $tr = $(item);
+
+                    if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
+                        $tr.hide();
+                    }
+                });
+
+                $('.loading').hide();
+            }
         }
 
         function SearchGrid(txtSearch, grd) {
@@ -631,12 +646,11 @@
             <br />
             <div style="float: right">
                 <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
-                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" />
-                <div id="imgSearchLoad" style="display: none;" class="SearchLoad">
+                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
+                <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
                     <span>Login..!</span>
-                </div>
-
+                </div>--%>
             </div>
             <table style="width: 100%;">
                 <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
