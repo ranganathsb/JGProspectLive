@@ -1089,6 +1089,8 @@ namespace JG_Prospect
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + hdnEmailTo.Value + ".');", true);
             }
+
+            LoadEmailContentToSentToUser();
         }
 
         protected void btnCancelSendEmailToUser_Click(object sender, EventArgs e)
@@ -3135,7 +3137,7 @@ namespace JG_Prospect
 
             upSendEmailToUser.Update();
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('", divSendEmailToUser.ClientID, "');"), true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
         }
 
         #endregion
