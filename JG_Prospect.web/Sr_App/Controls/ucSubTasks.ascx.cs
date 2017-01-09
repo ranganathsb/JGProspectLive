@@ -959,6 +959,9 @@ namespace JG_Prospect.Sr_App.Controls
                 UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
 
                 FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
+
+                hdnAttachments.Value = string.Empty;
+                upAttachmentsData.Update();
             }
 
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);

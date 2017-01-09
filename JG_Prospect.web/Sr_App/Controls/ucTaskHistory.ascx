@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
-<link href="../../css/magnific-popup.css" rel="stylesheet" />
-<script src="../../Scripts/jquery.magnific-popup.min.js"></script>
+<link href="<%=Page.ResolveUrl("~/css/magnific-popup.css") %>" rel="stylesheet" />
+<script src="<%=Page.ResolveUrl("~/Scripts/jquery.magnific-popup.min.js") %>"></script>
 <div>
     <asp:UpdatePanel ID="upTaskHistory" runat="server" UpdateMode="Conditional">
         <ContentTemplate>

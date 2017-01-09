@@ -1383,6 +1383,8 @@
     <Content Include="img\Bar2.png" />
     <Content Include="img\Bar3.png" />
     <Content Include="img\btn1.png" />
+    <Content Include="img\chosen-sprite%402x.png" />
+    <Content Include="img\chosen-sprite.png" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />

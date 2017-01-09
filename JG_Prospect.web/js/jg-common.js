@@ -117,22 +117,39 @@ function GetCKEditorContent(Id) {
 }
 
 function DestroyCKEditors() {
-    //CKEDITOR.instances.editor.removeAllListeners();
     for (var i = 0; i < arrCKEditor.length; i++) {
-        console.log(arrCKEditor[i].name + ' editor destroyed.');
         if (typeof (arrCKEditor[i]) != 'undefined') {
-            arrCKEditor[i].removeAllListeners();
-            arrCKEditor[i].destroy();
+            arrCKEditor[i].updateElement();
+            //arrCKEditor[i].removeAllListeners();
         }
     }
-    arrCKEditor = new Array();
+
+    setTimeout(StartDestroying, 1);
+
+    function StartDestroying() {
+        for (var i = 0; i < arrCKEditor.length; i++) {
+            if (typeof (arrCKEditor[i]) != 'undefined') {
+                arrCKEditor[i].destroy();
+            }
+            console.log(arrCKEditor[i].name + ' editor destroyed.');
+        }
+        arrCKEditor = new Array();
+    }
 }
 
 /********************************************* Dialog (jQuery Ui Popup) ******************************************************/
 function ShowPopupWithTitle(varControlID, strTitle) {
-    var objDialog = ShowPopup(varControlID);
+    var windowWidth = (parseInt($(window).width()) / 2) - 10;
+
+    var dialogwidth = windowWidth + "px";
+
+    var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
+
     // this will update title of current dialog.
     objDialog.parent().find('.ui-dialog-title').html(strTitle);
+
+    // this will enable postback from dialog buttons.
+    objDialog.parent().appendTo(jQuery("form:first"));
 }
 
 function HidePopup(varControlID) {
