@@ -1,7 +1,7 @@
 ﻿
 
 function TheConfirm_OkOnly(dialogText, dialogTitle) {
-    TheConfirm_Ok_Cancel(dialogText
+    TheConfirm_Ok(dialogText
                           , function () {
                           }, function () {
                           },
