@@ -2951,6 +2951,7 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
+    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
