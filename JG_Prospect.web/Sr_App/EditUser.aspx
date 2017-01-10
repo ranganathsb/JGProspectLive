@@ -328,6 +328,19 @@
                 SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
                 $('#imgSearchLoad').hide();;--%>
 
+
+                try {
+                    $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
+
+                try {
+                    $(".grd-status").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
+
             });
 
         }
@@ -633,8 +646,8 @@
                 <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
                 <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" />
                 <div id="imgSearchLoad" style="display: none;" class="SearchLoad">
-                    <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
-                    <span>Login..!</span>
+                    <img src="../img/Loading-ring-alt.gif" alt="Loading..!" />
+                    <span>Loading..!</span>
                 </div>
 
             </div>
@@ -1224,7 +1237,7 @@
 
     <script src="../js/jquery.dd.min.js"></script>
     <script>
-        try {
+        <%--try {
             $("#<%=ddlUserStatus.ClientID%>").msDropDown();
         } catch (e) {
             alert(e.message);
@@ -1234,6 +1247,6 @@
             $(".grd-status").msDropDown();
         } catch (e) {
             alert(e.message);
-        }
+        }--%>
     </script>
 </asp:Content>
