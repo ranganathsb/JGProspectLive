@@ -1053,7 +1053,7 @@ namespace JG_Prospect
 
         protected void btnSendEmailToUser_Click(object sender, EventArgs e)
         {
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 112);
 
             if (ds == null)
             {
