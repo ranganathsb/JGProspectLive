@@ -3119,7 +3119,7 @@ namespace JG_Prospect
 
         private void LoadEmailContentToSentToUser()
         {
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 112);
 
             if (ds == null)
             {
