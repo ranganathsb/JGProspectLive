@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace JG_Prospect.Common
+{
+    public enum HTMLTemplates
+    {
+        ActiveAutoEmail = 1,
+        Additions,
+        Awnings,
+        Basements,
+        Bathrooms,
+        ContractAutoEmailTemplate,
+        ContractTemplate,
+        Custom,
+        CustomOther,
+        CustomOtherTM,
+        CustomTemplate,
+        CustomerServiceAutoEmail,
+        CustomerEmail_Template,
+        DeactiveAutoEmail,
+        DeckingExteriorRailing,
+        DeckingRailingPostColumns,
+        Electric,
+        EquipmentAndIndustry,
+        ExcavatingAndStormWaterMNGMT,
+        FasciaCappingAndSoffit,
+        FasciaCapping,
+        Fencing,
+        FlooringHardwoodLaminateVinyl,
+        FlooringMarblePorcelainCeramic,
+        FramingDrywallInsulation,
+        FramingDrywallInsulationtrim,
+        GuttersAndGutterGuards,
+        InstallerAutoEmail,
+        InstallerWorkOrderTemplate,
+        InterviewDateAutoEmail,
+        KitchenTest,
+        Kitchens,
+        MasonryFlatWorkAndRetainingWalls ,
+        MasonryFlatRetainingWalls,
+        MasonryFlatConcreteCementAndAsphalt,
+        MasonrySiding,
+        NewResidentialConstruction,
+        OfferMadeAutoEmail,
+        OfferMade,
+        Painting,
+        Plumbing,
+        PostColumns,
+        ProspectingAutoEmail,
+        RepairTM,
+        RoofingMetal,
+        RoofingMetalShakeSlateTerracotta,
+        RoofingTerracottaShakeSlate,
+        RoofingAsphaltAndFlat,
+        RoofingAsphaltFlat,
+        SalesAutoEmail,
+        ServiceMaintenanceAndRepair,
+        Shutters,
+        SidingMasonry,
+        SidingVinyl,
+        SidingVinylWoodAluminumFiberCement,
+        SidingWoodAluminumFiberCement,
+        Soffit,
+        SoffitTemplate,
+        VendorCategoryEmailTemplate,
+        VendorEmailTemplate,
+        WindowsAndDoors
+    }
+}
