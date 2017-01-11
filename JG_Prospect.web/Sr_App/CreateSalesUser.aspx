@@ -11,7 +11,7 @@
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
-    
+    <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />    
 
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
