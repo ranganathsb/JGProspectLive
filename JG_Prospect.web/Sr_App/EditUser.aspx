@@ -660,20 +660,11 @@
             <br />
             <div style="float: right">
                 <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
-<<<<<<< HEAD
-                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" />
-                <div id="imgSearchLoad" style="display: none;" class="SearchLoad">
-                    <img src="../img/Loading-ring-alt.gif" alt="Loading..!" />
-                    <span>Loading..!</span>
-                </div>
-
-=======
                 <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
                 <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
                     <span>Login..!</span>
                 </div>--%>
->>>>>>> yogesh
             </div>
             <table style="width: 100%;">
                 <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
@@ -1315,10 +1306,7 @@
 <%--Popup Ends--%>
 
     <script src="../js/jquery.dd.min.js"></script>
-<<<<<<< HEAD
-    <script>
-        <%--try {
-=======
+
     <script type="text/javascript">
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -1330,22 +1318,6 @@
             DestroyCKEditors();
         });
 
-        try {
->>>>>>> yogesh
-            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
-
-        try {
-            $(".grd-status").msDropDown();
-        } catch (e) {
-            alert(e.message);
-<<<<<<< HEAD
-        }--%>
-=======
-        }
-        
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
             $('#<%=hdnEmailTo.ClientID%>').val(email);
@@ -1354,6 +1326,5 @@
             SetCKEditor('<%=txtEmailFooter.ClientID%>');
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
->>>>>>> yogesh
     </script>
 </asp:Content>
