@@ -169,9 +169,7 @@
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });
 
-            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-            });--%>
+            
             
             $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                 var url = window.location.href
