@@ -151,7 +151,7 @@ namespace JG_Prospect
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
-                LoadEmailContentToSentToUser();
+                LoadEmailContentToSentToUser(false);
             }
             else
             {
@@ -3117,7 +3117,7 @@ namespace JG_Prospect
         //    return installId;
         //}
 
-        private void LoadEmailContentToSentToUser()
+        private void LoadEmailContentToSentToUser(bool blHidePopup = true)
         {
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, JGSession.Designation);
 
@@ -3128,7 +3128,10 @@ namespace JG_Prospect
 
             upSendEmailToUser.Update();
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
+            if (blHidePopup)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
+            }
         }
 
         #endregion
