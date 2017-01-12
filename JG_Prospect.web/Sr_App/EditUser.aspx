@@ -329,11 +329,11 @@
         function btnSearchGridData_OnClick(sender) {
             var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
 
+            var $tblUsers = $('#<%=grdUsers.ClientID%>');
+            $tblUsers.find('tbody>tr').show();
+
             if (strSearchTerm.length > 0) {
                 $('.loading').show();
-
-                var $tblUsers = $('#<%=grdUsers.ClientID%>');
-                $tblUsers.find('tbody>tr').show();
 
                 $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
                     var $tr = $(item);
@@ -1294,26 +1294,35 @@
 
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript">
-        
-            try {
-                $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-            } catch (e) {
-                alert(e.message);
-            }
 
-            try {
-                $(".grd-status").msDropDown();
-            } catch (e) {
-                alert(e.message);
-            }
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+        });
+
+        prmTaskGenerator.add_beginRequest(function () {
+            DestroyCKEditors();
+        });
+
+        try {
+            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+        } catch (e) {
+            alert(e.message);
+        }
+
+        try {
+            $(".grd-status").msDropDown();
+        } catch (e) {
+            alert(e.message);
+        }
         
-            function grdUsers_Email_OnClick(sender, email) {
-                $('#<%=lblEmailTo.ClientID%>').html(email);
-                $('#<%=hdnEmailTo.ClientID%>').val(email);
-                SetCKEditor('<%=txtEmailHeader.ClientID%>');
-                SetCKEditor('<%=txtEmailBody.ClientID%>');
-                SetCKEditor('<%=txtEmailFooter.ClientID%>');
-                ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
-            }
+        function grdUsers_Email_OnClick(sender, email) {
+            $('#<%=lblEmailTo.ClientID%>').html(email);
+            $('#<%=hdnEmailTo.ClientID%>').val(email);
+            SetCKEditor('<%=txtEmailHeader.ClientID%>');
+            SetCKEditor('<%=txtEmailBody.ClientID%>');
+            SetCKEditor('<%=txtEmailFooter.ClientID%>');
+            ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
+        }
     </script>
 </asp:Content>

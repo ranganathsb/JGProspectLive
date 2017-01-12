@@ -151,7 +151,7 @@ namespace JG_Prospect
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
-                LoadEmailContentToSentToUser();
+                LoadEmailContentToSentToUser(false);
             }
             else
             {
@@ -1053,7 +1053,7 @@ namespace JG_Prospect
 
         protected void btnSendEmailToUser_Click(object sender, EventArgs e)
         {
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 112);
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
 
             if (ds == null)
             {
@@ -3117,27 +3117,21 @@ namespace JG_Prospect
         //    return installId;
         //}
 
-        private void LoadEmailContentToSentToUser()
+        private void LoadEmailContentToSentToUser(bool blHidePopup = true)
         {
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 112);
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, JGSession.Designation);
 
-            if (ds == null)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-            else if (ds.Tables[0].Rows.Count == 0)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-
-            txtEmailSubject.Text = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
-            txtEmailHeader.Text = ds.Tables[0].Rows[0]["HTMLHeader"].ToString();
-            txtEmailBody.Text = ds.Tables[0].Rows[0]["HTMLBody"].ToString();
-            txtEmailFooter.Text = ds.Tables[0].Rows[0]["HTMLFooter"].ToString();
+            txtEmailSubject.Text = objHTMLTemplate.Subject;
+            txtEmailHeader.Text = objHTMLTemplate.Header;
+            txtEmailBody.Text = objHTMLTemplate.Body;
+            txtEmailFooter.Text = objHTMLTemplate.Footer;
 
             upSendEmailToUser.Update();
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
+            if (blHidePopup)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
+            }
         }
 
         #endregion
