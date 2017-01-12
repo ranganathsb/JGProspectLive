@@ -94,6 +94,7 @@
     <Compile Include="existing_customerBLL.cs" />
     <Compile Include="GoogleCalendarBLL.cs" />
     <Compile Include="GoogleCalendarEvent.cs" />
+    <Compile Include="HTMLTemplateBLL.cs" />
     <Compile Include="ImproperCalendarEvent.cs" />
     <Compile Include="InstallUserBLL.cs" />
     <Compile Include="new_customerBLL.cs" />

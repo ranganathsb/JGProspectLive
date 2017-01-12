@@ -5,6 +5,8 @@
 <%@ Register Src="~/Sr_App/LeftPanel.ascx" TagName="LeftPanel" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor"
     TagPrefix="cc1" %>
+<%@ Register Src="~/UserControl/ucRenewSession.ascx" TagPrefix="uc1" TagName="ucRenewSession" %>
+
 <!DOCTYPE html>
 <html>
 <head id="Head1" runat="server">
@@ -20,6 +22,8 @@
 
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
+
+    <link href="../css/chosen.css" rel="stylesheet" />
 
 
     <%--<script type="text/javascript" src="../js/jquery.js"></script>
@@ -494,7 +498,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
+        <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" AsyncPostBackTimeout="360000">
             <Services>
                 <%-- <asp:ServiceReference Path="~/SuggestSearch.asmx" />--%>
             </Services>
@@ -509,6 +513,9 @@
                 <div class="search_google">
                     <input name="qfront" id="qfront" value="Google Web Search" runat="server" type="text" /><asp:Button ID="searchbutton"
                         runat="server" value="Search" Text="Search" />
+                </div>
+                <div style="top:150px; right:0px; position:absolute;">
+                    <uc1:ucRenewSession runat="server" id="ucRenewSession" />
                 </div>
             </div>
             <div class="content_panel">

@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" ValidateRequest="false"
     CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" MaintainScrollPositionOnPostback="true" %>
 
 <%@ Register Assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI.DataVisualization.Charting" TagPrefix="asp" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-
+<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -309,24 +309,18 @@
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
                 $('.GrdPrimaryEmail').click(function () {
-                    showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
+                    //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 });
 
 
-                $('#btnSearchGridData').mousedown(function () {
-                    $('#imgSearchLoad').show();
-                });
+                //$('#btnSearchGridData').mousedown(function () {
+                    //$('#imgSearchLoad').show();
+                //});
 
-                $('#btnSearchGridData').click(function () {
-                    SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
-                    $('#imgSearchLoad').hide();
-                });
-
-
-                <%--$('#<%=txtSearch.ClientID%>').keyup(function () {
-                $('#imgSearchLoad').show();
-                SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
-                $('#imgSearchLoad').hide();;--%>
+                //$('#btnSearchGridData').click(function () {
+                    //SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
+                    //$('#imgSearchLoad').hide();
+                //});
 
 
                 try {
@@ -345,46 +339,67 @@
 
         }
 
-        function SearchGrid(txtSearch, grd) {
-            if ($("[id *=" + txtSearch + " ]").val() != "") {
-                $("[id *=" + grd + " ]").children
-                ('tbody').children('tr').each(function () {
-                    $(this).show();
-                });
-                $("[id *=" + grd + " ]").children
-                ('tbody').children('tr').each(function () {
-                    var match = false;
-                    $(this).children('td').each(function () {
-                        if ($(this).text().toUpperCase().indexOf($("[id *=" +
-                    txtSearch + " ]").val().toUpperCase()) > -1) {
-                            match = true;
-                            return false;
-                        }
-                    });
-                    if (match) {
-                        $(this).show();
-                        $(this).children('th').show();
-                    }
-                    else {
-                        $(this).hide();
-                        $(this).children('th').show();
+        function btnSearchGridData_OnClick(sender) {
+            var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
+
+            var $tblUsers = $('#<%=grdUsers.ClientID%>');
+            $tblUsers.find('tbody>tr').show();
+
+            if (strSearchTerm.length > 0) {
+                $('.loading').show();
+
+                $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
+                    var $tr = $(item);
+
+                    if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
+                        $tr.hide();
                     }
                 });
 
-
-                $("[id *=" + grd + " ]").children('tbody').
-                        children('tr').each(function (index) {
-                            if (index == 0)
-                                $(this).show();
-                        });
-            }
-            else {
-                $("[id *=" + grd + " ]").children('tbody').
-                        children('tr').each(function () {
-                            $(this).show();
-                        });
+                $('.loading').hide();
             }
         }
+
+        //function SearchGrid(txtSearch, grd) {
+        //    if ($("[id *=" + txtSearch + " ]").val() != "") {
+        //        $("[id *=" + grd + " ]").children
+        //        ('tbody').children('tr').each(function () {
+        //            $(this).show();
+        //        });
+        //        $("[id *=" + grd + " ]").children
+        //        ('tbody').children('tr').each(function () {
+        //            var match = false;
+        //            $(this).children('td').each(function () {
+        //                if ($(this).text().toUpperCase().indexOf($("[id *=" +
+        //            txtSearch + " ]").val().toUpperCase()) > -1) {
+        //                    match = true;
+        //                    return false;
+        //                }
+        //            });
+        //            if (match) {
+        //                $(this).show();
+        //                $(this).children('th').show();
+        //            }
+        //            else {
+        //                $(this).hide();
+        //                $(this).children('th').show();
+        //            }
+        //        });
+        //
+        //
+        //        $("[id *=" + grd + " ]").children('tbody').
+        //                children('tr').each(function (index) {
+        //                    if (index == 0)
+        //                        $(this).show();
+        //                });
+        //    }
+        //    else {
+        //        $("[id *=" + grd + " ]").children('tbody').
+        //                children('tr').each(function () {
+        //                    $(this).show();
+        //                });
+        //    }
+        //}
     </script>
     <style type="text/css">
         .modalBackground {
@@ -454,6 +469,7 @@
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <script src="<%=Page.ResolveUrl("~/ckeditor/ckeditor.js") %>"></script>
     <div class="right_panel">
         <!-- appointment tabs section start -->
         <ul class="appointment_tab">
@@ -644,12 +660,20 @@
             <br />
             <div style="float: right">
                 <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
+<<<<<<< HEAD
                 <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" />
                 <div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loading..!" />
                     <span>Loading..!</span>
                 </div>
 
+=======
+                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
+                <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
+                    <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
+                    <span>Login..!</span>
+                </div>--%>
+>>>>>>> yogesh
             </div>
             <table style="width: 100%;">
                 <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
@@ -820,6 +844,7 @@
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
                                         <br />
                                         <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
@@ -844,7 +869,7 @@
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" ItemStyle-HorizontalAlign="Center" SortExpression="Phone" ControlStyle-Width="70px" HeaderStyle-Width="151px" ItemStyle-Width="150px" >
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%> 
-                                        <div class="GrdPrimaryEmail">
+                                        <div class="GrdPrimaryEmail" onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');" %>">
                                             <%--<asp:Label ID="lblEmail" CssClass="wordBreak"  Width="145" runat="server" Text='<%# Eval("Email") %>'></asp:Label>--%>
                                             <asp:Label ID="lblEmail" ToolTip='<%# Eval("Email") %>'  runat="server" Text='<%# Eval("Email") %>'></asp:Label>
                                         </div>                                        
@@ -951,8 +976,6 @@
         <br />
         <asp:Button ID="btnClose" runat="server" Text="Close" />
     </asp:Panel>
-
-
 
     <asp:Panel ID="panelPopup" runat="server">
         <div id="light" class="white_content">
@@ -1235,9 +1258,80 @@
     <div id="interviewDatefade" class="black_overlay">
     </div>
 
+<%--Popup Stars--%>
+<div class="hide">
+    <%--Send Email To User Popup--%>
+    <div id="divSendEmailToUser" runat="server" title="Send Email">
+        <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <asp:ValidationSummary ID="vsEmailToUser" runat="server" ValidationGroup="vgEmailToUser" ShowSummary="False" ShowMessageBox="True" />
+                <fieldset>
+                    <legend><asp:Label ID="lblEmailTo" runat="server" /><asp:HiddenField ID="hdnEmailTo" runat="server" /></legend>
+                    <table cellspacing="3" cellpadding="3" width="100%">
+                        <tr>
+                            <td>Subject:<br />
+                                <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailSubject" ForeColor="Red" ErrorMessage="Please enter email subject." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Header:<br />
+                                <asp:TextBox ID="txtEmailHeader" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailHeader" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailHeader" ForeColor="Red" ErrorMessage="Please enter email header." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Email Body:<br />
+                                <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Footer:<br />
+                                <asp:TextBox ID="txtEmailFooter" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailFooter" ValidationGroup="vgEmailToUser"
+                                    runat="server" ControlToValidate="txtEmailFooter" ForeColor="Red" ErrorMessage="Please enter email footer." Display="None" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn_sec">
+                                    <asp:Button ID="btnSendEmailToUser" runat="server" ValidationGroup="vgEmailToUser" OnClick="btnSendEmailToUser_Click" 
+                                        CssClass="ui-button" Text="Send" />
+                                    <asp:Button ID="btnCancelSendEmailToUser" runat="server" OnClick="btnCancelSendEmailToUser_Click"
+                                        Text="Cancel" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+</div>
+<%--Popup Ends--%>
+
     <script src="../js/jquery.dd.min.js"></script>
+<<<<<<< HEAD
     <script>
         <%--try {
+=======
+    <script type="text/javascript">
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+        });
+
+        prmTaskGenerator.add_beginRequest(function () {
+            DestroyCKEditors();
+        });
+
+        try {
+>>>>>>> yogesh
             $("#<%=ddlUserStatus.ClientID%>").msDropDown();
         } catch (e) {
             alert(e.message);
@@ -1247,6 +1341,19 @@
             $(".grd-status").msDropDown();
         } catch (e) {
             alert(e.message);
+<<<<<<< HEAD
         }--%>
+=======
+        }
+        
+        function grdUsers_Email_OnClick(sender, email) {
+            $('#<%=lblEmailTo.ClientID%>').html(email);
+            $('#<%=hdnEmailTo.ClientID%>').val(email);
+            SetCKEditor('<%=txtEmailHeader.ClientID%>');
+            SetCKEditor('<%=txtEmailBody.ClientID%>');
+            SetCKEditor('<%=txtEmailFooter.ClientID%>');
+            ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
+        }
+>>>>>>> yogesh
     </script>
 </asp:Content>

@@ -21,6 +21,8 @@ namespace JG_Prospect.Sr_App
         ErrorLog logManager = new ErrorLog();
         protected void Page_Load(object sender, EventArgs e)
         {
+            JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
+
             if (!IsPostBack)
             {
                 Session["AppType"] = "SrApp";

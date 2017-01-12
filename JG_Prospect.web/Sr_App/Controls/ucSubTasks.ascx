@@ -33,7 +33,7 @@
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                             SortExpression="Description">
                             <ItemTemplate>
-                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px;">
+                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
                                     <div style="padding-bottom: 5px;">
                                         <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
                                     </div>
@@ -178,11 +178,15 @@
                                     </tr>
                                     <tr>
                                         <td class="noborder">
-                                            <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
+                                            <%--<asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
                                                 <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
                                                 <Texts SelectBoxCaption="--Open--" />
-                                            </asp:DropDownCheckBoxes>
+                                            </asp:DropDownCheckBoxes>--%>
+                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" SelectionMode="Multiple"
+                                                CssClass="chosen-select" data-placeholder="Select"
+                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
+                                            </asp:ListBox>
                                             <asp:Label ID="lblAssigned" runat="server" />
                                         </td>
                                     </tr>
@@ -274,29 +278,6 @@
                                     <tr>
                                         <td class="haligncenter noborder">
                                             <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
-
-                                        </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
-
-                                        </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
-
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td colspan="3">
-                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td colspan="3" class="haligncenter noborder">
                                             <div id="divAdmin" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -316,9 +297,8 @@
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3" class="haligncenter noborder">
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
                                             <div id="divITLead" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -338,9 +318,8 @@
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3" class="haligncenter noborder">
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
                                             <div id="divUser" runat="server" visible="false">
                                                 <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                                     <%# 
@@ -359,6 +338,15 @@
                                                 </asp:HyperLink>
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="display: none;">
+                                        <td colspan="3">
+                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
+                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
+                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
                                         </td>
                                     </tr>
                                 </table>
@@ -411,7 +399,7 @@
                                     ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                             </td>
                         </tr>
-                        <tr>
+                        <tr runat="server" visible="false">
                             <td>
                                 <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
@@ -471,7 +459,11 @@
                         </tr>
                         <tr>
                             <td>Attachment(s):<br>
-                                <input id="hdnAttachments" runat="server" type="hidden" />
+                                <asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <input id="hdnAttachments" runat="server" type="hidden" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div id="divSubTaskDropzone" runat="server" class="dropzone">
                                     <div class="fallback">
                                         <input name="file" type="file" multiple />
@@ -482,6 +474,7 @@
                             <td>
                                 <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
                                 </div>
+                                <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
                             </td>
                         </tr>
                         <tr>
@@ -606,6 +599,7 @@
 
 
 <%--Popup Ends--%>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
@@ -617,16 +611,20 @@
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
     prmTaskGenerator.add_endRequest(function () {
+        console.log('end req.');
         ucSubTasks_Initialize();
     });
 
     prmTaskGenerator.add_beginRequest(function () {
+        console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
         DestroyCKEditors();
     });
 
     function ucSubTasks_Initialize() {
+
+        ChosenDropDown();
 
         ApplySubtaskLinkContextMenu();
         //ApplyImageGallery();
@@ -639,10 +637,21 @@
 
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
-            SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-            //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
+            SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
         }
 
+    }
+
+    function txtSubTaskDescription_Blur(editor) {
+        if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+            if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
+                $('#<%=btnSaveSubTask.ClientID%>').click();
+            }
+        }
+    }
+
+    function OnSaveSubTaskClick() {
+        return Page_ClientValidate('vgSubTask');
     }
 
     function copytoListID(sender) {
@@ -652,16 +661,6 @@
             ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
             ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
         }
-    }
-
-    function OnSaveSubTaskClick() {
-        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
-        //$('#<%=txtSubTaskTitle.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskTitle.ClientID%>'));
-
-        SetCKEditor('<%=txtSubTaskDescription.ClientID%>');
-        //SetCKEditor('<%=txtSubTaskTitle.ClientID%>');
-
-        return Page_ClientValidate('vgSubTask')
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
@@ -691,6 +690,12 @@
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
                     });
                 }
             });

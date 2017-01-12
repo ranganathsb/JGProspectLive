@@ -3260,204 +3260,769 @@ FROM
 
 GO
 
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 23-Dec-16 8:57:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 115, 1, 'Description DESC'
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	;WITH 
+	
+	Tasklist AS
+	(	
+		SELECT
+			Tasks.*,
+			(SELECT EstimatedHours 
+				FROM [TaskApprovalsView] TaskApprovals 
+				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+			(SELECT EstimatedHours 
+				FROM [TaskApprovalsView] TaskApprovals 
+				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+			Row_number() OVER
+			(
+				ORDER BY
+					CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+					CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+					CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+					CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+					CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+					CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+					CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+					CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+					CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+					CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+					CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+					CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+			) AS RowNo_Order
+		FROM
+			(
+				SELECT 
+					Tasks.*,
+					CASE Tasks.[Status]
+						WHEN @AssignedStatus THEN 1
+						WHEN @RequestedStatus THEN 1
+
+						WHEN @InProgressStatus THEN 2
+						WHEN @PendingStatus THEN 2
+						WHEN @ReOpenedStatus THEN 2
+
+						WHEN @OpenStatus THEN 
+							CASE 
+								WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+								ELSE 4
+							END
+
+						WHEN @SpecsInProgressStatus THEN 4
+
+						WHEN @ClosedStatus THEN 5
+
+						WHEN @DeletedStatus THEN 6
+
+						ELSE 7
+
+					END AS StatusOrder,
+					TaskApprovals.Id AS TaskApprovalId,
+					TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+					TaskApprovals.Description AS TaskApprovalDescription,
+					TaskApprovals.UserId AS TaskApprovalUserId,
+					TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+				FROM 
+					[TaskListView] Tasks 
+						LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+				WHERE
+					Tasks.ParentTaskId = @TaskId
+			) Tasks
+	)
+	
+	-- get records
+	SELECT * 
+	FROM Tasklist 
+	ORDER BY RowNo_Order
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 23-Dec-16 8:57:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 115, 1, 'Description DESC'
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	;WITH 
+	
+	Tasklist AS
+	(	
+		SELECT
+			Tasks.*,
+			(SELECT TOP 1 EstimatedHours 
+				FROM [TaskApprovalsView] TaskApprovals 
+				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+			(SELECT TOP 1 EstimatedHours 
+				FROM [TaskApprovalsView] TaskApprovals 
+				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+			Row_number() OVER
+			(
+				ORDER BY
+					CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+					CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+					CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+					CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+					CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+					CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+					CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+					CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+					CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+					CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+					CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+					CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+					CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+					CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+			) AS RowNo_Order
+		FROM
+			(
+				SELECT 
+					Tasks.*,
+					CASE Tasks.[Status]
+						WHEN @AssignedStatus THEN 1
+						WHEN @RequestedStatus THEN 1
+
+						WHEN @InProgressStatus THEN 2
+						WHEN @PendingStatus THEN 2
+						WHEN @ReOpenedStatus THEN 2
+
+						WHEN @OpenStatus THEN 
+							CASE 
+								WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+								ELSE 4
+							END
+
+						WHEN @SpecsInProgressStatus THEN 4
+
+						WHEN @ClosedStatus THEN 5
+
+						WHEN @DeletedStatus THEN 6
+
+						ELSE 7
+
+					END AS StatusOrder,
+					TaskApprovals.Id AS TaskApprovalId,
+					TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+					TaskApprovals.Description AS TaskApprovalDescription,
+					TaskApprovals.UserId AS TaskApprovalUserId,
+					TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+				FROM 
+					[TaskListView] Tasks 
+						LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+				WHERE
+					Tasks.ParentTaskId = @TaskId
+			) Tasks
+	)
+	
+	-- get records
+	SELECT * 
+	FROM Tasklist 
+	ORDER BY RowNo_Order
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[usp_InsertTaskDesignations]    Script Date: 26-Dec-16 8:29:54 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 07152016
+-- Description:	Will insert assigned designations for given task
+-- =============================================
+
+ALTER PROCEDURE [dbo].[usp_InsertTaskDesignations] 
+(
+	@TaskId int ,
+	@Designations varchar(4000) ,
+	@TaskIDCode varchar(5)
+)	
+AS
+BEGIN
+
+	DECLARE @InstallId VARCHAR(50) = NULL
+
+	SELECT @InstallId = InstallId
+	FROM tblTask
+	WHERE TaskId = @TaskId
+
+	IF @InstallId IS NULL
+	BEGIN
+		-- get sequence of last entered task for perticular designation.
+		DECLARE @DesSequence bigint
+
+		SELECT @DesSequence = ttds.LastSequenceNo FROM dbo.tblTaskDesignationSequence ttds WHERE ttds.DesignationCode = @TaskIDCode
+
+		-- if it is first time task is entered for designation start from 001.
+		IF(@DesSequence IS NULL)
+		BEGIN
+			SET @DesSequence = 0  
+		END
+
+		SET @DesSequence = @DesSequence + 1  
+
+		UPDATE tblTask
+			SET InstallId = @TaskIDCode + Right('00' + CONVERT(NVARCHAR, @DesSequence), 3)
+		WHERE TaskId=@TaskId
+
+		-- INCREMENT SEQUENCE NUMBER FOR DESIGNATION TO USE NEXT TIME
+		IF NOT EXISTS( 
+						SELECT ttds.TaskDesigSequenceId 
+						FROM dbo.tblTaskDesignationSequence ttds 
+						WHERE ttds.DesignationCode = @TaskIDCode 
+					 )
+		BEGIN
+			INSERT INTO dbo.tblTaskDesignationSequence
+			(
+    
+				DesignationCode,
+				LastSequenceNo
+			)
+			VALUES
+			(
+				@TaskIDCode,
+				@DesSequence
+			) 
+		END
+		ELSE		
+		BEGIN
+			UPDATE dbo.tblTaskDesignationSequence
+			SET
+				dbo.tblTaskDesignationSequence.LastSequenceNo = @DesSequence
+			WHERE dbo.tblTaskDesignationSequence.DesignationCode = @TaskIDCode 
+		END
+	END
+
+	-- REMOVE ALREADY ADDED DESIGNATIONS IF ANY
+	DELETE FROM tblTaskDesignations
+	WHERE  (TaskId = @TaskId)
+
+	-- insert comma seperated multiple designations for given task.
+	INSERT INTO tblTaskDesignations (TaskId, Designation,DesignationID)
+	SELECT @TaskId , (Select top 1 DesignationName From tbl_Designation Where ID=item), item 
+	FROM dbo.SplitString(@Designations,',') ss 
+
+	--*********** SUB TASK DESIGNATIONS ****************--
+	-- REMOVE ALREADY ADDED DESIGNATIONS IF ANY, FOR ALL SUB TASKS
+	DELETE FROM tblTaskDesignations
+	WHERE TaskId IN (Select TaskId 
+						FROM tblTask 
+						WHERE ParentTaskId = @TaskId)
+
+	-- insert comma seperated multiple designations for sub tasks of given task.
+	INSERT INTO tblTaskDesignations (TaskId, Designation,DesignationID)
+	SELECT st.TaskId , (Select top 1 DesignationName From tbl_Designation Where ID=item), item 
+	FROM dbo.SplitString(@Designations,',') ss, tblTask st
+	WHERE st.ParentTaskId = @TaskId
+
+END
+GO
 
 --=======================================================================================================================================================================================================
 
 -- Published on Live 22 Dec 2016
 
 --=======================================================================================================================================================================================================
-/*
-   Tuesday, December 27, 20168:58:25 PM
-   User: jgrovesa
-   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
-   Database: JGBS_Dev
-   Application: 
-*/
 
-/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
-BEGIN TRANSACTION
-SET QUOTED_IDENTIFIER ON
-SET ARITHABORT ON
-SET NUMERIC_ROUNDABORT OFF
-SET CONCAT_NULL_YIELDS_NULL ON
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 06-Jan-17 12:20:17 PM ******/
 SET ANSI_NULLS ON
-SET ANSI_PADDING ON
-SET ANSI_WARNINGS ON
-COMMIT
-BEGIN TRANSACTION
 GO
-ALTER TABLE dbo.tblTask
-	DROP CONSTRAINT DF__tblTask__IsUiReq__2CC890AD
+SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE dbo.Tmp_tblTask
-	(
-	TaskId bigint NOT NULL IDENTITY (1, 1),
-	Title varchar(250) NOT NULL,
-	Description varchar(MAX) NOT NULL,
-	Status tinyint NOT NULL,
-	DueDate datetime NULL,
-	Hours varchar(25) NULL,
-	CreatedBy int NOT NULL,
-	CreatedOn datetime NOT NULL,
-	IsDeleted bit NOT NULL,
-	InstallId varchar(50) NULL,
-	ParentTaskId bigint NULL,
-	TaskType tinyint NULL,
-	TaskPriority tinyint NULL,
-	IsTechTask bit NULL,
-	AdminStatus bit NULL,
-	TechLeadStatus bit NULL,
-	OtherUserStatus bit NULL,
-	AdminStatusUpdated datetime NULL,
-	TechLeadStatusUpdated datetime NULL,
-	OtherUserStatusUpdated datetime NULL,
-	AdminUserId int NULL,
-	TechLeadUserId int NULL,
-	OtherUserId int NULL,
-	IsAdminInstallUser bit NULL,
-	IsTechLeadInstallUser bit NULL,
-	IsOtherUserInstallUser bit NULL,
-	Url varchar(250) NULL,
-	IsUiRequested bit NULL
-	)  ON [PRIMARY]
-	 TEXTIMAGE_ON [PRIMARY]
-GO
-ALTER TABLE dbo.Tmp_tblTask SET (LOCK_ESCALATION = TABLE)
-GO
-ALTER TABLE dbo.Tmp_tblTask ADD CONSTRAINT
-	DF__tblTask__IsUiReq__2CC890AD DEFAULT ((0)) FOR IsUiRequested
-GO
-SET IDENTITY_INSERT dbo.Tmp_tblTask ON
-GO
-IF EXISTS(SELECT * FROM dbo.tblTask)
-	 EXEC('INSERT INTO dbo.Tmp_tblTask (TaskId, Title, Description, Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested)
-		SELECT TaskId, Title, CONVERT(varchar(MAX), Description), Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested FROM dbo.tblTask WITH (HOLDLOCK TABLOCKX)')
-GO
-SET IDENTITY_INSERT dbo.Tmp_tblTask OFF
-GO
-ALTER TABLE dbo.tblTaskApprovals
-	DROP CONSTRAINT FK__tblTaskAp__TaskI__31C24FF4
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications
-	DROP CONSTRAINT FK__tblTaskWo__TaskI__4CAB505A
-GO
-ALTER TABLE dbo.tblTaskAcceptance
-	DROP CONSTRAINT FK__tblTaskAc__TaskI__61A66D40
-GO
-ALTER TABLE dbo.tblTaskDesignations
-	DROP CONSTRAINT FK_tblTaskDesignations_tblTask
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests
-	DROP CONSTRAINT FK_tblTaskAssignmentRequests_tblTask
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers
-	DROP CONSTRAINT FK_tblTaskAssignedUsers_tblTask
-GO
-DROP TABLE dbo.tblTask
-GO
-EXECUTE sp_rename N'dbo.Tmp_tblTask', N'tblTask', 'OBJECT' 
-GO
-ALTER TABLE dbo.tblTask ADD CONSTRAINT
-	PK_tblTask PRIMARY KEY CLUSTERED 
-	(
-	TaskId
-	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+-- =============================================
+-- Updated By :	  Bhavik J. Vaishnani
+-- Updated date:  21-12-2016
+-- =============================================
+--
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@UserId int,
+	@FromDate date = null,
+	@ToDate date = null
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
 
-GO
-COMMIT
-BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers ADD CONSTRAINT
-	FK_tblTaskAssignedUsers_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
+	IF @FromDate  IS NOT NULL AND @ToDate IS NOT NULL
+	BEGIN
+		IF(@UserId<>0)
+		BEGIN
+			SELECT 
+				t.status,count(*)cnt 
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+					
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND U.Id=@UserId 
+					AND CAST(t.CreatedDateTime as date) >= CAST( @FromDate  as date) 
+					AND CAST(t.CreatedDateTime  as date) <= CAST( @ToDate  as date)
+			GROUP BY t.status
+		END
+	ELSE 
+		BEGIN
+			SELECT 
+				t.status,count(*)cnt 
+			FROM 
+				tblInstallUsers t 	
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+					AND CAST(t.CreatedDateTime as date) >= CAST( @FromDate  as date) 
+					AND CAST(t.CreatedDateTime  as date) <= CAST( @ToDate  as date)
+			GROUP BY t.status
+		END
 	
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests ADD CONSTRAINT
-	FK_tblTaskAssignmentRequests_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
 	
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskDesignations ADD CONSTRAINT
-	FK_tblTaskDesignations_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
+	IF(@UserId<>0)
+		Begin
+			SELECT 
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(t.FristName +' '+ t.LastName,'')  AS 'AddedBy' , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById
+				, mcq.[Aggregate] , t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+				,Task.TechTaskId, Task.TechTaskInstallId
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+					LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId=ru.Id
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= t.Id	  
+					LEFT OUTER JOIN MCQ_Performance mcq on mcq.UserID = t.Id	
+					OUTER APPLY
+					(
+					SELECT tsk.TaskId AS TechTaskId, tsk.InstallId AS TechTaskInstallId
+					FROM tblTask tsk 
+							INNER JOIN tblTaskAssignedUsers tu ON tsk.TaskId = tu.TaskId
+						WHERE tu.UserId = t.Id AND tsk.IsTechTask = 1
+					) AS Task			
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND t.Status <> 'Deactive' 
+					AND t.Id=@UserId 
+					AND CAST(t.CreatedDateTime as date) >= CAST( @FromDate  as date) 
+					AND CAST (t.CreatedDateTime  as date) <= CAST( @ToDate  as date)
+			ORDER BY Id DESC
+		END
+	Else
+		BEGIN
+			SELECT 
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(U.FristName + ' ' + U.LastName,'')  AS 'AddedBy' , ISNULL (t.UserInstallId ,t.id) As UserInstallId,	
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') 
+				then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+				,Task.TechTaskId, Task.TechTaskInstallId
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+					LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId=ru.Id
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+					LEFT OUTER JOIN MCQ_Performance mcq on mcq.UserID = t.Id	
+					OUTER APPLY
+					(
+					SELECT tsk.TaskId AS TechTaskId, tsk.InstallId AS TechTaskInstallId
+					FROM tblTask tsk 
+							INNER JOIN tblTaskAssignedUsers tu ON tsk.TaskId = tu.TaskId
+						WHERE tu.UserId = t.Id AND tsk.IsTechTask = 1
+					) AS Task			
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND t.Status <> 'Deactive' 
+					AND CAST(t.CreatedDateTime as date) >= CAST( @FromDate  as date) 
+					ANd CAST(t.CreatedDateTime  as date) <= CAST( @ToDate  as date)
+			ORDER BY Id DESC
+		END
+	END
+	ELSE
+	BEGIN 
+		IF(@UserId<>0)
+		BEGIN
+			SELECT 
+				t.status,count(*)cnt 
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser	
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND U.Id=@UserId 
+			GROUP BY t.status
+		END
+	ELSE 
+		BEGIN
+			SELECT 
+				t.status,count(*)cnt 
+			FROM 
+				tblInstallUsers t 	
+					 
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			GROUP BY t.status
+		END
 	
-GO
-ALTER TABLE dbo.tblTaskDesignations SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAcceptance ADD CONSTRAINT
-	FK__tblTaskAc__TaskI__61A66D40 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
 	
+	IF(@UserId<>0)
+		Begin
+			SELECT 
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(U.FristName + ' ' + U.LastName,'')  AS 'AddedBy' , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById 
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+				,Task.TechTaskId, Task.TechTaskInstallId
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+					LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId=ru.Id
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+					LEFT OUTER JOIN MCQ_Performance mcq on mcq.UserID = t.Id	
+					OUTER APPLY
+					(
+					SELECT tsk.TaskId AS TechTaskId, tsk.InstallId AS TechTaskInstallId
+					FROM tblTask tsk 
+							INNER JOIN tblTaskAssignedUsers tu ON tsk.TaskId = tu.TaskId
+						WHERE tu.UserId = t.Id AND tsk.IsTechTask = 1
+					) AS Task			
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND t.Status <> 'Deactive' 
+					AND U.Id=@UserId 
+			ORDER BY Id DESC
+		END
+	Else
+		BEGIN
+			SELECT 
+				t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+				t.SourceUser, ISNULL(U.FristName + ' ' + U.LastName,'')  AS 'AddedBy' , ISNULL (t.UserInstallId ,t.id) As UserInstallId,	
+				InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') 
+				then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+				RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+				t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById 
+				, mcq.[Aggregate], t.EmpType, dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
+				--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+				,Task.TechTaskId, Task.TechTaskInstallId
+			FROM 
+				tblInstallUsers t 
+					LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+					LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId=ru.Id
+					LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id
+					LEFT OUTER JOIN MCQ_Performance mcq on mcq.UserID = t.Id		
+					OUTER APPLY
+					(
+					SELECT tsk.TaskId AS TechTaskId, tsk.InstallId AS TechTaskInstallId
+					FROM tblTask tsk 
+							INNER JOIN tblTaskAssignedUsers tu ON tsk.TaskId = tu.TaskId
+						WHERE tu.UserId = t.Id AND tsk.IsTechTask = 1
+					) AS Task					
+			WHERE 
+				(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+					AND t.Status <> 'Deactive' 
+			ORDER BY Id DESC
+		END
+	END
+
+ 
+END
 GO
-ALTER TABLE dbo.tblTaskAcceptance SET (LOCK_ESCALATION = TABLE)
+
+
+
+/****** Object:  StoredProcedure [dbo].[GetAllEditSalesUser]    Script Date: 06-Jan-17 11:35:17 AM ******/
+SET ANSI_NULLS ON
 GO
-COMMIT
-BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
 GO
-ALTER TABLE dbo.tblTaskWorkSpecifications ADD CONSTRAINT
-	FK__tblTaskWo__TaskI__4CAB505A FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
+-- =============================================
+-- Updated By :		Bhavik J. Vaishnani
+-- Updated date: 22-12-2016
+-- =============================================
+--exec [GetAllEditSalesUser]
+ALTER PROCEDURE [dbo].[GetAllEditSalesUser]
+	-- Add the parameters for the stored procedure here
+	AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT  
+		t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+		t.SourceUser, ISNULL(t.FristName +' '+ t.LastName,'')  AS AddedBy, U.Id As AddeBy_UserID , ISNULL (t.UserInstallId ,t.id) As UserInstallId ,
+		InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+		RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+		t.Email, t1.[UserInstallId] As AddedByUserInstallId
+		, t1.Id As AddedById, mcq.[Aggregate] , t.EmpType , dbo.Fn_GetUserPrimaryOrDefaultPhone(t.Id) As PrimaryPhone, t.CountryCode, t.Resumepath
+		--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+		,Task.TechTaskId, Task.TechTaskInstallId
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblInstallUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id
+			LEFT OUTER JOIN MCQ_Performance mcq on mcq.UserID = t.Id
+			OUTER APPLY
+			(
+			SELECT tsk.TaskId AS TechTaskId, tsk.InstallId AS TechTaskInstallId
+			FROM tblTask tsk 
+					INNER JOIN tblTaskAssignedUsers tu ON tsk.TaskId = tu.TaskId
+				WHERE tu.UserId = t.Id AND tsk.IsTechTask = 1
+			) AS Task
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+			AND t.Status <> 'Deactive' 
+	ORDER BY Id DESC
 	
+ 
+END
 GO
-ALTER TABLE dbo.tblTaskWorkSpecifications SET (LOCK_ESCALATION = TABLE)
+
+
+INSERT INTO [dbo].[tblSubHTMLTemplates]
+           ([HTMLTemplateID]
+           ,[SubHTMLName]
+           ,[HTMLSubject]
+           ,[HTMLHeader]
+           ,[HTMLBody]
+           ,[HTMLFooter]
+           ,[Updated_On])
+     SELECT
+           110
+           ,SubHTMLName
+           ,HTMLSubject
+           ,HTMLHeader
+           ,HTMLBody
+           ,HTMLFooter
+           ,GETDATE()
+	FROM tblSubHtmlTemplates
+	WHERE HTMLTemplateID = 104
 GO
-COMMIT
-BEGIN TRANSACTION
+
+
+--=======================================================================================================================================================================================================
+-- Email Template
+--=======================================================================================================================================================================================================
+
+
+/****** Object:  Table [dbo].[tblHTMLTemplatesMater]    Script Date: 11-Jan-17 10:18:50 AM ******/
+SET ANSI_NULLS ON
 GO
-ALTER TABLE dbo.tblTaskApprovals ADD CONSTRAINT
-	FK__tblTaskAp__TaskI__31C24FF4 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
+SET QUOTED_IDENTIFIER ON
 GO
-ALTER TABLE dbo.tblTaskApprovals SET (LOCK_ESCALATION = TABLE)
+SET ANSI_PADDING OFF
 GO
-COMMIT
+CREATE TABLE [dbo].[tblHTMLTemplatesMater](
+	[Id] [int] PRIMARY KEY,
+	[Name] [varchar](50) NOT NULL,
+	[Subject] [varchar](4000) NOT NULL,
+	[Header] [nvarchar](max) NOT NULL,
+	[Body] [nvarchar](max) NOT NULL,
+	[Footer] [nvarchar](max) NOT NULL,
+	[DateUpdated] [date] NOT NULL
+)
+GO
+SET ANSI_PADDING OFF
+GO
+
+
+/****** Object:  Table [dbo].[tblHTMLTemplates]    Script Date: 11-Jan-17 10:18:50 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE TABLE [dbo].[tblDesignationHTMLTemplates](
+	[Id] [int] IDENTITY(1,1) PRIMARY KEY,
+	[HTMLTemplatesMaterId] [int] REFERENCES [tblHTMLTemplatesMater],
+	[Designation] VARCHAR(50) NOT NULL,
+	[Subject] [varchar](4000) NOT NULL,
+	[Header] [nvarchar](max) NOT NULL,
+	[Body] [nvarchar](max) NOT NULL,
+	[Footer] [nvarchar](max) NOT NULL,
+	[DateUpdated] [date] NOT NULL
+)
+GO
+SET ANSI_PADDING OFF
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets all HTMLTemplates
+-- =============================================
+CREATE PROCEDURE GetHTMLTemplates
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM
+		(
+			SELECT 
+					 0 As IsMaster
+					,[Id]
+					,[HTMLTemplatesMaterId]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblDesignationHTMLTemplates
+
+			UNION ALL
+
+			SELECT 
+					 1 As IsMaster
+					,0 AS [Id]
+					,[Id] AS HTMLTemplatesMaterId
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMater 
+			WHERE Id NOT IN (SELECT HTMLTemplatesMaterId FROM tblDesignationHTMLTemplates)
+
+		) AS HTMLTemplates
+	ORDER BY HTMLTemplates.IsMaster DESC
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets a HTMLTemplate.
+-- =============================================
+CREATE PROCEDURE GetDesignationHTMLTemplate
+	@Id	INT,
+	@Designation VARCHAR(50) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT TOP 1 *
+	FROM
+		(
+			SELECT 
+					 0 As IsMaster
+					,[Id]
+					,[HTMLTemplatesMaterId]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblDesignationHTMLTemplates
+			WHERE 
+				HTMLTemplatesMaterId = @Id AND
+				Designation = ISNULL(@Designation,Designation)
+
+			UNION
+
+			SELECT 
+					 1 As IsMaster
+					,0 AS Id
+					,[Id] AS HTMLTemplatesMaterId
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMater 
+			WHERE Id = @Id
+
+		) AS HTMLTemplates
+
+END
+GO
+

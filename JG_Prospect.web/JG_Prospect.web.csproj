@@ -994,6 +994,7 @@
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
     <Content Include="CreateUser.aspx" />
+    <Content Include="css\chosen.css" />
     <Content Include="css\connected-carousel.css" />
     <Content Include="css\dropzone\css\basic.css" />
     <Content Include="css\dropzone\css\dropzone.css" />
@@ -1386,6 +1387,8 @@
     <Content Include="img\Bar2.png" />
     <Content Include="img\Bar3.png" />
     <Content Include="img\btn1.png" />
+    <Content Include="img\chosen-sprite%402x.png" />
+    <Content Include="img\chosen-sprite.png" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
@@ -1483,6 +1486,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\chosen.jquery.js" />
     <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
@@ -1871,6 +1875,7 @@
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
+    <Content Include="UserControl\ucRenewSession.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
@@ -2026,6 +2031,13 @@
     </Compile>
     <Compile Include="stafflogin.aspx.designer.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucRenewSession.ascx.cs">
+      <DependentUpon>ucRenewSession.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucRenewSession.ascx.designer.cs">
+      <DependentUpon>ucRenewSession.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
@@ -2572,6 +2584,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -2865,6 +2878,7 @@
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
     <Folder Include="Database Scripts\Bhavik\Nov\" />
+    <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />

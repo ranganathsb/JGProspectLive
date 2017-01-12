@@ -174,8 +174,7 @@ namespace JG_Prospect.Sr_App.Controls
                 controlMode.Value = "0";
                 SetControlDisplay();
                 LoadFilters();
-                //SearchTasks(null);
-                SearchTasks(50);
+                SearchTasks(null);
                 LoadPopupDropdown();
             }
         }
@@ -239,7 +238,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnLoadMore_Click(object sender, EventArgs e)
         {
-            SearchTasks(50);
+            SearchTasks(null);
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "expand", "SetHeaderSectionHeight();", true);
         }
 
@@ -425,45 +424,28 @@ namespace JG_Prospect.Sr_App.Controls
                     strRowCssClass = "FirstRow";
                 }
 
-                switch ((JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status")))
+                JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status"));
+                JGConstant.TaskPriority? objTaskPriority = null;
+
+                if (
+                    !string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()) &&
+                    DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString().ToString() != "0"
+                   )
                 {
-                    case JGConstant.TaskStatus.Open:
-                        strRowCssClass += " task-open";
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()) && 
-                            DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString() != "0")
-                        {
-                            strRowCssClass += " task-with-priority";
-                        }
-                        break;
-                    case JGConstant.TaskStatus.Requested:
-                        strRowCssClass += " task-requested";
-                        break;
-                    case JGConstant.TaskStatus.Assigned:
-                        strRowCssClass += " task-assigned";
-                        break;
-                    case JGConstant.TaskStatus.InProgress:
-                        strRowCssClass += " task-inprogress";
-                        break;
-                    case JGConstant.TaskStatus.Pending:
-                        strRowCssClass += " task-pending";
-                        break;
-                    case JGConstant.TaskStatus.ReOpened:
-                        strRowCssClass += " task-reopened";
-                        break;
+                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString());
+                }
+
+                strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
+
+                switch (objTaskStatus)
+                {
                     case JGConstant.TaskStatus.Closed:
-                        strRowCssClass += " task-closed closed-task-bg";
                         ddcbAssigned.Enabled = false;
-                    ddlTaskStatus.Enabled = false;
-                        break;
-                    case JGConstant.TaskStatus.SpecsInProgress:
-                        strRowCssClass += " task-specsinprogress";
+                        ddlTaskStatus.Enabled = false;
                         break;
                     case JGConstant.TaskStatus.Deleted:
-                        strRowCssClass += " task-deleted deleted-task-bg";
                         ddcbAssigned.Enabled = false;
-                    ddlTaskStatus.Enabled = false;
-                        break;
-                    default:
+                        ddlTaskStatus.Enabled = false;
                         break;
                 }
 
@@ -1030,7 +1012,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
             // this is for paging based data fetch, in header view case it will be always page numnber 0 and page size 5
-            int Start = 0, PageLimit = 5;
+            int Start = 0, PageLimit = 50;
 
             if (RecordstoPull != null)
             {

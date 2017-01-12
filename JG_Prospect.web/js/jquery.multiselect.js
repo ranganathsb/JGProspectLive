@@ -125,7 +125,8 @@
             });
 
             // hide options menus if click happens off of the list placeholder button
-            $(document).off('click.ms-hideopts').on('click.ms-hideopts', function (event) {
+            // $(document).off('click.ms-hideopts').on('click.ms-hideopts', function (event) {
+            $(document).unbind('click.ms-hideopts').bind('click.ms-hideopts', function (event) {
                 if (!$(event.target).closest('.ms-options-wrap').length) {
                     $('.ms-options-wrap > .ms-options:visible').hide();
                 }
@@ -173,7 +174,7 @@
                 optionsList.before('<div class="ms-search"><input type="text" value="" placeholder="' + instance.options.searchOptions['default'] + '" /></div>');
 
                 var search = optionsWrap.find('.ms-search input');
-                search.on('keyup', function () {
+                search.bind('keyup', function () {
                     // ignore keystrokes that don't make a difference
                     if ($(this).data('lastsearch') == $(this).val()) {
                         return true;
@@ -220,7 +221,7 @@
             }
 
             // handle select all option
-            optionsWrap.on('click', '.ms-selectall', function (event) {
+            optionsWrap.bind('click', '.ms-selectall', function (event) {
                 event.preventDefault();
 
                 if ($(this).hasClass('global')) {
@@ -329,7 +330,7 @@
             }
 
             // BIND SELECT ACTION
-            optionsWrap.on('click', 'input[type="checkbox"]', function () {
+            optionsWrap.bind('click', 'input[type="checkbox"]', function () {
                 $(this).closest('li').toggleClass('selected');
 
                 var select = optionsWrap.parent().prev();

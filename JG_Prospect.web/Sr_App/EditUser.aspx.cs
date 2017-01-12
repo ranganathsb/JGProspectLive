@@ -125,10 +125,7 @@ namespace JG_Prospect
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Username"] == null)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
-            }
+            CommonFunction.AuthenticateUser();
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
             {
@@ -154,6 +151,7 @@ namespace JG_Prospect
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
+                LoadEmailContentToSentToUser(false);
             }
             else
             {
@@ -238,6 +236,7 @@ namespace JG_Prospect
                     Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
+                    HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
 
                     ddlContactType = BindContactDllForGrid(ddlContactType);
 
@@ -259,6 +258,17 @@ namespace JG_Prospect
                     if (Status != "")
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
+
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TechTaskId").ToString()))
+                        {
+                            hypTechTask.Text = string.Concat(
+                                                                                string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
+                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskId") :
+                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
+                                                                            );
+                            hypTechTask.NavigateUrl = Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
+                            hypTechTask.Visible = true; 
+                        }
 
                         switch (Status)
                         {
@@ -854,7 +864,6 @@ namespace JG_Prospect
             //return;
         }
 
-
         #region 'Private Methods - Assigned Task ToUser '
 
         private void AssignedTaskToUser()
@@ -948,7 +957,6 @@ namespace JG_Prospect
 
         #endregion
 
-
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
             binddata();
@@ -1041,6 +1049,53 @@ namespace JG_Prospect
             binddata();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             return;
+        }
+
+        protected void btnSendEmailToUser_Click(object sender, EventArgs e)
+        {
+            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 110);
+
+            if (ds == null)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+            else if (ds.Tables[0].Rows.Count == 0)
+            {
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+            }
+
+            List<Attachment> lstAttachments = new List<Attachment>();
+
+            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+            {
+                string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+                if (File.Exists(sourceDir))
+                {
+                    Attachment attachment = new Attachment(sourceDir);
+                    attachment.Name = Path.GetFileName(sourceDir);
+                    lstAttachments.Add(attachment);
+                }
+            }
+
+            string strBody = txtEmailHeader.Text + txtEmailBody.Text + txtEmailFooter.Text;
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(JGSession.Designation, hdnEmailTo.Value, txtEmailSubject.Text, strBody, lstAttachments);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + hdnEmailTo.Value + ".');", true);
+            }
+            catch
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + hdnEmailTo.Value + ".');", true);
+            }
+
+            LoadEmailContentToSentToUser();
+        }
+
+        protected void btnCancelSendEmailToUser_Click(object sender, EventArgs e)
+        {
+            LoadEmailContentToSentToUser();
         }
 
         #endregion
@@ -2646,7 +2701,7 @@ namespace JG_Prospect
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
                         && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
-                        && (userdata.Field<Int32>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<Int32?>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
                         && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
@@ -3062,6 +3117,23 @@ namespace JG_Prospect
         //    return installId;
         //}
 
+        private void LoadEmailContentToSentToUser(bool blHidePopup = true)
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, JGSession.Designation);
+
+            txtEmailSubject.Text = objHTMLTemplate.Subject;
+            txtEmailHeader.Text = objHTMLTemplate.Header;
+            txtEmailBody.Text = objHTMLTemplate.Body;
+            txtEmailFooter.Text = objHTMLTemplate.Footer;
+
+            upSendEmailToUser.Update();
+
+            if (blHidePopup)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
+            }
+        }
+
         #endregion
 
         protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
@@ -3086,5 +3158,6 @@ namespace JG_Prospect
             DropDownList ddlStatus = (DropDownList) sender;
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
+
     }
 }

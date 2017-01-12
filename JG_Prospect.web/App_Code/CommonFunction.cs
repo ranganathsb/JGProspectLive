@@ -11,6 +11,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Linq;
 
 namespace JG_Prospect.App_Code
 {
@@ -35,7 +36,7 @@ namespace JG_Prospect.App_Code
         {
             ScriptManager.RegisterStartupScript(page, page.GetType(), "alert", String.Concat("alert('", MessageString, "');"), true);
         }
-
+        
         public static string FormatToShortDateString(object dateobject)
         {
             string formateddatetime = string.Empty;
@@ -66,7 +67,12 @@ namespace JG_Prospect.App_Code
         {
             if (!JGSession.IsActive)
             {
-                HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                // redirect user to login page, only when session renewal is not requested.
+                string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
+                if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                {
+                    HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                }
             }
         }
 
@@ -80,9 +86,9 @@ namespace JG_Prospect.App_Code
             // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
 
             bool returnVal = false;
-            if (HttpContext.Current.Session["DesigNew"] != null)
+            if (JGSession.Designation != null)
             {
-                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                switch (JGSession.Designation.ToUpper())
                 {
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
@@ -116,9 +122,9 @@ namespace JG_Prospect.App_Code
             // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
 
             bool returnVal = false;
-            if (HttpContext.Current.Session["DesigNew"] != null)
+            if (JGSession.Designation != null)
             {
-                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                switch (JGSession.Designation.ToUpper())
                 {
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
@@ -658,6 +664,53 @@ namespace JG_Prospect.App_Code
             return objListItemCollection;
         }
 
+        public static string GetTaskRowCssClass(JGConstant.TaskStatus objTaskStatus, JGConstant.TaskPriority? objTaskPriority)
+        {
+            string strRowCssClass = string.Empty;
+
+            switch (objTaskStatus)
+            {
+                case JGConstant.TaskStatus.Open:
+                    strRowCssClass += " task-open";
+                    if (objTaskPriority.HasValue)
+                    {
+                        strRowCssClass += " task-with-priority";
+                    }
+                    break;
+                case JGConstant.TaskStatus.Requested:
+                    strRowCssClass += " task-requested";
+                    break;
+                case JGConstant.TaskStatus.Assigned:
+                    strRowCssClass += " task-assigned";
+                    break;
+                case JGConstant.TaskStatus.InProgress:
+                    strRowCssClass += " task-inprogress";
+                    break;
+                case JGConstant.TaskStatus.Pending:
+                    strRowCssClass += " task-pending";
+                    break;
+                case JGConstant.TaskStatus.ReOpened:
+                    strRowCssClass += " task-reopened";
+                    break;
+                case JGConstant.TaskStatus.Closed:
+                    strRowCssClass += " task-closed closed-task-bg";
+                    break;
+                case JGConstant.TaskStatus.Finished:
+                    strRowCssClass += " task-finished finished-task-bg";
+                    break;
+                case JGConstant.TaskStatus.SpecsInProgress:
+                    strRowCssClass += " task-specsinprogress";
+                    break;
+                case JGConstant.TaskStatus.Deleted:
+                    strRowCssClass += " task-deleted deleted-task-bg";
+                    break;
+                default:
+                    break;
+            }
+
+            return strRowCssClass;
+        }
+
         public static bool IsImageFile(string fileName)
         {
             bool isImageFile = false;
@@ -749,6 +802,22 @@ namespace JG_Prospect
             }
         }
 
+        public static DateTime StartDateTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["StartDateTime"] == null)
+                {
+                    return DateTime.MinValue;
+                }
+                return Convert.ToDateTime(HttpContext.Current.Session["StartDateTime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["StartDateTime"] = value;
+            }
+        }
+
         public static Int32 UserId
         {
             get
@@ -781,6 +850,38 @@ namespace JG_Prospect
             }
         }
 
+        public static string UserLoginId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["loginid"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["loginid"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["loginid"] = value;
+            }
+        }
+
+        public static string UserPassword
+        {
+            get
+            {
+                if (HttpContext.Current.Session["loginpassword"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["loginpassword"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["loginpassword"] = value;
+            }
+        }
+
         public static string UserProfileImg
         {
             get
@@ -807,6 +908,20 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
+            }
+        }
+
+        public static string Designation
+        {
+            get
+            {
+                if (HttpContext.Current.Session["DesigNew"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["DesigNew"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["DesigNew"] = value;
             }
         }
 

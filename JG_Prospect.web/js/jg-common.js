@@ -1,7 +1,8 @@
-﻿/********************************************* CK Editor (Html Editor) ******************************************************/
+﻿// test
+/********************************************* CK Editor (Html Editor) ******************************************************/
 var arrCKEditor = new Array();
 
-function SetCKEditor(Id) {
+function SetCKEditor(Id, onBlurCallBack) {
 
     var $target = $('#' + Id);
 
@@ -13,13 +14,26 @@ function SetCKEditor(Id) {
     CKEDITOR.inline(Id,
         {
             // Show toolbar on startup (optional).
-            startupFocus: true,
+            //startupFocus: true,
+            startupFocus: false,
             enterMode: CKEDITOR.ENTER_BR
         });
 
     var editor = CKEDITOR.instances[Id];
 
+    console.log(editor.name + ' editor created.');
+
     arrCKEditor.push(editor);
+
+    editor.on('blur', function (event) {
+
+        event.editor.updateElement();
+        
+        if (typeof (onBlurCallBack) == 'function') {
+            console.log(event.editor.name + ' editor lost focus.');
+            onBlurCallBack(event.editor);
+        }
+    });
 
     editor.on('fileUploadResponse', function (evt) {
         // Prevent the default response handler.
@@ -53,7 +67,8 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
     CKEDITOR.inline(Id,
         {
             // Show toolbar on startup (optional).
-            startupFocus: true,
+            //startupFocus: true,
+            startupFocus: false,
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
@@ -97,29 +112,45 @@ function GetCKEditorContent(Id) {
 
     //editor.updateElement();
 
-    var $target = $('#' + Id);
-
-    $target.html(encodedHTMLData);
-
-    $target.attr('contenteditable', false);
-
-    CKEDITOR.instances[Id].destroy();
+    //CKEDITOR.instances[Id].destroy();
 
     return encodedHTMLData;
 }
 
 function DestroyCKEditors() {
     for (var i = 0; i < arrCKEditor.length; i++) {
-        arrCKEditor[i].destroy();
+        if (typeof (arrCKEditor[i]) != 'undefined') {
+            arrCKEditor[i].updateElement();
+            //arrCKEditor[i].removeAllListeners();
+        }
     }
-    arrCKEditor = new Array();
+
+    setTimeout(StartDestroying, 1);
+
+    function StartDestroying() {
+        for (var i = 0; i < arrCKEditor.length; i++) {
+            if (typeof (arrCKEditor[i]) != 'undefined') {
+                arrCKEditor[i].destroy();
+            }
+            console.log(arrCKEditor[i].name + ' editor destroyed.');
+        }
+        arrCKEditor = new Array();
+    }
 }
 
 /********************************************* Dialog (jQuery Ui Popup) ******************************************************/
 function ShowPopupWithTitle(varControlID, strTitle) {
-    var objDialog = ShowPopup(varControlID);
+    var windowWidth = (parseInt($(window).width()) / 2) - 10;
+
+    var dialogwidth = windowWidth + "px";
+
+    var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
+
     // this will update title of current dialog.
     objDialog.parent().find('.ui-dialog-title').html(strTitle);
+
+    // this will enable postback from dialog buttons.
+    objDialog.parent().appendTo(jQuery("form:first"));
 }
 
 function HidePopup(varControlID) {
@@ -135,7 +166,7 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
 
-    var objDropzone =  new Dropzone(strDropzoneSelector,
+    var objDropzone = new Dropzone(strDropzoneSelector,
         {
             maxFiles: 5,
             url: "taskattachmentupload.aspx",
@@ -230,7 +261,11 @@ function DestroyGallery() {
         subtaskSliders.destroy();
     }
 }
-
+/********************************************* General Functions ******************************************************/
+function ChosenDropDown(options) {
+    var _options = options || {};
+    $('.chosen-select').chosen(_options);
+}
 /********************************************* General Functions ******************************************************/
 function htmlEncode(value) {
     //create a in-memory div, set it's inner text(which jQuery automatically encodes)

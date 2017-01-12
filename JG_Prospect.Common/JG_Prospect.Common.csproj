@@ -89,6 +89,7 @@
     <Compile Include="exceltoXml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="HTMLTemplates.cs" />
     <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />
     <Compile Include="Logger\ErrorLog.cs" />
@@ -105,6 +106,8 @@
     <Compile Include="modal\Customs.cs" />
     <Compile Include="modal\Department.cs" />
     <Compile Include="modal\Designation.cs" />
+    <Compile Include="modal\DesignationHTMLTemplate.cs" />
+    <Compile Include="modal\HTMLTemplatesMater.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />
@@ -130,8 +133,6 @@
     <Compile Include="Session.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\JG_Prospect.Common.dll" />
-    <Content Include="bin\Debug\JG_Prospect.Common.pdb" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.dll" />
     <Content Include="bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.SqlCe.dll" />

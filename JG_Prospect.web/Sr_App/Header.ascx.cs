@@ -38,9 +38,9 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                Session["PopUpOnSessionExpire"] = "Expire";
-                // Response.Redirect("/login.aspx");
-                ScriptManager.RegisterStartupScript(this, GetType(), "alsert", "alert('Your session has expired,login to continue');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + ";')", true);
+                //Session["PopUpOnSessionExpire"] = "Expire";
+                //// Response.Redirect("/login.aspx");
+                //ScriptManager.RegisterStartupScript(this, GetType(), "alsert", "alert('Your session has expired,login to continue');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + ";')", true);
             }
 
         }

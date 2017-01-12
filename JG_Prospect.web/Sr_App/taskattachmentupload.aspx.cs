@@ -49,7 +49,7 @@ namespace JG_Prospect.Sr_App
                 var originalDirectory = new DirectoryInfo(Server.MapPath("~/TaskAttachments"));
 
                 string imageName = Path.GetFileName(file.FileName);
-                string NewImageName = Guid.NewGuid() + "-" + imageName;
+                string NewImageName = Guid.NewGuid() + "-" + imageName.Replace(",", "-").Replace("@", "-");
 
                 string pathString = System.IO.Path.Combine(originalDirectory.ToString(),NewImageName);
 
