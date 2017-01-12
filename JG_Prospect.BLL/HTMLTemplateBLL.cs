@@ -30,9 +30,9 @@ namespace JG_Prospect.BLL
             return HTMLTemplateDAL.Instance.GetHTMLTemplates();
         }
 
-        public HTMLTemplate GetHTMLTemplateByIdAndDesignation(HTMLTemplates objHTMLTemplates, string strDesignation = null)
+        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation = null)
         {
-            return HTMLTemplateDAL.Instance.GetHTMLTemplateByIdAndDesignation(objHTMLTemplates, strDesignation);
+            return HTMLTemplateDAL.Instance.GetDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
         }
     }
 }

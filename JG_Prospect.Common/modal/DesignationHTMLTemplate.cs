@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JG_Prospect.Common.modal
 {
-    public class HTMLTemplate
+    public class DesignationHTMLTemplate
     {
         public int Id { get; set; }
         public int HTMLTemplatesMaterId { get; set; }

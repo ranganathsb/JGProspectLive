@@ -3119,21 +3119,12 @@ namespace JG_Prospect
 
         private void LoadEmailContentToSentToUser()
         {
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(JGSession.Designation, 112);
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, JGSession.Designation);
 
-            if (ds == null)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-            else if (ds.Tables[0].Rows.Count == 0)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
-            }
-
-            txtEmailSubject.Text = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
-            txtEmailHeader.Text = ds.Tables[0].Rows[0]["HTMLHeader"].ToString();
-            txtEmailBody.Text = ds.Tables[0].Rows[0]["HTMLBody"].ToString();
-            txtEmailFooter.Text = ds.Tables[0].Rows[0]["HTMLFooter"].ToString();
+            txtEmailSubject.Text = objHTMLTemplate.Subject;
+            txtEmailHeader.Text = objHTMLTemplate.Header;
+            txtEmailBody.Text = objHTMLTemplate.Body;
+            txtEmailFooter.Text = objHTMLTemplate.Footer;
 
             upSendEmailToUser.Update();
 

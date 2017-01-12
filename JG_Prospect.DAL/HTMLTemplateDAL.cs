@@ -44,13 +44,13 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public HTMLTemplate GetHTMLTemplateByIdAndDesignation(HTMLTemplates objHTMLTemplates, string strDesignation = null)
+        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation = null)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("GetHTMLTemplateByIdAndDesignation");
+                    DbCommand command = database.GetStoredProcCommand("GetDesignationHTMLTemplate");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int16, (byte)objHTMLTemplates);
                     if (!string.IsNullOrEmpty(strDesignation))
@@ -59,7 +59,7 @@ namespace JG_Prospect.DAL
                     }
 
                     DataSet dsHTMLTemplate = database.ExecuteDataSet(command);
-                    HTMLTemplate objHTMLTemplate = null;
+                    DesignationHTMLTemplate objHTMLTemplate = null;
                     if (
                         dsHTMLTemplate != null && 
                         dsHTMLTemplate.Tables.Count > 0 && 
@@ -68,7 +68,7 @@ namespace JG_Prospect.DAL
                     {
                         DataRow dr = dsHTMLTemplate.Tables[0].Rows[0];
 
-                        objHTMLTemplate = new HTMLTemplate();
+                        objHTMLTemplate = new DesignationHTMLTemplate();
 
                         objHTMLTemplate.Id = Convert.ToInt32(dr["Id"]);
                         objHTMLTemplate.HTMLTemplatesMaterId = Convert.ToInt32(dr["HTMLTemplatesMaterId"]);
