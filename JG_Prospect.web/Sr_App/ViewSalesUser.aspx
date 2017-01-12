@@ -54,12 +54,6 @@
                 return true;
             }
 
-
-            $('#EmailContainer .PrimaryEmailchk').each(function () {
-                if (this.checked == true) {
-                    return true;
-                }
-            });
             
             TheConfirm_OkOnly('Kindly select any one email as PrimaryEmail', 'Email Validation Alert');
             
@@ -166,7 +160,7 @@
                 return true;
         }
 
-    
+        
         $(document).ready(function () {
 
            changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
@@ -761,19 +755,7 @@
             });
 
             i = 0;
-            //== Getting value of Phone Type Checkbox 
-            $('#container .PrimaryPhonechk').each(function () {
-                if (this.checked == true) {
-                    chkPhoneProroty[i] = "1";
-                }
-                else {
-                    chkPhoneProroty[i] = "0";
-                }
-                
-                i++;
-            });
-
-            i = 0;
+            
             //== Getting value of Phone Type textBox
             $('#container .ExtPhoneClass').each(function () {
                 txtPhone[i] = this.value;
@@ -784,7 +766,7 @@
             for (i = 0; i < len; i++) {
                 //var txtPhone = html.find('[name=AddedPhone' + i + ']');
                 if (txtPhone[i] != '') {
-                    var strPhoneCombainValue = chkPhoneProroty[i] + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
+                    var strPhoneCombainValue = 0 + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
 
                     if (strPhoneValue == '') {
                         strPhoneValue = strPhoneCombainValue;
@@ -881,17 +863,7 @@
             debugger
             i = 0;
             //== Getting value of Email Primary Checkbox 
-            $('#EmailContainer .PrimaryEmailchk').each(function () {
-                if (this.checked == true) {
-                    chkPrimaryEmail[i] = "1";
-                }
-                else {
-                    chkPrimaryEmail[i] = "0";
-                } 
-                i++;
-            });
-
-            i = 0;
+            
             $('#EmailContainer .ExtEmailClass').each(function () {
                         strEmailIds[i] = this.value; 
                 i++;
@@ -1272,22 +1244,7 @@
             margin-bottom: 0;
         }
 
-        .PrimaryPhonechk {
-            display: inline-block;
-            margin-left: -28px;
-            padding-left: 28px;
-            background: url('img/main-header-bg.png') no-repeat 0 0;
-            line-height: 24px;
-        }
-
-        .PrimaryEmailchk{
-            display: inline-block;
-            margin-left: -28px;
-            padding-left: 28px;
-            background: url('img/main-header-bg.png') no-repeat 0 0;
-            line-height: 24px;
-        }
-
+        
         .tr-RadioButton span label {
             padding-top: 0px !important;
             padding-left: 3px;
@@ -1777,8 +1734,7 @@
                                     <td colspan="4" class="style2" style="vertical-align: top">
                                         <div style="margin-top: 10px;" class="ExtAddPhoneTemplate">
                                             <div class="PhontType"></div>
-                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
-                                            <input name="chkPrimaryPhone" class="PrimaryPhonechk" id="chkPrimaryPhone" style="color: #fff;" type="checkbox" onclick="SetPhoneValuefromCtlToHid();">
+                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">                                            
                                             <input type="text" name="AddedPhone" id="txtAddedPhone" class="ExtPhoneClass" maxlength="256" onkeypress="return IsNumeric(event);" onblur="CheckDuplicatePhone(this);" style="width: 150px" />
                                             <input type="text" name="AddedPhoneExt" id="AddedPhoneExt" class="ExtPhoneClassExt" maxlength="256" onkeypress="return IsNumeric(event);"  style="width: 25px" />
                                             <asp:DropDownList CssClass="ddlPhoneTypeExt" ID="ddlPhontType" AddtxtPhoneExtID="AddedPhoneExt" AddtxtPhoneID="txtAddedPhone" PhoneISDCode="us" data-dopdorcout="ddlCount" OnPreRender="ddlPhontType_PreRender" runat="server">
@@ -1791,7 +1747,7 @@
                                         <div style="margin-top: 10px;" class="ExtAddEmailTemplate" id="ExtAddEmailTemplate">
                                             <%--<div class="EmailType"></div>--%>
                                             <input name="RemoveEmail" class="RemovePhoneBtn" value="-" id="RemoveEmail" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
-                                            <input name="chkPrimaryEmail" class="PrimaryEmailchk" id="chkEmailPhone" style="color: #fff;" type="checkbox" onclick="SetEmailValuefromCtlToHid();">
+                                            
                                             <input type="text" name="txtExtEmail" class="ExtEmailClass" value="" onblur="CheckDuplicateEmail(this)" placeholder="Email" maxlength="256" style="width: 180px" />
                                         </div>
 
@@ -4892,12 +4848,12 @@
                     </div>
                     <div class="btn_sec">
                         <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
-                        <asp:Button ID="btncreate" Text="Create User" runat="server" OnClientClick="return ValidateUserDetals();" OnClick="btncreate_Click" ValidationGroup="submit" />
+                        <asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />
                         <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" />
                         <%--TabIndex="210"--%>
                         <%--<asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />--%>
-                        <asp:Button ID="btnUpdate" Text="Update" runat="server" OnClientClick="return ValidateUserDetals();" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />
+                        <asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />
                     </div>
                 </div>
                 <asp:Panel ID="panelPopup" runat="server">
