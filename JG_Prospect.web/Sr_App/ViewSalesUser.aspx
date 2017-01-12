@@ -166,7 +166,7 @@
                 return true;
         }
 
-        function pageLoad() {
+    
         $(document).ready(function () {
 
            changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
@@ -197,7 +197,7 @@
             });
         });
 
-        }
+   
 
         function ClosePassword() {
             document.getElementById('litePassword').style.display = 'none';
