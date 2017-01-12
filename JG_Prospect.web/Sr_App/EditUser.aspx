@@ -329,11 +329,11 @@
         function btnSearchGridData_OnClick(sender) {
             var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
 
+            var $tblUsers = $('#<%=grdUsers.ClientID%>');
+            $tblUsers.find('tbody>tr').show();
+
             if (strSearchTerm.length > 0) {
                 $('.loading').show();
-
-                var $tblUsers = $('#<%=grdUsers.ClientID%>');
-                $tblUsers.find('tbody>tr').show();
 
                 $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
                     var $tr = $(item);
