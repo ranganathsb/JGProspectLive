@@ -1718,12 +1718,11 @@
                                                             <td>
                                                                 <label><span>* </span>Website:</label><br />
                                                                 <asp:DropDownList ID="ddlWebSite" runat="server" TabIndex="2" Width="250px">
-                                                                    <asp:ListItem Value="0">Select</asp:ListItem>
                                                                 </asp:DropDownList><br />
                                                                 <asp:TextBox ID="txtWebsite" TabIndex="3" runat="server" MaxLength="100"></asp:TextBox>
-                                                                <asp:Button runat="server" ID="btnAddWebsite" TabIndex="4" Text="Add" ValidationGroup="AddWebsite"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddWebsite_Click" Height="30px" />&nbsp;
+                                                                <asp:Button runat="server" ID="btnAddWebsite" TabIndex="4" Text="Add" ValidationGroup="AddWebsite" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddWebsite_Click" Height="30px" />&nbsp;
                                                                 <asp:RequiredFieldValidator ID="rfvWebSite" runat="server" ControlToValidate="ddlWebSite" Display="Dynamic"
-                                                                ValidationGroup="addvendor" ErrorMessage="Please Enter Website." ForeColor="Red" InitialValue="0"></asp:RequiredFieldValidator>
+                                                                    ValidationGroup="addvendor" ErrorMessage="Please Enter Website." ForeColor="Red" InitialValue=""></asp:RequiredFieldValidator>
                                                                 <asp:RegularExpressionValidator ID="revWebsite" runat="server" ControlToValidate="txtWebsite" Display="Dynamic"
                                                                     ValidationGroup="AddWebsite" ErrorMessage="Please Enter Valid Website." ForeColor="Red" ValidationExpression="(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$" />
                                                             </td>
@@ -1733,14 +1732,14 @@
                                                                 </asp:DropDownList>
                                                                 <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
                                                                 <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                                                <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
                                                                 <%--<br />
                                                             &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
                                                                 ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
                                                             </td>
                                                             <td>
                                                                 <label>General Phone No :</label><br />
-                                                                <asp:TextBox ID="txtGeneralPhone" runat="server"></asp:TextBox>
+                                                                <asp:TextBox ID="txtGeneralPhone" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone"></asp:TextBox>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -1752,50 +1751,39 @@
                                                                     <asp:ListItem Value="Deactivate" style="color: gray !important;">Deactivate</asp:ListItem>
                                                                 </asp:DropDownList>
                                                             </td>
-                                                            <td>
+                                                            <td colspan="2">
                                                                 <label>Hours of operation:</label><br />
+                                                                <asp:CheckBox ID="chk24Hours" runat="server" AutoPostBack="false" Text="24 Hr" />
+                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" TabIndex="3" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
+                                                                </asp:DropDownList>
+                                                                <br />
+                                                                <asp:DropDownList ID="ddlDays" runat="server" TabIndex="3">
+                                                                    <asp:ListItem Value="M-F">Mon-Fri</asp:ListItem>
+                                                                    <asp:ListItem Value="M-S">Mon-Sat</asp:ListItem>
+                                                                    <asp:ListItem Value="Sat">Sat</asp:ListItem>
+                                                                    <asp:ListItem Value="S-S">Sat-Sun</asp:ListItem>
+                                                                    <asp:ListItem Value="Sun">Sun</asp:ListItem>
+                                                                </asp:DropDownList>
                                                                 <asp:DropDownList ID="ddlFromHours" runat="server" TabIndex="3">
-                                                                    <asp:ListItem Value="01">01</asp:ListItem>
-                                                                    <asp:ListItem Value="02">02</asp:ListItem>
-                                                                    <asp:ListItem Value="03">03</asp:ListItem>
-                                                                    <asp:ListItem Value="04">04</asp:ListItem>
-                                                                    <asp:ListItem Value="05">05</asp:ListItem>
-                                                                    <asp:ListItem Value="06">06</asp:ListItem>
-                                                                    <asp:ListItem Value="07">07</asp:ListItem>
-                                                                    <asp:ListItem Value="08">08</asp:ListItem>
-                                                                    <asp:ListItem Value="09">09</asp:ListItem>
-                                                                    <asp:ListItem Value="10">10</asp:ListItem>
-                                                                    <asp:ListItem Value="11">11</asp:ListItem>
-                                                                    <asp:ListItem Value="12">12</asp:ListItem>
                                                                 </asp:DropDownList>
                                                                 <asp:DropDownList ID="ddlFromAMPM" runat="server" TabIndex="3">
                                                                     <asp:ListItem Value="AM">AM</asp:ListItem>
                                                                     <asp:ListItem Value="PM">PM</asp:ListItem>
                                                                 </asp:DropDownList>
                                                                 <asp:DropDownList ID="ddlToHours" runat="server" TabIndex="3">
-                                                                    <asp:ListItem Value="01">01</asp:ListItem>
-                                                                    <asp:ListItem Value="02">02</asp:ListItem>
-                                                                    <asp:ListItem Value="03">03</asp:ListItem>
-                                                                    <asp:ListItem Value="04">04</asp:ListItem>
-                                                                    <asp:ListItem Value="05">05</asp:ListItem>
-                                                                    <asp:ListItem Value="06">06</asp:ListItem>
-                                                                    <asp:ListItem Value="07">07</asp:ListItem>
-                                                                    <asp:ListItem Value="08">08</asp:ListItem>
-                                                                    <asp:ListItem Value="09">09</asp:ListItem>
-                                                                    <asp:ListItem Value="10">10</asp:ListItem>
-                                                                    <asp:ListItem Value="11">11</asp:ListItem>
-                                                                    <asp:ListItem Value="12">12</asp:ListItem>
                                                                 </asp:DropDownList>
                                                                 <asp:DropDownList ID="ddlToAMPM" runat="server" TabIndex="3">
                                                                     <asp:ListItem Value="AM">AM</asp:ListItem>
                                                                     <asp:ListItem Value="PM">PM</asp:ListItem>
                                                                 </asp:DropDownList>
+                                                                <asp:Button runat="server" ID="btnHoursOfOperation" TabIndex="4" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnHoursOfOperation_Click" Height="30px" />
+                                                                <br />
+                                                                <label>Note : Select 00-AM to 00-AM for Close</label>
                                                             </td>
                                                             <td>
                                                                 <label>Fax Number :</label><br />
-                                                                <asp:TextBox ID="txtFaxNumber" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                                <asp:TextBox ID="txtFaxNumber" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone"></asp:TextBox>
                                                             </td>
-                                                            <td></td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="4" style="padding: 0px;">
@@ -2767,7 +2755,7 @@
                                 </asp:TabPanel>
                             </asp:TabContainer>
 
-                            <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
+                            <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px; width: 100%">
                                 <tr>
                                     <td colspan="4" style="padding: 0px;">
                                         <div class="grid_h" style="font-weight: bold; font-size: large; font-style: normal">
@@ -2801,17 +2789,38 @@
                                         <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
                                             <tr>
                                                 <td>
-                                                    <div class="btn_sec">
-                                                        <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" CssClass="btnnotes" OnClick="btnAddNotes_Click" ValidationGroup="addAddNotes" />
-                                                    </div>
-                                                </td>
-                                                <td>
                                                     <div class="">
-                                                        <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Height="33px" Width="407px"></asp:TextBox>
+                                                        <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Rows="7" Width="100%" CssClass="textbox"></asp:TextBox>
                                                         <br />
                                                         <asp:RequiredFieldValidator ID="rfvAddNotes" runat="server" ControlToValidate="txtAddNotes" Display="Dynamic"
                                                             ValidationGroup="addAddNotes" ErrorMessage="Please Enter Notes." ForeColor="Red"></asp:RequiredFieldValidator>
                                                     </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table style="width: 100%">
+                                                        <tr>
+                                                            <td style="width: 50%">
+                                                                <div class="btn_sec" style="text-align: right;">
+                                                                 <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" CssClass="ui-button" OnClick="btnAddNotes_Click" ValidationGroup="addAddNotes" />
+                                                                </div>
+                                                            </td>
+                                                            <td style="width: 50%">
+                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                                                    <div class="fallback">
+                                                                        <input name="file" type="file" multiple />
+                                                                        <input type="submit" value="Upload" />
+                                                                    </div>
+                                                                </div>
+                                                                <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
+                                                                </div>
+                                                                <div class="hide">
+                                                                    <asp:Button ID="btnUploadLogFiles" runat="server" Text="Upload File" CssClass="ui-button"  />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </td>
                                             </tr>
                                         </table>
