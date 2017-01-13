@@ -609,6 +609,12 @@ namespace JG_Prospect
             Session["DesignitionSC"] = lblDesignation.Text;
             Session["FirstNameNewSC"] = lblFirstName.Text;
             Session["LastNameNewSC"] = lblLastName.Text;
+
+            lblName_InterviewDetails.Text =
+            lblName_OfferMade.Text = lblFirstName.Text + " " + lblLastName.Text;
+            lblDesignation_InterviewDetails.Text =
+            lblDesignation_OfferMade.Text = lblDesignation.Text;
+
             if ((lblStatus.Value == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 binddata();

@@ -625,6 +625,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Panel panel2;
         
         /// <summary>
+        /// lblName_InterviewDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblName_InterviewDetails;
+        
+        /// <summary>
+        /// lblDesignation_InterviewDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDesignation_InterviewDetails;
+        
+        /// <summary>
         /// dtInterviewDate control.
         /// </summary>
         /// <remarks>
@@ -776,6 +794,24 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnLastName;
+        
+        /// <summary>
+        /// lblName_OfferMade control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblName_OfferMade;
+        
+        /// <summary>
+        /// lblDesignation_OfferMade control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDesignation_OfferMade;
         
         /// <summary>
         /// lblReqEmail control.

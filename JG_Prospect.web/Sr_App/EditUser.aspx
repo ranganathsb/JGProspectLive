@@ -992,6 +992,11 @@
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
                         <tr>
+                            <td align="right">Name: <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
+                            <td></td>
+                            <td>Designation: <asp:Label ID="lblDesignation_InterviewDetails" runat="server" /></td>
+                        </tr>
+                        <tr>
                             <td align="center" style="height: 15px;">Date :
                     <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
                                 <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
@@ -1079,6 +1084,10 @@
                     <asp:HiddenField ID="hdnLastName" runat="server" />
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td align="right">Name: <asp:Label ID="lblName_OfferMade" runat="server" /></td>
+                            <td>Designation: <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                        </tr>
                         <tr>
                             <td align="right" style="height: 15px;">
                                 <br />
