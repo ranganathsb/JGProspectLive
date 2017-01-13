@@ -321,7 +321,9 @@
                     //SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
                     //$('#imgSearchLoad').hide();
                 //});
-
+                $('#<%=txtSearch.ClientID%>').on('blur', function () {
+                    SearchGridData();
+                });
             });
 
         }
@@ -345,6 +347,32 @@
 
                 $('.loading').hide();
             }
+        }
+
+        function SearchGridData() {
+
+            $('.loading').show();
+
+            var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
+
+            var $tblUsers = $('#<%=grdUsers.ClientID%>');
+            $tblUsers.find('tbody>tr').show();
+
+            if (strSearchTerm.length > 0) {
+                
+
+                $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
+                    var $tr = $(item);
+
+                    if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
+                        $tr.hide();
+                    }
+                });
+
+                
+            }
+
+            $('.loading').hide();
         }
 
         //function SearchGrid(txtSearch, grd) {
@@ -646,8 +674,8 @@
             <br />
             <br />
             <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
-                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" />
+                <input type="button" style="display:none;" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
                 <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
                     <span>Login..!</span>
