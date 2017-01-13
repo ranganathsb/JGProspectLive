@@ -2384,11 +2384,11 @@ namespace JG_Prospect
 
             if (ds == null)
             {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin",htmlTempID);
             }
             else if (ds.Tables[0].Rows.Count == 0)
             {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
             }
             string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
             string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
