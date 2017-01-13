@@ -2611,7 +2611,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -2999,6 +2998,7 @@
     <Content Include="project.net\jquery\jquery-2.1.1.min.map" />
     <Content Include="project.net\JsonResponse.ashx" />
     <Content Include="project.net\project.bak" />
+    <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
