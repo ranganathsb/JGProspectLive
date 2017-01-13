@@ -1182,6 +1182,15 @@ namespace JG_Prospect.Sr_App
             //ucAudiUpdateUserLog.BindUserData();
         }
 
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            string note = txtAddNotes.Text.Trim();
+            int CustomerId = Convert.ToInt32(Session["ID"]);
+            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
+            txtAddNotes.Text = string.Empty;
+            bindGrid();
+        }
+
         #endregion
 
         #region '--Control Events--'
@@ -1820,9 +1829,9 @@ namespace JG_Prospect.Sr_App
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
 
-                        AddUpdateUserPhoneEmail(true , result.Item2);
-                        
-                        UpdateUserInstallID(result.Item2);
+                        AddUpdateUserPhoneEmail(true , result.Item2);                        
+                        UpdateUserInstallID(result.Item2);                        
+                        CreateUserEmailID();
 
                         hidTouchPointGUID.Value = hidTouchPointGUID.Value.Trim();
                         if (hidTouchPointGUID.Value !="")
@@ -1888,7 +1897,44 @@ namespace JG_Prospect.Sr_App
         {
             //If insert than only chk for blank.
             if (IsInsert != true || hidExtEmail.Value.Trim() != "")
-                    InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+            {
+                string strHidEmailValue = hidExtEmail.Value;
+                string delimeter = "|,|";
+                string Subdelimeter = "|%|";
+                //PhoneValue = '0' + Subdelimeter + 'Phone1' + Subdelimeter + 'skype' + delimeter + '1' + Subdelimeter + 'Phone2' + Subdelimeter + 'whatsapp';
+                if (strHidEmailValue.IndexOf(delimeter) < 0)
+                    strHidEmailValue = strHidEmailValue + delimeter;
+
+                string[] PhoneTypes = strHidEmailValue.Split(new string[] { delimeter }, StringSplitOptions.None);
+
+                InstallUserBLL.Instance.AddUserPhone(false, "", 0, UserID, "", "", true);
+
+                foreach (string SubItems in PhoneTypes)
+                {
+                    if (SubItems.Trim() != "")
+                    {
+                        string[] PhoneTypeItems = SubItems.Split(new string[] { Subdelimeter }, StringSplitOptions.None);
+                        if (PhoneTypeItems != null)
+                        {
+                            bool IsPrimaryPhone = false;
+
+                            if (PhoneTypeItems[0].ToString() == "1")
+                                IsPrimaryPhone = true;
+
+                            string PhoneISDCode = PhoneTypeItems[1].ToString();
+                            string PhoneText = PhoneTypeItems[2].ToString();
+                            string PhoneExtNo = PhoneTypeItems[3].ToString();
+                            int intPhoneType;
+                            Int32.TryParse(PhoneTypeItems[4].ToString(), out intPhoneType);
+
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType
+                                , UserID, PhoneExtNo, PhoneISDCode, false);
+                        }
+                    }
+                }
+            }
+            //InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+                  
 
             if (IsInsert != true || hidExtPhone.Value.Trim() != "")
             {
@@ -1931,9 +1977,6 @@ namespace JG_Prospect.Sr_App
             //{
             //    //Update User value
             //}
-            
-            
-            
             
         }
 
@@ -2437,7 +2480,8 @@ namespace JG_Prospect.Sr_App
                     
                     AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
-                    
+                    CreateUserEmailID();
+
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
                         SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
@@ -2804,6 +2848,7 @@ namespace JG_Prospect.Sr_App
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
             fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
 
+
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -2916,6 +2961,7 @@ namespace JG_Prospect.Sr_App
                 showHideNewHireSection(true);
 
                 rqdtResignition.Enabled = true;
+                
             }
             else
             {
@@ -5980,6 +6026,20 @@ namespace JG_Prospect.Sr_App
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
         }
+        
+        /// <summary>
+        /// Create email on the base of FirestName & Last Name
+        /// </summary>
+        private void CreateUserEmailID()
+        {
+            // so On Create and Update will check if user was not active or so. on the bae of the same create accoutn.
+            if (Convert.ToString(Session["PreviousStatusNew"]) != "Active" && ddlstatus.SelectedValue == "Active")
+            {
+                string strNewEmailId = txtfirstname.Text + txtlastname.Text;
+
+                Utilits.EmailCommonHelper.CreateUserEmailAccount(strNewEmailId);
+            }
+        }
 
         #endregion
 
@@ -6601,14 +6661,6 @@ namespace JG_Prospect.Sr_App
 
 
         #endregion
-
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            if (txtTouchPointLogNote.Text.Trim() !="")
-            {
-                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
-                txtTouchPointLogNote.Text = "";
-            }
-        }
+        
     }
 }

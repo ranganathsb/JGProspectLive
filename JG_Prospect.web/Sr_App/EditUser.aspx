@@ -322,6 +322,19 @@
                     //$('#imgSearchLoad').hide();
                 //});
 
+
+                try {
+                    $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
+
+                try {
+                    $(".grd-status").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
+
             });
 
         }
@@ -1293,6 +1306,7 @@
 <%--Popup Ends--%>
 
     <script src="../js/jquery.dd.min.js"></script>
+
     <script type="text/javascript">
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -1304,18 +1318,6 @@
             DestroyCKEditors();
         });
 
-        try {
-            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
-
-        try {
-            $(".grd-status").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
-        
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
             $('#<%=hdnEmailTo.ClientID%>').val(email);
