@@ -65,7 +65,7 @@
     <script type="text/javascript">
 
         function changeFlag(countrolD) {            
-            $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
+            $("#dvFlag").attr('class', $(countrolD).val());
         }
 
         function hidePnl() {
@@ -165,9 +165,6 @@
 
            changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
 
-           $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-            });
 
             
             
@@ -3189,7 +3186,7 @@
 															Country
                                                                     <br />                                                                  
                                                                 <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
-                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    
                                                                     <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
                                                                     <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
                                                                     </select>

@@ -11,7 +11,7 @@
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
-    <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
+    <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />    
 
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
@@ -65,7 +65,7 @@
     <script type="text/javascript">
 
         function changeFlag(countrolD) {            
-            $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
+            $("#dvFlag").attr('class', $(countrolD).val());
         }
 
         function hidePnl() {
@@ -165,9 +165,6 @@
 
            changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
 
-           $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-            });
 
             
             
@@ -3189,7 +3186,7 @@
 															Country
                                                                     <br />                                                                  
                                                                 <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
-                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    
                                                                     <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
                                                                     <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
                                                                     </select>
