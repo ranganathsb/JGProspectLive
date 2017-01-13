@@ -1019,8 +1019,6 @@
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
     <Content Include="Database Scripts\DataScripts\12212016-ImageRef#.txt" />
-    <Content Include="Database Scripts\executed\bhavik\ITSN042_Dec_P1.sql" />
-    <Content Include="Database Scripts\executed\bhavik\ITSN042_Dec_P1_DonNE_SampleTest2Q.sql" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
@@ -1046,8 +1044,6 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V2.sql" />
-    <Content Include="Database Scripts\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
-    <Content Include="Database Scripts\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
     <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1625,6 +1621,37 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="project.net\css\cupertino\images\animated-overlay.gif" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_glass_100_e4f1fb_1x400.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_glass_50_3baae3_1x400.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_glass_80_d7ebf9_1x400.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_100_f2f5f7_1x100.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_70_000000_1x100.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_100_deedf7_1x100.png" />
+    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_25_ffef8f_1x100.png" />
+    <Content Include="project.net\css\cupertino\images\ui-icons_2694e8_256x240.png" />
+    <Content Include="project.net\css\cupertino\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="project.net\css\cupertino\images\ui-icons_3d80b3_256x240.png" />
+    <Content Include="project.net\css\cupertino\images\ui-icons_72a7cf_256x240.png" />
+    <Content Include="project.net\css\cupertino\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="project.net\css\cupertino\jquery-ui-1.10.3.min.css" />
+    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.css" />
+    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.min.css" />
+    <Content Include="project.net\css\jquery.qtip-2.2.0.css" />
+    <Content Include="project.net\fullcalendar\fullcalendar-1.6.4.js" />
+    <Content Include="project.net\fullcalendar\fullcalendar-2.0.2.js" />
+    <Content Include="project.net\fullcalendar\fullcalendar-2.0.3.js" />
+    <Content Include="project.net\fullcalendar\fullcalendar.css" />
+    <Content Include="project.net\jquery\jquery-2.1.1.js" />
+    <Content Include="project.net\jquery\jquery-2.1.1.min.js" />
+    <Content Include="project.net\jquery\jquery-ui-1.11.1.js" />
+    <Content Include="project.net\jquery\jquery-ui-1.11.1.min.js" />
+    <Content Include="project.net\jquery\jquery-ui-timepicker-addon-1.4.5.js" />
+    <Content Include="project.net\jquery\jquery.qtip-2.2.0.js" />
+    <Content Include="project.net\jquery\moment-2.8.1.min.js" />
+    <Content Include="project.net\scripts\calendarscript.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -2046,10 +2073,7 @@
     <Compile Include="UserControl\ucStatusChangePopup.ascx.designer.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Utilits\AppSettingsValues.cs" />
-    <Compile Include="Utilits\EmailCommonHelper.cs" />
     <Compile Include="Utilits\SessionsCommon.cs" />
-    <Compile Include="Utilits\YandexManager.cs" />
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -2210,6 +2234,9 @@
     <Compile Include="JrAnnualCalendar.aspx.designer.cs">
       <DependentUpon>JrAnnualCalendar.aspx</DependentUpon>
     </Compile>
+    <Compile Include="project.net\App_Code\CalendarEvent.cs" />
+    <Compile Include="project.net\App_Code\EventDAO.cs" />
+    <Compile Include="project.net\App_Code\ImproperCalendarEvent.cs" />
     <Compile Include="Services\service.aspx.cs">
       <DependentUpon>service.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2584,7 +2611,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -2969,7 +2995,10 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
+    <Content Include="project.net\jquery\jquery-2.1.1.min.map" />
+    <Content Include="project.net\JsonResponse.ashx" />
+    <Content Include="project.net\project.bak" />
+    <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
@@ -2985,6 +3014,10 @@
     <ProjectReference Include="..\JG_Prospect.DAL\JG_Prospect.DAL.csproj">
       <Project>{2c56d357-387f-4070-9dc0-70ab17d35668}</Project>
       <Name>JG_Prospect.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JG_Prospect.WebAPI\JG_Prospect.WebAPI.csproj">
+      <Project>{a2e0432f-2ed7-45eb-81d8-d889f2f85c6b}</Project>
+      <Name>JG_Prospect.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -321,20 +321,9 @@
                     //SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
                     //$('#imgSearchLoad').hide();
                 //});
-
-
-                try {
-                    $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-                } catch (e) {
-                    alert(e.message);
-                }
-
-                try {
-                    $(".grd-status").msDropDown();
-                } catch (e) {
-                    alert(e.message);
-                }
-
+                $('#<%=txtSearch.ClientID%>').on('blur', function () {
+                    SearchGridData();
+                });
             });
 
         }
@@ -358,6 +347,32 @@
 
                 $('.loading').hide();
             }
+        }
+
+        function SearchGridData() {
+
+            $('.loading').show();
+
+            var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
+
+            var $tblUsers = $('#<%=grdUsers.ClientID%>');
+            $tblUsers.find('tbody>tr').show();
+
+            if (strSearchTerm.length > 0) {
+                
+
+                $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
+                    var $tr = $(item);
+
+                    if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
+                        $tr.hide();
+                    }
+                });
+
+                
+            }
+
+            $('.loading').hide();
         }
 
         //function SearchGrid(txtSearch, grd) {
@@ -659,8 +674,8 @@
             <br />
             <br />
             <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
-                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" />
+                <input type="button" style="display:none;" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
                 <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
                     <span>Login..!</span>
@@ -1005,6 +1020,9 @@
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
                         <tr>
+                            <td colspan="3" align="center">Name: <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
+                        </tr>
+                        <tr>
                             <td align="center" style="height: 15px;">Date :
                     <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
                                 <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
@@ -1092,6 +1110,10 @@
                     <asp:HiddenField ID="hdnLastName" runat="server" />
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td align="right">Name: <asp:Label ID="lblName_OfferMade" runat="server" /></td>
+                            <td>Designation: <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                        </tr>
                         <tr>
                             <td align="right" style="height: 15px;">
                                 <br />
@@ -1306,7 +1328,6 @@
 <%--Popup Ends--%>
 
     <script src="../js/jquery.dd.min.js"></script>
-
     <script type="text/javascript">
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -1318,6 +1339,18 @@
             DestroyCKEditors();
         });
 
+        try {
+            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+        } catch (e) {
+            alert(e.message);
+        }
+
+        try {
+            $(".grd-status").msDropDown();
+        } catch (e) {
+            alert(e.message);
+        }
+        
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
             $('#<%=hdnEmailTo.ClientID%>').val(email);
