@@ -617,6 +617,7 @@ namespace JG_Prospect
 
             if (ddlDesignationForTask.Items.FindByText(lblDesignation.Text) != null)
             {
+                ddlDesignationForTask.ClearSelection();
                 ddlDesignationForTask.Items.FindByText(lblDesignation.Text).Selected = true;
             }
 
