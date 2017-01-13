@@ -69,6 +69,16 @@ namespace JG_Prospect.Sr_App
                     Session["VendorId"] = "0";
                     ccExpireMonth.Items.Clear();
                     ccExpireYear.Items.Clear();
+
+                    ddlFromHours.Items.Clear();
+                    ddlToHours.Items.Clear();
+                    for (int i = 0; i <= 24; i++)
+                    {
+                        var val = i.ToString().PadLeft(2, '0');
+                        ddlFromHours.Items.Add(new System.Web.UI.WebControls.ListItem(val, val));
+                        ddlToHours.Items.Add(new System.Web.UI.WebControls.ListItem(val, val));
+                    }
+
                     for (int i = 1; i <= 12; i++)
                         ccExpireMonth.Items.Add(new System.Web.UI.WebControls.ListItem((new DateTime(1, i, 1)).ToString("MMMM"), i.ToString("00")));
 
@@ -80,7 +90,7 @@ namespace JG_Prospect.Sr_App
                 {
                     EditVendor(Convert.ToInt32(Request.QueryString["vid"].ToString()), "");
                 }
-                
+
                 setPermissions();
                 if (!IsPostBack)
                 {
@@ -182,6 +192,9 @@ namespace JG_Prospect.Sr_App
                     bindPayPeriod(dsCurrentPeriod);
                     grdprimaryvendor.DataSource = new List<JG_Prospect.BLL.clsProcurementDataAll>();
                     grdprimaryvendor.DataBind();
+
+                 
+
                 }
                 else
                 {
@@ -583,7 +596,7 @@ namespace JG_Prospect.Sr_App
 
             DataTable dtVendorEmail = new DataTable("VendorEmail");
 
-            if(HttpContext.Current.Session["dtVendorEmail"] != null)
+            if (HttpContext.Current.Session["dtVendorEmail"] != null)
             {
                 dtVendorEmail = (DataTable)HttpContext.Current.Session["dtVendorEmail"];
             }
@@ -603,7 +616,7 @@ namespace JG_Prospect.Sr_App
                 dtVendorEmail.Columns.Add("TempID");
             }
 
-            if(HttpContext.Current.Session["VendorId"] != null)
+            if (HttpContext.Current.Session["VendorId"] != null)
             {
                 vendorid = HttpContext.Current.Session["VendorId"].ToString();
             }
@@ -613,7 +626,7 @@ namespace JG_Prospect.Sr_App
                 for (int i = 0; i < VendorEmails.Count; i++)
                 {
                     bool flagAdd = true;
-                    foreach(DataRow dr in dtVendorEmail.Rows)
+                    foreach (DataRow dr in dtVendorEmail.Rows)
                     {
                         if (dr["SeqNo"].ToString() == (i + 1).ToString() && dr["VendorId"].ToString() == vendorid && dr["AddressID"].ToString() == VendorEmails[i].AddressID.ToString())
                         {
@@ -661,7 +674,7 @@ namespace JG_Prospect.Sr_App
             }
 
             HttpContext.Current.Session["dtVendorEmail"] = dtVendorEmail as DataTable;
-         
+
         }
 
         [WebMethod]
@@ -826,10 +839,10 @@ namespace JG_Prospect.Sr_App
                 objvendor.VendorStatus = "Prospect";
             }
             objvendor.Website = txtWebsite.Text;
-            if(ddlWebSite.Items.Count > 0)
+            if (ddlWebSite.Items.Count > 0)
             {
                 string strWebsite = string.Empty;
-                foreach(System.Web.UI.WebControls.ListItem li in ddlWebSite.Items)
+                foreach (System.Web.UI.WebControls.ListItem li in ddlWebSite.Items)
                 {
                     if (li.Text != "Select")
                         strWebsite = strWebsite + li.Text + ",";
@@ -957,7 +970,12 @@ namespace JG_Prospect.Sr_App
 
             objvendor.GeneralPhone = txtGeneralPhone.Text;
 
-            objvendor.HoursOfOperation = ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
+            objvendor.HoursOfOperation = string.Empty;
+            //objvendor.HoursOfOperation = ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
+            foreach (System.Web.UI.WebControls.ListItem item in ddlHoursOfOperation.Items)
+            {
+                objvendor.HoursOfOperation += item.Value + ",";
+            }
 
             objvendor.ContactPreferenceEmail = chkContactPreferenceEmail.Checked;
             objvendor.ContactPreferenceCall = chkContactPreferenceCall.Checked;
@@ -1000,7 +1018,7 @@ namespace JG_Prospect.Sr_App
 
             hdnVendorID.Value = txtVendorNm.Text = "";
             ddlSource.ClearSelection();
-            
+
             txtTaxId.Text = txtWebsite.Text = null;
             ddlPaymentMethod.ClearSelection();
             ddlPaymentTerms.ClearSelection();
@@ -3446,54 +3464,56 @@ namespace JG_Prospect.Sr_App
                 if (!string.IsNullOrEmpty(dr["HoursOfOperation"].ToString()))
                 {
                     string strHoursOfOperation = dr["HoursOfOperation"].ToString();
-                    var strHO = strHoursOfOperation.Split('-');
-                    if (strHO.Count() == 4)
+                    var strHO = strHoursOfOperation.Split(',');
+                    foreach(string s in strHO)
                     {
-                        ddlFromHours.SelectedValue = strHO[0];
-                        ddlFromAMPM.SelectedValue = strHO[1];
-                        ddlToHours.SelectedValue = strHO[2];
-                        ddlToAMPM.SelectedValue = strHO[3];
+                        if (!string.IsNullOrWhiteSpace(s))
+                        {
+                            ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(s, s));
+                        }
                     }
+
+                  
                 }
 
                 if (!string.IsNullOrEmpty(dr["DeliveryFee"].ToString()))
-                    txtDeliveryFee.Text= dr["DeliveryFee"].ToString();
+                    txtDeliveryFee.Text = dr["DeliveryFee"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["StockingReturnFee"].ToString()))
-                    txtStockingReturnFee.Text= dr["StockingReturnFee"].ToString();
+                    txtStockingReturnFee.Text = dr["StockingReturnFee"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["MiscFee"].ToString()))
-                    txtMiscFee.Text= dr["MiscFee"].ToString();
+                    txtMiscFee.Text = dr["MiscFee"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["DeliveryMethod"].ToString()))
                     ddlPreferredDeliveryMethod.SelectedValue = dr["DeliveryMethod"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["FreightTerms"].ToString()))
-                     ddlFreightTerms.SelectedValue= dr["FreightTerms"].ToString();
+                    ddlFreightTerms.SelectedValue = dr["FreightTerms"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["Tax"].ToString()))
-                    txtSPTax.Text= dr["Tax"].ToString();
+                    txtSPTax.Text = dr["Tax"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["VendorQuote"].ToString()))
-                    txtVendorQuote.Text= dr["VendorQuote"].ToString();
+                    txtVendorQuote.Text = dr["VendorQuote"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["AttachVendorQuote"].ToString()))
-                    txtAttachVendorQuote.Text= dr["AttachVendorQuote"].ToString();
+                    txtAttachVendorQuote.Text = dr["AttachVendorQuote"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["Revision"].ToString()))
-                    txtRevision.Text= dr["Revision"].ToString();
+                    txtRevision.Text = dr["Revision"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["VendorInvoice"].ToString()))
-                    txtVendorInvoice.Text= dr["VendorInvoice"].ToString();
+                    txtVendorInvoice.Text = dr["VendorInvoice"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["JGCustomerPO"].ToString()))
-                     txtJGCustomerPO.Text= dr["JGCustomerPO"].ToString();
+                    txtJGCustomerPO.Text = dr["JGCustomerPO"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["LeadTimeDueDate"].ToString()))
-                    txtLeadtimeduedate.Text= dr["LeadTimeDueDate"].ToString();
+                    txtLeadtimeduedate.Text = dr["LeadTimeDueDate"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["EconimicalOrderQuantity"].ToString()))
-                    txtEconimicalOrderQuantity.Text= dr["EconimicalOrderQuantity"].ToString();
+                    txtEconimicalOrderQuantity.Text = dr["EconimicalOrderQuantity"].ToString();
 
                 if (!string.IsNullOrEmpty(dr["DiscountPerUnit"].ToString()))
                     txtDiscountPerUnit.Text = dr["DiscountPerUnit"].ToString();
@@ -3596,7 +3616,7 @@ namespace JG_Prospect.Sr_App
             {
                 DataTable dtVendorEmail = GenerateBlankEmailTable();
 
-                foreach ( DataRow  dr in dsEmail.Tables[0].Rows)
+                foreach (DataRow dr in dsEmail.Tables[0].Rows)
                 {
                     DataRow drow = dtVendorEmail.NewRow();
                     drow["VendorId"] = dr["VendorId"];
@@ -3636,8 +3656,8 @@ namespace JG_Prospect.Sr_App
             if (!string.IsNullOrEmpty(Convert.ToString(ds.Tables[0].Rows[0]["PaymentTerms"])))
             {
                 ddlPaymentTerms.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["PaymentTerms"]);
-                
-                
+
+
             }
             if (!string.IsNullOrEmpty(Convert.ToString(ds.Tables[0].Rows[0]["PaymentMethod"])))
             {
@@ -3775,7 +3795,7 @@ namespace JG_Prospect.Sr_App
             {
                 var addressId = "";
                 addressId = dr["AddressID"].ToString();
-                if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && Convert.ToInt32( dr["AddressID"].ToString()) <=0)
+                if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && Convert.ToInt32(dr["AddressID"].ToString()) <= 0)
                 {
                     dr["AddressID"] = 0;
                 }
@@ -3886,7 +3906,7 @@ namespace JG_Prospect.Sr_App
             objVendor.AddressID = AddressID;
             objVendor.TempID = NewTempID;
             DataSet dsemail = VendorBLL.Instance.GetVendorEmailByAddress(objVendor);
-            
+
             string EmailJSON = JsonConvert.SerializeObject(dsemail.Tables[0]);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "vendor Email", "AddVenderEmails(" + EmailJSON + ");", true);
 
@@ -3963,7 +3983,7 @@ namespace JG_Prospect.Sr_App
             //txtSecContact0.Text = "";
             //txtAltContactExten0.Text = "";
             //txtAltContact0.Text = "";
-           
+
             string newAddName = "Secondary_" + (DrpVendorAddress.Items.Count).ToString();
             string newAddValue = "-" + (DrpVendorAddress.Items.Count).ToString();
             DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem(newAddName, newAddValue));
@@ -4037,7 +4057,7 @@ namespace JG_Prospect.Sr_App
 
             DataTable dtVendorAddress = GenerateBlankAddressTable();
 
-            if(HttpContext.Current.Session["dtVendorAddress"] != null)
+            if (HttpContext.Current.Session["dtVendorAddress"] != null)
             {
                 dtVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
             }
@@ -4075,26 +4095,26 @@ namespace JG_Prospect.Sr_App
 
             foreach (DataRow dr in dtVendorAddress.Rows)
             {
-                if(dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && dr["AddressID"].ToString() == DrpVendorAddress.SelectedValue)
+                if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && dr["AddressID"].ToString() == DrpVendorAddress.SelectedValue)
                 {
                     dr["VendorId"] = string.IsNullOrEmpty(vendorid) ? "0" : vendorid;
                     dr["AddressID"] = DrpVendorAddress.SelectedValue;
                     dr["AddressType"] = "Primary";
                     dr["Address"] = txtPrimaryAddress.Text;
-                    dr["City"] = txtPrimaryCity.Text ;
+                    dr["City"] = txtPrimaryCity.Text;
                     dr["State"] = txtPrimaryState.Text;
                     dr["Zip"] = txtPrimaryZip.Text;
                     dr["Country"] = ddlCountry.SelectedValue;
                     dr["TempID"] = NewTempID;
-                    dr["Latitude"]= Latitude;
-                    dr["Longitude"]= Longitude;
+                    dr["Latitude"] = Latitude;
+                    dr["Longitude"] = Longitude;
                     newAdd = false;
                 }
             }
 
             if (newAdd == true)
             {
-                
+
                 DataRow dr = dtVendorAddress.NewRow();
                 dr["VendorId"] = string.IsNullOrEmpty(vendorid) ? "0" : vendorid;
                 dr["AddressID"] = DrpVendorAddress.SelectedValue;
@@ -4112,7 +4132,7 @@ namespace JG_Prospect.Sr_App
             }
 
             HttpContext.Current.Session["dtVendorAddress"] = dtVendorAddress as DataTable;
-           
+
 
         }
 
@@ -4202,7 +4222,7 @@ namespace JG_Prospect.Sr_App
             }
             Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
             BindVendorNotes();
-           
+
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
@@ -4664,11 +4684,34 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
-            if(flagInsert == true && !string.IsNullOrWhiteSpace(txtWebsite.Text))
+            if (flagInsert == true && !string.IsNullOrWhiteSpace(txtWebsite.Text))
             {
                 ddlWebSite.Items.Add(new System.Web.UI.WebControls.ListItem(txtWebsite.Text, txtWebsite.Text));
             }
 
+        }
+
+        protected void btnHoursOfOperation_Click(object sender, EventArgs e)
+        {
+            var val = string.Empty;
+
+            val += chk24Hours.Checked ? "24|" : "12|";
+            val += ddlDays.SelectedValue + "|";
+            val += ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
+
+            ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(val, val));
+        }
+
+        protected void ddlHoursOfOperation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //if (strHO.Count() == 4)
+            //{
+
+            //    ddlFromHours.SelectedValue = strHO[0];
+            //    ddlFromAMPM.SelectedValue = strHO[1];
+            //    ddlToHours.SelectedValue = strHO[2];
+            //    ddlToAMPM.SelectedValue = strHO[3];
+            //}
         }
 
         protected void lnkCharge_Click(object sender, EventArgs e)

@@ -4316,7 +4316,7 @@ namespace JG_Prospect.Sr_App
                     return;
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }
