@@ -259,7 +259,7 @@ namespace JG_Prospect
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
 
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TechTaskId").ToString()))
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskId").ToString()))
                         {
                             hypTechTask.Text = string.Concat(
                                                                                 string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
@@ -267,7 +267,7 @@ namespace JG_Prospect
                                                                                     DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
                                                                             );
                             hypTechTask.NavigateUrl = Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
-                            hypTechTask.Visible = true; 
+                            hypTechTask.Visible = true;
                         }
 
                         switch (Status)
@@ -308,20 +308,20 @@ namespace JG_Prospect
         private DropDownList BindContactDllForGrid(DropDownList ddlContactType)
         {
             // To Avoid multi call to DB
-            if(ViewState["ContactDllForGrid"] != null)
+            if (ViewState["ContactDllForGrid"] != null)
             {   // Bind dropdown 
-                ddlContactType =  BindContactDllForVS(ddlContactType);
+                ddlContactType = BindContactDllForVS(ddlContactType);
             }
             else
             {
                 // Fill ViewState from DB.
                 DataSet dsPhoneType;
-               
+
                 dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
-                
+
                 foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
                 {
-                    if(RowItem["ContactName"].ToString().ToUpper() == "OTHER")
+                    if (RowItem["ContactName"].ToString().ToUpper() == "OTHER")
                     {
                         RowItem["ContactName"] = "EMAIL";
                         RowItem["ContactValue"] = "EMAIL";
@@ -364,7 +364,7 @@ namespace JG_Prospect
         /// <param name="lblPrimaryPhone"></param>
         /// <param name="chaDelimiter"></param>
         /// <returns></returns>
-        private Label ManiPulatePrimaryPhone(Label lblPrimaryPhone , char chaDelimiter)
+        private Label ManiPulatePrimaryPhone(Label lblPrimaryPhone, char chaDelimiter)
         {
             string[] strPrimaryPhone = lblPrimaryPhone.Text.Split(chaDelimiter);
             string strPhoneType = "";
@@ -467,7 +467,7 @@ namespace JG_Prospect
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
                 }
-                
+
                 //DropDownList ddlStatus = (DropDownList)gvRow.FindControl("ddlStatus");
                 //int StatusId = Convert.ToInt32(e.CommandArgument);
                 ////string Status = ddlStatus.SelectedValue;
@@ -852,7 +852,10 @@ namespace JG_Prospect
                     }
                 }
             }
-            SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, 104);
+
+            SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]),
+                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, 104, null,
+                ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
 
             //AssignedTask if any or Default
             AssignedTaskToUser();
@@ -929,7 +932,7 @@ namespace JG_Prospect
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat( Request.Url.Scheme,Uri.SchemeDelimiter,Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -2354,7 +2357,7 @@ namespace JG_Prospect
             return true;
         }
 
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null, string strManager = "")
         {
             string fullname = FName + " " + LName;
             DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
@@ -2393,6 +2396,8 @@ namespace JG_Prospect
             //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
             strBody = strBody.Replace("Reason", Reason);
 
+            strBody = strBody.Replace("#manager#", strManager);
+
             strBody = strHeader + strBody + strFooter;
 
             //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
@@ -2426,7 +2431,7 @@ namespace JG_Prospect
             }
 
             try
-            { 
+            {
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
@@ -3155,7 +3160,7 @@ namespace JG_Prospect
 
         protected void ddlUserStatus_PreRender(object sender, EventArgs e)
         {
-            DropDownList ddlStatus = (DropDownList) sender;
+            DropDownList ddlStatus = (DropDownList)sender;
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
 
