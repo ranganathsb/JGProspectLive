@@ -1184,11 +1184,11 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
-            if (txtTouchPointLogNote.Text.Trim() != "")
-            {
-                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
-                txtTouchPointLogNote.Text = "";
-            }
+            string note = txtAddNotes.Text.Trim();
+            int CustomerId = Convert.ToInt32(Session["ID"]);
+            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
+            txtAddNotes.Text = string.Empty;
+            bindGrid();
         }
 
         #endregion
