@@ -612,8 +612,13 @@ namespace JG_Prospect
 
             lblName_InterviewDetails.Text =
             lblName_OfferMade.Text = lblFirstName.Text + " " + lblLastName.Text;
-            lblDesignation_InterviewDetails.Text =
+
             lblDesignation_OfferMade.Text = lblDesignation.Text;
+
+            if (ddlDesignationForTask.Items.FindByText(lblDesignation.Text) != null)
+            {
+                ddlDesignationForTask.Items.FindByText(lblDesignation.Text).Selected = true;
+            }
 
             if ((lblStatus.Value == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
