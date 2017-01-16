@@ -1754,7 +1754,7 @@
                                                             <td colspan="2">
                                                                 <label>Hours of operation:</label><br />
                                                                 <asp:CheckBox ID="chk24Hours" runat="server" AutoPostBack="false" Text="24 Hr" />
-                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" TabIndex="3" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
+                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" AutoPostBack="true" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
                                                                 </asp:DropDownList>
                                                                 <br />
                                                                 <asp:DropDownList ID="ddlDays" runat="server" TabIndex="3">

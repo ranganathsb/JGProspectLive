@@ -3969,6 +3969,11 @@ namespace JG_Prospect.Sr_App
         {
             AddVendorAddressToViewState();
 
+            var addr = txtPrimaryAddress.Text;
+            addr += ", " + txtPrimaryCity.Text;
+            addr += ", " + ddlCountry.SelectedValue;
+            DrpVendorAddress.SelectedItem.Text = addr;
+
             DrpVendorAddress.ClearSelection();
             txtPrimaryCity.Text = "";
             txtPrimaryState.Text = "";
@@ -4704,14 +4709,22 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlHoursOfOperation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (strHO.Count() == 4)
-            //{
+            string val = ddlHoursOfOperation.SelectedValue;
+            var strHO = val.Split('|');
+            chk24Hours.Checked = false;
+            if (strHO.Count() > 0)
+            {
+                if(strHO[0] == "24")
+                    chk24Hours.Checked = true;
+                ddlDays.SelectedValue = strHO[1];
 
-            //    ddlFromHours.SelectedValue = strHO[0];
-            //    ddlFromAMPM.SelectedValue = strHO[1];
-            //    ddlToHours.SelectedValue = strHO[2];
-            //    ddlToAMPM.SelectedValue = strHO[3];
-            //}
+                var strFT = strHO[2].Split('-');
+
+                ddlFromHours.SelectedValue = strFT[0];
+                ddlFromAMPM.SelectedValue = strFT[1];
+                ddlToHours.SelectedValue = strFT[2];
+                ddlToAMPM.SelectedValue = strFT[3];
+            }
         }
 
         protected void lnkCharge_Click(object sender, EventArgs e)
