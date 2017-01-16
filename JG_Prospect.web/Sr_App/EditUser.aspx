@@ -152,7 +152,7 @@
         }
 
         .grdUserMain {
-            margin-top: 50px;
+            /*margin-top: 50px;*/
         }
 
         .grdUserMain tr td {
@@ -733,22 +733,21 @@
                     </td>
                 </tr>
             </table>
-            <div class="grid">
+            <div class="grid" style="overflow:visible; max-height:none; padding:0 10px;width:auto;">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" AutoGenerateColumns="False" DataKeyNames="Id" 
-                            AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
-                            OnRowCancelingEdit="grdUsers_RowCancelingEdit" OnRowEditing="grdUsers_RowEditing"
-                            OnRowUpdating="grdUsers_RowUpdating" OnRowDeleting="grdUsers_RowDeleting"
-                            OnRowDataBound="grdUsers_RowDataBound" OnSelectedIndexChanged="grdUsers_SelectedIndexChanged"
-                            OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" EmptyDataText="No Data" HeaderStyle-CssClass="HeaderFreez">
+                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" Width="100%" HeaderStyle-CssClass="" EmptyDataText="No Data"
+                            AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
+                            PagerSettings-Mode="NumericFirstLast" PagerSettings-Position="TopAndBottom" 
+                            OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" 
+                            OnPageIndexChanging="grdUsers_PageIndexChanging">
                             <Columns>
                                 <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px" HeaderStyle-Width="40px">
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="Edit" runat="server"
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="Delete" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
+                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -759,7 +758,7 @@
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                         <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
-                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="Edit" runat="server"
+                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
                                         <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
