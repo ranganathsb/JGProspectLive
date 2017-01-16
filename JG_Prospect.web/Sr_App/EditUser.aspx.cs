@@ -135,22 +135,26 @@ namespace JG_Prospect
             {
                 btnExport.Visible = false;
             }
+
             if (!IsPostBack)
             {
                 CalendarExtender1.StartDate = DateTime.Now;
+                
                 Session["DeactivationStatus"] = "";
                 Session["FirstNameNewSC"] = "";
                 Session["LastNameNewSC"] = "";
                 Session["DesignitionSC"] = "";
                 Session["HighlightUsersForTypes"] = null;
-                binddata();
-                DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
+
+                //binddata();
+                //DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
                 FillCustomer();
+                BindDesignations();
                 //txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
-                ShowHRData();
+                GetSalesUsersStaticticsAndData();
                 LoadEmailContentToSentToUser(false);
             }
             else
@@ -175,12 +179,12 @@ namespace JG_Prospect
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
         {
-            ShowHRData();
+            GetSalesUsersStaticticsAndData();
         }
 
         protected void txtTodate_TextChanged(object sender, EventArgs e)
         {
-            ShowHRData();
+            GetSalesUsersStaticticsAndData();
         }
 
         #endregion
@@ -1516,8 +1520,8 @@ namespace JG_Prospect
                 ddlDesignationForTask.DataValueField = "ID";
                 ddlDesignationForTask.DataBind();
             }
-            ddlDesignation.Items.Insert(0, "--All--");
-            ddlDesignationForTask.Items.Insert(0, "--All--");
+            ddlDesignation.Items.Insert(0, new ListItem("--All--","0"));
+            ddlDesignationForTask.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         private void FillCustomer()
@@ -1525,7 +1529,7 @@ namespace JG_Prospect
 
             fillFilterUserDDL();
 
-            ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "--Select--");
+            ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "0");
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -2697,7 +2701,7 @@ namespace JG_Prospect
 
         private void BindGrid()
         {
-            ShowHRData();
+            GetSalesUsersStaticticsAndData();
 
             DataTable dt = (DataTable)(Session["UserGridData"]);
             EnumerableRowCollection<DataRow> query = null;
@@ -2739,7 +2743,7 @@ namespace JG_Prospect
             BindUsers(dt);
         }
 
-        private void ShowHRData()
+        private void GetSalesUsersStaticticsAndData()
         {
             DateTime? fromDate = null;
             DateTime? toDate = null;
@@ -2751,23 +2755,63 @@ namespace JG_Prospect
             string strUserStatus = string.Empty;
             if (fromDate < toDate || (fromDate == null && toDate == null))
             {
-                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt32(drpUser.SelectedValue));
-                if (ds != null)
+                DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
+                                                        (
+                                                            ddlUserStatus.SelectedValue,
+                                                            ddlDesignation.SelectedValue,
+                                                            ddlSource.SelectedValue,
+                                                            fromDate, 
+                                                            toDate,
+                                                            Convert.ToInt32(drpUser.SelectedValue),
+                                                            grdUsers.PageIndex,
+                                                            grdUsers.PageSize
+                                                        );
+                if (dsSalesUserData != null)
                 {
-                    DataTable dtHrData = ds.Tables[0];
-                    DataTable dtgridData = ds.Tables[1];
+                    DataTable dtSalesUser_Statictics = dsSalesUserData.Tables[0];
+                    DataTable dtSalesUser_Grid = dsSalesUserData.Tables[1];
 
-                    List<HrData> lstHrData = new List<HrData>();
-                    foreach (DataRow row in dtHrData.Rows)
-                    {
-                        HrData hrdata = new HrData();
-                        hrdata.status = row["status"].ToString();
-                        hrdata.count = row["cnt"].ToString();
-                        lstHrData.Add(hrdata);
-                    }
+                    #region OrderStatus Column
+                    
+                    string usertype = Session["usertype"].ToString().ToLower();
 
-                    if (dtHrData.Rows.Count > 0)
+                    if (dtSalesUser_Grid.Columns["OrderStatus"] == null)
                     {
+                        dtSalesUser_Grid.Columns.Add("OrderStatus");
+                        int st = 0;
+
+                        if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
+                        {
+                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                            {
+                                st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
+                                dr["OrderStatus"] = st.ToString();
+                            }
+                        }
+                        else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
+                        {
+                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                            {
+                                st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
+                                dr["OrderStatus"] = st.ToString();
+                            }
+                        }
+                    } 
+
+                    #endregion
+
+                    #region Statictics
+                    
+                    if (dtSalesUser_Statictics.Rows.Count > 0)
+                    {
+                        List<HrData> lstHrData = new List<HrData>();
+                        foreach (DataRow row in dtSalesUser_Statictics.Rows)
+                        {
+                            HrData hrdata = new HrData();
+                            hrdata.status = row["status"].ToString();
+                            hrdata.count = row["cnt"].ToString();
+                            lstHrData.Add(hrdata);
+                        }
 
                         var rowOfferMade = lstHrData.Where(r => r.status == "OfferMade").FirstOrDefault();
                         if (rowOfferMade != null)
@@ -2880,7 +2924,6 @@ namespace JG_Prospect
                         {
                             lblActiveDeactiveRatio.Text = "0";
                         }
-
                     }
                     else
                     {
@@ -2893,23 +2936,24 @@ namespace JG_Prospect
                         lblInterviewDateCount.Text = "0";
                         lblAppInterviewRatio.Text = "0";
                         //  lblAppHireRatio.Text = "0";
-                    }
+                    } 
+                    #endregion
 
-                    if (dtgridData.Rows.Count > 0)
+                    if (dtSalesUser_Grid.Rows.Count > 0)
                     {
-                        Session["UserGridData"] = dtgridData;
+                        //Session["UserGridData"] = dtSalesUser_Grid;
+                        //BindUsers(dtSalesUser_Grid);
 
-                        BindUsers(dtgridData);
+                        grdUsers.DataSource = dtSalesUser_Grid;
+                        grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[2].Rows[0]["TotalRecordCount"]);
+                        grdUsers.DataBind();
 
-                        //grdUsers.DataSource = dtgridData;
-                        //grdUsers.DataBind();
-
-                        BindPieChart(dtgridData);
-                        BindUsersCount(dtgridData);
+                        BindPieChart(dtSalesUser_Grid);
+                        BindUsersCount(dtSalesUser_Grid);
                     }
                     else
                     {
-                        Session["UserGridData"] = null;
+                        //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
                     }

@@ -2213,7 +2213,7 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("GetSalesUsers");
+                    DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Status", DbType.String, strStatus);
                     database.AddInParameter(command, "@Designation", DbType.String, strDesignation);
