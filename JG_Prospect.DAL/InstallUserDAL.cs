@@ -2206,6 +2206,45 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetSalesUsersStaticticsAndData(string strStatus,string strDesignation,string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize)
+        {
+            DataSet dsResult = null;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetSalesUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Status", DbType.String, strStatus);
+                    database.AddInParameter(command, "@Designation", DbType.String, strDesignation);
+                    database.AddInParameter(command, "@Source", DbType.String, strSource);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int16, userid);
+                    if (fromdate != null)
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
+                    dsResult = database.ExecuteDataSet(command);
+                }
+                return dsResult;
+            }
+            catch (Exception ex)
+            {
+                return dsResult;
+            }
+        }
+
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             returndata = new DataSet();

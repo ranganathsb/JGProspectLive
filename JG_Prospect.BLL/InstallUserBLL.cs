@@ -21,7 +21,7 @@ namespace JG_Prospect.BLL
         public static InstallUserBLL Instance
         {
             get { return m_InstallUserBLL; }
-            private set {; }
+            private set { ; }
         }
         public string AddHoursToAvailability(DateTime dt)
         {
@@ -325,7 +325,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.CheckCustomerRegistration(loginid, PhoneNo);
         }
 
-        public bool BulkUpdateIntsallUser(string xmlDoc,string UpdatedBy)
+        public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
         {
             return InstallUserDAL.Instance.BulkUpdateIntsallUser(xmlDoc, UpdatedBy);
         }
@@ -475,10 +475,15 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.UpdateOfferMade(Id, Email, password);
         }
-        
+
         public string AddNewEmailForUser(string EmailID, bool IsPrimary, int UserID)
         {
             return InstallUserDAL.Instance.AddNewEmailForUser(EmailID, IsPrimary, UserID);
+        }
+
+        public DataSet GetSalesUsersStaticticsAndData(string strStatus, string strDesignation, string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize)
+        {
+            return InstallUserDAL.Instance.GetSalesUsersStaticticsAndData(strStatus, strDesignation, strSource, fromdate, todate, userid, intPageIndex, intPageSize);
         }
 
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
@@ -542,14 +547,14 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUserPhoneByUseId(UserId);
         }
-        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID , string PhoneExtNo, string PhoneISDCode ,bool ClearDataBeforInsert)
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int UserID, string PhoneExtNo, string PhoneISDCode, bool ClearDataBeforInsert)
         {
-            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID, PhoneExtNo , PhoneISDCode, ClearDataBeforInsert);
+            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
         }
 
-        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog , string strGUID)
+        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
         {
-            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog , strGUID);
+            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
         }
 
         public DataSet GetTouchPointLogDataByUserID(int UserID)
@@ -572,9 +577,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.Update_ForgotPassword(loginId, newPassword, isCustomer);
         }
 
-        public string CheckForNewUserByEmaiID(string userEmail, int userID,string DefaultPW)
+        public string CheckForNewUserByEmaiID(string userEmail, int userID, string DefaultPW)
         {
-            return InstallUserDAL.Instance.CheckForNewUserByEmaiID(userEmail, userID,DefaultPW);
+            return InstallUserDAL.Instance.CheckForNewUserByEmaiID(userEmail, userID, DefaultPW);
         }
 
         public int InsertUserOTP(int userID, int userType, string OTP)

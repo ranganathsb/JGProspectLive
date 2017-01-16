@@ -736,7 +736,8 @@
             <div class="grid">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
+                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" AutoGenerateColumns="False" DataKeyNames="Id" 
+                            AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
                             OnRowCancelingEdit="grdUsers_RowCancelingEdit" OnRowEditing="grdUsers_RowEditing"
                             OnRowUpdating="grdUsers_RowUpdating" OnRowDeleting="grdUsers_RowDeleting"
                             OnRowDataBound="grdUsers_RowDataBound" OnSelectedIndexChanged="grdUsers_SelectedIndexChanged"
