@@ -2206,7 +2206,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetSalesUsersStaticticsAndData(string strStatus,string strDesignation,string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize)
+        public DataSet GetSalesUsersStaticticsAndData(string strStatus, string strDesignation, string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
             DataSet dsResult = null;
             try
@@ -2235,6 +2235,11 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
                     }
+
+                    database.AddInParameter(command, "@PageIndex", DbType.Int16, intPageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int16, intPageSize);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
                     dsResult = database.ExecuteDataSet(command);
                 }
                 return dsResult;

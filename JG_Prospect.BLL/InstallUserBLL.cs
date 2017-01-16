@@ -481,9 +481,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddNewEmailForUser(EmailID, IsPrimary, UserID);
         }
 
-        public DataSet GetSalesUsersStaticticsAndData(string strStatus, string strDesignation, string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize)
+        public DataSet GetSalesUsersStaticticsAndData(string strStatus, string strDesignation, string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
-            return InstallUserDAL.Instance.GetSalesUsersStaticticsAndData(strStatus, strDesignation, strSource, fromdate, todate, userid, intPageIndex, intPageSize);
+            return InstallUserDAL.Instance.GetSalesUsersStaticticsAndData(strStatus, strDesignation, strSource, fromdate, todate, userid, intPageIndex, intPageSize, strSortExpression);
         }
 
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)

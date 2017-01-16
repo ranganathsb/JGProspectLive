@@ -139,7 +139,7 @@ namespace JG_Prospect
                 FillCustomer();
                 BindDesignations();
 
-                GetSalesUsersStaticticsAndData();
+                GetSalesUsersStaticticsAndData(true);
 
                 LoadEmailContentToSentToUser(false);
             }
@@ -173,7 +173,7 @@ namespace JG_Prospect
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
             }
             //BindGrid();
-            GetSalesUsersStaticticsAndData();
+            GetSalesUsersStaticticsAndData(true);
         }
 
         protected void ddlUserStatus_PreRender(object sender, EventArgs e)
@@ -184,18 +184,18 @@ namespace JG_Prospect
 
         protected void ddlFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GetSalesUsersStaticticsAndData();
+            GetSalesUsersStaticticsAndData(true);
             //BindGrid();
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
         {
-            GetSalesUsersStaticticsAndData();
+            GetSalesUsersStaticticsAndData(true);
         }
 
         protected void txtTodate_TextChanged(object sender, EventArgs e)
         {
-            GetSalesUsersStaticticsAndData();
+            GetSalesUsersStaticticsAndData(true);
         }
 
         #endregion
@@ -2728,8 +2728,15 @@ namespace JG_Prospect
         //    BindUsers(dt);
         //}
 
-        private void GetSalesUsersStaticticsAndData()
+        private void GetSalesUsersStaticticsAndData(bool blResetGrid = false)
         {
+            if (blResetGrid)
+            {
+                grdUsers.PageIndex = 0;
+                this.SalesUserSortDirection = SortDirection.Ascending;
+                this.SalesUserSortExpression = "Status";
+            }
+
             DateTime? dtFromDate = null;
             DateTime? dtToDate = null;
             if (!chkAllDates.Checked)
@@ -2751,7 +2758,8 @@ namespace JG_Prospect
                                                             dtToDate,
                                                             Convert.ToInt32(drpUser.SelectedValue),
                                                             grdUsers.PageIndex,
-                                                            grdUsers.PageSize
+                                                            grdUsers.PageSize,
+                                                            strSortExpression
                                                         );
                 if (dsSalesUserData != null)
                 {
@@ -2795,8 +2803,8 @@ namespace JG_Prospect
                         foreach (DataRow row in dtSalesUser_Statictics.Rows)
                         {
                             HrData hrdata = new HrData();
-                            hrdata.status = row["status"].ToString();
-                            hrdata.count = row["cnt"].ToString();
+                            hrdata.status = row["Status"].ToString();
+                            hrdata.count = row["Count"].ToString();
                             lstHrData.Add(hrdata);
                         }
 
@@ -2911,6 +2919,8 @@ namespace JG_Prospect
                         {
                             lblActiveDeactiveRatio.Text = "0";
                         }
+
+                        BindPieChart(lstHrData);
                     }
                     else
                     {
@@ -2935,7 +2945,6 @@ namespace JG_Prospect
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[2].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
 
-                        BindPieChart(dtSalesUser_Grid);
                         BindUsersCount(dtSalesUser_Grid);
                     }
                     else
@@ -2952,40 +2961,16 @@ namespace JG_Prospect
             }
         }
 
-        private void BindPieChart(DataTable dtgridData)
+        private void BindPieChart(List<HrData> lstHrData)
         {
-            DataTable dt = dtgridData;
+            string[] x = new string[lstHrData.Count()];
+            int[] y = new int[lstHrData.Count()];
 
-            var query = from row in dt.AsEnumerable()
-                        group row by row.Field<string>("status") into st
-                        orderby st.Key
-                        select new
-                        {
-                            Name = st.Key,
-                            Total = st.Count()
-                        };
-
-            DataTable newItems = new DataTable();
-            newItems.Columns.Add("Name");
-            newItems.Columns.Add("Total");
-
-            foreach (var item in query)
-            {
-                DataRow newRow = newItems.NewRow();
-                newRow["Name"] = item.Name;
-                newRow["Total"] = item.Total;
-
-                newItems.Rows.Add(newRow);
-            }
-
-            string[] x = new string[query.Count()];
-            int[] y = new int[query.Count()];
-
-            for (int i = 0; i < query.Count(); i++)
+            for (int i = 0; i < lstHrData.Count(); i++)
             {
 
-                x[i] = newItems.Rows[i]["Name"].ToString();
-                y[i] = Convert.ToInt32(newItems.Rows[i]["Total"]);
+                x[i] = lstHrData[i].status.ToString();
+                y[i] = Convert.ToInt32(lstHrData[i].count);
             }
 
             Chart1.Series[0].Points.DataBindXY(x, y);
@@ -2993,6 +2978,48 @@ namespace JG_Prospect
             Chart1.ChartAreas["ChartArea1"].Area3DStyle.Enable3D = true;
             Chart1.Legends[0].Enabled = true;
         }
+
+        //private void BindPieChart(DataTable dtgridData)
+        //{
+        //    DataTable dt = dtgridData;
+
+        //    var query = from row in dt.AsEnumerable()
+        //                group row by row.Field<string>("status") into st
+        //                orderby st.Key
+        //                select new
+        //                {
+        //                    Name = st.Key,
+        //                    Total = st.Count()
+        //                };
+
+        //    DataTable newItems = new DataTable();
+        //    newItems.Columns.Add("Name");
+        //    newItems.Columns.Add("Total");
+
+        //    foreach (var item in query)
+        //    {
+        //        DataRow newRow = newItems.NewRow();
+        //        newRow["Name"] = item.Name;
+        //        newRow["Total"] = item.Total;
+
+        //        newItems.Rows.Add(newRow);
+        //    }
+
+        //    string[] x = new string[query.Count()];
+        //    int[] y = new int[query.Count()];
+
+        //    for (int i = 0; i < query.Count(); i++)
+        //    {
+
+        //        x[i] = newItems.Rows[i]["Name"].ToString();
+        //        y[i] = Convert.ToInt32(newItems.Rows[i]["Total"]);
+        //    }
+
+        //    Chart1.Series[0].Points.DataBindXY(x, y);
+        //    Chart1.Series[0].ChartType = SeriesChartType.Pie;
+        //    Chart1.ChartAreas["ChartArea1"].Area3DStyle.Enable3D = true;
+        //    Chart1.Legends[0].Enabled = true;
+        //}
 
         private void BindUsersCount(DataTable dt)
         {
