@@ -281,6 +281,21 @@
             $("#<%=chkVSCRetail_WholesaleEdit.ClientID%>").removeAttr("checked");
             $("#<%=chkVSCManufacturerEdit.ClientID%>").removeAttr("checked");
 
+            
+            $("#rowVendorC1").show();
+            $("#rowVendorC2").show();
+            $("#rowVendorC3").show();
+            $("#rowVendorCDelete").hide();
+
+           
+            $("#rowVSC1").show();
+            $("#rowVSC2").show();
+            $("#rowVSC3").show();
+            $("#rowVSCDelete").hide();
+
+            $("#rowSupSubCat1").show();
+            $("#rowSupSubCat2").show();
+            $("#rowSupSubCatDelete").hide();
 
             $("#<%=btnAddVendorCat.ClientID%>").hide();
             $("#<%=btnNewVendorSubCat.ClientID%>").hide();
@@ -289,12 +304,21 @@
             $("#<%=btnUdpateVendorSubCat.ClientID%>").hide();
             $("#<%=btnDeleteVendorSubCat.ClientID%>").hide();
 
+            $("#<%=btnSaveSupplierSubCat.ClientID%>").hide();
+            $("#<%=btnUpdateSupplierSubCat.ClientID%>").hide();
+            $("#<%=btnDeleteSupplierSubCat.ClientID%>").hide();
+
             $("#addVendorCat").hide();
             $("#updateVendorCat").hide();
             $("#deleteVendorCat").hide();
             $("#addVendorSubCat").hide();
             $("#updateVendorSubCat").hide();
             $("#deleteVendorSubCat").hide();
+
+            $("#addSupSubCat").hide();
+            $("#updateSupSubCat").hide();
+            $("#deleteSupSubCat").hide();
+
         }
 
         function AddVenodrCat(btn, productId, productName) {
@@ -325,10 +349,10 @@
             $("#<%=txtVendorCateogryName.ClientID%>").val(vName);
 
             if (IsRetail_Wholesale == "True") {
-                $("#<%=chkVendorCRetail_WholesaleEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVendorCRetail_WholesaleEdit.ClientID%>").prop("checked", true);
             }
             if (IsManufacturer == "True") {
-                $("#<%=chkVendorCManufacturerEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVendorCManufacturerEdit.ClientID%>").prop("checked", true);
             }
 
             $("#updateVendorCat").show();
@@ -345,15 +369,20 @@
             $("#<%=txtVendorCateogryName.ClientID%>").val(vName);
 
             if (IsRetail_Wholesale == "True") {
-                $("#<%=chkVendorCRetail_WholesaleEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVendorCRetail_WholesaleEdit.ClientID%>").prop("checked", true);
             }
             if (IsManufacturer == "True") {
-                $("#<%=chkVendorCManufacturerEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVendorCManufacturerEdit.ClientID%>").prop("checked", true);
             }
 
             $("#deleteVendorCat").show();
             $("#<%=btnDeleteVendorCat.ClientID%>").show();
             $("#<%=pnlVendorCat.ClientID%>").show();
+
+            $("#rowVendorC1").hide();
+            $("#rowVendorC2").hide();
+            $("#rowVendorC3").hide();
+            $("#rowVendorCDelete").show();
         }
 
         function EditSubCat(btn, vsId, vsName, vId, vName, IsRetail_Wholesale, IsManufacturer, productId, productName) {
@@ -365,12 +394,12 @@
 
             $("#<%=hdnVendorCatID.ClientID%>").val(vId);
             $("#<%=txtVendorCatName.ClientID%>").val(vName);
-
+            
             if (IsRetail_Wholesale == "True") {
-                $("#<%=chkVSCRetail_WholesaleEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVSCRetail_WholesaleEdit.ClientID%>").prop("checked", true);
             }
             if (IsManufacturer == "True") {
-                $("#<%=chkVSCManufacturerEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVSCManufacturerEdit.ClientID%>").prop("checked", true);
             }
 
             $("#updateVendorSubCat").show();
@@ -389,14 +418,19 @@
             $("#<%=txtVendorCatName.ClientID%>").val(vName);
 
             if (IsRetail_Wholesale == "True") {
-                $("#<%=chkVSCRetail_WholesaleEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVSCRetail_WholesaleEdit.ClientID%>").prop("checked", true);
             }
             if (IsManufacturer == "True") {
-                $("#<%=chkVSCManufacturerEdit.ClientID%>").attr("checked", true);
+                $("#<%=chkVSCManufacturerEdit.ClientID%>").prop("checked", true);
             }
             $("#deleteVendorSubCat").show();
             $("#<%=btnDeleteVendorSubCat.ClientID%>").show();
             $("#<%=pnlVendorSubCat.ClientID%>").show();
+
+            $("#rowVSC1").hide();
+            $("#rowVSC2").hide();
+            $("#rowVSC3").hide();
+            $("#rowVSCDelete").show();
         }
 
         function SupplierClick(btn, SuppId, SuppName) {
@@ -441,6 +475,10 @@
             $("#deleteSupSubCat").show();
             $("#<%=btnDeleteSupplierSubCat.ClientID%>").show();
             $("#<%=pnlSupSubCat.ClientID%>").show();
+
+            $("#rowSupSubCat1").hide();
+            $("#rowSupSubCat2").hide();
+            $("#rowSupSubCatDelete").show();
         }
 
         function supSubCatClick(btn, supID, supName, supSubCatId, supSubCatName) {
@@ -541,29 +579,36 @@
                                             <div id="deleteVendorCat" style="display: none;">Delete Vendor Category</div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVendorC1">
                                         <td align="right" style="width: 31%">Product Category Name	</td>
                                         <td>
                                             <asp:HiddenField ID="hdnProductID" runat="server" />
                                             <asp:TextBox ID="txtProudctName" runat="server" ReadOnly="true"></asp:TextBox>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVendorC2">
                                         <td align="right" style="width: 31%">Vendor Category Name </td>
                                         <td>
                                             <asp:HiddenField ID="hdnVendorID" runat="server" />
-                                            <asp:TextBox ID="txtVendorCateogryName" runat="server" onkeypress="return isAlphaKey(event);"></asp:TextBox>
+                                            <asp:TextBox ID="txtVendorCateogryName" runat="server" ></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtVendorCateogryName"
                                                 ValidationGroup="Updatevendorcat" ErrorMessage="Enter Vendor Category Name." ForeColor="Red"
                                                 Display="Dynamic"></asp:RequiredFieldValidator>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVendorC3">
                                         <td align="right" style="width: 31%">Manufacturer Type
                                         </td>
                                         <td>
                                             <asp:CheckBox ID="chkVendorCRetail_WholesaleEdit" runat="server" Text="Retail/Wholesale" />
                                             <asp:CheckBox ID="chkVendorCManufacturerEdit" runat="server" Text="Manufacturer" />
+                                        </td>
+                                    </tr>
+                                    <tr id="rowVendorCDelete" style="display:none;">
+                                        <td colspan="2" align="center">
+                                            <br /><br /><br />
+                                            Are you sure you want to delete this Vendor Category?
+                                            <br /><br /><br />
                                         </td>
                                     </tr>
                                     <tr>
@@ -588,29 +633,36 @@
                                             <div id="deleteVendorSubCat" style="display: none;">Delete Vendor Sub Category</div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVSC1">
                                         <td align="right" style="width: 31%">Vendor Category Name </td>
                                         <td>
                                             <asp:HiddenField ID="hdnVendorCatID" runat="server" />
                                             <asp:TextBox ID="txtVendorCatName" runat="server" ReadOnly="true"></asp:TextBox>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVSC2">
                                         <td align="right" style="width: 31%">Vendor Sub Category Name </td>
                                         <td>
                                             <asp:HiddenField ID="hdnSubCategoryId" runat="server" />
-                                            <asp:TextBox ID="txtVendorSubCatEdit" runat="server" onkeypress="return isAlphaKey(event);"></asp:TextBox>
+                                            <asp:TextBox ID="txtVendorSubCatEdit" runat="server" ></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="rfvtxtVendorSubCatEdit" runat="server" ControlToValidate="txtVendorSubCatEdit"
                                                 ValidationGroup="Updatevendorsubcat" ErrorMessage="Enter Vendor Sub Category Name." ForeColor="Red"
                                                 Display="Dynamic"></asp:RequiredFieldValidator>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="rowVSC3">
                                         <td align="right" style="width: 31%">Manufacturer Type
                                         </td>
                                         <td>
                                             <asp:CheckBox ID="chkVSCRetail_WholesaleEdit" runat="server" Text="Retail/Wholesale" />
                                             <asp:CheckBox ID="chkVSCManufacturerEdit" runat="server" Text="Manufacturer" />
+                                        </td>
+                                    </tr>
+                                    <tr id="rowVSCDelete" style="display:none;">
+                                        <td colspan="2" align="center">
+                                            <br /><br /><br />
+                                            Are you sure you want to delete this Vendor Sub Category?
+                                            <br /><br /><br />
                                         </td>
                                     </tr>
                                     <tr>
@@ -703,21 +755,28 @@
                                         <div id="deleteSupSubCat" style="display: none;">Delete Supplier Sub Category</div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td align="right" style="width: 31%">Supplier Category Name	</td>
+                                <tr id="rowSupSubCat1">
+                                    <td align="right" style="width: 45%">Supplier Category Name&nbsp;</td>
                                     <td>
                                         <asp:HiddenField ID="hdnSupplierCatId" runat="server" />
                                         <asp:TextBox ID="txtSupCatName" runat="server" ReadOnly="true"></asp:TextBox>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td align="right" style="width: 31%">Supplier Sub Category Name </td>
+                                <tr id="rowSupSubCat2">
+                                    <td align="right">Supplier Sub Category Name&nbsp;</td>
                                     <td>
                                         <asp:HiddenField ID="hdnSupSubCatId" runat="server" />
-                                        <asp:TextBox ID="txtSupSubCatName" runat="server" onkeypress="return isAlphaKey(event);"></asp:TextBox>
+                                        <asp:TextBox ID="txtSupSubCatName" runat="server" ></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="txtSupSubCatName"
                                             ValidationGroup="SupSubCat" ErrorMessage="Enter Supplier Sub Category Name." ForeColor="Red"
                                             Display="Dynamic"></asp:RequiredFieldValidator>
+                                    </td>
+                                </tr>
+                                <tr id="rowSupSubCatDelete" style="display:none;">
+                                    <td colspan="2" align="center">
+                                        <br /><br /><br />
+                                        Are you sure you want to delete this Supplier Sub Category?
+                                        <br /><br /><br />
                                     </td>
                                 </tr>
                                 <tr>
