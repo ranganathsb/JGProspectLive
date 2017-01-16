@@ -1476,21 +1476,16 @@ namespace JG_Prospect
 
         private void binddata()
         {
-            DataSet DS = new DataSet();
-            //DS = UserBLL.Instance.getallusers(usertype);
-            DataSet ds = new DataSet();
+            DataSet dsUsers_Export = InstallUserBLL.Instance.GetAllSalesUserToExport();
+            DataSet dsUsers_Grid = InstallUserBLL.Instance.GetAllEditSalesUser();
 
-            ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
-            DS = InstallUserBLL.Instance.GetAllEditSalesUser();
-
-
-            BindPieChart(DS.Tables[0]);
+            BindPieChart(dsUsers_Grid.Tables[0]);
 
             //DS.Tables[0].Columns[4].DataType = typeof(Int32);
-            Session["GridDataExport"] = ds.Tables[0];
-            Session["UserGridData"] = DS.Tables[0];
+            Session["GridDataExport"] = dsUsers_Export.Tables[0];
+            Session["UserGridData"] = dsUsers_Grid.Tables[0];
 
-            BindUsers(DS.Tables[0]);
+            BindUsers(dsUsers_Grid.Tables[0]);
             //grdUsers.DataSource = DS.Tables[0];
             //grdUsers.DataBind();
 
@@ -2659,6 +2654,7 @@ namespace JG_Prospect
             }
             return timeIntervals;
         }
+        
         /// <summary>
         /// Fill ddl for User Recruter 
         /// Also call from ucStaffLogin , EditUser
@@ -2760,6 +2756,7 @@ namespace JG_Prospect
                 {
                     DataTable dtHrData = ds.Tables[0];
                     DataTable dtgridData = ds.Tables[1];
+
                     List<HrData> lstHrData = new List<HrData>();
                     foreach (DataRow row in dtHrData.Rows)
                     {
@@ -2852,10 +2849,7 @@ namespace JG_Prospect
                         else
                         {
                             Applicantcount = "0";
-
                         }
-
-
 
                         lblNewApplicantsCount.Text = Convert.ToDouble(Applicantcount).ToString();
                         // Ratio Calculation
@@ -2900,6 +2894,7 @@ namespace JG_Prospect
                         lblAppInterviewRatio.Text = "0";
                         //  lblAppHireRatio.Text = "0";
                     }
+
                     if (dtgridData.Rows.Count > 0)
                     {
                         Session["UserGridData"] = dtgridData;
