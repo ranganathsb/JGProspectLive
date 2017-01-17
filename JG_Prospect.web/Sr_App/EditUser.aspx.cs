@@ -2770,8 +2770,11 @@ namespace JG_Prospect
                                                         );
                 if (dsSalesUserData != null)
                 {
-                    DataTable dtSalesUser_Statictics = dsSalesUserData.Tables[0];
-                    DataTable dtSalesUser_Grid = dsSalesUserData.Tables[1];
+                    DataTable dtSalesUser_Statictics_Status = dsSalesUserData.Tables[0];
+                    DataTable dtSalesUser_Statictics_AddedBy = dsSalesUserData.Tables[1];
+                    DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
+                    DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
+                    DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
 
                     #region OrderStatus Column
 
@@ -2804,10 +2807,10 @@ namespace JG_Prospect
 
                     #region Statictics
 
-                    if (dtSalesUser_Statictics.Rows.Count > 0)
+                    if (dtSalesUser_Statictics_Status.Rows.Count > 0)
                     {
                         List<HrData> lstHrData = new List<HrData>();
-                        foreach (DataRow row in dtSalesUser_Statictics.Rows)
+                        foreach (DataRow row in dtSalesUser_Statictics_Status.Rows)
                         {
                             HrData hrdata = new HrData();
                             hrdata.status = row["Status"].ToString();
@@ -2949,10 +2952,10 @@ namespace JG_Prospect
                         //BindUsers(dtSalesUser_Grid);
 
                         grdUsers.DataSource = dtSalesUser_Grid;
-                        grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[2].Rows[0]["TotalRecordCount"]);
+                        grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
 
-                        BindUsersCount(dtSalesUser_Grid);
+                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
                     }
                     else
                     {
@@ -3028,42 +3031,42 @@ namespace JG_Prospect
         //    Chart1.Legends[0].Enabled = true;
         //}
 
-        private void BindUsersCount(DataTable dt)
+        private void BindUsersCount(DataTable dtAddedBy, DataTable dtDesignation, DataTable dtSource)
         {
-            var addedBy = from row in dt.AsEnumerable()
-                          group row by row.Field<string>("AddedBy") into st
-                          orderby st.Key
-                          select new
-                          {
-                              AddedBy = st.Key,
-                              Total = st.Count()
-                          };
+            //var addedBy = from row in dt.AsEnumerable()
+            //              group row by row.Field<string>("AddedBy") into st
+            //              orderby st.Key
+            //              select new
+            //              {
+            //                  AddedBy = st.Key,
+            //                  Count = st.Count()
+            //              };
 
-            listAddedBy.DataSource = addedBy;
+            listAddedBy.DataSource = dtAddedBy;
             listAddedBy.DataBind();
 
-            var desig = from row in dt.AsEnumerable()
-                        group row by row.Field<string>("Designation") into st
-                        orderby st.Key
-                        select new
-                        {
-                            Designation = st.Key,
-                            Total = st.Count()
-                        };
+            //var desig = from row in dt.AsEnumerable()
+            //            group row by row.Field<string>("Designation") into st
+            //            orderby st.Key
+            //            select new
+            //            {
+            //                Designation = st.Key,
+            //                Count = st.Count()
+            //            };
 
-            listDesignation.DataSource = desig;
+            listDesignation.DataSource = dtDesignation;
             listDesignation.DataBind();
 
-            var source = from row in dt.AsEnumerable()
-                         group row by row.Field<string>("Source") into st
-                         orderby st.Key
-                         select new
-                         {
-                             Source = st.Key,
-                             Total = st.Count()
-                         };
+            //var source = from row in dt.AsEnumerable()
+            //             group row by row.Field<string>("Source") into st
+            //             orderby st.Key
+            //             select new
+            //             {
+            //                 Source = st.Key,
+            //                 Count = st.Count()
+            //             };
 
-            listSource.DataSource = source;
+            listSource.DataSource = dtSource;
             listSource.DataBind();
         }
 

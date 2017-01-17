@@ -465,7 +465,7 @@
                                                         <ItemTemplate>
                                                             <tr>
                                                                 <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "" )? "No Name" : Eval("AddedBy")%></span></td>
-                                                                <td><span><%#Eval("Total")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
                                                     </asp:ListView>
@@ -477,7 +477,7 @@
                                                         <ItemTemplate>
                                                             <tr>
                                                                 <td><span><%#(Eval("Designation") == null || Eval("Designation") == "" )? "No Designation" : Eval("Designation")%></span></td>
-                                                                <td><span><%#Eval("Total")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
                                                     </asp:ListView>
@@ -489,7 +489,7 @@
                                                         <ItemTemplate>
                                                             <tr>
                                                                 <td><span><%#(Eval("Source") == null || Eval("Source") == "" )? "No Name" : Eval("Source")%></span></td>
-                                                                <td><span><%#Eval("Total")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
                                                     </asp:ListView>
