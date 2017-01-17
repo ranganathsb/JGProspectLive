@@ -671,6 +671,17 @@
             <div class="grid" style="overflow:visible; max-height:none; padding:0 10px;width:auto;">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
+                        <div  style="float:right; padding-top:10px;">
+                            Page size: 
+                            <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
+                                OnSelectedIndexChanged="ddlPageSize_grdUsers_SelectedIndexChanged" >
+                                <asp:ListItem Text="10" Value="10" />
+                                <asp:ListItem Text="20" Value="20" />
+                                <asp:ListItem Text="30" Value="30" />
+                                <asp:ListItem Text="40" Value="40" />
+                                <asp:ListItem Text="50" Value="50" />
+                            </asp:DropDownList>
+                        </div>
                         <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" Width="100%" HeaderStyle-CssClass="header-row" PagerStyle-CssClass="pager-row" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
                             PagerSettings-Mode="NumericFirstLast" PagerSettings-Position="TopAndBottom" 

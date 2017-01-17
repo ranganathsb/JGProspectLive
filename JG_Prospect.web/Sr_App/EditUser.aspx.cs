@@ -460,6 +460,13 @@ namespace JG_Prospect
             GetSalesUsersStaticticsAndData();
         }
 
+        protected void ddlPageSize_grdUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdUsers.PageSize = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+            grdUsers.PageIndex = 0;
+            GetSalesUsersStaticticsAndData();
+        }
+
         protected void grdUsers_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             grdUsers.PageIndex = e.NewPageIndex;
