@@ -152,7 +152,7 @@
         }
 
         .grdUserMain {
-            margin-top: 50px;
+            /*margin-top: 50px;*/
         }
 
         .grdUserMain tr td {
@@ -312,17 +312,6 @@
                     //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 });
 
-
-                //$('#btnSearchGridData').mousedown(function () {
-                    //$('#imgSearchLoad').show();
-                //});
-
-                //$('#btnSearchGridData').click(function () {
-                    //SearchGrid('<%=txtSearch.ClientID%>', '<%=grdUsers.ClientID%>');
-                    //$('#imgSearchLoad').hide();
-                //});
-
-
                 try {
                     $("#<%=ddlUserStatus.ClientID%>").msDropDown();
                 } catch (e) {
@@ -334,72 +323,41 @@
                 } catch (e) {
                     alert(e.message);
                 }
+                $('#<%=txtSearch.ClientID%>').on('blur', function () {
+                    SearchGridData();
+                });
 
             });
 
         }
 
         function btnSearchGridData_OnClick(sender) {
+            SearchGridData();
+        }
+
+        function SearchGridData() {
+
+            $('.loading').show();
+
             var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
 
             var $tblUsers = $('#<%=grdUsers.ClientID%>');
-            $tblUsers.find('tbody>tr').show();
+            $tblUsers.find('>tbody>tr').show();
 
             if (strSearchTerm.length > 0) {
-                $('.loading').show();
-
-                $tblUsers.find('tbody>tr:gt(0)').each(function (i, item) {
+                $tblUsers.find('>tbody>tr').each(function (i, item) {
                     var $tr = $(item);
 
                     if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
-                        $tr.hide();
+                        if(!$tr.hasClass('header-row') && !$tr.hasClass('pager-row')){
+                            $tr.hide();
+                        }
                     }
                 });
-
-                $('.loading').hide();
             }
-        }
 
-        //function SearchGrid(txtSearch, grd) {
-        //    if ($("[id *=" + txtSearch + " ]").val() != "") {
-        //        $("[id *=" + grd + " ]").children
-        //        ('tbody').children('tr').each(function () {
-        //            $(this).show();
-        //        });
-        //        $("[id *=" + grd + " ]").children
-        //        ('tbody').children('tr').each(function () {
-        //            var match = false;
-        //            $(this).children('td').each(function () {
-        //                if ($(this).text().toUpperCase().indexOf($("[id *=" +
-        //            txtSearch + " ]").val().toUpperCase()) > -1) {
-        //                    match = true;
-        //                    return false;
-        //                }
-        //            });
-        //            if (match) {
-        //                $(this).show();
-        //                $(this).children('th').show();
-        //            }
-        //            else {
-        //                $(this).hide();
-        //                $(this).children('th').show();
-        //            }
-        //        });
-        //
-        //
-        //        $("[id *=" + grd + " ]").children('tbody').
-        //                children('tr').each(function (index) {
-        //                    if (index == 0)
-        //                        $(this).show();
-        //                });
-        //    }
-        //    else {
-        //        $("[id *=" + grd + " ]").children('tbody').
-        //                children('tr').each(function () {
-        //                    $(this).show();
-        //                });
-        //    }
-        //}
+            $('.loading').hide();
+        }
     </script>
     <style type="text/css">
         .modalBackground {
@@ -481,186 +439,190 @@
         </ul>
         <h1>Edit User</h1>        
         <div class="form_panel">
-            <span>
-                <asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>
-            </span>
-            <table style="width: 100%; background-color: #fff;" class="tblPieChart">
-                <tr>
-                    <td style="width: 50%; padding: 0px;">
-                        <asp:Chart ID="Chart1" runat="server" Height="320px" Width="415px">
-                            <Titles>
-                                <asp:Title ShadowOffset="3" Name="Items" />
-                            </Titles>
-                            <Legends>
-                                <asp:Legend Alignment="Center" Docking="Bottom" IsTextAutoFit="False" Name="Default" LegendStyle="Table" />
-                            </Legends>
-                            <Series>
-                                <asp:Series Name="Default" />
-                            </Series>
-                            <ChartAreas>
-                                <asp:ChartArea Name="ChartArea1" BorderWidth="0" />
-                            </ChartAreas>
-                        </asp:Chart>
-                    </td>
-                    <td style="width: 50%; padding: 0px;">
-                        <div class="scrollCls">
-                            <table style="height: inherit;">
-                                <tr>
-                                    <td class="head">Added By</td>
-                                    <td class="head">Designation</td>
-                                    <td class="head">Source</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 0px;">
-                                        <table>
-                                            <asp:ListView ID="listAddedBy" runat="server">
-                                                <ItemTemplate>
-                                                    <tr>
-                                                        <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "" )? "No Name" : Eval("AddedBy")%></span></td>
-                                                        <td><span><%#Eval("Total")%></span></td>
-                                                    </tr>
-                                                </ItemTemplate>
-                                            </asp:ListView>
-                                        </table>
-                                    </td>
-                                    <td style="padding: 0px;">
-                                        <table>
-                                            <asp:ListView ID="listDesignation" runat="server">
-                                                <ItemTemplate>
-                                                    <tr>
-                                                        <td><span><%#(Eval("Designation") == null || Eval("Designation") == "" )? "No Designation" : Eval("Designation")%></span></td>
-                                                        <td><span><%#Eval("Total")%></span></td>
-                                                    </tr>
-                                                </ItemTemplate>
-                                            </asp:ListView>
-                                        </table>
-                                    </td>
-                                    <td style="padding: 0px;">
-                                        <table>
-                                            <asp:ListView ID="listSource" runat="server">
-                                                <ItemTemplate>
-                                                    <tr>
-                                                        <td><span><%#(Eval("Source") == null || Eval("Source") == "" )? "No Name" : Eval("Source")%></span></td>
-                                                        <td><span><%#Eval("Total")%></span></td>
-                                                    </tr>
-                                                </ItemTemplate>
-                                            </asp:ListView>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <br />
-            <br />
-            <div class="showhrdata">
-                <table class="tblshowhrdata">
-                    <tr>
-                        <td>
-                            <asp:Label ID="lbljoboffer" runat="server">New "Job Offers" Submissions</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lbljoboffercount" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInterviewDate" runat="server">New "Interview Date"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInterviewDateCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblActive" runat="server">New active</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblActiveCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblPhoneVideoScreened" runat="server">New "Phone/Video Screened"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblPhoneVideoScreenedCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblRejected" runat="server">New "Rejected"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblRejectedCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblDeactivated" runat="server">New "Deactivated"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblDeactivatedCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblNewApplicants" runat="server">New "Applicants"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblNewApplicantsCount" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInstallProspect" runat="server">New "Prospect Referrals"</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInstallProspectCount" runat="server" Text="0"></asp:Label>
-                        </td>
+            <asp:UpdatePanel ID="upSalesUserStatictics" runat="server">
+                <ContentTemplate>
+                    <span>
+                        <asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>
+                    </span>
+                    <table style="width: 100%; background-color: #fff;" class="tblPieChart">
+                        <tr>
+                            <td style="width: 50%; padding: 0px;">
+                                <asp:Chart ID="Chart1" runat="server" Height="320px" Width="415px">
+                                    <Titles>
+                                        <asp:Title ShadowOffset="3" Name="Items" />
+                                    </Titles>
+                                    <Legends>
+                                        <asp:Legend Alignment="Center" Docking="Bottom" IsTextAutoFit="False" Name="Default" LegendStyle="Table" />
+                                    </Legends>
+                                    <Series>
+                                        <asp:Series Name="Default" />
+                                    </Series>
+                                    <ChartAreas>
+                                        <asp:ChartArea Name="ChartArea1" BorderWidth="0" />
+                                    </ChartAreas>
+                                </asp:Chart>
+                            </td>
+                            <td style="width: 50%; padding: 0px;">
+                                <div class="scrollCls">
+                                    <table style="height: inherit;">
+                                        <tr>
+                                            <td class="head">Added By</td>
+                                            <td class="head">Designation</td>
+                                            <td class="head">Source</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0px;">
+                                                <table>
+                                                    <asp:ListView ID="listAddedBy" runat="server">
+                                                        <ItemTemplate>
+                                                            <tr>
+                                                                <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "" )? "No Name" : Eval("AddedBy")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
+                                                            </tr>
+                                                        </ItemTemplate>
+                                                    </asp:ListView>
+                                                </table>
+                                            </td>
+                                            <td style="padding: 0px;">
+                                                <table>
+                                                    <asp:ListView ID="listDesignation" runat="server">
+                                                        <ItemTemplate>
+                                                            <tr>
+                                                                <td><span><%#(Eval("Designation") == null || Eval("Designation") == "" )? "No Designation" : Eval("Designation")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
+                                                            </tr>
+                                                        </ItemTemplate>
+                                                    </asp:ListView>
+                                                </table>
+                                            </td>
+                                            <td style="padding: 0px;">
+                                                <table>
+                                                    <asp:ListView ID="listSource" runat="server">
+                                                        <ItemTemplate>
+                                                            <tr>
+                                                                <td><span><%#(Eval("Source") == null || Eval("Source") == "" )? "No Name" : Eval("Source")%></span></td>
+                                                                <td><span><%#Eval("Count")%></span></td>
+                                                            </tr>
+                                                        </ItemTemplate>
+                                                    </asp:ListView>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <br />
+                    <div class="showhrdata">
+                        <table class="tblshowhrdata">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lbljoboffer" runat="server">New "Job Offers" Submissions</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lbljoboffercount" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInterviewDate" runat="server">New "Interview Date"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInterviewDateCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblActive" runat="server">New active</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblActiveCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblPhoneVideoScreened" runat="server">New "Phone/Video Screened"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblPhoneVideoScreenedCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblRejected" runat="server">New "Rejected"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblRejectedCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblDeactivated" runat="server">New "Deactivated"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblDeactivatedCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblNewApplicants" runat="server">New "Applicants"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblNewApplicantsCount" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInstallProspect" runat="server">New "Prospect Referrals"</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInstallProspectCount" runat="server" Text="0"></asp:Label>
+                                </td>
 
-                        <td>
-                            <asp:Label ID="lblAppInterview" runat="server">Applicant/interview ratio</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblAppInterviewRatio" runat="server" Text="0"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblInterviewActive" runat="server">Interview/Active ratio</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInterviewActiveRatio" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblJobOfferActive" runat="server">Offer Made/Active ratio</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblJobOfferActiveRatio" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblActiveDeactive" runat="server">Active/Deactive Ratio</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblActiveDeactiveRatio" runat="server" Text="0"></asp:Label>
-                        </td>
-                        <%--<td>
-                            <asp:Label ID="lblInactive" runat="server">New Inactive</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblInactiveCount" runat="server" Text="0"></asp:Label>
-                        </td><td>
-                            <asp:Label ID="lblAppHire" runat="server">Applicant/new hire ratio</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblAppHireRatio" runat="server" Text="0"></asp:Label>
-                        </td><td>
-                            <asp:Label ID="lblJobOfferHire" runat="server">Job Offer/new hire ratio	</asp:Label>
-                        </td>
-                        <td>
-                            <asp:Label ID="lblJobOfferHireRatio" runat="server" Text="0"></asp:Label>
-                        </td>--%>
-                    </tr>
-                </table>
-            </div>
+                                <td>
+                                    <asp:Label ID="lblAppInterview" runat="server">Applicant/interview ratio</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblAppInterviewRatio" runat="server" Text="0"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblInterviewActive" runat="server">Interview/Active ratio</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInterviewActiveRatio" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblJobOfferActive" runat="server">Offer Made/Active ratio</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblJobOfferActiveRatio" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblActiveDeactive" runat="server">Active/Deactive Ratio</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblActiveDeactiveRatio" runat="server" Text="0"></asp:Label>
+                                </td>
+                                <%--<td>
+                                    <asp:Label ID="lblInactive" runat="server">New Inactive</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblInactiveCount" runat="server" Text="0"></asp:Label>
+                                </td><td>
+                                    <asp:Label ID="lblAppHire" runat="server">Applicant/new hire ratio</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblAppHireRatio" runat="server" Text="0"></asp:Label>
+                                </td><td>
+                                    <asp:Label ID="lblJobOfferHire" runat="server">Job Offer/new hire ratio	</asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblJobOfferHireRatio" runat="server" Text="0"></asp:Label>
+                                </td>--%>
+                            </tr>
+                        </table>
+                    </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
             <br />
             <br />
             <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="txtSearch" placeholder="Search Data." />
-                <input type="button" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" />
+                <input type="button" style="display:none;" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
                 <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
                     <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
                     <span>Login..!</span>
@@ -718,21 +680,32 @@
                     </td>
                 </tr>
             </table>
-            <div class="grid">
+            <div class="grid" style="overflow:visible; max-height:none; padding:0 10px;width:auto;">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                        <asp:GridView CssClass="grdUserMain" ID="grdUsers" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
-                            OnRowCancelingEdit="grdUsers_RowCancelingEdit" OnRowEditing="grdUsers_RowEditing"
-                            OnRowUpdating="grdUsers_RowUpdating" OnRowDeleting="grdUsers_RowDeleting"
-                            OnRowDataBound="grdUsers_RowDataBound" OnSelectedIndexChanged="grdUsers_SelectedIndexChanged"
-                            OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" EmptyDataText="No Data" HeaderStyle-CssClass="HeaderFreez">
+                        <div  style="float:right; padding-top:10px;">
+                            Page size: 
+                            <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
+                                OnSelectedIndexChanged="ddlPageSize_grdUsers_SelectedIndexChanged" >
+                                <asp:ListItem Text="10" Value="10" />
+                                <asp:ListItem Text="20" Value="20" />
+                                <asp:ListItem Text="30" Value="30" />
+                                <asp:ListItem Text="40" Value="40" />
+                                <asp:ListItem Text="50" Value="50" />
+                            </asp:DropDownList>
+                        </div>
+                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" Width="100%" HeaderStyle-CssClass="header-row" PagerStyle-CssClass="pager-row" EmptyDataText="No Data"
+                            AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
+                            PagerSettings-Mode="NumericFirstLast" PagerSettings-Position="TopAndBottom" 
+                            OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" 
+                            OnPageIndexChanging="grdUsers_PageIndexChanging">
                             <Columns>
                                 <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px" HeaderStyle-Width="40px">
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="Edit" runat="server"
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="Delete" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
+                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -743,7 +716,7 @@
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                         <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
-                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="Edit" runat="server"
+                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
                                         <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
@@ -928,7 +901,6 @@
                         </asp:GridView>
                     </ContentTemplate>
                 </asp:UpdatePanel>
-
             </div>
             <table style="width: 100%">
                 <tr style="width: 100%">
@@ -1004,6 +976,9 @@
                 <ContentTemplate>
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="3" align="center">Name: <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
+                        </tr>
                         <tr>
                             <td align="center" style="height: 15px;">Date :
                     <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
@@ -1092,6 +1067,10 @@
                     <asp:HiddenField ID="hdnLastName" runat="server" />
                     <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                         cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td align="right">Name: <asp:Label ID="lblName_OfferMade" runat="server" /></td>
+                            <td>Designation: <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                        </tr>
                         <tr>
                             <td align="right" style="height: 15px;">
                                 <br />

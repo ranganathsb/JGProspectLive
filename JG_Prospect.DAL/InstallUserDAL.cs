@@ -2228,6 +2228,50 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetSalesUsersStaticticsAndData(string strStatus, string strDesignation, string strSource, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
+        {
+            DataSet dsResult = null;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Status", DbType.String, strStatus);
+                    database.AddInParameter(command, "@Designation", DbType.String, strDesignation);
+                    database.AddInParameter(command, "@Source", DbType.String, strSource);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int16, userid);
+                    if (fromdate != null)
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
+
+                    database.AddInParameter(command, "@PageIndex", DbType.Int16, intPageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int16, intPageSize);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
+                    dsResult = database.ExecuteDataSet(command);
+                }
+                return dsResult;
+            }
+            catch (Exception ex)
+            {
+                return dsResult;
+            }
+        }
+
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             returndata = new DataSet();

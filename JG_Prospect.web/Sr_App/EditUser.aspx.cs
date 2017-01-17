@@ -64,59 +64,42 @@ namespace JG_Prospect
 
     public partial class EditUser : System.Web.UI.Page
     {
-
         #region '--Members--'
 
         #endregion
 
         #region '--Properties--'
 
-        public SortDirection dir
+        private SortDirection SalesUserSortDirection
         {
             get
             {
-                if (ViewState["dirState"] == null)
+                if (ViewState["SalesUserSortDirection"] == null)
                 {
-                    ViewState["dirState"] = SortDirection.Ascending;
+                    return SortDirection.Descending;
                 }
-                return (SortDirection)ViewState["dirState"];
+                return (SortDirection)ViewState["SalesUserSortDirection"];
             }
             set
             {
-                ViewState["dirState"] = value;
+                ViewState["SalesUserSortDirection"] = value;
             }
         }
 
-        #endregion
-
-        #region WebMethods
-        [System.Web.Services.WebMethod]
-        public static List<Task> GetTasksForDesignation(string designationID)
+        private string SalesUserSortExpression
         {
-            List<Task> taskList = new List<Task>();
-            DataSet dsTechTaskForDesignation;
-
-            if (!string.IsNullOrEmpty(designationID) && !designationID.ToLower().Contains("all"))
+            get
             {
-                int iDesignationID = Convert.ToInt32(designationID);
-                dsTechTaskForDesignation = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);
-                if (dsTechTaskForDesignation != null & dsTechTaskForDesignation.Tables.Count > 0)
+                if (ViewState["SalesUserSortExpression"] == null)
                 {
-                    //taskJSON = JsonConvert.SerializeObject(dsTechTaskForDesignation.Tables[0]);
-                    if (dsTechTaskForDesignation.Tables[0].Rows.Count > 0)
-                    {
-                        for (int iCurrentRow = 0; iCurrentRow < dsTechTaskForDesignation.Tables[0].Rows.Count; iCurrentRow++)
-                        {
-                            taskList.Add(new Task
-                            {
-                                TaskId = Convert.ToInt32(dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["TaskId"]),
-                                Title = dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["Title"].ToString()
-                            });
-                        }
-                    }
+                    return "CreatedOn";
                 }
+                return Convert.ToString(ViewState["SalesUserSortExpression"]);
             }
-            return taskList;
+            set
+            {
+                ViewState["SalesUserSortExpression"] = value;
+            }
         }
 
         #endregion
@@ -135,22 +118,29 @@ namespace JG_Prospect
             {
                 btnExport.Visible = false;
             }
+
             if (!IsPostBack)
             {
                 CalendarExtender1.StartDate = DateTime.Now;
+
                 Session["DeactivationStatus"] = "";
                 Session["FirstNameNewSC"] = "";
                 Session["LastNameNewSC"] = "";
                 Session["DesignitionSC"] = "";
                 Session["HighlightUsersForTypes"] = null;
-                binddata();
-                DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
+
+                //binddata();
+                //DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
-                FillCustomer();
                 //txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
-                ShowHRData();
+
+                FillCustomer();
+                BindDesignations();
+
+                GetSalesUsersStaticticsAndData(true);
+
                 LoadEmailContentToSentToUser(false);
             }
             else
@@ -168,63 +158,49 @@ namespace JG_Prospect
 
         #region grdUsers - Filters
 
+        protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAllDates.Checked)
+            {
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "All";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void ddlUserStatus_PreRender(object sender, EventArgs e)
+        {
+            DropDownList ddlStatus = (DropDownList)sender;
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
+        }
+
         protected void ddlFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+            //BindGrid();
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
         {
-            ShowHRData();
+            GetSalesUsersStaticticsAndData(true);
         }
 
         protected void txtTodate_TextChanged(object sender, EventArgs e)
         {
-            ShowHRData();
+            GetSalesUsersStaticticsAndData(true);
         }
 
         #endregion
 
         #region grdUsers - User List
-
-        protected void grdUsers_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            grdUsers.EditIndex = -1;
-            // binddata();
-        }
-
-        protected void grdUsers_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            try
-            {
-                string key = grdUsers.DataKeys[e.RowIndex].Values[0].ToString();
-                bool result = InstallUserBLL.Instance.DeleteInstallUser(Convert.ToInt32(key));
-                binddata();
-
-                if (result)
-                {
-                    //    lblmsg.Visible = true;
-                    //    lblmsg.CssClass = "success";
-                    //    lblmsg.Text = "User has been deleted successfully";
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deleted Successfully');", true);
-                }
-            }
-            catch (Exception ex)
-            {
-                //return ex
-            }
-        }
-
-        protected void grdUsers_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            grdUsers.EditIndex = e.NewEditIndex;
-            binddata();
-        }
-
-        protected void grdUsers_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-
-        }
 
         protected void grdUsers_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -259,7 +235,7 @@ namespace JG_Prospect
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
 
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem,"TechTaskId").ToString()))
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskId").ToString()))
                         {
                             hypTechTask.Text = string.Concat(
                                                                                 string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
@@ -267,7 +243,7 @@ namespace JG_Prospect
                                                                                     DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
                                                                             );
                             hypTechTask.NavigateUrl = Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
-                            hypTechTask.Visible = true; 
+                            hypTechTask.Visible = true;
                         }
 
                         switch (Status)
@@ -305,114 +281,6 @@ namespace JG_Prospect
             }
         }
 
-        private DropDownList BindContactDllForGrid(DropDownList ddlContactType)
-        {
-            // To Avoid multi call to DB
-            if(ViewState["ContactDllForGrid"] != null)
-            {   // Bind dropdown 
-                ddlContactType =  BindContactDllForVS(ddlContactType);
-            }
-            else
-            {
-                // Fill ViewState from DB.
-                DataSet dsPhoneType;
-               
-                dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
-                
-                foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
-                {
-                    if(RowItem["ContactName"].ToString().ToUpper() == "OTHER")
-                    {
-                        RowItem["ContactName"] = "EMAIL";
-                        RowItem["ContactValue"] = "EMAIL";
-                        RowItem["UserContactID"] = "0";
-                    }
-                }
-
-                ViewState["ContactDllForGrid"] = dsPhoneType;
-
-                ddlContactType = BindContactDllForVS(ddlContactType);
-
-            }
-            return ddlContactType;
-        }
-
-        /// <summary>
-        /// Bind DropDown on from the ViewState.
-        /// </summary>
-        /// <param name="ddlContactType"></param>
-        /// <returns></returns>
-        private DropDownList BindContactDllForVS(DropDownList ddlContactType)
-        {
-            DataSet dsPhoneType;
-            dsPhoneType = (DataSet)ViewState["ContactDllForGrid"];
-
-            if (dsPhoneType.Tables[0].Rows.Count > 0)
-            {
-                ddlContactType.DataSource = dsPhoneType.Tables[0];
-                ddlContactType.DataTextField = "ContactName";
-                ddlContactType.DataValueField = "UserContactID";
-                ddlContactType.DataBind();
-            }
-
-            return ddlContactType;
-        }
-
-        /// <summary>
-        /// If PromaryPhone with Phone Type will Inject Phone Type Image.
-        /// </summary>
-        /// <param name="lblPrimaryPhone"></param>
-        /// <param name="chaDelimiter"></param>
-        /// <returns></returns>
-        private Label ManiPulatePrimaryPhone(Label lblPrimaryPhone , char chaDelimiter)
-        {
-            string[] strPrimaryPhone = lblPrimaryPhone.Text.Split(chaDelimiter);
-            string strPhoneType = "";
-
-            if (!string.IsNullOrEmpty(strPrimaryPhone[1]))
-            {
-                strPhoneType = strPrimaryPhone[1].ToString().Trim();
-
-                switch (strPhoneType)
-                {
-                    case "skype":
-                        strPhoneType = "../Sr_App/img/skype.png";
-                        break;
-                    case "whatsapp":
-                        strPhoneType = "../Sr_App/img/WhatsApp.png";
-                        break;
-                    case "HousePhone":
-                    case "House Phone":
-                        strPhoneType = "../Sr_App/img/Phone_home.png";
-                        break;
-                    case "CellPhone":
-                    case "Cell Phone":
-                        strPhoneType = "../Sr_App/img/Cell_Phone.png";
-                        break;
-                    case "WorkPhone":
-                    case "Work Phone":
-                        strPhoneType = "../Sr_App/img/WorkPhone.png";
-                        break;
-                    case "AltPhone":
-                    case "Alt. Phone":
-                        strPhoneType = "../Sr_App/img/AltPhone.png";
-                        break;
-                    default:
-                        strPhoneType = "../Sr_App/img/WorkPhone.png";
-                        break;
-                }
-                strPhoneType = "<img src='" + strPhoneType + "' alt='' />";
-                lblPrimaryPhone.Text = "<a style='color:red' class='PrimaryPhone'>" + strPrimaryPhone[0] + "</a>" + strPhoneType;
-            }
-
-            return lblPrimaryPhone;
-        }
-
-        protected void grdUsers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
@@ -432,22 +300,20 @@ namespace JG_Prospect
 
                 if (txtNewContact.Text.Trim() != "")
                 {
-
-
                     if (PhoneType == "EMAIL")
                     {
                         string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 2, id, 0);
                         if (strReturnValue != "")
                         {
-                            binddata();
                             //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User with email already Exist')", true);
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
                         }
                         else
                         {
                             InstallUserBLL.Instance.AddNewEmailForUser(txtNewContact.Text, IsPrimary, id);
-                            binddata();
                         }
+                        //binddata();
+                        GetSalesUsersStaticticsAndData();
                     }
                     else
                     {
@@ -459,7 +325,8 @@ namespace JG_Prospect
                         else
                         {
                             InstallUserBLL.Instance.AddUserPhone(IsPrimary, txtNewContact.Text, Convert.ToInt32(ddlContactType.SelectedValue), id, null, null, false);
-                            binddata();
+                            //binddata();
+                            GetSalesUsersStaticticsAndData();
                         }
                     }
                 }
@@ -467,30 +334,30 @@ namespace JG_Prospect
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
                 }
-                
+
                 //DropDownList ddlStatus = (DropDownList)gvRow.FindControl("ddlStatus");
                 //int StatusId = Convert.ToInt32(e.CommandArgument);
                 ////string Status = ddlStatus.SelectedValue;
                 //bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
 
             }
-            else if (e.CommandName == "Edit")
+            else if (e.CommandName == "EditSalesUser")
             {
-                GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-                int index = row.RowIndex;
-                Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
-                string designation = desig.Text;
-                string ID1 = e.CommandArgument.ToString();
-                con.Open();
-                SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
-                SqlDataReader rdr = cmd.ExecuteReader();
-                string type = "";
-                while (rdr.Read())
-                {
-                    type = rdr[0].ToString();
+                //GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                //int index = row.RowIndex;
+                //Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
+                //string designation = desig.Text;
+                //string ID1 = e.CommandArgument.ToString();
+                //con.Open();
+                //SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
+                //SqlDataReader rdr = cmd.ExecuteReader();
+                //string type = "";
+                //while (rdr.Read())
+                //{
+                //    type = rdr[0].ToString();
 
-                }
-                con.Close();
+                //}
+                //con.Close();
                 //if (designation != "SubContractor" && type != "Sales")
                 //{
                 //    string ID = e.CommandArgument.ToString();
@@ -508,10 +375,13 @@ namespace JG_Prospect
                 //}
 
             }
-            else if (e.CommandName == "Delete")
+            else if (e.CommandName == "DeleteSalesUser")
             {
                 int id = Convert.ToInt32(e.CommandArgument.ToString());
-                InstallUserBLL.Instance.DeleteInstallUser(id);
+                if (InstallUserBLL.Instance.DeleteInstallUser(id))
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deleted Successfully');", true);
+                }
             }
             else if (e.CommandName == "ShowPicture")
             {
@@ -569,26 +439,38 @@ namespace JG_Prospect
 
         protected void grdUsers_Sorting(object sender, GridViewSortEventArgs e)
         {
-            binddata();
-            DataTable dt = new DataTable();
-            dt = (DataTable)(Session["UserGridData"]);
+            if (this.SalesUserSortExpression == e.SortExpression)
             {
-                string SortDir = string.Empty;
-                if (dir == SortDirection.Ascending)
+                if (this.SalesUserSortDirection == SortDirection.Ascending)
                 {
-                    dir = SortDirection.Descending;
-                    SortDir = "Desc";
+                    this.SalesUserSortDirection = SortDirection.Descending;
                 }
                 else
                 {
-                    dir = SortDirection.Ascending;
-                    SortDir = "Asc";
+                    this.SalesUserSortDirection = SortDirection.Ascending;
                 }
-                DataView sortedView = new DataView(dt);
-                sortedView.Sort = e.SortExpression + " " + SortDir;
-                grdUsers.DataSource = sortedView;
-                grdUsers.DataBind();
             }
+            else
+            {
+                this.SalesUserSortExpression = e.SortExpression;
+                this.SalesUserSortDirection = SortDirection.Ascending;
+            }
+
+            //binddata();
+            GetSalesUsersStaticticsAndData();
+        }
+
+        protected void ddlPageSize_grdUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdUsers.PageSize = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+            grdUsers.PageIndex = 0;
+            GetSalesUsersStaticticsAndData();
+        }
+
+        protected void grdUsers_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            grdUsers.PageIndex = e.NewPageIndex;
+            GetSalesUsersStaticticsAndData();
         }
 
         protected void grdUsers_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
@@ -609,9 +491,22 @@ namespace JG_Prospect
             Session["DesignitionSC"] = lblDesignation.Text;
             Session["FirstNameNewSC"] = lblFirstName.Text;
             Session["LastNameNewSC"] = lblLastName.Text;
+
+            lblName_InterviewDetails.Text =
+            lblName_OfferMade.Text = lblFirstName.Text + " " + lblLastName.Text;
+
+            lblDesignation_OfferMade.Text = lblDesignation.Text;
+
+            if (ddlDesignationForTask.Items.FindByText(lblDesignation.Text) != null)
+            {
+                ddlDesignationForTask.ClearSelection();
+                ddlDesignationForTask.Items.FindByText(lblDesignation.Text).Selected = true;
+            }
+
             if ((lblStatus.Value == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
-                binddata();
+                //binddata();
+                GetSalesUsersStaticticsAndData();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have rights change the status.')", true);
                 return;
             }
@@ -635,7 +530,8 @@ namespace JG_Prospect
                 }
                 else
                 {
-                    binddata();
+                    //binddata();
+                    GetSalesUsersStaticticsAndData();
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed as required field for selected status are not field')", true);
                     return;
                 }
@@ -735,7 +631,8 @@ namespace JG_Prospect
                 // Adding a popUp...
 
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
-                binddata();
+                //binddata();
+                GetSalesUsersStaticticsAndData();
 
                 if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
@@ -754,6 +651,109 @@ namespace JG_Prospect
             //call: updateStauts() function to update it in database.
         }
 
+        private DropDownList BindContactDllForGrid(DropDownList ddlContactType)
+        {
+            // To Avoid multi call to DB
+            if (ViewState["ContactDllForGrid"] != null)
+            {   // Bind dropdown 
+                ddlContactType = BindContactDllForVS(ddlContactType);
+            }
+            else
+            {
+                // Fill ViewState from DB.
+                DataSet dsPhoneType;
+
+                dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
+
+                foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
+                {
+                    if (RowItem["ContactName"].ToString().ToUpper() == "OTHER")
+                    {
+                        RowItem["ContactName"] = "EMAIL";
+                        RowItem["ContactValue"] = "EMAIL";
+                        RowItem["UserContactID"] = "0";
+                    }
+                }
+
+                ViewState["ContactDllForGrid"] = dsPhoneType;
+
+                ddlContactType = BindContactDllForVS(ddlContactType);
+
+            }
+            return ddlContactType;
+        }
+
+        /// <summary>
+        /// Bind DropDown on from the ViewState.
+        /// </summary>
+        /// <param name="ddlContactType"></param>
+        /// <returns></returns>
+        private DropDownList BindContactDllForVS(DropDownList ddlContactType)
+        {
+            DataSet dsPhoneType;
+            dsPhoneType = (DataSet)ViewState["ContactDllForGrid"];
+
+            if (dsPhoneType.Tables[0].Rows.Count > 0)
+            {
+                ddlContactType.DataSource = dsPhoneType.Tables[0];
+                ddlContactType.DataTextField = "ContactName";
+                ddlContactType.DataValueField = "UserContactID";
+                ddlContactType.DataBind();
+            }
+
+            return ddlContactType;
+        }
+
+        /// <summary>
+        /// If PromaryPhone with Phone Type will Inject Phone Type Image.
+        /// </summary>
+        /// <param name="lblPrimaryPhone"></param>
+        /// <param name="chaDelimiter"></param>
+        /// <returns></returns>
+        private Label ManiPulatePrimaryPhone(Label lblPrimaryPhone, char chaDelimiter)
+        {
+            string[] strPrimaryPhone = lblPrimaryPhone.Text.Split(chaDelimiter);
+            string strPhoneType = "";
+
+            if (!string.IsNullOrEmpty(strPrimaryPhone[1]))
+            {
+                strPhoneType = strPrimaryPhone[1].ToString().Trim();
+
+                switch (strPhoneType)
+                {
+                    case "skype":
+                        strPhoneType = "../Sr_App/img/skype.png";
+                        break;
+                    case "whatsapp":
+                        strPhoneType = "../Sr_App/img/WhatsApp.png";
+                        break;
+                    case "HousePhone":
+                    case "House Phone":
+                        strPhoneType = "../Sr_App/img/Phone_home.png";
+                        break;
+                    case "CellPhone":
+                    case "Cell Phone":
+                        strPhoneType = "../Sr_App/img/Cell_Phone.png";
+                        break;
+                    case "WorkPhone":
+                    case "Work Phone":
+                        strPhoneType = "../Sr_App/img/WorkPhone.png";
+                        break;
+                    case "AltPhone":
+                    case "Alt. Phone":
+                        strPhoneType = "../Sr_App/img/AltPhone.png";
+                        break;
+                    default:
+                        strPhoneType = "../Sr_App/img/WorkPhone.png";
+                        break;
+                }
+                strPhoneType = "<img src='" + strPhoneType + "' alt='' />";
+                lblPrimaryPhone.Text = "<a style='color:red' class='PrimaryPhone'>" + strPrimaryPhone[0] + "</a>" + strPhoneType;
+            }
+
+            return lblPrimaryPhone;
+        }
+
         #endregion
 
         #region grdUsers - Popups
@@ -765,7 +765,8 @@ namespace JG_Prospect
             if (isvaliduser > 0)
             {
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
-                binddata();
+                //binddata();
+                GetSalesUsersStaticticsAndData();
             }
         }
 
@@ -806,7 +807,8 @@ namespace JG_Prospect
             else
             {
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
-                binddata();
+                //binddata();
+                GetSalesUsersStaticticsAndData();
             }
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopup()", true);
             return;
@@ -852,7 +854,10 @@ namespace JG_Prospect
                     }
                 }
             }
-            SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, 104);
+
+            SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]),
+                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, 104, null,
+                ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
 
             //AssignedTask if any or Default
             AssignedTaskToUser();
@@ -884,7 +889,7 @@ namespace JG_Prospect
                     UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
-                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
+                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue, ddlTechTask.SelectedItem.Text);
             }
         }
 
@@ -908,7 +913,7 @@ namespace JG_Prospect
             //}
         }
 
-        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId)
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strTaskTitle)
         {
             try
             {
@@ -928,8 +933,15 @@ namespace JG_Prospect
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
+                    strsubject = strsubject.Replace("#ID#", strTaskId);
+                    strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
+
+                    strBody = strBody.Replace("#ID#", strTaskId);
+                    strBody = strBody.Replace("#TaskTitleID#", strTaskTitle);
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat( Request.Url.Scheme,Uri.SchemeDelimiter,Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#email#", emailId);
+                    strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -959,7 +971,8 @@ namespace JG_Prospect
 
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
-            binddata();
+            //binddata();
+            GetSalesUsersStaticticsAndData();
         }
 
         protected void btnSaveOfferMade_Click(object sender, EventArgs e)
@@ -1046,7 +1059,8 @@ namespace JG_Prospect
             }
             SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
 
-            binddata();
+            //binddata();
+            GetSalesUsersStaticticsAndData();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             return;
         }
@@ -1130,7 +1144,8 @@ namespace JG_Prospect
 
                         if (validateUploadedData(dtExcel) == false)
                         {
-                            binddata();
+                            //binddata();
+                            GetSalesUsersStaticticsAndData(); ;
                             UcStatusPopUp.changeText();
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
                             return;
@@ -1138,7 +1153,8 @@ namespace JG_Prospect
                         else
                         {
                             Import_To_Grid(dtExcel);
-                            binddata();
+                            //binddata();
+                            GetSalesUsersStaticticsAndData();
                         }
                     }
                     else
@@ -1156,7 +1172,8 @@ namespace JG_Prospect
         }
 
         protected void btnExport_Click(object sender, EventArgs e)
-        {/*
+        {
+            /*
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", string.Format("attachment; filename={0}", "Users.xls"));
@@ -1185,7 +1202,8 @@ namespace JG_Prospect
             Response.End();
           * */
 
-            DataTable dt = (DataTable)(Session["GridDataExport"]);
+            DataSet dsUsers_Export = InstallUserBLL.Instance.GetAllSalesUserToExport();
+            DataTable dt = dsUsers_Export.Tables[0];
 
             string filename = "SalesUser.xls";
             System.IO.StringWriter tw = new System.IO.StringWriter();
@@ -1399,89 +1417,84 @@ namespace JG_Prospect
 
         #region '--Methods--'
 
-        private void BindUsers(DataTable dt)
-        {
-            try
-            {
-                string usertype = Session["usertype"].ToString().ToLower();
+        //private void BindUsers(DataTable dt)
+        //{
+        //    try
+        //    {
+        //        string usertype = Session["usertype"].ToString().ToLower();
 
-                if (dt != null && dt.Columns["OrderStatus"] == null)
-                {
-                    dt.Columns.Add("OrderStatus");
-                    int st = 0;
+        //        if (dt != null && dt.Columns["OrderStatus"] == null)
+        //        {
+        //            dt.Columns.Add("OrderStatus");
+        //            int st = 0;
 
-                    if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
-                            dr["OrderStatus"] = st.ToString();
-                        }
-                    }
-                    else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
-                            dr["OrderStatus"] = st.ToString();
-                        }
-                    }
-                }
+        //            if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
+        //            {
+        //                foreach (DataRow dr in dt.Rows)
+        //                {
+        //                    st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
+        //                    dr["OrderStatus"] = st.ToString();
+        //                }
+        //            }
+        //            else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
+        //            {
+        //                foreach (DataRow dr in dt.Rows)
+        //                {
+        //                    st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
+        //                    dr["OrderStatus"] = st.ToString();
+        //                }
+        //            }
+        //        }
 
-                if (dt != null)
-                {
-                    DataView dv = dt.DefaultView;
-                    dv.Sort = "OrderStatus asc";
-                    grdUsers.DataSource = dv;
-                    grdUsers.DataBind();
-                }
-                else
-                {
-                    grdUsers.DataSource = null;
-                    grdUsers.DataBind();
-                }
+        //        if (dt != null)
+        //        {
+        //            DataView dv = dt.DefaultView;
+        //            dv.Sort = "OrderStatus asc";
+        //            grdUsers.DataSource = dv;
+        //            grdUsers.DataBind();
+        //        }
+        //        else
+        //        {
+        //            grdUsers.DataSource = null;
+        //            grdUsers.DataBind();
+        //        }
 
-                //DataView dv = dt.DefaultView;
-                //dv.Sort = "OrderStatus asc";
-                //grdUsers.DataSource = dv;
-                //grdUsers.DataBind();
-            }
-            catch (Exception ex)
-            {
-                UtilityBAL.AddException("Edituser", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-            }
-        }
+        //        //DataView dv = dt.DefaultView;
+        //        //dv.Sort = "OrderStatus asc";
+        //        //grdUsers.DataSource = dv;
+        //        //grdUsers.DataBind();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        UtilityBAL.AddException("Edituser", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+        //    }
+        //}
 
-        private void binddata()
-        {
-            DataSet DS = new DataSet();
-            //DS = UserBLL.Instance.getallusers(usertype);
-            DataSet ds = new DataSet();
+        //private void binddata()
+        //{
+        //    DataSet dsUsers_Export = InstallUserBLL.Instance.GetAllSalesUserToExport();
+        //    DataSet dsUsers_Grid = InstallUserBLL.Instance.GetAllEditSalesUser();
 
-            ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
-            DS = InstallUserBLL.Instance.GetAllEditSalesUser();
+        //    BindPieChart(dsUsers_Grid.Tables[0]);
 
+        //    //DS.Tables[0].Columns[4].DataType = typeof(Int32);
+        //    Session["GridDataExport"] = dsUsers_Export.Tables[0];
+        //    Session["UserGridData"] = dsUsers_Grid.Tables[0];
 
-            BindPieChart(DS.Tables[0]);
+        //    BindUsers(dsUsers_Grid.Tables[0]);
+        //    //grdUsers.DataSource = DS.Tables[0];
+        //    //grdUsers.DataBind();
 
-            //DS.Tables[0].Columns[4].DataType = typeof(Int32);
-            Session["GridDataExport"] = ds.Tables[0];
-            Session["UserGridData"] = DS.Tables[0];
+        //    //List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
+        //    // where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
+        //    // select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
 
-            BindUsers(DS.Tables[0]);
-            //grdUsers.DataSource = DS.Tables[0];
-            //grdUsers.DataBind();
+        //    //lstDesignation.Sort((x, y) => string.Compare(x, y));
+        //    //ddlDesignation.DataSource = lstDesignation;
 
-            //List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
-            // where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-            // select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
-
-            //lstDesignation.Sort((x, y) => string.Compare(x, y));
-            //ddlDesignation.DataSource = lstDesignation;
-
-            //ddlDesignation.DataBind();            
-            BindDesignations();
-        }
+        //    //ddlDesignation.DataBind();            
+        //    BindDesignations();
+        //}
 
         private void BindDesignations()
         {
@@ -1499,8 +1512,8 @@ namespace JG_Prospect
                 ddlDesignationForTask.DataValueField = "ID";
                 ddlDesignationForTask.DataBind();
             }
-            ddlDesignation.Items.Insert(0, "--All--");
-            ddlDesignationForTask.Items.Insert(0, "--All--");
+            ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
+            ddlDesignationForTask.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         private void FillCustomer()
@@ -1508,7 +1521,7 @@ namespace JG_Prospect
 
             fillFilterUserDDL();
 
-            ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "--Select--");
+            ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "0");
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -2354,7 +2367,7 @@ namespace JG_Prospect
             return true;
         }
 
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null, string strManager = "")
         {
             string fullname = FName + " " + LName;
             DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
@@ -2362,11 +2375,11 @@ namespace JG_Prospect
 
             if (ds == null)
             {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
             }
             else if (ds.Tables[0].Rows.Count == 0)
             {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
             }
             string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
             string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
@@ -2377,6 +2390,8 @@ namespace JG_Prospect
             string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
             strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
             strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
             strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
             strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
@@ -2392,6 +2407,8 @@ namespace JG_Prospect
             //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
             //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
             strBody = strBody.Replace("Reason", Reason);
+
+            strBody = strBody.Replace("#manager#", strManager);
 
             strBody = strHeader + strBody + strFooter;
 
@@ -2426,7 +2443,7 @@ namespace JG_Prospect
             }
 
             try
-            { 
+            {
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
@@ -2633,6 +2650,7 @@ namespace JG_Prospect
             }
             return timeIntervals;
         }
+
         /// <summary>
         /// Fill ddl for User Recruter 
         /// Also call from ucStaffLogin , EditUser
@@ -2673,78 +2691,132 @@ namespace JG_Prospect
             }
         }
 
-        private void BindGrid()
+        //private void BindGrid()
+        //{
+        //    GetSalesUsersStaticticsAndData();
+
+        //    DataTable dt = (DataTable)(Session["UserGridData"]);
+        //    EnumerableRowCollection<DataRow> query = null;
+        //    int iSelectedDesignationID = 0;
+        //    int iAddedByUserID = 0;
+        //    int iSourceID = 0;
+        //    if (ddlDesignation.SelectedIndex > 0)
+        //    {
+        //        iSelectedDesignationID = string.IsNullOrEmpty(ddlDesignation.SelectedValue) ? 0 : Convert.ToInt32(ddlDesignation.SelectedValue);
+        //    }
+        //    //if (drpUser.SelectedIndex > 0)
+        //    //{
+        //    //    iAddedByUserID = string.IsNullOrEmpty(drpUser.SelectedValue) ? 0 : Convert.ToInt32(drpUser.SelectedValue);
+        //    //}
+        //    //if (ddlSource.SelectedIndex > 0)
+        //    //{
+        //    //    iSourceID = string.IsNullOrEmpty(ddlSource.SelectedValue) ? 0 : Convert.ToInt32(ddlSource.SelectedValue);
+        //    //}
+        //    if ((ddlUserStatus.SelectedIndex != 0 || ddlDesignation.SelectedIndex != 0 || drpUser.SelectedIndex != 0 || ddlSource.SelectedIndex != 0)
+        //        && dt != null)
+        //    {
+        //        string Status = ddlUserStatus.SelectedItem.Value;
+        //        query = from userdata in dt.AsEnumerable()
+        //                where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
+        //                && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
+        //                && (userdata.Field<Int32?>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
+        //                && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
+        //                select userdata;
+        //        if (query.Count() > 0)
+        //        {
+        //            dt = query.CopyToDataTable();
+        //        }
+        //        else
+        //            dt = null;
+        //    }
+        //    //grdUsers.DataSource = dt;
+        //    //grdUsers.DataBind();
+
+        //    BindUsers(dt);
+        //}
+
+        private void GetSalesUsersStaticticsAndData(bool blResetGrid = false)
         {
-            ShowHRData();
-
-            DataTable dt = (DataTable)(Session["UserGridData"]);
-            EnumerableRowCollection<DataRow> query = null;
-            int iSelectedDesignationID = 0;
-            int iAddedByUserID = 0;
-            int iSourceID = 0;
-            if (ddlDesignation.SelectedIndex > 0)
+            if (blResetGrid)
             {
-                iSelectedDesignationID = string.IsNullOrEmpty(ddlDesignation.SelectedValue) ? 0 : Convert.ToInt32(ddlDesignation.SelectedValue);
+                grdUsers.PageIndex = 0;
+                this.SalesUserSortDirection = SortDirection.Ascending;
+                this.SalesUserSortExpression = "Status";
             }
-            //if (drpUser.SelectedIndex > 0)
-            //{
-            //    iAddedByUserID = string.IsNullOrEmpty(drpUser.SelectedValue) ? 0 : Convert.ToInt32(drpUser.SelectedValue);
-            //}
-            //if (ddlSource.SelectedIndex > 0)
-            //{
-            //    iSourceID = string.IsNullOrEmpty(ddlSource.SelectedValue) ? 0 : Convert.ToInt32(ddlSource.SelectedValue);
-            //}
-            if ((ddlUserStatus.SelectedIndex != 0 || ddlDesignation.SelectedIndex != 0 || drpUser.SelectedIndex != 0 || ddlSource.SelectedIndex != 0)
-                && dt != null)
-            {
-                string Status = ddlUserStatus.SelectedItem.Value;
-                query = from userdata in dt.AsEnumerable()
-                        where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
-                        && (userdata.Field<Int32?>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
-                        && (userdata.Field<Int32?>("AddedById") == Convert.ToInt32(drpUser.SelectedValue) || drpUser.SelectedIndex == 0)
-                        && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
-                        select userdata;
-                if (query.Count() > 0)
-                {
-                    dt = query.CopyToDataTable();
-                }
-                else
-                    dt = null;
-            }
-            //grdUsers.DataSource = dt;
-            //grdUsers.DataBind();
 
-            BindUsers(dt);
-        }
-
-        private void ShowHRData()
-        {
-            DateTime? fromDate = null;
-            DateTime? toDate = null;
+            DateTime? dtFromDate = null;
+            DateTime? dtToDate = null;
             if (!chkAllDates.Checked)
             {
-                fromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
-                toDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                dtFromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                dtToDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
             }
             string strUserStatus = string.Empty;
-            if (fromDate < toDate || (fromDate == null && toDate == null))
+            if (dtFromDate < dtToDate || (dtFromDate == null && dtToDate == null))
             {
-                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt32(drpUser.SelectedValue));
-                if (ds != null)
+                string strSortExpression = this.SalesUserSortExpression + " " + (this.SalesUserSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+
+                DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
+                                                        (
+                                                            ddlUserStatus.SelectedValue,
+                                                            ddlDesignation.SelectedValue,
+                                                            ddlSource.SelectedValue,
+                                                            dtFromDate,
+                                                            dtToDate,
+                                                            Convert.ToInt32(drpUser.SelectedValue),
+                                                            grdUsers.PageIndex,
+                                                            grdUsers.PageSize,
+                                                            strSortExpression
+                                                        );
+                if (dsSalesUserData != null)
                 {
-                    DataTable dtHrData = ds.Tables[0];
-                    DataTable dtgridData = ds.Tables[1];
-                    List<HrData> lstHrData = new List<HrData>();
-                    foreach (DataRow row in dtHrData.Rows)
+                    DataTable dtSalesUser_Statictics_Status = dsSalesUserData.Tables[0];
+                    DataTable dtSalesUser_Statictics_AddedBy = dsSalesUserData.Tables[1];
+                    DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
+                    DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
+                    DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
+
+                    #region OrderStatus Column
+
+                    string usertype = Session["usertype"].ToString().ToLower();
+
+                    if (dtSalesUser_Grid.Columns["OrderStatus"] == null)
                     {
-                        HrData hrdata = new HrData();
-                        hrdata.status = row["status"].ToString();
-                        hrdata.count = row["cnt"].ToString();
-                        lstHrData.Add(hrdata);
+                        dtSalesUser_Grid.Columns.Add("OrderStatus");
+                        int st = 0;
+
+                        if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
+                        {
+                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                            {
+                                st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
+                                dr["OrderStatus"] = st.ToString();
+                            }
+                        }
+                        else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
+                        {
+                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                            {
+                                st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
+                                dr["OrderStatus"] = st.ToString();
+                            }
+                        }
                     }
 
-                    if (dtHrData.Rows.Count > 0)
+                    #endregion
+
+                    #region Statictics
+
+                    if (dtSalesUser_Statictics_Status.Rows.Count > 0)
                     {
+                        List<HrData> lstHrData = new List<HrData>();
+                        foreach (DataRow row in dtSalesUser_Statictics_Status.Rows)
+                        {
+                            HrData hrdata = new HrData();
+                            hrdata.status = row["Status"].ToString();
+                            hrdata.count = row["Count"].ToString();
+                            lstHrData.Add(hrdata);
+                        }
 
                         var rowOfferMade = lstHrData.Where(r => r.status == "OfferMade").FirstOrDefault();
                         if (rowOfferMade != null)
@@ -2826,10 +2898,7 @@ namespace JG_Prospect
                         else
                         {
                             Applicantcount = "0";
-
                         }
-
-
 
                         lblNewApplicantsCount.Text = Convert.ToDouble(Applicantcount).ToString();
                         // Ratio Calculation
@@ -2861,6 +2930,7 @@ namespace JG_Prospect
                             lblActiveDeactiveRatio.Text = "0";
                         }
 
+                        BindPieChart(lstHrData);
                     }
                     else
                     {
@@ -2874,21 +2944,22 @@ namespace JG_Prospect
                         lblAppInterviewRatio.Text = "0";
                         //  lblAppHireRatio.Text = "0";
                     }
-                    if (dtgridData.Rows.Count > 0)
+                    #endregion
+
+                    if (dtSalesUser_Grid.Rows.Count > 0)
                     {
-                        Session["UserGridData"] = dtgridData;
+                        //Session["UserGridData"] = dtSalesUser_Grid;
+                        //BindUsers(dtSalesUser_Grid);
 
-                        BindUsers(dtgridData);
+                        grdUsers.DataSource = dtSalesUser_Grid;
+                        grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
+                        grdUsers.DataBind();
 
-                        //grdUsers.DataSource = dtgridData;
-                        //grdUsers.DataBind();
-
-                        BindPieChart(dtgridData);
-                        BindUsersCount(dtgridData);
+                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
                     }
                     else
                     {
-                        Session["UserGridData"] = null;
+                        //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
                     }
@@ -2900,40 +2971,16 @@ namespace JG_Prospect
             }
         }
 
-        private void BindPieChart(DataTable dtgridData)
+        private void BindPieChart(List<HrData> lstHrData)
         {
-            DataTable dt = dtgridData;
+            string[] x = new string[lstHrData.Count()];
+            int[] y = new int[lstHrData.Count()];
 
-            var query = from row in dt.AsEnumerable()
-                        group row by row.Field<string>("status") into st
-                        orderby st.Key
-                        select new
-                        {
-                            Name = st.Key,
-                            Total = st.Count()
-                        };
-
-            DataTable newItems = new DataTable();
-            newItems.Columns.Add("Name");
-            newItems.Columns.Add("Total");
-
-            foreach (var item in query)
-            {
-                DataRow newRow = newItems.NewRow();
-                newRow["Name"] = item.Name;
-                newRow["Total"] = item.Total;
-
-                newItems.Rows.Add(newRow);
-            }
-
-            string[] x = new string[query.Count()];
-            int[] y = new int[query.Count()];
-
-            for (int i = 0; i < query.Count(); i++)
+            for (int i = 0; i < lstHrData.Count(); i++)
             {
 
-                x[i] = newItems.Rows[i]["Name"].ToString();
-                y[i] = Convert.ToInt32(newItems.Rows[i]["Total"]);
+                x[i] = lstHrData[i].status.ToString();
+                y[i] = Convert.ToInt32(lstHrData[i].count);
             }
 
             Chart1.Series[0].Points.DataBindXY(x, y);
@@ -2942,42 +2989,84 @@ namespace JG_Prospect
             Chart1.Legends[0].Enabled = true;
         }
 
-        private void BindUsersCount(DataTable dt)
-        {
-            var addedBy = from row in dt.AsEnumerable()
-                          group row by row.Field<string>("AddedBy") into st
-                          orderby st.Key
-                          select new
-                          {
-                              AddedBy = st.Key,
-                              Total = st.Count()
-                          };
+        //private void BindPieChart(DataTable dtgridData)
+        //{
+        //    DataTable dt = dtgridData;
 
-            listAddedBy.DataSource = addedBy;
+        //    var query = from row in dt.AsEnumerable()
+        //                group row by row.Field<string>("status") into st
+        //                orderby st.Key
+        //                select new
+        //                {
+        //                    Name = st.Key,
+        //                    Total = st.Count()
+        //                };
+
+        //    DataTable newItems = new DataTable();
+        //    newItems.Columns.Add("Name");
+        //    newItems.Columns.Add("Total");
+
+        //    foreach (var item in query)
+        //    {
+        //        DataRow newRow = newItems.NewRow();
+        //        newRow["Name"] = item.Name;
+        //        newRow["Total"] = item.Total;
+
+        //        newItems.Rows.Add(newRow);
+        //    }
+
+        //    string[] x = new string[query.Count()];
+        //    int[] y = new int[query.Count()];
+
+        //    for (int i = 0; i < query.Count(); i++)
+        //    {
+
+        //        x[i] = newItems.Rows[i]["Name"].ToString();
+        //        y[i] = Convert.ToInt32(newItems.Rows[i]["Total"]);
+        //    }
+
+        //    Chart1.Series[0].Points.DataBindXY(x, y);
+        //    Chart1.Series[0].ChartType = SeriesChartType.Pie;
+        //    Chart1.ChartAreas["ChartArea1"].Area3DStyle.Enable3D = true;
+        //    Chart1.Legends[0].Enabled = true;
+        //}
+
+        private void BindUsersCount(DataTable dtAddedBy, DataTable dtDesignation, DataTable dtSource)
+        {
+            //var addedBy = from row in dt.AsEnumerable()
+            //              group row by row.Field<string>("AddedBy") into st
+            //              orderby st.Key
+            //              select new
+            //              {
+            //                  AddedBy = st.Key,
+            //                  Count = st.Count()
+            //              };
+
+            listAddedBy.DataSource = dtAddedBy;
             listAddedBy.DataBind();
 
-            var desig = from row in dt.AsEnumerable()
-                        group row by row.Field<string>("Designation") into st
-                        orderby st.Key
-                        select new
-                        {
-                            Designation = st.Key,
-                            Total = st.Count()
-                        };
+            //var desig = from row in dt.AsEnumerable()
+            //            group row by row.Field<string>("Designation") into st
+            //            orderby st.Key
+            //            select new
+            //            {
+            //                Designation = st.Key,
+            //                Count = st.Count()
+            //            };
 
-            listDesignation.DataSource = desig;
+            listDesignation.DataSource = dtDesignation;
             listDesignation.DataBind();
 
-            var source = from row in dt.AsEnumerable()
-                         group row by row.Field<string>("Source") into st
-                         orderby st.Key
-                         select new
-                         {
-                             Source = st.Key,
-                             Total = st.Count()
-                         };
+            //var source = from row in dt.AsEnumerable()
+            //             group row by row.Field<string>("Source") into st
+            //             orderby st.Key
+            //             select new
+            //             {
+            //                 Source = st.Key,
+            //                 Count = st.Count()
+            //             };
 
-            listSource.DataSource = source;
+            listSource.DataSource = dtSource;
             listSource.DataBind();
         }
 
@@ -3134,30 +3223,40 @@ namespace JG_Prospect
             }
         }
 
+
+        #region '--WebMethods--'
+
+        [System.Web.Services.WebMethod]
+        public static List<Task> GetTasksForDesignation(string designationID)
+        {
+            List<Task> taskList = new List<Task>();
+            DataSet dsTechTaskForDesignation;
+
+            if (!string.IsNullOrEmpty(designationID) && !designationID.ToLower().Contains("all"))
+            {
+                int iDesignationID = Convert.ToInt32(designationID);
+                dsTechTaskForDesignation = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);
+                if (dsTechTaskForDesignation != null & dsTechTaskForDesignation.Tables.Count > 0)
+                {
+                    //taskJSON = JsonConvert.SerializeObject(dsTechTaskForDesignation.Tables[0]);
+                    if (dsTechTaskForDesignation.Tables[0].Rows.Count > 0)
+                    {
+                        for (int iCurrentRow = 0; iCurrentRow < dsTechTaskForDesignation.Tables[0].Rows.Count; iCurrentRow++)
+                        {
+                            taskList.Add(new Task
+                            {
+                                TaskId = Convert.ToInt32(dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["TaskId"]),
+                                Title = dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["Title"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return taskList;
+        }
+
         #endregion
 
-        protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkAllDates.Checked)
-            {
-                txtfrmdate.Enabled = false;
-                txtTodate.Enabled = false;
-                txtfrmdate.Text = "All";
-            }
-            else
-            {
-                txtfrmdate.Enabled = true;
-                txtTodate.Enabled = true;
-                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
-            }
-            BindGrid();
-        }
-
-        protected void ddlUserStatus_PreRender(object sender, EventArgs e)
-        {
-            DropDownList ddlStatus = (DropDownList) sender;
-            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
-        }
-
+        #endregion
     }
 }
