@@ -223,6 +223,9 @@ namespace JG_Prospect.Sr_App
             chkProductCategoryList.DataTextField = "ProductName";
             chkProductCategoryList.DataValueField = "ProductId";
             chkProductCategoryList.DataBind();
+
+            chkProductCategoryList.Items.Add(new System.Web.UI.WebControls.ListItem("Select All", "0"));
+
         }
 
         #region Bind VendorMaterialList
@@ -993,7 +996,7 @@ namespace JG_Prospect.Sr_App
                 //bool emailres = VendorBLL.Instance.InsertVendorEmail(objvendor);
                 //objvendor.tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
                 //bool addressres = VendorBLL.Instance.InsertVendorAddress(objvendor);
-                //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
                 LblSave.Text = "Vendor Saved/Updated Successfully";
                 hidIsEditVendor.Value = "false";
                 clear();

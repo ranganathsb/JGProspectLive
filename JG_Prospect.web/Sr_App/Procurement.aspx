@@ -315,7 +315,7 @@
 
         }
 
-          function GetVendorDetails(e) {
+        function GetVendorDetails(e) {
             debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
@@ -332,13 +332,9 @@
             }
             var selectedChkProductCategoryListValues = "";
             $("[id*=chkVendorCategoryList] input:checked").each(function () {
-                //alert($(this).val());
                 selectedChkProductCategoryListValues += $(this).val();
             });
-            <%--if ($('#<%=ddlVndrCategory.ClientID%>').val() == 'Select' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
-                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
-                return false;
-            }--%>
+    
             if (selectedChkProductCategoryListValues == '' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
                 $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
@@ -348,8 +344,7 @@
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
             var AddrType = "Other";
-            //$(".vendor_table").find(".fixedAddressrow").each(function (index, node) {
-            //    if (index == 0) {
+            debugger;
             AddressData.push({
                 AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
                 AddressType: $(".clstxtAddressType0").val(),
@@ -359,8 +354,7 @@
                 Zip: $(".clstxtZip0").val(),
                 Country: $(".clstxtCountry0").val()
             })
-            //}
-            // });
+
             $("#tblVendorLocation").find(".newAddressrow").each(function (index, node) {
                 AddressData.push({
                     AddressType: $("#ddlAddressType1" + index).val(),
@@ -370,6 +364,7 @@
                     Zip: $("#txtZip1" + index).val()
                 })
             });
+
             $("#tblPrimaryEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -380,7 +375,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -396,6 +391,7 @@
                 VendorEmailData.push(EmailData);
 
             });
+
             $("#tblSecEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -406,7 +402,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -421,6 +417,7 @@
                 };
                 VendorEmailData.push(EmailData);
             });
+
             $("#tblAltEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -432,7 +429,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -447,11 +444,9 @@
                 };
                 VendorEmailData.push(EmailData);
             });
-            //console.log(JSON.stringify(VendorEmailData));
-            //console.log(JSON.stringify(AddressData));
 
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
-            debugger
+            debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/PostVendorDetails",
@@ -461,7 +456,6 @@
                 success: function (data) {
                     console.log(data);
                     checkAddress();
-                    //AddOldEmailContent(datalength);
                 }
             });
         }
@@ -486,8 +480,7 @@
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
             var AddrType = "Other";
-            //$(".vendor_table").find(".fixedAddressrow").each(function (index, node) {
-            //    if (index == 0) {
+
             AddressData.push({
                 AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
                 AddressType: $(".clstxtAddressType0").val(),
@@ -497,8 +490,7 @@
                 Zip: $(".clstxtZip0").val(),
                 Country: $(".clstxtCountry0").val()
             })
-            //}
-            // });
+
             $("#tblVendorLocation").find(".newAddressrow").each(function (index, node) {
                 AddressData.push({
                     AddressType: $("#ddlAddressType1" + index).val(),
@@ -508,6 +500,7 @@
                     Zip: $("#txtZip1" + index).val()
                 })
             });
+
             $("#tblPrimaryEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -518,7 +511,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -544,7 +537,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -570,7 +563,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -2851,17 +2844,17 @@
                                 <div id="categoriesList">
                                     <div id="productCategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Product Category</h4>
-                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
+                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>
                                     </div>
                                     <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Vendor Category</h4>
-                                        <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
+                                        <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>
                                     </div>
                                     <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Vendor Sub Category</h4>
-                                        <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
+                                        <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>
                                     </div>
                                 </div>
