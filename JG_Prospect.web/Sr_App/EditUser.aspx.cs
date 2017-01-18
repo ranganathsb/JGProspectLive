@@ -2759,8 +2759,8 @@ namespace JG_Prospect
                 DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
                                                         (
                                                             ddlUserStatus.SelectedValue,
-                                                            ddlDesignation.SelectedValue,
-                                                            ddlSource.SelectedValue,
+                                                            Convert.ToInt32(ddlDesignation.SelectedValue),
+                                                            Convert.ToInt32(ddlSource.SelectedValue),
                                                             dtFromDate,
                                                             dtToDate,
                                                             Convert.ToInt32(drpUser.SelectedValue),
