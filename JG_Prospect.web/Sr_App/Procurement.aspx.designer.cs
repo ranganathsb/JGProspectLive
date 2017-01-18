@@ -1153,7 +1153,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlprdtCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlprdtCategory;
         
         /// <summary>
         /// ddlVndrCategory control.
@@ -1162,7 +1162,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlVndrCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlVndrCategory;
         
         /// <summary>
         /// lnkAddVendorCategory1 control.
@@ -1324,7 +1324,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlVendorSubCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlVendorSubCategory;
         
         /// <summary>
         /// lnkAddVendorSubCategory control.
@@ -2863,7 +2863,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkProductCategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkProductCategoryList;
         
         /// <summary>
         /// chkVendorCategoryList control.
@@ -2872,7 +2872,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorCategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkVendorCategoryList;
         
         /// <summary>
         /// chkVendorSubcategoryList control.
@@ -2881,7 +2881,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorSubcategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkVendorSubcategoryList;
         
         /// <summary>
         /// btnSave control.
