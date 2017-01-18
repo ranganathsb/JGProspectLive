@@ -1415,7 +1415,7 @@
 
                         <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updtpnlfilter">
                             <ProgressTemplate>
-                                <div class="modal">
+                                <div class="modal" style="z-index:110000 !important;">
                                     <div class="center">
                                         <img alt="Loading..." src="../img/loader.gif" />
                                     </div>
@@ -1458,11 +1458,18 @@
                                     <tr>
                                         <td>Product Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlprdtCategory" runat="server" Width="150px" AutoPostBack="true" OnSelectedIndexChanged="ddlprdtCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlprdtCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlprdtCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="190" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                         </td>
                                         <td>Vendor Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlVndrCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <%--<asp:DropDownList ID="ddlVndrCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged"></asp:DropDownList>--%>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlVndrCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                             <br />
                                             <asp:LinkButton ID="lnkAddVendorCategory1" Text="Add Vendor Category" Visible="false" runat="server" OnClick="lnkAddVendorCategory1_Click"></asp:LinkButton>
                                             <br />
@@ -1552,7 +1559,11 @@
                                         </td>
                                         <td>Vendor Sub Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlVendorSubCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <%--<asp:DropDownList ID="ddlVendorSubCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged"></asp:DropDownList>--%>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlVendorSubCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                             <br />
                                             <asp:LinkButton ID="lnkAddVendorSubCategory" Text="Add Vendor Sub Category" Visible="false" runat="server"></asp:LinkButton>
                                             <asp:ModalPopupExtender ID="ModalPopupExtender5" runat="server" TargetControlID="lnkAddVendorSubCategory"
@@ -2826,10 +2837,10 @@
                                 <asp:Label ID="lbladdress" runat="server" ForeColor="Red"></asp:Label>
                             </div>
 
-                            <div id="divModalPopup" style="display: none;">
+                            <div id="divModalPopup" style="z-index:110000 !important; display: none;">
                                 <div class="modal">
                                     <div class="center">
-                                        <img alt="Loading..." src="../img/loader.gif" />
+                                        <img alt="Loading...0000" src="../img/loader.gif" />
                                     </div>
                                 </div>
                             </div>
@@ -2844,18 +2855,30 @@
                                 <div id="categoriesList">
                                     <div id="productCategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Product Category</h4>
-                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
-                                        </asp:CheckBoxList>
+                                        <%--<asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>--%>
+                                        <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkProductCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
+                                            <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
+                                            <Items></Items>
+                                        </asp:DropDownCheckBoxes>
                                     </div>
                                     <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Vendor Category</h4>
-                                        <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
-                                        </asp:CheckBoxList>
+                                       <%-- <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>--%>
+                                        <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
+                                            <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
+                                            <Items></Items>
+                                        </asp:DropDownCheckBoxes>
                                     </div>
                                     <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Vendor Sub Category</h4>
-                                        <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
-                                        </asp:CheckBoxList>
+                                        <%--<asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>--%>
+                                        <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorSubcategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
+                                            <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
+                                            <Items></Items>
+                                        </asp:DropDownCheckBoxes>
                                     </div>
                                 </div>
                                 <div class="btn_sec">

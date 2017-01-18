@@ -798,6 +798,10 @@ form.inline {
                         margin-bottom: 0;
                     }
 
+.form_panel_checkbox_dropdown ul li table tr td label, .form_panel_checkbox_dropdown table tr td label{
+    width:90% !important;
+}
+
 .list_limit {
     max-height: 150px;
     overflow: auto;
@@ -1360,7 +1364,7 @@ ul.left_nav {
 }
 
 #categoriesList {
-    height: 500px;
+    height: 300px;
     width: 800px;
     overflow: auto;
 }
