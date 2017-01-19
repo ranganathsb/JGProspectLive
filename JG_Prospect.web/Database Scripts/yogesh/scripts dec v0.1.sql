@@ -5128,3 +5128,36 @@ BEGIN
 END
 GO
 
+-- Create the data type
+CREATE TYPE IDs AS TABLE 
+(
+	Id BIGINT NOT NULL
+)
+GO
+
+/****** Object:  StoredProcedure [dbo].[DeleteInstallUsers]    Script Date: 19-Jan-17 9:55:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 19 Jan 2017
+-- Description:	Deletes / deactivates install users.
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteInstallUsers]
+	@IDs IDs READONLY
+AS
+BEGIN
+	
+	UPDATE dbo.tblInstallUsers 
+	SET 
+		[STATUS] = 'Deactive' 
+	WHERE Id IN (SELECT Id FROM @IDs)
+	
+	/*DELETE 
+	FROM dbo.tblInstallUsers 
+	WHERE Id=@id*/
+       
+ END
+GO

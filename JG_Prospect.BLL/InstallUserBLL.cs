@@ -269,6 +269,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.DeleteInstallUser(id);
         }
 
+        public bool DeleteInstallUsers(List<Int32> lstIDs)
+        {
+            return InstallUserDAL.Instance.DeleteInstallUsers(lstIDs);
+        }
+
         public bool updateProspectstatus(int Estimateid, string status, DateTime? followupdate)
         {
             return UserDAL.Instance.updateProspectstatus(Estimateid, status, followupdate);
