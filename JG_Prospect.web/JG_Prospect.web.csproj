@@ -1491,6 +1491,7 @@
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\html-table-search.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\langs\en.js" />
@@ -1612,10 +1613,12 @@
     <Content Include="js\jquery.js" />
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />
+    <Content Include="js\jquery.timepicker.js" />
     <Content Include="js\jquery.ui.core.js" />
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
+    <Content Include="js\tablefilter.js" />
     <Content Include="js\TimerFunctions.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
@@ -2878,7 +2881,6 @@
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
     <Folder Include="Database Scripts\Bhavik\Nov\" />
-    <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
