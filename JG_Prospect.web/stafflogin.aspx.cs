@@ -827,7 +827,7 @@ namespace JG_Prospect
 
                 // Check if request is coming from www.jmgroveconstruction.com's Employment page
                 Uri UrlReferer = Request.UrlReferrer;
-                if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
+                if ( UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
                 {
                     if (Request.Form.Count > 0 && !String.IsNullOrEmpty(Request.Form["txtloginid"]) && !String.IsNullOrEmpty(Request.Form["txtpassword"]))
                     {
