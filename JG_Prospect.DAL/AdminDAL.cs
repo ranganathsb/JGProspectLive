@@ -1280,6 +1280,37 @@ namespace JG_Prospect.DAL
             }
         }
 
+
+        //---------- start DP --------
+
+        //For Event By calendar....
+        public DataSet GetEventByCalendar(int calid)
+        {
+            DataSet result = new DataSet();
+            DateTime d = Convert.ToDateTime(System.DateTime.Now.ToLongDateString());
+            string year = Convert.ToString(System.DateTime.Now.Year);
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetEventByCalendar");
+                    database.AddInParameter(command, "@Year", DbType.String, year);
+                    database.AddInParameter(command, "@calid", DbType.Int32, calid);
+                    command.CommandType = CommandType.StoredProcedure;
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+                return null;
+            }
+        }
+
+
+        //--------- End DP -----------
+
         //Get All HR, Event , Company Calendars...
         public DataSet GetHRCompanyEventCalendar()
         {
