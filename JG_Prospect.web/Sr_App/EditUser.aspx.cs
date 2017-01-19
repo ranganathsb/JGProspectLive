@@ -2763,6 +2763,7 @@ namespace JG_Prospect
 
                 DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
                                                         (
+                                                            txtSearch.Text.Trim(),
                                                             ddlUserStatus.SelectedValue,
                                                             Convert.ToInt32(ddlDesignation.SelectedValue),
                                                             Convert.ToInt32(ddlSource.SelectedValue),

@@ -577,7 +577,7 @@
             <br />
             <br />
             <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" />
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                 <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
             </div>
             <table style="width: 100%;">

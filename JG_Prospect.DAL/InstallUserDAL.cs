@@ -2233,7 +2233,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetSalesUsersStaticticsAndData(string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
+        public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
             DataSet dsResult = null;
             try
@@ -2242,6 +2242,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
                     database.AddInParameter(command, "@Status", DbType.String, strStatus);
                     database.AddInParameter(command, "@DesignationId", DbType.Int32, intDesignationId);
                     database.AddInParameter(command, "@SourceId", DbType.Int32, intSourceId);
