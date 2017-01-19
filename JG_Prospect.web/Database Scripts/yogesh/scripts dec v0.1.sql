@@ -2717,7 +2717,7 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 	WHERE tuf.TaskId = @TaskId
 
 END
-
+GO
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE VIEW [dbo].[TaskListView] 
