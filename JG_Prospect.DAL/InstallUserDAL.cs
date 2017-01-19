@@ -2266,7 +2266,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
-                    if (string.IsNullOrEmpty(strSearchTerm))
+                    if (!string.IsNullOrEmpty(strSearchTerm))
                     {
                         database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
                     }
