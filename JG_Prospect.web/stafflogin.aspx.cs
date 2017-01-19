@@ -827,20 +827,24 @@ namespace JG_Prospect
 
                 // Check if request is coming from www.jmgroveconstruction.com's Employment page
                 Uri UrlReferer = Request.UrlReferrer;
-                if (!String.IsNullOrEmpty(UrlReferer.Host) && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
-                {
-                    if (Request.Form.Count > 0 && !String.IsNullOrEmpty(Request.Form["txtloginid"]) && !String.IsNullOrEmpty(Request.Form["txtpassword"]))
-                    {
-                        String strUserName = Request.Form["txtloginid"];
-                        String strUserPassword = Request.Form["txtpassword"];
 
-                        if (!String.IsNullOrEmpty(strUserName) && !String.IsNullOrEmpty(strUserPassword))
+                if (UrlReferer != null)
+                {
+                    if (!String.IsNullOrEmpty(UrlReferer.Host) && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
+                    {
+                        if (Request.Form.Count > 0 && !String.IsNullOrEmpty(Request.Form["txtloginid"]) && !String.IsNullOrEmpty(Request.Form["txtpassword"]))
                         {
-                            txtloginid.Text = strUserName;
-                            txtpassword.Text = strUserPassword;
-                            btnsubmit_Click(sender, e);
+                            String strUserName = Request.Form["txtloginid"];
+                            String strUserPassword = Request.Form["txtpassword"];
+
+                            if (!String.IsNullOrEmpty(strUserName) && !String.IsNullOrEmpty(strUserPassword))
+                            {
+                                txtloginid.Text = strUserName;
+                                txtpassword.Text = strUserPassword;
+                                btnsubmit_Click(sender, e);
+                            }
                         }
-                    }
+                    } 
                 }
             }
         }
@@ -858,7 +862,7 @@ namespace JG_Prospect
                 if (rdSalesIns.Checked)
                 {
                     JGSession.IsInstallUser = true;
-            
+
                     #region 'Install User'
 
                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
