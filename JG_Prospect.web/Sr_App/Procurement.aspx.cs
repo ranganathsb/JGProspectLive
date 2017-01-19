@@ -235,7 +235,7 @@ namespace JG_Prospect.Sr_App
             string VendorId = string.IsNullOrEmpty(hdnVendorID.Value) ? "" : hdnVendorID.Value;
             string ProductCatId = ddlprdtCategory.SelectedValue.ToString() == "Select" ? "" : ddlprdtCategory.SelectedValue.ToString();
             string VendorCatId = ddlVndrCategory.SelectedValue.ToString() == "0" ? "" : ddlVndrCategory.SelectedValue.ToString();
-            string VendorSubCatId = ddlVendorSubCategory.SelectedValue.ToString() == "Select" ? "" : ddlVendorSubCategory.SelectedValue.ToString();
+            string VendorSubCatId = ddlVendorSubCategory.SelectedValue.ToString() == "" ? "" : ddlVendorSubCategory.SelectedValue.ToString();
             string PeriodStart = txtfrmdate.Text;
             string PeriodEnd = txtTodate.Text;
             string PayPeriod = drpPayPeriod.SelectedValue.ToString() == "0" ? "" : drpPayPeriod.SelectedValue.ToString();
@@ -937,7 +937,7 @@ namespace JG_Prospect.Sr_App
             objvendor.TaxId = txtTaxId.Text;
             objvendor.ExpenseCategory = "";
             objvendor.AutoTruckInsurance = "";
-            objvendor.vendor_subcategory_id = Convert.ToInt32((ddlVendorSubCategory.SelectedValue == "Select") ? "0" : ddlVendorSubCategory.SelectedValue);
+            objvendor.vendor_subcategory_id = Convert.ToInt32((ddlVendorSubCategory.SelectedValue == "") ? "0" : ddlVendorSubCategory.SelectedValue);
 
             objvendor.VendorStatus = (ddlVendorStatusfltr.SelectedValue == "Select") ? "" : ddlVendorStatusfltr.SelectedValue;
             if (objvendor.VendorStatus == "All")
@@ -3523,7 +3523,7 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    ddlVendorSubCategory.SelectedValue = "Select";
+                    ddlVendorSubCategory.SelectedValue = "";
                 }
             }
             catch (Exception ex)
@@ -4404,7 +4404,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (chkVendorCategoryList.Items[0].Selected)
+            if (chkVendorCategoryList.Items.Count > 0 && chkVendorCategoryList.Items[0].Selected)
             {
                 foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
                     li.Selected = true;
