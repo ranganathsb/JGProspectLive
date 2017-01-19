@@ -311,40 +311,8 @@
                 $('.GrdPrimaryEmail').click(function () {
                     //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 });
-
-                $('#<%=txtSearch.ClientID%>').on('blur', function () {
-                    SearchGridData();
-                });
             });
 
-        }
-
-        function btnSearchGridData_OnClick(sender) {
-            SearchGridData();
-        }
-
-        function SearchGridData() {
-
-            $('.loading').show();
-
-            var strSearchTerm = $.trim($('#<%=txtSearch.ClientID%>').val()).toUpperCase();
-
-            var $tblUsers = $('#<%=grdUsers.ClientID%>');
-            $tblUsers.find('>tbody>tr').show();
-
-            if (strSearchTerm.length > 0) {
-                $tblUsers.find('>tbody>tr').each(function (i, item) {
-                    var $tr = $(item);
-
-                    if ($tr.text().toUpperCase().indexOf(strSearchTerm) == -1) {
-                        if(!$tr.hasClass('header-row') && !$tr.hasClass('pager-row')){
-                            $tr.hide();
-                        }
-                    }
-                });
-            }
-
-            $('.loading').hide();
         }
     </script>
     <style type="text/css">
@@ -609,12 +577,8 @@
             <br />
             <br />
             <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" />
-                <input type="button" style="display:none;" name="btnSearchGridData" value="Search" id="btnSearchGridData" class="btnSearc" onclick="javascript: btnSearchGridData_OnClick(this);" />
-                <%--<div id="imgSearchLoad" style="display: none;" class="SearchLoad">
-                    <img src="../img/Loading-ring-alt.gif" alt="Loding..!" />
-                    <span>Login..!</span>
-                </div>--%>
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
             </div>
             <table style="width: 100%;">
                 <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
@@ -1277,25 +1241,88 @@
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
-        prmTaskGenerator.add_endRequest(function () {
-        });
-
         prmTaskGenerator.add_beginRequest(function () {
             DestroyCKEditors();
         });
 
-        try {
-            $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
+        prmTaskGenerator.add_endRequest(function () {
+            EditUser_Initialize();
+        });
+
+        $(document).ready(function () {
+            EditUser_Initialize();
+        });
+
+        function EditUser_Initialize() {
+
+            SetSalesUserAutoSuggestion();
+            SetSalesUserAutoSuggestionUI();
+
+            try {
+                $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+                $(".grd-status").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
         }
 
-        try {
-            $(".grd-status").msDropDown();
-        } catch (e) {
-            alert(e.message);
+        function SetSalesUserAutoSuggestion() {
+
+            $("#<%=txtSearch.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetSalesUserAutoSuggestion",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=txtSearch.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearchGridData.ClientID%>').click();
+                }
+            });
         }
-        
+
+        function SetSalesUserAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
             $('#<%=hdnEmailTo.ClientID%>').val(email);
@@ -1304,5 +1331,6 @@
             SetCKEditor('<%=txtEmailFooter.ClientID%>');
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
+
     </script>
 </asp:Content>
