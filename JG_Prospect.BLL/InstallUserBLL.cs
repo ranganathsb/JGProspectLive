@@ -481,6 +481,16 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddNewEmailForUser(EmailID, IsPrimary, UserID);
         }
 
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for sales users.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns> categorised search suggestions for sales users</returns>
+        public DataSet GetSalesUserAutoSuggestion(String searchTerm)
+        {
+            return InstallUserDAL.Instance.GetSalesUserAutoSuggestion(searchTerm);
+        }
+
         public DataSet GetSalesUsersStaticticsAndData(string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
             return InstallUserDAL.Instance.GetSalesUsersStaticticsAndData(strStatus, intDesignationId, intSourceId, fromdate, todate, userid, intPageIndex, intPageSize, strSortExpression);

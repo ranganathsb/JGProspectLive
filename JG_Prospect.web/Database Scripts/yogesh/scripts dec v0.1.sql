@@ -4826,3 +4826,89 @@ BEGIN
 		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
 END
 GO
+
+/****** Object:  StoredProcedure [dbo].[GetSalesUserAutoSuggestion]    Script Date: 19-Jan-17 7:42:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 01/19/2017
+-- Description:	Load auto search suggestions for search term in edit user page.
+-- =============================================
+-- GetSalesUserAutoSuggestion 'IT'
+CREATE PROCEDURE [dbo].[GetSalesUserAutoSuggestion] 
+	@SearchTerm varchar(15) 	  
+AS
+BEGIN
+
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+
+	; WITH Suggestion (label,Category)
+	AS
+	(
+	
+	   SELECT TOP 3 t.InstallId AS AutoSuggest , 'Id#' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.InstallId LIKE '%'+ @SearchTerm + '%'   
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.FristName AS AutoSuggest , 'FirstName' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.FristName LIKE '%'+ @SearchTerm + '%'   
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.LastName AS AutoSuggest , 'LastName' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.LastName LIKE '%'+ @SearchTerm + '%'
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.Email AS AutoSuggest, 'Email' AS Category 
+	   from dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Email LIKE '%' + @SearchTerm +'%'
+   
+	   UNION
+	   
+	   SELECT DISTINCT TOP 3 t.Phone AS AutoSuggest, 'Phone' AS Category 
+	   from dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Phone LIKE '%' + @SearchTerm +'%'
+   
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.CountryCode AS AutoSuggest , 'CountryCode' AS Category 
+	   FROM dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.CountryCode LIKE '%' + @SearchTerm + '%'
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.Zip AS AutoSuggest , 'Zip' AS Category 
+	   FROM dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Zip LIKE '%' + @SearchTerm + '%'
+
+	)
+
+	SELECT * FROM Suggestion s ORDER BY s.Category DESC, s.label
+
+END
+GO

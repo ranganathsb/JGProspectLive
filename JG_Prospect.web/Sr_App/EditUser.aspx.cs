@@ -198,6 +198,11 @@ namespace JG_Prospect
             GetSalesUsersStaticticsAndData(true);
         }
 
+        protected void btnSearchGridData_Click(object sender, EventArgs e)
+        {
+            GetSalesUsersStaticticsAndData(true);
+        }
+
         #endregion
 
         #region grdUsers - User List
