@@ -306,7 +306,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@EventColor", DbType.String, Event.EventColor);
                     database.AddInParameter(command, "@EventCal", DbType.Int32, Event.EventCal);
                     database.AddInParameter(command, "@EventFile", DbType.String, Event.EventFile);
-                    //-------- End DP ----------
+                    database.AddInParameter(command, "@EventType", DbType.Int32, Event.EventType);
+                    database.AddInParameter(command, "@EventRepeat", DbType.Int32, Event.EventRepeat);
+                    database.AddInParameter(command, "@RecurrenceRule", DbType.String, Event.RecurrenceRule);
+                     //-------- End DP ----------
                     database.ExecuteNonQuery(command);
                    
                    // return res; 

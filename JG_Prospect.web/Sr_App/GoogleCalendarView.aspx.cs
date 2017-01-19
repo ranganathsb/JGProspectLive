@@ -190,9 +190,12 @@ namespace JG_Prospect.Sr_App
         {
             string NewImageName="";
             AnnualEvent a = new AnnualEvent();
+
+            a.RecurrenceRule = "";
             a.EventName = txtEventName.Text;
             a.Eventdate = txtEventStartDate.Text;
             a.EventEndDate = txtEventEndDate.Text;
+
             a.EventStartTime = txtEventStartTime.Text;
             if (txtEventEndTime.Text == "") {
                 a.EventEndTime ="";
@@ -220,6 +223,8 @@ namespace JG_Prospect.Sr_App
             {
                 a.EventType = Convert.ToInt32(chkEventType.SelectedValue);
             }
+
+           
 
             string strInviteUsers = txtinvite.Value;
 
@@ -358,6 +363,7 @@ namespace JG_Prospect.Sr_App
         }
         protected void btnEventClose_Click(object sender, EventArgs e)
         {
+           
             mpEvents.Hide();
         }
         protected void rsAppointments_AppointmentClick(object sender, SchedulerEventArgs e)

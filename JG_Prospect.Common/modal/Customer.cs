@@ -98,6 +98,7 @@ namespace JG_Prospect.Common.modal
         public string EventFile;
         public int EventRepeat;
         public int EventType;
+        public string RecurrenceRule;
         //------ End DP -----
 
     }

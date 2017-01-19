@@ -515,12 +515,12 @@
                                                     Event Start Time <span>*</span>
                                             </td>
                                             <td>
-                                                    <asp:TextBox ID="txtEventStartTime" CssClass="time"  MaxLength="10"
+                                                    <asp:TextBox ID="txtEventStartTime" CssClass="time" onkeypress="return false"  MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
                                              </td>
-                                            <td>  Event End Time <span>*</span> </td>
+                                            <td style="width:100px;">  Event End Time <span>*</span> </td>
                                             <td>
-                                                    <asp:TextBox ID="txtEventEndTime" CssClass="time"  MaxLength="10"
+                                                    <asp:TextBox ID="txtEventEndTime" CssClass="time"  onkeypress="return false" MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
                                             </td>
                                         </tr>
@@ -541,7 +541,7 @@
                                                                     <asp:ListItem Text="Daily" Value="1"></asp:ListItem>
                                                                     <asp:ListItem Text="Weekly" Value="2"></asp:ListItem>
                                                                     <asp:ListItem Text="Monthly" Value="3"></asp:ListItem>
-                                                                    <asp:ListItem Text="Weekly" Value="4"></asp:ListItem>
+                                                                    <asp:ListItem Text="Yearly" Value="4"></asp:ListItem>
                                                                 </asp:RadioButtonList>
                                                             </asp:Panel>
                                                         </td>
@@ -568,11 +568,11 @@
                                         <tr>
                                             
                                             <td colspan="2"  valign="top">
-                                                <div style="overflow:scroll;height:200px;width:300px;">
+                                                <div style="overflow:scroll;height:200px;width:280px;">
                                                     <table id="tblInvite" runat="server" >
                                                         <tr>
                                                             <td>
-                                                                Invite Users : <asp:TextBox ID="txtInviteEmail"  runat="server"></asp:TextBox>
+                                                                Invite Users : <asp:TextBox ID="txtInviteEmail" Width="100px"  runat="server"></asp:TextBox>
                                                                <input type="button" id="btnInviteEmail" runat="server" value="Add" />
                                                             </td>
                                                         </tr>
@@ -580,14 +580,37 @@
                                                 </div>
                                             </td>
 
-                                            <td  align="left" valign="top">
-                                                    Description <span>*</span>
+                                            <td colspan="2">
+                                                <table>
+                                                    <tr>
+                                                         <td  align="left" valign="top">
+                                                            Description <span>*</span>
+                                                        </td>
+                                                        <td valign="top">
+                                                             <asp:TextBox ID="txtEventDesc" TextMode="MultiLine"  Columns="25"   Rows="5"    TabIndex="1" runat="server"></asp:TextBox>
+                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ValidationGroup="SubmitEvent" runat="server"
+                                                               ControlToValidate="txtEventDesc" ForeColor="Red" ErrorMessage="Please Enter Event Description" Display="None"> </asp:RequiredFieldValidator>
+                                                         </td>
+                                                    </tr>
+                                                    <tr>
+                                                         <td  align="left" valign="top">
+                                                                Interval <span>*</span>
+                                                        </td>
+                                                        <td valign="top">
+                                                             <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" runat="server"></asp:TextBox>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                         <td  align="left" valign="top">
+                                                                Max Occurrence <span>*</span>
+                                                        </td>
+                                                        <td valign="top"> 
+                                                             <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" runat="server"></asp:TextBox>
+                                                         </td>
+                                                    </tr>
+                                                </table>
                                             </td>
-                                            <td valign="top">
-                                                 <asp:TextBox ID="txtEventDesc" TextMode="MultiLine"  Columns="30"   Rows="5"    TabIndex="1" runat="server"></asp:TextBox>
-                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventDesc" ForeColor="Red" ErrorMessage="Please Enter Event Description" Display="None"> </asp:RequiredFieldValidator>
-                                             </td>
+                                          
                                         </tr>
                                       <tr>
                                           <td colspan="4">
