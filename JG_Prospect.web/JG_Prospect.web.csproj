@@ -1011,6 +1011,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.contextMenu.min.css" />
     <Content Include="css\jquery.multiselect.css" />
+    <Content Include="css\jquery.timepicker.css" />
     <Content Include="css\lightslider.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
