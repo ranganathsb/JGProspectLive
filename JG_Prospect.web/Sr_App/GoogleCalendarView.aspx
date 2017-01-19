@@ -187,8 +187,8 @@
     </style>
    <%-- <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />--%>
-   <link href="../css/jquery.timepicker.css" rel="stylesheet" type="text/css" />
-
+   
+    <link href="../css/jquery.timepicker.css" rel="stylesheet" type="text/css" />
 
     <script lang="JavaScript" type="text/javascript">
         $(document).ready(function () {
@@ -568,7 +568,7 @@
                                         <tr>
                                             
                                             <td colspan="2"  valign="top">
-                                                <div style="overflow:scroll;height:200px;">
+                                                <div style="overflow:scroll;height:200px;width:300px;">
                                                     <table id="tblInvite" runat="server" >
                                                         <tr>
                                                             <td>
@@ -592,7 +592,7 @@
                                       <tr>
                                           <td colspan="4">
                                                <asp:HiddenField ID="txtinvite"  runat="server"  ></asp:HiddenField>
-                                                <asp:Button ID="btnEventSubmit"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="Submit" />
+                                                <asp:Button ID="btnEventSubmit" ValidationGroup="SubmitEvent"    runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
                                                 <asp:Button ID="btnEventClose" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" OnClick="btnEventClose_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                           </td>
                                       </tr>
@@ -601,15 +601,14 @@
                            
                    </asp:Panel>
 
-               <%-- <script src="//code.jquery.com/jquery-1.10.2.js"></script>--%>
-      
-                  <!-- Updated JavaScript url -->
+                <!-- Updated JavaScript url -->
                <script src="../js/jquery.timepicker.js"></script>
      
                 <script type="text/javascript" >
                    
+
                     $(document).ready(function () {
-                        $('#ContentPlaceHolder1_txtEventStartTime').timepicker({});
+                        $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
                         $('#ContentPlaceHolder1_txtEventEndTime').timepicker();
 
                         $(".radiol").click(function () {
@@ -650,51 +649,74 @@
 
                         function addRow() {
                             var txtInviteVal = $("#ContentPlaceHolder1_txtInviteEmail").val();
+                            
                             var html =
                             '<tr id="tr_' + cnt + '">' +
                                 '<td>' + '&nbsp;<lable class="eventinvite">' + txtInviteVal + ' </lable>'+
                                 '</td>' +
-                                '<td><a href="javascript:void(0);" class="BtnMinus"> X </a></td>' +
+                                '<td><a href="javascript:void(0);" onclick="javascript:$(this).parent().parent().remove();" class="BtnMinus"> X </a></td>' +
                                 '</tr>'
 
                             $(html).appendTo($("#ContentPlaceHolder1_tblInvite"));
                             cnt++;
                         };
 
-                        function deleteRow() {
-                            //var m = confirm("are you sure you want to delete this product category, Data will not be saved ?");
-                            //if (m) {
-                                var par = $(this).parent().parent();
-                                par.remove();
-                            //}
-                        };
+                        //function deleteRow() {
+                        //    //var m = confirm("are you sure you want to delete this product category, Data will not be saved ?");
+                        //    //if (m) {
+                        //        var par = $(this).parent().parent();
+                        //        par.remove();
+                        //    //}
+                        //};
 
                         $("#ContentPlaceHolder1_btnInviteEmail").click(function () {
                              addRow();
                         });
 
-                        $("#ContentPlaceHolder1_tblInvite").on("click", ".BtnMinus", deleteRow);
+                        //$(".BtnMinus").each(function () {
+                        //    alert("fff");
+                        //    // deleteRow();
+                        //    var par = $(this).parent().parent();
+                        //    par.remove();
+                        //});
                 
-
                     });
+
+                    function ValidateEventCal()
+                    {
+                        var isValid = false;
+                        isValid = Page_ClientValidate('SubmitCalendar');
+                        return isValid;
+                    }
+
+                 
 
                     function gotoInvite() {
                        
-                        var i = 0;
-                        var strInviteEmail = "";
-                        $(".eventinvite").each(function () {
-                            //alert($(this).text());
-                            if(i==0)
-                            {
-                                strInviteEmail = $(this).text();
-                            }
-                            else {
-                                strInviteEmail = strInviteEmail + ";" + $(this).text();
-                            }
-                            i = i + 1;
-                        });
-                        $("#ContentPlaceHolder1_txtinvite").val(strInviteEmail);
-                       
+
+                        var isValid = false;
+                        isValid = Page_ClientValidate('SubmitEvent');
+                        if (isValid == true) {
+
+                            var i = 0;
+                            var strInviteEmail = "";
+                            $(".eventinvite").each(function () {
+                                //alert($(this).text());
+                                if (i == 0) {
+                                    strInviteEmail = $(this).text();
+                                }
+                                else {
+                                    strInviteEmail = strInviteEmail + ";" + $(this).text();
+                                }
+                                i = i + 1;
+                            });
+                            $("#ContentPlaceHolder1_txtinvite").val(strInviteEmail);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
 
                 </script>
@@ -726,7 +748,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <asp:Button ID="btnAddCalendar"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClick="btnAddCalendar_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="Submit" />
+                                        <asp:Button ID="btnAddCalendar"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="return ValidateEventCal();" OnClick="btnAddCalendar_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitCalendar" />
                                         <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6" OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                     </td>
                                 </tr>
