@@ -1336,8 +1336,6 @@
                         <asp:ModalPopupExtender ID="mpevendorcatelog" runat="server" TargetControlID="btnAddcategory"
                             PopupControlID="pnlpopup" CancelControlID="btnCancel">
                         </asp:ModalPopupExtender>
-
-
                         <asp:Panel ID="pnlpopup" runat="server" BackColor="White" Height="269px" Width="550px"
                             Style="display: none; border: Solid 3px #A33E3F; border-radius: 10px 10px 0 0;">
                             <table style="border: Solid 3px #A33E3F; width: 100%; height: 100%;" cellpadding="0"
@@ -1366,15 +1364,6 @@
                                 </tr>
                             </table>
                         </asp:Panel>
-
-                        <asp:ModalPopupExtender ID="Mpedeletecategory" runat="server" TargetControlID="btndeletecategory"
-                            PopupControlID="pnlpopup2" CancelControlID="btnCancel2">
-                        </asp:ModalPopupExtender>
-                        <asp:Panel ID="pnlpopup2" runat="server" BackColor="White" Height="269px" Width="550px" CssClass="pnlDeleteVendor"
-                            Style="display: none">
-                        </asp:Panel>
-                        <button id="btnquotes" style="display: none" runat="server">
-                        </button>
                         <button id="btnmateriallist" style="display: none" runat="server">
                         </button>
                         <asp:ModalPopupExtender ID="ModalMateriallist" runat="server" PopupControlID="PanelMateriallist"
