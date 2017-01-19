@@ -198,6 +198,11 @@ namespace JG_Prospect
             GetSalesUsersStaticticsAndData(true);
         }
 
+        protected void btnSearchGridData_Click(object sender, EventArgs e)
+        {
+            GetSalesUsersStaticticsAndData(true);
+        }
+
         #endregion
 
         #region grdUsers - User List
@@ -2758,6 +2763,7 @@ namespace JG_Prospect
 
                 DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
                                                         (
+                                                            txtSearch.Text.Trim(),
                                                             ddlUserStatus.SelectedValue,
                                                             Convert.ToInt32(ddlDesignation.SelectedValue),
                                                             Convert.ToInt32(ddlSource.SelectedValue),

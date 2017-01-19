@@ -2228,7 +2228,34 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetSalesUsersStaticticsAndData(string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for sales users.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns> categorised search suggestions for sales users</returns>
+        public DataSet GetSalesUserAutoSuggestion(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetSalesUserAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
             DataSet dsResult = null;
             try
@@ -2237,6 +2264,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
                     database.AddInParameter(command, "@Status", DbType.String, strStatus);
                     database.AddInParameter(command, "@DesignationId", DbType.Int32, intDesignationId);
                     database.AddInParameter(command, "@SourceId", DbType.Int32, intSourceId);

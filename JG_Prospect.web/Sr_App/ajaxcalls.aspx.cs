@@ -16,13 +16,11 @@ namespace JG_Prospect.Sr_App
 
         #region "-- Web Methods --"
 
-
         /// <summary>
         /// Get auto search suggestions for task generator search box.
         /// </summary>
         /// <param name="searchterm"></param>
         /// <returns>categorised search suggestions for Users, Designations, Task Title, Task Ids</returns>
-
         [WebMethod]
         public static string GetSearchSuggestions(string searchterm)
         {
@@ -39,6 +37,29 @@ namespace JG_Prospect.Sr_App
 
             return SearchSuggestions;
         }
+
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for sales users.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns> categorised search suggestions for sales users</returns>
+        [WebMethod]
+        public static string GetSalesUserAutoSuggestion(string searchterm)
+        {
+            DataSet dsSuggestions;
+
+            string SearchSuggestions = string.Empty;
+
+            dsSuggestions = InstallUserBLL.Instance.GetSalesUserAutoSuggestion(searchterm);
+
+            if (dsSuggestions != null && dsSuggestions.Tables.Count > 0 && dsSuggestions.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsSuggestions.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
 
         #endregion
 
