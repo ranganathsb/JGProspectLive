@@ -178,7 +178,8 @@ namespace JG_Prospect.Sr_App
                 // -------- insert record  ----------
                 new_customerBLL.Instance.AddEventCalendar(a);
                 FillMyCalendarDropDown();
-                ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Calendar Added Successfully');", true);
+                Response.Redirect("GoogleCalendarView.aspx");
+                //ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Calendar Added Successfully');", true);
             }
             else
             {
@@ -347,8 +348,8 @@ namespace JG_Prospect.Sr_App
                             CommonFunction.SendEmail("", emailId, strsubject, emailbody, lstAttachments);
                         }
                     }
-                    
-                    ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Event Added Successfully');", true);
+                    Response.Redirect("GoogleCalendarView.aspx");
+                    //ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Event Added Successfully');", true);
                 }
                 catch(Exception ex)
                 {

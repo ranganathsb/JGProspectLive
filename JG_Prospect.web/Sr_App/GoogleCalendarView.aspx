@@ -502,12 +502,14 @@
                                                  <asp:TextBox ID="txtEventStartDate" CssClass="date" onkeypress="return false" MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
                                                  <asp:RequiredFieldValidator ID="RequiredFieldValidator6" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Date" Display="None"> </asp:RequiredFieldValidator>
+                                                   ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Start Date" Display="None"> </asp:RequiredFieldValidator>
                                              </td>
                                             <td>Event End Date <span>*</span></td>
                                             <td>
                                                  <asp:TextBox ID="txtEventEndDate" CssClass="date" onkeypress="return false" MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitEvent" runat="server"
+                                                   ControlToValidate="txtEventEndDate" ForeColor="Red" ErrorMessage="Please Enter Event End Date" Display="None"> </asp:RequiredFieldValidator>
                                              </td>
                                         </tr>
                                         <tr>
