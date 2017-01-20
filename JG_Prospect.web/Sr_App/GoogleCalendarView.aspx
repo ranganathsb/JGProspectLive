@@ -288,7 +288,7 @@
                 <h2>
                     <% 
                         
-                        if (Session["DesigNew"].ToString() == "Admin" ||  Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
+                        if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Admin"  || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
                        { %>
                     <asp:Button ID="btnCreateEvent" runat="server" Text="Create" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnCreateEvent_Click"   />
                     <asp:Button ID="btnCreateCal" runat="server" Text="Create Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="120px" OnClick="btnCreateCal_Click"   />
@@ -379,6 +379,8 @@
                                             <td >
                                                 <asp:DropDownList runat="server" ID="drpEventCalender" >
                                                 </asp:DropDownList>
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="SubmitEvent"
+                                                    runat="server" ControlToValidate="drpEventCalender" ForeColor="Red" ErrorMessage="Please Select Calendar" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                         </tr>
                                         <tr>

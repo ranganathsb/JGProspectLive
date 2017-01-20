@@ -4,11 +4,16 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Src="~/UserControl/UCAddress.ascx" TagPrefix="uc1" TagName="UCAddress" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
-    <script src="../js/jquery-latest.js" type="text/javascript"></script>
+   <script type="text/javascript">
+       var $ = jQuery.noConflict();
+       </script>
+
+   <%-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="../js/jquery-latest.js" type="text/javascript"></script>--%>
     <script type="text/javascript" src="../../Scripts/jquery.MultiFile.js"></script>
     <script src="../js/PrimaryContact.js" type="text/javascript"></script>
     <script type="text/javascript">
+
         function uploadComplete() {
 
             if (Checkfiles() == true) {
@@ -66,6 +71,7 @@
                 alert('Upload atleast two image.');
                 return false;
             }
+            return true;
         }
         function IsExists(pagePath, dataString, textboxid, errorlableid) {
             $.ajax({
@@ -135,15 +141,11 @@ function HidePopup() {
     $('#mask').hide();
     $('#<%=pnlpopup.ClientID %>').hide();
 }
-$(".btnClose").live('click', function () {
+$(".btnClose").bind('click', function () {
     $('#<%=txtAmount.ClientID %>, #<%=txtauthpass.ClientID %>, #<%=lblError.ClientID %>').val('');
 
     HidePopup();
 });
-
-
-
-
 
 
     </script>
@@ -252,9 +254,9 @@ $(".btnClose").live('click', function () {
 
     <script src="../Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
     <%--<script src="../Scripts/dropDownlistDiv.js" type="text/javascript"></script>--%>
-    <script src="../Scripts/jquery.webui-popover.min.js" type="text/javascript"></script>
+   <%-- <script src="../Scripts/jquery.webui-popover.min.js" type="text/javascript"></script>
     <script src="../Scripts/pgwslideshow.min.js" type="text/javascript"></script>
-       
+       --%>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel">
@@ -600,7 +602,7 @@ $(".btnClose").live('click', function () {
                                                                 </HeaderTemplate>
                                                                 <ItemTemplate>
                                                                     <asp:LinkButton ID="lnkCategoryDelete" runat="server" Text="X" CommandArgument='<%#Eval("RowSerialNo")%>'
-                                                                        CommandName="DeleteRec" CausesValidation="false" OnClientClick='javascript:return confirm("Are you sure want to delete this entry?");'></asp:LinkButton>
+                                                                        CommandName="DeleteRec" CausesValidation="false" OnClientClick='javascript:return if(confirm("Are you sure want to delete this entry?")) {return true; } else {return false;}'></asp:LinkButton>
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
                                                         </Columns>

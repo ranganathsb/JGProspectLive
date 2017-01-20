@@ -1144,8 +1144,9 @@ namespace JG_Prospect.Sr_App
 
                 ListItem lstMyCal = new ListItem();
                 lstMyCal.Text = "My Calendar";
-                lstMyCal.Value = "0";
+                lstMyCal.Value = "";
                 drpMyCalendar.Items.Add(lstMyCal);
+                drpEventCalender.Items.Add(lstMyCal);
 
 
                 for (int i = 0; i < result.Tables[0].Rows.Count; i++)
