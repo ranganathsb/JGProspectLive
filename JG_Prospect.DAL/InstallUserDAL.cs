@@ -1729,13 +1729,37 @@ namespace JG_Prospect.DAL
                         return false;
                 }
             }
-
             catch (Exception ex)
             {
                 return false;
-
             }
+        }
 
+        public bool DeleteInstallUsers(List<Int32> lstIDs)
+        {
+            try
+            {
+                DataTable dtIDs = new DataTable();
+                dtIDs.Columns.Add(new DataColumn("ID", typeof(Int32)));
+
+                foreach (var item in lstIDs)
+                {
+                    dtIDs.Rows.Add(item);
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("DeleteInstallUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.ExecuteNonQuery(command);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public DataSet getuserdetails(int id)
@@ -2264,7 +2288,10 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
+                    if (!string.IsNullOrEmpty(strSearchTerm))
+                    {
+                        database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
+                    }
                     database.AddInParameter(command, "@Status", DbType.String, strStatus);
                     database.AddInParameter(command, "@DesignationId", DbType.Int32, intDesignationId);
                     database.AddInParameter(command, "@SourceId", DbType.Int32, intSourceId);

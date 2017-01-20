@@ -576,62 +576,65 @@
             </asp:UpdatePanel>
             <br />
             <br />
-            <div style="float: right">
-                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
-                <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
-            </div>
-            <table style="width: 100%;">
-                <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
-                    <td>
-                        <asp:Label ID="lblUserStatus" Text="User Status" runat="server" /><span style="color: red">*</span></td>
-                    <td>
-                        <asp:Label ID="lblDesignation" Text="Designation" runat="server" /></td>
-                    <td>
-                        <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
-                    <td>
-                        <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
-                    <td colspan="2">
-                        <asp:Label ID="Label2" Text="Select Period" runat="server" /></td>
-                </tr>
-                <tr style="text-align: center; width: 100%">
-                    <td style="text-align: center;">
-                        <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender">                            
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="ddlDesignation" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-                    <td>
-                        <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-                    <td>
-                        <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" /></td>
-                    <td>
-                        <asp:Label ID="Label3" Text="From :*" runat="server" />
-                        <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
-                            onkeypress="return false" MaxLength="10" AutoPostBack="true"
-                            Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
-                        <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                        </cc1:CalendarExtender>
-                        <asp:Label ID="Label4" Text="To :*" runat="server" />
-                        <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
-                            MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
-                            Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
-                        <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
-                        </cc1:CalendarExtender>
-                        <br />
-                        <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
-                            runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
-                        </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
-                            runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
-                        </asp:RequiredFieldValidator>
-                        <br />
-
-
-                    </td>
-                </tr>
-            </table>
+            <asp:UpdatePanel ID="upFilter" runat="server">
+                <ContentTemplate>
+                    <div style="float: right">
+                        <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                        <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
+                    </div>
+                    <table style="width: 100%;">
+                        <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
+                            <td>
+                                <asp:Label ID="lblUserStatus" Text="User Status" runat="server" /><span style="color: red">*</span></td>
+                            <td>
+                                <asp:Label ID="lblDesignation" Text="Designation" runat="server" /></td>
+                            <td>
+                                <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
+                            <td>
+                                <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
+                            <td colspan="2">
+                                <asp:Label ID="Label2" Text="Select Period" runat="server" /></td>
+                        </tr>
+                        <tr style="text-align: center; width: 100%">
+                            <td style="text-align: center;">
+                                <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true" 
+                                    OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="ddlDesignation" runat="server" Width="140px" 
+                                    OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true" />
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                            <td>
+                                <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                            <td>
+                                <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" /></td>
+                            <td>
+                                <asp:Label ID="Label3" Text="From :*" runat="server" />
+                                <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
+                                    onkeypress="return false" MaxLength="10" AutoPostBack="true"
+                                    Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
+                                <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+                                </cc1:CalendarExtender>
+                                <asp:Label ID="Label4" Text="To :*" runat="server" />
+                                <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
+                                    MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
+                                    Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
+                                <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+                                </cc1:CalendarExtender>
+                                <br />
+                                <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
+                                    runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
+                                </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
+                                    runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
+                                </asp:RequiredFieldValidator>
+                                <br />
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+            </asp:UpdatePanel>
             <div class="grid" style="overflow:visible; max-height:none; padding:0 10px;width:auto;">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
@@ -652,6 +655,11 @@
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" 
                             OnPageIndexChanging="grdUsers_PageIndexChanging">
                             <Columns>
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkSelected" runat="server" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px" HeaderStyle-Width="40px">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
@@ -852,6 +860,10 @@
                             </Columns>
                         </asp:GridView>
                     </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
+                    </Triggers>
                 </asp:UpdatePanel>
             </div>
             <table style="width: 100%">
@@ -862,11 +874,15 @@
                         <br />
                         <asp:LinkButton ID="lnkDownloadCSV" Text="Download Sample CSV Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.csv' runat="server" OnClick="DownloadFile"></asp:LinkButton>
                     </td>
-
                     <td>
                         <label>Upload Prospects using xlsx file: 
                             <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
+                    </td>
+                    <td align="right">
+                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected" OnClick="lbtnDeleteSelected_Click" />
+                        <br />
+                        <br />
                     </td>
                 </tr>
             </table>
