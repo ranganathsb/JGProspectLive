@@ -130,6 +130,7 @@
             background-color:#333333; 
             filter:alpha(opacity=70); 
             opacity:0.7; 
+            z-index : 100 !important
         } 
         .modalPopup { 
             background-color:#FFFFFF; 
@@ -139,6 +140,7 @@
             padding:1px; 
             width:700px; 
             Height:450px; 
+            
         }    
 
 
