@@ -287,8 +287,8 @@
             <ContentTemplate>
                 <h2>
                     <% 
-                       
-                        if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
+                        
+                        if (Session["DesigNew"].ToString() == "Admin" ||  Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
                        { %>
                     <asp:Button ID="btnCreateEvent" runat="server" Text="Create" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnCreateEvent_Click"   />
                     <asp:Button ID="btnCreateCal" runat="server" Text="Create Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="120px" OnClick="btnCreateCal_Click"   />
@@ -502,12 +502,14 @@
                                                  <asp:TextBox ID="txtEventStartDate" CssClass="date" onkeypress="return false" MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
                                                  <asp:RequiredFieldValidator ID="RequiredFieldValidator6" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Date" Display="None"> </asp:RequiredFieldValidator>
+                                                   ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Start Date" Display="None"> </asp:RequiredFieldValidator>
                                              </td>
                                             <td>Event End Date <span>*</span></td>
                                             <td>
                                                  <asp:TextBox ID="txtEventEndDate" CssClass="date" onkeypress="return false" MaxLength="10"
                                                     TabIndex="1" runat="server"></asp:TextBox>
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitEvent" runat="server"
+                                                   ControlToValidate="txtEventEndDate" ForeColor="Red" ErrorMessage="Please Enter Event End Date" Display="None"> </asp:RequiredFieldValidator>
                                              </td>
                                         </tr>
                                         <tr>
