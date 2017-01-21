@@ -62,6 +62,8 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
+                
+
                 if (!IsPostBack)
                 {
                     Session["dtVendorAddress"] = null;
@@ -165,7 +167,7 @@ namespace JG_Prospect.Sr_App
                             ddlSource.DataTextField = "Source";
                             ddlSource.DataValueField = "Source";
                             ddlSource.DataBind();
-                            ddlSource.Items.Insert(0, "Select Source");
+                            ddlSource.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select Source", "0"));
                             ddlSource.SelectedIndex = 0;
                         }
                         else
@@ -570,7 +572,7 @@ namespace JG_Prospect.Sr_App
             bindVendorMaterialList();
 
             int VendorID = Convert.ToInt32(string.IsNullOrEmpty(hdnVendorID.Value) ? "0" : hdnVendorID.Value);
-            int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "Select" ? "0" : DrpVendorAddress.SelectedValue);
+            int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "0" ? "0" : DrpVendorAddress.SelectedValue);
             LoadVendorEmails(VendorID, AddressID);
         }
 
@@ -993,7 +995,7 @@ namespace JG_Prospect.Sr_App
                 //bool emailres = VendorBLL.Instance.InsertVendorEmail(objvendor);
                 //objvendor.tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
                 //bool addressres = VendorBLL.Instance.InsertVendorAddress(objvendor);
-                //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
                 LblSave.Text = "Vendor Saved/Updated Successfully";
                 hidIsEditVendor.Value = "false";
                 clear();
@@ -1020,6 +1022,7 @@ namespace JG_Prospect.Sr_App
             ddlSource.ClearSelection();
 
             txtTaxId.Text = txtWebsite.Text = null;
+            ddlWebSite.Items.Clear();
             ddlPaymentMethod.ClearSelection();
             ddlPaymentTerms.ClearSelection();
             txtPrimaryCity.Text = "";
@@ -1029,10 +1032,10 @@ namespace JG_Prospect.Sr_App
             ddlCountry.ClearSelection();
             ddlCountry.SelectedValue = "US";
             DrpVendorAddress.Items.Clear();
-            DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Primary", "0"));
             txtPrimaryContactExten0.Text = txtPrimaryContact0.Text = txtSecContactExten0.Text = txtSecContact0.Text = txtAltContactExten0.Text = txtAltContact0.Text = null;
             btnSave.Text = "Save";
-            ModalPopupExtender1.Hide();
+            mpeCategoryPopup.Hide();
             ViewState["CheckedPc"] = null;
             ViewState["CheckedVc"] = null;
             ViewState["CheckedVsc"] = null;
@@ -1059,10 +1062,25 @@ namespace JG_Prospect.Sr_App
             txtDiscountPerUnit.Text = "";
             txtReOrderPoint.Text = "";
             txtOrderQTYMax.Text = "";
-
+            txtGeneralPhone.Text = txtFaxNumber.Text = string.Empty;
+            ddlVendorStatus.ClearSelection();
+            ddlHoursOfOperation.Items.Clear();
             HttpContext.Current.Session["TempID"] = "";
             HttpContext.Current.Session["NotesTempID"] = "";
             BindVendorNotes();
+
+            txtPrimaryEmail0.Text = txtPrimaryFName0.Text = txtPrimaryLName0.Text = txtPrimaryContact0.Text = txtPrimaryContactExten0.Text = txtPrimaryFax0.Text = string.Empty;
+            ddlPrimaryTitle0.ClearSelection();
+            ddlPrimaryPhoneType0.ClearSelection();
+
+            txtSecEmail0.Text = txtSecFName0.Text = txtSecLName0.Text = txtSecContact0.Text = txtSecContactExten0.Text = txtSecFax0.Text = string.Empty;
+            ddlSecTitle0.ClearSelection();
+            ddlSecPhoneType0.ClearSelection();
+
+            txtAltEmail0.Text = txtAltFName0.Text = txtAltLName0.Text = txtAltContact0.Text = txtAltContactExten0.Text = txtAltFax0.Text = string.Empty;
+            ddlAltTitle0.ClearSelection();
+            ddlAltPhoneType0.ClearSelection();
+
         }
 
         #endregion
@@ -4237,7 +4255,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkProductCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            mpeCategoryPopup.Show();
             string strPrdtCategory = "";
             foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
             {
@@ -4285,7 +4303,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            mpeCategoryPopup.Show();
             string strVendorCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
             {
@@ -4330,7 +4348,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorSubcategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            mpeCategoryPopup.Show();
             string strVendorsubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {
@@ -4712,6 +4730,11 @@ namespace JG_Prospect.Sr_App
             //    ddlToHours.SelectedValue = strHO[2];
             //    ddlToAMPM.SelectedValue = strHO[3];
             //}
+        }
+
+        protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
+        {
+            mpeCategoryPopup.Show();
         }
 
         protected void lnkCharge_Click(object sender, EventArgs e)

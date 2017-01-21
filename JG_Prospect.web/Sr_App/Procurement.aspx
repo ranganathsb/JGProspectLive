@@ -100,7 +100,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.55);
-            z-index: 99;
+            z-index: 99 !important;
             -moz-opacity: 0.8;
             opacity: .80;
             filter: alpha(opacity=80);
@@ -219,7 +219,7 @@
             return false;
         }
         function HideModalPopup() {
-            debugger;
+            //debugger;
             $find("mpe").hide();
             return false;
         }
@@ -316,7 +316,7 @@
         }
 
           function GetVendorDetails(e) {
-            debugger;
+            //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
                 $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
@@ -343,7 +343,7 @@
                 $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
             }
-            $("#divModalPopup").show();
+            //$("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
@@ -380,7 +380,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -406,7 +406,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -432,7 +432,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -451,7 +451,7 @@
             //console.log(JSON.stringify(AddressData));
 
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
-            debugger
+            //debugger
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/PostVendorDetails",
@@ -467,7 +467,7 @@
         }
 
         function SetVendorEmails(e) {
-            debugger;
+            //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
                 $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
@@ -518,7 +518,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -544,7 +544,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -570,7 +570,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -587,7 +587,7 @@
             });
             //console.log(JSON.stringify(VendorEmailData));
             //console.log(JSON.stringify(AddressData));
-            debugger;
+            //debugger;
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
             $.ajax({
                 type: "POST",
@@ -1419,16 +1419,6 @@
                             <h2>Vendor Contacts</h2>
                             <br />
                         </div>
-
-                        <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updtpnlfilter">
-                            <ProgressTemplate>
-                                <div class="modal">
-                                    <div class="center">
-                                        <img alt="Loading..." src="../img/loader.gif" />
-                                    </div>
-                                </div>
-                            </ProgressTemplate>
-                        </asp:UpdateProgress>
                         <asp:UpdatePanel ID="updtpnlfilter" runat="server" UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
@@ -1733,9 +1723,9 @@
                                                                 <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
                                                                 <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
                                                                 <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
-                                                                <%--<br />
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
-                                                                ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
+                                                                <br />
+                                                                <asp:RequiredFieldValidator ID="rfvSource" runat="server" ControlToValidate="ddlSource" Display="Dynamic" 
+                                                                 ValidationGroup="addvendor" ErrorMessage="Please select the source." ForeColor="Red" InitialValue="0"></asp:RequiredFieldValidator>
                                                             </td>
                                                             <td>
                                                                 <label>General Phone No :</label><br />
@@ -2841,17 +2831,18 @@
                                 </div>
                             </div>
                             <asp:Button ID="btnPageLoad" runat="server" CssClass="cssbtnPageLoad" />
-                            <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BehaviorID="mpe" TargetControlID="btnOpenCategoryPopup"
+                            <asp:Label ID="dummyLabel" runat="server" />
+                            <asp:ModalPopupExtender ID="mpeCategoryPopup" runat="server" TargetControlID="dummyLabel"
                                 PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
                             </asp:ModalPopupExtender>
-                            <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none; background: white; border: 5px solid rgb(179, 71, 74)">
+                            <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none;z-index:1000 !important; background: white; border: 5px solid rgb(179, 71, 74)">
                                 <div class="popup_heading">
                                     <h1>Select Category</h1>
                                 </div>
                                 <div id="categoriesList">
                                     <div id="productCategory" class="categorylist_Heading" style="width: 250px; float: left">
                                         <h4>Product Category</h4>
-                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
+                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>
                                     </div>
                                     <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
@@ -2868,44 +2859,20 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" ValidationGroup="addvendor" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                     <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
-                                    <asp:ValidationSummary ID="valSum" DisplayMode="BulletList" EnableClientScript="true" HeaderText="You must enter a value in the following fields:" runat="server" ValidationGroup="addvendor" />
+                                    <asp:ValidationSummary ID="valSum" DisplayMode="BulletList" ShowMessageBox="true" EnableClientScript="true" HeaderText="You must enter a value in the following fields:" runat="server" ValidationGroup="addvendor" />
+                                    <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                                 </div>
                             </asp:Panel>
                             <div class="btn_sec">
                                 <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                 <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
-                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
+                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" OnClick="btnOpenCategoryPopup_Click" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
                                 <asp:Button ID="Button4" runat="server" TabIndex="1" Text="Save" Visible="false" />
-                                <br />
-                                <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                             </div>
                         </ContentTemplate>
+                      <Triggers>
+                      </Triggers>
                     </asp:UpdatePanel>
-                    <div id="tabs" style="display: none;">
-                        <ul>
-                            <li><a href="#tabs-1">Add/Edit Vendor</a></li>
-                            <li><a href="#tabs-2">Add Product</a></li>
-                            <li><a href="#tabs-3">Payment & Shipping</a></li>
-                        </ul>
-                        <div id="tabs-1">
-                            <asp:UpdatePanel ID="updtpnlAddVender11" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                        <div id="tabs-2">
-                            <asp:UpdatePanel ID="updatepanelAddProduct" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                        <div id="tabs-3">
-                            <asp:UpdatePanel ID="updatepanelPaymentShipping" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                    </div>
                     <asp:UpdatePanel ID="updateMaterialList" UpdateMode="Conditional" runat="server">
                         <ContentTemplate>
                             <div class="form_panel_custom vendorFilter">
@@ -3444,7 +3411,7 @@
         }
 
         function GetCityStateOnBlur(e) {
-            //debugger;
+            ////debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3452,7 +3419,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    //debugger;
+                    ////debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);
@@ -3462,7 +3429,7 @@
         }
 
         function onclientselect(strZip) {
-            //debugger;
+            ////debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3470,7 +3437,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    // debugger;
+                    // //debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);
