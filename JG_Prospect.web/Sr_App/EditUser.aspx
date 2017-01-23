@@ -12,7 +12,6 @@
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
     <style type="text/css">
-
         /*Grid add Container START*/
         .GrdContainer {
             width: 100%;
@@ -35,64 +34,81 @@
                 padding: 5px;
                 height: 160px;
             }
-            .GrdContent ul li span { width:100% !important;}
+
+        .GrdContent ul li span {
+            width: 100% !important;
+        }
+
         .GrdContent ul li {
             width: 80%;
             padding-top: 10px;
-        }.GrdContent ul li span label {width:75%; float:left; padding-top:0px;}.GrdContent ul li span input {width:20% !important; float:left;}
-            .GrdContent ul li select, .GrdContent ul li input
-            {
-                width:85% !important;
+        }
+
+            .GrdContent ul li span label {
+                width: 75%;
+                float: left;
+                padding-top: 0px;
             }
 
-            .GrdBtnAdd
-            {
-                margin-top: 12px; height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;
+            .GrdContent ul li span input {
+                width: 20% !important;
+                float: left;
             }
+
+            .GrdContent ul li select, .GrdContent ul li input {
+                width: 85% !important;
+            }
+
+        .GrdBtnAdd {
+            margin-top: 12px;
+            height: 30px;
+            background: url(img/main-header-bg.png) repeat-x;
+            color: #fff;
+        }
 
         /*Grid add Container END */
         .PrimaryPhone {
             cursor: pointer;
         }
+
         .GrdPrimaryEmail {
             text-decoration: underline;
             cursor: pointer;
             color: blue;
-
             line-height: 20px;
             width: 150px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-            /*.GrdPrimaryEmail:hover {
+        /*.GrdPrimaryEmail:hover {
                 overflow: visible;
                 white-space: normal;
                 width: auto;
                 position: absolute;
                 background-color: #FFF;
             }*/
-        .ddChild li 
-        {
-            text-align:left;
-            margin:0 !important;
-            width:auto !important;
-            border-bottom:none !important;
+        .ddChild li {
+            text-align: left;
+            margin: 0 !important;
+            width: auto !important;
+            border-bottom: none !important;
         }
-        .grd-lblPrimaryPhone img
-        {
-            float:left;
-            
+
+        .grd-lblPrimaryPhone img {
+            float: left;
         }
-        .grd-lblPrimaryPhone
-        {
-            width:135px !important;
-            padding-top:8px;
+
+        .grd-lblPrimaryPhone {
+            width: 135px !important;
+            padding-top: 8px;
         }
-        .user-zip{
-            padding-left:50px;
-            margin-left:70px;
+
+        .user-zip {
+            padding-left: 50px;
+            margin-left: 70px;
         }
+
         .SearchLoad {
             position: absolute;
             display: block;
@@ -155,7 +171,7 @@
             /*margin-top: 50px;*/
         }
 
-        .grdUserMain tr td {
+            .grdUserMain tr td {
                 padding: 10px 8px 12px 4px !important;
             }
 
@@ -263,8 +279,7 @@
             return isValidFile;
         }
 
-        function SetDesignationForTask()
-		 {
+        function SetDesignationForTask() {
             var dID = $('#<%=ddlDesignationForTask.ClientID%>').val();
             $.ajax({
                 type: "POST",
@@ -577,11 +592,7 @@
             <br />
             <br />
             <asp:UpdatePanel ID="upFilter" runat="server">
-                <ContentTemplate>
-                    <div style="float: right">
-                        <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
-                        <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
-                    </div>
+                <ContentTemplate>                   
                     <table style="width: 100%;">
                         <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
                             <td>
@@ -638,30 +649,34 @@
             <div class="grid" style="overflow:visible; max-height:none; padding:0 10px;width:auto;">
                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                        <div  style="float:right; padding-top:10px;">
-                            Page size: 
+                        <div  style="float:left; padding-top:10px;">
+                             
+                        <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                        <asp:Button ID="btnSearchGridData" runat="server" Text="Search" style="display:none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
+                    
+                            Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
                                 OnSelectedIndexChanged="ddlPageSize_grdUsers_SelectedIndexChanged" >
                                 <asp:ListItem Text="10" Value="10" />
-                                <asp:ListItem Text="20" Value="20" />
+                                <asp:ListItem Selected="True" Text="20" Value="20" />
                                 <asp:ListItem Text="30" Value="30" />
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
                         </div>
-                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" Width="100%" HeaderStyle-CssClass="header-row" PagerStyle-CssClass="pager-row" EmptyDataText="No Data"
-                            AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="10"
-                            PagerSettings-Mode="NumericFirstLast" PagerSettings-Position="TopAndBottom" 
+                        <asp:GridView ID="grdUsers" runat="server" CssClass="grdUserMain" Width="100%" HeaderStyle-CssClass="header-row"  EmptyDataText="No Data"
+                            AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" 
                             OnPageIndexChanging="grdUsers_PageIndexChanging">
+                            <PagerSettings Mode="Numeric"  Position="TopAndBottom"  />
+                            <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys"/>
                             <Columns>
-                                <asp:TemplateField>
+                                                                        
+                               <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px" HeaderStyle-Width="40px">
                                     <ItemTemplate>
                                         <asp:CheckBox ID="chkSelected" runat="server" />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px" HeaderStyle-Width="40px">
-                                    <ItemTemplate>
+
+                                        <br />
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
@@ -806,10 +821,10 @@
                                                 <ul style="padding-left:0px;">
                                                     <li><asp:CheckBox ID="chkIsPrimaryPhone" Text=" Is Primary contact" runat="server"></asp:CheckBox></li>
                                                     <li><asp:DropDownList ID="ddlContactType" runat="server">
-                                                                <asp:ListItem>Home Phone</asp:ListItem>
-                                                                <asp:ListItem>Office Phone</asp:ListItem>
-                                                                <asp:ListItem>Alt Phone</asp:ListItem>
-                                                                <asp:ListItem>Email</asp:ListItem>
+                                                                <asp:ListItem Text="Home Phone"></asp:ListItem>
+                                                                <asp:ListItem Text="Office Phone"></asp:ListItem>
+                                                                <asp:ListItem Text="Alt Phone"></asp:ListItem>
+                                                                <asp:ListItem Text="Email"></asp:ListItem>
                                                             </asp:DropDownList></li>
                                                     <li><asp:TextBox ID="txtNewContact" runat="server"></asp:TextBox></li>
                                                     <li><asp:Button ID="btnAddPhone" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact" CommandArgument='<%# Eval("Id") %>'></asp:Button></li>
@@ -821,7 +836,7 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Country-Zip<br/>Type-Apptitude Test %<br/>Resume Attachment" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-Width="70px" ItemStyle-Width="130px" HeaderStyle-Width="135px" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
-                                        <div  <%# (string.IsNullOrEmpty(Eval("CountryCode").ToString()))?"":"style='background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px'"%>' class="<%#Eval("CountryCode").ToString().ToLower()%>"></div>
+                                        <div  '<%# (string.IsNullOrEmpty(Eval("CountryCode").ToString()))?"":"style='background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px'" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'></div>
                                         <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
                                       
