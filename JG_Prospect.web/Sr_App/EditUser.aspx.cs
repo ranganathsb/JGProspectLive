@@ -102,6 +102,22 @@ namespace JG_Prospect
             }
         }
 
+        private DataTable SelectedUsers
+        {
+            get
+            {
+                if (ViewState["SelectedUsers"] == null)
+                {
+                    return null;
+                }
+                return (DataTable)ViewState["SelectedUsers"];
+            }
+            set
+            {
+                ViewState["SelectedUsers"] = value;
+            }
+        }
+
         #endregion
 
         #region '--Page Events--'
@@ -117,6 +133,17 @@ namespace JG_Prospect
             else
             {
                 btnExport.Visible = false;
+            }
+
+            if (JGSession.Designation.ToUpper() == "RECRUITER" || JGSession.Designation.ToUpper() == "ADMIN")
+            {
+                lbtnChangeStatusForSelected.Visible =
+                lbtnDeleteSelected.Visible = true;
+            }
+            else
+            {
+                lbtnChangeStatusForSelected.Visible =
+                lbtnDeleteSelected.Visible = false;
             }
 
             if (!IsPostBack)
@@ -555,8 +582,8 @@ namespace JG_Prospect
             }
             else if (ddl.SelectedValue == "InterviewDate")
             {
-                ddlUsers = LoadUsersByRecruiterDesgination(ddlUsers);
-                FillTechTaskDropDown();
+                LoadUsersByRecruiterDesgination(ddlUsers);
+                FillTechTaskDropDown(ddlTechTask);
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -1117,6 +1144,87 @@ namespace JG_Prospect
             LoadEmailContentToSentToUser();
         }
 
+        #region '----Change Status For Selected - Popup----'
+
+        protected void ddlStatus_Popup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlStatus_Popup.SelectedValue.Equals("InterviewDate"))
+            {
+                divInterviewDate.Visible =
+                grdUsers_Popup.Columns[2].Visible =
+                grdUsers_Popup.Columns[3].Visible = true;
+                grdUsers_Popup.Columns[4].Visible = false;
+            }
+            else if (ddlStatus_Popup.SelectedValue.Equals("OfferMade"))
+            {
+                divInterviewDate.Visible =
+                grdUsers_Popup.Columns[2].Visible =
+                grdUsers_Popup.Columns[3].Visible =
+                grdUsers_Popup.Columns[4].Visible = false;
+            }
+            else if (ddlStatus_Popup.SelectedValue.Equals("Rejected"))
+            {
+                divInterviewDate.Visible =
+                grdUsers_Popup.Columns[2].Visible =
+                grdUsers_Popup.Columns[3].Visible = false;
+                grdUsers_Popup.Columns[4].Visible = true;
+            }
+            else
+            {
+                divInterviewDate.Visible =
+                grdUsers_Popup.Columns[2].Visible =
+                grdUsers_Popup.Columns[3].Visible =
+                grdUsers_Popup.Columns[4].Visible = false;
+            }
+
+            grdUsers_Popup.DataSource = this.SelectedUsers;
+            grdUsers_Popup.DataBind();
+            upChangeStatusForSelected.Update();
+        }
+
+        protected void grdUsers_Popup_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                DropDownList ddlInterviewTime = e.Row.FindControl("ddlInterviewTime") as DropDownList;
+                DropDownList ddlTechTask = e.Row.FindControl("ddlTechTask") as DropDownList;
+
+                ddlInterviewTime.DataSource = GetTimeIntervals();
+                ddlInterviewTime.DataBind();
+
+                FillTechTaskDropDown(ddlTechTask);
+
+            }
+        }
+
+        protected void btnCancelChangeStatusForSelected_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript
+                                (
+                                    this,
+                                    this.GetType(),
+                                    "HidePopup_divChangeStatusForSelected",
+                                    string.Concat("HidePopup('#", divChangeStatusForSelected.ClientID, "');"),
+                                    true
+                                );
+        }
+
+        protected void btnChangeStatusForSelected_Click(object sender, EventArgs e)
+        {
+            GetSalesUsersStaticticsAndData();
+
+            ScriptManager.RegisterStartupScript
+                                (
+                                    this,
+                                    this.GetType(),
+                                    "HidePopup_divChangeStatusForSelected",
+                                    string.Concat("HidePopup('#", divChangeStatusForSelected.ClientID, "');"),
+                                    true
+                                );
+        }
+
+        #endregion
+
         #endregion
 
         protected void btnUpload_Click(object sender, EventArgs e)
@@ -1273,6 +1381,87 @@ namespace JG_Prospect
             Session["DuplicateUsers"] = null;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "ClosePopupUploadBulk();", true);
             return;
+        }
+
+        protected void lbtnDeleteSelected_Click(object sender, EventArgs e)
+        {
+            List<Int32> lstIDs = new List<int>();
+
+            foreach (GridViewRow objUserRow in grdUsers.Rows)
+            {
+                if (((CheckBox)objUserRow.FindControl("chkSelected")).Checked)
+                {
+                    lstIDs.Add(Convert.ToInt32(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]));
+                }
+            }
+
+            if (lstIDs.Count > 0)
+            {
+                if (InstallUserBLL.Instance.DeleteInstallUsers(lstIDs))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User Deleted Successfully.");
+                    GetSalesUsersStaticticsAndData();
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User can not be deleted. Please try again.");
+                }
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Please select user(s) to deleted.");
+            }
+        }
+
+        protected void lbtnChangeStatusForSelected_Click(object sender, EventArgs e)
+        {
+            this.SelectedUsers = null;
+
+            DataTable dtUsers = new DataTable();
+            dtUsers.Columns.Add("Id");
+            dtUsers.Columns.Add("Name");
+            dtUsers.Columns.Add("Designation");
+            dtUsers.Columns.Add("InterviewDate");
+            dtUsers.Columns.Add("InterviewTime");
+
+            foreach (GridViewRow objUserRow in grdUsers.Rows)
+            {
+                if (((CheckBox)objUserRow.FindControl("chkSelected")).Checked)
+                {
+                    dtUsers.Rows.Add(
+                                        Convert.ToString(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]),
+                                        (objUserRow.FindControl("lblFirstName") as Label).Text + " " + (objUserRow.FindControl("lblLastName") as Label).Text,
+                                        (objUserRow.FindControl("lblDesignation") as Label).Text,
+                                        DateTime.Now.AddDays(1).ToShortDateString(),
+                                        "10:00 AM"
+                                    );
+                }
+            }
+
+            if (dtUsers.Rows.Count > 0)
+            {
+                JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus_Popup, "--Select--", "0");
+                LoadUsersByRecruiterDesgination(ddlRecruiter_Popup);
+
+                this.SelectedUsers = dtUsers;
+                grdUsers_Popup.DataSource = dtUsers;
+                grdUsers_Popup.DataBind();
+
+                upChangeStatusForSelected.Update();
+
+                ScriptManager.RegisterStartupScript
+                                (
+                                    this,
+                                    this.GetType(),
+                                    "ShowPopup_divChangeStatusForSelected",
+                                    string.Concat("ShowPopupWithTitle('#", divChangeStatusForSelected.ClientID, "');"),
+                                    true
+                                );
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Please select user(s) to change status.");
+            }
         }
 
         //protected void btnshow_Click(object sender, EventArgs e)
@@ -2660,7 +2849,7 @@ namespace JG_Prospect
         /// Fill ddl for User Recruter 
         /// Also call from ucStaffLogin , EditUser
         /// </summary>
-        private DropDownList LoadUsersByRecruiterDesgination(DropDownList ddlUsers)
+        private void LoadUsersByRecruiterDesgination(DropDownList ddlUsers)
         {
             DataSet dsUsers;
 
@@ -2671,11 +2860,9 @@ namespace JG_Prospect
             ddlUsers.DataValueField = "Id";
             ddlUsers.DataBind();
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
-
-            return ddlUsers;
         }
 
-        private void FillTechTaskDropDown()
+        private void FillTechTaskDropDown(DropDownList ddlTechTask)
         {
             DataSet dsTechTask;
 
@@ -3262,36 +3449,6 @@ namespace JG_Prospect
         }
 
         #endregion
-
-        protected void lbtnDeleteSelected_Click(object sender, EventArgs e)
-        {
-            List<Int32> lstIDs = new List<int>();
-
-            foreach (GridViewRow objUserRow in grdUsers.Rows)
-            {
-                if (((CheckBox)objUserRow.FindControl("chkSelected")).Checked)
-                {
-                    lstIDs.Add(Convert.ToInt32(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]));
-                }
-            }
-
-            if (lstIDs.Count > 0)
-            {
-                if (InstallUserBLL.Instance.DeleteInstallUsers(lstIDs))
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this, "User Deleted Successfully.");
-                    GetSalesUsersStaticticsAndData();
-                }
-                else
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this, "User can not be deleted. Please try again.");
-                }
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this, "Please select user(s) to deleted.");
-            }
-        }
 
         #endregion
     }

@@ -862,7 +862,7 @@
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
-                        <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="lbtnChangeStatusForSelected" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>
@@ -883,6 +883,7 @@
                         <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected" OnClick="lbtnDeleteSelected_Click" />
                         <br />
                         <br />
+                        <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
                     </td>
                 </tr>
             </table>
@@ -896,306 +897,309 @@
             </div>
         </div>
     </div>
-    <%--<asp:UpdatePanel ID="updatepanel1" runat="server">
-                    <ContentTemplate>--%>
-    <asp:Button ID="Button1" Style="display: none;" runat="server" Text="Button" />
-    <cc1:ModalPopupExtender ID="mp1" runat="server" PopupControlID="Panel1" TargetControlID="Button1"
-        CancelControlID="btnClose" BackgroundCssClass="modalBackground">
-    </cc1:ModalPopupExtender>
-    <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup" align="center" Style="display: none">
-        <asp:Image ID="img_InstallerImage" runat="server" Height="150px" Width="118px" />
-        <br />
-        <asp:Button ID="btnClose" runat="server" Text="Close" />
-    </asp:Panel>
+<%--Modal Popup Stars--%>
+    <div id="divModalPopups">
+        <%--<asp:UpdatePanel ID="updatepanel1" runat="server">
+                        <ContentTemplate>--%>
+        <asp:Button ID="Button1" Style="display: none;" runat="server" Text="Button" />
+        <cc1:ModalPopupExtender ID="mp1" runat="server" PopupControlID="Panel1" TargetControlID="Button1"
+            CancelControlID="btnClose" BackgroundCssClass="modalBackground">
+        </cc1:ModalPopupExtender>
+        <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup" align="center" Style="display: none">
+            <asp:Image ID="img_InstallerImage" runat="server" Height="150px" Width="118px" />
+            <br />
+            <asp:Button ID="btnClose" runat="server" Text="Close" />
+        </asp:Panel>
 
-    <asp:Panel ID="panelPopup" runat="server">
-        <div id="light" class="white_content">
-            <h3>Reason
-            </h3>
-            <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
-            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
-                cellpadding="0" cellspacing="0">
-                <tr>
-                    <td align="center" colspan="2" style="height: 15px;">
-                        <asp:TextBox ID="txtReason" runat="server" placeholder="Enter Reason" TextMode="MultiLine"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="reqReason" runat="server" ErrorMessage="Enter reason" ControlToValidate="txtReason" ValidationGroup="Reason"></asp:RequiredFieldValidator>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
-                            TabIndex="119" OnClick="btnSaveReason_Click" />
-                        <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </asp:Panel>
-    <div id="fade" class="black_overlay">
-    </div>
-    <ucStatusChange:PoPup ID="UcStatusPopUp" runat="server"></ucStatusChange:PoPup>
-    <asp:Panel ID="panel2" runat="server">
-        <div id="interviewDatelite" class="white_content" style="height: auto;">
-            <h3>Interview Details
-            </h3>
-            <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
-            <asp:UpdatePanel runat="server" UpdateMode="Always">
-                <ContentTemplate>
-                    <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
-                        cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td colspan="3" align="center">Name: <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td align="center" style="height: 15px;">Date :
-                    <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
-                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
-                            </td>
-                            <td align="center"></td>
-                            <td>Time :
-                        <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">Recruiter</td>
-                            <td>: </td>
-                            <td align="left">
-                                <asp:DropDownList ID="ddlUsers" runat="server" />
-                                <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers"
-                                    ValidationGroup="InterviewDate" InitialValue="0" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">Designation</td>
-                            <td>: </td>
-                            <td align="left">
-                                <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" onchange="SetDesignationForTask();"></asp:DropDownList>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">Task</td>
-                            <td>: </td>
-                            <td align="left">
-                                <asp:DropDownList ID="ddlTechTask" runat="server" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" colspan="3">
-                                <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                    Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
-                                    TabIndex="119" OnClick="btnSaveInterview_Click" />
-                                <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
-                                    Style="height: 26px; font-weight: 700; line-height: 1em;"
-                                    OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
-                            </td>
-                        </tr>
-                    </table>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </div>
-    </asp:Panel>
-
-    <asp:Panel ID="panel3" runat="server">
-        <div id="litePassword" class="white_content">
-            <h3>Password
-            </h3>
-            <a href="javascript:void(0)" onclick="document.getElementById('litePassword').style.display='none';document.getElementById('fadePassword').style.display='none'">Close</a>
-            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
-                cellpadding="0" cellspacing="0">
-                <tr>
-                    <td align="center" style="height: 54px; width: 200px;">Enter Password To Change Status
-                    </td>
-                    <td align="center" style="height: 54px;">
-                        <asp:TextBox ID="txtPassword" runat="server" placeholder="Enter Password" TextMode="Password"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Enter Password" ControlToValidate="txtPassword" ValidationGroup="Password"></asp:RequiredFieldValidator>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="2" style="height: 54px;">
-                        <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
-                            TabIndex="119" OnClick="btnChangeStatus_Click" />
-                        <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </asp:Panel>
-    <div id="fadePassword" class="black_overlay">
-    </div>
-
-    <asp:Panel ID="panel4" runat="server">
-        <div id="DivOfferMade" class="white_content" style="height: auto;">
-            <h3>Offer Made Details</h3>
-            <asp:UpdatePanel runat="server" UpdateMode="Always">
-                <ContentTemplate>
-                    <asp:HiddenField ID="hdnFirstName" runat="server" />
-                    <asp:HiddenField ID="hdnLastName" runat="server" />
-                    <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
-                        cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td align="right">Name: <asp:Label ID="lblName_OfferMade" runat="server" /></td>
-                            <td>Designation: <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
-                        </tr>
-                        <tr>
-                            <td align="right" style="height: 15px;">
-                                <br />
-                                <label>
-                                    Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
-                                    Enabled="false" ReadOnly="true"></asp:TextBox>
-                                <br />
-                                <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
-                                    ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
-                                <asp:RegularExpressionValidator ID="reEmail" ControlToValidate="txtEmail" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                    Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
-                                    ValidationGroup="OfferMade">
-                                </asp:RegularExpressionValidator>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" style="height: 15px;">
-                                <label>
-                                    Password<asp:Label ID="lblPassReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtPassword1" runat="server" TextMode="Password" MaxLength="30"
-                                    autocomplete="off" Width="242px"></asp:TextBox>
-                                <br />
-                                <label>
-                                </label>
-                                <asp:RequiredFieldValidator ID="rqPass" runat="server" ControlToValidate="txtPassword1"
-                                    ValidationGroup="OfferMade" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Password"></asp:RequiredFieldValidator><br />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" style="height: 15px;">
-                                <label>
-                                    Confirm Password<asp:Label ID="lblConfirmPass" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtpassword2" runat="server" TextMode="Password" autocomplete="off"
-                                    MaxLength="30" EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
-                                <br />
-                                <label>
-                                </label>
-                                <asp:CompareValidator ID="password" runat="server" ControlToValidate="txtpassword2"
-                                    Display="Dynamic" ControlToCompare="txtPassword1" ForeColor="Red" ErrorMessage="Password didn't matched"
-                                    ValidationGroup="OfferMade">
-                                </asp:CompareValidator>
-                                <asp:RequiredFieldValidator ID="rqConPass" runat="server" ControlToValidate="txtpassword2"
-                                    ForeColor="Red" ValidationGroup="OfferMade" ErrorMessage="Enter Confirm Password"></asp:RequiredFieldValidator>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" colspan="2">
-                                <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                    Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
-                                    TabIndex="119" OnClick="btnSaveOfferMade_Click" />
-                                <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
-                                    Style="height: 26px; font-weight: 700; line-height: 1em;"
-                                    OnClientClick="javascript:document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'" />
-                            </td>
-                        </tr>
-                    </table>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </div>
-    </asp:Panel>
-    <div id="DivOfferMadefade" class="black_overlay">
-    </div>
-
-    <asp:Panel ID="pnlUploadBulk" runat="server">
-        <style>
-            .uploadBulkTab {
-                background-color: #dadada;
-            }
-
-                .uploadBulkTab td {
-                    padding: 7px 5px;
-                }
-        </style>
-        <div id="lightUploadBulk" class="white_content" style="text-align: center">
-            <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
-
-            <asp:Panel ID="pnlDuplicate" runat="server">
-                <asp:Label ID="lblDuplicateCount" runat="server"></asp:Label>
-
-                <div style="padding: 20px; margin: auto;">
-                    <center>
-                            <table width="60%" class="uploadBulkTab" cellpadding="0">
-                            <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
-                                <td><span>Full Name</span></td>
-                                <td><span>Email</span></td>
-                                <td><span>Phone</span></td>
-                                <td><span>status</span></td>
-                            </tr>
-                            <asp:ListView ID="listDuplicateUsers" runat="server">
-                                <ItemTemplate>
-                                    <tr>
-                                        <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
-                                        <td><span><%#Eval("Email")%></span></td>
-                                        <td><span><%#Eval("phone")%></span></td>
-                                        <td><span><%#Eval("status")%></span></td>
-                                    </tr>
-                                </ItemTemplate>
-                            </asp:ListView>
-                        </table>
-                        </center>
-                </div>
-                <div style="padding: 20px; margin: auto;">
-                    Email or Phone number of above users already exists, do you want to update the existing record?
-                </div>
-                <div style="padding: 10px; margin: auto;">
-                    <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
-                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
-                        ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
-                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
-                        ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
-                </div>
-
-                <hr />
-                <br />
-            </asp:Panel>
-
-            <asp:Panel ID="pnlAddNewUser" runat="server">
-                <asp:Label ID="lblNewRecordAddedCount" runat="server"></asp:Label>
-                <center>
-                <table width="60%" class="uploadBulkTab" cellpadding="0" style="margin-top:20px;">
-                    <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
-                        <td><span>Full Name</span></td>
-                        <td><span>Email</span></td>
-                        <td><span>Phone</span></td>
-                        <td><span>status</span></td>
+        <asp:Panel ID="panelPopup" runat="server">
+            <div id="light" class="white_content">
+                <h3>Reason
+                </h3>
+                <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
+                    cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" colspan="2" style="height: 15px;">
+                            <asp:TextBox ID="txtReason" runat="server" placeholder="Enter Reason" TextMode="MultiLine"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="reqReason" runat="server" ErrorMessage="Enter reason" ControlToValidate="txtReason" ValidationGroup="Reason"></asp:RequiredFieldValidator>
+                        </td>
                     </tr>
-                    <asp:ListView ID="lstNewUserAdd" runat="server">
-                        <ItemTemplate>
-                            <tr>
-                                <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
-                                <td><span><%#Eval("Email")%></span></td>
-                                <td><span><%#Eval("phone")%></span></td>
-                                <td><span><%#Eval("status")%></span></td>
-                            </tr>
-                        </ItemTemplate>
-                    </asp:ListView>
+                    <tr>
+                        <td align="center">
+                            <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
+                                TabIndex="119" OnClick="btnSaveReason_Click" />
+                            <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        </td>
+                    </tr>
                 </table>
-                </center>
-            </asp:Panel>
-
+            </div>
+        </asp:Panel>
+        <div id="fade" class="black_overlay">
         </div>
-    </asp:Panel>
-    <div id="fadeUploadBulk" class="black_overlay">
-    </div>
-    <div id="interviewDatefade" class="black_overlay">
-    </div>
+        <ucStatusChange:PoPup ID="UcStatusPopUp" runat="server"></ucStatusChange:PoPup>
+        <asp:Panel ID="panel2" runat="server">
+            <div id="interviewDatelite" class="white_content" style="height: auto;">
+                <h3>Interview Details
+                </h3>
+                <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
+                <asp:UpdatePanel runat="server" UpdateMode="Always">
+                    <ContentTemplate>
+                        <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                            cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td colspan="3" align="center">Name: <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="height: 15px;">Date :
+                        <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
+                                    <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
+                                </td>
+                                <td align="center"></td>
+                                <td>Time :
+                            <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Recruiter</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlUsers" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers"
+                                        ValidationGroup="InterviewDate" InitialValue="0" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Designation</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" onchange="SetDesignationForTask();"></asp:DropDownList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Task</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlTechTask" runat="server" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="3">
+                                    <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
+                                        TabIndex="119" OnClick="btnSaveInterview_Click" />
+                                    <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;"
+                                        OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </asp:Panel>
 
+        <asp:Panel ID="panel3" runat="server">
+            <div id="litePassword" class="white_content">
+                <h3>Password
+                </h3>
+                <a href="javascript:void(0)" onclick="document.getElementById('litePassword').style.display='none';document.getElementById('fadePassword').style.display='none'">Close</a>
+                <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
+                    cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" style="height: 54px; width: 200px;">Enter Password To Change Status
+                        </td>
+                        <td align="center" style="height: 54px;">
+                            <asp:TextBox ID="txtPassword" runat="server" placeholder="Enter Password" TextMode="Password"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Enter Password" ControlToValidate="txtPassword" ValidationGroup="Password"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2" style="height: 54px;">
+                            <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
+                                TabIndex="119" OnClick="btnChangeStatus_Click" />
+                            <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </asp:Panel>
+        <div id="fadePassword" class="black_overlay">
+        </div>
+
+        <asp:Panel ID="panel4" runat="server">
+            <div id="DivOfferMade" class="white_content" style="height: auto;">
+                <h3>Offer Made Details</h3>
+                <asp:UpdatePanel runat="server" UpdateMode="Always">
+                    <ContentTemplate>
+                        <asp:HiddenField ID="hdnFirstName" runat="server" />
+                        <asp:HiddenField ID="hdnLastName" runat="server" />
+                        <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                            cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="right">Name: <asp:Label ID="lblName_OfferMade" runat="server" /></td>
+                                <td>Designation: <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <br />
+                                    <label>
+                                        Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
+                                        Enabled="false" ReadOnly="true"></asp:TextBox>
+                                    <br />
+                                    <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
+                                        ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
+                                    <asp:RegularExpressionValidator ID="reEmail" ControlToValidate="txtEmail" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                        Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
+                                        ValidationGroup="OfferMade">
+                                    </asp:RegularExpressionValidator>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <label>
+                                        Password<asp:Label ID="lblPassReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtPassword1" runat="server" TextMode="Password" MaxLength="30"
+                                        autocomplete="off" Width="242px"></asp:TextBox>
+                                    <br />
+                                    <label>
+                                    </label>
+                                    <asp:RequiredFieldValidator ID="rqPass" runat="server" ControlToValidate="txtPassword1"
+                                        ValidationGroup="OfferMade" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Password"></asp:RequiredFieldValidator><br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <label>
+                                        Confirm Password<asp:Label ID="lblConfirmPass" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtpassword2" runat="server" TextMode="Password" autocomplete="off"
+                                        MaxLength="30" EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
+                                    <br />
+                                    <label>
+                                    </label>
+                                    <asp:CompareValidator ID="password" runat="server" ControlToValidate="txtpassword2"
+                                        Display="Dynamic" ControlToCompare="txtPassword1" ForeColor="Red" ErrorMessage="Password didn't matched"
+                                        ValidationGroup="OfferMade">
+                                    </asp:CompareValidator>
+                                    <asp:RequiredFieldValidator ID="rqConPass" runat="server" ControlToValidate="txtpassword2"
+                                        ForeColor="Red" ValidationGroup="OfferMade" ErrorMessage="Enter Confirm Password"></asp:RequiredFieldValidator>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
+                                        TabIndex="119" OnClick="btnSaveOfferMade_Click" />
+                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;"
+                                        OnClientClick="javascript:document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </asp:Panel>
+        <div id="DivOfferMadefade" class="black_overlay">
+        </div>
+
+        <asp:Panel ID="pnlUploadBulk" runat="server">
+            <style>
+                .uploadBulkTab {
+                    background-color: #dadada;
+                }
+
+                    .uploadBulkTab td {
+                        padding: 7px 5px;
+                    }
+            </style>
+            <div id="lightUploadBulk" class="white_content" style="text-align: center">
+                <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
+
+                <asp:Panel ID="pnlDuplicate" runat="server">
+                    <asp:Label ID="lblDuplicateCount" runat="server"></asp:Label>
+
+                    <div style="padding: 20px; margin: auto;">
+                        <center>
+                                <table width="60%" class="uploadBulkTab" cellpadding="0">
+                                <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
+                                    <td><span>Full Name</span></td>
+                                    <td><span>Email</span></td>
+                                    <td><span>Phone</span></td>
+                                    <td><span>status</span></td>
+                                </tr>
+                                <asp:ListView ID="listDuplicateUsers" runat="server">
+                                    <ItemTemplate>
+                                        <tr>
+                                            <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
+                                            <td><span><%#Eval("Email")%></span></td>
+                                            <td><span><%#Eval("phone")%></span></td>
+                                            <td><span><%#Eval("status")%></span></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                </asp:ListView>
+                            </table>
+                            </center>
+                    </div>
+                    <div style="padding: 20px; margin: auto;">
+                        Email or Phone number of above users already exists, do you want to update the existing record?
+                    </div>
+                    <div style="padding: 10px; margin: auto;">
+                        <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
+                            ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
+                            ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
+                    </div>
+
+                    <hr />
+                    <br />
+                </asp:Panel>
+
+                <asp:Panel ID="pnlAddNewUser" runat="server">
+                    <asp:Label ID="lblNewRecordAddedCount" runat="server"></asp:Label>
+                    <center>
+                    <table width="60%" class="uploadBulkTab" cellpadding="0" style="margin-top:20px;">
+                        <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
+                            <td><span>Full Name</span></td>
+                            <td><span>Email</span></td>
+                            <td><span>Phone</span></td>
+                            <td><span>status</span></td>
+                        </tr>
+                        <asp:ListView ID="lstNewUserAdd" runat="server">
+                            <ItemTemplate>
+                                <tr>
+                                    <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
+                                    <td><span><%#Eval("Email")%></span></td>
+                                    <td><span><%#Eval("phone")%></span></td>
+                                    <td><span><%#Eval("status")%></span></td>
+                                </tr>
+                            </ItemTemplate>
+                        </asp:ListView>
+                    </table>
+                    </center>
+                </asp:Panel>
+
+            </div>
+        </asp:Panel>
+        <div id="fadeUploadBulk" class="black_overlay">
+        </div>
+        <div id="interviewDatefade" class="black_overlay">
+        </div>
+    </div>
+<%--Modal Popup Ends--%>
 <%--Popup Stars--%>
 <div class="hide">
     <%--Send Email To User Popup--%>
@@ -1246,6 +1250,67 @@
                         </tr>
                     </table>
                 </fieldset>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+
+    <div id="divChangeStatusForSelected" runat="server" title="Change Status">
+        <asp:UpdatePanel ID="upChangeStatusForSelected" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <asp:ValidationSummary ID="vsChangeStatus" runat="server" ValidationGroup="vgChangeStatus" ShowMessageBox="true" ShowSummary="false" />
+                <div>
+                    Status: <asp:DropDownList ID="ddlStatus_Popup" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
+                    <asp:RequiredFieldValidator ID="rfvStatus_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
+                        ControlToValidate="ddlStatus_Popup" ValidationGroup="vgChangeStatus" Display="None" />
+                </div>
+                <br /> 
+                <div id="divInterviewDate" runat="server" visible="false">
+                    Recruiter: <asp:DropDownList ID="ddlRecruiter_Popup" runat="server" />
+                    <asp:RequiredFieldValidator ID="rfvRecruiter_Popup" runat="server" ErrorMessage="Please select recruiter."  InitialValue="0"
+                        ControlToValidate="ddlRecruiter_Popup" ValidationGroup="vgChangeStatus" Display="None" />
+                </div>
+                <br />
+                <asp:GridView ID="grdUsers_Popup" runat="server" AutoGenerateColumns="false" DataKeyNames="Id"
+                    CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
+                    OnRowDataBound="grdUsers_Popup_RowDataBound">
+                    <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                    <HeaderStyle CssClass="trHeader " />
+                    <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                    <AlternatingRowStyle CssClass="AlternateRow " />
+                    <Columns>
+                        <asp:BoundField HeaderText="Name" DataField="Name" ItemStyle-Width="150" />
+                        <asp:BoundField HeaderText="Designation" DataField="Designation" ItemStyle-Width="150" />
+                        <asp:TemplateField HeaderText="Interview" Visible="false">
+                            <ItemTemplate>
+                                <asp:TextBox ID="txtInterviewDate" placeholder="Select Date" runat="server"
+                                    onkeypress="return false" Width="127px" Text='<%#Eval("InterviewDate")%>' />
+                                <cc1:CalendarExtender ID="ceInterviewDate" TargetControlID="txtInterviewDate" Format="MM/dd/yyyy" runat="server" />
+                                <asp:RequiredFieldValidator ID="rfvInterviewDate" runat="server" ErrorMessage="Please select interview date." 
+                                    ControlToValidate="txtInterviewDate" ValidationGroup="vgChangeStatus" Display="None" />
+                                <br />
+                                <asp:DropDownList ID="ddlInterviewTime" runat="server" Width="112px" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Tech Task" Visible="false" ItemStyle-Width="100">
+                            <ItemTemplate>
+                                <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Reason" Visible="false">
+                            <ItemTemplate>
+                                <asp:TextBox ID="txtReason" runat="server" TextMode="MultiLine" Rows="3" Width="95%" />
+                                <asp:RequiredFieldValidator ID="rfvReason" runat="server" ErrorMessage="Please enter reason for status change." 
+                                    ControlToValidate="txtReason" ValidationGroup="vgChangeStatus" Display="None" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <br />
+                <div class="btn_sec">
+                    <asp:Button ID="btnChangeStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
+                         OnClick="btnChangeStatusForSelected_Click" />&nbsp;
+                    <asp:Button ID="btnCancelChangeStatusForSelected" runat="server" Text="Cancel" OnClick="btnCancelChangeStatusForSelected_Click" />
+                </div>
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
