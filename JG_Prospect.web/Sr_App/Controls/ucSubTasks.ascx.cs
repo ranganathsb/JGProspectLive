@@ -184,23 +184,20 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.Visible = false;
                     lbtnInstallId.CssClass = "installidright";
                 }
-                else
-                {
-
-                    lnkAddMoreSubTask.Visible = true;
-                    lbtnInstallId.CssClass = "installidleft";
-                }
-
-               
-                if (hdTaskLevel.Value == "1")
+                else if (hdTaskLevel.Value == "1")
                 {
                     vFirstLevelId = Convert.ToInt32( hdTaskId.Value);
                     lnkAddMoreSubTask.CommandName = "2";
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "installidleft";
+                    lnkAddMoreSubTask.CssClass = "installidleft";
                 }
-
-                if (hdTaskLevel.Value == "2")
+                else if (hdTaskLevel.Value == "2")
                 {
                     lnkAddMoreSubTask.CommandName = "3";
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "installidcenter";
+                    lnkAddMoreSubTask.CssClass = "installidcenter";
                 }
                
                  lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();

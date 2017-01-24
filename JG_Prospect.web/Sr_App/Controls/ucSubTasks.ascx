@@ -16,6 +16,12 @@
         display: block;
         padding-right:5px;
     }
+    .installidcenter{
+        text-align:center;
+        width:80px;
+        display: block;
+        padding-right:5px;
+    }
     .installidleft
     {
         text-align:left;
