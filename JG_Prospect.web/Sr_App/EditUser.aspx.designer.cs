@@ -1273,13 +1273,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.GridView grdUsers_Popup;
         
         /// <summary>
-        /// btnChangeStatusForSelected control.
+        /// btnSaveStatusForSelected control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnChangeStatusForSelected;
+        protected global::System.Web.UI.WebControls.Button btnSaveStatusForSelected;
         
         /// <summary>
         /// btnCancelChangeStatusForSelected control.

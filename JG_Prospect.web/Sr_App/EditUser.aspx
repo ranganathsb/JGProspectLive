@@ -1293,8 +1293,16 @@
                     <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:BoundField HeaderText="Name" DataField="Name" ItemStyle-Width="150" />
-                        <asp:BoundField HeaderText="Designation" DataField="Designation" ItemStyle-Width="150" />
+                        <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">
+                            <ItemTemplate>
+                                <asp:Literal ID="ltrlFirstName" runat="server" Text='<%#Eval("FirstName") %>' />&nbsp;<asp:Literal ID="ltrlLastName" runat="server" Text='<%#Eval("LastName") %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Designation" ItemStyle-Width="150">
+                            <ItemTemplate>
+                                <asp:Literal ID="ltrlDesignation" runat="server" Text='<%#Eval("Designation") %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Interview" Visible="false">
                             <ItemTemplate>
                                 <asp:TextBox ID="txtInterviewDate" placeholder="Select Date" runat="server"
@@ -1322,8 +1330,8 @@
                 </asp:GridView>
                 <br />
                 <div class="btn_sec">
-                    <asp:Button ID="btnChangeStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
-                         OnClick="btnChangeStatusForSelected_Click" />&nbsp;
+                    <asp:Button ID="btnSaveStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
+                         OnClick="btnSaveStatusForSelected_Click" />&nbsp;
                     <asp:Button ID="btnCancelChangeStatusForSelected" runat="server" Text="Cancel" OnClick="btnCancelChangeStatusForSelected_Click" />
                 </div>
             </ContentTemplate>
