@@ -1014,6 +1014,8 @@
     <Content Include="css\lightslider.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
+    <Content Include="css\msdropdown\dd_arrow.gif" />
+    <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
