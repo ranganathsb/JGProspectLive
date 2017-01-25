@@ -13,6 +13,15 @@ namespace JG_Prospect {
     public partial class EditUser {
         
         /// <summary>
+        /// upSalesUserStatictics control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upSalesUserStatictics;
+        
+        /// <summary>
         /// lblmsg control.
         /// </summary>
         /// <remarks>
@@ -274,13 +283,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Label lblActiveDeactiveRatio;
         
         /// <summary>
-        /// txtSearch control.
+        /// upFilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        protected global::System.Web.UI.UpdatePanel upFilter;
         
         /// <summary>
         /// lblUserStatus control.
@@ -454,6 +463,33 @@ namespace JG_Prospect {
         protected global::System.Web.UI.UpdatePanel upUsers;
         
         /// <summary>
+        /// txtSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        
+        /// <summary>
+        /// btnSearchGridData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSearchGridData;
+        
+        /// <summary>
+        /// ddlPageSize_grdUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPageSize_grdUsers;
+        
+        /// <summary>
         /// grdUsers control.
         /// </summary>
         /// <remarks>
@@ -497,6 +533,24 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
+        
+        /// <summary>
+        /// lbtnDeleteSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnDeleteSelected;
+        
+        /// <summary>
+        /// lbtnChangeStatusForSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnChangeStatusForSelected;
         
         /// <summary>
         /// btnUpload control.
@@ -1066,24 +1120,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailSubject;
         
         /// <summary>
-        /// txtEmailHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmailHeader;
-        
-        /// <summary>
-        /// rfvEmailHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailHeader;
-        
-        /// <summary>
         /// txtEmailBody control.
         /// </summary>
         /// <remarks>
@@ -1102,22 +1138,22 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailBody;
         
         /// <summary>
-        /// txtEmailFooter control.
+        /// txtEmailCustomMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmailFooter;
+        protected global::System.Web.UI.WebControls.TextBox txtEmailCustomMessage;
         
         /// <summary>
-        /// rfvEmailFooter control.
+        /// rfvEmailCustomMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailFooter;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailCustomMessage;
         
         /// <summary>
         /// btnSendEmailToUser control.
@@ -1136,5 +1172,104 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelSendEmailToUser;
+        
+        /// <summary>
+        /// divChangeStatusForSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divChangeStatusForSelected;
+        
+        /// <summary>
+        /// upChangeStatusForSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upChangeStatusForSelected;
+        
+        /// <summary>
+        /// vsChangeStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary vsChangeStatus;
+        
+        /// <summary>
+        /// ddlStatus_Popup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatus_Popup;
+        
+        /// <summary>
+        /// rfvStatus_Popup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvStatus_Popup;
+        
+        /// <summary>
+        /// divInterviewDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divInterviewDate;
+        
+        /// <summary>
+        /// ddlRecruiter_Popup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRecruiter_Popup;
+        
+        /// <summary>
+        /// rfvRecruiter_Popup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvRecruiter_Popup;
+        
+        /// <summary>
+        /// grdUsers_Popup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView grdUsers_Popup;
+        
+        /// <summary>
+        /// btnSaveStatusForSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveStatusForSelected;
+        
+        /// <summary>
+        /// btnCancelChangeStatusForSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelChangeStatusForSelected;
     }
 }
