@@ -2997,6 +2997,10 @@ namespace JG_Prospect.Sr_App
                 Boolean lDefVendorCat = Convert.ToBoolean(lDr["DefaultVendorForCategory"].ToString());
                 Label lblVendorNames = (Label)e.Row.FindControl("lblVendorNames");
                 LinkButton lnkAddVendors = (LinkButton)e.Row.FindControl("lnkAddVendors");
+                TextBox txtVendorSearch = (TextBox)e.Row.FindControl("txtVendorSearch");
+                //txtVendorSearch.Attributes.Add("onfocus", "AddVendorFocus('" + lnkAddVendors.ClientID + "')");
+                txtVendorSearch.Attributes.Add("onfocus", this.Page.ClientScript.GetPostBackEventReference(lnkAddVendors, ""));
+                txtVendorSearch.ReadOnly = true;
                 CheckBox chkDefault = (CheckBox)e.Row.FindControl("chkDefault");
                 chkDefault.Checked = false; //lDefVendorCat;
 
@@ -3033,11 +3037,15 @@ namespace JG_Prospect.Sr_App
                         if (lRow["VendorID"].ToString() == lVendorId)
                         {
                             lblVendorNames.Text += "<input type='radio' " + ((lDr["VendorID"].ToString() == lVendorId.ToString()) ? "checked='checked'" : "") + " onclick='updateVendor(" + lDr["id"] + "," + lProdCatID + "," + lVendorId + ", this)'  id='rdo" + lDr["id"] + "' name='grp" + lDr["id"] + "' /> <label for='rdo" + lDr["id"] + "'> <a href='Procurement.aspx?vid="+lRow["VendorID"]+"' target='_blank'>" + lRow["VendorName"].ToString() + "</a></label> <a href='javascript:void(0);' onclick='ShowAttachQuotes(" + lProdCatID + "," + lVendorId + ")'>Attach Quote</a><br/>";
+                            txtVendorSearch.Text += lRow["VendorName"].ToString() + ",";
                         }
                     }
                 }
-                    lblVendorNames.Text = lblVendorNames.Text.TrimEnd(',');
-               // }
+
+                lblVendorNames.Text = lblVendorNames.Text.TrimEnd(',');
+                txtVendorSearch.Text = txtVendorSearch.Text.TrimEnd(',');
+
+                // }
 
             }
         }
@@ -4493,20 +4501,33 @@ namespace JG_Prospect.Sr_App
             drpVendorSubCat.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
 
         }
+
+
         public void FilterVendors(string FilterParams, string FilterBy, string ManufacturerType, string VendorCategoryId)
         {
+            lstVendors.Items.Clear();
             lstVendors.DataSource = null;
             lstVendors.DataBind();
             DataSet ds = new DataSet();
             ds = VendorBLL.Instance.GetVendorList(FilterParams, FilterBy, ManufacturerType, VendorCategoryId,"");
-            if (ds != null)
+            if (ds != null && ds.Tables.Count > 0)
             {
-                lstVendors.DataSource = ds;
-                lstVendors.DataTextField = "VendorName";
-                lstVendors.DataValueField = "VendorID";
-                lstVendors.DataBind();
+                //lstVendors.DataSource = ds;
+                //lstVendors.DataTextField = "VendorName";
+                //lstVendors.DataValueField = "VendorID";
+                //lstVendors.DataBind();
 
-                foreach(string Vendor in VendorIDs.Split(',')){
+                foreach (DataRow lRow in ds.Tables[0].Rows)
+                {
+                    if (!string.IsNullOrWhiteSpace(lRow["VendorName"].ToString().Trim()))
+                    {
+                        System.Web.UI.WebControls.ListItem lstVendor = new System.Web.UI.WebControls.ListItem(lRow["VendorName"].ToString(), lRow["VendorID"].ToString());
+                        lstVendors.Items.Add(lstVendor);
+                    }
+                }
+
+
+                foreach (string Vendor in VendorIDs.Split(',')){
                     foreach (System.Web.UI.WebControls.ListItem item in lstVendors.Items)
                     {
                         if (item.Value == Vendor)
@@ -4517,12 +4538,7 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 lblGotQuotesFrom.Text = lblGotQuotesFrom.Text.TrimEnd(',');
-                //foreach (DataRow lRow in ds.Tables[0].Rows)
-                //{
-                //    System.Web.UI.WebControls.ListItem lstVendor = new System.Web.UI.WebControls.ListItem(lRow["VendorName"].ToString(), lRow["VendorID"].ToString());
-                //    //lstVendor.Attributes.Add("OptionGroup", VendorCategoryList.Select("VendorCategpryId=" + lRow["VendorCategpryId"].ToString())[0]["VendorCategoryNm"].ToString());
-                //    lstVendors.Items.Add(lstVendor);
-                //}
+            
 
             }
         }
