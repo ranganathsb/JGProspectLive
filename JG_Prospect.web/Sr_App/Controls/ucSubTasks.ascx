@@ -465,7 +465,7 @@
                                             <td >
                                                 <asp:TextBox ID="txtTitle"   runat="server"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtTitle" ForeColor="Red" ErrorMessage="Please Enter Calendar Name" Display="None"> </asp:RequiredFieldValidator>
+                                                    runat="server" ControlToValidate="txtTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                        
                                         </tr>
@@ -475,7 +475,7 @@
                                             <td >
                                                 <asp:TextBox ID="txtInstallId"   runat="server"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtInstallId" ForeColor="Red" ErrorMessage="Please Enter Calendar Name" Display="None"> </asp:RequiredFieldValidator>
+                                                    runat="server" ControlToValidate="txtInstallId" ForeColor="Red" ErrorMessage="Please Enter Install ID" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                        
                                         </tr>
@@ -486,7 +486,7 @@
                                                 
                                                 <asp:TextBox ID="txtTaskDesc" TextMode="MultiLine" Columns="15" Rows="8" runat="server"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Calendar Name" Display="None"> </asp:RequiredFieldValidator>
+                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                        
                                         </tr>

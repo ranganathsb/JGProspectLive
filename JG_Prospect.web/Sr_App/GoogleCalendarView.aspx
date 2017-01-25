@@ -147,6 +147,20 @@
 
     </style> 
     <style>
+
+
+     .myTitleClass .ui-dialog-titlebar {
+           font-size: 22px;
+            line-height: 45px;
+            height: 45px;
+            font-weight: normal;
+            margin: 0;
+            padding: 0 0 0 25px;
+            color:#ffffff;
+            background: url(/img/main-header-bg.png) repeat-x;
+            border-radius: 7px 7px 0 0;
+        }
+
     /* ----css start for eventcolor --*/
     table.eventcolor label input {
         visibility: hidden;
@@ -292,7 +306,8 @@
                         
                         if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Admin"  || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
                        { %>
-                    <asp:Button ID="btnCreateEvent" runat="server" Text="Create" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnCreateEvent_Click"   />
+                    <input type="button"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;height:30px;width:75px"  value="Create" id="btnCreateEvent"/>          
+
                     <asp:Button ID="btnCreateCal" runat="server" Text="Create Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="120px" OnClick="btnCreateCal_Click"   />
                     <% } %>
                     &nbsp; <asp:DropDownList runat="server" ID="drpMyCalendar" Height="30px" Width="200px" OnSelectedIndexChanged="drpMyCalendar_SelectedIndexChanged" AutoPostBack="true">
@@ -314,7 +329,7 @@
                             EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="MonthView"
                             CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
-                            TimelineView-ReadOnly="true" m DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
+                            TimelineView-ReadOnly="true" OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true" DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
                             <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
                             <AdvancedForm Modal="True" />
                             <AppointmentTemplate>
@@ -354,406 +369,7 @@
                 </div>
 
             <!--  ------- Start DP Add events ------  -->
-            <cc1:ModalPopupExtender ID="mpEvents" runat="server" PopupControlID="pnlEvent"  TargetControlID="btnCreateEvent"
-            CancelControlID="btnClose" BackgroundCssClass="modalBackground">
-            </cc1:ModalPopupExtender>
-                    <asp:Panel ID="pnlEvent" runat="server" CssClass="modalPopup" Height="600px" Width="700px" align="center" >
-                           
-                       <h1><b>Add Events</b></h1>
-                            
-                                    <table border="1" cellspacing="5" cellpadding="5">
-                                       
-                                        <tr>
-                                            <td colspan="4">
-                                                <asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td   align="left">  Event Name <span>*</span>
-                                            </td>
-                                            <td >
-                                                <asp:TextBox ID="txtEventName" runat="server"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="SubmitEvent"
-                                                    runat="server" ControlToValidate="txtEventName" ForeColor="Red" ErrorMessage="Please Enter Event Name" Display="None"> </asp:RequiredFieldValidator>
-                                            </td>
-                                       
-                                            <td   align="left">Calendar <span>*</span> </td>
-                                            <td >
-                                                <asp:DropDownList runat="server" ID="drpEventCalender" >
-                                                </asp:DropDownList>
-                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="SubmitEvent"
-                                                    runat="server" ControlToValidate="drpEventCalender" ForeColor="Red" ErrorMessage="Please Select Calendar" Display="None"> </asp:RequiredFieldValidator>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="left">Event Colors  </td>
-                                            <td colspan="3">
-                                                
-                                               <table class="eventcolor">
-                                                   <tr>
-                                                       <td>
-                                                           <div  class="selectedeventcolor" style="background-color:#5484ed" /> 
-                                                        </td>
-                                                       <td>
-                                                           <span> Select Color :</span>
-                                                           <asp:HiddenField ID="txtEventColor" runat="server"   />
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#5484ed" class="radiol"  /> 		  
-			                                                   <img src="" class="img1" style="background-color:#5484ed" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#a4bdfc" class="radiol"  /> 		  
-			                                                    <img src="" class="img1" style="background-color:#a4bdfc" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                                <input type="radio" name="foo" value="#46d6db" class="radiol"  /> 		  
-			                                                    <img class="img1" style="background-color:#46d6db" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#7ae7bf" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#7ae7bf" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#51b749" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#51b749" />
-                                                           </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#fbd75b" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#fbd75b" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#ffb878" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#ffb878" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#ff887c" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#ff887c" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#dc2127" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#dc2127" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#9966CC" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#9966CC" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label>
-                                                               <input type="radio" name="foo" value="#e1e1e1" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#e1e1e1" />
-                                                           </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#FF33CC" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#FF33CC" />
-                                                            </label>
-                                                       </td>
-                                                        <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#FF9966" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#FF9966" />
-                                                            </label>
-                                                       </td>
-
-                                                        <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#CC6699" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#CC6699" />
-                                                            </label>
-                                                       </td>
-                                                       <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#33CC66" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#33CC66" />
-                                                            </label>
-                                                       </td>
-                                                        <td>
-                                                           <label >
-                                                               <input type="radio" name="foo" value="#FFFF99" class="radiol"  /> 		  
-			                                                   <img class="img1" style="background-color:#FFFF99" />
-                                                            </label>
-                                                       </td>
-                                                   </tr>
-                                               </table>
-                                             
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td> Event Start Date <span>*</span> </td>
-                                            <td>
-                                                 <asp:TextBox ID="txtEventStartDate" CssClass="date" onkeypress="return false" MaxLength="10"
-                                                    TabIndex="1" runat="server"></asp:TextBox>
-                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator6" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Start Date" Display="None"> </asp:RequiredFieldValidator>
-                                             </td>
-                                            <td>Event End Date <span>*</span></td>
-                                            <td>
-                                                 <asp:TextBox ID="txtEventEndDate" CssClass="date" onkeypress="return false" MaxLength="10"
-                                                    TabIndex="1" runat="server"></asp:TextBox>
-                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventEndDate" ForeColor="Red" ErrorMessage="Please Enter Event End Date" Display="None"> </asp:RequiredFieldValidator>
-                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                    Event Start Time <span>*</span>
-                                            </td>
-                                            <td>
-                                                    <asp:TextBox ID="txtEventStartTime" CssClass="time" onkeypress="return false"  MaxLength="10"
-                                                    TabIndex="1" runat="server"></asp:TextBox>
-                                             </td>
-                                            <td style="width:100px;">  Event End Time <span>*</span> </td>
-                                            <td>
-                                                    <asp:TextBox ID="txtEventEndTime" CssClass="time"  onkeypress="return false" MaxLength="10"
-                                                    TabIndex="1" runat="server"></asp:TextBox>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top">
-                                                <asp:CheckBoxList  RepeatDirection="Horizontal"  runat="server" ID="chkEventType" >
-                                                    <asp:ListItem Text="All Day" Value="1"></asp:ListItem>
-                                                    <asp:ListItem Text="Repeat" Value="2"></asp:ListItem>
-                                                    
-                                                </asp:CheckBoxList>
-                                            </td>
-                                            <td colspan="3">
-                                                <table>
-                                                    <tr>
-                                                        <td> 
-                                                            <asp:Panel runat="server" ID="pnlRepeatEvent">
-                                                                <asp:RadioButtonList  RepeatDirection="Horizontal" runat="server" ID="rdoRepeatEvent">
-                                                                    <asp:ListItem Text="Daily" Value="1"></asp:ListItem>
-                                                                    <asp:ListItem Text="Weekly" Value="2"></asp:ListItem>
-                                                                    <asp:ListItem Text="Monthly" Value="3"></asp:ListItem>
-                                                                    <asp:ListItem Text="Yearly" Value="4"></asp:ListItem>
-                                                                </asp:RadioButtonList>
-                                                            </asp:Panel>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top">
-                                                Attachment
-                                            </td>
-                                            <td valign="top">
-                                                <asp:FileUpload  ID="flEventFile" runat="server" />
-                                            </td>
-                                            <td  align="left" valign="top">
-                                                    Event Location <span>*</span>
-                                            </td>
-                                            <td valign="top">
-                                                 <asp:TextBox ID="txtEventLoc"    MaxLength="10"    TabIndex="1" runat="server"></asp:TextBox>
-                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="SubmitEvent" runat="server"
-                                                   ControlToValidate="txtEventLoc" ForeColor="Red" ErrorMessage="Please Enter Event Location" Display="None"> </asp:RequiredFieldValidator>
-                                             </td>
-                                        </tr>
-                                        <tr>
-                                            
-                                            <td colspan="2"  valign="top">
-                                                <div style="overflow:scroll;height:200px;width:280px;">
-                                                    <table id="tblInvite" runat="server" >
-                                                        <tr>
-                                                            <td>
-                                                                Invite Users : <asp:TextBox ID="txtInviteEmail" Width="100px"  runat="server"></asp:TextBox>
-                                                               <input type="button" id="btnInviteEmail" runat="server" value="Add" />
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </td>
-
-                                            <td colspan="2">
-                                                <table>
-                                                    <tr>
-                                                         <td  align="left" valign="top">
-                                                            Description <span>*</span>
-                                                        </td>
-                                                        <td valign="top">
-                                                             <asp:TextBox ID="txtEventDesc" TextMode="MultiLine"  Columns="25"   Rows="5"    TabIndex="1" runat="server"></asp:TextBox>
-                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ValidationGroup="SubmitEvent" runat="server"
-                                                               ControlToValidate="txtEventDesc" ForeColor="Red" ErrorMessage="Please Enter Event Description" Display="None"> </asp:RequiredFieldValidator>
-                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                         <td  align="left" valign="top">
-                                                                Interval <span>*</span>
-                                                        </td>
-                                                        <td valign="top">
-                                                             <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" runat="server"></asp:TextBox>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                         <td  align="left" valign="top">
-                                                                Max Occurrence <span>*</span>
-                                                        </td>
-                                                        <td valign="top"> 
-                                                             <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" runat="server"></asp:TextBox>
-                                                         </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                          
-                                        </tr>
-                                      <tr>
-                                          <td colspan="4">
-                                               <asp:HiddenField ID="txtinvite"  runat="server"  ></asp:HiddenField>
-                                                <asp:Button ID="btnEventSubmit" ValidationGroup="SubmitEvent"    runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
-                                                <asp:Button ID="btnEventClose" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" OnClick="btnEventClose_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
-                                          </td>
-                                      </tr>
-                                    </table>
-                                
-                           
-                   </asp:Panel>
-
-                <!-- Updated JavaScript url -->
-               <script src="../js/jquery.timepicker.js"></script>
-     
-                <script type="text/javascript" >
-                   
-
-                    $(document).ready(function () {
-                        $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
-                        $('#ContentPlaceHolder1_txtEventEndTime').timepicker();
-
-                        $(".radiol").click(function () {
-                            $("#ContentPlaceHolder1_txtEventColor").val($(this).val());
-                            $(".selectedeventcolor").attr("style", "background-color:" + $(this).val() + "");
-                        });
-
-                        $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
-
-                        $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").click(function () {
-                            
-                            if($(this).val() ==2)
-                            {
-                                $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
-                                $('#ContentPlaceHolder1_txtEventEndDate').val('');
-                                $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", false);
-                                $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
-                                $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
-                            }
-                            else {
-                                $('#ContentPlaceHolder1_chkEventType_1').prop("checked", false);
-                                var vStartDate = $('#ContentPlaceHolder1_txtEventStartDate').val();
-
-                                $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", true);
-                                $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", true);
-                                $('#ContentPlaceHolder1_txtEventStartTime').val('');
-                                $('#ContentPlaceHolder1_txtEventEndTime').val('');
-
-                                $('#ContentPlaceHolder1_txtEventEndDate').val(vStartDate);
-                                $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
-                            }
-                            
-                        });
-                        
-
-                        // invite people for event //
-                        var cnt = 2;
-
-                        function addRow() {
-                            var txtInviteVal = $("#ContentPlaceHolder1_txtInviteEmail").val();
-                            
-                            var html =
-                            '<tr id="tr_' + cnt + '">' +
-                                '<td>' + '&nbsp;<lable class="eventinvite">' + txtInviteVal + ' </lable>'+
-                                '</td>' +
-                                '<td><a href="javascript:void(0);" onclick="javascript:$(this).parent().parent().remove();" class="BtnMinus"> X </a></td>' +
-                                '</tr>'
-
-                            $(html).appendTo($("#ContentPlaceHolder1_tblInvite"));
-                            cnt++;
-                        };
-
-                        //function deleteRow() {
-                        //    //var m = confirm("are you sure you want to delete this product category, Data will not be saved ?");
-                        //    //if (m) {
-                        //        var par = $(this).parent().parent();
-                        //        par.remove();
-                        //    //}
-                        //};
-
-                        $("#ContentPlaceHolder1_btnInviteEmail").click(function () {
-                             addRow();
-                        });
-
-                        //$(".BtnMinus").each(function () {
-                        //    alert("fff");
-                        //    // deleteRow();
-                        //    var par = $(this).parent().parent();
-                        //    par.remove();
-                        //});
-                
-                    });
-
-                    function ValidateEventCal()
-                    {
-                        var isValid = false;
-                        isValid = Page_ClientValidate('SubmitCalendar');
-                        return isValid;
-                    }
-
-                 
-
-                    function gotoInvite() {
-                       
-
-                        var isValid = false;
-                        isValid = Page_ClientValidate('SubmitEvent');
-                        if (isValid == true) {
-
-                            var i = 0;
-                            var strInviteEmail = "";
-                            $(".eventinvite").each(function () {
-                                //alert($(this).text());
-                                if (i == 0) {
-                                    strInviteEmail = $(this).text();
-                                }
-                                else {
-                                    strInviteEmail = strInviteEmail + ";" + $(this).text();
-                                }
-                                i = i + 1;
-                            });
-                            $("#ContentPlaceHolder1_txtinvite").val(strInviteEmail);
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-
-                </script>
-
-
-
-
-                 <cc1:ModalPopupExtender ID="mpCalendar" runat="server" PopupControlID="pnlCalendar" TargetControlID="btnCreateCal"
+              <cc1:ModalPopupExtender ID="mpCalendar" runat="server" PopupControlID="pnlCalendar" TargetControlID="btnCreateCal"
             CancelControlID="btnClose" BackgroundCssClass="modalBackground">
             </cc1:ModalPopupExtender>
                     <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
@@ -784,20 +400,428 @@
                             </table>
                            
                    </asp:Panel>
-
-
-
-
-                <!-- --------- End DP -------  -->
+          <!-- --------- End DP -------  -->
             </ContentTemplate>
 
              
-            <Triggers>
-                <asp:PostBackTrigger ControlID="btnEventSubmit" />
-            </Triggers>
-             
         </asp:UpdatePanel>
     </div>
+
+    <!-- Start DP --->
+    <script src="../js/jquery.timepicker.js"></script>
+    <div id="popup" class="modalPopup" title="Add Events" > 
+       <table border="1" cellspacing="5" cellpadding="5">
+                                       
+                    <tr>
+                        <td colspan="4">
+                            <asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td   align="left">  Event Name <span>*</span>
+                        </td>
+                        <td >
+                            <asp:TextBox ID="txtEventName" runat="server"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="SubmitEvent"
+                                runat="server" ControlToValidate="txtEventName" ForeColor="Red" ErrorMessage="Please Enter Event Name" Display="None"> </asp:RequiredFieldValidator>
+                        </td>
+                                       
+                        <td   align="left">Calendar <span>*</span> </td>
+                        <td >
+                            <asp:DropDownList runat="server" ID="drpEventCalender" >
+                            </asp:DropDownList>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="SubmitEvent"
+                                runat="server" ControlToValidate="drpEventCalender" ForeColor="Red" ErrorMessage="Please Select Calendar" Display="None"> </asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left">Event Colors  </td>
+                        <td colspan="3">
+                                                
+                            <table class="eventcolor">
+                                <tr>
+                                    <td>
+                                        <div  class="selectedeventcolor" style="background-color:#5484ed" /> 
+                                    </td>
+                                    <td>
+                                        <span> Select Color :</span>
+                                        <asp:HiddenField ID="txtEventColor" runat="server"   />
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#5484ed" class="radiol"  /> 		  
+			                                <img src="" class="img1" style="background-color:#5484ed" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#a4bdfc" class="radiol"  /> 		  
+			                                <img src="" class="img1" style="background-color:#a4bdfc" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#46d6db" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#46d6db" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#7ae7bf" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#7ae7bf" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#51b749" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#51b749" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#fbd75b" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#fbd75b" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#ffb878" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#ffb878" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#ff887c" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#ff887c" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#dc2127" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#dc2127" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#9966CC" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#9966CC" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="radio" name="foo" value="#e1e1e1" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#e1e1e1" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#FF33CC" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#FF33CC" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#FF9966" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#FF9966" />
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#CC6699" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#CC6699" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#33CC66" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#33CC66" />
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label >
+                                            <input type="radio" name="foo" value="#FFFF99" class="radiol"  /> 		  
+			                                <img class="img1" style="background-color:#FFFF99" />
+                                        </label>
+                                    </td>
+                                </tr>
+                            </table>
+                                             
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Event Start Date <span>*</span> </td>
+                        <td>
+                                <asp:TextBox ID="txtEventStartDate" CssClass="date" onkeypress="return false" 
+                                TabIndex="1" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" ValidationGroup="SubmitEvent" runat="server"
+                                ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Start Date" Display="None"> </asp:RequiredFieldValidator>
+                            </td>
+                        <td>Event End Date <span>*</span></td>
+                        <td>
+                                <asp:TextBox ID="txtEventEndDate" CssClass="date" onkeypress="return false" 
+                                TabIndex="1" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitEvent" runat="server"
+                                ControlToValidate="txtEventEndDate" ForeColor="Red" ErrorMessage="Please Enter Event End Date" Display="None"> </asp:RequiredFieldValidator>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                                Event Start Time <span>*</span>
+                        </td>
+                        <td>
+                                <asp:TextBox ID="txtEventStartTime" CssClass="time" onkeypress="return false"  
+                                TabIndex="1" runat="server"></asp:TextBox>
+                            </td>
+                        <td style="width:100px;">  Event End Time <span>*</span> </td>
+                        <td>
+                                <asp:TextBox ID="txtEventEndTime" CssClass="time"  onkeypress="return false" 
+                                TabIndex="1" runat="server"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <asp:CheckBoxList  RepeatDirection="Horizontal"  runat="server" ID="chkEventType" >
+                                <asp:ListItem Text="All Day" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="Repeat" Value="2"></asp:ListItem>
+                                                    
+                            </asp:CheckBoxList>
+                        </td>
+                        <td colspan="3">
+                            <table>
+                                <tr>
+                                    <td> 
+                                        <asp:Panel runat="server" ID="pnlRepeatEvent">
+                                            <asp:RadioButtonList  RepeatDirection="Horizontal" runat="server" ID="rdoRepeatEvent">
+                                                <asp:ListItem Text="Daily" Value="1"></asp:ListItem>
+                                                <asp:ListItem Text="Weekly" Value="2"></asp:ListItem>
+                                                <asp:ListItem Text="Monthly" Value="3"></asp:ListItem>
+                                                <asp:ListItem Text="Yearly" Value="4"></asp:ListItem>
+                                            </asp:RadioButtonList>
+                                        </asp:Panel>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            Attachment
+                        </td>
+                        <td valign="top">
+                            <asp:FileUpload  ID="flEventFile" runat="server" />
+                        </td>
+                        <td  align="left" valign="top">
+                                Event Location <span>*</span>
+                        </td>
+                        <td valign="top">
+                                <asp:TextBox ID="txtEventLoc"    MaxLength="55"    TabIndex="1" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="SubmitEvent" runat="server"
+                                ControlToValidate="txtEventLoc" ForeColor="Red" ErrorMessage="Please Enter Event Location" Display="None"> </asp:RequiredFieldValidator>
+                            </td>
+                    </tr>
+                    <tr>
+                                            
+                        <td colspan="2"  valign="top">
+                            <div style="overflow:scroll;height:200px;width:280px;">
+                                <table id="tblInvite" runat="server" >
+                                    <tr>
+                                        <td>
+                                            Invite Users : <asp:DropDownList ID="drpInviteEmail" runat="server" >
+
+                                                            </asp:DropDownList> 
+                                            <input type="button" id="btnInviteEmail" runat="server" value="Add" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                        <td  align="left" valign="top">
+                                        Description <span>*</span>
+                                    </td>
+                                    <td valign="top">
+                                            <asp:TextBox ID="txtEventDesc" TextMode="MultiLine"  Columns="25"   Rows="5"    TabIndex="1" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ValidationGroup="SubmitEvent" runat="server"
+                                            ControlToValidate="txtEventDesc" ForeColor="Red" ErrorMessage="Please Enter Event Description" Display="None"> </asp:RequiredFieldValidator>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td  align="left" valign="top">
+                                            Interval <span>*</span>
+                                    </td>
+                                    <td valign="top">
+                                            <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" runat="server"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                        <td  align="left" valign="top">
+                                            Max Occurrence <span>*</span>
+                                    </td>
+                                    <td valign="top"> 
+                                            <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" runat="server"></asp:TextBox>
+                                        </td>
+                                </tr>
+                            </table>
+                        </td>
+                                          
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <asp:HiddenField ID="txtinvite"  runat="server"  ></asp:HiddenField>
+                            <asp:Button ID="btnEventSubmit" ValidationGroup="SubmitEvent"    runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
+                            
+                        </td>
+                    </tr>
+                </table>
+    </div>
+
+     <script type="text/javascript" >
+         var cnt = 2;
+         $(function () {
+             $("#popup").dialog({
+                 width: 750,
+                 height: 700,
+                 modal: true,
+                 autoOpen: false,
+                 dialogClass: 'myTitleClass',
+                 open: function () {
+                     $("#datePicker").datepicker();
+                     $('#datePicker').removeAttr("disabled");
+                     $(this).parent().appendTo("form");
+                 },
+                 close: function () {
+                     $('#datePicker').datepicker('hide');
+                     $("#popup").dialog("close");
+                 },
+                 ok: function () {
+                     $("#ContentPlaceHolder1_btnEventSubmit").click();
+                 },
+
+             });
+
+
+             $(".date").datepicker();
+             $('#btnCreateEvent').unbind('click').bind('click', function () {
+                 callpopupscript();
+             });
+
+         });
+
+
+
+
+         function callpopupscript() {
+             $('.date').attr("disabled", true);
+             $("#popup").dialog("open");
+             $('.date').removeAttr("disabled");
+             $(".date").datepicker({
+                 minDate: 0,
+                 dateFormat: "dd-M-yy"
+             });
+             $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
+             $('#ContentPlaceHolder1_txtEventEndTime').timepicker();             
+
+             $(".radiol").click(function () {
+                 $("#ContentPlaceHolder1_txtEventColor").val($(this).val());
+                 $(".selectedeventcolor").attr("style", "background-color:" + $(this).val() + "");
+             });
+
+             $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+
+             $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").click(function () {
+
+                 if ($(this).val() == 2) {
+                     $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
+                     $('#ContentPlaceHolder1_txtEventEndDate').val('');
+                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", false);
+                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                 }
+                 else {
+                     $('#ContentPlaceHolder1_chkEventType_1').prop("checked", false);
+                     var vStartDate = $('#ContentPlaceHolder1_txtEventStartDate').val();
+
+                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", true);
+                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", true);
+                     $('#ContentPlaceHolder1_txtEventStartTime').val('');
+                     $('#ContentPlaceHolder1_txtEventEndTime').val('');
+
+                     $('#ContentPlaceHolder1_txtEventEndDate').val(vStartDate);
+                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                 }
+
+             });
+
+
+             $("#ContentPlaceHolder1_btnInviteEmail").unbind('click').bind('click', function () {
+                 addRow();
+             });
+         }
+
+             // invite people for event //
+             
+
+             function addRow() {
+                 var txtInviteVal = $("#ContentPlaceHolder1_drpInviteEmail option:selected").text();
+                 if (txtInviteVal == "<--Select-->" || txtInviteVal == "") {
+                     alert("Please select User Email to send an Invitation");
+                     return false;
+                 }
+                 var html =
+                 '<tr id="tr_' + cnt + '">' +
+                     '<td>' + '&nbsp;<lable class="eventinvite">' + txtInviteVal + ' </lable>' +
+                     '</td>' +
+                     '<td><a href="javascript:void(0);" onclick="javascript:$(this).parent().parent().remove();" class="BtnMinus"> X </a></td>' +
+                     '</tr>'
+
+                 $(html).appendTo($("#ContentPlaceHolder1_tblInvite"));
+                 cnt++;
+             };
+
+
+         function ValidateEventCal() {
+             var isValid = false;
+             isValid = Page_ClientValidate('SubmitCalendar');
+             return isValid;
+         }
+
+         function gotoInvite() {
+
+
+             var isValid = false;
+             isValid = Page_ClientValidate('SubmitEvent');
+             if (isValid == true) {
+
+                 var i = 0;
+                 var strInviteEmail = "";
+                 $(".eventinvite").each(function () {
+                     //alert($(this).text());
+                     if (i == 0) {
+                         strInviteEmail = $(this).text();
+                     }
+                     else {
+                         strInviteEmail = strInviteEmail + ";" + $(this).text();
+                     }
+                     i = i + 1;
+                 });
+                 $("#ContentPlaceHolder1_txtinvite").val(strInviteEmail);
+                 return true;
+             }
+             else {
+                 return false;
+             }
+         }
+
+                </script>
+
+
+    <!-- End DP -->
+
+
     
     <asp:UpdatePanel ID="upRadWindowManager" runat="server" UpdateMode="Always">
         <ContentTemplate>
