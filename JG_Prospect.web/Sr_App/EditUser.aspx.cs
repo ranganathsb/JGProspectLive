@@ -3237,11 +3237,12 @@ namespace JG_Prospect
                     {
                         //Session["UserGridData"] = dtSalesUser_Grid;
                         //BindUsers(dtSalesUser_Grid);
-
+                       
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
-
+                        grdUsers.UseAccessibleHeader = true;
+                        grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
                     }
                     else
@@ -3674,5 +3675,26 @@ namespace JG_Prospect
         #endregion
 
         #endregion
+
+        protected void grdUsers_PreRender(object sender, EventArgs e)
+        {
+            GridView gv = (GridView)sender;            
+
+            if (gv.Rows.Count > 0)
+            {
+                gv.UseAccessibleHeader = true;
+                gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gv.FooterRow.TableSection = TableRowSection.TableFooter;
+            }
+
+            if (gv.TopPagerRow != null)
+            {
+                gv.TopPagerRow.TableSection = TableRowSection.TableHeader;
+            }
+            if (gv.BottomPagerRow != null)
+            {
+                gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+            }
+        }
     }
 }
