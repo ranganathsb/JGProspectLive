@@ -808,9 +808,10 @@
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" ItemStyle-HorizontalAlign="Center" SortExpression="Phone" ControlStyle-Width="70px" HeaderStyle-Width="151px" ItemStyle-Width="150px" >
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%> 
-                                        <div class="GrdPrimaryEmail" onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');" %>">
-                                            <%--<asp:Label ID="lblEmail" CssClass="wordBreak"  Width="145" runat="server" Text='<%# Eval("Email") %>'></asp:Label>--%>
-                                            <asp:Label ID="lblEmail" ToolTip='<%# Eval("Email") %>'  runat="server" Text='<%# Eval("Email") %>'></asp:Label>
+                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
+                                        <div class="GrdPrimaryEmail">
+                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
+                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>                                        
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" Width="145" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
                                         <div class="GrdContainer">
@@ -1227,16 +1228,9 @@
                     <table cellspacing="3" cellpadding="3" width="100%">
                         <tr>
                             <td>Subject:<br />
-                                <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" />
-                                <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser"
+                                <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" ReadOnly="true" />
+                                <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser" 
                                     runat="server" ControlToValidate="txtEmailSubject" ForeColor="Red" ErrorMessage="Please enter email subject." Display="None" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Header:<br />
-                                <asp:TextBox ID="txtEmailHeader" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
-                                <asp:RequiredFieldValidator ID="rfvEmailHeader" ValidationGroup="vgEmailToUser"
-                                    runat="server" ControlToValidate="txtEmailHeader" ForeColor="Red" ErrorMessage="Please enter email header." Display="None" />
                             </td>
                         </tr>
                         <tr>
@@ -1247,10 +1241,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Footer:<br />
-                                <asp:TextBox ID="txtEmailFooter" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
-                                <asp:RequiredFieldValidator ID="rfvEmailFooter" ValidationGroup="vgEmailToUser"
-                                    runat="server" ControlToValidate="txtEmailFooter" ForeColor="Red" ErrorMessage="Please enter email footer." Display="None" />
+                            <td>Custom Message:<br />
+                                <asp:TextBox ID="txtEmailCustomMessage" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                <asp:RequiredFieldValidator ID="rfvEmailCustomMessage" ValidationGroup="vgEmailToUser" Display="None" 
+                                    runat="server" ControlToValidate="txtEmailCustomMessage" ForeColor="Red" ErrorMessage="Please enter custom message for email." />
                             </td>
                         </tr>
                         <tr>
@@ -1430,9 +1424,9 @@
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
             $('#<%=hdnEmailTo.ClientID%>').val(email);
-            SetCKEditor('<%=txtEmailHeader.ClientID%>');
+            <%--SetCKEditor('<%=txtEmailHeader.ClientID%>');
             SetCKEditor('<%=txtEmailBody.ClientID%>');
-            SetCKEditor('<%=txtEmailFooter.ClientID%>');
+            SetCKEditor('<%=txtEmailFooter.ClientID%>');--%>
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
 

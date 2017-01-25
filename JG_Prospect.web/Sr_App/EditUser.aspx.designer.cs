@@ -1120,24 +1120,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailSubject;
         
         /// <summary>
-        /// txtEmailHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmailHeader;
-        
-        /// <summary>
-        /// rfvEmailHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailHeader;
-        
-        /// <summary>
         /// txtEmailBody control.
         /// </summary>
         /// <remarks>
@@ -1156,22 +1138,22 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailBody;
         
         /// <summary>
-        /// txtEmailFooter control.
+        /// txtEmailCustomMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmailFooter;
+        protected global::System.Web.UI.WebControls.TextBox txtEmailCustomMessage;
         
         /// <summary>
-        /// rfvEmailFooter control.
+        /// rfvEmailCustomMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailFooter;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailCustomMessage;
         
         /// <summary>
         /// btnSendEmailToUser control.

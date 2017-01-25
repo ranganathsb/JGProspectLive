@@ -167,8 +167,6 @@ namespace JG_Prospect
                 BindDesignations();
 
                 GetSalesUsersStaticticsAndData(true);
-
-                LoadEmailContentToSentToUser(false);
             }
             else
             {
@@ -466,7 +464,10 @@ namespace JG_Prospect
                 //}
 
             }
-
+            else if (e.CommandName == "send-email")
+            {
+                LoadEmailContentToSentToUser(grdUsers.Rows[Convert.ToInt32(e.CommandArgument)]);
+            }
         }
 
         protected void grdUsers_Sorting(object sender, GridViewSortEventArgs e)
@@ -514,7 +515,7 @@ namespace JG_Prospect
             Label lblDesignation = (Label)(grow.FindControl("lblDesignation"));
             Label lblFirstName = (Label)(grow.FindControl("lblFirstName"));
             Label lblLastName = (Label)(grow.FindControl("lblLastName"));
-            Label lblEmail = (Label)(grow.FindControl("lblEmail"));
+            LinkButton lbtnEmail = (LinkButton)(grow.FindControl("lbtnEmail"));
             HiddenField lblStatus = (HiddenField)(grow.FindControl("lblStatus"));
             Label Id = (Label)grow.FindControl("lblid");
             DropDownList ddl = (DropDownList)grow.FindControl("ddlStatus");
@@ -554,7 +555,7 @@ namespace JG_Prospect
                 {
                     hdnFirstName.Value = lblFirstName.Text;
                     hdnLastName.Value = lblLastName.Text;
-                    txtEmail.Text = lblEmail.Text;
+                    txtEmail.Text = lbtnEmail.Text;
                     txtPassword1.Attributes.Add("value", "jmgrove");
                     txtpassword2.Attributes.Add("value", "jmgrove");
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
@@ -599,7 +600,7 @@ namespace JG_Prospect
             }
             else if (ddl.SelectedValue == "OfferMade")
             {
-                txtEmail.Text = lblEmail.Text;
+                txtEmail.Text = lbtnEmail.Text;
                 txtPassword1.Attributes.Add("value", "jmgrove");
                 txtpassword2.Attributes.Add("value", "jmgrove");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
@@ -1024,25 +1025,39 @@ namespace JG_Prospect
                 }
             }
 
-            string strBody = txtEmailHeader.Text + txtEmailBody.Text + txtEmailFooter.Text;
+            string strBody = txtEmailBody.Text + txtEmailCustomMessage.Text;
 
             try
             {
                 JG_Prospect.App_Code.CommonFunction.SendEmail(JGSession.Designation, hdnEmailTo.Value, txtEmailSubject.Text, strBody, lstAttachments);
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + hdnEmailTo.Value + ".');", true);
+                ScriptManager.RegisterStartupScript(
+                                                    this,
+                                                    this.GetType(),
+                                                    "HidePopup_divSendEmailToUserWithAlert",
+                                                    string.Concat
+                                                                (
+                                                                    "alert('An email notification has sent on " + hdnEmailTo.Value + ".');",
+                                                                    "HidePopup('#", divSendEmailToUser.ClientID, "');"
+                                                                ),
+                                                    true
+                                                   );
             }
             catch
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + hdnEmailTo.Value + ".');", true);
             }
-
-            LoadEmailContentToSentToUser();
         }
 
         protected void btnCancelSendEmailToUser_Click(object sender, EventArgs e)
         {
-            LoadEmailContentToSentToUser();
+            ScriptManager.RegisterStartupScript(
+                                                this,
+                                                this.GetType(),
+                                                "HidePopup_divSendEmailToUser",
+                                                string.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"),
+                                                true
+                                               );
         }
 
         #region '----Change Status For Selected - Popup----'
@@ -1200,7 +1215,7 @@ namespace JG_Prospect
 
                         //AssignedTask if any or Default
                         AssignedTaskToUser(intId, (DropDownList)objUserRow.FindControl("ddlTechTask"));
-                        
+
                         break;
 
                     case "OfferMade":
@@ -3478,21 +3493,51 @@ namespace JG_Prospect
         //    return installId;
         //}
 
-        private void LoadEmailContentToSentToUser(bool blHidePopup = true)
+        private void LoadEmailContentToSentToUser(GridViewRow objUserRow)
         {
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, JGSession.Designation);
 
             txtEmailSubject.Text = objHTMLTemplate.Subject;
-            txtEmailHeader.Text = objHTMLTemplate.Header;
-            txtEmailBody.Text = objHTMLTemplate.Body;
-            txtEmailFooter.Text = objHTMLTemplate.Footer;
+            txtEmailBody.Text = string.Concat(
+                                                //objHTMLTemplate.Designation + " --- ",
+                                                objHTMLTemplate.Header,
+                                                objHTMLTemplate.Body,
+                                                objHTMLTemplate.Footer
+                                            );
+
+            string strEmail = ((LinkButton)objUserRow.FindControl("lbtnEmail")).Text;
+            string strFirstName = ((Label)objUserRow.FindControl("lblFirstName")).Text;
+            string strLastName = ((Label)objUserRow.FindControl("lblLastName")).Text;
+            string strDesignation = ((Label)objUserRow.FindControl("lblDesignation")).Text;
+
+            string strBody = txtEmailBody.Text;
+            strBody = strBody.Replace("#Email#", strEmail).Replace("#email#", strEmail);
+            strBody = strBody.Replace("#FirstName#", strFirstName);
+            strBody = strBody.Replace("#LastName#", strLastName);
+            strBody = strBody.Replace("#Name#", strFirstName).Replace("#name#", strFirstName);
+            strBody = strBody.Replace("#Designation#", strDesignation).Replace("#designation#", strDesignation);
+
+            txtEmailBody.Text = strBody;
+
+            txtEmailCustomMessage.Text = string.Empty;
+
+            hdnEmailTo.Value =
+            lblEmailTo.Text = strEmail;
 
             upSendEmailToUser.Update();
-
-            if (blHidePopup)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup_divSendEmailToUser", String.Concat("HidePopup('#", divSendEmailToUser.ClientID, "');"), true);
-            }
+            
+            ScriptManager.RegisterStartupScript
+                                (
+                                    this,
+                                    this.GetType(),
+                                    "ShowPopup_divSendEmailToUser",
+                                    string.Concat(
+                                                    "SetCKEditor('", txtEmailBody.ClientID, "');",
+                                                    "SetCKEditor('", txtEmailCustomMessage.ClientID, "');",
+                                                    "ShowPopupWithTitle('#", divSendEmailToUser.ClientID, "','Send Email');"
+                                                 ),
+                                    true
+                                );
         }
 
         #region 'Assigned Task ToUser'
