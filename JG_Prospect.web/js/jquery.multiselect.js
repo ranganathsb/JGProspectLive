@@ -181,7 +181,7 @@
             });
 
             // hide options menus if click happens off of the list placeholder button
-            // $(document).off('click.ms-hideopts').on('click.ms-hideopts', function (event) {
+            $(document).off('click.ms-hideopts').on('click.ms-hideopts', function( event ){
                 if( !$(event.target).closest('.ms-options-wrap').length ) {
                     if( $('.ms-options-wrap > .ms-options:visible').length ) {
                         $('.ms-options-wrap > .ms-options:visible').each(function(){
@@ -405,6 +405,7 @@
             instance._updateSelectAllText( false );
 
             // BIND SELECT ACTION
+            optionsWrap.on( 'click', 'input[type="checkbox"]', function(){
                 $(this).closest( 'li' ).toggleClass( 'selected' );
 
                 var select = optionsWrap.parent().prev();
@@ -423,7 +424,9 @@
             });
 
             // BIND FOCUS EVENT
+            optionsWrap.on('focusin', 'input[type="checkbox"]', function(){
                 $(this).closest('label').addClass('focused');
+            }).on('focusout', 'input[type="checkbox"]', function(){
                 $(this).closest('label').removeClass('focused');
             });
 
