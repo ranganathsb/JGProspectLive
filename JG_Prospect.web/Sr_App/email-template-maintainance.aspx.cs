@@ -15,7 +15,8 @@ namespace JG_Prospect.Sr_App
         {
             CommonFunction.AuthenticateUser();
 
-            if (!IsPostBack) {
+            if (!IsPostBack)
+            {
                 FillHtmlTemplates();
             }
         }
@@ -24,6 +25,14 @@ namespace JG_Prospect.Sr_App
         {
             grdHtmlTemplates.DataSource = HTMLTemplateBLL.Instance.GetHTMLTemplates();
             grdHtmlTemplates.DataBind();
+        }
+
+        protected void grdHtmlTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName.Equals("edit-template"))
+            {
+                Response.Redirect("~/Sr_App/edit-email-template.aspx?MasterId=" + e.CommandArgument.ToString());
+            }
         }
     }
 }

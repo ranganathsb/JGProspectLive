@@ -5462,29 +5462,14 @@ BEGIN
 	FROM
 		(
 			SELECT 
-					 0 As IsMaster
-					,[Id]
-					,[HTMLTemplatesMasterId]
-					,[Subject]
-					,[Header]
-					,[Body]
-					,[Footer]
-					,[DateUpdated]
-			FROM tblDesignationHTMLTemplates
-
-			UNION ALL
-
-			SELECT 
-					 1 As IsMaster
-					,0 AS [Id]
-					,[Id] AS HTMLTemplatesMasterId
+					[Id]
+					,[Name]
 					,[Subject]
 					,[Header]
 					,[Body]
 					,[Footer]
 					,[DateUpdated]
 			FROM tblHTMLTemplatesMaster 
-			WHERE Id NOT IN (SELECT HTMLTemplatesMasterId FROM tblDesignationHTMLTemplates)
 
 		) AS HTMLTemplates
 	ORDER BY HTMLTemplates.IsMaster DESC
@@ -5548,3 +5533,33 @@ BEGIN
 END
 GO
 
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets all HTMLTemplates
+-- =============================================
+ALTER PROCEDURE GetHTMLTemplates
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT 
+			[Id]
+			,[Name]
+			,[Subject]
+			,[Header]
+			,[Body]
+			,[Footer]
+			,[DateUpdated]
+	FROM tblHTMLTemplatesMaster 
+	ORDER BY Id ASC
+
+END
+GO

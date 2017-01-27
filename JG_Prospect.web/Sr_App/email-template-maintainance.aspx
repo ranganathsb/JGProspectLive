@@ -4,14 +4,32 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="true" DataKeyNames="Id"
-        CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
-        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-        <HeaderStyle CssClass="trHeader " />
-        <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-        <AlternatingRowStyle CssClass="AlternateRow " />
-        <Columns>
-
-        </Columns>
-    </asp:GridView>
+    <div class="right_panel">
+        <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
+            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
+            OnRowCommand="grdHtmlTemplates_RowCommand">
+            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+            <HeaderStyle CssClass="trHeader " />
+            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+            <AlternatingRowStyle CssClass="AlternateRow " />
+            <Columns>
+                <asp:TemplateField HeaderText="Id">
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnEdit" runat="server" Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' 
+                            CommandName="edit-template" />
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Name">
+                    <ItemTemplate>
+                        <%# Eval("Name") %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Subject">
+                    <ItemTemplate>
+                        <%# Eval("Subject") %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Columns>
+        </asp:GridView>
+    </div>
 </asp:Content>
