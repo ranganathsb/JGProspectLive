@@ -1664,8 +1664,10 @@
     <Content Include="Sr_App\DepartmentList.aspx" />
     <Content Include="Sr_App\DesignationAddEdit.aspx" />
     <Content Include="Sr_App\DesignationList.aspx" />
+    <Content Include="Sr_App\edit-email-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
+    <Content Include="Sr_App\email-template-maintainance.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendors.aspx" />
     <Content Include="Sr_App\estimate.aspx" />
@@ -2011,6 +2013,20 @@
     </Compile>
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\edit-email-template.aspx.cs">
+      <DependentUpon>edit-email-template.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\edit-email-template.aspx.designer.cs">
+      <DependentUpon>edit-email-template.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.designer.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>

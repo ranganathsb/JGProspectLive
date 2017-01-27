@@ -107,7 +107,7 @@
     <Compile Include="modal\Department.cs" />
     <Compile Include="modal\Designation.cs" />
     <Compile Include="modal\DesignationHTMLTemplate.cs" />
-    <Compile Include="modal\HTMLTemplatesMater.cs" />
+    <Compile Include="modal\HTMLTemplatesMaster.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />

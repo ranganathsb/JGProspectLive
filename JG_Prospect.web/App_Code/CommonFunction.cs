@@ -911,6 +911,22 @@ namespace JG_Prospect
             }
         }
 
+        public static Int32 DesignationId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["DesignationId"] == null)
+                {
+                    return 0;
+                }
+                return Convert.ToInt32(HttpContext.Current.Session["DesignationId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["DesignationId"] = value;
+            }
+        }
+
         public static string Designation
         {
             get

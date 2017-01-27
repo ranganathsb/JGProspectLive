@@ -5385,3 +5385,303 @@ BEGIN
 		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
 END
 GO
+
+
+
+/****** Object:  Table [dbo].[tblHTMLTemplatesMaster]    Script Date: 11-Jan-17 10:18:50 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE TABLE [dbo].[tblHTMLTemplatesMaster](
+	[Id] [int] PRIMARY KEY,
+	[Name] [varchar](50) NOT NULL,
+	[Subject] [varchar](4000) NOT NULL,
+	[Header] [nvarchar](max) NOT NULL,
+	[Body] [nvarchar](max) NOT NULL,
+	[Footer] [nvarchar](max) NOT NULL,
+	[DateUpdated] [date] NOT NULL
+)
+GO
+SET ANSI_PADDING OFF
+GO
+
+INSERT INTO [tblHTMLTemplatesMaster]
+(
+	[Id]
+	,[Name]
+	,[Subject]
+	,[Header]
+	,[Body]
+	,[Footer]
+	,[DateUpdated]
+)
+SELECT *
+FROM [tblHTMLTemplatesMater]
+GO
+
+
+ALTER TABLE tblDesignationHTMLTemplates
+ADD HTMLTemplatesMasterId INT NOT NULL REFERENCES tblHTMLTemplatesMaster
+GO
+
+UPDATE tblDesignationHTMLTemplates
+SET HTMLTemplatesMasterId = HTMLTemplatesMaterId
+GO
+
+ALTER TABLE tblDesignationHTMLTemplates
+DROP FK__tblDesign__HTMLT__0D45C3B3
+GO
+ALTER TABLE tblDesignationHTMLTemplates
+DROP COLUMN HTMLTemplatesMaterId
+GO
+
+DROP TABLE tblHTMLTemplatesMater
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets all HTMLTemplates
+-- =============================================
+ALTER PROCEDURE GetHTMLTemplates
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM
+		(
+			SELECT 
+					[Id]
+					,[Name]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMaster 
+
+		) AS HTMLTemplates
+	ORDER BY HTMLTemplates.IsMaster DESC
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets a HTMLTemplate.
+-- =============================================
+ALTER PROCEDURE GetDesignationHTMLTemplate
+	@Id	INT,
+	@Designation VARCHAR(50) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT TOP 1 *
+	FROM
+		(
+			SELECT 
+					 0 As IsMaster
+					,[Id]
+					,[HTMLTemplatesMasterId]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblDesignationHTMLTemplates
+			WHERE 
+				HTMLTemplatesMasterId = @Id AND
+				Designation = ISNULL(@Designation,Designation)
+
+			UNION
+
+			SELECT 
+					 1 As IsMaster
+					,0 AS Id
+					,[Id] AS HTMLTemplatesMasterId
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMaster 
+			WHERE Id = @Id
+
+		) AS HTMLTemplates
+
+END
+GO
+
+
+DROP PROCEDURE GetHTMLTemplates
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Gets all Master HTMLTemplates.
+-- =============================================
+CREATE PROCEDURE GetHTMLTemplateMasters
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT 
+			[Id]
+			,[Name]
+			,[Subject]
+			,[Header]
+			,[Body]
+			,[Footer]
+			,[DateUpdated]
+	FROM tblHTMLTemplatesMaster 
+	ORDER BY Id ASC
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Gets a Master HTMLTemplate.
+-- =============================================
+CREATE PROCEDURE GetHTMLTemplateMasterById
+	@Id INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT 
+			[Id]
+			,[Name]
+			,[Subject]
+			,[Header]
+			,[Body]
+			,[Footer]
+			,[DateUpdated]
+	FROM tblHTMLTemplatesMaster 
+	WHERE Id = @Id
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Saves designation HTMLTemplate either inserts or updates.
+-- =============================================
+CREATE PROCEDURE SaveDesignationHTMLTemplate
+	@HTMLTemplatesMasterId	INT,
+	@Designation			VARCHAR(50),
+	@Subject				VARCHAR(4000),
+	@Header					NVARCHAR(max),
+	@Body					NVARCHAR(max),
+	@Footer					NVARCHAR(max)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	IF EXISTS (SELECT ID 
+					FROM [tblDesignationHTMLTemplates] 
+					WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation)
+		BEGIN
+
+			UPDATE [dbo].[tblDesignationHTMLTemplates]
+			   SET
+				  [Subject] = @Subject
+				  ,[Header] = @Header
+				  ,[Body] = @Body
+				  ,[Footer] = @Footer
+				  ,[DateUpdated] = GETDATE()
+			 WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation
+
+		END
+	ELSE
+		BEGIN
+			INSERT INTO [dbo].[tblDesignationHTMLTemplates]
+				   ([HTMLTemplatesMasterId]
+				   ,[Designation]
+				   ,[Subject]
+				   ,[Header]
+				   ,[Body]
+				   ,[Footer]
+				   ,[DateUpdated])
+			 VALUES
+				   (@HTMLTemplatesMasterId
+				   ,@Designation
+				   ,@Subject
+				   ,@Header
+				   ,@Body
+				   ,@Footer
+				   ,GETDATE())
+		END
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Deletes designation HTMLTemplate.
+-- =============================================
+CREATE PROCEDURE DeleteDesignationHTMLTemplate
+	@HTMLTemplatesMasterId	INT,
+	@Designation			VARCHAR(50)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DELETE 
+	FROM [dbo].[tblDesignationHTMLTemplates]
+	WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation
+
+END
+GO

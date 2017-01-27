@@ -845,6 +845,7 @@ namespace JG_Prospect
         {
             try
             {
+                JGSession.DesignationId = 0;
                 string strRedirectUrl = string.Empty;
                 int isvaliduser = 0;
                 DataSet ds = new DataSet();
@@ -860,6 +861,10 @@ namespace JG_Prospect
                         Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                         AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                         Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                        if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                        {
+                            JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                        }
                         isvaliduser = UserBLL.Instance.chklogin(txtloginid.Text.Trim(), txtpassword.Text);
                     }
 
