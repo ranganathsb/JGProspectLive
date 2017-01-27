@@ -5385,3 +5385,166 @@ BEGIN
 		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
 END
 GO
+
+
+
+/****** Object:  Table [dbo].[tblHTMLTemplatesMaster]    Script Date: 11-Jan-17 10:18:50 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE TABLE [dbo].[tblHTMLTemplatesMaster](
+	[Id] [int] PRIMARY KEY,
+	[Name] [varchar](50) NOT NULL,
+	[Subject] [varchar](4000) NOT NULL,
+	[Header] [nvarchar](max) NOT NULL,
+	[Body] [nvarchar](max) NOT NULL,
+	[Footer] [nvarchar](max) NOT NULL,
+	[DateUpdated] [date] NOT NULL
+)
+GO
+SET ANSI_PADDING OFF
+GO
+
+INSERT INTO [tblHTMLTemplatesMaster]
+(
+	[Id]
+	,[Name]
+	,[Subject]
+	,[Header]
+	,[Body]
+	,[Footer]
+	,[DateUpdated]
+)
+SELECT *
+FROM [tblHTMLTemplatesMater]
+GO
+
+
+ALTER TABLE tblDesignationHTMLTemplates
+ADD HTMLTemplatesMasterId INT NOT NULL REFERENCES tblHTMLTemplatesMaster
+GO
+
+UPDATE tblDesignationHTMLTemplates
+SET HTMLTemplatesMasterId = HTMLTemplatesMaterId
+GO
+
+ALTER TABLE tblDesignationHTMLTemplates
+DROP FK__tblDesign__HTMLT__0D45C3B3
+GO
+ALTER TABLE tblDesignationHTMLTemplates
+DROP COLUMN HTMLTemplatesMaterId
+GO
+
+DROP TABLE tblHTMLTemplatesMater
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets all HTMLTemplates
+-- =============================================
+ALTER PROCEDURE GetHTMLTemplates
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM
+		(
+			SELECT 
+					 0 As IsMaster
+					,[Id]
+					,[HTMLTemplatesMasterId]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblDesignationHTMLTemplates
+
+			UNION ALL
+
+			SELECT 
+					 1 As IsMaster
+					,0 AS [Id]
+					,[Id] AS HTMLTemplatesMasterId
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMaster 
+			WHERE Id NOT IN (SELECT HTMLTemplatesMasterId FROM tblDesignationHTMLTemplates)
+
+		) AS HTMLTemplates
+	ORDER BY HTMLTemplates.IsMaster DESC
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets a HTMLTemplate.
+-- =============================================
+ALTER PROCEDURE GetDesignationHTMLTemplate
+	@Id	INT,
+	@Designation VARCHAR(50) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT TOP 1 *
+	FROM
+		(
+			SELECT 
+					 0 As IsMaster
+					,[Id]
+					,[HTMLTemplatesMasterId]
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblDesignationHTMLTemplates
+			WHERE 
+				HTMLTemplatesMasterId = @Id AND
+				Designation = ISNULL(@Designation,Designation)
+
+			UNION
+
+			SELECT 
+					 1 As IsMaster
+					,0 AS Id
+					,[Id] AS HTMLTemplatesMasterId
+					,[Subject]
+					,[Header]
+					,[Body]
+					,[Footer]
+					,[DateUpdated]
+			FROM tblHTMLTemplatesMaster 
+			WHERE Id = @Id
+
+		) AS HTMLTemplates
+
+END
+GO
+
