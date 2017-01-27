@@ -1729,13 +1729,37 @@ namespace JG_Prospect.DAL
                         return false;
                 }
             }
-
             catch (Exception ex)
             {
                 return false;
-
             }
+        }
 
+        public bool DeleteInstallUsers(List<Int32> lstIDs)
+        {
+            try
+            {
+                DataTable dtIDs = new DataTable();
+                dtIDs.Columns.Add(new DataColumn("ID", typeof(Int32)));
+
+                foreach (var item in lstIDs)
+                {
+                    dtIDs.Rows.Add(item);
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("DeleteInstallUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.ExecuteNonQuery(command);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public DataSet getuserdetails(int id)
@@ -2225,6 +2249,81 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for sales users.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns> categorised search suggestions for sales users</returns>
+        public DataSet GetSalesUserAutoSuggestion(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetSalesUserAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
+        {
+            DataSet dsResult = null;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
+                    command.CommandType = CommandType.StoredProcedure;
+                    if (!string.IsNullOrEmpty(strSearchTerm))
+                    {
+                        database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
+                    }
+                    database.AddInParameter(command, "@Status", DbType.String, strStatus);
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, intDesignationId);
+                    database.AddInParameter(command, "@SourceId", DbType.Int32, intSourceId);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int16, userid);
+                    if (fromdate != null)
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
+
+                    database.AddInParameter(command, "@PageIndex", DbType.Int16, intPageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int16, intPageSize);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
+                    dsResult = database.ExecuteDataSet(command);
+                }
+                return dsResult;
+            }
+            catch (Exception ex)
+            {
+                return dsResult;
             }
         }
 

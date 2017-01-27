@@ -2717,7 +2717,7 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 	WHERE tuf.TaskId = @TaskId
 
 END
-
+GO
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE VIEW [dbo].[TaskListView] 
@@ -4026,3 +4026,1368 @@ BEGIN
 END
 GO
 
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 16-Jan-17 8:59:28 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@Status VARCHAR(50),
+	@Designation VARCHAR(50),
+	@Source VARCHAR(50),
+	@AddedByUserId int,
+	@UserId int,
+	@FromDate date = null,
+	@ToDate date = null,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @Designation = '0'
+	BEGIN
+		SET @Designation = NULL
+	END
+	
+	IF @Source = '0'
+	BEGIN
+		SET @Source = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	-- get counts
+	SELECT 
+		t.status,count(*)cnt 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+			AND t.Designation = ISNULL(@Designation, t.Designation)
+			AND t.Source = ISNULL(@Source, t.Source)
+			AND U.Id=ISNULL(@AddedByUserId,U.Id)
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	;WITH Users
+	AS 
+	(
+		-- get records
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER(ORDER BY t.Id DESC) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+				AND t.Status = ISNULL(@Status, t.Status)
+				AND t.Designation = ISNULL(@Designation, t.Designation)
+				AND t.Source = ISNULL(@Source, t.Source)
+				AND U.Id=ISNULL(@AddedByUserId,U.Id)
+				AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+				AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	-- get records
+	SELECT *
+	FROM Users
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+			AND t.Status <> 'Deactive' 
+			AND U.Id=ISNULL(@AddedByUserId,U.Id)
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 16-Jan-17 8:59:28 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@Status VARCHAR(50),
+	@Designation VARCHAR(50),
+	@Source VARCHAR(50),
+	@AddedByUserId int,
+	@FromDate date = null,
+	@ToDate date = null,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @Designation = '0'
+	BEGIN
+		SET @Designation = NULL
+	END
+	
+	IF @Source = '0'
+	BEGIN
+		SET @Source = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics
+	SELECT 
+		t.status,count(*)cnt 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+		AND ISNULL(t.Designation,'') = ISNULL(NULL, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(NULL, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(NULL,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(NULL,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(NULL,t.CreatedDateTime) as date)
+
+	GROUP BY t.status
+	
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER(ORDER BY t.Id DESC) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(t.Designation,'') = ISNULL(NULL, ISNULL(t.Designation,''))
+			AND ISNULL(t.Source,'') = ISNULL(NULL, ISNULL(t.Source,''))
+			AND ISNULL(U.Id,'')=ISNULL(NULL,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(NULL,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(NULL,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(t.Designation,'') = ISNULL(NULL, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(NULL, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(NULL,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(NULL,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(NULL,t.CreatedDateTime) as date)
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 17-Jan-17 12:37:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@Status VARCHAR(50),
+	@Designation VARCHAR(50),
+	@Source VARCHAR(50),
+	@AddedByUserId int,
+	@FromDate date = null,
+	@ToDate date = null,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL,
+	@SortExpression VARCHAR(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @Designation = '0'
+	BEGIN
+		SET @Designation = NULL
+	END
+	
+	IF @Source = '0'
+	BEGIN
+		SET @Source = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics
+	SELECT 
+		t.Status, count(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+	
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER
+							(
+								ORDER BY
+									CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,
+									CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,
+									CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,
+									CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,
+									CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,
+									CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,
+									CASE WHEN @SortExpression = 'Designation ASC' THEN t.Designation END ASC,
+									CASE WHEN @SortExpression = 'Designation DESC' THEN t.Designation END DESC,
+									CASE WHEN @SortExpression = 'Source ASC' THEN t.Source END ASC,
+									CASE WHEN @SortExpression = 'Source DESC' THEN t.Source END DESC,
+									CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,
+									CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC
+								
+							) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+			AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+			AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 17-Jan-17 12:37:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@Status VARCHAR(50),
+	@Designation VARCHAR(50),
+	@Source VARCHAR(50),
+	@AddedByUserId int,
+	@FromDate date = null,
+	@ToDate date = null,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL,
+	@SortExpression VARCHAR(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @Designation = '0'
+	BEGIN
+		SET @Designation = NULL
+	END
+	
+	IF @Source = '0'
+	BEGIN
+		SET @Source = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics (Status)
+	SELECT 
+		t.Status, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	  
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+	
+	-- get statistics (AddedBy)
+	SELECT 
+		ISNULL(U.Username,'')  AS AddedBy, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY U.Username
+
+	-- get statistics (Designation)
+	SELECT 
+		t.Designation, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Designation
+	
+	-- get statistics (Source)
+	SELECT 
+		t.Source, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Source
+
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,t.Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(t.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER
+							(
+								ORDER BY
+									CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,
+									CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,
+									CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,
+									CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,
+									CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,
+									CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,
+									CASE WHEN @SortExpression = 'Designation ASC' THEN t.Designation END ASC,
+									CASE WHEN @SortExpression = 'Designation DESC' THEN t.Designation END DESC,
+									CASE WHEN @SortExpression = 'Source ASC' THEN t.Source END ASC,
+									CASE WHEN @SortExpression = 'Source DESC' THEN t.Source END DESC,
+									CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,
+									CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC
+								
+							) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+			AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+			AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(t.Designation,'') = ISNULL(@Designation, ISNULL(t.Designation,''))
+		AND ISNULL(t.Source,'') = ISNULL(@Source, ISNULL(t.Source,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 17-Jan-17 12:37:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@Status VARCHAR(50),
+	@DesignationId INT,
+	@SourceId INT,
+	@AddedByUserId INT,
+	@FromDate DATE = NULL,
+	@ToDate DATE = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL,
+	@SortExpression VARCHAR(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @DesignationId = '0'
+	BEGIN
+		SET @DesignationId = NULL
+	END
+	
+	IF @SourceId = '0'
+	BEGIN
+		SET @SourceId = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics (Status)
+	SELECT 
+		t.Status, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+	
+	-- get statistics (AddedBy)
+	SELECT 
+		ISNULL(U.Username,'')  AS AddedBy, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY U.Username
+
+	-- get statistics (Designation)
+	SELECT 
+		t.Designation, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Designation
+	
+	-- get statistics (Source)
+	SELECT 
+		t.Source, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Source
+
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,d.DesignationName AS Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(s.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER
+							(
+								ORDER BY
+									CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,
+									CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,
+									CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,
+									CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,
+									CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,
+									CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,
+									CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,
+									CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,
+									CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,
+									CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,
+									CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,
+									CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC
+								
+							) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+				LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id  
+				LEFT JOIN tblSource s ON t.SourceId = s.Id
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+			AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+			AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id		  
+			LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+			LEFT JOIN tblSource s ON t.SourceId = s.Id
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+		AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetSalesUserAutoSuggestion]    Script Date: 19-Jan-17 7:42:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 01/19/2017
+-- Description:	Load auto search suggestions for search term in edit user page.
+-- =============================================
+-- GetSalesUserAutoSuggestion 'IT'
+CREATE PROCEDURE [dbo].[GetSalesUserAutoSuggestion] 
+	@SearchTerm varchar(15) 	  
+AS
+BEGIN
+
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+
+	; WITH Suggestion (label,Category)
+	AS
+	(
+	
+	   SELECT TOP 3 t.InstallId AS AutoSuggest , 'Id#' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.InstallId LIKE '%'+ @SearchTerm + '%'   
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.FristName AS AutoSuggest , 'FirstName' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.FristName LIKE '%'+ @SearchTerm + '%'   
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.LastName AS AutoSuggest , 'LastName' AS Category 
+	   FROM dbo.tblInstallUsers t 
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.LastName LIKE '%'+ @SearchTerm + '%'
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.Email AS AutoSuggest, 'Email' AS Category 
+	   from dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Email LIKE '%' + @SearchTerm +'%'
+   
+	   UNION
+	   
+	   SELECT DISTINCT TOP 3 t.Phone AS AutoSuggest, 'Phone' AS Category 
+	   from dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Phone LIKE '%' + @SearchTerm +'%'
+   
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.CountryCode AS AutoSuggest , 'CountryCode' AS Category 
+	   FROM dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.CountryCode LIKE '%' + @SearchTerm + '%'
+
+	   UNION
+
+	   SELECT DISTINCT TOP 3 t.Zip AS AutoSuggest , 'Zip' AS Category 
+	   FROM dbo.tblInstallUsers t
+	   WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND t.Zip LIKE '%' + @SearchTerm + '%'
+
+	)
+
+	SELECT * FROM Suggestion s ORDER BY s.Category DESC, s.label
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 17-Jan-17 12:37:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@SearchTerm VARCHAR(15) = NULL,
+	@Status VARCHAR(50),
+	@DesignationId INT,
+	@SourceId INT,
+	@AddedByUserId INT,
+	@FromDate DATE = NULL,
+	@ToDate DATE = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL,
+	@SortExpression VARCHAR(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @DesignationId = '0'
+	BEGIN
+		SET @DesignationId = NULL
+	END
+	
+	IF @SourceId = '0'
+	BEGIN
+		SET @SourceId = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics (Status)
+	SELECT 
+		t.Status, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+	
+	-- get statistics (AddedBy)
+	SELECT 
+		ISNULL(U.Username,'')  AS AddedBy, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY U.Username
+
+	-- get statistics (Designation)
+	SELECT 
+		t.Designation, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Designation
+	
+	-- get statistics (Source)
+	SELECT 
+		t.Source, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Source
+
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,d.DesignationName AS Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(s.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER
+							(
+								ORDER BY
+									CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,
+									CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,
+									CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,
+									CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,
+									CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,
+									CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,
+									CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,
+									CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,
+									CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,
+									CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,
+									CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,
+									CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC
+								
+							) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+				LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id  
+				LEFT JOIN tblSource s ON t.SourceId = s.Id
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND 1 = CASE
+						WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1
+						ELSE 0
+					END
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+			AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+			AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id		  
+			LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+			LEFT JOIN tblSource s ON t.SourceId = s.Id
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND 1 = CASE
+					WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1
+					ELSE 0
+				END
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+		AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+-- Create the data type
+CREATE TYPE IDs AS TABLE 
+(
+	Id BIGINT NOT NULL
+)
+GO
+
+/****** Object:  StoredProcedure [dbo].[DeleteInstallUsers]    Script Date: 19-Jan-17 9:55:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 19 Jan 2017
+-- Description:	Deletes / deactivates install users.
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteInstallUsers]
+	@IDs IDs READONLY
+AS
+BEGIN
+	
+	UPDATE dbo.tblInstallUsers 
+	SET 
+		[STATUS] = 'Deactive' 
+	WHERE Id IN (SELECT Id FROM @IDs)
+	
+	/*DELETE 
+	FROM dbo.tblInstallUsers 
+	WHERE Id=@id*/
+       
+ END
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[sp_GetHrData]    Script Date: 17-Jan-17 12:37:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 16 Jan 2017
+-- Description:	Gets statictics and records for edit user page.
+-- =============================================
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10
+ALTER PROCEDURE [dbo].[sp_GetHrData]
+	@SearchTerm VARCHAR(15) = NULL,
+	@Status VARCHAR(50),
+	@DesignationId INT,
+	@SourceId INT,
+	@AddedByUserId INT,
+	@FromDate DATE = NULL,
+	@ToDate DATE = NULL,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL,
+	@SortExpression VARCHAR(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	IF @Status = '0'
+	BEGIN
+		SET @Status = NULL
+	END
+
+	IF @DesignationId = '0'
+	BEGIN
+		SET @DesignationId = NULL
+	END
+	
+	IF @SourceId = '0'
+	BEGIN
+		SET @SourceId = NULL
+	END
+
+	IF @AddedByUserId = 0
+	BEGIN
+		SET @AddedByUserId = NULL
+	END
+
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+	-- get statistics (Status)
+	SELECT 
+		t.Status, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id	
+	WHERE 
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.status
+	
+	-- get statistics (AddedBy)
+	SELECT 
+		ISNULL(U.Username,'')  AS AddedBy, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY U.Username
+
+	-- get statistics (Designation)
+	SELECT 
+		t.Designation, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Designation
+	
+	-- get statistics (Source)
+	SELECT 
+		t.Source, COUNT(*) [Count] 
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	GROUP BY t.Source
+
+	-- get records
+	;WITH SalesUsers
+	AS 
+	(
+		SELECT 
+			t.Id,t.FristName,t.LastName,t.Phone,t.Zip,d.DesignationName AS Designation,t.Status,t.HireDate,t.InstallId,t.picture, t.CreatedDateTime, Isnull(s.Source,'') AS Source,
+			t.SourceUser, ISNULL(U.Username,'')  AS AddedBy , ISNULL (t.UserInstallId ,t.id) As UserInstallId , 
+			InterviewDetail = case when (t.Status='InterviewDate' or t.Status='Interview Date') then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.InterviewTime,'') else '' end,
+			RejectDetail = case when (t.Status='Rejected' ) then coalesce(t.RejectionDate,'') + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'') else '' end,
+			t.Email, t.DesignationID, t1.[UserInstallId] As AddedByUserInstallId, t1.Id As AddedById , 0 as 'EmpType'
+			,NULL as [Aggregate] ,t.Phone As PrimaryPhone , NULL as 'CountryCode', t.Resumepath
+			--ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId
+			,NULL as 'TechTaskId', NULL as 'TechTaskInstallId',
+			ROW_NUMBER() OVER
+							(
+								ORDER BY
+									CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,
+									CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,
+									CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,
+									CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,
+									CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,
+									CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,
+									CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,
+									CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,
+									CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,
+									CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,
+									CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,
+									CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,
+									CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC
+								
+							) AS RowNumber
+		FROM 
+			tblInstallUsers t 
+				LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+				LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id	  
+				LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id  
+				LEFT JOIN tblSource s ON t.SourceId = s.Id
+		WHERE 
+			(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+			AND 
+			(
+				@SearchTerm IS NULL OR 
+				1 = CASE
+						WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1
+						WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1
+						ELSE 0
+					END
+			)
+			AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+			AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+			AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+			AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+			AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+			AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+	)
+
+	SELECT *
+	FROM SalesUsers
+	WHERE 
+		RowNumber >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNumber < (@StartIndex + @PageSize)
+		)
+
+	-- get record count
+	SELECT COUNT(*) AS TotalRecordCount
+	FROM 
+		tblInstallUsers t 
+			LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+			LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+			LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id		  
+			LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+			LEFT JOIN tblSource s ON t.SourceId = s.Id
+	WHERE  
+		(t.UserType = 'SalesUser' OR t.UserType = 'sales')
+		AND 
+		(
+			@SearchTerm IS NULL OR 
+			1 = CASE
+					WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1
+					WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1
+					ELSE 0
+				END
+		)
+		AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))
+		AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+		AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))
+		AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date) 
+		AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)
+END
+GO
+
+--=================================================================================================================================================================================================
+
+-- Publish on live - 01252017
+
+--=================================================================================================================================================================================================
