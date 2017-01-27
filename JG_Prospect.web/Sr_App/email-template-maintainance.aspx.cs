@@ -23,7 +23,7 @@ namespace JG_Prospect.Sr_App
 
         private void FillHtmlTemplates()
         {
-            grdHtmlTemplates.DataSource = HTMLTemplateBLL.Instance.GetHTMLTemplates();
+            grdHtmlTemplates.DataSource = HTMLTemplateBLL.Instance.GetHTMLTemplateMasters();
             grdHtmlTemplates.DataBind();
         }
 
