@@ -9,7 +9,7 @@ namespace JG_Prospect.Common.modal
     public class DesignationHTMLTemplate
     {
         public int Id { get; set; }
-        public int HTMLTemplatesMaterId { get; set; }
+        public int HTMLTemplatesMasterId { get; set; }
         public string Designation { get; set; }
         public string Subject { get; set; }
         public string Header { get; set; }
