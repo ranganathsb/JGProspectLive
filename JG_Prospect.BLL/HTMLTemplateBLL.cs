@@ -35,7 +35,7 @@ namespace JG_Prospect.BLL
             return HTMLTemplateDAL.Instance.GetHTMLTemplateMasterById(objHTMLTemplates);
         }
 
-        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation = null)
+        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
         {
             return HTMLTemplateDAL.Instance.GetDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
         }

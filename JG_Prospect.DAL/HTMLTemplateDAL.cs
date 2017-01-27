@@ -84,7 +84,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation = null)
+        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("SaveDesignationHTMLTemplate");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@Id", DbType.Int16, objDesignationHTMLTemplate.HTMLTemplatesMasterId);
+                    database.AddInParameter(command, "@HTMLTemplatesMasterId", DbType.Int16, objDesignationHTMLTemplate.HTMLTemplatesMasterId);
                     database.AddInParameter(command, "@Designation", DbType.String, objDesignationHTMLTemplate.Designation);
                     database.AddInParameter(command, "@Subject", DbType.String, objDesignationHTMLTemplate.Subject);
                     database.AddInParameter(command, "@Header", DbType.String, objDesignationHTMLTemplate.Header);

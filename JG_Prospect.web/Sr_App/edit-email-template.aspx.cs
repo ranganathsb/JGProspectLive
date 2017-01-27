@@ -38,10 +38,12 @@ namespace JG_Prospect.Sr_App
                     ddlDesignation.DataTextField = "DesignationName";
                     ddlDesignation.DataValueField = "ID";
                     ddlDesignation.DataBind();
+                    ddlDesignation.Items.Insert(0, new ListItem("--Select--", "0"));
 
                     HTMLTemplatesMaster objHTMLTemplatesMaster = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(this.HTMLTemplate.Value);
 
-                    txtSubject.Text = objHTMLTemplatesMaster.Name;
+                    txtName.Text = objHTMLTemplatesMaster.Name;
+                    txtSubject.Text = objHTMLTemplatesMaster.Subject;
                     txtHeader.Text = objHTMLTemplatesMaster.Header;
                     txtBody.Text = objHTMLTemplatesMaster.Body;
                     txtFooter.Text = objHTMLTemplatesMaster.Footer;

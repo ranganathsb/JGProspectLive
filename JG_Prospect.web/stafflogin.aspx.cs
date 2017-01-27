@@ -853,6 +853,7 @@ namespace JG_Prospect
         {
             try
             {
+                JGSession.DesignationId = 0;
                 string strRedirectUrl = string.Empty;
                 DataSet ds = new DataSet();
                 if (rdSalesIns.Checked)
@@ -871,6 +872,10 @@ namespace JG_Prospect
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                            {
+                                JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                            }
                             if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
                             {
                                 JGSession.IsFirstTime = true;
