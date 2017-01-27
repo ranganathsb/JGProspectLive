@@ -16,11 +16,20 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Data;
+using System.Data.Common;
+using JG_Prospect.DAL.Database;
+using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 #endregion
 
 namespace JG_Prospect.Sr_App.Controls
 {
+
+
+     
+
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
         #region '--Members--'
@@ -141,6 +150,9 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Page Events--'
 
+
+        public int vFirstLevelId = 0;
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -149,11 +161,50 @@ namespace JG_Prospect.Sr_App.Controls
                 FillInitialData();
                 hdnAdminMode.Value = this.IsAdminMode.ToString();
             }
+           
         }
 
         #endregion
 
         #region '--Control Events--'
+
+        #region '---- gvSubTasksLevels_RowDataBound ---'
+        protected void gvSubTasksLevels_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                HiddenField hdTaskLevel = e.Row.FindControl("hdTaskLevel") as HiddenField;
+                HiddenField hdTaskId = e.Row.FindControl("hdTaskId") as HiddenField;
+                LinkButton lnkAddMoreSubTask = e.Row.FindControl("lnkAddMoreSubTask") as LinkButton;
+                LinkButton lbtnInstallId = e.Row.FindControl("lbtnInstallId") as LinkButton;
+                
+
+                if (hdTaskLevel.Value=="3" )
+                {
+                    lnkAddMoreSubTask.Visible = false;
+                    lbtnInstallId.CssClass = "installidright";
+                }
+                else if (hdTaskLevel.Value == "1")
+                {
+                    vFirstLevelId = Convert.ToInt32( hdTaskId.Value);
+                    lnkAddMoreSubTask.CommandName = "2";
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "installidleft";
+                    lnkAddMoreSubTask.CssClass = "installidleft";
+                }
+                else if (hdTaskLevel.Value == "2")
+                {
+                    lnkAddMoreSubTask.CommandName = "3";
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "installidcenter";
+                    lnkAddMoreSubTask.CssClass = "installidcenter";
+                }
+               
+                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
+
+            }
+        }
+        #endregion
 
         #region '--gvSubTasks--'
 
@@ -163,6 +214,30 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
+
+                //---------- Start DP ----------
+                Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
+                GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
+                DataSet resultTask = new DataSet();
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DbCommand command = database.GetStoredProcCommand("usp_GetSubTasksLevel23");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskId", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
+                        resultTask = database.ExecuteDataSet(command);
+                    }
+
+                    grdTaskLevels.DataSource = resultTask;
+                    grdTaskLevels.DataBind();
+                }
+                catch (Exception ex)
+                {
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+                //--------- End DP -----------
+
 
                 if (this.IsAdminMode)
                 {
@@ -357,8 +432,121 @@ namespace JG_Prospect.Sr_App.Controls
 
                 e.Row.CssClass = strRowCssClass;
 
+
+
             }
         }
+
+        //-------- Start DP --------
+        protected void lnkAddMoreSubTask_Click(object sender, EventArgs e)
+        {
+
+            LinkButton lnkpop = (LinkButton)sender;
+            hdParentTaskId.Value = lnkpop.CommandArgument;
+            hdTaskLvl.Value = lnkpop.CommandName;
+            txtMode.Value = "add";
+            hdTaskId.Value = "0";
+            mpCalendar.Show();
+            
+        }
+        protected void btnCalClose_Click(object sender, EventArgs e)
+        {
+            mpCalendar.Hide();
+            //mpcalendar.show();
+        }
+        protected void btnAddMoreSubtask_Click(object sender, EventArgs e)
+        {
+            //LinkButton lnkpop = (LinkButton)sender;
+            //txtCalName.Text = lnkpop.Text;
+            //mpCalendar.Show();
+            //mpcalendar.show();
+            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("AddSubTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (txtMode.Value == "add")
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@Title", DbType.String, txtTitle.Text);
+                        database.AddInParameter(command, "@Description", DbType.String, txtTaskDesc.Text);
+                        database.AddInParameter(command, "@Status", DbType.Int32, 1);
+                        database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
+                        database.AddInParameter(command, "@CreatedOn", DbType.DateTime, DateTime.Now.Date);
+                        database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
+                        database.AddInParameter(command, "@TaskLevel", DbType.Int32, Convert.ToInt32(hdTaskLvl.Value));
+                        database.AddInParameter(command, "@ParentTaskId", DbType.Int32, Convert.ToInt32(hdParentTaskId.Value));
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
+
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int32, Convert.ToInt32(hdTaskId.Value));
+                        database.AddInParameter(command, "@Title", DbType.String, txtTitle.Text);
+                        database.AddInParameter(command, "@Description", DbType.String, txtTaskDesc.Text);
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
+                        database.AddInParameter(command, "@Status", DbType.Int32, 1);
+                        database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
+                        database.AddInParameter(command, "@CreatedOn", DbType.DateTime, DateTime.Now.Date);
+                        database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
+                        database.AddInParameter(command, "@TaskLevel", DbType.Int32, 0);
+                        database.AddInParameter(command, "@ParentTaskId", DbType.Int32, 0);
+                    }
+                    
+                    database.ExecuteNonQuery(command);
+                    mpCalendar.Hide();
+                    Response.Redirect(Request.Url.ToString(),false );
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
+
+        }
+
+        protected void EditSubTask_Click(object sender, EventArgs e)
+        {
+            LinkButton lnkpop = (LinkButton)sender;
+            //txtCalName.Text = lnkpop.Text;
+            //mpCalendar.Show();
+            //mpcalendar.show();
+            txtMode.Value = "edit";
+            hdTaskId.Value = lnkpop.CommandArgument;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet result = new DataSet();
+                    DbCommand command = database.GetSqlStringCommand("select * from tblTask where TaskId=" + Convert.ToInt32(hdTaskId.Value));
+                    command.CommandType = CommandType.Text;
+                    result = database.ExecuteDataSet(command);
+                    if(result.Tables[0].Rows.Count>0)
+                    {
+                        txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
+                        txtTaskDesc.Text = result.Tables[0].Rows[0]["Description"].ToString();
+                        txtInstallId.Text = result.Tables[0].Rows[0]["InstallId"].ToString();
+                    }
+                    result.Dispose();
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            mpCalendar.Show();
+
+        }
+        // -------- End DP -------
 
         protected void gvSubTasks_RowCommand(object sender, GridViewCommandEventArgs e)
         {

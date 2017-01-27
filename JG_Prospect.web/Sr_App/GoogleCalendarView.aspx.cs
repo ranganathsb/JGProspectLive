@@ -75,6 +75,7 @@ namespace JG_Prospect.Sr_App
                 //----- Start DP ------
 
                 FillMyCalendarDropDown();
+                FillInviteUserDropDown();
                 BindEventCalendar();
                 //------ End DP -----
                 
@@ -147,13 +148,7 @@ namespace JG_Prospect.Sr_App
             RadWindow2.VisibleOnPageLoad = false;
         }
 
-        protected void btnCreateEvent_Click(object sender, EventArgs e)
-        {
-            mpEvents.Show();
-        }
-
-
-        protected void btnCreateCal_Click(object sender, EventArgs e)
+          protected void btnCreateCal_Click(object sender, EventArgs e)
         {
             mpCalendar.Show();
         }
@@ -162,6 +157,8 @@ namespace JG_Prospect.Sr_App
         protected void btnCalClose_Click(object sender, EventArgs e)
         {
             mpCalendar.Hide();
+            ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#btnCreateEvent').click(function () {callpopupscript();   });", true);
+
         }
         protected void btnAddCalendar_Click(object sender, EventArgs e)
         {
@@ -186,6 +183,8 @@ namespace JG_Prospect.Sr_App
             {
                 //If duplicate Calendar......
                 ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Calendar Name is already exist');", true);
+                ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#btnCreateEvent').click(function () {callpopupscript();   });", true);
+
             }
         }
         protected void btnEventSubmit_Click(object sender, EventArgs e)
@@ -224,6 +223,73 @@ namespace JG_Prospect.Sr_App
             else
             {
                 a.EventType = Convert.ToInt32(chkEventType.SelectedValue);
+                                //****************** start DP 19-Jan-17 ******************			
+                if (a.EventType == 2)			
+                {			
+                    DateTime vStartDate = Convert.ToDateTime(txtEventStartDate.Text);			
+                    DateTime vEndDate = Convert.ToDateTime(txtEventEndDate.Text);			
+                    string rrule = "";			
+                    rrule = rrule + "DTSTART:" + vStartDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventStartTime.Text).ToString("hhmmss") + "Z";			
+                    rrule = rrule + "\n\rDTEND:" + vStartDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z";			
+                    int vMaxOcc = 1;			
+                    int vInterval = 1;			
+                    if (txtMaxOccu.Text != "")			
+                    {			
+                        vMaxOcc = Convert.ToInt16(txtMaxOccu.Text);			
+                    }			
+                    if (txtInterval.Text != "")			
+                    {			
+                        vInterval = Convert.ToInt16(txtInterval.Text);			
+                    }			
+                    if (rdoRepeatEvent.SelectedValue == "1")			
+                    {			
+                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";";			
+                        }			
+                        else			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";";			
+                        }			
+                    }			
+                    else if (rdoRepeatEvent.SelectedValue == "2")			
+                    {			
+                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=WEEKLY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";BYDAY=" + vStartDate.ToString("ddd").Substring(0, 2).ToUpper();			
+                        }			
+                        else			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=WEEKLY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";BYDAY=" + vStartDate.ToString("ddd").Substring(0, 2).ToUpper();			
+                        }			                        
+                    }			
+                    else if (rdoRepeatEvent.SelectedValue == "3")			
+                    {			
+                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=MONTHLY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";BYMONTHDAY=" + vStartDate.Day.ToString();			
+                        }			
+                        else			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=MONTHLY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";BYMONTHDAY=" + vStartDate.Day.ToString();			
+                        }			                       
+                    }			
+                    else if (rdoRepeatEvent.SelectedValue == "4")			
+                    {			
+                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=YEARLY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";BYMONTHDAY=" + vStartDate.Day.ToString() + ";BYMONTH=" + vStartDate.Month.ToString();			
+                        }			
+                        else			
+                        {			
+                            rrule = rrule + "\n\rRRULE:FREQ=YEARLY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";BYMONTHDAY=" + vStartDate.Day.ToString() + ";BYMONTH=" + vStartDate.Month.ToString();			
+                        }			                        
+                    }			
+			
+                    a.RecurrenceRule = rrule;
+                }			
+                //****************** end DP 19-Jan-17 ******************			
+
             }
 
            
@@ -363,11 +429,16 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Event Name for paricular date is already exist');", true);
             }
         }
-        protected void btnEventClose_Click(object sender, EventArgs e)
+        
+
+        //--------- Start DP ---------
+        protected void rsAppointments_OnNavigationCommand(object sender, SchedulerNavigationCommandEventArgs e)
         {
-           
-            mpEvents.Hide();
-        }
+            BindEventCalendar();
+        }			
+
+        //------- End DP --------
+
         protected void rsAppointments_AppointmentClick(object sender, SchedulerEventArgs e)
         {
             //if (usertType == Admin)
@@ -987,6 +1058,11 @@ namespace JG_Prospect.Sr_App
                 rsAppointments.DataSource = ds.Tables[0];
                 rsAppointments.DataBind();
             }
+            else
+            {
+                rsAppointments.Appointments.Clear();
+                rsAppointments.Rebind();
+            }
             RadWindow2.VisibleOnPageLoad = false;
         }
         // ---------- End DP ------------
@@ -1162,6 +1238,46 @@ namespace JG_Prospect.Sr_App
             //------------ End DP ------------
         }
 
+
+        private void FillInviteUserDropDown()
+        {
+            //---------- start DP ------------
+            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetInstallUsersByStatus");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Status", DbType.String, "Active");
+                    result = database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
+            if (result.Tables[0].Rows.Count > 0)
+            {
+                drpInviteEmail.Items.Clear();
+            
+                ListItem lstMyCal = new ListItem();
+                lstMyCal.Text = "<--Select-->";
+                lstMyCal.Value = "";
+                drpInviteEmail.Items.Add(lstMyCal);
+                for (int i = 0; i < result.Tables[0].Rows.Count; i++)
+                {
+                    ListItem lst = new ListItem();
+                    lst.Text = result.Tables[0].Rows[i]["Email"].ToString();
+                    lst.Value = result.Tables[0].Rows[i]["ID"].ToString();
+                    drpInviteEmail.Items.Add(lst);
+               }
+            }
+            result.Dispose();
+            //------------ End DP ------------
+        }
 
         #endregion
     }

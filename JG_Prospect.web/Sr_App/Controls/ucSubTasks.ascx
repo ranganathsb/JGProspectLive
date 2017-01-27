@@ -1,9 +1,57 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucSubTasks.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucSubTasks" %>
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
-
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
+
+<style type="text/css">
+
+    .subtasklevel {
+        border:0px;
+    }
+    .installidright{
+        text-align:right;
+        width:80px;
+        display: block;
+        padding-right:5px;
+    }
+    .installidcenter{
+        text-align:center;
+        width:80px;
+        display: block;
+        padding-right:5px;
+    }
+    .installidleft
+    {
+        text-align:left;
+        width:80px;
+        display: block;
+    }
+    .subtasklevelheader
+    {
+        border:none;
+    }
+
+    .modalBackground { 
+            background-color:#333333; 
+            filter:alpha(opacity=70); 
+            opacity:0.7; 
+            z-index : 100 !important
+        } 
+        .modalPopup { 
+            background-color:#FFFFFF; 
+            border-width:1px; 
+            border-style:solid; 
+            border-color:#CCCCCC; 
+            padding:1px; 
+            width:700px; 
+            Height:450px; 
+            
+        }    
+
+</style>
+
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
@@ -21,13 +69,15 @@
                     <RowStyle CssClass="FirstRow" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
+                        
+                        <%--<asp:TemplateField  HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
                             SortExpression="InstallId">
-                            <ItemTemplate>
+                            <ItemTemplate >
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <h5>
                                     <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                         CommandArgument='<%# Container.DataItemIndex  %>' /></h5>
+                                <span>+</span>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
@@ -54,7 +104,48 @@
                                     </div>
                                 </div>
                             </ItemTemplate>
+                        </asp:TemplateField>--%>
+
+                        <asp:TemplateField  HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
+                            SortExpression="InstallId">
+                            <ItemTemplate >
+                                <asp:Literal ID="ltrlInstallId" Visible="false" runat="server" Text='<%# Eval("InstallId") %>' />
+                                <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
+                               
+                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false" CssClass="subtasklevel" BorderColor="Transparent"  Width="500px" BorderStyle="None">
+                                    <Columns>
+                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" 
+                                         HeaderStyle-Width="80"
+                                            SortExpression="InstallId">
+                                            <ItemTemplate>
+                                                
+                                                <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ></asp:HiddenField>
+                                                <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
+                                                <h5>
+                                                    <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>' 
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
+                                                        CommandArgument='<%# Eval("TaskId")%>' /></h5>
+
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server"  OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                                                           
+                                                 </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
+                                            SortExpression="Description">
+                                            <ItemTemplate>
+                                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
+                                                    <div style="padding-bottom: 5px;">
+                                                       
+                                                        <%# Eval("Description")%>
+                                                    </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        </Columns>
+                                </asp:GridView>
+                            </ItemTemplate>
                         </asp:TemplateField>
+
                         <%--<asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
                             SortExpression="Status">
                             <ItemTemplate>
@@ -355,8 +446,71 @@
                     </Columns>
                 </asp:GridView>
             </div>
+            <asp:LinkButton ID="lnkFake" runat="server" ></asp:LinkButton>
+                  <cc1:ModalPopupExtender ID="mpCalendar" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
+                    BackgroundCssClass="modalBackground">
+                    </cc1:ModalPopupExtender>
+                            <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
+                           
+                                <h1><b>Add Sub Task</b></h1>
+                                    <table border="1" cellspacing="5" cellpadding="5">
+                                        <tr>
+                                            <td colspan="4">
+                                                <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td   align="left">  Task Title <span>*</span>
+                                            </td>
+                                            <td >
+                                                <asp:TextBox ID="txtTitle"   runat="server"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                       
+                                        </tr>
+                                          <tr>
+                                            <td   align="left">  Install ID <span>*</span>
+                                            </td>
+                                            <td >
+                                                <asp:TextBox ID="txtInstallId"   runat="server"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtInstallId" ForeColor="Red" ErrorMessage="Please Enter Install ID" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                       
+                                        </tr>
+                                        <tr>
+                                            <td   align="left">  Task Description <span>*</span>
+                                            </td>
+                                            <td >
+                                                
+                                                <asp:TextBox ID="txtTaskDesc" TextMode="MultiLine" Columns="15" Rows="8" runat="server"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                       
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <asp:HiddenField ID="txtMode" runat="server" />
+                                                <asp:HiddenField ID="hdParentTaskId" runat="server" />
+                                                <asp:HiddenField ID="hdTaskLvl" runat="server" />
+                                                <asp:HiddenField ID="hdTaskId" runat="server" />
+                                                <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit"  OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
+                                                <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6" OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                           
+                            </asp:Panel>
+ 
+
         </ContentTemplate>
     </asp:UpdatePanel>
+
+
+     <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
+
     <br />
     <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
