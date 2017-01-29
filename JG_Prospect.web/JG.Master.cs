@@ -12,7 +12,7 @@ namespace JG_Prospect
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["loginid"] == null)
+            if (String.IsNullOrEmpty(Session["loginid"].ToString()))
             {
                 Session["PopUpOnSessionExpire"] = null;
                 ScriptManager.RegisterStartupScript(this, GetType(), "alsert", "alert('Your session has expired,login to continue');window.location='login.aspx;')", true);
