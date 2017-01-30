@@ -25,130 +25,245 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                Session["AppType"] = "SrApp";
-                if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
-                {
-                    li_AnnualCalender.Visible = true;
-                }
-                if ((string)Session["usertype"] == "Admin")
-                {
-                    pnlTestEmail.Visible = true;
-                }
+                //Session["AppType"] = "SrApp";
+                //if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
+                //{
+                //    li_AnnualCalender.Visible = true;
+                //}
+                //if ((string)Session["usertype"] == "Admin")
+                //{
+                //    pnlTestEmail.Visible = true;
+                //}
+                BindTaskInProgressGrid();
+
+                BindTaskClosedGrid();
             }
+            lblMessage.Text = "";
         }
 
-        [System.Web.Services.WebMethod]
-        public static string GetAllScripts(string strScriptId)
+        private void BindTaskInProgressGrid()
         {
             DataSet ds = new DataSet();
-            int? intScriptId = Convert.ToInt32(strScriptId);
-            if (strScriptId == "0")
-                intScriptId = null;
-            ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
-            if (ds != null)
+            ds = TaskGeneratorBLL.Instance.GetInProgressTasks();
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    return JsonConvert.SerializeObject(ds.Tables[0]);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                grdTaskPending.DataSource = ds;
+                grdTaskPending.DataBind();
             }
             else
-                return string.Empty;
+            {
+                lblMessage.Text = "No In-Progress Tasks Found !!!";
+                grdTaskPending.DataSource = null;
+                grdTaskPending.DataBind();
+
+            }
         }
 
-        [System.Web.Services.WebMethod]
-        public static string ManageScripts(string intMode, string intScriptId, string strScriptName, string strScriptDescription)
+
+        private void BindTaskClosedGrid()
         {
             DataSet ds = new DataSet();
-            PhoneDashboard objPhoneDashboard = new PhoneDashboard();
-            objPhoneDashboard.intMode = Convert.ToInt32(intMode);
-            objPhoneDashboard.intScriptId = Convert.ToInt32(intScriptId);
-            objPhoneDashboard.strScriptName = strScriptName;
-            objPhoneDashboard.strScriptDescription = strScriptDescription;
-
-            ds = UserBLL.Instance.manageScripts(objPhoneDashboard);
-            if (ds != null)
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks();
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    return JsonConvert.SerializeObject(ds.Tables[0]);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                grdTaskClosed.DataSource = ds;
+                grdTaskClosed.DataBind();
             }
             else
-                return string.Empty;
-        }
-
-        protected void btnTestMail_Click(object sender, EventArgs e)
-        {
-            if (txtTestEmail.Text != "")
-                SendEmail(txtTestEmail.Text);
-        }
-
-        private void SendEmail(string emailId)
-        {
-            try
             {
-                string strHeader = "<div>Email Header</div>";
-                string strBody = "<div>Email Body</div>";
-                string strFooter = "<div>Email Footer</div>";
-                string strsubject = "Subject - test mail";
+                lblMessage.Text = "No Closed Tasks Found !!!";
+                grdTaskClosed.DataSource = null;
+                grdTaskClosed.DataBind();
 
-                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
-
-                StringBuilder Body = new StringBuilder();
-                MailMessage Msg = new MailMessage();
-                Msg.From = new MailAddress(userName, "JGrove Construction");
-                Msg.To.Add(emailId);
-                //Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
-                //Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-
-                Msg.Subject = strsubject;// "JG Prospect Notification";
-                Body.Append(strHeader);
-                Body.Append(strBody);
-                Body.Append(strFooter);
-
-                Msg.Body = Convert.ToString(Body);
-                Msg.IsBodyHtml = true;// your remote SMTP server IP
-
-                SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
-
-                NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
-                sc.UseDefaultCredentials = false;
-                sc.Credentials = ntw;
-
-                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                try
-                {
-                    sc.Send(Msg);
-                }
-                catch (Exception ex)
-                {
-                    lblMessage.Text = "failure";
-                    logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
-                }
-
-                Msg = null;
-                sc.Dispose();
-                sc = null;
-                lblMessage.Text = "Successfully Sent to " + emailId;
-                txtTestEmail.Text = "";
-            }
-            catch (Exception ex)
-            {
-                lblMessage.Text = "failure";
-                logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
             }
         }
 
+        protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
+        {
+            BindTaskInProgressGrid();
+            grdTaskPending.PageIndex = e.NewPageIndex;
+            grdTaskPending.DataBind();
+        }
+
+        protected void OnPagingTaskClosed(object sender, GridViewPageEventArgs e)
+        {
+            BindTaskClosedGrid();
+            grdTaskClosed.PageIndex = e.NewPageIndex;
+            grdTaskClosed.DataBind();
+        }
+
+        protected void grdTaskPending_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                Label lblStatus = e.Row.FindControl("lblStatus") as Label;
+                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                if (lblDueDate.Text != "")
+                {
+                    DateTime dtDue = new DateTime();
+                    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                }
+
+                if (lblStatus.Text == "4")
+                {
+                    lblStatus.Text = "In Progress";
+                }
+                else if (lblStatus.Text == "3")
+                {
+                    lblStatus.Text = "Assigned";
+                }
+                else if (lblStatus.Text == "2")
+                {
+                    lblStatus.Text = "Requested";
+                }
+
+            }
+        }
+
+
+        protected void grdTaskClosed_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                Label lblStatus = e.Row.FindControl("lblStatus") as Label;
+                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                if (lblDueDate.Text != "")
+                {
+                    DateTime dtDue = new DateTime();
+                    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                }
+
+                if (lblStatus.Text == "4")
+                {
+                    lblStatus.Text = "In Progress";
+                }
+                else if (lblStatus.Text == "3")
+                {
+                    lblStatus.Text = "Assigned";
+                }
+                else if (lblStatus.Text == "2")
+                {
+                    lblStatus.Text = "Requested";
+                }
+
+            }
+        }
+
+        //[System.Web.Services.WebMethod]
+        //public static string GetAllScripts(string strScriptId)
+        //{
+        //    DataSet ds = new DataSet();
+        //    int? intScriptId = Convert.ToInt32(strScriptId);
+        //    if (strScriptId == "0")
+        //        intScriptId = null;
+        //    ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
+        //    if (ds != null)
+        //    {
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //        {
+        //            return JsonConvert.SerializeObject(ds.Tables[0]);
+        //        }
+        //        else
+        //        {
+        //            return string.Empty;
+        //        }
+        //    }
+        //    else
+        //        return string.Empty;
+        //}
+
+        //[System.Web.Services.WebMethod]
+        //public static string ManageScripts(string intMode, string intScriptId, string strScriptName, string strScriptDescription)
+        //{
+        //    DataSet ds = new DataSet();
+        //    PhoneDashboard objPhoneDashboard = new PhoneDashboard();
+        //    objPhoneDashboard.intMode = Convert.ToInt32(intMode);
+        //    objPhoneDashboard.intScriptId = Convert.ToInt32(intScriptId);
+        //    objPhoneDashboard.strScriptName = strScriptName;
+        //    objPhoneDashboard.strScriptDescription = strScriptDescription;
+
+        //    ds = UserBLL.Instance.manageScripts(objPhoneDashboard);
+        //    if (ds != null)
+        //    {
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //        {
+        //            return JsonConvert.SerializeObject(ds.Tables[0]);
+        //        }
+        //        else
+        //        {
+        //            return string.Empty;
+        //        }
+        //    }
+        //    else
+        //        return string.Empty;
+        //}
+
+        //protected void btnTestMail_Click(object sender, EventArgs e)
+        //{
+        //    if (txtTestEmail.Text != "")
+        //        SendEmail(txtTestEmail.Text);
+        //}
+
+        //private void SendEmail(string emailId)
+        //{
+        //    try
+        //    {
+        //        string strHeader = "<div>Email Header</div>";
+        //        string strBody = "<div>Email Body</div>";
+        //        string strFooter = "<div>Email Footer</div>";
+        //        string strsubject = "Subject - test mail";
+
+        //        string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+        //        string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+        //        StringBuilder Body = new StringBuilder();
+        //        MailMessage Msg = new MailMessage();
+        //        Msg.From = new MailAddress(userName, "JGrove Construction");
+        //        Msg.To.Add(emailId);
+        //        //Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
+        //        //Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
+
+        //        Msg.Subject = strsubject;// "JG Prospect Notification";
+        //        Body.Append(strHeader);
+        //        Body.Append(strBody);
+        //        Body.Append(strFooter);
+
+        //        Msg.Body = Convert.ToString(Body);
+        //        Msg.IsBodyHtml = true;// your remote SMTP server IP
+
+        //        SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
+
+        //        NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
+        //        sc.UseDefaultCredentials = false;
+        //        sc.Credentials = ntw;
+
+        //        sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+        //        sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+        //        try
+        //        {
+        //            sc.Send(Msg);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            lblMessage.Text = "failure";
+        //            logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
+        //        }
+
+        //        Msg = null;
+        //        sc.Dispose();
+        //        sc = null;
+        //        lblMessage.Text = "Successfully Sent to " + emailId;
+        //        txtTestEmail.Text = "";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblMessage.Text = "failure";
+        //        logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
+        //    }
+        //}
+
+        //}
     }
 }

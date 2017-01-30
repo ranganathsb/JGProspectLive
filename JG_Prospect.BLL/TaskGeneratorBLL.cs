@@ -255,6 +255,19 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskApproval(objTaskApproval);
         }
 
+
+        //--------- Start DP -----------
+        public DataSet  GetInProgressTasks()
+        {
+            return TaskGeneratorDAL.Instance.GetInProgressTasks();
+        }
+
+        public DataSet GetClosedTasks()
+        {
+            return TaskGeneratorDAL.Instance.GetClosedTasks();
+        }
+        //------- End DP ----------
+
         #endregion
     }
 }

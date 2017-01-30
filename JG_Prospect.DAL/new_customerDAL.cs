@@ -309,6 +309,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@EventType", DbType.Int32, Event.EventType);
                     database.AddInParameter(command, "@EventRepeat", DbType.Int32, Event.EventRepeat);
                     database.AddInParameter(command, "@RecurrenceRule", DbType.String, Event.RecurrenceRule);
+                    database.AddInParameter(command, "@TimeZone", DbType.String, Event.TimeZone);
                      //-------- End DP ----------
                     database.ExecuteNonQuery(command);
                    

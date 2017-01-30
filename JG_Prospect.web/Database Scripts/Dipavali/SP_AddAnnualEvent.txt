@@ -25,8 +25,9 @@ ALTER PROCEDURE [dbo].[AddAnnualEvent]
 	@EventFile varchar(400),
 	@EventType int,
 	@EventRepeat int,
+	@TimeZone varchar(400),
 	@RecurrenceRule nvarchar(1000)
-
+	
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -36,14 +37,12 @@ BEGIN
     -- Insert statements for procedure here
 	insert into dbo.tbl_AnnualEvents 
 	(EventName,EventDate,EventAddedBy,EventEndDate,EventStartTime,EventEndTime,EventLoc,
-	EventDesc,EventColor,EventCal,EventFile,EventType,EventRepeat,RecurrenceRule)
+	EventDesc,EventColor,EventCal,EventFile,EventType,EventRepeat,RecurrenceRule,TimeZone)
 	values
 	(@Eventname,@EventDate,@EventAddedBy,@EventEndDate,@EventStartTime,@EventEndTime,@EventLoc,@EventDesc,
-	@EventColor,@EventCal,@EventFile,@EventType,@EventRepeat,@RecurrenceRule)
+	@EventColor,@EventCal,@EventFile,@EventType,@EventRepeat,@RecurrenceRule,@TimeZone)
 
 END
-
-
 
 
 
