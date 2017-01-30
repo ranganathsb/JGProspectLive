@@ -591,7 +591,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        public DataSet ChangeSatatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -602,7 +602,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int32, StatusId);
                     database.AddInParameter(command, "@Status", DbType.String, Status);
-                    database.AddInParameter(command, "@RejectionDate", DbType.String, RejectionDate);
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
                     database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);

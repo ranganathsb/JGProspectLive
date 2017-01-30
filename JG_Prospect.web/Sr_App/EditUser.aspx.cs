@@ -663,7 +663,7 @@ namespace JG_Prospect
             {
                 // Adding a popUp...
 
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
 
@@ -797,7 +797,7 @@ namespace JG_Prospect
             isvaliduser = UserBLL.Instance.chklogin(Convert.ToString(Session["loginid"]), txtPassword.Text);
             if (isvaliduser > 0)
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
             }
@@ -812,7 +812,7 @@ namespace JG_Prospect
                 string HireDate = "";
                 string EmpType = "";
                 string PayRates = "";
-                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -839,7 +839,7 @@ namespace JG_Prospect
             }
             else
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
             }
@@ -864,7 +864,7 @@ namespace JG_Prospect
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "alert('Invalid Interview Date, Please verify');", true);
                 return;
             }
-            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate.ToString("yyyy-MM-dd"), ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text, ddlUsers.SelectedValue);
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate, ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text, ddlUsers.SelectedValue);
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
@@ -921,7 +921,7 @@ namespace JG_Prospect
             string PayRates = "";
             string Desig = "";
 
-            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
@@ -1128,7 +1128,8 @@ namespace JG_Prospect
         protected void btnSaveStatusForSelected_Click(object sender, EventArgs e)
         {
             int intId;
-            string strEmail, strHireDate, strEmployeeType, strPayRates, strFirstName, strLastName, strDesignation, strReason, strDate, strTime;
+            string strEmail, strHireDate, strEmployeeType, strPayRates, strFirstName, strLastName, strDesignation, strReason, strTime;
+            DateTime? dtDate = null;
 
             foreach (GridViewRow objUserRow in grdUsers_Popup.Rows)
             {
@@ -1140,7 +1141,6 @@ namespace JG_Prospect
                 strLastName =
                 strDesignation =
                 strReason =
-                strDate =
                 strTime = string.Empty;
 
                 intId = Convert.ToInt32(grdUsers_Popup.DataKeys[objUserRow.RowIndex]["Id"]);
@@ -1148,12 +1148,16 @@ namespace JG_Prospect
                 strLastName = ((Literal)objUserRow.FindControl("ltrlLastName")).Text;
                 strDesignation = ((Literal)objUserRow.FindControl("ltrlDesignation")).Text;
                 strReason = ((TextBox)objUserRow.FindControl("txtReason")).Text;
-                strDate = ((TextBox)objUserRow.FindControl("txtInterviewDate")).Text;
+                string strDate = ((TextBox)objUserRow.FindControl("txtInterviewDate")).Text;
+                if (!string.IsNullOrEmpty(strDate))
+                {
+                    dtDate = Convert.ToDateTime(strDate);
+                }
                 strTime = ((DropDownList)objUserRow.FindControl("ddlInterviewTime")).SelectedValue;
 
-                if (string.IsNullOrEmpty(strDate))
+                if (!dtDate.HasValue)
                 {
-                    strDate = DateTime.Today.ToShortDateString();
+                    dtDate = DateTime.Today;
                 }
 
                 if (string.IsNullOrEmpty(strTime))
@@ -1165,7 +1169,7 @@ namespace JG_Prospect
                                                     (
                                                         ddlStatus_Popup.SelectedValue,
                                                         intId,
-                                                        strDate,
+                                                        dtDate.Value,
                                                         strTime,
                                                         JGSession.UserId,
                                                         JGSession.IsInstallUser.Value,

@@ -11933,7 +11933,7 @@ namespace JG_Prospect.Sr_App
             isvaliduser = UserBLL.Instance.chklogin(Convert.ToString(Session["loginid"]), txtUserPassword.Text);
             if (isvaliduser > 0)
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReson.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReson.Text);
                 //Status changes....
                 string a = ddlstatus.SelectedValue;
                 if (a == "Rejected")
