@@ -54,7 +54,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-             
+            CommonFunction.AuthenticateUser();
+
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -72,7 +73,7 @@ namespace JG_Prospect.Sr_App
             //hide touch ppoint log grid for new customer and make it visible on view profile of customer
             if (Request.QueryString["Id"] != null)
             {
-               
+
                 if (Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] != null)
                 {
                     UserId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
@@ -95,7 +96,7 @@ namespace JG_Prospect.Sr_App
                     SetUserControlValue(string.Empty);
                     hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
-               
+
             }
 
             #region -- Page Load --
@@ -454,7 +455,7 @@ namespace JG_Prospect.Sr_App
                         if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
                         {
                             ddlCountry.ClearSelection();
-                            ddlCountry.SelectedValue = ds.Tables[0].Rows[0]["CountryCode"].ToString();                            
+                            ddlCountry.SelectedValue = ds.Tables[0].Rows[0]["CountryCode"].ToString();
                         }
 
 
@@ -740,7 +741,7 @@ namespace JG_Prospect.Sr_App
                                 rqEmpType.Enabled = true;
                                 #endregion
 
-                                if ((ddlstatus.SelectedValue == "Active")                                    
+                                if ((ddlstatus.SelectedValue == "Active")
                                     || (ddlstatus.SelectedValue == "OfferMade"))
                                 {
                                     showHideNewHireSection(true);
@@ -751,10 +752,10 @@ namespace JG_Prospect.Sr_App
                             #endregion
                         }
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
-                        if (ds.Tables[0].Rows[0][6].ToString() == "Active" 
+                        if (ds.Tables[0].Rows[0][6].ToString() == "Active"
                             || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
                         {
-                            
+
                             //pnlGrid.Visible = true;
                             pnl4.Visible = false;
                             showHideNewHireSection(true);
@@ -762,7 +763,7 @@ namespace JG_Prospect.Sr_App
                         }
                         else
                         {
-                            showHideNewHireSection(false);                            
+                            showHideNewHireSection(false);
                             pnl4.Visible = false;
                         }
                         if (ds.Tables[0].Rows[0][6].ToString() == "Deactive")
@@ -770,7 +771,7 @@ namespace JG_Prospect.Sr_App
                             ddlstatus.Enabled = false;
                         }
 
-                         
+
                         if (ds.Tables[0].Rows[0][38].ToString() != "")
                         {
                             ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
@@ -802,7 +803,7 @@ namespace JG_Prospect.Sr_App
                             txtReson.Visible = false;
                             dtInterviewDate.Visible = false;
                         }
-                        
+
                         ViewState["Phone"] = ds.Tables[0].Rows[0][8].ToString();
                         if (ds.Tables[0].Rows[0][9].ToString() != "")
                         {
@@ -1000,7 +1001,7 @@ namespace JG_Prospect.Sr_App
                                 rdoDrugtestNo.Checked = true;
                             }
                         }
-                         
+
                         if (Convert.ToString(ds.Tables[0].Rows[0][70]) != "")
                         {
                             if (Convert.ToBoolean(ds.Tables[0].Rows[0][70]))
@@ -1023,7 +1024,7 @@ namespace JG_Prospect.Sr_App
                                 rdoLicenseNo.Checked = true;
                             }
                         }
-                        
+
                         //txtStartDateNew.Text = Convert.ToString(ds.Tables[0].Rows[0][73]);
                         txtSalaryRequirments.Text = Convert.ToString(ds.Tables[0].Rows[0]["SalaryReq"]);
                         txtStartDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["StartDate"]);
@@ -1127,7 +1128,7 @@ namespace JG_Prospect.Sr_App
                         }
                         chkboxcondition.Checked = true;
                         //chkboxcondition.Enabled = false;
-                        
+
                     }
                 }
                 else
@@ -1172,23 +1173,14 @@ namespace JG_Prospect.Sr_App
 
             #endregion
 
-            pnlFngPrint.Visible = false;            
+            pnlFngPrint.Visible = false;
         }
-        
+
         private void SetUserControlValue(string LoginID)
         {
             ucAuditTrail.UserLoginID = LoginID;
             //ucAudiUpdateUserLog.UserLoginID = LoginID;
             //ucAudiUpdateUserLog.BindUserData();
-        }
-
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            string note = txtAddNotes.Text.Trim();
-            int CustomerId = Convert.ToInt32(Session["ID"]);
-            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
-            txtAddNotes.Text = string.Empty;
-            bindGrid();
         }
 
         #endregion
@@ -1532,9 +1524,9 @@ namespace JG_Prospect.Sr_App
                     objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
                 }
                 objuser.DateSourced = txtDateSourced.Text;
-                 
+
                 objuser.picture = Convert.ToString(Session["UplaodPicture"]);
-                  
+
                 string strFileName = string.Empty;
 
                 //if (ViewState["FileName"] != null)
@@ -1690,7 +1682,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.DrugTest = false;
                 }
-                 
+
                 if (rdoJMApplyYes.Checked)
                 {
                     objuser.PrevApply = true;
@@ -1707,20 +1699,20 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.LicenseStatus = false;
                 }
-                 
-                 
+
+
                 objuser.ResumePath = Convert.ToString(Session["ResumePath"]);
                 objuser.CirtificationTraining = Convert.ToString(Session["CirtificationPath"]);
                 if (Convert.ToString(Session["PersonName"]) != "")
                 {
                     objuser.PersonName = Convert.ToString(Session["PersonName"]);
                 }
-                
+
                 if (Convert.ToString(Session["PersonType"]) != "")
                 {
                     objuser.PersonType = Convert.ToString(Session["PersonType"]);
                 }
-                 
+
                 if (ddldesignation.SelectedValue != "0" && ddlInstallerType.Visible == true)
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
@@ -1809,7 +1801,7 @@ namespace JG_Prospect.Sr_App
                 objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
                 objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
                 objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
-                 
+
 
                 objuser.StartDate = txtStartDate.Text;
                 objuser.SalaryReq = txtSalaryRequirments.Text;
@@ -1829,16 +1821,16 @@ namespace JG_Prospect.Sr_App
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
 
-                        AddUpdateUserPhoneEmail(true , result.Item2);                        
-                        UpdateUserInstallID(result.Item2);                        
-                        CreateUserEmailID();
+                        AddUpdateUserPhoneEmail(true, result.Item2);
+
+                        UpdateUserInstallID(result.Item2);
 
                         hidTouchPointGUID.Value = hidTouchPointGUID.Value.Trim();
-                        if (hidTouchPointGUID.Value !="")
+                        if (hidTouchPointGUID.Value != "")
                         {
                             InstallUserBLL.Instance.UpdateTouchPointLog(hidTouchPointGUID.Value, result.Item2);
                         }
-                        
+
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
@@ -1893,19 +1885,22 @@ namespace JG_Prospect.Sr_App
         /// Add Update User Phone and email vlaue 
         /// </summary>
         /// <param name="IsInsert"></param>
-        private void AddUpdateUserPhoneEmail(bool IsInsert , int UserID)
+        private void AddUpdateUserPhoneEmail(bool IsInsert, int UserID)
         {
             //If insert than only chk for blank.
             if (IsInsert != true || hidExtEmail.Value.Trim() != "")
+                InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
+
+            if (IsInsert != true || hidExtPhone.Value.Trim() != "")
             {
-                string strHidEmailValue = hidExtEmail.Value;
+                string strHidPhoneValue = hidExtPhone.Value;
                 string delimeter = "|,|";
                 string Subdelimeter = "|%|";
                 //PhoneValue = '0' + Subdelimeter + 'Phone1' + Subdelimeter + 'skype' + delimeter + '1' + Subdelimeter + 'Phone2' + Subdelimeter + 'whatsapp';
-                if (strHidEmailValue.IndexOf(delimeter) < 0)
-                    strHidEmailValue = strHidEmailValue + delimeter;
+                if (strHidPhoneValue.IndexOf(delimeter) < 0)
+                    strHidPhoneValue = strHidPhoneValue + delimeter;
 
-                string[] PhoneTypes = strHidEmailValue.Split(new string[] { delimeter }, StringSplitOptions.None);
+                string[] PhoneTypes = strHidPhoneValue.Split(new string[] { delimeter }, StringSplitOptions.None);
 
                 InstallUserBLL.Instance.AddUserPhone(false, "", 0, UserID, "", "", true);
 
@@ -1933,51 +1928,14 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            //InstallUserBLL.Instance.AddUserEmails(hidExtEmail.Value, UserID);
-                  
-
-            if (IsInsert != true || hidExtPhone.Value.Trim() != "")
-            {
-                string strHidPhoneValue = hidExtPhone.Value;
-                string delimeter = "|,|";
-                string Subdelimeter = "|%|";
-                //PhoneValue = '0' + Subdelimeter + 'Phone1' + Subdelimeter + 'skype' + delimeter + '1' + Subdelimeter + 'Phone2' + Subdelimeter + 'whatsapp';
-                if (strHidPhoneValue.IndexOf(delimeter) < 0)
-                    strHidPhoneValue = strHidPhoneValue + delimeter;
-
-                string[] PhoneTypes = strHidPhoneValue.Split(new string[] { delimeter }, StringSplitOptions.None);
-
-                InstallUserBLL.Instance.AddUserPhone(false, "", 0, UserID,"","", true);
-
-                foreach (string SubItems in PhoneTypes)
-                {
-                    if (SubItems.Trim() != "")
-                    {
-                        string[] PhoneTypeItems = SubItems.Split(new string[] { Subdelimeter }, StringSplitOptions.None);
-                        if (PhoneTypeItems != null)
-                        {
-                            bool IsPrimaryPhone = false;
-                            
-                            if (PhoneTypeItems[0].ToString() == "1")
-                                IsPrimaryPhone = true;
-                            
-                            string PhoneISDCode = PhoneTypeItems[1].ToString(); 
-                            string PhoneText = PhoneTypeItems[2].ToString();
-                            string PhoneExtNo = PhoneTypeItems[3].ToString();
-                            int intPhoneType;
-                            Int32.TryParse(PhoneTypeItems[4].ToString(), out intPhoneType);
-                            
-                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType
-                                , UserID, PhoneExtNo , PhoneISDCode , false);
-                        }
-                    }
-                }
-            }
             //else
             //{
             //    //Update User value
             //}
-            
+
+
+
+
         }
 
         #endregion
@@ -2041,7 +1999,7 @@ namespace JG_Prospect.Sr_App
             //    pnl4.Visible = false;
             //}
         }
-        
+
         protected void lnkFacePage_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/face page.pdf"));
@@ -2127,7 +2085,7 @@ namespace JG_Prospect.Sr_App
             txtZip.Focus();
 
         }
- 
+
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             try
@@ -2477,10 +2435,9 @@ namespace JG_Prospect.Sr_App
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
-                    
+
                     AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
-                    CreateUserEmailID();
 
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
@@ -2614,7 +2571,7 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
-         
+
         protected void gvUploadedFiles_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
         {
             if (e.CommandName == "deleteRecord")
@@ -2693,7 +2650,7 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
-        
+
         protected void txtemail_TextChanged(object sender, EventArgs e)
         {
             ViewState["Email"] = txtemail.Text;
@@ -2728,7 +2685,7 @@ namespace JG_Prospect.Sr_App
         {
             ViewState["DOB"] = DOBdatepicker.Text;
         }
-        
+
         protected void txtSignature_TextChanged(object sender, EventArgs e)
         {
             ViewState["Signature"] = txtSignature.Text;
@@ -2743,7 +2700,7 @@ namespace JG_Prospect.Sr_App
         {
             ViewState["City"] = txtSignature.Text;
         }
-        
+
         protected void ddlcitizen_SelectedIndexChanged(object sender, EventArgs e)
         {
             ViewState["citizen"] = ddlcitizen.SelectedValue;
@@ -2790,7 +2747,7 @@ namespace JG_Prospect.Sr_App
             string path = PdflDirectory + "\\" + Filename;
             PDFHelper.ReturnPDF(pdfContents, Filename);
         }
-        
+
         protected void lnkw4Details_Click(object sender, EventArgs e)
         {
             ModalPopupExtender1.Show();
@@ -2847,7 +2804,6 @@ namespace JG_Prospect.Sr_App
         {
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
             fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
-
 
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
@@ -2955,23 +2911,22 @@ namespace JG_Prospect.Sr_App
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
                 //txtHireDate.Text = DateTime.Now.ToShortDateString();
-                dtReviewDate.Text = DateTime.Now.AddDays(30).ToShortDateString();                
+                dtReviewDate.Text = DateTime.Now.AddDays(30).ToShortDateString();
                 //pnlGrid.Visible = true;
                 pnl4.Visible = false;
                 showHideNewHireSection(true);
 
                 rqdtResignition.Enabled = true;
-                
             }
             else
             {
                 pnl4.Visible = false;
                 showHideNewHireSection(false);
-                rqdtResignition.Enabled = false; 
+                rqdtResignition.Enabled = false;
             }
 
-            if (ddlstatus.SelectedValue == "Active" 
-                && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) 
+            if (ddlstatus.SelectedValue == "Active"
+                && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))
                 && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 lblReqPicture.Style["display"] = "block";
@@ -2980,7 +2935,7 @@ namespace JG_Prospect.Sr_App
                 if (Convert.ToString(Session["ddlStatus"]) != "")
                 {
                     ddlstatus.SelectedValue = Convert.ToString(Session["ddlStatus"]);
-                } 
+                }
                 showHideNewHireSection(true);
                 return;
             }
@@ -2992,7 +2947,7 @@ namespace JG_Prospect.Sr_App
                 {
                     ddlstatus.SelectedValue = Convert.ToString(Session["ddlStatus"]);
                 }
-                 
+
                 return;
             }
             if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
@@ -3035,7 +2990,7 @@ namespace JG_Prospect.Sr_App
                 txtAccountType.Visible = true;
                 //txtOtherTrade.Visible = true;
             }
-             
+
 
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
@@ -3047,7 +3002,7 @@ namespace JG_Prospect.Sr_App
                 lblInstallerType.Visible = false;
                 ddlInstallerType.Visible = false;
             }
-              
+
             if ((ddlstatus.SelectedValue == "Active")
                 || (ddlstatus.SelectedValue == "OfferMade"))
             {
@@ -3056,17 +3011,17 @@ namespace JG_Prospect.Sr_App
             else
             {
                 showHideNewHireSection(false);
-            } 
+            }
 
             #region NewRequiredFields
-             
+
 
             if (ddlstatus.SelectedValue == "Applicant")
             {
                 rqDesignition.Enabled = false;
                 RequiredFieldValidator3.Enabled = false;
                 lblReqDesig.Visible = false;
-                
+
                 lblReqLastName.Visible = true;
                 rqLastName.Enabled = true;
                 RequiredFieldValidator5.Enabled = true;
@@ -3093,7 +3048,7 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;                
+                rqMaritalStatus.Enabled = false;
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3152,7 +3107,7 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;                
+                rqMaritalStatus.Enabled = false;
                 // lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3191,7 +3146,7 @@ namespace JG_Prospect.Sr_App
                 rqDesignition.Enabled = true;
                 RequiredFieldValidator3.Enabled = true;
                 lblReqDesig.Visible = true;
-                
+
                 lblReqLastName.Visible = true;
                 rqLastName.Enabled = true;
                 RequiredFieldValidator5.Enabled = true;
@@ -3221,7 +3176,7 @@ namespace JG_Prospect.Sr_App
                 //rqConPass.Enabled = true;
                 rqSign.Enabled = true;
                 lblReqMarSt.Visible = true;
-                rqMaritalStatus.Enabled = true;                
+                rqMaritalStatus.Enabled = true;
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -3296,7 +3251,7 @@ namespace JG_Prospect.Sr_App
                 //rqConPass.Enabled = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;                
+                rqMaritalStatus.Enabled = false;
                 //  lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -3354,7 +3309,7 @@ namespace JG_Prospect.Sr_App
         {
             rqdtResignition.Enabled = false;
             showHideNewHireSection(true);
-            
+
             if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
             {
                 txtOfferReqMail.Enabled = false;
@@ -3382,7 +3337,7 @@ namespace JG_Prospect.Sr_App
             dtInterviewDate.Visible = false;
             //pnlnewHire.Visible = true;
             showHideNewHireSection(true);
-            
+
         }
 
         private void showHideNewHireSection(bool ShowSection)
@@ -3427,7 +3382,7 @@ namespace JG_Prospect.Sr_App
                 ddlInstallerType.Visible = false;
             }
         }
-          
+
         protected void btnPqLicense_Click(object sender, EventArgs e)
         {
             if (flpPqLicense.HasFile)
@@ -3490,7 +3445,7 @@ namespace JG_Prospect.Sr_App
             btnPluse.Visible = true;
             btnMinus.Visible = false;
             pnl4.Visible = false;
-        } 
+        }
 
 
 
@@ -3692,13 +3647,13 @@ namespace JG_Prospect.Sr_App
             {
                 lnkw4Details.Visible = false;
                 lblStatus.Visible = false;
-                ddlmaritalstatus.Visible = false; 
+                ddlmaritalstatus.Visible = false;
             }
             else
             {
                 lnkw4Details.Visible = true;
                 lblStatus.Visible = true;
-                ddlmaritalstatus.Visible = true; 
+                ddlmaritalstatus.Visible = true;
             }
 
             ShowHideAptitudeTestLink();
@@ -4044,7 +3999,7 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
-         
+
         protected void btnPlusNew_Click(object sender, EventArgs e)
         {
             ////////btnMinusNew.Visible = true;
@@ -4080,7 +4035,7 @@ namespace JG_Prospect.Sr_App
                 ddlInstallerType.Visible = false;
             }
         }
-        
+
         protected void rdoAttchmentNo_CheckedChanged(object sender, EventArgs e)
         {
             //if (rdoAttchmentNo.Checked)
@@ -4227,7 +4182,7 @@ namespace JG_Prospect.Sr_App
 
             }
         }
-        
+
         protected void phoneTypeDropDownList_PreRender(object sender, EventArgs e)
         {
             string imageURL = "";
@@ -4367,7 +4322,7 @@ namespace JG_Prospect.Sr_App
                     string PayRates = "";
                     string Desig = "";
                     string reason = "";
-                    ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+                    ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
                     if (ds.Tables.Count > 0)
                     {
                         if (ds.Tables[0].Rows.Count > 0)
@@ -4485,7 +4440,7 @@ namespace JG_Prospect.Sr_App
                     return;
                 }
                 //ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate.ToString("yyyy-MM-dd"), ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), txtReason.Text);
-                DataSet ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, interviewDate.ToString("yyyy-MM-dd"), Convert.ToString(ViewState["ddlInsteviewtime"]), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, string.Empty, ddlUsers.SelectedValue);
+                DataSet ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, interviewDate, Convert.ToString(ViewState["ddlInsteviewtime"]), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, string.Empty, ddlUsers.SelectedValue);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -4528,7 +4483,7 @@ namespace JG_Prospect.Sr_App
                 //return;
             }
         }
-        
+
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
             //binddata();
@@ -4595,7 +4550,7 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat( Request.Url.Scheme,Uri.SchemeDelimiter,Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -4729,7 +4684,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-                label:
+            label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4778,7 +4733,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-                label1:
+            label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4797,7 +4752,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-            label:
+        label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4832,7 +4787,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-            label1:
+        label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -4912,7 +4867,7 @@ namespace JG_Prospect.Sr_App
         }
 
         private void FillListBoxImage(string imageName)
-        {   
+        {
         }
 
         private void clearcontrols()
@@ -5131,14 +5086,14 @@ namespace JG_Prospect.Sr_App
                     SalesId = "SLE0001";
                 }
             }
-            else if ((selDesignation ==  JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
 
             return SalesId;
         }
-        
+
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason)
         {
             try
@@ -5632,7 +5587,7 @@ namespace JG_Prospect.Sr_App
         //        //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
         //    }
         //}
-       
+
         //private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
         //{
         //    object matchCase = true;
@@ -5736,9 +5691,9 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 if (Attachments != null)
-            {
-                lstAttachments.AddRange(Attachments);
-            }
+                {
+                    lstAttachments.AddRange(Attachments);
+                }
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
@@ -5840,6 +5795,7 @@ namespace JG_Prospect.Sr_App
 
         private void FillControls()
         {
+            ddlstatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlstatus);
             FillPhoneTypeDropDown();
             FillCountryDropDown();
         }
@@ -5895,16 +5851,16 @@ namespace JG_Prospect.Sr_App
             if (strDesignationsCode != OldDesignationCode)
             {
                 //Set tblInstallUsers > UserInstallId to null.
-                InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"YES");
+                InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode, "YES");
             }
             else
-            InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"NO");
+                InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode, "NO");
         }
 
         protected void btnAddAttachment_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
-            {   
+            {
                 if (txtfirstname.Text != "" && txtlastname.Text != "")
                 {
                     hdnWorkFiles.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
@@ -5950,12 +5906,12 @@ namespace JG_Prospect.Sr_App
                 string strIsPrimayrPhone = "1";
                 string strCurrPhoneValue = "";
 
-                if (DataRow["IsPrimary"].ToString().ToLower() == "false" || DataRow["IsPrimary"].ToString() =="")
+                if (DataRow["IsPrimary"].ToString().ToLower() == "false" || DataRow["IsPrimary"].ToString() == "")
                 {
                     strIsPrimayrPhone = "0";
                 }
 
-                strCurrPhoneValue = strIsPrimayrPhone + Subdelimeter 
+                strCurrPhoneValue = strIsPrimayrPhone + Subdelimeter
                                     + DataRow["PhoneISDCode"] + Subdelimeter
                                     + DataRow["Phone"].ToString() + Subdelimeter
                                     + DataRow["PhoneExtNo"] + Subdelimeter
@@ -5971,16 +5927,16 @@ namespace JG_Prospect.Sr_App
 
         private void fullTouchPointLog(string strValueToAdd)
         {
-            if ((Session["ID"] != null 
+            if ((Session["ID"] != null
                 && Session["ID"].ToString() != "")
-                ||(hidTouchPointGUID.Value.Trim() !=""))//Fill Touch Point Log only if it is edit mode.
+                || (hidTouchPointGUID.Value.Trim() != ""))//Fill Touch Point Log only if it is edit mode.
             {
-                
+
                 string strUserInstallId = JGSession.LoginUserID;
 
                 if (Session["Username"] != null)
                 {
-                    strUserInstallId = Session["Username"]  +" - "+ JGSession.LoginUserID;
+                    strUserInstallId = Session["Username"] + " - " + JGSession.LoginUserID;
                 }
 
                 int InstallUserID = 0;
@@ -5991,23 +5947,23 @@ namespace JG_Prospect.Sr_App
                     //Store Zero if New user as we need to store Log at carea time also. 
                     InstallUserID = 0;
                     UserGuid = hidTouchPointGUID.Value;
-                }   
+                }
                 else
                 {
                     InstallUserID = Convert.ToInt32(Session["ID"]);
-                } 
+                }
 
                 InstallUserBLL.Instance.AddTouchPointLogRecord(
                     Convert.ToInt32(JGSession.LoginUserID)
                     , InstallUserID
                     , strUserInstallId
-                    , DateTime.Now  
-                    ,strValueToAdd
+                    , DateTime.Now
+                    , strValueToAdd
                     , UserGuid);
 
                 BindTouchPointLog();
             }
-            
+
         }
 
         private void BindTouchPointLog()
@@ -6018,27 +5974,13 @@ namespace JG_Prospect.Sr_App
             {
                 DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
             }
-            else if (hidTouchPointGUID.Value.Trim() !="")
+            else if (hidTouchPointGUID.Value.Trim() != "")
             {
                 DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByGUID(hidTouchPointGUID.Value);
             }
 
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
-        }
-        
-        /// <summary>
-        /// Create email on the base of FirestName & Last Name
-        /// </summary>
-        private void CreateUserEmailID()
-        {
-            // so On Create and Update will check if user was not active or so. on the bae of the same create accoutn.
-            if (Convert.ToString(Session["PreviousStatusNew"]) != "Active" && ddlstatus.SelectedValue == "Active")
-            {
-                string strNewEmailId = txtfirstname.Text + txtlastname.Text;
-
-                Utilits.EmailCommonHelper.CreateUserEmailAccount(strNewEmailId);
-            }
         }
 
         #endregion
@@ -6661,6 +6603,14 @@ namespace JG_Prospect.Sr_App
 
 
         #endregion
-        
+
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() != "")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
     }
 }

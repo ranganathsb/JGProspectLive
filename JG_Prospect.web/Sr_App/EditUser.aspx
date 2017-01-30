@@ -755,8 +755,8 @@
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
-                                        <asp:DropDownList ID="ddlStatus" CssClass="grd-status" style="width:95%;" AutoPostBack="true"  OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender" DataValueField='<%#Eval("Status")%>'>
-                                            <asp:ListItem Text="Referral applicant" Value="ReferralApplicant"></asp:ListItem>
+                                        <asp:DropDownList ID="ddlStatus" CssClass="grd-status" style="width:95%;" AutoPostBack="true"  OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
+                                            <%--<asp:ListItem Text="Referral applicant" Value="ReferralApplicant"></asp:ListItem>
                                             <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
                                             <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
                                             <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
@@ -764,7 +764,7 @@
                                             <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
                                             <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
                                             <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
-                                            <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
+                                            <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>--%>
                                         </asp:DropDownList><br />
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
                                         <br />

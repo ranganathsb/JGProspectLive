@@ -54,7 +54,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-             
+            CommonFunction.AuthenticateUser();
+    
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -4367,7 +4368,7 @@ namespace JG_Prospect.Sr_App
                     string PayRates = "";
                     string Desig = "";
                     string reason = "";
-                    ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+                    ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
                     if (ds.Tables.Count > 0)
                     {
                         if (ds.Tables[0].Rows.Count > 0)
@@ -4485,7 +4486,7 @@ namespace JG_Prospect.Sr_App
                     return;
                 }
                 //ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate.ToString("yyyy-MM-dd"), ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), txtReason.Text);
-                DataSet ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, interviewDate.ToString("yyyy-MM-dd"), Convert.ToString(ViewState["ddlInsteviewtime"]), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, string.Empty, ddlUsers.SelectedValue);
+                DataSet ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, interviewDate, Convert.ToString(ViewState["ddlInsteviewtime"]), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, string.Empty, ddlUsers.SelectedValue);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -5840,6 +5841,7 @@ namespace JG_Prospect.Sr_App
 
         private void FillControls()
         {
+            ddlstatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlstatus);
             FillPhoneTypeDropDown();
             FillCountryDropDown();
         }

@@ -683,7 +683,7 @@ namespace JG_Prospect.Sr_App
                 DataSet ds = new DataSet();
                 string email = "", HireDate = "", EmpType = "", PayRates = "", Desig = "", reason = "", firstName = "", lastName = "";
 
-                ds = InstallUserBLL.Instance.ChangeStatus(hidSelectedVal.Value, EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+                ds = InstallUserBLL.Instance.ChangeStatus(hidSelectedVal.Value, EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)

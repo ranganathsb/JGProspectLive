@@ -142,10 +142,10 @@ namespace JG_Prospect.Common
         public enum TaskUserFileType
         {
             Notes = 1,
-            Audio = 2, 
-            Video = 3, 
-            Images = 4, 
-            Docu = 5, 
+            Audio = 2,
+            Video = 3,
+            Images = 4,
+            Docu = 5,
             Other = 6
         }
 
@@ -171,6 +171,21 @@ namespace JG_Prospect.Common
             Installer_Foreman = 18,
             Commercial_Only = 19,
             SubContractor = 20
+        }
+
+        public enum InstallUserStatus
+        {
+            Active = 1
+            , Applicant = 2
+            , Deactive = 3
+            , InstallProspect = 4
+            , InterviewDate = 5
+            , OfferMade = 6
+            , PhoneScreened = 7
+            , Phone_VideoScreened = 8
+            , Rejected = 9
+            , ReferralApplicant = 10
+            , Deleted = 11
         }
 
         #region '-- Page Name --'

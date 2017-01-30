@@ -26,34 +26,7 @@ using Newtonsoft.Json;
 namespace JG_Prospect
 {
     #region '--Enums--'
-
-    enum OrderStatus1
-    {
-        OfferMade = 0,
-        InterviewScreened,
-        InterviewDate,
-        Applicant,
-        InstallProspect,
-        PhoneScreened,
-        Active,
-        Deactive,
-        Rejected,
-        Deleted
-    }
-
-    enum OrderStatus2
-    {
-        Applicant = 0,
-        InstallProspect,
-        InterviewDate,
-        PhoneScreened,
-        OfferMade,
-        InterviewScreened,
-        Active,
-        Deactive,
-        Rejected
-    }
-
+    
     public class HrData
     {
         public string status { get; set; }
@@ -244,6 +217,8 @@ namespace JG_Prospect
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
 
+                    ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
+
                     ddlContactType = BindContactDllForGrid(ddlContactType);
 
                     System.Web.UI.HtmlControls.HtmlAnchor aReasumePath = (e.Row.FindControl("aReasumePath") as System.Web.UI.HtmlControls.HtmlAnchor);
@@ -276,25 +251,25 @@ namespace JG_Prospect
                             hypTechTask.Visible = true;
                         }
 
-                        switch (Status)
+                        switch ((JGConstant.InstallUserStatus)Convert.ToByte( Status))
                         {
-                            case "Applicant":
+                            case JGConstant.InstallUserStatus.Applicant:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #FFFF00";
                                     break;
                                 }
-                            case "InstallProspect":
-                            case "Install Prospect":
+                            case JGConstant.InstallUserStatus.InstallProspect:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #FFA500";
                                     break;
                                 }
-                            case "Rejected":
+                            case JGConstant.InstallUserStatus.Rejected:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #AEAEAE";
                                     break;
                                 }
-                            case "Deleted":
+                            case JGConstant.InstallUserStatus.Deactive:
+                            case JGConstant.InstallUserStatus.Deleted:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #565656";
                                     break;
@@ -536,14 +511,29 @@ namespace JG_Prospect
                 ddlDesignationForTask.Items.FindByText(lblDesignation.Text).Selected = true;
             }
 
-            if ((lblStatus.Value == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if (
+                    (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) && 
+                    (
+                        !(Convert.ToString(Session["usertype"]).Contains("Admin")) && 
+                        !(Convert.ToString(Session["usertype"]).Contains("SM"))
+                    )
+                )
             {
                 //binddata();
                 GetSalesUsersStaticticsAndData();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have rights change the status.')", true);
                 return;
             }
-            else if ((lblStatus.Value == "Active" && ddl.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
+            else if (
+                        (
+                            lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() && 
+                            ddl.SelectedValue != Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()
+                        ) && 
+                        (
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) || 
+                            (Convert.ToString(Session["usertype"]).Contains("SM"))
+                        )
+                    )
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayPassword();", true);
                 return;
@@ -551,7 +541,7 @@ namespace JG_Prospect
             bool status = CheckRequiredFields(ddl.SelectedValue, Convert.ToInt32(Id.Text));
             if (!status)
             {
-                if (ddl.SelectedValue == "Offer Made" || ddl.SelectedValue == "OfferMade")
+                if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
                 {
                     hdnFirstName.Value = lblFirstName.Text;
                     hdnLastName.Value = lblLastName.Text;
@@ -570,35 +560,50 @@ namespace JG_Prospect
                 }
             }
 
-            if ((ddl.SelectedValue == "Active" || ddl.SelectedValue == "Deactive") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if (
+                    (
+                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() || 
+                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()
+                    ) && 
+                    (
+                        !(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                        !(Convert.ToString(Session["usertype"]).Contains("SM"))
+                    )
+                )
             {
                 ddl.SelectedValue = Convert.ToString(lblStatus.Value);
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have permission to Activate or Deactivate user')", true);
                 return;
             }
-            else if (ddl.SelectedValue == "Rejected")
+            else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString())
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlay()", true);
                 return;
             }
-            else if (ddl.SelectedValue == "InterviewDate")
+            else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 LoadUsersByRecruiterDesgination(ddlUsers);
                 FillTechTaskDropDown(ddlTechTask);
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
-                ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ddlInsteviewtime.SelectedValue = "10:00";
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
                 return;
             }
-            else if (ddl.SelectedValue == "Deactive" && ((Convert.ToString(Session["usertype"]).Contains("Admin")) && (Convert.ToString(Session["usertype"]).Contains("SM"))))
+            else if (
+                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString() && 
+                        (
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) && 
+                            (Convert.ToString(Session["usertype"]).Contains("SM"))
+                        )
+                    )
             {
                 Session["DeactivationStatus"] = "Deactive";
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlay()", true);
                 return;
             }
-            else if (ddl.SelectedValue == "OfferMade")
+            else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
             {
                 txtEmail.Text = lbtnEmail.Text;
                 txtPassword1.Attributes.Add("value", "jmgrove");
@@ -640,7 +645,7 @@ namespace JG_Prospect
                 */
             }
 
-            if (ddl.SelectedValue == "Install Prospect")
+            if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InstallProspect).ToString())
             {
                 if (lblStatus.Value != "")
                 {
@@ -650,7 +655,8 @@ namespace JG_Prospect
                 return;
             }
 
-            if (lblStatus.Value == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
+            if (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() && 
+                (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
                 if (Convert.ToString(Session["PreviousStatusNew"]) != "")
@@ -663,11 +669,12 @@ namespace JG_Prospect
             {
                 // Adding a popUp...
 
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
 
-                if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
+                if ((ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) || 
+                    (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()))
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
                 return;
             }
@@ -797,7 +804,7 @@ namespace JG_Prospect
             isvaliduser = UserBLL.Instance.chklogin(Convert.ToString(Session["loginid"]), txtPassword.Text);
             if (isvaliduser > 0)
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
             }
@@ -812,7 +819,7 @@ namespace JG_Prospect
                 string HireDate = "";
                 string EmpType = "";
                 string PayRates = "";
-                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -839,7 +846,7 @@ namespace JG_Prospect
             }
             else
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 //binddata();
                 GetSalesUsersStaticticsAndData();
             }
@@ -864,7 +871,7 @@ namespace JG_Prospect
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "alert('Invalid Interview Date, Please verify');", true);
                 return;
             }
-            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate.ToString("yyyy-MM-dd"), ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text, ddlUsers.SelectedValue);
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate, ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text, ddlUsers.SelectedValue);
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
@@ -921,7 +928,7 @@ namespace JG_Prospect
             string PayRates = "";
             string Desig = "";
 
-            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
@@ -1064,21 +1071,21 @@ namespace JG_Prospect
 
         protected void ddlStatus_Popup_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlStatus_Popup.SelectedValue.Equals("InterviewDate"))
+            if (ddlStatus_Popup.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 divInterviewDate.Visible =
                 grdUsers_Popup.Columns[2].Visible =
                 grdUsers_Popup.Columns[3].Visible = true;
                 grdUsers_Popup.Columns[4].Visible = false;
             }
-            else if (ddlStatus_Popup.SelectedValue.Equals("OfferMade"))
+            else if (ddlStatus_Popup.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
             {
                 divInterviewDate.Visible =
                 grdUsers_Popup.Columns[2].Visible =
                 grdUsers_Popup.Columns[3].Visible =
                 grdUsers_Popup.Columns[4].Visible = false;
             }
-            else if (ddlStatus_Popup.SelectedValue.Equals("Rejected"))
+            else if (ddlStatus_Popup.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString())
             {
                 divInterviewDate.Visible =
                 grdUsers_Popup.Columns[2].Visible =
@@ -1107,6 +1114,7 @@ namespace JG_Prospect
 
                 ddlInterviewTime.DataSource = GetTimeIntervals();
                 ddlInterviewTime.DataBind();
+                ddlInsteviewtime.SelectedValue = DataBinder.Eval(e.Row.DataItem, "InterviewTime").ToString();
 
                 FillTechTaskDropDown(ddlTechTask);
 
@@ -1128,7 +1136,8 @@ namespace JG_Prospect
         protected void btnSaveStatusForSelected_Click(object sender, EventArgs e)
         {
             int intId;
-            string strEmail, strHireDate, strEmployeeType, strPayRates, strFirstName, strLastName, strDesignation, strReason, strDate, strTime;
+            string strEmail, strHireDate, strEmployeeType, strPayRates, strFirstName, strLastName, strDesignation, strReason, strTime;
+            DateTime? dtDate = null;
 
             foreach (GridViewRow objUserRow in grdUsers_Popup.Rows)
             {
@@ -1140,7 +1149,6 @@ namespace JG_Prospect
                 strLastName =
                 strDesignation =
                 strReason =
-                strDate =
                 strTime = string.Empty;
 
                 intId = Convert.ToInt32(grdUsers_Popup.DataKeys[objUserRow.RowIndex]["Id"]);
@@ -1148,12 +1156,16 @@ namespace JG_Prospect
                 strLastName = ((Literal)objUserRow.FindControl("ltrlLastName")).Text;
                 strDesignation = ((Literal)objUserRow.FindControl("ltrlDesignation")).Text;
                 strReason = ((TextBox)objUserRow.FindControl("txtReason")).Text;
-                strDate = ((TextBox)objUserRow.FindControl("txtInterviewDate")).Text;
+                string strDate = ((TextBox)objUserRow.FindControl("txtInterviewDate")).Text;
+                if (!string.IsNullOrEmpty(strDate))
+                {
+                    dtDate = Convert.ToDateTime(strDate);
+                }
                 strTime = ((DropDownList)objUserRow.FindControl("ddlInterviewTime")).SelectedValue;
 
-                if (string.IsNullOrEmpty(strDate))
+                if (!dtDate.HasValue)
                 {
-                    strDate = DateTime.Today.ToShortDateString();
+                    dtDate = DateTime.Today;
                 }
 
                 if (string.IsNullOrEmpty(strTime))
@@ -1165,7 +1177,7 @@ namespace JG_Prospect
                                                     (
                                                         ddlStatus_Popup.SelectedValue,
                                                         intId,
-                                                        strDate,
+                                                        dtDate.Value,
                                                         strTime,
                                                         JGSession.UserId,
                                                         JGSession.IsInstallUser.Value,
@@ -1180,9 +1192,9 @@ namespace JG_Prospect
                     strPayRates = Convert.ToString(dsUser.Tables[0].Rows[0][3]);
                 }
 
-                switch (ddlStatus_Popup.SelectedValue)
+                switch ((JGConstant.InstallUserStatus)Convert.ToByte( ddlStatus_Popup.SelectedValue))
                 {
-                    case "Deactive":
+                    case JGConstant.InstallUserStatus.Deactive:
                         SendEmail(
                                     strEmail,
                                     strFirstName,
@@ -1197,7 +1209,7 @@ namespace JG_Prospect
                                 );
                         break;
 
-                    case "InterviewDate":
+                    case JGConstant.InstallUserStatus.InterviewDate:
                         SendEmail(
                                     strEmail,
                                     strFirstName,
@@ -1218,7 +1230,7 @@ namespace JG_Prospect
 
                         break;
 
-                    case "OfferMade":
+                    case JGConstant.InstallUserStatus.OfferMade:
                         InstallUserBLL.Instance.UpdateOfferMade(intId, strEmail, JGSession.UserPassword);
 
                         #region '-- PDF Attachment --'
@@ -1295,7 +1307,7 @@ namespace JG_Prospect
                 }
             }
 
-            if (ddlStatus_Popup.SelectedValue.Equals("InterviewDate"))
+            if (ddlStatus_Popup.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
             }
@@ -1527,7 +1539,7 @@ namespace JG_Prospect
                                         (objUserRow.FindControl("lblLastName") as Label).Text,
                                         (objUserRow.FindControl("lblDesignation") as Label).Text,
                                         DateTime.Now.AddDays(1).ToShortDateString(),
-                                        "10:00 AM"
+                                        "10:00"
                                     );
                 }
             }
@@ -3026,8 +3038,8 @@ namespace JG_Prospect
             if (blResetGrid)
             {
                 grdUsers.PageIndex = 0;
-                this.SalesUserSortDirection = SortDirection.Ascending;
-                this.SalesUserSortExpression = "Status";
+                this.SalesUserSortDirection = SortDirection.Descending;
+                this.SalesUserSortExpression = "CreatedDateTime";
             }
 
             DateTime? dtFromDate = null;
@@ -3070,24 +3082,28 @@ namespace JG_Prospect
                     if (dtSalesUser_Grid.Columns["OrderStatus"] == null)
                     {
                         dtSalesUser_Grid.Columns.Add("OrderStatus");
-                        int st = 0;
+                        foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                        {
+                            dr["OrderStatus"] = dr["Status"].ToString().Replace(" ", "");
+                        }
+                        //int st = 0;
 
-                        if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
-                        {
-                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
-                            {
-                                st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
-                                dr["OrderStatus"] = st.ToString();
-                            }
-                        }
-                        else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
-                        {
-                            foreach (DataRow dr in dtSalesUser_Grid.Rows)
-                            {
-                                st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
-                                dr["OrderStatus"] = st.ToString();
-                            }
-                        }
+                        //if (usertype == "jg account" || usertype == "sales manager" || usertype == "office manager" || usertype == "recruiter")
+                        //{
+                        //    foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                        //    {
+                        //        st = (int)((OrderStatus1)Enum.Parse(typeof(OrderStatus1), dr["Status"].ToString().Replace(" ", "")));
+                        //        dr["OrderStatus"] = st.ToString();
+                        //    }
+                        //}
+                        //else if (usertype == "admin" || usertype == "jr. sales" || usertype == "project manager")
+                        //{
+                        //    foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                        //    {
+                        //        st = (int)((OrderStatus2)Enum.Parse(typeof(OrderStatus2), dr["Status"].ToString().Replace(" ", "")));
+                        //        dr["OrderStatus"] = st.ToString();
+                        //    }
+                        //}
                     }
 
                     #endregion
@@ -3105,7 +3121,7 @@ namespace JG_Prospect
                             lstHrData.Add(hrdata);
                         }
 
-                        var rowOfferMade = lstHrData.Where(r => r.status == "OfferMade").FirstOrDefault();
+                        var rowOfferMade = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()).FirstOrDefault();
                         if (rowOfferMade != null)
                         {
                             string count = rowOfferMade.count;
@@ -3115,7 +3131,7 @@ namespace JG_Prospect
                         {
                             lbljoboffercount.Text = "0";
                         }
-                        var rowActive = lstHrData.Where(r => r.status == "Active").FirstOrDefault();
+                        var rowActive = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()).FirstOrDefault();
                         if (rowActive != null)
                         {
                             string count = rowActive.count;
@@ -3125,7 +3141,7 @@ namespace JG_Prospect
                         {
                             lblActiveCount.Text = "0";
                         }
-                        var rowRejected = lstHrData.Where(r => r.status == "Rejected").FirstOrDefault();
+                        var rowRejected = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString()).FirstOrDefault();
                         if (rowRejected != null)
                         {
                             string count = rowRejected.count;
@@ -3135,7 +3151,7 @@ namespace JG_Prospect
                         {
                             lblRejectedCount.Text = "0";
                         }
-                        var rowDeactive = lstHrData.Where(r => r.status == "Deactive").FirstOrDefault();
+                        var rowDeactive = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()).FirstOrDefault();
                         if (rowDeactive != null)
                         {
                             string count = rowDeactive.count;
@@ -3145,7 +3161,7 @@ namespace JG_Prospect
                         {
                             lblDeactivatedCount.Text = "0";
                         }
-                        var rowInstallProspect = lstHrData.Where(r => r.status == "Install Prospect").FirstOrDefault();
+                        var rowInstallProspect = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.InstallProspect).ToString()).FirstOrDefault();
                         if (rowInstallProspect != null)
                         {
                             string count = rowInstallProspect.count;
@@ -3155,7 +3171,7 @@ namespace JG_Prospect
                         {
                             lblInstallProspectCount.Text = "0";
                         }
-                        var rowPhoneScreened = lstHrData.Where(r => r.status == "PhoneScreened").FirstOrDefault();
+                        var rowPhoneScreened = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.PhoneScreened).ToString()).FirstOrDefault();
                         if (rowPhoneScreened != null)
                         {
                             string count = rowPhoneScreened.count;
@@ -3165,7 +3181,7 @@ namespace JG_Prospect
                         {
                             lblPhoneVideoScreenedCount.Text = "0";
                         }
-                        var rowInterviewDate = lstHrData.Where(r => r.status == "InterviewDate").FirstOrDefault();
+                        var rowInterviewDate = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString()).FirstOrDefault();
                         if (rowInterviewDate != null)
                         {
                             string count = rowInterviewDate.count;
@@ -3175,7 +3191,7 @@ namespace JG_Prospect
                         {
                             lblInterviewDateCount.Text = "0";
                         }
-                        var rowApplicant = lstHrData.Where(r => r.status == "Applicant").FirstOrDefault();
+                        var rowApplicant = lstHrData.Where(r => r.status == Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString()).FirstOrDefault();
                         string Applicantcount = "0";
                         if (rowApplicant != null)
                         {

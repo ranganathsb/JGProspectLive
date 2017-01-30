@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI.WebControls;
 
 using System.Collections.Generic;
+using JG_Prospect.Common;
 
 namespace JG_Prospect.Utilits
 {
@@ -72,44 +73,54 @@ namespace JG_Prospect.Utilits
             if (FirstItem != "" && FirstItemValue != "")
             {
                 objUserStatus = new UserStatus();
-                objUserStatus.Status = FirstItem; objUserStatus.StatusValue = FirstItemValue;
+                objUserStatus.Status = FirstItem;
+                objUserStatus.StatusValue = FirstItemValue;
                 lstUserStatus.Add(objUserStatus);
             }
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Referral applicant"; objUserStatus.StatusValue = "ReferralApplicant";
+            objUserStatus.Status = "Referral applicant";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.ReferralApplicant).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Applicant"; objUserStatus.StatusValue = "Applicant";
+            objUserStatus.Status = "Applicant";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Phone/Video Screened"; objUserStatus.StatusValue = "PhoneScreened";
+            objUserStatus.Status = "Phone/Video Screened";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Phone_VideoScreened).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Rejected"; objUserStatus.StatusValue = "Rejected";
+            objUserStatus.Status = "Rejected";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Interview Date"; objUserStatus.StatusValue = "InterviewDate";
+            objUserStatus.Status = "Interview Date";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Offer Made"; objUserStatus.StatusValue = "OfferMade";
+            objUserStatus.Status = "Offer Made";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Active"; objUserStatus.StatusValue = "Active";
+            objUserStatus.Status = "Active";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Deactive"; objUserStatus.StatusValue = "Deactive";
+            objUserStatus.Status = "Deactive";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString();
             lstUserStatus.Add(objUserStatus);
 
             objUserStatus = new UserStatus();
-            objUserStatus.Status = "Install Prospect"; objUserStatus.StatusValue = "Install Prospect";
+            objUserStatus.Status = "Install Prospect";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.InstallProspect).ToString();
             lstUserStatus.Add(objUserStatus);
 
             ddlUserStatus.DataSource = lstUserStatus;
@@ -130,26 +141,26 @@ namespace JG_Prospect.Utilits
 
             for (int i = 0; i < ddlstatus.Items.Count; i++)
             {
-                switch (ddlstatus.Items[i].Value)
+                switch ((JGConstant.InstallUserStatus)Convert.ToByte(ddlstatus.Items[i].Value))
                 {
-                    case "Applicant":
-                    case "ReferralApplicant":
+                    case JGConstant.InstallUserStatus.Applicant:
+                    case JGConstant.InstallUserStatus.ReferralApplicant:
                         imageURL = "../Sr_App/img/red-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "OfferMade":
+                    case JGConstant.InstallUserStatus.OfferMade:
                         imageURL = "../Sr_App/img/dark-blue-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "PhoneScreened":
+                    case JGConstant.InstallUserStatus.PhoneScreened:
                         imageURL = "../Sr_App/img/yellow-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "Active":
+                    case JGConstant.InstallUserStatus.Active:
                         imageURL = "../Sr_App/img/green-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "InterviewDate":
+                    case JGConstant.InstallUserStatus.InterviewDate:
                         imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;

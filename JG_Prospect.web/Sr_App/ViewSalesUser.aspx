@@ -7,8 +7,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css?v=1" rel="stylesheet" />
-
-    <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
@@ -17,7 +15,7 @@
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
     <link href="../Styles/dd.css" rel="stylesheet" />
-    <link type="text/css" href="../css/flags24.css" rel="Stylesheet"/>
+    <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet"/>
 
 
     <script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>
@@ -36,30 +34,7 @@
                            title: "Aptitude Test"
                        });
         $dialog.dialog('open');
-        }
-
-        function ValidateUserDetals()
-        {
-            debugger
-            if (validateUserEmail() == false) {
-                return false;
-            }
-
-            return true;
-        }
-
-        function validateUserEmail()
-        {
-            if ($('#<%=chkPrimaryEmailMain.ClientID%>').is(':checked') == true) {                
-                return true;
-            }
-
-            
-            TheConfirm_OkOnly('Kindly select any one email as PrimaryEmail', 'Email Validation Alert');
-            
-            return false;
-        }
-
+    }
 </script>
 
     <script type="text/javascript">
@@ -160,7 +135,7 @@
                 return true;
         }
 
-        
+        function pageLoad() {
         $(document).ready(function () {
 
            changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
@@ -169,7 +144,9 @@
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });
 
-            
+            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+            });--%>
             
             $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                 var url = window.location.href
@@ -189,7 +166,7 @@
             });
         });
 
-   
+        }
 
         function ClosePassword() {
             document.getElementById('litePassword').style.display = 'none';
@@ -558,7 +535,7 @@
                 /// Email  == START
                 $('#AddExtEmail').click(function () {
                     $('<div/>', {
-                        'class': 'ExtAddEmail', html: GetHtmlForEmail('','')
+                        'class': 'ExtAddEmail', html: GetHtmlForEmail('')
                     }).hide().appendTo('#EmailContainer').slideDown('slow');//Get the html from template and hide and slideDown for transtion.
                 });
 
@@ -704,7 +681,28 @@
             return '$' + n2.split('').reverse().join('');
         }
 
-        
+        function SetEmailValuefromCtlToHid() {
+            var delimeter = '|,|';
+            var strEmailIds = '';
+
+            var mailEmail = $('#<%= txtemail.ClientID %>').val();
+
+            validateEmail(mailEmail);
+
+            $('#EmailContainer .ExtEmailClass').each(function () {
+                if (this.value != '') {
+
+                    if (strEmailIds == '') {
+                        strEmailIds = strEmailIds + this.value;
+                    }
+                    else {
+                        strEmailIds = strEmailIds + delimeter + this.value;
+                    }
+                }
+            });
+
+            $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
+        }
 
         function SetPhoneValuefromCtlToHid() {
             var delimeter = '|,|';
@@ -753,7 +751,19 @@
             });
 
             i = 0;
-            
+            //== Getting value of Phone Type Checkbox 
+            $('#container .PrimaryPhonechk').each(function () {
+                if (this.checked == true) {
+                    chkPhoneProroty[i] = "1";
+                }
+                else {
+                    chkPhoneProroty[i] = "0";
+                }
+                
+                i++;
+            });
+
+            i = 0;
             //== Getting value of Phone Type textBox
             $('#container .ExtPhoneClass').each(function () {
                 txtPhone[i] = this.value;
@@ -764,7 +774,7 @@
             for (i = 0; i < len; i++) {
                 //var txtPhone = html.find('[name=AddedPhone' + i + ']');
                 if (txtPhone[i] != '') {
-                    var strPhoneCombainValue = 0 + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
+                    var strPhoneCombainValue = chkPhoneProroty[i] + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
 
                     if (strPhoneValue == '') {
                         strPhoneValue = strPhoneCombainValue;
@@ -775,6 +785,8 @@
                 }
             }
 
+            
+            
 
             //chkPhoneProroty[i] + Subdelimeter + txtPhone[i] + Subdelimeter + ddlPhoneType[i];
             //So it will be like Eg.for 1 record =="1|%|9429822|%|WorkPhone
@@ -845,57 +857,18 @@
             });
         }
 
-        /// Set email value on the base of control selected.
-        function SetEmailValuefromCtlToHid() {
-            var delimeter = '|,|';
-            var Subdelimeter = '|%|';
-            var len = $('.ExtAddEmail').length;
-            var strEmailIds = [];
-            var chkPrimaryEmail = [];
-            var strEmailValue = '';
-            var i = 0;
-            
-            //var mailEmail = $('#%= txtemail.ClientID %>').val();
-
-            //validateEmail(mailEmail);
-            debugger
-            i = 0;
-            //== Getting value of Email Primary Checkbox 
-            
-            $('#EmailContainer .ExtEmailClass').each(function () {
-                        strEmailIds[i] = this.value; 
-                i++;
-            });
-
-
-            for (i = 0; i < len; i++) {
-                if (strEmailIds[i] != '') {
-                    var strEmaileCombainValue = chkPrimaryEmail[i] + Subdelimeter + strEmailIds[i];
-                    if (strEmailValue == '') {
-                        strEmailValue = strEmaileCombainValue;
-                    }
-                    else {
-                        strEmailValue = strEmailValue + delimeter + strEmaileCombainValue;
-                    }
-                } 
-            }
-            
-            $('#<%= hidExtEmail.ClientID %>').val(strEmailValue);
-        }
-
         function ReadEmailValuesFromHidGenControls() {
             
             var emailValue = $('#<%= hidExtEmail.ClientID %>').val();
-            debugger;
+            
             var delimeter = '|,|';
-            var Subdelimeter = '|%|';
 
             if (emailValue == '') {
                 return;
             }
 
             if (emailValue.lastIndexOf(delimeter) < 0) {
-                //if delimeter is not found then add it.
+                //only One emailID without 
                 emailValue = emailValue + delimeter;
             }
 
@@ -905,16 +878,11 @@
 
             $('#EmailContainer').empty(); // cear div contails
 
-            for (i = 0; i < emaiArray.length; i++) { 
+            for (i = 0; i < emaiArray.length; i++) {
 
                 if (emaiArray[i] != '') {
-                    
-                    var EmailCombainValue = emaiArray[i].split(Subdelimeter)
-                    var ChkEmailPrimary = EmailCombainValue[0];
-                    var Email = EmailCombainValue[1];
-
                     $('<div/>', {
-                        'class': 'ExtAddEmail', html: GetHtmlForEmail(ChkEmailPrimary, Email)
+                        'class': 'ExtAddEmail', html: GetHtmlForEmail(emaiArray[i])
                     }).hide().appendTo('#EmailContainer').slideDown('slow');
                 }
             }
@@ -1015,19 +983,13 @@
             return $html.html();
         }
 
-        function GetHtmlForEmail(ChkEmailPrimary, strEmailValue) {
+        function GetHtmlForEmail(strEmailValue) {
 
             var len = $('.ExtAddEmail').length;
 
             var $html = $('.ExtAddEmailTemplate').clone();
             $html.find('[name=txtExtEmail]')[0].name = "txtExtEmail" + len;
             $html.find('[name=txtExtEmail' + len + ']').attr("value", strEmailValue);
-
-            $html.find('[name=chkPrimaryEmail]')[0].name = "chkPrimaryEmail" + len;
-
-            if (ChkEmailPrimary == "1") {
-                $html.find('[name=chkPrimaryEmail' + len + ']').attr("checked", true);
-            }
 
             return $html.html();
         }
@@ -1077,10 +1039,12 @@
         
         // == Add New Phone Type in To DB..
         function AddNewPhoneType(newPhoneType) {
-            newPhoneType = "Other : " + newPhoneType;
 
+            newPhoneType = "Other : " + newPhoneType;
+            alert(newPhoneType);
             var IsAlreadyExist = false;
-            if (newPhoneType == null || newPhoneType == 'null') {
+
+            if (newPhoneType == null) {
                 return false;
             }
 
@@ -1221,10 +1185,6 @@
 
     </script>
     <style type="text/css">
-        .trChkbox tr label
-        {
-
-        }
         #ui-dialog-title
         {
             background: #ccc;
@@ -1242,7 +1202,22 @@
             margin-bottom: 0;
         }
 
-        
+        .PrimaryPhonechk {
+            display: inline-block;
+            margin-left: -28px;
+            padding-left: 28px;
+            background: url('img/main-header-bg.png') no-repeat 0 0;
+            line-height: 24px;
+        }
+
+        .PrimaryEmailchk{
+            display: inline-block;
+            margin-left: -28px;
+            padding-left: 28px;
+            background: url('img/main-header-bg.png') no-repeat 0 0;
+            line-height: 24px;
+        }
+
         .tr-RadioButton span label {
             padding-top: 0px !important;
             padding-left: 3px;
@@ -1637,9 +1612,10 @@
                                         <label>
                                             <asp:Label ID="lblUser" runat="server" ForeColor="Black" Text="User Status"></asp:Label>
                                             <asp:Label ID="lblReqDesig" ForeColor="Red" runat="server" Text="*"></asp:Label>></label>
-                                              
-                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
-                                            <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
+
+                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" 
+                                                OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
+                                           <%-- <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
                                             <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>
                                             <asp:ListItem Text="Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" Value="InterviewDate"></asp:ListItem>
                                             <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem> 
@@ -1647,7 +1623,7 @@
                                                 
                                             <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
 
-                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
+                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>--%>
                                             
                                             <%--<asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>--%>
                                             
@@ -1662,54 +1638,53 @@
                                     <td colspan="7">
                                         <table style="margin-left:0px;">
                                             <tr>
-                                                <td style="vertical-align: top; width: 220px; padding-right: 0px !important;">First Name<span><asp:Label ID="lblReqFName" Text="*" ForeColor="Green" runat="server"></asp:Label></span>
-                                                    <br />
-                                                    <asp:RequiredFieldValidator ID="rqFirstName" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
-                                                        ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Name"></asp:RequiredFieldValidator>
-                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator4" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
-                                                        ForeColor="Red" ValidationGroup="Image" ErrorMessage="Enter First Name"></asp:RequiredFieldValidator>
+                                                <td style="vertical-align: top; width: 220px;padding-right: 0px !important;">First Name<span><asp:Label ID="lblReqFName" Text="*" ForeColor="Green" runat="server"></asp:Label></span>
+                                        <br />
+                                        <asp:RequiredFieldValidator ID="rqFirstName" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
+                                            ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Name"></asp:RequiredFieldValidator>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator4" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
+                                            ForeColor="Red" ValidationGroup="Image" ErrorMessage="Enter First Name"></asp:RequiredFieldValidator>
 
-                                                    <asp:TextBox ID="txtfirstname" Placeholder="First Name" runat="server" MaxLength="40" autocomplete="off" onkeypress="return lettersOnly(event);"
-                                                        EnableViewState="false" AutoCompleteType="None" OnTextChanged="txtfirstname_TextChanged" Width="130px" TabIndex="503"></asp:TextBox>
+                                        <asp:TextBox ID="txtfirstname" Placeholder="First Name" runat="server" MaxLength="40" autocomplete="off" onkeypress="return lettersOnly(event);"
+                                            EnableViewState="false" AutoCompleteType="None" OnTextChanged="txtfirstname_TextChanged" Width="130px" TabIndex="503"></asp:TextBox>
 
-                                                </td>
+                                    </td>
 
-                                                <td style="margin: 0px; padding-right: 0px !important;">
-                                                    <br />
-                                                    <asp:TextBox ID="txtMiddleInitial" Placeholder="I." runat="server" MaxLength="3" Width="10px" TabIndex="504"></asp:TextBox>
-                                                </td>
+                                    <td style="margin:0px;padding-right:0px !important;">
+                                        <br />
+                                        <asp:TextBox ID="txtMiddleInitial" Placeholder="I." runat="server" MaxLength="3" Width="10px" TabIndex="504"></asp:TextBox>
+                                    </td>
+                    
+                                    <td style="vertical-align: top; width: 220px;">Last Name<span><asp:Label ID="lblReqLastName" Text="*" runat="server" ForeColor="Green"></asp:Label></span>
+                                        <asp:RequiredFieldValidator ID="rqLastName" runat="server" ControlToValidate="txtlastname"
+                                            ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Last Name"></asp:RequiredFieldValidator>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtlastname"
+                                            ForeColor="Red" Display="Dynamic" ValidationGroup="Image">Enter Last Name</asp:RequiredFieldValidator>
+                                        <asp:TextBox ID="txtlastname" Placeholder="Last Name" runat="server" MaxLength="40" onkeypress="return lettersOnly(event);" autocomplete="off"
+                                            OnTextChanged="txtlastname_TextChanged" Width="150px" TabIndex="505"></asp:TextBox>
 
-                                                <td style="vertical-align: top; width: 220px;">Last Name<span><asp:Label ID="lblReqLastName" Text="*" runat="server" ForeColor="Green"></asp:Label></span>
-                                                    <asp:RequiredFieldValidator ID="rqLastName" runat="server" ControlToValidate="txtlastname"
-                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Last Name"></asp:RequiredFieldValidator>
-                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtlastname"
-                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="Image">Enter Last Name</asp:RequiredFieldValidator>
-                                                    <asp:TextBox ID="txtlastname" Placeholder="Last Name" runat="server" MaxLength="40" onkeypress="return lettersOnly(event);" autocomplete="off"
-                                                        OnTextChanged="txtlastname_TextChanged" Width="150px" TabIndex="505"></asp:TextBox>
-
-                                                    <br />
-                                                </td>
-                                                <td style="display: none;">
-                                                    <asp:CheckBox class="PrimaryPhoneMain" ID="chkPrimaryPhoneMain" runat="server" Style="color: #fff; margin-top: 18px;" />
-                                                </td>
-                                                <td style="padding-right: 0px !important;">Phone#<asp:Label ID="lblPhoneReq" runat="server" Text="*" ForeColor="Red"></asp:Label>
-                                                    <asp:RequiredFieldValidator ID="rqPhone" runat="server" ControlToValidate="txtPhone"
-                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Phone No"></asp:RequiredFieldValidator>
-                                                    <asp:TextBox ID="txtPhone" runat="server" MaxLength="12" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
-                                                        onkeypress="return IsNumeric(event);" Width="150"></asp:TextBox>
-                                                </td>
-                                                <td>&nbsp;&nbsp;Ext. <%--extension--%>
-                                                    <br />
-                                                    <asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25"></asp:TextBox></td>
-                                                <td style="padding-left: 0px !important; padding-right: 0px !important;">Phone Type
-                                        <asp:DropDownList ID="phoneTypeDropDownList" TabIndex="506" OnPreRender="phoneTypeDropDownList_PreRender" runat="server">
+                                        <br />
+                                    </td>
+                                        <td style="display:none;">
+                                            <asp:CheckBox class="PrimaryPhoneMain" id="chkPrimaryPhoneMain" runat="server" style="color: #fff;margin-top: 18px;" />
+                                        </td>
+                                    <td style="padding-right: 0px !important;">Phone#<asp:Label ID="lblPhoneReq" runat="server" Text="*" ForeColor="Red"></asp:Label>
+                                        <asp:RequiredFieldValidator ID="rqPhone" runat="server" ControlToValidate="txtPhone"
+                                            ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Phone No"></asp:RequiredFieldValidator>
+                                        <asp:TextBox ID="txtPhone" runat="server" MaxLength="12" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
+                                            onkeypress="return IsNumeric(event);" Width="150"></asp:TextBox>                                        
+                                    </td>
+                                    <td>&nbsp;&nbsp;Ext. <%--extension--%>
+                                        <br /><asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25"></asp:TextBox></td>
+                                    <td style="padding-left: 0px !important; padding-right: 0px !important;">Phone Type
+                                        <asp:DropDownList ID="phoneTypeDropDownList" TabIndex="506" OnPreRender="phoneTypeDropDownList_PreRender" runat="server">                                            
                                         </asp:DropDownList>
-                                                </td>
+                                    </td>
                                                 <td style="padding-left: 0px !important;">
                                                     <input id="AddExtPhone" value="Add Phone" style="margin-top: 12px; height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
                                                 </td>
-                                                <td style="padding-right: 0px !important; margin-top: 19px; padding-top: 25px;">
-                                                    <asp:CheckBox class="PrimaryEmailMain" ID="chkPrimaryEmailMain" runat="server" Style="color: #fff; margin-top: 19px;" />
+                                                <td style="padding-right: 0px !important;margin-top: 15px;">                                                    
+                                                    <asp:CheckBox class="PrimaryEmailMain" id="chkPrimaryEmailMain" runat="server" style="color: #fff;margin-top: 18px;" />
                                                 </td>
                                                 <td style="vertical-align: top; padding-right: 0px !important;">Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span><br />
                                                     <asp:TextBox ID="txtemail" runat="server" MaxLength="40" OnTextChanged="txtemail_TextChanged" onblur="CheckDuplicateEmail(this)" Width="150px" TabIndex="507"></asp:TextBox><%--TabIndex="117"--%>
@@ -1720,9 +1695,9 @@
                                                         ValidationGroup="OfferMade">
                                                     </asp:RegularExpressionValidator>
                                                 </td>
-                                                <td style="padding-left: 0px !important;">
-                                                    <input name="AddExtEmail" id="AddExtEmail" value="Add Email" style="margin-top: 12px; height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
-                                                </td>
+                                    <td style="padding-left: 0px !important;">
+                                        <input name="AddExtEmail" id="AddExtEmail" value="Add Email" style="margin-top: 12px; height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
+                                    </td>
                                             </tr>
                                         </table>
                                     </td>
@@ -1732,7 +1707,8 @@
                                     <td colspan="4" class="style2" style="vertical-align: top">
                                         <div style="margin-top: 10px;" class="ExtAddPhoneTemplate">
                                             <div class="PhontType"></div>
-                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">                                            
+                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
+                                            <input name="chkPrimaryPhone" class="PrimaryPhonechk" id="chkPrimaryPhone" style="color: #fff;" type="checkbox" onclick="SetPhoneValuefromCtlToHid();">
                                             <input type="text" name="AddedPhone" id="txtAddedPhone" class="ExtPhoneClass" maxlength="256" onkeypress="return IsNumeric(event);" onblur="CheckDuplicatePhone(this);" style="width: 150px" />
                                             <input type="text" name="AddedPhoneExt" id="AddedPhoneExt" class="ExtPhoneClassExt" maxlength="256" onkeypress="return IsNumeric(event);"  style="width: 25px" />
                                             <asp:DropDownList CssClass="ddlPhoneTypeExt" ID="ddlPhontType" AddtxtPhoneExtID="AddedPhoneExt" AddtxtPhoneID="txtAddedPhone" PhoneISDCode="us" data-dopdorcout="ddlCount" OnPreRender="ddlPhontType_PreRender" runat="server">
@@ -1745,7 +1721,7 @@
                                         <div style="margin-top: 10px;" class="ExtAddEmailTemplate" id="ExtAddEmailTemplate">
                                             <%--<div class="EmailType"></div>--%>
                                             <input name="RemoveEmail" class="RemovePhoneBtn" value="-" id="RemoveEmail" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
-                                            
+                                            <input name="chkPrimaryEmail" class="PrimaryEmailchk" id="chkEmailPhone" style="color: #fff;" type="checkbox" onclick="SetEmailValuefromCtlToHid();">
                                             <input type="text" name="txtExtEmail" class="ExtEmailClass" value="" onblur="CheckDuplicateEmail(this)" placeholder="Email" maxlength="256" style="width: 180px" />
                                         </div>
 
@@ -1756,7 +1732,7 @@
                                 <tr>
                                     <td colspan="2">
                                         <table>
-                                            <tr class="trChkbox">
+                                            <tr>
                                                 <td>
                                                     Contact Preference
                                                 </td>
@@ -4845,12 +4821,10 @@
 
                     </div>
                     <div class="btn_sec">
-                        <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />
                         <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" />
                         <%--TabIndex="210"--%>
-                        <%--<asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />--%>
                         <asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />
                     </div>
                 </div>
