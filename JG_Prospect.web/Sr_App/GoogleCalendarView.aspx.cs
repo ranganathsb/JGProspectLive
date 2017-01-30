@@ -74,9 +74,19 @@ namespace JG_Prospect.Sr_App
 
                 //----- Start DP ------
 
-                FillMyCalendarDropDown();
-                FillInviteUserDropDown();
-                BindEventCalendar();
+                
+                if (!IsPostBack)
+                {
+                    drpTimeZone.DataSource = TimeZoneInfo.GetSystemTimeZones();
+                    drpTimeZone.DataTextField = "DisplayName";
+                    drpTimeZone.DataValueField = "Id";
+                    drpTimeZone.DataBind();
+
+
+                    FillMyCalendarDropDown();
+                    FillInviteUserDropDown();
+                    BindEventCalendar();
+                }
                 //------ End DP -----
                 
             }
@@ -172,10 +182,14 @@ namespace JG_Prospect.Sr_App
             {
                 int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 a.UserId = userId;
-              
+        
+              if (userId == 0)
+              {
+                  Response.Redirect("../stafflogin.aspx");
+              }
                 // -------- insert record  ----------
                 new_customerBLL.Instance.AddEventCalendar(a);
-                FillMyCalendarDropDown();
+                //FillMyCalendarDropDown();
                 Response.Redirect("GoogleCalendarView.aspx");
                 //ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Calendar Added Successfully');", true);
             }
@@ -204,6 +218,7 @@ namespace JG_Prospect.Sr_App
                 a.EventEndTime = txtEventEndTime.Text;
             }
             a.EventFile = "";
+            a.TimeZone = drpTimeZone.SelectedValue;
             a.EventLoc = txtEventLoc.Text;
             a.EventDesc = txtEventDesc.Text;
             a.EventCal = Convert.ToInt32(drpEventCalender.SelectedValue);
@@ -291,7 +306,11 @@ namespace JG_Prospect.Sr_App
                 //****************** end DP 19-Jan-17 ******************			
 
             }
-
+            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            if (userId == 0)
+            {
+                Response.Redirect("../stafflogin.aspx");
+            }
            
 
             string strInviteUsers = txtinvite.Value;
@@ -301,7 +320,7 @@ namespace JG_Prospect.Sr_App
             ds = new_customerBLL.Instance.CheckDuplicateAnnualEvent(a);
             if (ds.Tables[0].Rows.Count == 0)
             {
-                int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+               
                 a.EventAddedBy = userId;
 
                 try
@@ -655,6 +674,7 @@ namespace JG_Prospect.Sr_App
             //string status = Convert.ToString(DataBinder.Eval(e.Appointment.DataItem, "Status"));
             DropDownList ddlStatus = (DropDownList)e.Container.FindControl("ddlStatus");
             LinkButton lbtnReSchedule = (LinkButton)e.Container.FindControl("lbtnReSchedule");
+            
             if (ddlStatus != null && !string.IsNullOrEmpty(status) && ddlStatus.Items.FindByValue(status) != null)
             {
                 ddlStatus.SelectedValue = status;

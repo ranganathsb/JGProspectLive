@@ -200,6 +200,12 @@
     }
 
     /* ----css end for eventcolor --*/
+        .auto-style2 {
+            width: 341px;
+        }
+        .auto-style3 {
+            width: 432px; /*width of accordion menu*/
+        }
     </style>
    <%-- <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />--%>
@@ -326,15 +332,23 @@
                         <telerik:RadScheduler  ID="rsAppointments" runat="server" DataKeyField="id" DayStartTime="7:00:00" DayEndTime="20:59:59"
                             AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
                             ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
-                            EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="MonthView"
-                            CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
+                            EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView"
+                            CustomAttributeNames="EventName,EventStartTime,EventColor,EventEndTime,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
-                            TimelineView-ReadOnly="true" OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true" DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
+                            TimelineView-ReadOnly="true"   
+                            OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true"
+                             DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" 
+                            OnAppointmentCreated="rsAppointments_AppointmentCreated">
                             <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
                             <AdvancedForm Modal="True" />
-                            <AppointmentTemplate>
+                            <AppointmentTemplate >
                                 <%--<%#Eval("EventName") %>--%>
                                 <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' BackColor="Wheat"></asp:Label>
+                                <br />
+                                <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="Label6" runat="server" Text=' To ' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' BackColor="Wheat"></asp:Label>
+                                <asp:HiddenField ID="hdEventColor" runat="server" Value='<%#Eval("EventColor")%>' />
                              <%--   <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
                                 <asp:LinkButton ID="lnkEmail" Visible="false" runat="server" Text='<%#Eval("Email") %>'></asp:LinkButton>
@@ -418,16 +432,17 @@
                         </td>
                     </tr>
                     <tr>
-                        <td   align="left">  Event Name <span>*</span>
+                        <td   align="left" class="auto-style3" >  Event Name <span>*</span>
                         </td>
                         <td >
                             <asp:TextBox ID="txtEventName" runat="server"></asp:TextBox>
+                            <br />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="SubmitEvent"
                                 runat="server" ControlToValidate="txtEventName" ForeColor="Red" ErrorMessage="Please Enter Event Name" Display="None"> </asp:RequiredFieldValidator>
                         </td>
                                        
                         <td   align="left">Calendar <span>*</span> </td>
-                        <td >
+                        <td class="auto-style2" >
                             <asp:DropDownList runat="server" ID="drpEventCalender" >
                             </asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="SubmitEvent"
@@ -435,7 +450,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="left">Event Colors  </td>
+                        <td align="left" class="auto-style3" >Event Colors  </td>
                         <td colspan="3">
                                                 
                             <table class="eventcolor">
@@ -550,7 +565,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td> Event Start Date <span>*</span> </td>
+                        <td   align="left" class="auto-style3" >  Select Time Zone 
+                        </td>
+                        <td colspan="3">
+                             <asp:DropDownList ID="drpTimeZone" runat="server" AutoPostBack="True">
+                                </asp:DropDownList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style3" > Event Start Date <span>*</span> </td>
                         <td>
                                 <asp:TextBox ID="txtEventStartDate" CssClass="date" onkeypress="return false" 
                                 TabIndex="1" runat="server"></asp:TextBox>
@@ -558,7 +581,7 @@
                                 ControlToValidate="txtEventStartDate" ForeColor="Red" ErrorMessage="Please Enter Event Start Date" Display="None"> </asp:RequiredFieldValidator>
                             </td>
                         <td>Event End Date <span>*</span></td>
-                        <td>
+                        <td class="auto-style2">
                                 <asp:TextBox ID="txtEventEndDate" CssClass="date" onkeypress="return false" 
                                 TabIndex="1" runat="server"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitEvent" runat="server"
@@ -566,7 +589,7 @@
                             </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="auto-style3">
                                 Event Start Time <span>*</span>
                         </td>
                         <td>
@@ -574,25 +597,24 @@
                                 TabIndex="1" runat="server"></asp:TextBox>
                             </td>
                         <td style="width:100px;">  Event End Time <span>*</span> </td>
-                        <td>
+                        <td class="auto-style2">
                                 <asp:TextBox ID="txtEventEndTime" CssClass="time"  onkeypress="return false" 
                                 TabIndex="1" runat="server"></asp:TextBox>
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">
-                            <asp:CheckBoxList  RepeatDirection="Horizontal"  runat="server" ID="chkEventType" >
+                 
+                        <td colspan="4">
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBoxList  RepeatDirection="Horizontal"  runat="server" ID="chkEventType" Width="133px" >
                                 <asp:ListItem Text="All Day" Value="1"></asp:ListItem>
                                 <asp:ListItem Text="Repeat" Value="2"></asp:ListItem>
                                                     
-                            </asp:CheckBoxList>
-                        </td>
-                        <td colspan="3">
-                            <table>
-                                <tr>
+                            </asp:CheckBoxList></td>
                                     <td> 
                                         <asp:Panel runat="server" ID="pnlRepeatEvent">
-                                            <asp:RadioButtonList  RepeatDirection="Horizontal" runat="server" ID="rdoRepeatEvent">
+                                            <asp:RadioButtonList  RepeatDirection="Horizontal" runat="server" ID="rdoRepeatEvent" Width="268px">
                                                 <asp:ListItem Text="Daily" Value="1"></asp:ListItem>
                                                 <asp:ListItem Text="Weekly" Value="2"></asp:ListItem>
                                                 <asp:ListItem Text="Monthly" Value="3"></asp:ListItem>
@@ -605,7 +627,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">
+                        <td valign="top" class="auto-style3"  >
                             Attachment
                         </td>
                         <td valign="top">
@@ -614,7 +636,7 @@
                         <td  align="left" valign="top">
                                 Event Location <span>*</span>
                         </td>
-                        <td valign="top">
+                        <td valign="top" class="auto-style2">
                                 <asp:TextBox ID="txtEventLoc"    MaxLength="55"    TabIndex="1" runat="server"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="SubmitEvent" runat="server"
                                 ControlToValidate="txtEventLoc" ForeColor="Red" ErrorMessage="Please Enter Event Location" Display="None"> </asp:RequiredFieldValidator>
@@ -655,6 +677,8 @@
                                     </td>
                                     <td valign="top">
                                             <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" runat="server"></asp:TextBox>
+                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator12" ValidationGroup="SubmitEvent" runat="server"
+                                            ControlToValidate="txtInterval" ForeColor="Red" ErrorMessage="Please Enter Interval" Display="None"> </asp:RequiredFieldValidator>
                                     </td>
                                 </tr>
                                 <tr>
@@ -663,6 +687,8 @@
                                     </td>
                                     <td valign="top"> 
                                             <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" runat="server"></asp:TextBox>
+                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator13" ValidationGroup="SubmitEvent" runat="server"
+                                            ControlToValidate="txtMaxOccu" ForeColor="Red" ErrorMessage="Please Enter Max Occurrence" Display="None"> </asp:RequiredFieldValidator>
                                         </td>
                                 </tr>
                             </table>
@@ -683,8 +709,8 @@
          var cnt = 2;
          $(function () {
              $("#popup").dialog({
-                 width: 750,
-                 height: 700,
+                 width: 800,
+                 height: 750,
                  modal: true,
                  autoOpen: false,
                  dialogClass: 'myTitleClass',
@@ -721,10 +747,13 @@
              $(".date").datepicker({
                  minDate: 0,
                  dateFormat: "dd-M-yy"
-             });
+             });
+
              $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
              $('#ContentPlaceHolder1_txtEventEndTime').timepicker();             
 
+
+             $("#ContentPlaceHolder1_txtEventColor").val('#5484ed');
              $(".radiol").click(function () {
                  $("#ContentPlaceHolder1_txtEventColor").val($(this).val());
                  $(".selectedeventcolor").attr("style", "background-color:" + $(this).val() + "");

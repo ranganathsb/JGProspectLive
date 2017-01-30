@@ -15,7 +15,8 @@ BEGIN
     -- Insert statements for procedure here
 	SELECT 
 		a.ID,a.EventName,a.EventDate,a.EventAddedBy,a.ApplicantId,u.Username,i.FristName,i.LastName,i.Phone,
-		 a.RecurrenceRule
+		 a.RecurrenceRule,a.EventStartTime,a.EventEndTime,a.EventEndDate,
+		 a.EventDesc,a.EventLoc,a.EventColor,a.EventFile
 	FROM 
 		tbl_AnnualEvents a 
 		OUTER APPLY 

@@ -112,7 +112,9 @@ namespace JG_Prospect.Common
             Closed = 7,
             SpecsInProgress = 8,
             Deleted = 9,
-            Finished = 10
+            Finished = 10,
+            Test = 11,
+            Live = 12
         }
 
         public enum TaskPriority

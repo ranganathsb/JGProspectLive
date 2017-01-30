@@ -99,6 +99,7 @@ namespace JG_Prospect.Common.modal
         public int EventRepeat;
         public int EventType;
         public string RecurrenceRule;
+        public string TimeZone;
         //------ End DP -----
 
     }
