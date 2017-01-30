@@ -15,7 +15,7 @@
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
     <link href="../Styles/dd.css" rel="stylesheet" />
-    <link type="text/css" href="../css/flags24.css" rel="Stylesheet"/>
+    <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet"/>
 
 
     <script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>
@@ -1613,8 +1613,9 @@
                                             <asp:Label ID="lblUser" runat="server" ForeColor="Black" Text="User Status"></asp:Label>
                                             <asp:Label ID="lblReqDesig" ForeColor="Red" runat="server" Text="*"></asp:Label>></label>
 
-                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
-                                            <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
+                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" 
+                                                OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
+                                           <%-- <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
                                             <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>
                                             <asp:ListItem Text="Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" Value="InterviewDate"></asp:ListItem>
                                             <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem> 
@@ -1622,7 +1623,7 @@
                                                 
                                             <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
 
-                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
+                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>--%>
                                             
                                             <%--<asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>--%>
                                             
