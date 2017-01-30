@@ -656,6 +656,9 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Key", DbType.Int16, Key);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
                     result = database.ExecuteDataSet(command);
                 }
