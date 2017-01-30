@@ -54,7 +54,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-             
+            CommonFunction.AuthenticateUser();
+    
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -5794,6 +5795,7 @@ namespace JG_Prospect.Sr_App
 
         private void FillControls()
         {
+            ddlstatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlstatus);
             FillPhoneTypeDropDown();
             FillCountryDropDown();
         }
