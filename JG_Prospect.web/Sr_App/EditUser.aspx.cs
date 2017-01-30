@@ -3038,8 +3038,8 @@ namespace JG_Prospect
             if (blResetGrid)
             {
                 grdUsers.PageIndex = 0;
-                this.SalesUserSortDirection = SortDirection.Ascending;
-                this.SalesUserSortExpression = "Status";
+                this.SalesUserSortDirection = SortDirection.Descending;
+                this.SalesUserSortExpression = "CreatedDateTime";
             }
 
             DateTime? dtFromDate = null;
