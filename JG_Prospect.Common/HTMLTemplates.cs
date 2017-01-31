@@ -67,6 +67,18 @@ namespace JG_Prospect.Common
         VendorCategoryEmail_Template = 57,
         VendorEmail_Template = 58,
         Windows_And_Doors = 59,
-        Contract_AutoEmail_Template = 60
+        Contract_AutoEmail_Template = 60,
+        QuoteRequest = 61,
+        Acceptance_And_Payment_Confirmation = 62,
+        Proposal_Tracking_For_Not_Sold_Job = 63,
+        Proposal_Tracking_For_Sold_Job = 64,
+        Install_Category_Proposal_For_Not_Sold = 65,
+        Install_Category_Proposal_For_Sold = 66,
+        Estimate_Set_Appointment = 67,
+        Ordered = 68,
+        Active_Auto_Email = 69,
+        Deactive_Auto_Email = 70,
+        Task_Generator_Auto_Email = 71,
+        Task_Assignment_Requested = 72
     }
 }
