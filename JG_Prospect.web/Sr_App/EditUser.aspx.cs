@@ -2957,14 +2957,16 @@ namespace JG_Prospect
         /// </summary>
         private void LoadUsersByRecruiterDesgination(DropDownList ddlUsers)
         {
-            DataSet dsUsers;
-
-            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Office Manager,Recruiter");
-
-            ddlUsers.DataSource = dsUsers;
-            ddlUsers.DataTextField = "FristName";
-            ddlUsers.DataValueField = "Id";
-            ddlUsers.DataBind();
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Admin Recruiter,Office Manager,Recruiter,ITLead,");
+            if (dsUsers != null && dsUsers.Tables.Count > 0)
+            {
+                DataView dvUsers = dsUsers.Tables[0].DefaultView;
+                dvUsers.RowFilter = string.Format( "[Status] = '{0}'",Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                ddlUsers.DataSource = dvUsers.ToTable();
+                ddlUsers.DataTextField = "FristName";
+                ddlUsers.DataValueField = "Id";
+                ddlUsers.DataBind();
+            }
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
