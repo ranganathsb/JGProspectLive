@@ -454,6 +454,7 @@ namespace JG_Prospect.Sr_App
         protected void rsAppointments_OnNavigationCommand(object sender, SchedulerNavigationCommandEventArgs e)
         {
             BindEventCalendar();
+            ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#btnCreateEvent').click(function () {callpopupscript();   });", true);
         }
         protected void rsAppointments_AppointmentDataBound(object sender, SchedulerEventArgs e)
         {

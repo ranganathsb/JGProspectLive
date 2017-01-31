@@ -20,7 +20,8 @@ create PROCEDURE [dbo].[AddSubTasks]
 	@CreatedBy int,
 	@TaskLevel int,
 	@ParentTaskId int,
-	@InstallId varchar(50)
+	@InstallId varchar(50),
+	@MainParentId int
 	
 AS
 BEGIN
@@ -32,9 +33,9 @@ BEGIN
 		begin 
 			-- Insert statements for procedure here
 			insert into dbo.tblTask 
-			(Title,[Description],[Status],IsDeleted,CreatedOn,CreatedBy,TaskLevel,ParentTaskId,InstallId)
+			(Title,[Description],[Status],IsDeleted,CreatedOn,CreatedBy,TaskLevel,ParentTaskId,InstallId,MainParentId)
 			values
-			(@Title,@Description,@Status,@IsDeleted,@CreatedOn,@CreatedBy,@TaskLevel,@ParentTaskId,@InstallId)
+			(@Title,@Description,@Status,@IsDeleted,@CreatedOn,@CreatedBy,@TaskLevel,@ParentTaskId,@InstallId,@MainParentId)
 		end
 	else
 		begin

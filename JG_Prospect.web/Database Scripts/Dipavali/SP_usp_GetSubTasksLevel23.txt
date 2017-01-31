@@ -15,6 +15,6 @@ AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
-	select * from tbltask where TaskId=@taskId or ParentTaskId=@taskId
+	select * from tbltask where TaskId=@taskId or MainParentId=@taskId
 
 END
