@@ -181,7 +181,7 @@
             });
 
             // hide options menus if click happens off of the list placeholder button
-            $(document).unbind('click.ms-hideopts').bind('click.ms-hideopts', function( event ){
+            $(document).off('click.ms-hideopts').on('click.ms-hideopts', function( event ){
                 if( !$(event.target).closest('.ms-options-wrap').length ) {
                     if( $('.ms-options-wrap > .ms-options:visible').length ) {
                         $('.ms-options-wrap > .ms-options:visible').each(function(){
@@ -254,7 +254,7 @@
                 optionsList.before('<div class="ms-search"><input type="text" value="" placeholder="'+ instance.options.texts.search +'" /></div>');
 
                 var search = optionsWrap.find('.ms-search input');
-                search.bind('keyup', function(){
+                search.on('keyup', function(){
                     // ignore keystrokes that don't make a difference
                     if( $(this).data('lastsearch') == $(this).val() ) {
                         return true;
@@ -313,7 +313,7 @@
             }
 
             // handle select all option
-            optionsWrap.bind('click', '.ms-selectall', function( event ){
+            optionsWrap.on('click', '.ms-selectall', function( event ){
                 event.preventDefault();
 
                 instance.updatePlaceholder = false;
@@ -405,7 +405,7 @@
             instance._updateSelectAllText( false );
 
             // BIND SELECT ACTION
-            optionsWrap.bind( 'click', 'input[type="checkbox"]', function(){
+            optionsWrap.on( 'click', 'input[type="checkbox"]', function(){
                 $(this).closest( 'li' ).toggleClass( 'selected' );
 
                 var select = optionsWrap.parent().prev();
@@ -424,9 +424,9 @@
             });
 
             // BIND FOCUS EVENT
-            optionsWrap.bind('focusin', 'input[type="checkbox"]', function(){
+            optionsWrap.on('focusin', 'input[type="checkbox"]', function(){
                 $(this).closest('label').addClass('focused');
-            }).bind('focusout', 'input[type="checkbox"]', function(){
+            }).on('focusout', 'input[type="checkbox"]', function(){
                 $(this).closest('label').removeClass('focused');
             });
 

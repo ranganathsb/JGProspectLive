@@ -23,6 +23,7 @@ using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
 
+
 namespace JG_Prospect
 {
     #region '--Enums--'
@@ -3284,8 +3285,8 @@ namespace JG_Prospect
 
             for (int i = 0; i < lstHrData.Count(); i++)
             {
-
-                x[i] = lstHrData[i].status.ToString();
+                JGConstant.InstallUserStatus status = (JGConstant.InstallUserStatus)Convert.ToInt32(lstHrData[i].status.ToString());
+                x[i] = status.ToString();
                 y[i] = Convert.ToInt32(lstHrData[i].count);
             }
 
