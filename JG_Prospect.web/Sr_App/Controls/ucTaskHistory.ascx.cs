@@ -891,6 +891,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 txtTaskDesc.Visible = false;
                 rfvDesc.Visible = false;
+                txtTaskDesc.Text = 
                 ltlTaskDesc.Text = TaskDesc;
             }
 
