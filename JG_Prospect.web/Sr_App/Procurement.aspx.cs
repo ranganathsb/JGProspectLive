@@ -984,8 +984,7 @@ namespace JG_Prospect.Sr_App
             objvendor.ContactPreferenceText = chkContactPreferenceText.Checked;
             objvendor.ContactPreferenceMail = chkContactPreferenceMail.Checked;
 
-            bool res = VendorBLL.Instance.savevendor(objvendor) > 0 ? true: false;
-
+            bool res = VendorBLL.Instance.savevendor(objvendor);
             HttpContext.Current.Session["TempID"] = null;
             lbladdress.Text = "";
             //if (flag == "")
