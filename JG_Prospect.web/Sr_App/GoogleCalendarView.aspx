@@ -336,6 +336,7 @@
                             CustomAttributeNames="EventName,EventStartTime,EventColor,EventEndTime,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
                             TimelineView-ReadOnly="true"   
+                            OnAppointmentDataBound ="rsAppointments_AppointmentDataBound"
                             OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true"
                              DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" 
                             OnAppointmentCreated="rsAppointments_AppointmentCreated">
@@ -343,11 +344,11 @@
                             <AdvancedForm Modal="True" />
                             <AppointmentTemplate >
                                 <%--<%#Eval("EventName") %>--%>
-                                <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' ></asp:Label>
                                 <br />
-                                <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' BackColor="Wheat"></asp:Label>
-                                <asp:Label ID="Label6" runat="server" Text=' To ' BackColor="Wheat"></asp:Label>
-                                <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' ></asp:Label>
+                                <asp:Label ID="Label6" runat="server" Text=' To ' ></asp:Label>
+                                <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' ></asp:Label>
                                 <asp:HiddenField ID="hdEventColor" runat="server" Value='<%#Eval("EventColor")%>' />
                              <%--   <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
