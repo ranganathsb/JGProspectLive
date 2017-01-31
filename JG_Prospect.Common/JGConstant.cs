@@ -166,7 +166,7 @@ namespace JG_Prospect.Common
             Installer_Foreman = 18,
             Commercial_Only = 19,
             SubContractor = 20,
-            IT_Sr_Net_Developer = 21,
+            //IT_Sr_Net_Developer = 21,
             Admin_Sales = 22,
             Admin_Recruiter = 23,
             IT_Lead = 24
