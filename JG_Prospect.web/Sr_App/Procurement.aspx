@@ -100,7 +100,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.55);
-            z-index: 99;
+            z-index: 99 !important;
             -moz-opacity: 0.8;
             opacity: .80;
             filter: alpha(opacity=80);
@@ -219,7 +219,7 @@
             return false;
         }
         function HideModalPopup() {
-            debugger;
+            //debugger;
             $find("mpe").hide();
             return false;
         }
@@ -316,7 +316,7 @@
         }
 
         function GetVendorDetails(e) {
-            debugger;
+            //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
                 $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
@@ -344,7 +344,7 @@
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
             var AddrType = "Other";
-            debugger;
+            //debugger;
             AddressData.push({
                 AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
                 AddressType: $(".clstxtAddressType0").val(),
@@ -446,7 +446,7 @@
             });
 
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
-            debugger;
+            //debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/PostVendorDetails",
@@ -461,7 +461,7 @@
         }
 
         function SetVendorEmails(e) {
-            debugger;
+            //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
                 $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
@@ -580,7 +580,7 @@
             });
             //console.log(JSON.stringify(VendorEmailData));
             //console.log(JSON.stringify(AddressData));
-            debugger;
+            //debugger;
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
             $.ajax({
                 type: "POST",
@@ -1401,16 +1401,6 @@
                             <h2>Vendor Contacts</h2>
                             <br />
                         </div>
-
-                        <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updtpnlfilter">
-                            <ProgressTemplate>
-                                <div class="modal" style="z-index:110000 !important;">
-                                    <div class="center">
-                                        <img alt="Loading..." src="../img/loader.gif" />
-                                    </div>
-                                </div>
-                            </ProgressTemplate>
-                        </asp:UpdateProgress>
                         <asp:UpdatePanel ID="updtpnlfilter" runat="server" UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
@@ -1726,9 +1716,10 @@
                                                                 <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
                                                                 <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
                                                                 <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
-                                                                <%--<br />
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
-                                                                ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
+                                                                <br />
+                                                                <asp:RequiredFieldValidator ID="rfvSource" runat="server" ControlToValidate="ddlSource" Display="Dynamic" 
+                                                                 ValidationGroup="addvendor" ErrorMessage="Please select the source." ForeColor="Red" InitialValue="0"></asp:RequiredFieldValidator>
+
                                                             </td>
                                                             <td>
                                                                 <label>General Phone No :</label><br />
@@ -2825,19 +2816,12 @@
                                 <br />
                                 <asp:Label ID="lbladdress" runat="server" ForeColor="Red"></asp:Label>
                             </div>
-
-                            <div id="divModalPopup" style="z-index:110000 !important; display: none;">
-                                <div class="modal">
-                                    <div class="center">
-                                        <img alt="Loading...0000" src="../img/loader.gif" />
-                                    </div>
-                                </div>
-                            </div>
                             <asp:Button ID="btnPageLoad" runat="server" CssClass="cssbtnPageLoad" />
-                            <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BehaviorID="mpe" TargetControlID="btnOpenCategoryPopup"
+                            <asp:Label ID="dummyLabel" runat="server" />
+                            <asp:ModalPopupExtender ID="mpeCategoryPopup" runat="server" BehaviorID="mpe" TargetControlID="dummyLabel"
                                 PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
                             </asp:ModalPopupExtender>
-                            <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none; background: white; border: 5px solid rgb(179, 71, 74)">
+                            <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none;z-index:1000 !important; background: white; border: 5px solid rgb(179, 71, 74)">
                                 <div class="popup_heading">
                                     <h1>Select Category</h1>
                                 </div>
@@ -2879,7 +2863,7 @@
                             <div class="btn_sec">
                                 <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                 <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
-                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
+                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" OnClick="btnOpenCategoryPopup_Click" />
                                 <asp:Button ID="Button4" runat="server" TabIndex="1" Text="Save" Visible="false" />
                                 <br />
                                 <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
