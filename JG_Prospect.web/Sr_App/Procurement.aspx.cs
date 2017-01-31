@@ -165,7 +165,7 @@ namespace JG_Prospect.Sr_App
                             ddlSource.DataTextField = "Source";
                             ddlSource.DataValueField = "Source";
                             ddlSource.DataBind();
-                            ddlSource.Items.Insert(0, "Select Source");
+                            ddlSource.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select Source", "0"));
                             ddlSource.SelectedIndex = 0;
                         }
                         else
@@ -192,8 +192,6 @@ namespace JG_Prospect.Sr_App
                     bindPayPeriod(dsCurrentPeriod);
                     grdprimaryvendor.DataSource = new List<JG_Prospect.BLL.clsProcurementDataAll>();
                     grdprimaryvendor.DataBind();
-
-                 
 
                 }
                 else
@@ -884,7 +882,7 @@ namespace JG_Prospect.Sr_App
 
             //}
 
-            SaveAddressAndVendorEmail();
+            
             //if (ddlVendorName.SelectedValue != "")
             //    objvendor.vendor_id = Convert.ToInt32(ddlVendorName.SelectedValue);
             //else
@@ -985,7 +983,6 @@ namespace JG_Prospect.Sr_App
                     NewTempID = Convert.ToString(HttpContext.Current.Session["TempID"]);
                 }
 
-
                 if (HttpContext.Current.Session["NotesTempID"] == null)
                 {
                     NotesTempID = Guid.NewGuid().ToString();
@@ -1016,13 +1013,8 @@ namespace JG_Prospect.Sr_App
             string trimmedVendorcategory = strVendorCategory.TrimEnd(',');
 
             objvendor.VendorCategories = trimmedVendorcategory;
+            objvendor.vendor_category_id = defaultVendorCatId;
 
-            objvendor.vendor_category_id = Convert.ToInt32(ddlVndrCategory.SelectedValue == "0" ? "0" : ddlVndrCategory.SelectedValue);
-
-            if (objvendor.vendor_category_id == 0)
-            {
-                objvendor.vendor_category_id = defaultVendorCatId;
-            }
             string strVendorSubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {
@@ -1034,7 +1026,6 @@ namespace JG_Prospect.Sr_App
             string trimmedVendorSubcategory = strVendorSubCategory.TrimEnd(',');
             objvendor.VendorSubCategories = trimmedVendorSubcategory;
             objvendor.UserID = JGSession.Username;
-
 
             if (decimal.TryParse(txtDeliveryFee.Text, out objvendor.DeliveryFee))
                 objvendor.DeliveryFee = Convert.ToDecimal(txtDeliveryFee.Text);
@@ -1073,11 +1064,9 @@ namespace JG_Prospect.Sr_App
             if (int.TryParse(txtOrderQTYMax.Text, out objvendor.OrderQTY))
                 objvendor.OrderQTY = Convert.ToInt32(txtOrderQTYMax.Text);
 
-
             objvendor.GeneralPhone = txtGeneralPhone.Text;
 
             objvendor.HoursOfOperation = string.Empty;
-            //objvendor.HoursOfOperation = ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
             foreach (System.Web.UI.WebControls.ListItem item in ddlHoursOfOperation.Items)
             {
                 objvendor.HoursOfOperation += item.Value + ",";
@@ -1088,34 +1077,19 @@ namespace JG_Prospect.Sr_App
             objvendor.ContactPreferenceText = chkContactPreferenceText.Checked;
             objvendor.ContactPreferenceMail = chkContactPreferenceMail.Checked;
 
-            bool res = VendorBLL.Instance.savevendor(objvendor);
+            Int32 res = VendorBLL.Instance.savevendor(objvendor);
             HttpContext.Current.Session["TempID"] = null;
             lbladdress.Text = "";
-            //if (flag == "")
-            //{
-            if (res)
+          
+            if (res > 0)
             {
-                //objvendor.tblVendorEmail = (DataTable)HttpContext.Current.Session["dtVendorEmail"];
-                //bool emailres = VendorBLL.Instance.InsertVendorEmail(objvendor);
-                //objvendor.tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
-                //bool addressres = VendorBLL.Instance.InsertVendorAddress(objvendor);
+                SaveAddressAndVendorEmail(res.ToString());
+                hdnVendorID.Value = res.ToString();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
-                LblSave.Text = "Vendor Saved/Updated Successfully";
                 hidIsEditVendor.Value = "false";
                 clear();
                 BindFilteredVendorList();
-                pnlcategorypopup.Style.Add("display", "none");
-                //string ManufacturerType = GetManufacturerType();
-                //if (ddlVendorSubCategory.SelectedValue == "Select")
-                //{
-                //    FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, null, GetVendorStatus());
-                //}
-                //else
-                //{
-                //    FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
-                //}
             }
-            //}
 
         }
 
@@ -1126,6 +1100,8 @@ namespace JG_Prospect.Sr_App
             ddlSource.ClearSelection();
 
             txtTaxId.Text = txtWebsite.Text = null;
+            ddlWebSite.Items.Clear();
+
             ddlPaymentMethod.ClearSelection();
             ddlPaymentTerms.ClearSelection();
             txtPrimaryCity.Text = "";
@@ -1135,10 +1111,10 @@ namespace JG_Prospect.Sr_App
             ddlCountry.ClearSelection();
             ddlCountry.SelectedValue = "US";
             DrpVendorAddress.Items.Clear();
-            DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Primary", "0"));
             txtPrimaryContactExten0.Text = txtPrimaryContact0.Text = txtSecContactExten0.Text = txtSecContact0.Text = txtAltContactExten0.Text = txtAltContact0.Text = null;
             btnSave.Text = "Save";
-            ModalPopupExtender1.Hide();
+            mpeCategoryPopup.Hide();
             ViewState["CheckedPc"] = null;
             ViewState["CheckedVc"] = null;
             ViewState["CheckedVsc"] = null;
@@ -1165,10 +1141,26 @@ namespace JG_Prospect.Sr_App
             txtDiscountPerUnit.Text = "";
             txtReOrderPoint.Text = "";
             txtOrderQTYMax.Text = "";
+            txtGeneralPhone.Text = txtFaxNumber.Text = string.Empty;
+            ddlVendorStatus.ClearSelection();
+            ddlHoursOfOperation.Items.Clear();
 
             HttpContext.Current.Session["TempID"] = "";
             HttpContext.Current.Session["NotesTempID"] = "";
             BindVendorNotes();
+
+            txtPrimaryEmail0.Text = txtPrimaryFName0.Text = txtPrimaryLName0.Text = txtPrimaryContact0.Text = txtPrimaryContactExten0.Text = txtPrimaryFax0.Text = string.Empty;
+            ddlPrimaryTitle0.ClearSelection();
+            ddlPrimaryPhoneType0.ClearSelection();
+
+            txtSecEmail0.Text = txtSecFName0.Text = txtSecLName0.Text = txtSecContact0.Text = txtSecContactExten0.Text = txtSecFax0.Text = string.Empty;
+            ddlSecTitle0.ClearSelection();
+            ddlSecPhoneType0.ClearSelection();
+
+            txtAltEmail0.Text = txtAltFName0.Text = txtAltLName0.Text = txtAltContact0.Text = txtAltContactExten0.Text = txtAltFax0.Text = string.Empty;
+            ddlAltTitle0.ClearSelection();
+            ddlAltPhoneType0.ClearSelection();
+
         }
 
         #endregion
@@ -3531,7 +3523,6 @@ namespace JG_Prospect.Sr_App
 
             }
 
-
             txtVendorNm.Text = Convert.ToString(ds.Tables[0].Rows[0]["VendorName"]);
 
             string Name = Convert.ToString(ds.Tables[0].Rows[0]["ContactPerson"]);
@@ -3578,8 +3569,6 @@ namespace JG_Prospect.Sr_App
                             ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(s, s));
                         }
                     }
-
-                  
                 }
 
                 if (!string.IsNullOrEmpty(dr["DeliveryFee"].ToString()))
@@ -3894,7 +3883,7 @@ namespace JG_Prospect.Sr_App
 
         #region Address Add Edit
 
-        public void SaveAddressAndVendorEmail()
+        public void SaveAddressAndVendorEmail(string VendorID)
         {
             AddVendorAddressToViewState();
             DataTable tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
@@ -3907,6 +3896,7 @@ namespace JG_Prospect.Sr_App
                 {
                     dr["AddressID"] = 0;
                 }
+                dr["VendorId"] = VendorID;
 
                 DataTable dtAdd = tblVendorAddress.Clone();
                 dtAdd.ImportRow(dr);
@@ -3916,6 +3906,7 @@ namespace JG_Prospect.Sr_App
                 DataTable dtEmail = tblVendorEmail.Clone();
                 foreach (DataRow drEmail in tblVendorEmail.Rows)
                 {
+                    drEmail["VendorId"] = VendorID;
                     if (drEmail["AddressID"] != null && addressId == drEmail["AddressID"].ToString())
                     {
                         dtEmail.ImportRow(drEmail);
@@ -3952,7 +3943,7 @@ namespace JG_Prospect.Sr_App
 
         protected void BtnSaveLoaction_Click(object sender, EventArgs e)
         {
-            SaveAddressAndVendorEmail();
+            //SaveAddressAndVendorEmail();
         }
         #endregion
 
@@ -4321,7 +4312,12 @@ namespace JG_Prospect.Sr_App
             }
             string Notes = txtAddNotes.Text;
             string TempId = "";
-            if (VendorID == 0)
+            if (VendorID > 0)
+            {
+                Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
+                BindVendorNotes();
+            }
+            else
             {
                 if (HttpContext.Current.Session["NotesTempID"] == null)
                 {
@@ -4332,9 +4328,8 @@ namespace JG_Prospect.Sr_App
                     TempId = Convert.ToString(HttpContext.Current.Session["NotesTempID"]);
                 }
                 HttpContext.Current.Session["NotesTempID"] = TempId;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBoxAddNote", "alert('Please select Vendor from list.');", true);
             }
-            Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
-            BindVendorNotes();
 
         }
 
@@ -4350,6 +4345,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkProductCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            mpeCategoryPopup.Show();
             if (chkProductCategoryList.Items[0].Selected)
             {
                 foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
@@ -4404,6 +4400,7 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            mpeCategoryPopup.Show();
             if (chkVendorCategoryList.Items.Count > 0 && chkVendorCategoryList.Items[0].Selected)
             {
                 foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
@@ -4460,7 +4457,7 @@ namespace JG_Prospect.Sr_App
                 foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
                     li.Selected = true;
             }
-            //ModalPopupExtender1.Show();
+            mpeCategoryPopup.Show();
             string strVendorsubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {
@@ -4925,6 +4922,11 @@ namespace JG_Prospect.Sr_App
             chkVendorCategoryList_SelectedIndexChanged(null, null);
 
             updtpnlAddVender.Update();
+        }
+
+        protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
+        {
+            mpeCategoryPopup.Show();
         }
 
         private void UpdatePopupVendorSubCategoryList()

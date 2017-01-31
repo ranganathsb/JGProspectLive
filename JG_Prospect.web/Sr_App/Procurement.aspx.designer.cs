@@ -1048,15 +1048,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btncancelmateriallist;
         
         /// <summary>
-        /// UpdateProgress1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
-        
-        /// <summary>
         /// updtpnlfilter control.
         /// </summary>
         /// <remarks>
@@ -1649,6 +1640,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDeleteSource;
+        
+        /// <summary>
+        /// rfvSource control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSource;
         
         /// <summary>
         /// txtGeneralPhone control.
@@ -2812,13 +2812,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnPageLoad;
         
         /// <summary>
-        /// ModalPopupExtender1 control.
+        /// dummyLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender ModalPopupExtender1;
+        protected global::System.Web.UI.WebControls.Label dummyLabel;
+        
+        /// <summary>
+        /// mpeCategoryPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ModalPopupExtender mpeCategoryPopup;
         
         /// <summary>
         /// pnlcategorypopup control.
