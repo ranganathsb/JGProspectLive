@@ -88,6 +88,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
         }
+        
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
