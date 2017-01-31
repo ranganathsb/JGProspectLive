@@ -1046,7 +1046,12 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V2.sql" />
-    <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
+    <None Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2016_ITSN043_II_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />

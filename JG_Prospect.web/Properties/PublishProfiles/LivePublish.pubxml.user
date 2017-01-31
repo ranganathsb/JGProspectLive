@@ -28,19 +28,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:06:32</publishTime>
     </File>
     <File Include="bin/App_Browsers.dll">
-      <publishTime>01/25/2017 22:04:10</publishTime>
+      <publishTime>01/31/2017 23:54:28</publishTime>
     </File>
     <File Include="bin/App_Code.compiled">
-      <publishTime>01/25/2017 22:04:08</publishTime>
+      <publishTime>01/31/2017 23:54:27</publishTime>
     </File>
     <File Include="bin/App_Code.dll">
-      <publishTime>01/25/2017 22:04:08</publishTime>
+      <publishTime>01/31/2017 23:54:26</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>01/25/2017 22:04:09</publishTime>
+      <publishTime>01/31/2017 23:54:27</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>01/25/2017 22:04:09</publishTime>
+      <publishTime>01/31/2017 23:54:27</publishTime>
     </File>
     <File Include="bin/aspsnippets.facebookapi.dll">
       <publishTime>06/29/2016 21:09:56</publishTime>
@@ -112,19 +112,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/06/2016 13:58:32</publishTime>
     </File>
     <File Include="bin/JG_Prospect.BLL.dll">
-      <publishTime>01/25/2017 22:03:49</publishTime>
+      <publishTime>01/31/2017 23:50:17</publishTime>
     </File>
     <File Include="bin/JG_Prospect.Common.dll">
-      <publishTime>01/25/2017 22:03:41</publishTime>
+      <publishTime>01/31/2017 23:50:15</publishTime>
     </File>
     <File Include="bin/JG_Prospect.DAL.dll">
-      <publishTime>01/25/2017 22:03:45</publishTime>
+      <publishTime>01/31/2017 23:50:16</publishTime>
     </File>
     <File Include="bin/JG_Prospect.dll">
-      <publishTime>01/25/2017 22:03:52</publishTime>
+      <publishTime>01/31/2017 23:51:52</publishTime>
     </File>
     <File Include="bin/JG_Prospect.WebAPI.dll">
-      <publishTime>01/25/2017 22:03:49</publishTime>
+      <publishTime>01/31/2017 23:50:17</publishTime>
     </File>
     <File Include="bin/Microsoft.Data.Edm.dll">
       <publishTime>07/18/2016 14:05:56</publishTime>
@@ -250,7 +250,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:06:32</publishTime>
     </File>
     <File Include="bin/__browserCapabilitiesCompiler.compiled">
-      <publishTime>01/25/2017 22:04:10</publishTime>
+      <publishTime>01/31/2017 23:54:28</publishTime>
     </File>
     <File Include="calendar/calendar.aspx">
       <publishTime>09/02/2016 09:33:38</publishTime>
@@ -2446,7 +2446,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/01/2016 18:29:48</publishTime>
     </File>
     <File Include="css/jquery.multiselect.css">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 18:46:49</publishTime>
     </File>
     <File Include="css/jquery.ui.accordion.css">
       <publishTime>07/18/2016 14:03:24</publishTime>
@@ -2464,19 +2464,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/15/2016 09:58:06</publishTime>
     </File>
     <File Include="css/msdropdown/dd.css">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 18:46:49</publishTime>
     </File>
     <File Include="css/msdropdown/dd_arrow.gif">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 18:46:49</publishTime>
     </File>
     <File Include="css/msdropdown/title-bg.gif">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 18:46:49</publishTime>
     </File>
     <File Include="css/pgwslideshow.min.css">
       <publishTime>07/18/2016 14:03:26</publishTime>
     </File>
     <File Include="css/screen.css">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="customer_panel.php">
       <publishTime>07/22/2016 13:53:40</publishTime>
@@ -3709,7 +3709,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:12</publishTime>
     </File>
     <File Include="GoogleMaps.LocationServices.readme.txt">
-      <publishTime>07/18/2016 14:03:12</publishTime>
+      <publishTime>01/31/2017 22:29:52</publishTime>
     </File>
     <File Include="home.aspx">
       <publishTime>07/18/2016 14:03:12</publishTime>
@@ -4066,7 +4066,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:40</publishTime>
     </File>
     <File Include="JG.Master">
-      <publishTime>01/25/2017 20:30:22</publishTime>
+      <publishTime>01/31/2017 18:46:48</publishTime>
     </File>
     <File Include="JGCalender/Calender.aspx">
       <publishTime>09/02/2016 09:33:08</publishTime>
@@ -4282,7 +4282,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:48</publishTime>
     </File>
     <File Include="js/Custom/JgPopUp.js">
-      <publishTime>01/25/2017 21:44:57</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="js/ddaccordion.js">
       <publishTime>07/18/2016 14:03:48</publishTime>
@@ -4663,7 +4663,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:50</publishTime>
     </File>
     <File Include="js/jquery.multiselect.js">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="js/jquery.printElement.min.js">
       <publishTime>07/18/2016 14:03:50</publishTime>
@@ -4738,10 +4738,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/15/2016 21:38:34</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>11/28/2016 22:23:34</publishTime>
+      <publishTime>01/31/2017 23:02:21</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>01/25/2017 22:03:59</publishTime>
+      <publishTime>01/31/2017 23:54:20</publishTime>
     </File>
     <File Include="ProgressReport.aspx">
       <publishTime>07/18/2016 14:03:14</publishTime>
@@ -4909,7 +4909,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/09/2016 14:40:02</publishTime>
     </File>
     <File Include="Sr_App/Controls/ucSubTasks.ascx">
-      <publishTime>01/25/2017 20:30:22</publishTime>
+      <publishTime>01/31/2017 23:25:50</publishTime>
     </File>
     <File Include="Sr_App/Controls/ucTaskHistory.ascx">
       <publishTime>01/12/2017 11:26:49</publishTime>
@@ -4918,10 +4918,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/28/2016 19:10:32</publishTime>
     </File>
     <File Include="Sr_App/CreateSalesUser.aspx">
-      <publishTime>01/25/2017 21:44:56</publishTime>
+      <publishTime>01/31/2017 23:28:41</publishTime>
     </File>
     <File Include="Sr_App/Custom.aspx">
-      <publishTime>01/25/2017 21:30:27</publishTime>
+      <publishTime>01/31/2017 23:25:50</publishTime>
     </File>
     <File Include="Sr_App/customerattachmentupload.aspx">
       <publishTime>07/22/2016 13:53:40</publishTime>
@@ -4933,7 +4933,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/02/2016 14:01:38</publishTime>
     </File>
     <File Include="Sr_App/Custom_MaterialList.aspx">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="Sr_App/DepartmentAddEdit.aspx">
       <publishTime>11/28/2016 22:23:34</publishTime>
@@ -4947,6 +4947,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Sr_App/DesignationList.aspx">
       <publishTime>11/28/2016 22:23:34</publishTime>
     </File>
+    <File Include="Sr_App/edit-email-template.aspx">
+      <publishTime>01/31/2017 19:16:07</publishTime>
+    </File>
     <File Include="Sr_App/EditEmailTemplate.aspx">
       <publishTime>07/18/2016 14:04:06</publishTime>
     </File>
@@ -4954,7 +4957,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/02/2016 13:13:36</publishTime>
     </File>
     <File Include="Sr_App/EditUser.aspx">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 19:16:06</publishTime>
+    </File>
+    <File Include="Sr_App/email-template-maintainance.aspx">
+      <publishTime>01/31/2017 19:16:07</publishTime>
     </File>
     <File Include="Sr_App/EmailTemplateForVendorCategories.aspx">
       <publishTime>07/18/2016 14:04:06</publishTime>
@@ -4972,7 +4978,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:04:08</publishTime>
     </File>
     <File Include="Sr_App/GoogleCalendarView.aspx">
-      <publishTime>01/25/2017 21:30:27</publishTime>
+      <publishTime>01/31/2017 23:25:50</publishTime>
     </File>
     <File Include="Sr_App/Gutter.aspx">
       <publishTime>07/18/2016 14:04:08</publishTime>
@@ -4984,7 +4990,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/02/2016 17:22:20</publishTime>
     </File>
     <File Include="Sr_App/home.aspx">
-      <publishTime>07/28/2016 16:55:24</publishTime>
+      <publishTime>01/31/2017 23:25:50</publishTime>
     </File>
     <File Include="Sr_App/HRReports.aspx">
       <publishTime>12/29/2016 12:15:44</publishTime>
@@ -5071,7 +5077,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/24/2016 13:09:02</publishTime>
     </File>
     <File Include="Sr_App/Inventory.aspx">
-      <publishTime>01/25/2017 21:30:27</publishTime>
+      <publishTime>01/31/2017 23:25:50</publishTime>
     </File>
     <File Include="Sr_App/JMGroveCONTRACT-%28email-version%29.html">
       <publishTime>07/18/2016 14:04:10</publishTime>
@@ -5113,7 +5119,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2016 17:09:56</publishTime>
     </File>
     <File Include="Sr_App/Procurement.aspx">
-      <publishTime>01/25/2017 21:44:56</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="Sr_App/ProductEstimate.aspx">
       <publishTime>07/18/2016 14:04:12</publishTime>
@@ -5176,7 +5182,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:04:14</publishTime>
     </File>
     <File Include="Sr_App/SR_app.Master">
-      <publishTime>01/25/2017 21:30:27</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="Sr_App/StatusEmailTemplate.aspx">
       <publishTime>09/02/2016 14:01:54</publishTime>
@@ -5191,7 +5197,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 19:54:24</publishTime>
     </File>
     <File Include="Sr_App/TaskGenerator.aspx">
-      <publishTime>01/25/2017 20:34:43</publishTime>
+      <publishTime>01/31/2017 23:27:49</publishTime>
     </File>
     <File Include="Sr_App/TaskList.aspx">
       <publishTime>12/05/2016 18:44:00</publishTime>
@@ -5212,7 +5218,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:04:14</publishTime>
     </File>
     <File Include="Sr_App/ViewSalesUser.aspx">
-      <publishTime>01/25/2017 21:44:57</publishTime>
+      <publishTime>01/31/2017 23:28:52</publishTime>
     </File>
     <File Include="Sr_App/viewshutters1.aspx">
       <publishTime>07/18/2016 14:04:14</publishTime>
@@ -5230,7 +5236,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:16</publishTime>
     </File>
     <File Include="Styles/dd.css">
-      <publishTime>01/25/2017 21:45:07</publishTime>
+      <publishTime>01/31/2017 18:46:49</publishTime>
     </File>
     <File Include="Styles/Site.css">
       <publishTime>07/18/2016 14:05:28</publishTime>
@@ -5272,7 +5278,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2016 14:03:16</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/25/2017 22:03:57</publishTime>
+      <publishTime>01/31/2017 23:50:23</publishTime>
     </File>
     <File Include="WebForm1.aspx">
       <publishTime>07/18/2016 14:03:16</publishTime>
