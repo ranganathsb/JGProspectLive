@@ -165,22 +165,35 @@ namespace JG_Prospect.Common
             Installer_Lead_Mechanic = 17,
             Installer_Foreman = 18,
             Commercial_Only = 19,
-            SubContractor = 20
+            SubContractor = 20,
+            IT_Sr_Net_Developer = 21,
+            Admin_Sales = 22,
+            Admin_Recruiter = 23,
+            IT_Lead = 24
         }
 
         public enum InstallUserStatus
         {
             Active = 1
-            , Applicant = 2
-            , Deactive = 3
-            , InstallProspect = 4
-            , InterviewDate = 5
-            , OfferMade = 6
-            , PhoneScreened = 7
-            , Phone_VideoScreened = 8
-            , Rejected = 9
-            , ReferralApplicant = 10
-            , Deleted = 11
+            ,
+            Applicant = 2
+                ,
+            Deactive = 3
+                ,
+            InstallProspect = 4
+                ,
+            InterviewDate = 5
+                ,
+            OfferMade = 6
+                ,
+            PhoneScreened = 7
+                ,
+            Phone_VideoScreened = 8
+                ,
+            Rejected = 9
+                ,
+            ReferralApplicant = 10
+                , Deleted = 11
         }
 
         #region '-- Page Name --'
