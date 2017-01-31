@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true"
     EnableEventValidation="false" CodeBehind="Custom_MaterialList.aspx.cs" Inherits="JG_Prospect.Sr_App.Custom_MaterialList" %>
 
-<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -89,12 +88,6 @@
     <link href="../css/jquery.multiselect.css" rel="stylesheet" />
 
 
-            debugger;
-            $('.form-control').multiselect({ columns: 2, placeholder: 'Select options', search: true });
-                columns: 2, 
-                placeholder: 'Select options', 
-                search: true
-            });
     <style type="text/css">
         .dd_chk_select {
             width: 180px;
@@ -130,9 +123,9 @@
             max-height: 250px;
         }
 
-        .ven-form-control {
+        .form-control {
             display: block;
-            width: 500px;
+            width: 100%;
             height: 34px;
             padding: 6px 12px;
             font-size: 14px;
@@ -171,25 +164,11 @@
             padding: 5px;
             text-transform: capitalize;
         }
-
-        .uiblack {
-            display: block;
-            position: fixed;
-            top: 0%;
-            left: 0%;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.55);
-            z-index: 99 !important;
-            -moz-opacity: 0.8;
-            opacity: .80;
-            filter: alpha(opacity=80);
-            overflow-y: hidden;
-        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <script src="../js/jquery.multiselect.js"></script>
+
 
     <div class="right_panel">
         <!-- appointment tabs section start -->
@@ -434,16 +413,16 @@
                                                         <ContentTemplate>
                                                             <div id='<%#Eval("id")   %>' class='<%#Eval("ProductCatID")%>'>
                                                                 <%--<asp:ListBox onchange="SaveVendor(this)" ID="lstVendorName" Width="25%" SelectionMode="Multiple" CssClass="form-contr2ol" runat="server"></asp:ListBox>--%>
-                                                                <asp:Label ID="lblVendorNames" runat="server" Text="" class="display:none;" ></asp:Label>
-                                                                <asp:LinkButton ID="lnkAddVendors" runat="server" CommandArgument='<%#Eval("Id") %>' CssClass="display_none" CommandName="AddVendor" OnClick="lnkAddVendors_Click">+ Add</asp:LinkButton>
-                                                                <asp:TextBox ID="txtVendorSearch" runat="server" CssClass="text-style" placeholder="Search Vendor" ></asp:TextBox>
+                                                                <asp:Label ID="lblVendorNames" runat="server" Text=""></asp:Label>
+                                                                <asp:LinkButton ID="lnkAddVendors" runat="server" CommandArgument='<%#Eval("Id") %>' CommandName="AddVendor" OnClick="lnkAddVendors_Click">+ Add</asp:LinkButton>
                                                                 <asp:CheckBox Style="display: none" onclick="UpdateDefault(this);" ID="chkDefault" Text="Default" runat="server" />
                                                                 <asp:LinkButton ID="lnkaddvendorquotes" Visible="false" runat="server" Text="Attach Quotes" OnClick="lnkaddvendorquotes_Click" HeaderStyle-Width="200px">Attach Quotes</asp:LinkButton>
-                                                        
+
                                                             </div>
-                                                    
+
                                                         </ContentTemplate>
                                                     </asp:UpdatePanel>
+
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="" HeaderStyle-Width="5%" ItemStyle-Width="5%">
@@ -453,9 +432,14 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Total" Visible="false">
                                                 <ItemTemplate>
+
+
                                                     <%--<asp:Label ID="lblTotal" runat="server" Text='<%# Eval("Total") %>' ClientIDMode="Static"></asp:Label>--%>
                                                     <asp:LinkButton ID="lblTotal" data-toggle="modal" data-target="#myModal" runat="server" Text='<%# Eval("Total") %>' ClientIDMode="Static"></asp:LinkButton>
                                                     <asp:LinkButton ID="lnkAttachQuotes" Text="Attach Quotes" runat="server" OnClick="lnkAttachQuotes_Click" ClientIDMode="Static"></asp:LinkButton>
+
+
+
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
@@ -668,12 +652,13 @@
         <div class="form_panel2">
             <button id="btnFake" style="display: none" runat="server" />
             <ajaxToolkit:ModalPopupExtender ID="mpVendorCat" runat="server" TargetControlID="btnFake"
-                PopupControlID="pnlVendorCategory" CancelControlID="btnFake" BackgroundCssClass="uiblack" >
+                PopupControlID="pnlVendorCategory" CancelControlID="btnFake">
             </ajaxToolkit:ModalPopupExtender>
-            <asp:Panel ID="pnlVendorCategory" runat="server" BackColor="White"  Width="750px" Style="display: none;z-index:1000 !important; border: Solid 3px #A33E3F; border-radius: 10px 10px 0 0;">
-                <asp:UpdatePanel ID="updVendorCategoryFilter" runat="server" UpdateMode="Conditional">
-                    <ContentTemplate>
-                        <table style="border: Solid 3px #A33E3F; width: 100%; height: 100%;" cellpadding="10" cellspacing="0">
+            <asp:Panel ID="pnlVendorCategory" runat="server" BackColor="White" Width="750px" Style="display: none; border: Solid 3px #A33E3F; border-radius: 10px 10px 0 0;">
+                <%--<asp:UpdatePanel ID="updVendorCategoryFilter" runat="server">
+                    <ContentTemplate>--%>
+                <table style="border: Solid 3px #A33E3F; width: 100%; height: 100%;" cellpadding="10"
+                    cellspacing="0">
                     <tr style="background-color: #A33E3F">
                         <td colspan="2" style="height: 10%; color: White; font-weight: bold; font-size: larger; width: 100%;"
                             align="center">Add Vendors to Product Line
@@ -704,7 +689,7 @@
                     <tr>
                         <td align="right">Vendor:</td>
                         <td>
-                                    <asp:ListBox onchange="AssociateVendor(this)" ID="lstVendors" Width="500px" SelectionMode="Multiple" CssClass="ven-form-control" runat="server"></asp:ListBox>
+                            <asp:ListBox onchange="AssociateVendor(this)" ID="lstVendors" Width="500px" SelectionMode="Multiple" CssClass="form-control" runat="server"></asp:ListBox>
                         </td>
                     </tr>
                     <tr>
@@ -718,21 +703,20 @@
                             <asp:Button ID="btnCancel" runat="server" Style="width: 100px;" Text="Cancel" OnClick="btnCancel_Click" OnClientClick="" /></td>
                     </tr>
                 </table>
-                    </ContentTemplate>
+                <%--  </ContentTemplate>
                     <Triggers>
-                        <%--<asp:AsyncPostBackTrigger ControlID="drpVendorCat" />
+                        <asp:AsyncPostBackTrigger ControlID="drpVendorCat" />
                         <asp:AsyncPostBackTrigger ControlID="drpVendorSubCat" />
-                        <asp:AsyncPostBackTrigger ControlID="optManf" />
-                        <asp:AsyncPostBackTrigger ControlID="optWholeSaler" />--%>
+                        <%--<asp:AsyncPostBackTrigger ControlID="optManf" />
+                        <asp:AsyncPostBackTrigger ControlID="optWholeSaler" />--% >
                     </Triggers>
-                </asp:UpdatePanel>
+                </asp:UpdatePanel>--%>
             </asp:Panel>
         </div>
 
         <div class="form_panel2">
-            <button id="btnFakeAttachPurchaseOrder" style="display: none" runat="server" />
-            <ajaxToolkit:ModalPopupExtender ID="mpAttachPurchaseOrder" runat="server" TargetControlID="btnFakeAttachPurchaseOrder"
-                PopupControlID="pnlAttachPurchaseOrder" CancelControlID="btnFakeAttachPurchaseOrder">
+            <ajaxToolkit:ModalPopupExtender ID="mpAttachPurchaseOrder" runat="server" TargetControlID="btnFake"
+                PopupControlID="pnlAttachPurchaseOrder" CancelControlID="btnFake">
             </ajaxToolkit:ModalPopupExtender>
             <asp:Panel ID="pnlAttachPurchaseOrder" runat="server" BackColor="White" Width="750px" Style="display: none; border: Solid 3px #A33E3F; border-radius: 10px 10px 0 0;">
                 <table style="border: Solid 3px #A33E3F; width: 100%; height: 100%;" cellpadding="10" cellspacing="0">

@@ -22,7 +22,6 @@ using System.Net.Configuration;
 using System.Net;
 using JG_Prospect.Common.Logger;
 using Saplin.Controls;
-using JG_Prospect.App_Code;
 //using System.Diagnostics;
 
 namespace JG_Prospect.Sr_App
@@ -1648,13 +1647,25 @@ namespace JG_Prospect.Sr_App
                             string mailId = dr["Email"].ToString();
                             string vendorName = dr["VendorName"].ToString();
 
+                            MailMessage m = new MailMessage();
+                            SmtpClient sc = new SmtpClient("jmgroveconstruction.com", 26);
+
+                            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                            m.From = new MailAddress(userName, "JMGROVECONSTRUCTION");
+                            m.To.Add(new MailAddress(mailId, vendorName));
+                            m.Subject = "J.M. Grove " + jobId + " quote request ";
+                            m.IsBodyHtml = true;
                             DataSet dsEmailTemplate = fetchVendorCategoryEmailTemplate();
+
                             if (dsEmailTemplate != null)
                             {
                                 string templateHeader = dsEmailTemplate.Tables[0].Rows[0][0].ToString();
                                 StringBuilder tHeader = new StringBuilder();
                                 tHeader.Append(templateHeader);
-                                var replacedHeader = tHeader.Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
+                                var replacedHeader = tHeader//.Replace("imgHeader", "<img src=cid:myImageHeader height=10% width=80%>")
+                                                               .Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
                                                             .Replace("lblJobId", jobId.ToString())
                                                             .Replace("lblCustomerId", "C" + customerId.ToString());
                                 htmlBody = replacedHeader.ToString();
@@ -1662,6 +1673,7 @@ namespace JG_Prospect.Sr_App
                                 string templateBody = dsEmailTemplate.Tables[0].Rows[0][1].ToString();
 
                                 string materialList = cm.MaterialList;
+
 
                                 StringBuilder tbody = new StringBuilder();
                                 tbody.Append(templateBody);
@@ -1698,12 +1710,15 @@ namespace JG_Prospect.Sr_App
                             htmlView.LinkedResources.Add(theEmailImageLogo);
                             htmlView.LinkedResources.Add(theEmailImageFooter);
 
-                            List<AlternateView> htmlViews = new List<AlternateView>();
-                            htmlViews.Add(htmlView);
-
+                            m.AlternateViews.Add(htmlView);
+                            m.Body = htmlBody;
+                            sc.Credentials = new System.Net.NetworkCredential(userName, password);
+                            sc.UseDefaultCredentials = true;
+                            sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            sc.EnableSsl = false; // runtime encrypt the SMTP communications using SSL
                             try
                             {
-                                CommonFunction.SendEmail("", mailId, "J.M. Grove " + jobId + " quote request ", htmlBody, new List<Attachment>(), htmlViews);
+                                sc.Send(m);
                                 emailCounter += 1;
                             }
                             catch (Exception ex)
@@ -1755,9 +1770,17 @@ namespace JG_Prospect.Sr_App
                         quoteTempName = dsVendorQuoute.Tables[0].Rows[0]["TempName"].ToString();
                         quoteOriginalName = dsVendorQuoute.Tables[0].Rows[0]["DocName"].ToString();
                     }
+                    MailMessage m = new MailMessage();
+                    SmtpClient sc = new SmtpClient();
 
+                    string userName = ConfigurationManager.AppSettings["VendorUserName"].ToString();
+                    string password = ConfigurationManager.AppSettings["VendorPassword"].ToString();
+
+                    m.From = new MailAddress(userName, "JMGROVECONSTRUCTION");
                     string mailId = cm.VendorEmail;
-                    string emailSubject = "J.M. Grove " + jobId + " quote acceptance ";
+                    m.To.Add(new MailAddress(mailId, cm.VendorName));
+                    m.Subject = "J.M. Grove " + jobId + " quote acceptance ";
+                    m.IsBodyHtml = true;
                     DataSet dsEmailTemplate = fetchVendorEmailTemplate();
 
                     if (dsEmailTemplate != null)
@@ -1766,7 +1789,8 @@ namespace JG_Prospect.Sr_App
                         StringBuilder tHeader = new StringBuilder();
                         tHeader.Append(templateHeader);
 
-                        var replacedHeader = tHeader.Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
+                        var replacedHeader = tHeader//.Replace("imgHeader", "<img src=cid:myImageHeader height=10% width=80%>")
+                                                   .Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
                                                    .Replace("lblJobId", jobId.ToString())
                                                    .Replace("lblCustomerId", "C" + customerId.ToString());
                         htmlBody = replacedHeader.ToString();
@@ -1790,15 +1814,13 @@ namespace JG_Prospect.Sr_App
                         htmlBody += replacedFooter.ToString();
                     }
                     AlternateView htmlView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-                    
 
-                    List<Attachment> objAttachment = new List<Attachment>();
                     if (quoteTempName != "")
                     {
                         string sourceDir = Server.MapPath("~/CustomerDocs/VendorQuotes/");
                         Attachment attachment = new Attachment(sourceDir + "\\" + quoteTempName);
                         attachment.Name = quoteOriginalName;
-                        objAttachment.Add(attachment);
+                        m.Attachments.Add(attachment);
                     }
                     string imageSourceHeader = Server.MapPath(@"~\img") + @"\Email art header.png";
                     LinkedResource theEmailImageHeader = new LinkedResource(imageSourceHeader);
@@ -1817,12 +1839,17 @@ namespace JG_Prospect.Sr_App
                     htmlView.LinkedResources.Add(theEmailImageLogo);
                     htmlView.LinkedResources.Add(theEmailImageFooter);
 
-                    List<AlternateView> htmlViews = new List<AlternateView>();
-                    htmlViews.Add(htmlView);
+                    m.AlternateViews.Add(htmlView);
+                    m.Body = htmlBody;
 
+                    sc.UseDefaultCredentials = false;
+                    sc.Host = "mail.jmgroveconstruction.com";
+                    sc.Port = 587;
+                    sc.Credentials = new System.Net.NetworkCredential(userName, password);
+                    sc.EnableSsl = false; // runtime encrypt the SMTP communications using SSL
                     try
                     {
-                        CommonFunction.SendEmail("", mailId, emailSubject, htmlBody, objAttachment, htmlViews);
+                        sc.Send(m);
                         emailCounter += 1;
                     }
                     catch (Exception ex)
@@ -2970,10 +2997,6 @@ namespace JG_Prospect.Sr_App
                 Boolean lDefVendorCat = Convert.ToBoolean(lDr["DefaultVendorForCategory"].ToString());
                 Label lblVendorNames = (Label)e.Row.FindControl("lblVendorNames");
                 LinkButton lnkAddVendors = (LinkButton)e.Row.FindControl("lnkAddVendors");
-                TextBox txtVendorSearch = (TextBox)e.Row.FindControl("txtVendorSearch");
-                //txtVendorSearch.Attributes.Add("onfocus", "AddVendorFocus('" + lnkAddVendors.ClientID + "')");
-                txtVendorSearch.Attributes.Add("onfocus", this.Page.ClientScript.GetPostBackEventReference(lnkAddVendors, ""));
-                txtVendorSearch.ReadOnly = true;
                 CheckBox chkDefault = (CheckBox)e.Row.FindControl("chkDefault");
                 chkDefault.Checked = false; //lDefVendorCat;
 
@@ -3010,15 +3033,11 @@ namespace JG_Prospect.Sr_App
                         if (lRow["VendorID"].ToString() == lVendorId)
                         {
                             lblVendorNames.Text += "<input type='radio' " + ((lDr["VendorID"].ToString() == lVendorId.ToString()) ? "checked='checked'" : "") + " onclick='updateVendor(" + lDr["id"] + "," + lProdCatID + "," + lVendorId + ", this)'  id='rdo" + lDr["id"] + "' name='grp" + lDr["id"] + "' /> <label for='rdo" + lDr["id"] + "'> <a href='Procurement.aspx?vid="+lRow["VendorID"]+"' target='_blank'>" + lRow["VendorName"].ToString() + "</a></label> <a href='javascript:void(0);' onclick='ShowAttachQuotes(" + lProdCatID + "," + lVendorId + ")'>Attach Quote</a><br/>";
-                            txtVendorSearch.Text += lRow["VendorName"].ToString() + ",";
                         }
                     }
                 }
-
-                lblVendorNames.Text = lblVendorNames.Text.TrimEnd(',');
-                txtVendorSearch.Text = txtVendorSearch.Text.TrimEnd(',');
-
-                // }
+                    lblVendorNames.Text = lblVendorNames.Text.TrimEnd(',');
+               // }
 
             }
         }
@@ -3575,22 +3594,37 @@ namespace JG_Prospect.Sr_App
                     string mailId = dr["Email"].ToString();
                     string vendorName = dr["VendorName"].ToString();
 
-                    string emailSubject = "J.M. Grove " + jobId + " quote request ";
+                    MailMessage m = new MailMessage();
+                    SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
+
+                    string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                    string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                    m.From = new MailAddress(userName, "JGrove Construction");
+                    m.To.Add(new MailAddress(mailId, vendorName));
+                    m.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
+                 
+                    m.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
+                    m.Subject = "J.M. Grove " + jobId + " quote request ";
+                    m.IsBodyHtml = true;
                     DataSet dsEmailTemplate = fetchVendorCategoryEmailTemplate();
 
                     if (dsEmailTemplate != null)
                     {
-                        emailSubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString().Replace("c-xxxx", jobId);
-
+                        m.Subject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString().Replace("c-xxxx", jobId);
                         string templateHeader = dsEmailTemplate.Tables[0].Rows[0][0].ToString();
                         StringBuilder tHeader = new StringBuilder();
                         tHeader.Append(templateHeader);
-                        var replacedHeader = tHeader.Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
+                        var replacedHeader = tHeader//.Replace("imgHeader", "<img src=cid:myImageHeader height=10% width=80%>")
+                                                       .Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
                                                     .Replace("lblJobId", jobId.ToString())
                                                     .Replace("lblCustomerId", "C" + customerId.ToString());
                         htmlBody = replacedHeader.ToString();
                         htmlBody += "</br></br></br>";
                         string templateBody = dsEmailTemplate.Tables[0].Rows[0][1].ToString();
+
+                       // string materialList = cm.MaterialList;
+
 
                         StringBuilder tbody = new StringBuilder();
                         tbody.Append(templateBody);
@@ -3600,6 +3634,7 @@ namespace JG_Prospect.Sr_App
                         htmlBody += replacedBody.ToString();
 
                         htmlBody += "</br></br></br>";
+                        
 
                         string templateFooter = dsEmailTemplate.Tables[0].Rows[0][2].ToString();
                         StringBuilder tFooter = new StringBuilder();
@@ -3609,10 +3644,7 @@ namespace JG_Prospect.Sr_App
                         htmlBody += replacedFooter.ToString();
                     }
                     AlternateView htmlView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-                    List<AlternateView> htmlViews = new List<AlternateView>();
-                    htmlViews.Add(htmlView);
-
-                    List<Attachment> objAttachment = new List<Attachment>();
+                    m.Body = htmlBody; //"Email To: "+ mailId + htmlBody;
 
                     try
                     {
@@ -3624,8 +3656,7 @@ namespace JG_Prospect.Sr_App
                             {
                                 Attachment attachment = new Attachment(sourceDir);
                                 attachment.Name = Path.GetFileName(sourceDir);
-                                objAttachment.Add(attachment);
-
+                                m.Attachments.Add(attachment);
                             }
                         }
 
@@ -3636,15 +3667,22 @@ namespace JG_Prospect.Sr_App
                             {
                                 Attachment attachment = new Attachment(sourceDir);
                                 attachment.Name = Path.GetFileName(sourceDir);
-                                objAttachment.Add(attachment);
+                                m.Attachments.Add(attachment);
                             }
                         }
                     }
                     catch (Exception ex) { }
 
+
+                    NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+                    
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                     try
                     {
-                        CommonFunction.SendEmail("", mailId, emailSubject, htmlBody, objAttachment, htmlViews);
+                        sc.Send(m);
                         emailCounter += 1;
                     }
                     catch (Exception ex)
@@ -3677,21 +3715,41 @@ namespace JG_Prospect.Sr_App
                     string mailId = dr["Email"].ToString();
                     string vendorName = dr["VendorName"].ToString();
 
-                    string emailSubject = "J.M. Grove " + jobId + " quote request ";
+                    MailMessage m = new MailMessage();
+                    SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
+
+                    string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                    string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                    m.From = new MailAddress(userName, "JGrove Construction");
+                    //m.To.Add(new MailAddress(mailId, vendorName));
+                    m.To.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
+
+                    //m.To.Add(new MailAddress("skanchwala@4qlearning.com", "Shabbir Kanchwala"));
+                    //m.To.Add(new MailAddress("skanchwala@mosaic-network.com", "Shabbir Kanchwala"));
+                    //m.To.Add(new MailAddress("shabbirk@live.com", "Shabbir Kanchwala"));
+
+                    m.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
+                    m.Subject = "J.M. Grove " + jobId + " quote request ";
+                    m.IsBodyHtml = true;
                     DataSet dsEmailTemplate = fetchVendorEmailTemplate();
                     DataSet lDsJobInformation = AdminBLL.Instance.GetJobInformation(jobId, pProductCatID, Convert.ToInt32(dr["VendorID"].ToString()));
                     if (dsEmailTemplate != null)
                     {
-                        emailSubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString().Replace("c-xxxx", jobId);
+                        m.Subject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString().Replace("c-xxxx", jobId);
                         string templateHeader = dsEmailTemplate.Tables[0].Rows[0][0].ToString();
                         StringBuilder tHeader = new StringBuilder();
                         tHeader.Append(templateHeader);
-                        var replacedHeader = tHeader.Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
+                        var replacedHeader = tHeader//.Replace("imgHeader", "<img src=cid:myImageHeader height=10% width=80%>")
+                                                       .Replace("src=\"../img/Email art header.png\"", "src=cid:myImageHeader")
                                                     .Replace("lblJobId", jobId.ToString())
                                                     .Replace("lblCustomerId", "C" + customerId.ToString());
                         htmlBody = replacedHeader.ToString();
                         htmlBody += "</br></br></br>";
                         string templateBody = dsEmailTemplate.Tables[0].Rows[0][1].ToString();
+
+                        // string materialList = cm.MaterialList;
+
 
                         StringBuilder tbody = new StringBuilder();
                         tbody.Append(templateBody);
@@ -3724,9 +3782,8 @@ namespace JG_Prospect.Sr_App
                         htmlBody += replacedFooter.ToString();
                     }
                     AlternateView htmlView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-                    List<AlternateView> htmlViews = new List<AlternateView>();
-                    htmlViews.Add(htmlView);
-                    List<Attachment> objAttachment = new List<Attachment>();
+                    m.Body = "TO: "+mailId +"<br/>"+ htmlBody; //"Email To: "+ mailId + htmlBody;
+
                     try
                     {
                         DataSet lDSAttachedFiles = AdminBLL.Instance.GetHTMLTemplateAttachedFile(14); //Vendor Categories
@@ -3737,7 +3794,7 @@ namespace JG_Prospect.Sr_App
                             {
                                 Attachment attachment = new Attachment(sourceDir);
                                 attachment.Name = Path.GetFileName(sourceDir);
-                                objAttachment.Add(attachment);
+                                m.Attachments.Add(attachment);
                             }
                         }
 
@@ -3748,15 +3805,22 @@ namespace JG_Prospect.Sr_App
                             {
                                 Attachment attachment = new Attachment(sourceDir);
                                 attachment.Name = Path.GetFileName(sourceDir);
-                                objAttachment.Add(attachment);
+                                m.Attachments.Add(attachment);
                             }
                         }
                     }
                     catch (Exception ex) { }
 
+
+                    NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                     try
                     {
-                        CommonFunction.SendEmail("", mailId, emailSubject, htmlBody, objAttachment, htmlViews);
+                        sc.Send(m);
                         emailCounter += 1;
                     }
                     catch (Exception ex)
@@ -4429,33 +4493,20 @@ namespace JG_Prospect.Sr_App
             drpVendorSubCat.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
 
         }
-
-
         public void FilterVendors(string FilterParams, string FilterBy, string ManufacturerType, string VendorCategoryId)
         {
-            lstVendors.Items.Clear();
             lstVendors.DataSource = null;
             lstVendors.DataBind();
             DataSet ds = new DataSet();
             ds = VendorBLL.Instance.GetVendorList(FilterParams, FilterBy, ManufacturerType, VendorCategoryId,"");
-            if (ds != null && ds.Tables.Count > 0)
+            if (ds != null)
             {
-                //lstVendors.DataSource = ds;
-                //lstVendors.DataTextField = "VendorName";
-                //lstVendors.DataValueField = "VendorID";
-                //lstVendors.DataBind();
+                lstVendors.DataSource = ds;
+                lstVendors.DataTextField = "VendorName";
+                lstVendors.DataValueField = "VendorID";
+                lstVendors.DataBind();
 
-                foreach (DataRow lRow in ds.Tables[0].Rows)
-                {
-                    if (!string.IsNullOrWhiteSpace(lRow["VendorName"].ToString().Trim()))
-                    {
-                        System.Web.UI.WebControls.ListItem lstVendor = new System.Web.UI.WebControls.ListItem(lRow["VendorName"].ToString(), lRow["VendorID"].ToString());
-                        lstVendors.Items.Add(lstVendor);
-                    }
-                }
-
-
-                foreach (string Vendor in VendorIDs.Split(',')){
+                foreach(string Vendor in VendorIDs.Split(',')){
                     foreach (System.Web.UI.WebControls.ListItem item in lstVendors.Items)
                     {
                         if (item.Value == Vendor)
@@ -4466,7 +4517,12 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 lblGotQuotesFrom.Text = lblGotQuotesFrom.Text.TrimEnd(',');
-            
+                //foreach (DataRow lRow in ds.Tables[0].Rows)
+                //{
+                //    System.Web.UI.WebControls.ListItem lstVendor = new System.Web.UI.WebControls.ListItem(lRow["VendorName"].ToString(), lRow["VendorID"].ToString());
+                //    //lstVendor.Attributes.Add("OptionGroup", VendorCategoryList.Select("VendorCategpryId=" + lRow["VendorCategpryId"].ToString())[0]["VendorCategoryNm"].ToString());
+                //    lstVendors.Items.Add(lstVendor);
+                //}
 
             }
         }
