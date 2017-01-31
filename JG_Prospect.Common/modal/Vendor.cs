@@ -38,5 +38,28 @@ namespace JG_Prospect.Common.modal
         public string VendorSubCategories;
         public string UserID;
 
+        public decimal DeliveryFee;
+        public decimal StockingReturnFee;
+        public decimal MiscFee;
+        public string DeliveryMethod;
+        public string FreightTerms;
+        public decimal Tax;
+        public string VendorQuote;
+        public string AttachVendorQuote;
+        public string Revision;
+        public string VendorInvoice;
+        public string JGCustomerPO;
+        public DateTime LeadTimeDueDate;
+        public int EconimicalOrderQuantity;
+        public decimal DiscountPerUnit;
+        public decimal ReOrderPoint;
+        public int OrderQTY;
+        public string GeneralPhone;
+        public string HoursOfOperation;
+        public bool ContactPreferenceEmail;
+        public bool ContactPreferenceCall;
+        public bool ContactPreferenceText;
+        public bool ContactPreferenceMail;
+
     }
 }

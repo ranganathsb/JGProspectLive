@@ -378,7 +378,29 @@ namespace JG_Prospect.DAL
                 return null;
             } 
         }
-        
+
+        public string AddUserEmail(bool isPrimaryEmail, string strEmail, int UserID, bool ClearDataBeforInsert)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_InsertUpdateUserEmail");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@isPrimaryEmail", DbType.Boolean, isPrimaryEmail);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
+                    database.AddInParameter(command, "@strEmail", DbType.String, strEmail);
+                    database.AddInParameter(command, "@ClearDataBeforInsert", DbType.Boolean, ClearDataBeforInsert);
+
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID,
                                     string PhoneExtNo,string PhoneISDCode, bool ClearDataBeforInsert)

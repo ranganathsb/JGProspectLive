@@ -100,7 +100,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.55);
-            z-index: 99;
+            z-index: 99 !important;
             -moz-opacity: 0.8;
             opacity: .80;
             filter: alpha(opacity=80);
@@ -214,6 +214,16 @@
 
     <script type="text/javascript">
 
+        function ShowModalPopup() {
+            $find("mpe").show();
+            return false;
+        }
+        function HideModalPopup() {
+            //debugger;
+            $find("mpe").hide();
+            return false;
+        }
+
         function ClosePopup() {
             document.getElementById('light').style.display = 'none';
             document.getElementById('fade').style.display = 'none';
@@ -305,7 +315,8 @@
 
         }
 
-        function GetVendorDetails(e) {
+          function GetVendorDetails(e) {
+            //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
                 $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
@@ -332,7 +343,7 @@
                 $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
             }
-            $("#divModalPopup").show();
+            //$("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
@@ -369,7 +380,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -395,7 +406,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -421,7 +432,7 @@
                     c.push({
                         Extension: $(this).find(".clsmaskphoneexten").val(),
                         Number: $(this).find(".clsmaskphone").val(),
-                        PhoneType: $(this).find(".clsphonetype option:selected'").val()
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
                     });
                 });
                 var EmailData = {
@@ -439,6 +450,144 @@
             //console.log(JSON.stringify(VendorEmailData));
             //console.log(JSON.stringify(AddressData));
 
+            var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
+            //debugger
+            $.ajax({
+                type: "POST",
+                url: "Procurement.aspx/PostVendorDetails",
+                contentType: "application/json; charset=utf-8",
+                dataType: "JSON",
+                data: JSON.stringify({ vendorid: vid, Address: AddressData, VendorEmails: VendorEmailData }),
+                success: function (data) {
+                    console.log(data);
+                    checkAddress();
+                    //AddOldEmailContent(datalength);
+                }
+            });
+        }
+
+        function SetVendorEmails(e) {
+            //debugger;
+            $('#<%=LblSave.ClientID%>').text("");
+            if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
+                $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
+                return false;
+            }
+            if ($('#<%=ddlSource.ClientID%>').val() == 'Select Source') {
+                $('#<%=LblSave.ClientID%>').text("Please select source!");
+                return false;
+            }
+            if ($('#<%=txtPrimaryAddress.ClientID%>').val() == '') {
+                $('#<%=LblSave.ClientID%>').text("Please enter address!");
+                return false;
+            }
+      
+            var AddressData = [];
+            var VendorEmailData = [];
+            var vid = $('.clsvendorid').val();
+            var AddrType = "Other";
+            //$(".vendor_table").find(".fixedAddressrow").each(function (index, node) {
+            //    if (index == 0) {
+            AddressData.push({
+                AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
+                AddressType: $(".clstxtAddressType0").val(),
+                Address: $(".clstxtAddress0").val(),
+                City: $(".clstxtCity0").val(),
+                State: $(".clstxtState0").val(),
+                Zip: $(".clstxtZip0").val(),
+                Country: $(".clstxtCountry0").val()
+            })
+            //}
+            // });
+            $("#tblVendorLocation").find(".newAddressrow").each(function (index, node) {
+                AddressData.push({
+                    AddressType: $("#ddlAddressType1" + index).val(),
+                    Address: $("#txtAddress1" + index).val(),
+                    City: $("#txtCity1" + index).val(),
+                    State: $("#txtState1" + index).val(),
+                    Zip: $("#txtZip1" + index).val()
+                })
+            });
+            $("#tblPrimaryEmail").find("tr").each(function (index, node) {
+                var c = [];
+                var Emails = [];
+                $(this).find(".newEmaildiv").each(function () {
+                    Emails.push({ Email: $(this).find(".clsemail").val() });
+                });
+                $(this).find(".newcontactdiv").each(function () {
+                    c.push({
+                        Extension: $(this).find(".clsmaskphoneexten").val(),
+                        Number: $(this).find(".clsmaskphone").val(),
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
+                    });
+                });
+                var EmailData = {
+                    EmailType: "Primary",
+                    Email: Emails,
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
+                    Contact: c,
+                    Fax: $(this).find(".clsfax").val(),
+                    AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
+                };
+                VendorEmailData.push(EmailData);
+
+            });
+            $("#tblSecEmail").find("tr").each(function (index, node) {
+                var c = [];
+                var Emails = [];
+                $(this).find(".newEmaildiv").each(function () {
+                    Emails.push({ Email: $(this).find(".clsemail").val() });
+                });
+                $(this).find(".newcontactdiv").each(function () {
+                    c.push({
+                        Extension: $(this).find(".clsmaskphoneexten").val(),
+                        Number: $(this).find(".clsmaskphone").val(),
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
+                    });
+                });
+                var EmailData = {
+                    EmailType: "Secondary",
+                    Email: Emails,
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
+                    Contact: c,
+                    Fax: $(this).find(".clsfax").val(),
+                    AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
+                };
+                VendorEmailData.push(EmailData);
+            });
+            $("#tblAltEmail").find("tr").each(function (index, node) {
+                var c = [];
+                var Emails = [];
+                $(this).find(".newEmaildiv").each(function () {
+                    Emails.push({ Email: $(this).find(".clsemail").val() });
+                });
+                $(this).find(".newcontactdiv").each(function () {
+                    // console.log($("#txtPrimaryContact" + index).html());
+                    c.push({
+                        Extension: $(this).find(".clsmaskphoneexten").val(),
+                        Number: $(this).find(".clsmaskphone").val(),
+                        PhoneType: $(this).find(".clsphonetype option:selected").val()
+                    });
+                });
+                var EmailData = {
+                    EmailType: "Alternate",
+                    Email: Emails,
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
+                    Contact: c,
+                    Fax: $(this).find(".clsfax").val(),
+                    AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
+                };
+                VendorEmailData.push(EmailData);
+            });
+            //console.log(JSON.stringify(VendorEmailData));
+            //console.log(JSON.stringify(AddressData));
+            //debugger;
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
             $.ajax({
                 type: "POST",
@@ -765,7 +914,6 @@
         <li><a href="Procurement.aspx">Sold Jobs</a></li>
         <li><a href="OverheadExp.aspx">Overhead Expenses</a></li>
     </ul>
-
     <h1>
         <b>Procurement </b>
         <b>
@@ -782,9 +930,7 @@
                         <div>
                             <asp:GridView ID="grdsoldjobs" runat="server" AutoGenerateColumns="false" CssClass="tableClass" DataKeyNames="CustomerId"
                                 Width="100%" OnRowDataBound="grdsoldjobs_RowDataBound" OnSelectedIndexChanged="grdsoldjobs_SelectedIndexChanged">
-
                                 <Columns>
-
                                     <asp:BoundField HeaderText="Date Sold" DataField="SoldDate" DataFormatString="{0:d}"
                                         HeaderStyle-Width="11%" />
                                     <asp:TemplateField HeaderText="Customer ID" HeaderStyle-Width="10%">
@@ -1273,16 +1419,6 @@
                             <h2>Vendor Contacts</h2>
                             <br />
                         </div>
-
-                        <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="updtpnlfilter">
-                            <ProgressTemplate>
-                                <div class="modal">
-                                    <div class="center">
-                                        <img alt="Loading..." src="../img/loader.gif" />
-                                    </div>
-                                </div>
-                            </ProgressTemplate>
-                        </asp:UpdateProgress>
                         <asp:UpdatePanel ID="updtpnlfilter" runat="server" UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
@@ -1507,1312 +1643,1236 @@
 
                                         </td>
                                     </tr>
-
                                 </table>
-                                <table style="width: 100%;">
-                                    <tr>
-                                        <td>
-                                            <div style="width: 100%">
-
-                                                <div class="grid_h" style="width: 47%; float: left; box-sizing: border-box;">
-                                                    Vendor List
-                                             <div class="grid">
-                                                 <asp:GridView ID="grdVendorList" runat="server" AutoGenerateColumns="false" CssClass="tableClass" Width="100%">
-                                                     <Columns>
-                                                         <asp:TemplateField HeaderText="Vendor Name">
-                                                             <ItemTemplate>
-                                                                 <asp:LinkButton ID="lnkVendorName" runat="server" Text='<%#Eval("Zip").ToString()==""?Eval("VendorName"):Eval("VendorName")+" - " +Eval("Zip")  %>' OnClick="lnkVendorName_Click"></asp:LinkButton>
-                                                                 <asp:HiddenField ID="hdnVendorId" runat="server" Value='<%#Eval("VendorId") %>' />
-                                                                 <asp:HiddenField ID="hdnVendorAddressId" runat="server" Value='<%#Eval("AddressId") %>' />
-                                                             </ItemTemplate>
-                                                         </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Action" Visible="false">
-                                                             <ItemTemplate>
-                                                                 <asp:LinkButton ID="lnkDeleteVendor" runat="server" OnClientClick="return confirm('Are you sure want to delete vendor?');" OnClick="lnkDeleteVendor_Click">Delete</asp:LinkButton>
-                                                             </ItemTemplate>
-                                                         </asp:TemplateField>
-                                                     </Columns>
-                                                     <EmptyDataTemplate>
-                                                         No Data Found.
-                                                     </EmptyDataTemplate>
-                                                 </asp:GridView>
-                                             </div>
-                                                </div>
-                                                <div style="width: 50%; float: initial; margin-left: 3%; margin-top: 20px; box-sizing: border-box;">
-                                                    <div id="googleMap" style="width: 100%; height: 254px;"></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div style="width: 100%">
+                                    <div class="grid_h" style="width: 47%; float: left; box-sizing: border-box;">
+                                        <h2>Vendor List</h2>
+                                    </div>
+                                    <div class="grid">
+                                        <asp:GridView ID="grdVendorList" runat="server" AutoGenerateColumns="false" CssClass="tableClass" Width="100%">
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="Vendor Name">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lnkVendorName" runat="server" Text='<%#Eval("Zip").ToString()==""?Eval("VendorName"):Eval("VendorName")+" - " +Eval("Zip")  %>' OnClick="lnkVendorName_Click"></asp:LinkButton>
+                                                        <asp:HiddenField ID="hdnVendorId" runat="server" Value='<%#Eval("VendorId") %>' />
+                                                        <asp:HiddenField ID="hdnVendorAddressId" runat="server" Value='<%#Eval("AddressId") %>' />
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Action" Visible="false">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lnkDeleteVendor" runat="server" OnClientClick="return confirm('Are you sure want to delete vendor?');" OnClick="lnkDeleteVendor_Click">Delete</asp:LinkButton>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                            <EmptyDataTemplate>
+                                                No Data Found.
+                                            </EmptyDataTemplate>
+                                        </asp:GridView>
+                                    </div>
+                                    <div style="width: 50%; float: initial; margin-left: 3%; margin-top: 20px; box-sizing: border-box; display: none;">
+                                        <div id="googleMap" style="width: 100%; height: 254px;"></div>
+                                    </div>
+                                </div>
                             </ContentTemplate>
                         </asp:UpdatePanel>
                         <asp:HiddenField ID="hidIsEditVendor" runat="server" Value="false" />
                     </div>
-                    <div id="tabs">
-                        <ul>
-                            <li><a href="#tabs-1">Add/Edit Vendor</a></li>
-                            <li><a href="#tabs-2">Add Product</a></li>
-                            <li><a href="#tabs-3">Payment & Shipping</a></li>
-                        </ul>
-                        <div id="tabs-1">
-                            <asp:UpdatePanel ID="updtpnlAddVender" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                    <div id="divVendor" class="vendorForm">
-                                        <ul style="padding: 0px;">
-                                            <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
-                                                <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
-                                                    <tr>
-                                                        <td colspan="3" style="font-weight: bold; font-size: large; font-style: normal">Add Vendor
-                                                        </td>
-                                                        <td>
-                                                            <asp:Button ID="btnAddNewVenodr" runat="server" CssClass="button_cls" OnClick="btnAddNewVenodr_Click" Text="Add New Vendor" />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><label>Vendor Id #:</label></td>
-                                                        <td><asp:TextBox ID="txtVendorId" CssClass="clsvendorid" TabIndex="1" runat="server" ReadOnly="true" MaxLength="50"></asp:TextBox></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>Vendor Name:</label><br />
-                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
-                                                                ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>Website:</label><br />
-                                                            <asp:TextBox ID="txtWebsite" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator16" runat="server" ControlToValidate="txtWebsite" Display="Dynamic"
-                                                                ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label>Vendor Source<asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Green"></asp:Label></label>
-                                                            <asp:DropDownList ID="ddlSource" runat="server" TabIndex="3" Width="250px">
-                                                            </asp:DropDownList>
-                                                            <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
-                                                            <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
-                                                            <%--<br />
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
-                                                                ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
-                                                        </td>
-                                                        <td>
-                                                            <%--<label>Vendor Status:</label><br />
-                                                            <asp:DropDownList ID="ddlVendorStatus" runat="server" TabIndex="1" Style="width: 180px;">
-                                                                <asp:ListItem>Select</asp:ListItem>
-                                                                <asp:ListItem>Prospect</asp:ListItem>
-                                                                <asp:ListItem>Active-Past</asp:ListItem>
-                                                                <asp:ListItem>Deactivate</asp:ListItem>
-                                                            </asp:DropDownList>--%>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Vendor Status</label>
-                                                            <asp:DropDownList ID="DropDownList3" runat="server" TabIndex="3" Width="250px">
-                                                                <asp:ListItem>prospect{Black}</asp:ListItem>
-                                                                <asp:ListItem>active{Red}</asp:ListItem>
-                                                                <asp:ListItem>deactivate-{grey} </asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </td>
-                                                        <td>
-                                                            <label>Address Location:</label><br />
-                                                            <asp:DropDownList ID="DropDownList2" TabIndex="1" AutoPostBack="true" OnSelectedIndexChanged="DrpVendorAddress_SelectedIndexChanged" runat="server" Style="width: 180px;" CssClass="clsvendoraddress">
-                                                                <asp:ListItem Value="Select">Select</asp:ListItem>
-                                                                <asp:ListItem Value="Select">Primary billing</asp:ListItem>
-                                                                <asp:ListItem Value="Select">Primary shipping</asp:ListItem>
-                                                                <asp:ListItem Value="Select">Secondary</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Hours of operation:</label><br />
-                                                            <asp:TextBox ID="TextBox1" TabIndex="1" runat="server" MaxLength="50"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Contact preference :</label><br />
-                                                            <asp:TextBox ID="TextBox3" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Address:</label><br />
-                                                            <asp:DropDownList ID="DrpVendorAddress" TabIndex="1" AutoPostBack="true" OnSelectedIndexChanged="DrpVendorAddress_SelectedIndexChanged" runat="server" Style="width: 180px;" CssClass="clsvendoraddress">
-                                                                <asp:ListItem Value="Select">Select</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </td>
-                                                        <td>
-                                                            <label>Tax Id:</label><br />
-                                                            <asp:TextBox ID="txtTaxId" TabIndex="1" runat="server" MaxLength="50"></asp:TextBox>
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>
-                                                                Payment Terms
-                                                            </label>
-                                                            <asp:DropDownList ID="DrpPaymentTerms" TabIndex="1" runat="server" Style="width: 180px;">
-                                                                <asp:ListItem>Select</asp:ListItem>
-                                                                <asp:ListItem>Pay In Advance</asp:ListItem>
-                                                                <asp:ListItem>COD</asp:ListItem>
-                                                                <asp:ListItem>NET 15</asp:ListItem>
-                                                                <asp:ListItem>Net 30</asp:ListItem>
-                                                                <asp:ListItem>Net 60</asp:ListItem>
-                                                                <asp:ListItem>1% 10 Net 30</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </td>
-                                                        <td>
-                                                            <label>
-                                                                Payment Method:</label><br />
-                                                            <asp:DropDownList ID="DrpPaymentMode" TabIndex="1" runat="server" Style="width: 180px;">
-                                                                <asp:ListItem>Select</asp:ListItem>
-                                                                <asp:ListItem>amex2343</asp:ListItem>
-                                                                <asp:ListItem>Discover3494</asp:ListItem>
-                                                                <asp:ListItem>echeck101</asp:ListItem>
-                                                            </asp:DropDownList>
+                    <br />
 
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <div class="grid_h" style="font-weight: bold; font-size: large; font-style: normal">
-                                                                Notes
-                                                            </div>
-                                                            <div class="grid">
-                                                                <asp:GridView ID="grdTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" AutoGenerateColumns="false" CssClass="tableClass" Width="100%" Style="margin: 0px;">
-                                                                    <Columns>
-                                                                        <asp:TemplateField HeaderText="User Id">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("userid")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Date">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("CreatedOn")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Notes">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("Notes")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                    </Columns>
-                                                                    <EmptyDataTemplate>
-                                                                        No Data Found.
-                                                                    </EmptyDataTemplate>
-                                                                </asp:GridView>
-                                                            </div>
-                                                            <br />
-                                                            <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="btn_sec">
-                                                                            <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" CssClass="btnnotes" OnClick="btnAddNotes_Click" />
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="">
-                                                                            <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Height="33px" Width="407px"></asp:TextBox>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <fieldset style="margin: 0px !important;">
-                                                                <legend style="width: 100%;">
-                                                                    <span style="font-weight: bold; font-size: 15px; font-style: normal; padding: 15px 15px 5px; display: inline-block;">Vendor Address</span>
-                                                                    <asp:LinkButton ID="lblNewAddress" runat="server" OnClick="lblNewAddress_Click" CssClass="btnNewAddress">Add New Address</asp:LinkButton>
-                                                                    <table class="vendor_table">
-                                                                        <tr class="fixedAddressrow">
-                                                                            <td style="width: 12%">
-                                                                                <label>Address Type:</label><br />
-                                                                                <asp:DropDownList ID="ddlAddressType" TabIndex="1" runat="server" CssClass="clstxtAddressType0" Width="190px">
-                                                                                    <asp:ListItem>Select</asp:ListItem>
-                                                                                    <asp:ListItem>Primary</asp:ListItem>
-                                                                                    <asp:ListItem>Secondary</asp:ListItem>
-                                                                                    <asp:ListItem>Billing</asp:ListItem>
-                                                                                </asp:DropDownList>
-
-                                                                            </td>
-                                                                            <td style="width: 12%">
-                                                                                <label>Zip:</label><br />
-                                                                                <asp:TextBox ID="txtPrimaryZip" runat="server" TabIndex="1" placeholder="Zip" CssClass="clstxtZip0" onkeypress="return isNumericKey(event);" autocomplete="off" onblur="GetCityStateOnBlur(this)"></asp:TextBox>
-                                                                            </td>
-                                                                            <td style="width: 12%">
-                                                                                <label>City:</label><br />
-                                                                                <asp:TextBox ID="txtPrimaryCity" runat="server" TabIndex="1" placeholder="City" CssClass="clstxtCity0"></asp:TextBox>
-                                                                            </td>
-                                                                            <td>
-                                                                                <label>State</label><br />
-                                                                                <asp:TextBox ID="txtPrimaryState" runat="server" TabIndex="1" placeholder="State" CssClass="clstxtState0"></asp:TextBox>
-                                                                            </td>
-                                                                        </tr>
+                    <asp:UpdatePanel ID="updtpnlAddVender" UpdateMode="Conditional" runat="server">
+                        <ContentTemplate>
+                            <asp:TabContainer ID="tabContainer" runat="server">
+                                <asp:TabPanel ID="TabPanel1" runat="server" HeaderText="Add/Edit Vendor">
+                                    <ContentTemplate>
+                                        <div id="divVendor" class="vendorForm">
+                                            <ul style="padding: 0px;">
+                                                <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
+                                                    <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <span style="font-weight: bold; font-size: 15px; font-style: normal; padding: 15px 15px 5px; display: inline-block;">Add Vendor</span>
+                                                                <asp:LinkButton ID="btnAddNewVenodr" runat="server" OnClick="btnAddNewVenodr_Click" CssClass="btnNewAddress">Add New Vendor</asp:LinkButton>
+                                                            </td>
+                                                            <td colspan="2"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <asp:HiddenField ID="hdnVendorID" runat="server" />
+                                                                <label>Vendor Id #:</label>&nbsp;<asp:LinkButton ID="txtVendorId" runat="server"></asp:LinkButton>
+                                                                <br />
+                                                                <label><span>* </span>Vendor Name:</label><br />
+                                                                <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off"></asp:TextBox><br />
+                                                                <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
+                                                                    ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>Website:</label><br />
+                                                                <asp:DropDownList ID="ddlWebSite" runat="server" TabIndex="2" Width="250px">
+                                                                </asp:DropDownList><br />
+                                                                <asp:TextBox ID="txtWebsite" TabIndex="3" runat="server" MaxLength="100"></asp:TextBox>
+                                                                <asp:Button runat="server" ID="btnAddWebsite" TabIndex="4" Text="Add" ValidationGroup="AddWebsite" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddWebsite_Click" Height="30px" />&nbsp;
+                                                                <asp:RequiredFieldValidator ID="rfvWebSite" runat="server" ControlToValidate="ddlWebSite" Display="Dynamic"
+                                                                    ValidationGroup="addvendor" ErrorMessage="Please Enter Website." ForeColor="Red" InitialValue=""></asp:RequiredFieldValidator>
+                                                                <asp:RegularExpressionValidator ID="revWebsite" runat="server" ControlToValidate="txtWebsite" Display="Dynamic"
+                                                                    ValidationGroup="AddWebsite" ErrorMessage="Please Enter Valid Website." ForeColor="Red" ValidationExpression="(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$" />
+                                                            </td>
+                                                            <td>
+                                                                <label>Vendor Source<asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Green"></asp:Label></label>
+                                                                <asp:DropDownList ID="ddlSource" runat="server" TabIndex="3" Width="250px">
+                                                                </asp:DropDownList>
+                                                                <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
+                                                                <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
+                                                                <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                                                <br />
+                                                                <asp:RequiredFieldValidator ID="rfvSource" runat="server" ControlToValidate="ddlSource" Display="Dynamic" 
+                                                                 ValidationGroup="addvendor" ErrorMessage="Please select the source." ForeColor="Red" InitialValue="0"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label>General Phone No :</label><br />
+                                                                <asp:TextBox ID="txtGeneralPhone" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Vendor Status</label><br />
+                                                                <asp:DropDownList ID="ddlVendorStatus" runat="server" TabIndex="3">
+                                                                    <asp:ListItem Value="Prospect" Selected="True">Prospect</asp:ListItem>
+                                                                    <asp:ListItem Value="Active" style="color: red !important;">Active</asp:ListItem>
+                                                                    <asp:ListItem Value="Deactivate" style="color: gray !important;">Deactivate</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                            <td colspan="2">
+                                                                <label>Hours of operation:</label><br />
+                                                                <asp:CheckBox ID="chk24Hours" runat="server" AutoPostBack="false" Text="24 Hr" />
+                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" TabIndex="3" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
+                                                                </asp:DropDownList>
+                                                                <br />
+                                                                <asp:DropDownList ID="ddlDays" runat="server" TabIndex="3">
+                                                                    <asp:ListItem Value="M-F">Mon-Fri</asp:ListItem>
+                                                                    <asp:ListItem Value="M-S">Mon-Sat</asp:ListItem>
+                                                                    <asp:ListItem Value="Sat">Sat</asp:ListItem>
+                                                                    <asp:ListItem Value="S-S">Sat-Sun</asp:ListItem>
+                                                                    <asp:ListItem Value="Sun">Sun</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:DropDownList ID="ddlFromHours" runat="server" TabIndex="3">
+                                                                </asp:DropDownList>
+                                                                <asp:DropDownList ID="ddlFromAMPM" runat="server" TabIndex="3">
+                                                                    <asp:ListItem Value="AM">AM</asp:ListItem>
+                                                                    <asp:ListItem Value="PM">PM</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:DropDownList ID="ddlToHours" runat="server" TabIndex="3">
+                                                                </asp:DropDownList>
+                                                                <asp:DropDownList ID="ddlToAMPM" runat="server" TabIndex="3">
+                                                                    <asp:ListItem Value="AM">AM</asp:ListItem>
+                                                                    <asp:ListItem Value="PM">PM</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:Button runat="server" ID="btnHoursOfOperation" TabIndex="4" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnHoursOfOperation_Click" Height="30px" />
+                                                                <br />
+                                                                <label>Note : Select 00-AM to 00-AM for Close</label>
+                                                            </td>
+                                                            <td>
+                                                                <label>Fax Number :</label><br />
+                                                                <asp:TextBox ID="txtFaxNumber" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="padding: 0px;">
+                                                                <table class="vendor_table">
+                                                                    <tr class="fixedAddressrow">
+                                                                        <td colspan="2">
+                                                                            <span style="font-weight: bold; font-size: 15px; font-style: normal; padding: 15px 15px 5px; display: inline-block;">Vendor Address</span>
+                                                                            <asp:LinkButton ID="lblNewAddress" runat="server" OnClientClick="return SetVendorEmails(this)" OnClick="lblNewAddress_Click" CssClass="btnNewAddress">Add New Address</asp:LinkButton>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label>Address Location:</label><br />
+                                                                            <asp:DropDownList ID="DrpVendorAddress" TabIndex="1" AutoPostBack="true" OnSelectedIndexChanged="DrpVendorAddress_SelectedIndexChanged" runat="server" Style="width: 180px;" CssClass="clsvendoraddress">
+                                                                                <asp:ListItem Value="0">Primary</asp:ListItem>
+                                                                            </asp:DropDownList>
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                    <tr class="fixedAddressrow">
+                                                                        <td style="width: 12%">
+                                                                            <label>Zip:</label><br />
+                                                                            <asp:TextBox ID="txtPrimaryZip" runat="server" TabIndex="1" placeholder="Zip" CssClass="clstxtZip0" onkeypress="return isNumericKey(event);" autocomplete="off" onblur="GetCityStateOnBlur(this)"></asp:TextBox>
+                                                                        </td>
+                                                                        <td style="width: 12%">
+                                                                            <label>City:</label><br />
+                                                                            <asp:TextBox ID="txtPrimaryCity" runat="server" TabIndex="1" placeholder="City" CssClass="clstxtCity0"></asp:TextBox>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label>State</label><br />
+                                                                            <asp:TextBox ID="txtPrimaryState" runat="server" TabIndex="1" placeholder="State" CssClass="clstxtState0"></asp:TextBox>
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">
+                                                                            <label>Address:</label><br />
+                                                                            <asp:TextBox ID="txtPrimaryAddress" runat="server" TabIndex="1" placeholder="Address" TextMode="MultiLine" Columns="40" Rows="2" CssClass="clstxtAddress0" Width="86%"></asp:TextBox>
+                                                                            <br />
+                                                                            <asp:RequiredFieldValidator ID="RfvAddress" runat="server" ControlToValidate="txtPrimaryAddress" Display="Dynamic"
+                                                                                ValidationGroup="addvendor" ErrorMessage="Please Enter Primary Address." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label>Country:</label><br />
+                                                                            <asp:DropDownList ID="ddlCountry" TabIndex="1" runat="server" Width="190px" CssClass="clstxtCountry0">
+                                                                                <asp:ListItem Value="">Select Country</asp:ListItem>
+                                                                                <asp:ListItem Value="AF">Afghanistan</asp:ListItem>
+                                                                                <asp:ListItem Value="AL">Albania</asp:ListItem>
+                                                                                <asp:ListItem Value="DZ">Algeria</asp:ListItem>
+                                                                                <asp:ListItem Value="AS">American Samoa</asp:ListItem>
+                                                                                <asp:ListItem Value="AD">Andorra</asp:ListItem>
+                                                                                <asp:ListItem Value="AO">Angola</asp:ListItem>
+                                                                                <asp:ListItem Value="AI">Anguilla</asp:ListItem>
+                                                                                <asp:ListItem Value="AQ">Antarctica</asp:ListItem>
+                                                                                <asp:ListItem Value="AG">Antigua And Barbuda</asp:ListItem>
+                                                                                <asp:ListItem Value="AR">Argentina</asp:ListItem>
+                                                                                <asp:ListItem Value="AM">Armenia</asp:ListItem>
+                                                                                <asp:ListItem Value="AW">Aruba</asp:ListItem>
+                                                                                <asp:ListItem Value="AU">Australia</asp:ListItem>
+                                                                                <asp:ListItem Value="AT">Austria</asp:ListItem>
+                                                                                <asp:ListItem Value="AZ">Azerbaijan</asp:ListItem>
+                                                                                <asp:ListItem Value="BS">Bahamas</asp:ListItem>
+                                                                                <asp:ListItem Value="BH">Bahrain</asp:ListItem>
+                                                                                <asp:ListItem Value="BD">Bangladesh</asp:ListItem>
+                                                                                <asp:ListItem Value="BB">Barbados</asp:ListItem>
+                                                                                <asp:ListItem Value="BY">Belarus</asp:ListItem>
+                                                                                <asp:ListItem Value="BE">Belgium</asp:ListItem>
+                                                                                <asp:ListItem Value="BZ">Belize</asp:ListItem>
+                                                                                <asp:ListItem Value="BJ">Benin</asp:ListItem>
+                                                                                <asp:ListItem Value="BM">Bermuda</asp:ListItem>
+                                                                                <asp:ListItem Value="BT">Bhutan</asp:ListItem>
+                                                                                <asp:ListItem Value="BO">Bolivia</asp:ListItem>
+                                                                                <asp:ListItem Value="BA">Bosnia And Herzegowina</asp:ListItem>
+                                                                                <asp:ListItem Value="BW">Botswana</asp:ListItem>
+                                                                                <asp:ListItem Value="BV">Bouvet Island</asp:ListItem>
+                                                                                <asp:ListItem Value="BR">Brazil</asp:ListItem>
+                                                                                <asp:ListItem Value="IO">British Indian Ocean Territory</asp:ListItem>
+                                                                                <asp:ListItem Value="BN">Brunei Darussalam</asp:ListItem>
+                                                                                <asp:ListItem Value="BG">Bulgaria</asp:ListItem>
+                                                                                <asp:ListItem Value="BF">Burkina Faso</asp:ListItem>
+                                                                                <asp:ListItem Value="BI">Burundi</asp:ListItem>
+                                                                                <asp:ListItem Value="KH">Cambodia</asp:ListItem>
+                                                                                <asp:ListItem Value="CM">Cameroon</asp:ListItem>
+                                                                                <asp:ListItem Value="CA">Canada</asp:ListItem>
+                                                                                <asp:ListItem Value="CV">Cape Verde</asp:ListItem>
+                                                                                <asp:ListItem Value="KY">Cayman Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="CF">Central African Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="TD">Chad</asp:ListItem>
+                                                                                <asp:ListItem Value="CL">Chile</asp:ListItem>
+                                                                                <asp:ListItem Value="CN">China</asp:ListItem>
+                                                                                <asp:ListItem Value="CX">Christmas Island</asp:ListItem>
+                                                                                <asp:ListItem Value="CC">Cocos (Keeling) Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="CO">Colombia</asp:ListItem>
+                                                                                <asp:ListItem Value="KM">Comoros</asp:ListItem>
+                                                                                <asp:ListItem Value="CG">Congo</asp:ListItem>
+                                                                                <asp:ListItem Value="CK">Cook Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="CR">Costa Rica</asp:ListItem>
+                                                                                <asp:ListItem Value="CI">Cote D'Ivoire</asp:ListItem>
+                                                                                <asp:ListItem Value="HR">Croatia (Local Name: Hrvatska)</asp:ListItem>
+                                                                                <asp:ListItem Value="CU">Cuba</asp:ListItem>
+                                                                                <asp:ListItem Value="CY">Cyprus</asp:ListItem>
+                                                                                <asp:ListItem Value="CZ">Czech Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="DK">Denmark</asp:ListItem>
+                                                                                <asp:ListItem Value="DJ">Djibouti</asp:ListItem>
+                                                                                <asp:ListItem Value="DM">Dominica</asp:ListItem>
+                                                                                <asp:ListItem Value="DO">Dominican Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="TP">East Timor</asp:ListItem>
+                                                                                <asp:ListItem Value="EC">Ecuador</asp:ListItem>
+                                                                                <asp:ListItem Value="EG">Egypt</asp:ListItem>
+                                                                                <asp:ListItem Value="SV">El Salvador</asp:ListItem>
+                                                                                <asp:ListItem Value="GQ">Equatorial Guinea</asp:ListItem>
+                                                                                <asp:ListItem Value="ER">Eritrea</asp:ListItem>
+                                                                                <asp:ListItem Value="EE">Estonia</asp:ListItem>
+                                                                                <asp:ListItem Value="ET">Ethiopia</asp:ListItem>
+                                                                                <asp:ListItem Value="FK">Falkland Islands (Malvinas)</asp:ListItem>
+                                                                                <asp:ListItem Value="FO">Faroe Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="FJ">Fiji</asp:ListItem>
+                                                                                <asp:ListItem Value="FI">Finland</asp:ListItem>
+                                                                                <asp:ListItem Value="FR">France</asp:ListItem>
+                                                                                <asp:ListItem Value="GF">French Guiana</asp:ListItem>
+                                                                                <asp:ListItem Value="PF">French Polynesia</asp:ListItem>
+                                                                                <asp:ListItem Value="TF">French Southern Territories</asp:ListItem>
+                                                                                <asp:ListItem Value="GA">Gabon</asp:ListItem>
+                                                                                <asp:ListItem Value="GM">Gambia</asp:ListItem>
+                                                                                <asp:ListItem Value="GE">Georgia</asp:ListItem>
+                                                                                <asp:ListItem Value="DE">Germany</asp:ListItem>
+                                                                                <asp:ListItem Value="GH">Ghana</asp:ListItem>
+                                                                                <asp:ListItem Value="GI">Gibraltar</asp:ListItem>
+                                                                                <asp:ListItem Value="GR">Greece</asp:ListItem>
+                                                                                <asp:ListItem Value="GL">Greenland</asp:ListItem>
+                                                                                <asp:ListItem Value="GD">Grenada</asp:ListItem>
+                                                                                <asp:ListItem Value="GP">Guadeloupe</asp:ListItem>
+                                                                                <asp:ListItem Value="GU">Guam</asp:ListItem>
+                                                                                <asp:ListItem Value="GT">Guatemala</asp:ListItem>
+                                                                                <asp:ListItem Value="GN">Guinea</asp:ListItem>
+                                                                                <asp:ListItem Value="GW">Guinea-Bissau</asp:ListItem>
+                                                                                <asp:ListItem Value="GY">Guyana</asp:ListItem>
+                                                                                <asp:ListItem Value="HT">Haiti</asp:ListItem>
+                                                                                <asp:ListItem Value="HM">Heard And Mc Donald Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="VA">Holy See (Vatican City State)</asp:ListItem>
+                                                                                <asp:ListItem Value="HN">Honduras</asp:ListItem>
+                                                                                <asp:ListItem Value="HK">Hong Kong</asp:ListItem>
+                                                                                <asp:ListItem Value="HU">Hungary</asp:ListItem>
+                                                                                <asp:ListItem Value="IS">Icel And</asp:ListItem>
+                                                                                <asp:ListItem Value="IN">India</asp:ListItem>
+                                                                                <asp:ListItem Value="ID">Indonesia</asp:ListItem>
+                                                                                <asp:ListItem Value="IR">Iran (Islamic Republic Of)</asp:ListItem>
+                                                                                <asp:ListItem Value="IQ">Iraq</asp:ListItem>
+                                                                                <asp:ListItem Value="IE">Ireland</asp:ListItem>
+                                                                                <asp:ListItem Value="IL">Israel</asp:ListItem>
+                                                                                <asp:ListItem Value="IT">Italy</asp:ListItem>
+                                                                                <asp:ListItem Value="JM">Jamaica</asp:ListItem>
+                                                                                <asp:ListItem Value="JP">Japan</asp:ListItem>
+                                                                                <asp:ListItem Value="JO">Jordan</asp:ListItem>
+                                                                                <asp:ListItem Value="KZ">Kazakhstan</asp:ListItem>
+                                                                                <asp:ListItem Value="KE">Kenya</asp:ListItem>
+                                                                                <asp:ListItem Value="KI">Kiribati</asp:ListItem>
+                                                                                <asp:ListItem Value="KP">Korea, Dem People'S Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="KR">Korea, Republic Of</asp:ListItem>
+                                                                                <asp:ListItem Value="KW">Kuwait</asp:ListItem>
+                                                                                <asp:ListItem Value="KG">Kyrgyzstan</asp:ListItem>
+                                                                                <asp:ListItem Value="LA">Lao People'S Dem Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="LV">Latvia</asp:ListItem>
+                                                                                <asp:ListItem Value="LB">Lebanon</asp:ListItem>
+                                                                                <asp:ListItem Value="LS">Lesotho</asp:ListItem>
+                                                                                <asp:ListItem Value="LR">Liberia</asp:ListItem>
+                                                                                <asp:ListItem Value="LY">Libyan Arab Jamahiriya</asp:ListItem>
+                                                                                <asp:ListItem Value="LI">Liechtenstein</asp:ListItem>
+                                                                                <asp:ListItem Value="LT">Lithuania</asp:ListItem>
+                                                                                <asp:ListItem Value="LU">Luxembourg</asp:ListItem>
+                                                                                <asp:ListItem Value="MO">Macau</asp:ListItem>
+                                                                                <asp:ListItem Value="MK">Macedonia</asp:ListItem>
+                                                                                <asp:ListItem Value="MG">Madagascar</asp:ListItem>
+                                                                                <asp:ListItem Value="MW">Malawi</asp:ListItem>
+                                                                                <asp:ListItem Value="MY">Malaysia</asp:ListItem>
+                                                                                <asp:ListItem Value="MV">Maldives</asp:ListItem>
+                                                                                <asp:ListItem Value="ML">Mali</asp:ListItem>
+                                                                                <asp:ListItem Value="MT">Malta</asp:ListItem>
+                                                                                <asp:ListItem Value="MH">Marshall Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="MQ">Martinique</asp:ListItem>
+                                                                                <asp:ListItem Value="MR">Mauritania</asp:ListItem>
+                                                                                <asp:ListItem Value="MU">Mauritius</asp:ListItem>
+                                                                                <asp:ListItem Value="YT">Mayotte</asp:ListItem>
+                                                                                <asp:ListItem Value="MX">Mexico</asp:ListItem>
+                                                                                <asp:ListItem Value="FM">Micronesia, Federated States</asp:ListItem>
+                                                                                <asp:ListItem Value="MD">Moldova, Republic Of</asp:ListItem>
+                                                                                <asp:ListItem Value="MC">Monaco</asp:ListItem>
+                                                                                <asp:ListItem Value="MN">Mongolia</asp:ListItem>
+                                                                                <asp:ListItem Value="MS">Montserrat</asp:ListItem>
+                                                                                <asp:ListItem Value="MA">Morocco</asp:ListItem>
+                                                                                <asp:ListItem Value="MZ">Mozambique</asp:ListItem>
+                                                                                <asp:ListItem Value="MM">Myanmar</asp:ListItem>
+                                                                                <asp:ListItem Value="NA">Namibia</asp:ListItem>
+                                                                                <asp:ListItem Value="NR">Nauru</asp:ListItem>
+                                                                                <asp:ListItem Value="NP">Nepal</asp:ListItem>
+                                                                                <asp:ListItem Value="NL">Netherlands</asp:ListItem>
+                                                                                <asp:ListItem Value="AN">Netherlands Ant Illes</asp:ListItem>
+                                                                                <asp:ListItem Value="NC">New Caledonia</asp:ListItem>
+                                                                                <asp:ListItem Value="NZ">New Zealand</asp:ListItem>
+                                                                                <asp:ListItem Value="NI">Nicaragua</asp:ListItem>
+                                                                                <asp:ListItem Value="NE">Niger</asp:ListItem>
+                                                                                <asp:ListItem Value="NG">Nigeria</asp:ListItem>
+                                                                                <asp:ListItem Value="NU">Niue</asp:ListItem>
+                                                                                <asp:ListItem Value="NF">Norfolk Island</asp:ListItem>
+                                                                                <asp:ListItem Value="MP">Northern Mariana Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="NO">Norway</asp:ListItem>
+                                                                                <asp:ListItem Value="OM">Oman</asp:ListItem>
+                                                                                <asp:ListItem Value="PK">Pakistan</asp:ListItem>
+                                                                                <asp:ListItem Value="PW">Palau</asp:ListItem>
+                                                                                <asp:ListItem Value="PA">Panama</asp:ListItem>
+                                                                                <asp:ListItem Value="PG">Papua New Guinea</asp:ListItem>
+                                                                                <asp:ListItem Value="PY">Paraguay</asp:ListItem>
+                                                                                <asp:ListItem Value="PE">Peru</asp:ListItem>
+                                                                                <asp:ListItem Value="PH">Philippines</asp:ListItem>
+                                                                                <asp:ListItem Value="PN">Pitcairn</asp:ListItem>
+                                                                                <asp:ListItem Value="PL">Poland</asp:ListItem>
+                                                                                <asp:ListItem Value="PT">Portugal</asp:ListItem>
+                                                                                <asp:ListItem Value="PR">Puerto Rico</asp:ListItem>
+                                                                                <asp:ListItem Value="QA">Qatar</asp:ListItem>
+                                                                                <asp:ListItem Value="RE">Reunion</asp:ListItem>
+                                                                                <asp:ListItem Value="RO">Romania</asp:ListItem>
+                                                                                <asp:ListItem Value="RU">Russian Federation</asp:ListItem>
+                                                                                <asp:ListItem Value="RW">Rwanda</asp:ListItem>
+                                                                                <asp:ListItem Value="KN">Saint K Itts And Nevis</asp:ListItem>
+                                                                                <asp:ListItem Value="LC">Saint Lucia</asp:ListItem>
+                                                                                <asp:ListItem Value="VC">Saint Vincent, The Grenadines</asp:ListItem>
+                                                                                <asp:ListItem Value="WS">Samoa</asp:ListItem>
+                                                                                <asp:ListItem Value="SM">San Marino</asp:ListItem>
+                                                                                <asp:ListItem Value="ST">Sao Tome And Principe</asp:ListItem>
+                                                                                <asp:ListItem Value="SA">Saudi Arabia</asp:ListItem>
+                                                                                <asp:ListItem Value="SN">Senegal</asp:ListItem>
+                                                                                <asp:ListItem Value="SC">Seychelles</asp:ListItem>
+                                                                                <asp:ListItem Value="SL">Sierra Leone</asp:ListItem>
+                                                                                <asp:ListItem Value="SG">Singapore</asp:ListItem>
+                                                                                <asp:ListItem Value="SK">Slovakia (Slovak Republic)</asp:ListItem>
+                                                                                <asp:ListItem Value="SI">Slovenia</asp:ListItem>
+                                                                                <asp:ListItem Value="SB">Solomon Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="SO">Somalia</asp:ListItem>
+                                                                                <asp:ListItem Value="ZA">South Africa</asp:ListItem>
+                                                                                <asp:ListItem Value="GS">South Georgia , S Sandwich Is.</asp:ListItem>
+                                                                                <asp:ListItem Value="ES">Spain</asp:ListItem>
+                                                                                <asp:ListItem Value="LK">Sri Lanka</asp:ListItem>
+                                                                                <asp:ListItem Value="SH">St. Helena</asp:ListItem>
+                                                                                <asp:ListItem Value="PM">St. Pierre And Miquelon</asp:ListItem>
+                                                                                <asp:ListItem Value="SD">Sudan</asp:ListItem>
+                                                                                <asp:ListItem Value="SR">Suriname</asp:ListItem>
+                                                                                <asp:ListItem Value="SJ">Svalbard, Jan Mayen Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="SZ">Sw Aziland</asp:ListItem>
+                                                                                <asp:ListItem Value="SE">Sweden</asp:ListItem>
+                                                                                <asp:ListItem Value="CH">Switzerland</asp:ListItem>
+                                                                                <asp:ListItem Value="SY">Syrian Arab Republic</asp:ListItem>
+                                                                                <asp:ListItem Value="TW">Taiwan</asp:ListItem>
+                                                                                <asp:ListItem Value="TJ">Tajikistan</asp:ListItem>
+                                                                                <asp:ListItem Value="TZ">Tanzania, United Republic Of</asp:ListItem>
+                                                                                <asp:ListItem Value="TH">Thailand</asp:ListItem>
+                                                                                <asp:ListItem Value="TG">Togo</asp:ListItem>
+                                                                                <asp:ListItem Value="TK">Tokelau</asp:ListItem>
+                                                                                <asp:ListItem Value="TO">Tonga</asp:ListItem>
+                                                                                <asp:ListItem Value="TT">Trinidad And Tobago</asp:ListItem>
+                                                                                <asp:ListItem Value="TN">Tunisia</asp:ListItem>
+                                                                                <asp:ListItem Value="TR">Turkey</asp:ListItem>
+                                                                                <asp:ListItem Value="TM">Turkmenistan</asp:ListItem>
+                                                                                <asp:ListItem Value="TC">Turks And Caicos Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="TV">Tuvalu</asp:ListItem>
+                                                                                <asp:ListItem Value="UG">Uganda</asp:ListItem>
+                                                                                <asp:ListItem Value="UA">Ukraine</asp:ListItem>
+                                                                                <asp:ListItem Value="AE">United Arab Emirates</asp:ListItem>
+                                                                                <asp:ListItem Value="GB">United Kingdom</asp:ListItem>
+                                                                                <asp:ListItem Value="US" Selected="True">United States</asp:ListItem>
+                                                                                <asp:ListItem Value="UM">United States Minor Is.</asp:ListItem>
+                                                                                <asp:ListItem Value="UY">Uruguay</asp:ListItem>
+                                                                                <asp:ListItem Value="UZ">Uzbekistan</asp:ListItem>
+                                                                                <asp:ListItem Value="VU">Vanuatu</asp:ListItem>
+                                                                                <asp:ListItem Value="VE">Venezuela</asp:ListItem>
+                                                                                <asp:ListItem Value="VN">Viet Nam</asp:ListItem>
+                                                                                <asp:ListItem Value="VG">Virgin Islands (British)</asp:ListItem>
+                                                                                <asp:ListItem Value="VI">Virgin Islands (U.S.)</asp:ListItem>
+                                                                                <asp:ListItem Value="WF">Wallis And Futuna Islands</asp:ListItem>
+                                                                                <asp:ListItem Value="EH">Western Sahara</asp:ListItem>
+                                                                                <asp:ListItem Value="YE">Yemen</asp:ListItem>
+                                                                                <asp:ListItem Value="ZR">Zaire</asp:ListItem>
+                                                                                <asp:ListItem Value="ZM">Zambia</asp:ListItem>
+                                                                                <asp:ListItem Value="ZW">Zimbabwe</asp:ListItem>
+                                                                            </asp:DropDownList>
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3" style="border-bottom: 0px none #000 !important;">
+                                                                            <label>Contact Preference : </label>
+                                                                            &nbsp;&nbsp;
+                                                                        <asp:CheckBox ID="chkContactPreferenceEmail" runat="server" Text="Email" />&nbsp;&nbsp;
+                                                                        <asp:CheckBox ID="chkContactPreferenceCall" runat="server" Text="Call" />&nbsp;&nbsp;
+                                                                        <asp:CheckBox ID="chkContactPreferenceText" runat="server" Text="Text" />&nbsp;&nbsp;
+                                                                        <asp:CheckBox ID="chkContactPreferenceMail" runat="server" Text="Mail" />&nbsp;&nbsp;
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <div style="width: 100%; overflow: auto;">
+                                                        <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
+                                                            <tr>
+                                                                <td colspan="4" style="padding: 0px;">
+                                                                    <table id="tblPrimaryEmail" style="margin: 0px;">
                                                                         <tr>
-                                                                            <td colspan="2">
-                                                                                <label>Address:</label><br />
-                                                                                <asp:TextBox ID="txtPrimaryAddress" runat="server" TabIndex="1" placeholder="Address" TextMode="MultiLine" Columns="40" Rows="2" CssClass="clstxtAddress0" Width="86%"></asp:TextBox>
-                                                                                <asp:RequiredFieldValidator ID="RfvAddress" runat="server" ControlToValidate="txtPrimaryAddress" Display="Dynamic"
-                                                                                    ValidationGroup="addvendor" ErrorMessage="Please Enter Primary Address." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                                            <td>
+
+                                                                                <label>
+                                                                                    Primary Contact Email
+                                                                                </label>
+                                                                                <div class="newEmaildiv">
+                                                                                    <asp:TextBox ID="txtPrimaryEmail0" runat="server" placeholder='Email' class="clsemail" MaxLength="50" />
+                                                                                    <br />
+                                                                                    <a style="cursor: pointer" tabindex="1" data-emailtype="Primary" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
+                                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Email</a>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    First Name</label><br />
+                                                                                <asp:TextBox ID="txtPrimaryFName0" runat="server" TabIndex="1" MaxLength="50" class="clsfname" />
                                                                             </td>
 
-
                                                                             <td>
-                                                                                <label>Country:</label><br />
-                                                                                <asp:DropDownList ID="ddlCountry" TabIndex="1" runat="server" Width="190px" CssClass="clstxtCountry0">
-                                                                                    <asp:ListItem Value="">Select Country</asp:ListItem>
-                                                                                    <asp:ListItem Value="AF">Afghanistan</asp:ListItem>
-                                                                                    <asp:ListItem Value="AL">Albania</asp:ListItem>
-                                                                                    <asp:ListItem Value="DZ">Algeria</asp:ListItem>
-                                                                                    <asp:ListItem Value="AS">American Samoa</asp:ListItem>
-                                                                                    <asp:ListItem Value="AD">Andorra</asp:ListItem>
-                                                                                    <asp:ListItem Value="AO">Angola</asp:ListItem>
-                                                                                    <asp:ListItem Value="AI">Anguilla</asp:ListItem>
-                                                                                    <asp:ListItem Value="AQ">Antarctica</asp:ListItem>
-                                                                                    <asp:ListItem Value="AG">Antigua And Barbuda</asp:ListItem>
-                                                                                    <asp:ListItem Value="AR">Argentina</asp:ListItem>
-                                                                                    <asp:ListItem Value="AM">Armenia</asp:ListItem>
-                                                                                    <asp:ListItem Value="AW">Aruba</asp:ListItem>
-                                                                                    <asp:ListItem Value="AU">Australia</asp:ListItem>
-                                                                                    <asp:ListItem Value="AT">Austria</asp:ListItem>
-                                                                                    <asp:ListItem Value="AZ">Azerbaijan</asp:ListItem>
-                                                                                    <asp:ListItem Value="BS">Bahamas</asp:ListItem>
-                                                                                    <asp:ListItem Value="BH">Bahrain</asp:ListItem>
-                                                                                    <asp:ListItem Value="BD">Bangladesh</asp:ListItem>
-                                                                                    <asp:ListItem Value="BB">Barbados</asp:ListItem>
-                                                                                    <asp:ListItem Value="BY">Belarus</asp:ListItem>
-                                                                                    <asp:ListItem Value="BE">Belgium</asp:ListItem>
-                                                                                    <asp:ListItem Value="BZ">Belize</asp:ListItem>
-                                                                                    <asp:ListItem Value="BJ">Benin</asp:ListItem>
-                                                                                    <asp:ListItem Value="BM">Bermuda</asp:ListItem>
-                                                                                    <asp:ListItem Value="BT">Bhutan</asp:ListItem>
-                                                                                    <asp:ListItem Value="BO">Bolivia</asp:ListItem>
-                                                                                    <asp:ListItem Value="BA">Bosnia And Herzegowina</asp:ListItem>
-                                                                                    <asp:ListItem Value="BW">Botswana</asp:ListItem>
-                                                                                    <asp:ListItem Value="BV">Bouvet Island</asp:ListItem>
-                                                                                    <asp:ListItem Value="BR">Brazil</asp:ListItem>
-                                                                                    <asp:ListItem Value="IO">British Indian Ocean Territory</asp:ListItem>
-                                                                                    <asp:ListItem Value="BN">Brunei Darussalam</asp:ListItem>
-                                                                                    <asp:ListItem Value="BG">Bulgaria</asp:ListItem>
-                                                                                    <asp:ListItem Value="BF">Burkina Faso</asp:ListItem>
-                                                                                    <asp:ListItem Value="BI">Burundi</asp:ListItem>
-                                                                                    <asp:ListItem Value="KH">Cambodia</asp:ListItem>
-                                                                                    <asp:ListItem Value="CM">Cameroon</asp:ListItem>
-                                                                                    <asp:ListItem Value="CA">Canada</asp:ListItem>
-                                                                                    <asp:ListItem Value="CV">Cape Verde</asp:ListItem>
-                                                                                    <asp:ListItem Value="KY">Cayman Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="CF">Central African Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="TD">Chad</asp:ListItem>
-                                                                                    <asp:ListItem Value="CL">Chile</asp:ListItem>
-                                                                                    <asp:ListItem Value="CN">China</asp:ListItem>
-                                                                                    <asp:ListItem Value="CX">Christmas Island</asp:ListItem>
-                                                                                    <asp:ListItem Value="CC">Cocos (Keeling) Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="CO">Colombia</asp:ListItem>
-                                                                                    <asp:ListItem Value="KM">Comoros</asp:ListItem>
-                                                                                    <asp:ListItem Value="CG">Congo</asp:ListItem>
-                                                                                    <asp:ListItem Value="CK">Cook Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="CR">Costa Rica</asp:ListItem>
-                                                                                    <asp:ListItem Value="CI">Cote D'Ivoire</asp:ListItem>
-                                                                                    <asp:ListItem Value="HR">Croatia (Local Name: Hrvatska)</asp:ListItem>
-                                                                                    <asp:ListItem Value="CU">Cuba</asp:ListItem>
-                                                                                    <asp:ListItem Value="CY">Cyprus</asp:ListItem>
-                                                                                    <asp:ListItem Value="CZ">Czech Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="DK">Denmark</asp:ListItem>
-                                                                                    <asp:ListItem Value="DJ">Djibouti</asp:ListItem>
-                                                                                    <asp:ListItem Value="DM">Dominica</asp:ListItem>
-                                                                                    <asp:ListItem Value="DO">Dominican Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="TP">East Timor</asp:ListItem>
-                                                                                    <asp:ListItem Value="EC">Ecuador</asp:ListItem>
-                                                                                    <asp:ListItem Value="EG">Egypt</asp:ListItem>
-                                                                                    <asp:ListItem Value="SV">El Salvador</asp:ListItem>
-                                                                                    <asp:ListItem Value="GQ">Equatorial Guinea</asp:ListItem>
-                                                                                    <asp:ListItem Value="ER">Eritrea</asp:ListItem>
-                                                                                    <asp:ListItem Value="EE">Estonia</asp:ListItem>
-                                                                                    <asp:ListItem Value="ET">Ethiopia</asp:ListItem>
-                                                                                    <asp:ListItem Value="FK">Falkland Islands (Malvinas)</asp:ListItem>
-                                                                                    <asp:ListItem Value="FO">Faroe Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="FJ">Fiji</asp:ListItem>
-                                                                                    <asp:ListItem Value="FI">Finland</asp:ListItem>
-                                                                                    <asp:ListItem Value="FR">France</asp:ListItem>
-                                                                                    <asp:ListItem Value="GF">French Guiana</asp:ListItem>
-                                                                                    <asp:ListItem Value="PF">French Polynesia</asp:ListItem>
-                                                                                    <asp:ListItem Value="TF">French Southern Territories</asp:ListItem>
-                                                                                    <asp:ListItem Value="GA">Gabon</asp:ListItem>
-                                                                                    <asp:ListItem Value="GM">Gambia</asp:ListItem>
-                                                                                    <asp:ListItem Value="GE">Georgia</asp:ListItem>
-                                                                                    <asp:ListItem Value="DE">Germany</asp:ListItem>
-                                                                                    <asp:ListItem Value="GH">Ghana</asp:ListItem>
-                                                                                    <asp:ListItem Value="GI">Gibraltar</asp:ListItem>
-                                                                                    <asp:ListItem Value="GR">Greece</asp:ListItem>
-                                                                                    <asp:ListItem Value="GL">Greenland</asp:ListItem>
-                                                                                    <asp:ListItem Value="GD">Grenada</asp:ListItem>
-                                                                                    <asp:ListItem Value="GP">Guadeloupe</asp:ListItem>
-                                                                                    <asp:ListItem Value="GU">Guam</asp:ListItem>
-                                                                                    <asp:ListItem Value="GT">Guatemala</asp:ListItem>
-                                                                                    <asp:ListItem Value="GN">Guinea</asp:ListItem>
-                                                                                    <asp:ListItem Value="GW">Guinea-Bissau</asp:ListItem>
-                                                                                    <asp:ListItem Value="GY">Guyana</asp:ListItem>
-                                                                                    <asp:ListItem Value="HT">Haiti</asp:ListItem>
-                                                                                    <asp:ListItem Value="HM">Heard And Mc Donald Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="VA">Holy See (Vatican City State)</asp:ListItem>
-                                                                                    <asp:ListItem Value="HN">Honduras</asp:ListItem>
-                                                                                    <asp:ListItem Value="HK">Hong Kong</asp:ListItem>
-                                                                                    <asp:ListItem Value="HU">Hungary</asp:ListItem>
-                                                                                    <asp:ListItem Value="IS">Icel And</asp:ListItem>
-                                                                                    <asp:ListItem Value="IN">India</asp:ListItem>
-                                                                                    <asp:ListItem Value="ID">Indonesia</asp:ListItem>
-                                                                                    <asp:ListItem Value="IR">Iran (Islamic Republic Of)</asp:ListItem>
-                                                                                    <asp:ListItem Value="IQ">Iraq</asp:ListItem>
-                                                                                    <asp:ListItem Value="IE">Ireland</asp:ListItem>
-                                                                                    <asp:ListItem Value="IL">Israel</asp:ListItem>
-                                                                                    <asp:ListItem Value="IT">Italy</asp:ListItem>
-                                                                                    <asp:ListItem Value="JM">Jamaica</asp:ListItem>
-                                                                                    <asp:ListItem Value="JP">Japan</asp:ListItem>
-                                                                                    <asp:ListItem Value="JO">Jordan</asp:ListItem>
-                                                                                    <asp:ListItem Value="KZ">Kazakhstan</asp:ListItem>
-                                                                                    <asp:ListItem Value="KE">Kenya</asp:ListItem>
-                                                                                    <asp:ListItem Value="KI">Kiribati</asp:ListItem>
-                                                                                    <asp:ListItem Value="KP">Korea, Dem People'S Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="KR">Korea, Republic Of</asp:ListItem>
-                                                                                    <asp:ListItem Value="KW">Kuwait</asp:ListItem>
-                                                                                    <asp:ListItem Value="KG">Kyrgyzstan</asp:ListItem>
-                                                                                    <asp:ListItem Value="LA">Lao People'S Dem Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="LV">Latvia</asp:ListItem>
-                                                                                    <asp:ListItem Value="LB">Lebanon</asp:ListItem>
-                                                                                    <asp:ListItem Value="LS">Lesotho</asp:ListItem>
-                                                                                    <asp:ListItem Value="LR">Liberia</asp:ListItem>
-                                                                                    <asp:ListItem Value="LY">Libyan Arab Jamahiriya</asp:ListItem>
-                                                                                    <asp:ListItem Value="LI">Liechtenstein</asp:ListItem>
-                                                                                    <asp:ListItem Value="LT">Lithuania</asp:ListItem>
-                                                                                    <asp:ListItem Value="LU">Luxembourg</asp:ListItem>
-                                                                                    <asp:ListItem Value="MO">Macau</asp:ListItem>
-                                                                                    <asp:ListItem Value="MK">Macedonia</asp:ListItem>
-                                                                                    <asp:ListItem Value="MG">Madagascar</asp:ListItem>
-                                                                                    <asp:ListItem Value="MW">Malawi</asp:ListItem>
-                                                                                    <asp:ListItem Value="MY">Malaysia</asp:ListItem>
-                                                                                    <asp:ListItem Value="MV">Maldives</asp:ListItem>
-                                                                                    <asp:ListItem Value="ML">Mali</asp:ListItem>
-                                                                                    <asp:ListItem Value="MT">Malta</asp:ListItem>
-                                                                                    <asp:ListItem Value="MH">Marshall Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="MQ">Martinique</asp:ListItem>
-                                                                                    <asp:ListItem Value="MR">Mauritania</asp:ListItem>
-                                                                                    <asp:ListItem Value="MU">Mauritius</asp:ListItem>
-                                                                                    <asp:ListItem Value="YT">Mayotte</asp:ListItem>
-                                                                                    <asp:ListItem Value="MX">Mexico</asp:ListItem>
-                                                                                    <asp:ListItem Value="FM">Micronesia, Federated States</asp:ListItem>
-                                                                                    <asp:ListItem Value="MD">Moldova, Republic Of</asp:ListItem>
-                                                                                    <asp:ListItem Value="MC">Monaco</asp:ListItem>
-                                                                                    <asp:ListItem Value="MN">Mongolia</asp:ListItem>
-                                                                                    <asp:ListItem Value="MS">Montserrat</asp:ListItem>
-                                                                                    <asp:ListItem Value="MA">Morocco</asp:ListItem>
-                                                                                    <asp:ListItem Value="MZ">Mozambique</asp:ListItem>
-                                                                                    <asp:ListItem Value="MM">Myanmar</asp:ListItem>
-                                                                                    <asp:ListItem Value="NA">Namibia</asp:ListItem>
-                                                                                    <asp:ListItem Value="NR">Nauru</asp:ListItem>
-                                                                                    <asp:ListItem Value="NP">Nepal</asp:ListItem>
-                                                                                    <asp:ListItem Value="NL">Netherlands</asp:ListItem>
-                                                                                    <asp:ListItem Value="AN">Netherlands Ant Illes</asp:ListItem>
-                                                                                    <asp:ListItem Value="NC">New Caledonia</asp:ListItem>
-                                                                                    <asp:ListItem Value="NZ">New Zealand</asp:ListItem>
-                                                                                    <asp:ListItem Value="NI">Nicaragua</asp:ListItem>
-                                                                                    <asp:ListItem Value="NE">Niger</asp:ListItem>
-                                                                                    <asp:ListItem Value="NG">Nigeria</asp:ListItem>
-                                                                                    <asp:ListItem Value="NU">Niue</asp:ListItem>
-                                                                                    <asp:ListItem Value="NF">Norfolk Island</asp:ListItem>
-                                                                                    <asp:ListItem Value="MP">Northern Mariana Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="NO">Norway</asp:ListItem>
-                                                                                    <asp:ListItem Value="OM">Oman</asp:ListItem>
-                                                                                    <asp:ListItem Value="PK">Pakistan</asp:ListItem>
-                                                                                    <asp:ListItem Value="PW">Palau</asp:ListItem>
-                                                                                    <asp:ListItem Value="PA">Panama</asp:ListItem>
-                                                                                    <asp:ListItem Value="PG">Papua New Guinea</asp:ListItem>
-                                                                                    <asp:ListItem Value="PY">Paraguay</asp:ListItem>
-                                                                                    <asp:ListItem Value="PE">Peru</asp:ListItem>
-                                                                                    <asp:ListItem Value="PH">Philippines</asp:ListItem>
-                                                                                    <asp:ListItem Value="PN">Pitcairn</asp:ListItem>
-                                                                                    <asp:ListItem Value="PL">Poland</asp:ListItem>
-                                                                                    <asp:ListItem Value="PT">Portugal</asp:ListItem>
-                                                                                    <asp:ListItem Value="PR">Puerto Rico</asp:ListItem>
-                                                                                    <asp:ListItem Value="QA">Qatar</asp:ListItem>
-                                                                                    <asp:ListItem Value="RE">Reunion</asp:ListItem>
-                                                                                    <asp:ListItem Value="RO">Romania</asp:ListItem>
-                                                                                    <asp:ListItem Value="RU">Russian Federation</asp:ListItem>
-                                                                                    <asp:ListItem Value="RW">Rwanda</asp:ListItem>
-                                                                                    <asp:ListItem Value="KN">Saint K Itts And Nevis</asp:ListItem>
-                                                                                    <asp:ListItem Value="LC">Saint Lucia</asp:ListItem>
-                                                                                    <asp:ListItem Value="VC">Saint Vincent, The Grenadines</asp:ListItem>
-                                                                                    <asp:ListItem Value="WS">Samoa</asp:ListItem>
-                                                                                    <asp:ListItem Value="SM">San Marino</asp:ListItem>
-                                                                                    <asp:ListItem Value="ST">Sao Tome And Principe</asp:ListItem>
-                                                                                    <asp:ListItem Value="SA">Saudi Arabia</asp:ListItem>
-                                                                                    <asp:ListItem Value="SN">Senegal</asp:ListItem>
-                                                                                    <asp:ListItem Value="SC">Seychelles</asp:ListItem>
-                                                                                    <asp:ListItem Value="SL">Sierra Leone</asp:ListItem>
-                                                                                    <asp:ListItem Value="SG">Singapore</asp:ListItem>
-                                                                                    <asp:ListItem Value="SK">Slovakia (Slovak Republic)</asp:ListItem>
-                                                                                    <asp:ListItem Value="SI">Slovenia</asp:ListItem>
-                                                                                    <asp:ListItem Value="SB">Solomon Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="SO">Somalia</asp:ListItem>
-                                                                                    <asp:ListItem Value="ZA">South Africa</asp:ListItem>
-                                                                                    <asp:ListItem Value="GS">South Georgia , S Sandwich Is.</asp:ListItem>
-                                                                                    <asp:ListItem Value="ES">Spain</asp:ListItem>
-                                                                                    <asp:ListItem Value="LK">Sri Lanka</asp:ListItem>
-                                                                                    <asp:ListItem Value="SH">St. Helena</asp:ListItem>
-                                                                                    <asp:ListItem Value="PM">St. Pierre And Miquelon</asp:ListItem>
-                                                                                    <asp:ListItem Value="SD">Sudan</asp:ListItem>
-                                                                                    <asp:ListItem Value="SR">Suriname</asp:ListItem>
-                                                                                    <asp:ListItem Value="SJ">Svalbard, Jan Mayen Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="SZ">Sw Aziland</asp:ListItem>
-                                                                                    <asp:ListItem Value="SE">Sweden</asp:ListItem>
-                                                                                    <asp:ListItem Value="CH">Switzerland</asp:ListItem>
-                                                                                    <asp:ListItem Value="SY">Syrian Arab Republic</asp:ListItem>
-                                                                                    <asp:ListItem Value="TW">Taiwan</asp:ListItem>
-                                                                                    <asp:ListItem Value="TJ">Tajikistan</asp:ListItem>
-                                                                                    <asp:ListItem Value="TZ">Tanzania, United Republic Of</asp:ListItem>
-                                                                                    <asp:ListItem Value="TH">Thailand</asp:ListItem>
-                                                                                    <asp:ListItem Value="TG">Togo</asp:ListItem>
-                                                                                    <asp:ListItem Value="TK">Tokelau</asp:ListItem>
-                                                                                    <asp:ListItem Value="TO">Tonga</asp:ListItem>
-                                                                                    <asp:ListItem Value="TT">Trinidad And Tobago</asp:ListItem>
-                                                                                    <asp:ListItem Value="TN">Tunisia</asp:ListItem>
-                                                                                    <asp:ListItem Value="TR">Turkey</asp:ListItem>
-                                                                                    <asp:ListItem Value="TM">Turkmenistan</asp:ListItem>
-                                                                                    <asp:ListItem Value="TC">Turks And Caicos Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="TV">Tuvalu</asp:ListItem>
-                                                                                    <asp:ListItem Value="UG">Uganda</asp:ListItem>
-                                                                                    <asp:ListItem Value="UA">Ukraine</asp:ListItem>
-                                                                                    <asp:ListItem Value="AE">United Arab Emirates</asp:ListItem>
-                                                                                    <asp:ListItem Value="GB">United Kingdom</asp:ListItem>
-                                                                                    <asp:ListItem Value="US" Selected="True">United States</asp:ListItem>
-                                                                                    <asp:ListItem Value="UM">United States Minor Is.</asp:ListItem>
-                                                                                    <asp:ListItem Value="UY">Uruguay</asp:ListItem>
-                                                                                    <asp:ListItem Value="UZ">Uzbekistan</asp:ListItem>
-                                                                                    <asp:ListItem Value="VU">Vanuatu</asp:ListItem>
-                                                                                    <asp:ListItem Value="VE">Venezuela</asp:ListItem>
-                                                                                    <asp:ListItem Value="VN">Viet Nam</asp:ListItem>
-                                                                                    <asp:ListItem Value="VG">Virgin Islands (British)</asp:ListItem>
-                                                                                    <asp:ListItem Value="VI">Virgin Islands (U.S.)</asp:ListItem>
-                                                                                    <asp:ListItem Value="WF">Wallis And Futuna Islands</asp:ListItem>
-                                                                                    <asp:ListItem Value="EH">Western Sahara</asp:ListItem>
-                                                                                    <asp:ListItem Value="YE">Yemen</asp:ListItem>
-                                                                                    <asp:ListItem Value="ZR">Zaire</asp:ListItem>
-                                                                                    <asp:ListItem Value="ZM">Zambia</asp:ListItem>
-                                                                                    <asp:ListItem Value="ZW">Zimbabwe</asp:ListItem>
-                                                                                </asp:DropDownList>
+                                                                                <label>
+                                                                                    Last Name</label><br />
+                                                                                <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50" class="clslname" />
+                                                                                <%--    <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
+                                                                                <br />
 
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>Title</label><br />
+                                                                                <asp:DropDownList ID="ddlPrimaryTitle0" runat="server" class="clstitle">
+                                                                                    <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                    <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
+                                                                                    <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                                    <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                                    <asp:ListItem Value="Manager">Manager</asp:ListItem>
+                                                                                    <asp:ListItem Value="Owner">Owner</asp:ListItem>
+                                                                                    <asp:ListItem Value="Others">Others</asp:ListItem>
+                                                                                </asp:DropDownList>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Contact #
+                                                                                </label>
+                                                                                <br />
+                                                                                <div class='newcontactdiv' style="width: 605px;">
+                                                                                    <asp:TextBox ID="txtPrimaryContact0" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone" Width="50%"></asp:TextBox>
+                                                                                    <asp:TextBox ID="txtPrimaryContactExten0" TabIndex="1" runat="server" placeholder="Extension" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" MaxLength="6" Width="34%"></asp:TextBox>
+                                                                                    <label>Phone Type</label>
+                                                                                    <asp:DropDownList ID="ddlPrimaryPhoneType0" runat="server" class="clsphonetype">
+                                                                                        <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                        <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="House">House Phone  #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
+                                                                                    </asp:DropDownList>
+                                                                                    <br />
+                                                                                    <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Contact</a><br />
+                                                                                </div>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Fax</label><br />
+                                                                                <asp:TextBox ID="txtPrimaryFax0" runat="server" MaxLength="15" class="clsfax" onkeypress="return isNumericKey(event);"></asp:TextBox>
+                                                                                <br />
                                                                             </td>
                                                                         </tr>
                                                                     </table>
-                                                                </legend>
-                                                            </fieldset>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <table id="tblPrimaryEmail" style="margin: 0px;">
-                                                                <tr>
-                                                                    <td>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="4" style="padding: 0px;">
+                                                                    <table id="tblSecEmail" style="margin: 0px; padding: 0px;">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Secondary Contact Email</label><br />
+                                                                                <div class="newEmaildiv">
+                                                                                    <asp:TextBox ID="txtSecEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
+                                                                                    <br />
+                                                                                    <a style="cursor: pointer" tabindex="1" data-emailtype="Sec" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp; 
+                                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Sec" data-type="0">Add Email</a>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    First Name</label><br />
+                                                                                <asp:TextBox ID="txtSecFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
+                                                                                <%--<asp:TextBox ID="txtSecFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
+                                                                            </td>
 
-                                                                        <label>
-                                                                            Primary Contact Email
-                                                                        </label>
-                                                                        <div class="newEmaildiv">
-                                                                            <asp:TextBox ID="txtPrimaryEmail0" runat="server" placeholder='Email' class="clsemail" MaxLength="50" />
-                                                                            <br />
-                                                                            <a style="cursor: pointer" tabindex="1" data-emailtype="Primary" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
-                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Email</a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            First Name</label><br />
-                                                                        <asp:TextBox ID="txtPrimaryFName0" runat="server" TabIndex="1" MaxLength="50" class="clsfname" />
-                                                                    </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Last Name</label><br />
+                                                                                <asp:TextBox ID="txtSecLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
+                                                                                <%--  <asp:TextBox ID="txtSecLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
+                                                                                <br />
 
-                                                                    <td>
-                                                                        <label>
-                                                                            Last Name</label><br />
-                                                                        <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50" class="clslname" />
-                                                                        <%--    <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
-                                                                        <br />
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>Title</label><br />
+                                                                                <asp:DropDownList ID="ddlSecTitle0" runat="server" class="clstitle">
+                                                                                    <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                    <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
+                                                                                    <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                                    <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                                    <asp:ListItem Value="Manager">Manager</asp:ListItem>
+                                                                                    <asp:ListItem Value="Owner">Owner</asp:ListItem>
+                                                                                    <asp:ListItem Value="Others">Others</asp:ListItem>
+                                                                                </asp:DropDownList>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Contact #
+                                                                                </label>
+                                                                                <br />
+                                                                                <div class='newcontactdiv' style="width: 605px;">
+                                                                                    <asp:TextBox ID="txtSecContact0" TabIndex="1" runat="server" MaxLength="10" onkeypress="return isNumericKey(event);" placeholder='___-___-____' CssClass="clsmaskphone" Width="50%"></asp:TextBox>
+                                                                                    <asp:TextBox ID="txtSecContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="35%"></asp:TextBox>
+                                                                                    <label>Phone Type</label>
+                                                                                    <asp:DropDownList ID="ddlSecPhoneType0" runat="server" class="clsphonetype">
+                                                                                        <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                        <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="House">House Phone  #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
+                                                                                    </asp:DropDownList>
+                                                                                    <br />
+                                                                                    <a onclick="AddContact(this)" tabindex="1" data-emailtype="Sec" style="cursor: pointer" data-type="0">Add Contact</a>
+                                                                                    <br />
+                                                                                </div>
 
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>Title</label><br />
-                                                                        <asp:DropDownList ID="ddlPrimaryTitle0" runat="server" class="clstitle">
-                                                                            <asp:ListItem Value="">Select</asp:ListItem>
-                                                                            <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
-                                                                            <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
-                                                                            <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
-                                                                            <asp:ListItem Value="Manager">Manager</asp:ListItem>
-                                                                            <asp:ListItem Value="Owner">Owner</asp:ListItem>
-                                                                            <asp:ListItem Value="Others">Others</asp:ListItem>
-                                                                        </asp:DropDownList>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Contact #
-                                                                        </label>
-                                                                        <br />
-                                                                        <div class='newcontactdiv' style="width: 605px;">
-                                                                            <asp:TextBox ID="txtPrimaryContact0" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone" Width="50%"></asp:TextBox>
-                                                                            <asp:TextBox ID="txtPrimaryContactExten0" TabIndex="1" runat="server" placeholder="Extension" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" MaxLength="6" Width="34%"></asp:TextBox>
-                                                                            <label>Phone Type</label>
-                                                                            <asp:DropDownList ID="ddlPrimaryPhoneType0" runat="server" class="clsphonetype">
-                                                                                <asp:ListItem Value="">Select</asp:ListItem>
-                                                                                <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="House">House Phone  #</asp:ListItem>
-                                                                                <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
-                                                                            </asp:DropDownList>
-                                                                            <br />
-                                                                            <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Contact</a><br />
-                                                                        </div>
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Fax</label><br />
-                                                                        <asp:TextBox ID="txtPrimaryFax0" runat="server" MaxLength="15" class="clsfax" onkeypress="return isNumericKey(event);"></asp:TextBox>
-                                                                        <br />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <table id="tblSecEmail" style="margin: 0px; padding: 0px;">
-                                                                <tr>
-                                                                    <td>
-                                                                        <label>
-                                                                            Secondary Contact Email</label><br />
-                                                                        <div class="newEmaildiv">
-                                                                            <asp:TextBox ID="txtSecEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
-                                                                            <br />
-                                                                            <a style="cursor: pointer" tabindex="1" data-emailtype="Sec" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
-                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Sec" data-type="0">Add Email</a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            First Name</label><br />
-                                                                        <asp:TextBox ID="txtSecFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
-                                                                        <%--<asp:TextBox ID="txtSecFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
-                                                                    </td>
-
-                                                                    <td>
-                                                                        <label>
-                                                                            Last Name</label><br />
-                                                                        <asp:TextBox ID="txtSecLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
-                                                                        <%--  <asp:TextBox ID="txtSecLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
-                                                                        <br />
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>Title</label><br />
-                                                                        <asp:DropDownList ID="ddlSecTitle0" runat="server" class="clstitle">
-                                                                            <asp:ListItem Value="">Select</asp:ListItem>
-                                                                            <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
-                                                                            <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
-                                                                            <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
-                                                                            <asp:ListItem Value="Manager">Manager</asp:ListItem>
-                                                                            <asp:ListItem Value="Owner">Owner</asp:ListItem>
-                                                                            <asp:ListItem Value="Others">Others</asp:ListItem>
-                                                                        </asp:DropDownList>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Contact #
-                                                                        </label>
-                                                                        <br />
-                                                                        <div class='newcontactdiv' style="width: 605px;">
-                                                                            <asp:TextBox ID="txtSecContact0" TabIndex="1" runat="server" MaxLength="10" onkeypress="return isNumericKey(event);" placeholder='___-___-____' CssClass="clsmaskphone" Width="50%"></asp:TextBox>
-                                                                            <asp:TextBox ID="txtSecContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="35%"></asp:TextBox>
-                                                                            <label>Phone Type</label>
-                                                                            <asp:DropDownList ID="ddlSecPhoneType0" runat="server" class="clsphonetype">
-                                                                                <asp:ListItem Value="">Select</asp:ListItem>
-                                                                                <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="House">House Phone  #</asp:ListItem>
-                                                                                <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
-                                                                            </asp:DropDownList>
-                                                                            <br />
-                                                                            <a onclick="AddContact(this)" tabindex="1" data-emailtype="Sec" style="cursor: pointer" data-type="0">Add Contact</a>
-                                                                            <br />
-                                                                        </div>
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Fax</label><br />
-                                                                        <asp:TextBox ID="txtSecFax0" runat="server" onkeypress="return isNumericKey(event);" MaxLength="15" class="clsfax"></asp:TextBox>
-                                                                        <br />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <table id="tblAltEmail" style="margin: 0px; padding: 0px;">
-                                                                <tr>
-                                                                    <td>
-                                                                        <label>
-                                                                            Alt. Contact Email</label><br />
-                                                                        <div class="newEmaildiv">
-                                                                            <asp:TextBox ID="txtAltEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
-                                                                            <br />
-                                                                            <a style="cursor: pointer" tabindex="1" data-emailtype="Alt" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
-                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Email</a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            First Name</label><br />
-                                                                        <asp:TextBox ID="txtAltFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
-                                                                        <%--<asp:TextBox ID="txtAltFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
-                                                                        <br />
-
-                                                                    </td>
-
-                                                                    <td>
-                                                                        <label>
-                                                                            Last Name</label><br />
-                                                                        <asp:TextBox ID="txtAltLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
-                                                                        <%--<asp:TextBox ID="txtAltLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
-                                                                        <br />
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>Title</label><br />
-                                                                        <asp:DropDownList ID="ddlAltTitle0" runat="server" class="clstitle">
-                                                                            <asp:ListItem Value="">Select</asp:ListItem>
-                                                                            <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
-                                                                            <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
-                                                                            <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
-                                                                            <asp:ListItem Value="Manager">Manager</asp:ListItem>
-                                                                            <asp:ListItem Value="Owner">Owner</asp:ListItem>
-                                                                            <asp:ListItem Value="Others">Others</asp:ListItem>
-                                                                        </asp:DropDownList>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Contact #
-                                                                        </label>
-                                                                        <br />
-                                                                        <div class='newcontactdiv' style="width: 605px;">
-                                                                            <asp:TextBox ID="txtAltContact0" TabIndex="1" runat="server" MaxLength="10" CssClass="clsmaskphone" onkeypress="return isNumericKey(event);" placeholder='___-___-____' Width="50%"></asp:TextBox>
-                                                                            <asp:TextBox ID="txtAltContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="32%"></asp:TextBox>
-                                                                            <label>Phone Type</label>
-                                                                            <asp:DropDownList ID="ddlAltPhoneType0" runat="server" class="clsphonetype">
-                                                                                <asp:ListItem Value="">Select</asp:ListItem>
-                                                                                <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="House">House Phone  #</asp:ListItem>
-                                                                                <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
-                                                                                <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
-                                                                            </asp:DropDownList>
-                                                                            <br />
-                                                                            <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Contact</a>
-                                                                            <br />
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>
-                                                                            Fax</label><br />
-                                                                        <asp:TextBox ID="txtAltFax0" runat="server" onkeypress="return isNumericKey(event);" MaxLength="15" class="clsfax"></asp:TextBox>
-                                                                        <br />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <div id="Div1" style="text-align: right;" runat="server" visible="false">
-                                                    <asp:LinkButton ID="BtnSaveLoaction" CssClass="btnSaveAddress" TabIndex="1" runat="server" Text="Save Address" OnClientClick="return GetVendorDetails(this)" ValidationGroup="addaddress" OnClick="BtnSaveLoaction_Click" />
-                                                    <br />
-                                                    <asp:Label ID="lbladdress" runat="server" ForeColor="Red"></asp:Label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div id="divModalPopup" style="display: none;">
-                                            <div class="modal">
-                                                <div class="center">
-                                                    <img alt="Loading..." src="../img/loader.gif" />
-                                                </div>
-                                            </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Fax</label><br />
+                                                                                <asp:TextBox ID="txtSecFax0" runat="server" onkeypress="return isNumericKey(event);" MaxLength="15" class="clsfax"></asp:TextBox>
+                                                                                <br />
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="4" style="padding: 0px;">
+                                                                    <table id="tblAltEmail" style="margin: 0px; padding: 0px;">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Alt. Contact Email</label><br />
+                                                                                <div class="newEmaildiv">
+                                                                                    <asp:TextBox ID="txtAltEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
+                                                                                    <br />
+                                                                                    <a style="cursor: pointer" tabindex="1" data-emailtype="Alt" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
+                                                                                    <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Email</a>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    First Name</label><br />
+                                                                                <asp:TextBox ID="txtAltFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
+                                                                                <%--<asp:TextBox ID="txtAltFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
+                                                                                <br />
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Last Name</label><br />
+                                                                                <asp:TextBox ID="txtAltLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
+                                                                                <%--<asp:TextBox ID="txtAltLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
+                                                                                <br />
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>Title</label><br />
+                                                                                <asp:DropDownList ID="ddlAltTitle0" runat="server" class="clstitle">
+                                                                                    <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                    <asp:ListItem Value="Secretary">Secretary</asp:ListItem>
+                                                                                    <asp:ListItem Value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                                    <asp:ListItem Value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                                    <asp:ListItem Value="Manager">Manager</asp:ListItem>
+                                                                                    <asp:ListItem Value="Owner">Owner</asp:ListItem>
+                                                                                    <asp:ListItem Value="Others">Others</asp:ListItem>
+                                                                                </asp:DropDownList>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Contact #
+                                                                                </label>
+                                                                                <br />
+                                                                                <div class='newcontactdiv' style="width: 605px;">
+                                                                                    <asp:TextBox ID="txtAltContact0" TabIndex="1" runat="server" MaxLength="10" CssClass="clsmaskphone" onkeypress="return isNumericKey(event);" placeholder='___-___-____' Width="50%"></asp:TextBox>
+                                                                                    <asp:TextBox ID="txtAltContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="32%"></asp:TextBox>
+                                                                                    <label>Phone Type</label>
+                                                                                    <asp:DropDownList ID="ddlAltPhoneType0" runat="server" class="clsphonetype">
+                                                                                        <asp:ListItem Value="">Select</asp:ListItem>
+                                                                                        <asp:ListItem Value="Cell">Cell Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="House">House Phone  #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Work">Work Phone #</asp:ListItem>
+                                                                                        <asp:ListItem Value="Alt">Alt. Phone #</asp:ListItem>
+                                                                                    </asp:DropDownList>
+                                                                                    <br />
+                                                                                    <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Contact</a>
+                                                                                    <br />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    Fax</label><br />
+                                                                                <asp:TextBox ID="txtAltFax0" runat="server" onkeypress="return isNumericKey(event);" MaxLength="15" class="clsfax"></asp:TextBox>
+                                                                                <br />
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <asp:Button ID="btnPageLoad" runat="server" CssClass="cssbtnPageLoad" />
-                                        <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="btnOpenCategoryPopup"
-                                            PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
-                                        </asp:ModalPopupExtender>
-                                        <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none; background: white; border: 5px solid rgb(179, 71, 74)">
-                                            <div class="popup_heading">
-                                                <h1>Select Category</h1>
-                                            </div>
-                                            <div id="categoriesList">
-                                                <div id="productCategory" class="categorylist_Heading" style="width: 250px; float: left">
-                                                    <h4>Product Category</h4>
-                                                    <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
-                                                    </asp:CheckBoxList>
-                                                </div>
-                                                <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
-                                                    <h4>Vendor Category</h4>
-                                                    <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
-                                                    </asp:CheckBoxList>
-                                                </div>
-                                                <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
-                                                    <h4>Vendor Sub Category</h4>
-                                                    <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
-                                                    </asp:CheckBoxList>
-                                                </div>
-                                            </div>
+                                    </ContentTemplate>
+                                </asp:TabPanel>
+                                <asp:TabPanel ID="TabPanel2" runat="server" HeaderText="Add Product">
+                                    <ContentTemplate>
+                                        <div id="divAddProduct" class="vendorForm">
+                                            <ul style="padding: 0px;">
+                                                <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
+                                                    <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
+                                                        <tr>
+                                                            <td colspan="3" style="font-weight: bold; font-size: large; font-style: normal">Add Product
+                                                            </td>
+                                                            <td>
+                                                                <asp:Button ID="btnAddNewProduct" runat="server" CssClass="button" OnClick="btnAddNewProduct_Click" Text="Add New Product" />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>SKU-Vendor STATUS :</label><br />
+                                                                <asp:TextBox ID="txtSKUVendorSTATUS" CssClass="clsvendorid" TabIndex="1" runat="server" MaxLength="50"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvSKUVendorSTATUS" runat="server" ControlToValidate="txtSKUVendorSTATUS" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter JG SKU MODEL number." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>JG SKU: MODEL#:</label><br />
+                                                                <asp:TextBox ID="txtJGSKUModelNumber" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvJGSKUModelNumber" runat="server" ControlToValidate="txtJGSKUModelNumber" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter JG SKU MODEL number." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td class="style1">
+                                                                <label><span>* </span>Total Cost ($var)</label><br />
+                                                                <asp:TextBox ID="txtProductTotalCost" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductTotalCost" runat="server" ControlToValidate="txtProductTotalCost" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter Total Cost ($var)." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>item Description :</label><br />
+                                                                <asp:TextBox ID="txtProductItemDescription" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductItemDescription" runat="server" ControlToValidate="txtProductItemDescription" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter item Description." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>JG Description :</label><br />
+                                                                <asp:TextBox ID="txtProductJGDescription" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductJGDescription" runat="server" ControlToValidate="txtProductJGDescription" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter JG Description ." ForeColor="Red"></asp:RequiredFieldValidator>
+
+                                                            </td>
+                                                            <td></td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>Vendor Part # </label>
+                                                                <br />
+                                                                <asp:TextBox ID="txtProductVendorPart" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductVendorPart" runat="server" ControlToValidate="txtProductVendorPart" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter vendor part number." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>Vendor Model# </label>
+                                                                <br />
+                                                                <asp:TextBox ID="txtProductVendorModel" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductVendorModel" runat="server" ControlToValidate="txtProductVendorModel" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter vendor model number." ForeColor="Red"></asp:RequiredFieldValidator>
+
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>UNIT COST </label>
+                                                                <br />
+                                                                <asp:TextBox ID="txtProductUnitCost" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvProductUnitCostUom" runat="server" ControlToValidate="txtProductUnitCost" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Please Enter unit cost." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>UOM</label><br />
+                                                                <asp:DropDownList ID="ddlProductUOM" runat="server" TabIndex="1" Style="width: 180px;">
+                                                                    <asp:ListItem>Select</asp:ListItem>
+                                                                    <asp:ListItem>In Advance</asp:ListItem>
+                                                                    <asp:ListItem>COD</asp:ListItem>
+                                                                    <asp:ListItem>NET 15</asp:ListItem>
+                                                                    <asp:ListItem>Net 30</asp:ListItem>
+                                                                    <asp:ListItem>Net 60</asp:ListItem>
+                                                                    <asp:ListItem>1% 10 Net 30</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfvddlProductUOM" runat="server" ControlToValidate="ddlProductUOM" Display="Dynamic"
+                                                                    ValidationGroup="AddProduct" ErrorMessage="Select UOM." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label>Add variables cost/feature </label>
+                                                                <br />
+                                                                <asp:Button ID="btnAddProductVariable" runat="server" Text="Add Variables" CssClass="button" />
+                                                            </td>
+                                                            <td colspan="2">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="padding: 0px;"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Post Title</label><br />
+                                                                <asp:TextBox ID="txtPostTitle" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Post Name (AKA Model#)</label><br />
+                                                                <asp:TextBox ID="txtPostName" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Post Excerpt</label><br />
+                                                                <asp:TextBox ID="txtPostExcerpt" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Post content</label><br />
+                                                                <asp:TextBox ID="txtPostContent" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Post Status</label><br />
+                                                                <asp:TextBox ID="txtPostStatus" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+
+                                                            </td>
+                                                            <td>
+                                                                <label>Post Date</label><br />
+                                                                <asp:TextBox ID="txtPostDate" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Post Parent</label><br />
+                                                                <asp:TextBox ID="txtPostParent" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Post Author</label><br />
+                                                                <asp:TextBox ID="txtPostAuthor" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Comment status</label><br />
+                                                                <asp:TextBox ID="txtCommentStatus" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Downloadable? Attach IMG </label>
+                                                                <br />
+                                                            </td>
+                                                            <td>
+                                                                <label>Virtual</label><br />
+                                                                <asp:TextBox ID="txtVirtual" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+
+                                                            </td>
+                                                            <td>
+                                                                <label>Visibility</label><br />
+                                                                <asp:TextBox ID="txtVisibility" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Stock Status</label><br />
+                                                                <asp:TextBox ID="txtStockStatus" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Backorders</label><br />
+                                                                <asp:TextBox ID="txtBackorders" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+
+                                                            </td>
+                                                            <td>
+                                                                <label>Manage_stock</label><br />
+                                                                <asp:TextBox ID="txtManage_stock" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Regular price</label><br />
+                                                                <asp:TextBox ID="txtRegularPrice" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Sale Price</label><br />
+                                                                <asp:TextBox ID="txtSalePrice" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+
+                                                            </td>
+                                                            <td>
+                                                                <label>Featured</label><br />
+                                                                <asp:TextBox ID="txtFeatured" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
+                                                            <label>
+                                                                Fax</label><br />
+                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
+                                                            <br />
+                                                        </td>--%>
+                                                        </tr>
+                                                    </table>
+                                                </li>
+                                            </ul>
                                             <div class="btn_sec">
-                                                <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
-                                                <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
+                                                <asp:Button ID="Button2" runat="server" Text="Update" Visible="false" OnClick="btnupdateVendor_Click1" />
+                                                <asp:Button ID="btnSaveProduct" runat="server" Text="Save Product" CssClass="cssOpenCategoryPopup" ValidationGroup="AddProduct" />
+                                                <br />
+                                                <asp:Label ID="Label23" runat="server" ForeColor="Red"></asp:Label>
                                             </div>
-                                        </asp:Panel>
-                                        <div class="btn_sec">
-                                            <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
-                                            <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
-                                            <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
-                                            <br />
-                                            <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                                         </div>
-                                    </div>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                        <div id="tabs-2">
-                            <asp:UpdatePanel ID="updatepanelAddProduct" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                    <div id="divAddProduct" class="vendorForm">
-                                        <ul style="padding: 0px;">
-                                            <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
-                                                <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
-                                                    <tr>
-                                                        <td colspan="3" style="font-weight: bold; font-size: large; font-style: normal">Add Product
-                                                        </td>
-                                                        <td>
-                                                            <asp:Button ID="btnAddNewProduct" runat="server" CssClass="button" OnClick="btnAddNewProduct_Click" Text="Add New Product" />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>SKU-Vendor STATUS :</label><br />
-                                                            <asp:TextBox ID="txtSKUVendorSTATUS" CssClass="clsvendorid" TabIndex="1" runat="server" MaxLength="50"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvSKUVendorSTATUS" runat="server" ControlToValidate="txtSKUVendorSTATUS" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter JG SKU MODEL number." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>JG SKU: MODEL#:</label><br />
-                                                            <asp:TextBox ID="txtJGSKUModelNumber" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvJGSKUModelNumber" runat="server" ControlToValidate="txtJGSKUModelNumber" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter JG SKU MODEL number." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td class="style1">
-                                                            <label><span>* </span>Total Cost ($var)</label><br />
-                                                            <asp:TextBox ID="txtProductTotalCost" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvProductTotalCost" runat="server" ControlToValidate="txtProductTotalCost" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter Total Cost ($var)." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>item Description :</label><br />
-                                                            <asp:TextBox ID="txtProductItemDescription" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvProductItemDescription" runat="server" ControlToValidate="txtProductItemDescription" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter item Description." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>JG Description :</label><br />
-                                                            <asp:TextBox ID="txtProductJGDescription" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvProductJGDescription" runat="server" ControlToValidate="txtProductJGDescription" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter JG Description ." ForeColor="Red"></asp:RequiredFieldValidator>
-
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>Vendor Part # - Model# </label>
-                                                            <br />
-                                                            <asp:TextBox ID="txtProductVendorPartModel" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvProductVendorPartModel" runat="server" ControlToValidate="txtProductVendorPartModel" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter vendor part model number." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <%-- <td>
+                                    </ContentTemplate>
+                                </asp:TabPanel>
+                                <asp:TabPanel ID="TabPanel3" runat="server" HeaderText="Payment & Shipping">
+                                    <ContentTemplate>
+                                        <div id="divPaymentShipping" class="vendorForm">
+                                            <ul style="padding: 0px;">
+                                                <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
+                                                    <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
+                                                        <tr>
+                                                            <td colspan="3" style="font-weight: bold; font-size: large; font-style: normal">Payment & Shipping
+                                                            </td>
+                                                            <td>
+                                                                <asp:Button ID="Button3" runat="server" CssClass="button" OnClick="btnAddNewProduct_Click" Text="Add New Product" />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>Payment Terms :</label><br />
+                                                                <asp:DropDownList ID="ddlPaymentTerms" runat="server" TabIndex="1" Style="width: 180px;">
+                                                                    <asp:ListItem>Select</asp:ListItem>
+                                                                    <asp:ListItem>In Advance</asp:ListItem>
+                                                                    <asp:ListItem>COD</asp:ListItem>
+                                                                    <asp:ListItem>NET 15</asp:ListItem>
+                                                                    <asp:ListItem>Net 30</asp:ListItem>
+                                                                    <asp:ListItem>Net 60</asp:ListItem>
+                                                                    <asp:ListItem>1% 10 Net 30</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfvPaymentTerms" runat="server" ControlToValidate="ddlPaymentTerms" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Select payment terms." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>Delivery Fee:$</label><br />
+                                                                <asp:TextBox ID="txtDeliveryFee" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvDeliveryFee" runat="server" ControlToValidate="txtDeliveryFee" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Delivery Fee." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td class="style1">
+                                                                <label><span>* </span>Stocking/Return Fee:$</label><br />
+                                                                <asp:TextBox ID="txtStockingReturnFee" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvStockingReturnFee" runat="server" ControlToValidate="txtStockingReturnFee" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Stocking/Return Fee." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>Misc. Fee:$ :</label><br />
+                                                                <asp:TextBox ID="txtMiscFee" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvMiscFee" runat="server" ControlToValidate="txtMiscFee" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Misc. Fee." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>add/edit cost variable </label>
+                                                                <br />
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>Preferred Payment Method</label><br />
+                                                                <asp:DropDownList ID="ddlPaymentMethod" runat="server" TabIndex="1" Style="width: 180px;">
+                                                                    <asp:ListItem Value="Select">Select</asp:ListItem>
+                                                                    <asp:ListItem>amex2343</asp:ListItem>
+                                                                    <asp:ListItem>Discover3494</asp:ListItem>
+                                                                    <asp:ListItem>echeck101</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfvPreferredPayment" runat="server" ControlToValidate="ddlPaymentMethod" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Select Preferred Payment Method." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <%-- <td>
                                                             <label>
                                                                 Fax</label><br />
                                                             <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
                                                             <br />
                                                         </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>UNIT COST/ UOM</label><br />
-                                                            <asp:TextBox ID="txtProductUnitCostUom" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvProductUnitCostUom" runat="server" ControlToValidate="txtProductUnitCostUom" Display="Dynamic"
-                                                                ValidationGroup="AddProduct" ErrorMessage="Please Enter unit cost/uom." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label>Add variables cost/feature </label>
-                                                            <br />
-                                                            <asp:Button ID="btnAddProductVariable" runat="server" Text="Add Variables" CssClass="button" />
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Post Title</label><br />
-                                                            <asp:TextBox ID="txtPostTitle" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Post Name (AKA Model#)</label><br />
-                                                            <asp:TextBox ID="txtPostName" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Post Excerpt</label><br />
-                                                            <asp:TextBox ID="txtPostExcerpt" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>Preferred Delivery Method</label><br />
+                                                                <asp:DropDownList ID="ddlPreferredDeliveryMethod" runat="server" TabIndex="1" Style="width: 180px;">
+                                                                    <asp:ListItem Value="0">Select</asp:ListItem>
+                                                                    <asp:ListItem Value="1">JG stock</asp:ListItem>
+                                                                    <asp:ListItem Value="2">JG ship</asp:ListItem>
+                                                                    <asp:ListItem Value="3">Vendor ship</asp:ListItem>
+                                                                    <asp:ListItem Value="4">Drop ship</asp:ListItem>
+                                                                    <asp:ListItem Value="5">Consignment</asp:ListItem>
+                                                                    <asp:ListItem Value="6">Pick up</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfvPreferredDelivery" runat="server" ControlToValidate="ddlPreferredDeliveryMethod" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Select Preferred Delivery Method." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label>Freight terms</label><br />
+                                                                <asp:DropDownList ID="ddlFreightTerms" runat="server" TabIndex="1" Style="width: 180px;">
+                                                                    <asp:ListItem Value="0">Select</asp:ListItem>
+                                                                    <asp:ListItem Value="1">Bill-of-Lading(BoL)</asp:ListItem>
+                                                                    <asp:ListItem Value="2">Freight Bill</asp:ListItem>
+                                                                    <asp:ListItem Value="3">Free-on-Board)</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfvFreightTerms" runat="server" ControlToValidate="ddlFreightTerms" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Select Freight Terms." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td colspan="2">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4" style="padding: 0px;"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label><span>* </span>Tax Id</label><br />
+                                                                <asp:TextBox ID="txtTaxId" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvTaxId" runat="server" ControlToValidate="txtTaxId" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Tax Id." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label><span>* </span>Tax: % (state)</label><br />
+                                                                <asp:TextBox ID="txtSPTax" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                                <asp:RequiredFieldValidator ID="rfvSPTax" runat="server" ControlToValidate="txtSPTax" Display="Dynamic"
+                                                                    ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Tax Id." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            </td>
+                                                            <td>
+                                                                <label>Vendor Quote #</label><br />
+                                                                <asp:TextBox ID="txtVendorQuote" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
                                                             <label>
                                                                 Fax</label><br />
                                                             <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
                                                             <br />
                                                         </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Post content</label><br />
-                                                            <asp:TextBox ID="txtPostContent" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Post Status</label><br />
-                                                            <asp:TextBox ID="txtPostStatus" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Attach Vendor Quote</label><br />
+                                                                <asp:TextBox ID="txtAttachVendorQuote" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Revision # </label>
+                                                                <br />
+                                                                <asp:TextBox ID="txtRevision" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
 
-                                                        </td>
-                                                        <td>
-                                                            <label>Post Date</label><br />
-                                                            <asp:TextBox ID="txtPostDate" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
+                                                            </td>
+                                                            <td>
+                                                                <label>Vendor Invoice#</label><br />
+                                                                <asp:TextBox ID="txtVendorInvoice" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
                                                             <label>
                                                                 Fax</label><br />
                                                             <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
                                                             <br />
                                                         </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Post Parent</label><br />
-                                                            <asp:TextBox ID="txtPostParent" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Post Author</label><br />
-                                                            <asp:TextBox ID="txtPostAuthor" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Comment status</label><br />
-                                                            <asp:TextBox ID="txtCommentStatus" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>JG Customer P.O. #</label><br />
+                                                                <asp:TextBox ID="txtJGCustomerPO" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Lead time/ Due date</label><br />
+                                                                <asp:TextBox ID="txtLeadtimeduedate" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Econimical Order Quantity</label><br />
+                                                                <asp:TextBox ID="txtEconimicalOrderQuantity" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
                                                             <label>
                                                                 Fax</label><br />
                                                             <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
                                                             <br />
                                                         </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Downloadable? Attach IMG </label>
-                                                            <br />
-                                                        </td>
-                                                        <td>
-                                                            <label>Virtual</label><br />
-                                                            <asp:TextBox ID="txtVirtual" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <label>Discount per unit </label>
+                                                                <br />
+                                                                <asp:TextBox ID="txtDiscountPerUnit" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
+                                                            </td>
+                                                            <td>
+                                                                <label>Re-Order point (Min.)</label><br />
+                                                                <asp:TextBox ID="txtReOrderPoint" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
 
-                                                        </td>
-                                                        <td>
-                                                            <label>Visibility</label><br />
-                                                            <asp:TextBox ID="txtVisibility" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
+                                                            </td>
+                                                            <td>
+                                                                <label>Order QTY (Max)</label><br />
+                                                                <asp:TextBox ID="txtOrderQTYMax" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
+                                                            </td>
+                                                            <%-- <td>
                                                             <label>
                                                                 Fax</label><br />
                                                             <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
                                                             <br />
                                                         </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Stock Status</label><br />
-                                                            <asp:TextBox ID="txtStockStatus" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Backorders</label><br />
-                                                            <asp:TextBox ID="txtBackorders" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-
-                                                        </td>
-                                                        <td>
-                                                            <label>Manage_stock</label><br />
-                                                            <asp:TextBox ID="txtManage_stock" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Regular price</label><br />
-                                                            <asp:TextBox ID="txtRegularPrice" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Sale Price</label><br />
-                                                            <asp:TextBox ID="txtSalePrice" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-
-                                                        </td>
-                                                        <td>
-                                                            <label>Featured</label><br />
-                                                            <asp:TextBox ID="txtFeatured" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <div class="grid_h" style="font-weight: bold; font-size: large; font-style: normal">
-                                                                Notes
-                                                            </div>
-                                                            <div class="grid">
-                                                                <asp:GridView ID="grdTouchPointProductLog" runat="server" ShowHeaderWhenEmpty="true" AutoGenerateColumns="false" CssClass="tableClass" Width="100%" Style="margin: 0px;">
-                                                                    <Columns>
-                                                                        <asp:TemplateField HeaderText="User Id">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("userid")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Date">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("CreatedOn")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Notes">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("Notes")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                    </Columns>
-                                                                    <EmptyDataTemplate>
-                                                                        No Data Found.
-                                                                    </EmptyDataTemplate>
-                                                                </asp:GridView>
-                                                            </div>
-                                                            <br />
-                                                            <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="btn_sec">
-                                                                            <asp:Button ID="btnAddProductNotes" runat="server" Text="Add Notes" CssClass="btnnotes" OnClick="btnAddNotes_Click" />
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="">
-                                                                            <asp:TextBox ID="txtProductNotes" runat="server" TextMode="MultiLine" Height="33px" Width="407px"></asp:TextBox>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </li>
-
-                                        </ul>
-                                        <div class="btn_sec">
-                                            <asp:Button ID="Button2" runat="server" Text="Update" Visible="false" OnClick="btnupdateVendor_Click1" />
-                                            <asp:Button ID="btnSaveProduct" runat="server" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="AddProduct" />
-                                            <br />
-                                            <asp:Label ID="Label23" runat="server" ForeColor="Red"></asp:Label>
+                                                        </tr>
+                                                    </table>
+                                                </li>
+                                            </ul>
                                         </div>
-                                    </div>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                        <div id="tabs-3">
-                            <asp:UpdatePanel ID="updatepanelPaymentShipping" UpdateMode="Conditional" runat="server">
-                                <ContentTemplate>
-                                    <div id="divPaymentShipping" class="vendorForm">
-                                        <ul style="padding: 0px;">
-                                            <li style="width: 99%; padding-left: 0px; margin-left: 0px;">
-                                                <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px;">
-                                                    <tr>
-                                                        <td colspan="3" style="font-weight: bold; font-size: large; font-style: normal">Add Product
-                                                        </td>
-                                                        <td>
-                                                            <asp:Button ID="Button3" runat="server" CssClass="button" OnClick="btnAddNewProduct_Click" Text="Add New Product" />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>Payment Terms :</label><br />
-                                                            <asp:DropDownList ID="ddlPaymentTerms" runat="server" TabIndex="1" Style="width: 180px;">
-                                                                <asp:ListItem>Select</asp:ListItem>
-                                                                <asp:ListItem>In Advance</asp:ListItem>
-                                                                <asp:ListItem>COD</asp:ListItem>
-                                                                <asp:ListItem>NET 15</asp:ListItem>
-                                                                <asp:ListItem>Net 30</asp:ListItem>
-                                                                <asp:ListItem>Net 60</asp:ListItem>
-                                                                <asp:ListItem>1% 10 Net 30</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                            <asp:RequiredFieldValidator ID="rfvPaymentTerms" runat="server" ControlToValidate="ddlPaymentTerms" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Select payment terms." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>Delivery Fee:$</label><br />
-                                                            <asp:TextBox ID="txtDeliveryFee" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvDeliveryFee" runat="server" ControlToValidate="txtDeliveryFee" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Delivery Fee." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td class="style1">
-                                                            <label><span>* </span>Stocking/Return Fee:$</label><br />
-                                                            <asp:TextBox ID="txtStockingReturnFee" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvStockingReturnFee" runat="server" ControlToValidate="txtStockingReturnFee" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Stocking/Return Fee." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>Misc. Fee:$ :</label><br />
-                                                            <asp:TextBox ID="txtMiscFee" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvMiscFee" runat="server" ControlToValidate="txtMiscFee" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Misc. Fee." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>add/edit cost variable </label>
-                                                            <br />
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>Preferred Payment Method</label><br />
-                                                            <asp:DropDownList ID="ddlPreferredPayment" runat="server" TabIndex="1" Style="width: 180px;">
-                                                                <asp:ListItem Value="Select">Select</asp:ListItem>
-                                                                <asp:ListItem>amex2343</asp:ListItem>
-                                                                <asp:ListItem>Discover3494</asp:ListItem>
-                                                                <asp:ListItem>echeck101</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                            <asp:RequiredFieldValidator ID="rfvPreferredPayment" runat="server" ControlToValidate="ddlPreferredPayment" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Select Preferred Payment Method." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>Preferred Delivery Method</label><br />
-                                                            <asp:DropDownList ID="ddlPreferredDelivery" runat="server" TabIndex="1" Style="width: 180px;">
-                                                                <asp:ListItem Value="Select">Select</asp:ListItem>
-                                                                <asp:ListItem>JG stock</asp:ListItem>
-                                                                <asp:ListItem>JG ship</asp:ListItem>
-                                                                <asp:ListItem>Vendor ship</asp:ListItem>
-                                                                <asp:ListItem>Drop ship</asp:ListItem>
-                                                                <asp:ListItem>Consignment</asp:ListItem>
-                                                                <asp:ListItem>Pick up</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                            <asp:RequiredFieldValidator ID="rfvPreferredDelivery" runat="server" ControlToValidate="ddlPreferredDelivery" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Select Preferred Delivery Method." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label>Freight terms</label><br />
-                                                            <asp:DropDownList ID="ddlFreightTerms" runat="server" TabIndex="1" Style="width: 180px;">
-                                                                <asp:ListItem Value="Select">Select</asp:ListItem>
-                                                                <asp:ListItem>Bill-of-Lading(BoL)</asp:ListItem>
-                                                                <asp:ListItem>Freight Bill</asp:ListItem>
-                                                                <asp:ListItem>Free-on-Board)</asp:ListItem>
-                                                            </asp:DropDownList>
-                                                            <asp:RequiredFieldValidator ID="rfvFreightTerms" runat="server" ControlToValidate="ddlFreightTerms" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Select Freight Terms." ForeColor="Red" InitialValue="Select"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td colspan="2">&nbsp;</td>
-                                                    </tr>
+                                    </ContentTemplate>
+                                </asp:TabPanel>
+                            </asp:TabContainer>
 
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label><span>* </span>Tax Id</label><br />
-                                                            <asp:TextBox ID="txtPSTaxId" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvTaxId" runat="server" ControlToValidate="txtPSTaxId" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Tax Id." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label><span>* </span>Tax: % (state)</label><br />
-                                                            <asp:TextBox ID="txtSPTax" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="rfvSPTax" runat="server" ControlToValidate="txtSPTax" Display="Dynamic"
-                                                                ValidationGroup="PaymentShipping" ErrorMessage="Please Enter Tax Id." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </td>
-                                                        <td>
-                                                            <label>Vendor Quote #</label><br />
-                                                            <asp:TextBox ID="txtVendorQuote" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Attach Vendor Quote</label><br />
-                                                            <asp:TextBox ID="txtAttachVendorQuote" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Revision # </label>
-                                                            <br />
-                                                            <asp:TextBox ID="txtRevision" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-
-                                                        </td>
-                                                        <td>
-                                                            <label>Vendor Invoice#</label><br />
-                                                            <asp:TextBox ID="txtVendorInvoice" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>JG Customer P.O. #</label><br />
-                                                            <asp:TextBox ID="txtJGCustomerPO" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Lead time/ Due date</label><br />
-                                                            <asp:TextBox ID="txtLeadtimeduedate" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Econimical Order Quantity</label><br />
-                                                            <asp:TextBox ID="txtEconimicalOrderQuantity" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label>Discount per unit </label>
-                                                            <br />
-                                                            <asp:TextBox ID="txtDiscountPerUnit" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-                                                        </td>
-                                                        <td>
-                                                            <label>Re-Order point (Min.)</label><br />
-                                                            <asp:TextBox ID="txtReOrderPoint" TabIndex="1" runat="server" MaxLength="500"></asp:TextBox>
-
-                                                        </td>
-                                                        <td>
-                                                            <label>Order QTY (Max)</label><br />
-                                                            <asp:TextBox ID="txtOrderQTYMax" TabIndex="1" runat="server" MaxLength="100"></asp:TextBox>
-                                                        </td>
-                                                        <%-- <td>
-                                                            <label>
-                                                                Fax</label><br />
-                                                            <asp:TextBox ID="txtVendorFax" TabIndex="1" runat="server" MaxLength="20"></asp:TextBox>
-                                                            <br />
-                                                        </td>--%>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="4" style="padding: 0px;">
-                                                            <div class="grid_h" style="font-weight: bold; font-size: large; font-style: normal">
-                                                                Notes
-                                                            </div>
-                                                            <div class="grid">
-                                                                <asp:GridView ID="grdTouchPointPSLog" runat="server" ShowHeaderWhenEmpty="true" AutoGenerateColumns="false" CssClass="tableClass" Width="100%" Style="margin: 0px;">
-                                                                    <Columns>
-                                                                        <asp:TemplateField HeaderText="User Id">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("userid")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Date">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("CreatedOn")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Notes">
-                                                                            <ItemTemplate>
-                                                                                <%#Eval("Notes")%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                    </Columns>
-                                                                    <EmptyDataTemplate>
-                                                                        No Data Found.
-                                                                    </EmptyDataTemplate>
-                                                                </asp:GridView>
-                                                            </div>
-                                                            <br />
-                                                            <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="btn_sec">
-                                                                            <asp:Button ID="Button5" runat="server" Text="Add Notes" CssClass="btnnotes" OnClick="btnAddNotes_Click" />
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="">
-                                                                            <asp:TextBox ID="TextBox8" runat="server" TextMode="MultiLine" Height="33px" Width="407px"></asp:TextBox>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </li>
-
-                                        </ul>
-                                        <div class="btn_sec">
-                                            <asp:Button ID="Button6" runat="server" Text="Update" Visible="false" OnClick="btnupdateVendor_Click1" />
-                                            <asp:Button ID="Button7" runat="server" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="PaymentShipping" />
-                                            <br />
-                                            <asp:Label ID="Label24" runat="server" ForeColor="Red"></asp:Label>
+                            <table border="0" cellspacing="0" cellpadding="0" style="padding: 0px; margin: 0px; width: 100%">
+                                <tr>
+                                    <td colspan="4" style="padding: 0px;">
+                                        <div class="grid_h" style="font-weight: bold; font-size: large; font-style: normal">
+                                            Notes
                                         </div>
+                                        <div class="grid">
+                                            <asp:GridView ID="grdTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" AutoGenerateColumns="false" CssClass="tableClass" Width="100%" Style="margin: 0px;">
+                                                <Columns>
+                                                    <asp:TemplateField HeaderText="User Id">
+                                                        <ItemTemplate>
+                                                            <%#Eval("userid")%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Date">
+                                                        <ItemTemplate>
+                                                            <%#Eval("CreatedOn")%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Notes">
+                                                        <ItemTemplate>
+                                                            <%#Eval("Notes")%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                                <EmptyDataTemplate>
+                                                    No Data Found.
+                                                </EmptyDataTemplate>
+                                            </asp:GridView>
+                                        </div>
+                                        <br />
+                                        <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td>
+                                                    <div class="">
+                                                        <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Rows="7" Width="100%" CssClass="textbox"></asp:TextBox>
+                                                        <br />
+                                                        <asp:RequiredFieldValidator ID="rfvAddNotes" runat="server" ControlToValidate="txtAddNotes" Display="Dynamic"
+                                                            ValidationGroup="addAddNotes" ErrorMessage="Please Enter Notes." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table style="width: 100%">
+                                                        <tr>
+                                                            <td style="width: 50%">
+                                                                <div class="btn_sec" style="text-align: right;">
+                                                                 <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" CssClass="ui-button" OnClick="btnAddNotes_Click" ValidationGroup="addAddNotes" />
+                                                                </div>
+                                                            </td>
+                                                            <td style="width: 50%">
+                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                                                    <div class="fallback">
+                                                                        <input name="file" type="file" multiple />
+                                                                        <input type="submit" value="Upload" />
+                                                                    </div>
+                                                                </div>
+                                                                <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
+                                                                </div>
+                                                                <div class="hide">
+                                                                    <asp:Button ID="btnUploadLogFiles" runat="server" Text="Upload File" CssClass="ui-button"  />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div id="Div1" style="text-align: right;" runat="server" visible="false">
+                                <asp:LinkButton ID="BtnSaveLoaction" CssClass="btnSaveAddress" TabIndex="1" runat="server" Text="Save Address" OnClientClick="return GetVendorDetails(this)" ValidationGroup="addaddress" OnClick="BtnSaveLoaction_Click" />
+                                <br />
+                                <asp:Label ID="lbladdress" runat="server" ForeColor="Red"></asp:Label>
+                            </div>
+
+                            <div id="divModalPopup" style="display: none;">
+                                <div class="modal">
+                                    <div class="center">
+                                        <img alt="Loading..." src="../img/loader.gif" />
                                     </div>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </div>
-                    </div>
+                                </div>
+                            </div>
+                            <asp:Button ID="btnPageLoad" runat="server" CssClass="cssbtnPageLoad" />
+                            <asp:Label ID="dummyLabel" runat="server" />
+                            <asp:ModalPopupExtender ID="mpeCategoryPopup" runat="server" TargetControlID="dummyLabel"
+                                PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
+                            </asp:ModalPopupExtender>
+                            <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none;z-index:1000 !important; background: white; border: 5px solid rgb(179, 71, 74)">
+                                <div class="popup_heading">
+                                    <h1>Select Category</h1>
+                                </div>
+                                <div id="categoriesList">
+                                    <div id="productCategory" class="categorylist_Heading" style="width: 250px; float: left">
+                                        <h4>Product Category</h4>
+                                        <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>
+                                    </div>
+                                    <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
+                                        <h4>Vendor Category</h4>
+                                        <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>
+                                    </div>
+                                    <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
+                                        <h4>Vendor Sub Category</h4>
+                                        <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
+                                        </asp:CheckBoxList>
+                                    </div>
+                                </div>
+                                <div class="btn_sec">
+                                    <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" ValidationGroup="addvendor" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
+                                    <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
+                                    <asp:ValidationSummary ID="valSum" DisplayMode="BulletList" ShowMessageBox="true" EnableClientScript="true" HeaderText="You must enter a value in the following fields:" runat="server" ValidationGroup="addvendor" />
+                                    <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
+                                </div>
+                            </asp:Panel>
+                            <div class="btn_sec">
+                                <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
+                                <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
+                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" OnClick="btnOpenCategoryPopup_Click" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
+                                <asp:Button ID="Button4" runat="server" TabIndex="1" Text="Save" Visible="false" />
+                            </div>
+                        </ContentTemplate>
+                      <Triggers>
+                      </Triggers>
+                    </asp:UpdatePanel>
                     <asp:UpdatePanel ID="updateMaterialList" UpdateMode="Conditional" runat="server">
                         <ContentTemplate>
                             <div class="form_panel_custom vendorFilter">
@@ -3351,7 +3411,7 @@
         }
 
         function GetCityStateOnBlur(e) {
-            //debugger;
+            ////debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3359,7 +3419,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    //debugger;
+                    ////debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);
@@ -3369,7 +3429,7 @@
         }
 
         function onclientselect(strZip) {
-            //debugger;
+            ////debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3377,7 +3437,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    // debugger;
+                    // //debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);
@@ -3420,32 +3480,24 @@
     <input type="hidden" id="hdnAmount" runat="server" />
     <style type="text/css">
         .style2 {
-
-               width: 100%
+            wi h: 100;
         }
 
-        #mas {
-           ositi
-        :
 
-        ixed;
-            left: 
-            top: 0px;
-  
-        index: ;
-            opacit : 0.4
-         
-        er: " r
-            ansform.M crosof
-            y=40) ;  /*
-                    opacity= 0)
-            
-          lor: gray;
-                        display: none;
-            width: 100%;
-            
-                       
-       }
+        #mas {
+            ;
+            ositi: ixed;
+            ft: top: 0px;
+            de: opacit: 0. er: " a form.M crosof y=40); /*
+                        opacity= 0)
+
+                 
+         lor: gray;
+                      displa : non
+        
+                   width: 100%;
+                
+                    }
     </style>
     <script type="text/javascript">
         function ShowPopup() {
@@ -3540,8 +3592,7 @@ function TriggerProcVendorSearch() {
     <div id="mask">
     </div>
     <asp:Panel ID="pnlPopupChangeAmt" runat="server" BackColor="White" Height="175px" Width="300px"
-        Style="     ex: 9999 9; ba
-            : Whit ; pos
+        Style="ex: 9999 9; ba: Whit; pos
             left: 3 %; to
         der: outset 2px gray; padding: 5px; display: none">
         <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">

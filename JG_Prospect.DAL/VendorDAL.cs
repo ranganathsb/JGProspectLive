@@ -650,6 +650,30 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@VendorSubCategories", DbType.String, DBNull.Value);
                     }
+
+                    database.AddInParameter(command, "@DeliveryFee", DbType.Decimal, objvendor.DeliveryFee);
+                    database.AddInParameter(command, "@StockingReturnFee", DbType.Decimal, objvendor.StockingReturnFee);
+                    database.AddInParameter(command, "@MiscFee", DbType.Decimal, objvendor.MiscFee);
+                    database.AddInParameter(command, "@DeliveryMethod", DbType.String, objvendor.DeliveryMethod);
+                    database.AddInParameter(command, "@FreightTerms", DbType.String, objvendor.FreightTerms);
+                    database.AddInParameter(command, "@Tax", DbType.Decimal, objvendor.Tax);
+                    database.AddInParameter(command, "@VendorQuote",DbType.String, objvendor.VendorQuote);
+                    database.AddInParameter(command, "@AttachVendorQuote", DbType.String, objvendor.AttachVendorQuote);
+                    database.AddInParameter(command, "@Revision",DbType.String, objvendor.Revision);
+                    database.AddInParameter(command, "@VendorInvoice", DbType.String, objvendor.VendorInvoice);
+                    database.AddInParameter(command, "@JGCustomerPO",DbType.String, objvendor.JGCustomerPO);
+                    database.AddInParameter(command, "@LeadTimeDueDate", DbType.DateTime, objvendor.LeadTimeDueDate);
+                    database.AddInParameter(command, "@EconimicalOrderQuantity", DbType.Int32, objvendor.EconimicalOrderQuantity);
+                    database.AddInParameter(command, "@DiscountPerUnit",DbType.Decimal, objvendor.DiscountPerUnit);
+                    database.AddInParameter(command, "@ReOrderPoint", DbType.Decimal, objvendor.ReOrderPoint);
+                    database.AddInParameter(command, "@OrderQTY", DbType.String, objvendor.OrderQTY);
+                    database.AddInParameter(command, "@GeneralPhone", DbType.String, objvendor.GeneralPhone);
+                    database.AddInParameter(command, "@HoursOfOperation", DbType.String, objvendor.HoursOfOperation);
+                    database.AddInParameter(command, "@ContactPreferenceEmail", DbType.Boolean, objvendor.ContactPreferenceEmail);
+                    database.AddInParameter(command, "@ContactPreferenceCall", DbType.Boolean, objvendor.ContactPreferenceCall);
+                    database.AddInParameter(command, "@ContactPreferenceText", DbType.Boolean, objvendor.ContactPreferenceText);
+                    database.AddInParameter(command, "@ContactPreferenceMail", DbType.Boolean, objvendor.ContactPreferenceMail);
+
                     database.AddInParameter(command, "@UserID", DbType.String, objvendor.UserID);
                     database.ExecuteNonQuery(command);
                     return true;

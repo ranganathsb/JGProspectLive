@@ -1716,3 +1716,7 @@ display: block;
         overflow-y: auto;
         height: 400px;
     }
+
+.display_none{
+    display:none !important;
+}

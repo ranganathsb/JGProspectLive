@@ -292,6 +292,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Panel pnlVendorCategory;
         
         /// <summary>
+        /// updVendorCategoryFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updVendorCategoryFilter;
+        
+        /// <summary>
         /// optManf control.
         /// </summary>
         /// <remarks>
@@ -353,6 +362,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancel;
+        
+        /// <summary>
+        /// btnFakeAttachPurchaseOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlButton btnFakeAttachPurchaseOrder;
         
         /// <summary>
         /// mpAttachPurchaseOrder control.

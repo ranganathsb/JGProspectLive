@@ -1075,15 +1075,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btncancelmateriallist;
         
         /// <summary>
-        /// UpdateProgress1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
-        
-        /// <summary>
         /// updtpnlfilter control.
         /// </summary>
         /// <remarks>
@@ -1525,13 +1516,40 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel updtpnlAddVender;
         
         /// <summary>
+        /// tabContainer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabContainer tabContainer;
+        
+        /// <summary>
+        /// TabPanel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabPanel TabPanel1;
+        
+        /// <summary>
         /// btnAddNewVenodr control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddNewVenodr;
+        protected global::System.Web.UI.WebControls.LinkButton btnAddNewVenodr;
+        
+        /// <summary>
+        /// hdnVendorID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnVendorID;
         
         /// <summary>
         /// txtVendorId control.
@@ -1540,7 +1558,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtVendorId;
+        protected global::System.Web.UI.WebControls.LinkButton txtVendorId;
         
         /// <summary>
         /// txtVendorNm control.
@@ -1561,6 +1579,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator Requiredvendorname;
         
         /// <summary>
+        /// ddlWebSite control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlWebSite;
+        
+        /// <summary>
         /// txtWebsite control.
         /// </summary>
         /// <remarks>
@@ -1570,13 +1597,31 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtWebsite;
         
         /// <summary>
-        /// RequiredFieldValidator16 control.
+        /// btnAddWebsite control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator16;
+        protected global::System.Web.UI.WebControls.Button btnAddWebsite;
+        
+        /// <summary>
+        /// rfvWebSite control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvWebSite;
+        
+        /// <summary>
+        /// revWebsite control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revWebsite;
         
         /// <summary>
         /// lblSourceReq control.
@@ -1624,103 +1669,112 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnDeleteSource;
         
         /// <summary>
-        /// DropDownList3 control.
+        /// rfvSource control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList3;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSource;
         
         /// <summary>
-        /// DropDownList2 control.
+        /// txtGeneralPhone control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList2;
+        protected global::System.Web.UI.WebControls.TextBox txtGeneralPhone;
         
         /// <summary>
-        /// TextBox1 control.
+        /// ddlVendorStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        protected global::System.Web.UI.WebControls.DropDownList ddlVendorStatus;
         
         /// <summary>
-        /// TextBox3 control.
+        /// chk24Hours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox3;
+        protected global::System.Web.UI.WebControls.CheckBox chk24Hours;
         
         /// <summary>
-        /// DrpVendorAddress control.
+        /// ddlHoursOfOperation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DrpVendorAddress;
+        protected global::System.Web.UI.WebControls.DropDownList ddlHoursOfOperation;
         
         /// <summary>
-        /// txtTaxId control.
+        /// ddlDays control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTaxId;
+        protected global::System.Web.UI.WebControls.DropDownList ddlDays;
         
         /// <summary>
-        /// DrpPaymentTerms control.
+        /// ddlFromHours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DrpPaymentTerms;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFromHours;
         
         /// <summary>
-        /// DrpPaymentMode control.
+        /// ddlFromAMPM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DrpPaymentMode;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFromAMPM;
         
         /// <summary>
-        /// grdTouchPointLog control.
+        /// ddlToHours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTouchPointLog;
+        protected global::System.Web.UI.WebControls.DropDownList ddlToHours;
         
         /// <summary>
-        /// btnAddNotes control.
+        /// ddlToAMPM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddNotes;
+        protected global::System.Web.UI.WebControls.DropDownList ddlToAMPM;
         
         /// <summary>
-        /// txtAddNotes control.
+        /// btnHoursOfOperation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAddNotes;
+        protected global::System.Web.UI.WebControls.Button btnHoursOfOperation;
+        
+        /// <summary>
+        /// txtFaxNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtFaxNumber;
         
         /// <summary>
         /// lblNewAddress control.
@@ -1732,13 +1786,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.LinkButton lblNewAddress;
         
         /// <summary>
-        /// ddlAddressType control.
+        /// DrpVendorAddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlAddressType;
+        protected global::System.Web.UI.WebControls.DropDownList DrpVendorAddress;
         
         /// <summary>
         /// txtPrimaryZip control.
@@ -1793,6 +1847,42 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCountry;
+        
+        /// <summary>
+        /// chkContactPreferenceEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkContactPreferenceEmail;
+        
+        /// <summary>
+        /// chkContactPreferenceCall control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkContactPreferenceCall;
+        
+        /// <summary>
+        /// chkContactPreferenceText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkContactPreferenceText;
+        
+        /// <summary>
+        /// chkContactPreferenceMail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkContactPreferenceMail;
         
         /// <summary>
         /// txtPrimaryEmail0 control.
@@ -2011,139 +2101,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtAltFax0;
         
         /// <summary>
-        /// Div1 control.
+        /// TabPanel2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Div1;
-        
-        /// <summary>
-        /// BtnSaveLoaction control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton BtnSaveLoaction;
-        
-        /// <summary>
-        /// lbladdress control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbladdress;
-        
-        /// <summary>
-        /// btnPageLoad control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPageLoad;
-        
-        /// <summary>
-        /// ModalPopupExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender ModalPopupExtender1;
-        
-        /// <summary>
-        /// pnlcategorypopup control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlcategorypopup;
-        
-        /// <summary>
-        /// chkProductCategoryList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkProductCategoryList;
-        
-        /// <summary>
-        /// chkVendorCategoryList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorCategoryList;
-        
-        /// <summary>
-        /// chkVendorSubcategoryList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorSubcategoryList;
-        
-        /// <summary>
-        /// btnSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
-        
-        /// <summary>
-        /// btnCancelCategory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCancelCategory;
-        
-        /// <summary>
-        /// btnupdateVendor control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnupdateVendor;
-        
-        /// <summary>
-        /// btnOpenCategoryPopup control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnOpenCategoryPopup;
-        
-        /// <summary>
-        /// LblSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblSave;
-        
-        /// <summary>
-        /// updatepanelAddProduct control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel updatepanelAddProduct;
+        protected global::AjaxControlToolkit.TabPanel TabPanel2;
         
         /// <summary>
         /// btnAddNewProduct control.
@@ -2245,31 +2209,49 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductJGDescription;
         
         /// <summary>
-        /// txtProductVendorPartModel control.
+        /// txtProductVendorPart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProductVendorPartModel;
+        protected global::System.Web.UI.WebControls.TextBox txtProductVendorPart;
         
         /// <summary>
-        /// rfvProductVendorPartModel control.
+        /// rfvProductVendorPart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductVendorPartModel;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductVendorPart;
         
         /// <summary>
-        /// txtProductUnitCostUom control.
+        /// txtProductVendorModel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProductUnitCostUom;
+        protected global::System.Web.UI.WebControls.TextBox txtProductVendorModel;
+        
+        /// <summary>
+        /// rfvProductVendorModel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductVendorModel;
+        
+        /// <summary>
+        /// txtProductUnitCost control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtProductUnitCost;
         
         /// <summary>
         /// rfvProductUnitCostUom control.
@@ -2279,6 +2261,24 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductUnitCostUom;
+        
+        /// <summary>
+        /// ddlProductUOM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlProductUOM;
+        
+        /// <summary>
+        /// rfvddlProductUOM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlProductUOM;
         
         /// <summary>
         /// btnAddProductVariable control.
@@ -2443,33 +2443,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtFeatured;
         
         /// <summary>
-        /// grdTouchPointProductLog control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTouchPointProductLog;
-        
-        /// <summary>
-        /// btnAddProductNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddProductNotes;
-        
-        /// <summary>
-        /// txtProductNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProductNotes;
-        
-        /// <summary>
         /// Button2 control.
         /// </summary>
         /// <remarks>
@@ -2497,13 +2470,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Label Label23;
         
         /// <summary>
-        /// updatepanelPaymentShipping control.
+        /// TabPanel3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel updatepanelPaymentShipping;
+        protected global::AjaxControlToolkit.TabPanel TabPanel3;
         
         /// <summary>
         /// Button3 control.
@@ -2587,13 +2560,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvMiscFee;
         
         /// <summary>
-        /// ddlPreferredPayment control.
+        /// ddlPaymentMethod control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPreferredPayment;
+        protected global::System.Web.UI.WebControls.DropDownList ddlPaymentMethod;
         
         /// <summary>
         /// rfvPreferredPayment control.
@@ -2605,13 +2578,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPreferredPayment;
         
         /// <summary>
-        /// ddlPreferredDelivery control.
+        /// ddlPreferredDeliveryMethod control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPreferredDelivery;
+        protected global::System.Web.UI.WebControls.DropDownList ddlPreferredDeliveryMethod;
         
         /// <summary>
         /// rfvPreferredDelivery control.
@@ -2641,13 +2614,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvFreightTerms;
         
         /// <summary>
-        /// txtPSTaxId control.
+        /// txtTaxId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPSTaxId;
+        protected global::System.Web.UI.WebControls.TextBox txtTaxId;
         
         /// <summary>
         /// rfvTaxId control.
@@ -2767,58 +2740,220 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtOrderQTYMax;
         
         /// <summary>
-        /// grdTouchPointPSLog control.
+        /// grdTouchPointLog control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTouchPointPSLog;
+        protected global::System.Web.UI.WebControls.GridView grdTouchPointLog;
         
         /// <summary>
-        /// Button5 control.
+        /// txtAddNotes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button5;
+        protected global::System.Web.UI.WebControls.TextBox txtAddNotes;
         
         /// <summary>
-        /// TextBox8 control.
+        /// rfvAddNotes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox8;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvAddNotes;
         
         /// <summary>
-        /// Button6 control.
+        /// btnAddNotes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button6;
+        protected global::System.Web.UI.WebControls.Button btnAddNotes;
         
         /// <summary>
-        /// Button7 control.
+        /// divNoteDropzone control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button7;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzone;
         
         /// <summary>
-        /// Label24 control.
+        /// divNoteDropzonePreview control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label24;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzonePreview;
+        
+        /// <summary>
+        /// btnUploadLogFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnUploadLogFiles;
+        
+        /// <summary>
+        /// Div1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Div1;
+        
+        /// <summary>
+        /// BtnSaveLoaction control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton BtnSaveLoaction;
+        
+        /// <summary>
+        /// lbladdress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbladdress;
+        
+        /// <summary>
+        /// btnPageLoad control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnPageLoad;
+        
+        /// <summary>
+        /// dummyLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label dummyLabel;
+        
+        /// <summary>
+        /// mpeCategoryPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ModalPopupExtender mpeCategoryPopup;
+        
+        /// <summary>
+        /// pnlcategorypopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlcategorypopup;
+        
+        /// <summary>
+        /// chkProductCategoryList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList chkProductCategoryList;
+        
+        /// <summary>
+        /// chkVendorCategoryList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorCategoryList;
+        
+        /// <summary>
+        /// chkVendorSubcategoryList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorSubcategoryList;
+        
+        /// <summary>
+        /// btnSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSave;
+        
+        /// <summary>
+        /// btnCancelCategory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelCategory;
+        
+        /// <summary>
+        /// valSum control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary valSum;
+        
+        /// <summary>
+        /// LblSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblSave;
+        
+        /// <summary>
+        /// btnupdateVendor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnupdateVendor;
+        
+        /// <summary>
+        /// btnOpenCategoryPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnOpenCategoryPopup;
+        
+        /// <summary>
+        /// Button4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button4;
         
         /// <summary>
         /// updateMaterialList control.
