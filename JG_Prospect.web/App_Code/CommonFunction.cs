@@ -36,7 +36,7 @@ namespace JG_Prospect.App_Code
         {
             ScriptManager.RegisterStartupScript(page, page.GetType(), "alert", String.Concat("alert('", MessageString, "');"), true);
         }
-        
+
         public static string FormatToShortDateString(object dateobject)
         {
             string formateddatetime = string.Empty;
@@ -179,14 +179,20 @@ namespace JG_Prospect.App_Code
 
                 //ds = AdminBLL.Instance.GetEmailTemplate('');
                 //// your remote SMTP server IP.
-                foreach (Attachment objAttachment in lstAttachments)
+                if (lstAttachments != null)
                 {
-                    Msg.Attachments.Add(objAttachment);
+                    foreach (Attachment objAttachment in lstAttachments)
+                    {
+                        Msg.Attachments.Add(objAttachment);
+                    }
                 }
 
-                foreach (AlternateView objAlternateView in lstAlternateView)
+                if (lstAlternateView != null)
                 {
-                    Msg.AlternateViews.Add(objAlternateView);
+                    foreach (AlternateView objAlternateView in lstAlternateView)
+                    {
+                        Msg.AlternateViews.Add(objAlternateView);
+                    } 
                 }
 
                 SmtpClient sc = new SmtpClient(
@@ -220,7 +226,7 @@ namespace JG_Prospect.App_Code
             }
             return retValue;
         }
-     
+
         /// <summary>
         /// Sends an internal email.
         /// </summary>
@@ -595,7 +601,7 @@ namespace JG_Prospect.App_Code
 
         public static string ReplaceEncodeWhiteSpace(string urlstring)
         {
-            return urlstring.Replace("+","%20");
+            return urlstring.Replace("+", "%20");
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskPriorityList()
