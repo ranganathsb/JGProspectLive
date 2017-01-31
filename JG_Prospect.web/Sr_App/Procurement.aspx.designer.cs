@@ -2839,6 +2839,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Panel pnlcategorypopup;
         
         /// <summary>
+        /// chkProductCategoryList_All control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkProductCategoryList_All;
+        
+        /// <summary>
         /// chkProductCategoryList control.
         /// </summary>
         /// <remarks>
@@ -2848,6 +2857,15 @@ namespace JG_Prospect.Sr_App {
         protected global::Saplin.Controls.DropDownCheckBoxes chkProductCategoryList;
         
         /// <summary>
+        /// chkVendorCategoryList_All control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkVendorCategoryList_All;
+        
+        /// <summary>
         /// chkVendorCategoryList control.
         /// </summary>
         /// <remarks>
@@ -2855,6 +2873,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes chkVendorCategoryList;
+        
+        /// <summary>
+        /// chkVendorSubcategoryList_All control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkVendorSubcategoryList_All;
         
         /// <summary>
         /// chkVendorSubcategoryList control.

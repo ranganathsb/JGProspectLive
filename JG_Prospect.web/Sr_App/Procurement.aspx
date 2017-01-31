@@ -2830,6 +2830,7 @@
                                         <h4>Product Category</h4>
                                         <%--<asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
+                                        <asp:CheckBox ID="chkProductCategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkProductCategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkProductCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>
@@ -2839,6 +2840,7 @@
                                         <h4>Vendor Category</h4>
                                        <%-- <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
+                                        <asp:CheckBox ID="chkVendorCategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkVendorCategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>
@@ -2848,6 +2850,7 @@
                                         <h4>Vendor Sub Category</h4>
                                         <%--<asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
+                                        <asp:CheckBox ID="chkVendorSubcategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkVendorSubcategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorSubcategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>

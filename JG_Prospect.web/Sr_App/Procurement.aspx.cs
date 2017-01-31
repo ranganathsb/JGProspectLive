@@ -223,7 +223,7 @@ namespace JG_Prospect.Sr_App
             chkProductCategoryList.DataValueField = "ProductId";
             chkProductCategoryList.DataBind();
 
-            chkProductCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //chkProductCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
       
         }
 
@@ -296,7 +296,7 @@ namespace JG_Prospect.Sr_App
             ddlprdtCategory.DataTextField = "ProductName";
             ddlprdtCategory.DataValueField = "ProductId";
             ddlprdtCategory.DataBind();
-            ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlProductCatgoryPopup.DataSource = ds;
             ddlProductCatgoryPopup.DataTextField = "ProductName";
@@ -320,7 +320,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public string GetManufacturerType()
@@ -533,7 +533,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = "VendorCategoryNm";
             ddlVndrCategory.DataValueField = "VendorCategoryId";
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             BindVendorCatPopup();
         }
 
@@ -621,7 +621,7 @@ namespace JG_Prospect.Sr_App
             ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
             ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
             ddlVendorSubCategory.DataBind();
-            ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public void BindVendorSubCatByVendorCat1(string VendorCatId)
@@ -1187,7 +1187,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlVendorCatPopup.DataSource = ds;
             ddlVendorCatPopup.DataTextField = ds.Tables[0].Columns[1].ToString();
@@ -1662,7 +1662,7 @@ namespace JG_Prospect.Sr_App
                 ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
                 ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
                 ddlVndrCategory.DataBind();
-                ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 BindVendorCatPopup();
                 ddlVndrCategory.ClearSelection();
                 ddlVendorCatPopup.ClearSelection();
@@ -1701,7 +1701,7 @@ namespace JG_Prospect.Sr_App
                 ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
                 ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
                 ddlVendorSubCategory.DataBind();
-                ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -3804,7 +3804,7 @@ namespace JG_Prospect.Sr_App
                     chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                     chkVendorCategoryList.DataValueField = "VendorCategoryId";
                     chkVendorCategoryList.DataBind();
-                    chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                    //chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 }
             }
 
@@ -3850,7 +3850,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
-                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             if (dscategories.Tables[2].Rows.Count > 0)
             {
@@ -4368,7 +4368,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                 chkVendorCategoryList.DataValueField = "VendorCategoryId";
                 chkVendorCategoryList.DataBind();
-                chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4424,7 +4424,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
-                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4927,6 +4927,34 @@ namespace JG_Prospect.Sr_App
         protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
         {
             mpeCategoryPopup.Show();
+        }
+
+        protected void chkProductCategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach(System.Web.UI.WebControls.ListItem lv in chkProductCategoryList.Items)
+            {
+                lv.Selected = chkProductCategoryList_All.Checked;
+            }
+            chkProductCategoryList_SelectedIndexChanged(null, null);
+        }
+
+        protected void chkVendorCategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+
+            foreach (System.Web.UI.WebControls.ListItem lv in chkVendorCategoryList.Items)
+            {
+                lv.Selected = chkVendorCategoryList_All.Checked;
+            }
+            chkVendorCategoryList_SelectedIndexChanged(null, null);
+        }
+
+        protected void chkVendorSubcategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (System.Web.UI.WebControls.ListItem lv in chkVendorSubcategoryList.Items)
+            {
+                lv.Selected = chkVendorSubcategoryList_All.Checked;
+            }
+            chkVendorSubcategoryList_SelectedIndexChanged(null, null);
         }
 
         private void UpdatePopupVendorSubCategoryList()
