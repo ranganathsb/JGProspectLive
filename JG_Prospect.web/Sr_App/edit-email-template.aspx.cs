@@ -58,6 +58,7 @@ namespace JG_Prospect.Sr_App
             {
                 DesignationHTMLTemplate objDesignationHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(this.HTMLTemplate.Value, ddlDesignation.SelectedValue);
 
+                txtSubject.Text = objDesignationHTMLTemplate.Subject;
                 txtHeader.Text = objDesignationHTMLTemplate.Header;
                 txtBody.Text = objDesignationHTMLTemplate.Body;
                 txtFooter.Text = objDesignationHTMLTemplate.Footer;

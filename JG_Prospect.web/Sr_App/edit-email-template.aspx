@@ -12,14 +12,14 @@
             <ContentTemplate>
                 <table width="100%">
                     <tr>
-                        <td width="80">Name:
+                        <td width="80" valign="top">Name:
                         </td>
                         <td>
                             <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" />
                         </td>
                     </tr>
                     <tr>
-                        <td>Designation:
+                        <td valign="top">Designation:
                         </td>
                         <td>
                             <asp:DropDownList ID="ddlDesignation" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged" />
@@ -35,7 +35,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Subject:
+                        <td valign="top">Subject:
                         </td>
                         <td>
                             <asp:TextBox ID="txtSubject" runat="server" MaxLength="3500" Width="90%" />
@@ -45,7 +45,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Header:
+                        <td valign="top">Header:
                         </td>
                         <td>
                             <asp:TextBox ID="txtHeader" runat="server" TextMode="MultiLine" Width="90%" />
@@ -55,7 +55,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Body:
+                        <td valign="top">Body:
                         </td>
                         <td>
                             <asp:TextBox ID="txtBody" runat="server" TextMode="MultiLine" Width="90%" />
@@ -65,7 +65,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Footer:
+                        <td valign="top">Footer:
                         </td>
                         <td>
                             <asp:TextBox ID="txtFooter" runat="server" TextMode="MultiLine" Width="90%" />

@@ -918,8 +918,8 @@ namespace JG_Prospect
             }
 
             SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]),
-                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, 104, null,
-                ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
+                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, HTMLTemplates.InterviewDateAutoEmail
+                , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
 
             //AssignedTask if any or Default
             AssignedTaskToUser(Convert.ToInt32(Session["EditId"]), ddlTechTask);
@@ -1020,7 +1020,9 @@ namespace JG_Prospect
                 attachment.Name = Path.GetFileName(strPath);
                 lstAttachments.Add(attachment);
             }
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
+
+            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 
+                HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
 
             //binddata();
             GetSalesUsersStaticticsAndData();
@@ -1242,7 +1244,7 @@ namespace JG_Prospect
                                     strHireDate,
                                     strEmployeeType,
                                     strPayRates,
-                                    104,
+                                    HTMLTemplates.InterviewDateAutoEmail,
                                     null,
                                     ddlRecruiter_Popup.SelectedItem != null ? ddlRecruiter_Popup.SelectedItem.Text : ""
                                 );
@@ -1319,7 +1321,7 @@ namespace JG_Prospect
                                     strHireDate,
                                     strEmployeeType,
                                     strPayRates,
-                                    105,
+                                    HTMLTemplates.Offer_Made_Auto_Email,
                                     lstAttachments
                                 );
                         break;
@@ -2689,27 +2691,33 @@ namespace JG_Prospect
             return true;
         }
 
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null, string strManager = "")
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
-            string fullname = FName + " " + LName;
-            DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
-            //htmlTempID = 105 only in btnSaveOfferMade method. otherwise  = 0 
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, JGSession.DesignationId.ToString());
 
-            if (ds == null)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
-            }
-            else if (ds.Tables[0].Rows.Count == 0)
-            {
-                ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
-            }
-            string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
-            string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
-            string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
-            string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+            //DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+            //if (ds == null)
+            //{
+            //    ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
+            //}
+            //else if (ds.Tables[0].Rows.Count == 0)
+            //{
+            //    ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
+            //}
+
+            //string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
+            //string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
+            //string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
+            //string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
             string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
             string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
 
             strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
             strBody = strBody.Replace("#FirstName#", FName);
@@ -2747,18 +2755,19 @@ namespace JG_Prospect
                 //CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
             }
 
-            List<Attachment> lstAttachments = new List<Attachment>();
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
 
-            for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
-            {
-                string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
-                if (File.Exists(sourceDir))
-                {
-                    Attachment attachment = new Attachment(sourceDir);
-                    attachment.Name = Path.GetFileName(sourceDir);
-                    lstAttachments.Add(attachment);
-                }
-            }
+            //for (int i = 0; i < lstAttachments.Count; i++)
+            //{
+            //    string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+            //    if (File.Exists(sourceDir))
+            //    {
+            //        Attachment attachment = new Attachment(sourceDir);
+            //        attachment.Name = Path.GetFileName(sourceDir);
+            //        lstAttachments.Add(attachment);
+            //    }
+            //}
+
             if (Attachments != null)
             {
                 lstAttachments.AddRange(Attachments);
