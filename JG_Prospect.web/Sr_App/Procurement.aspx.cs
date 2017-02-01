@@ -223,7 +223,7 @@ namespace JG_Prospect.Sr_App
             chkProductCategoryList.DataValueField = "ProductId";
             chkProductCategoryList.DataBind();
 
-            chkProductCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //chkProductCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
       
         }
 
@@ -296,7 +296,7 @@ namespace JG_Prospect.Sr_App
             ddlprdtCategory.DataTextField = "ProductName";
             ddlprdtCategory.DataValueField = "ProductId";
             ddlprdtCategory.DataBind();
-            ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlProductCatgoryPopup.DataSource = ds;
             ddlProductCatgoryPopup.DataTextField = "ProductName";
@@ -320,7 +320,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public string GetManufacturerType()
@@ -384,13 +384,6 @@ namespace JG_Prospect.Sr_App
         }
         protected void ddlprdtCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            if (ddlprdtCategory.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in ddlprdtCategory.Items)
-                        li.Selected = true;
-            }
-
             ddlVndrCategory.SelectedIndex = -1;
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorByProdCat(ddlprdtCategory.SelectedValue.ToString());
@@ -533,7 +526,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = "VendorCategoryNm";
             ddlVndrCategory.DataValueField = "VendorCategoryId";
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             BindVendorCatPopup();
         }
 
@@ -571,11 +564,6 @@ namespace JG_Prospect.Sr_App
         }
         protected void ddlVndrCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlVndrCategory.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in ddlVndrCategory.Items)
-                    li.Selected = true;
-            }
 
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorSubCatByVendorCat(ddlVndrCategory.SelectedValue.ToString());
@@ -621,7 +609,7 @@ namespace JG_Prospect.Sr_App
             ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
             ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
             ddlVendorSubCategory.DataBind();
-            ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public void BindVendorSubCatByVendorCat1(string VendorCatId)
@@ -637,12 +625,6 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlVendorSubCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlVendorSubCategory.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in ddlVendorSubCategory.Items)
-                    li.Selected = true;
-            }
-
             BindFilteredVendorList();
             ViewState["CheckedVsc"] = null;
             if (!ddlVendorSubCategory.SelectedValue.Equals("Select"))
@@ -1115,6 +1097,8 @@ namespace JG_Prospect.Sr_App
             txtPrimaryContactExten0.Text = txtPrimaryContact0.Text = txtSecContactExten0.Text = txtSecContact0.Text = txtAltContactExten0.Text = txtAltContact0.Text = null;
             btnSave.Text = "Save";
             mpeCategoryPopup.Hide();
+            ViewState["ShowCategoryPopup"] = "0";
+            ShowCategoryPopup();
             ViewState["CheckedPc"] = null;
             ViewState["CheckedVc"] = null;
             ViewState["CheckedVsc"] = null;
@@ -1187,7 +1171,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+            //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlVendorCatPopup.DataSource = ds;
             ddlVendorCatPopup.DataTextField = ds.Tables[0].Columns[1].ToString();
@@ -1662,7 +1646,7 @@ namespace JG_Prospect.Sr_App
                 ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
                 ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
                 ddlVndrCategory.DataBind();
-                ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 BindVendorCatPopup();
                 ddlVndrCategory.ClearSelection();
                 ddlVendorCatPopup.ClearSelection();
@@ -1701,7 +1685,7 @@ namespace JG_Prospect.Sr_App
                 ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
                 ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
                 ddlVendorSubCategory.DataBind();
-                ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -3804,7 +3788,7 @@ namespace JG_Prospect.Sr_App
                     chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                     chkVendorCategoryList.DataValueField = "VendorCategoryId";
                     chkVendorCategoryList.DataBind();
-                    chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                    //chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 }
             }
 
@@ -3850,7 +3834,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
-                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             if (dscategories.Tables[2].Rows.Count > 0)
             {
@@ -4345,13 +4329,8 @@ namespace JG_Prospect.Sr_App
 
         protected void chkProductCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mpeCategoryPopup.Show();
-            if (chkProductCategoryList.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
-                    li.Selected = true;
-            }
-
+            //mpeCategoryPopup.Show();
+            ShowCategoryPopup();
             string strPrdtCategory = "";
             foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
             {
@@ -4368,7 +4347,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                 chkVendorCategoryList.DataValueField = "VendorCategoryId";
                 chkVendorCategoryList.DataBind();
-                chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4400,12 +4379,8 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mpeCategoryPopup.Show();
-            if (chkVendorCategoryList.Items.Count > 0 && chkVendorCategoryList.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
-                    li.Selected = true;
-            }
+            //mpeCategoryPopup.Show();
+            ShowCategoryPopup();
 
             string strVendorCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
@@ -4424,7 +4399,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
-                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+                //chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4452,12 +4427,8 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorSubcategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (chkVendorSubcategoryList.Items[0].Selected)
-            {
-                foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
-                    li.Selected = true;
-            }
-            mpeCategoryPopup.Show();
+            //mpeCategoryPopup.Show();
+            ShowCategoryPopup();
             string strVendorsubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {
@@ -4926,7 +4897,50 @@ namespace JG_Prospect.Sr_App
 
         protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
         {
-            mpeCategoryPopup.Show();
+            ViewState["ShowCategoryPopup"] = "1";
+            ShowCategoryPopup();
+        }
+
+        private void ShowCategoryPopup()
+        {
+            if (ViewState["ShowCategoryPopup"] != null && ViewState["ShowCategoryPopup"].ToString() == "1")
+                mpeCategoryPopup.Show();
+            else
+                mpeCategoryPopup.Hide();
+        }
+
+        protected void chkProductCategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach(System.Web.UI.WebControls.ListItem lv in chkProductCategoryList.Items)
+            {
+                lv.Selected = chkProductCategoryList_All.Checked;
+            }
+            chkProductCategoryList_SelectedIndexChanged(null, null);
+        }
+
+        protected void chkVendorCategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+
+            foreach (System.Web.UI.WebControls.ListItem lv in chkVendorCategoryList.Items)
+            {
+                lv.Selected = chkVendorCategoryList_All.Checked;
+            }
+            chkVendorCategoryList_SelectedIndexChanged(null, null);
+        }
+
+        protected void chkVendorSubcategoryList_All_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (System.Web.UI.WebControls.ListItem lv in chkVendorSubcategoryList.Items)
+            {
+                lv.Selected = chkVendorSubcategoryList_All.Checked;
+            }
+            chkVendorSubcategoryList_SelectedIndexChanged(null, null);
+        }
+
+        protected void btnCancelCategory_Click(object sender, EventArgs e)
+        {
+            ViewState["ShowCategoryPopup"] = "0";
+            ShowCategoryPopup();
         }
 
         private void UpdatePopupVendorSubCategoryList()
