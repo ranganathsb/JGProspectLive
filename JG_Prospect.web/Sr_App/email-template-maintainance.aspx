@@ -15,8 +15,7 @@
             <Columns>
                 <asp:TemplateField HeaderText="Id">
                     <ItemTemplate>
-                        <asp:LinkButton ID="lbtnEdit" runat="server" Text='<%#Eval("Id")%>' CommandArgument='<%#Eval("Id")%>' 
-                            CommandName="edit-template" />
+                        <asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Name">

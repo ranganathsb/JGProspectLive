@@ -29,10 +29,7 @@ namespace JG_Prospect.Sr_App
 
         protected void grdHtmlTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName.Equals("edit-template"))
-            {
-                Response.Redirect("~/Sr_App/edit-email-template.aspx?MasterId=" + e.CommandArgument.ToString());
-            }
+            
         }
     }
 }

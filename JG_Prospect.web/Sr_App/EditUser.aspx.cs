@@ -206,6 +206,27 @@ namespace JG_Prospect
 
         #region grdUsers - User List
 
+        protected void grdUsers_PreRender(object sender, EventArgs e)
+        {
+            GridView gv = (GridView)sender;
+
+            if (gv.Rows.Count > 0)
+            {
+                gv.UseAccessibleHeader = true;
+                gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gv.FooterRow.TableSection = TableRowSection.TableFooter;
+            }
+
+            if (gv.TopPagerRow != null)
+            {
+                gv.TopPagerRow.TableSection = TableRowSection.TableHeader;
+            }
+            if (gv.BottomPagerRow != null)
+            {
+                gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+            }
+        }
+
         protected void grdUsers_RowDataBound(object sender, GridViewRowEventArgs e)
         {
 
@@ -252,7 +273,7 @@ namespace JG_Prospect
                             hypTechTask.Visible = true;
                         }
 
-                        switch ((JGConstant.InstallUserStatus)Convert.ToByte( Status))
+                        switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
                             case JGConstant.InstallUserStatus.Applicant:
                                 {
@@ -513,9 +534,9 @@ namespace JG_Prospect
             }
 
             if (
-                    (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) && 
+                    (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) &&
                     (
-                        !(Convert.ToString(Session["usertype"]).Contains("Admin")) && 
+                        !(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
                         !(Convert.ToString(Session["usertype"]).Contains("SM"))
                     )
                 )
@@ -527,11 +548,11 @@ namespace JG_Prospect
             }
             else if (
                         (
-                            lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() && 
+                            lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() &&
                             ddl.SelectedValue != Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()
-                        ) && 
+                        ) &&
                         (
-                            (Convert.ToString(Session["usertype"]).Contains("Admin")) || 
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) ||
                             (Convert.ToString(Session["usertype"]).Contains("SM"))
                         )
                     )
@@ -563,9 +584,9 @@ namespace JG_Prospect
 
             if (
                     (
-                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() || 
+                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() ||
                         ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()
-                    ) && 
+                    ) &&
                     (
                         !(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
                         !(Convert.ToString(Session["usertype"]).Contains("SM"))
@@ -593,9 +614,9 @@ namespace JG_Prospect
                 return;
             }
             else if (
-                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString() && 
+                        ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString() &&
                         (
-                            (Convert.ToString(Session["usertype"]).Contains("Admin")) && 
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) &&
                             (Convert.ToString(Session["usertype"]).Contains("SM"))
                         )
                     )
@@ -656,7 +677,7 @@ namespace JG_Prospect
                 return;
             }
 
-            if (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() && 
+            if (lblStatus.Value == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString() &&
                 (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -674,7 +695,7 @@ namespace JG_Prospect
                 //binddata();
                 GetSalesUsersStaticticsAndData();
 
-                if ((ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) || 
+                if ((ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) ||
                     (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()))
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
                 return;
@@ -1193,7 +1214,7 @@ namespace JG_Prospect
                     strPayRates = Convert.ToString(dsUser.Tables[0].Rows[0][3]);
                 }
 
-                switch ((JGConstant.InstallUserStatus)Convert.ToByte( ddlStatus_Popup.SelectedValue))
+                switch ((JGConstant.InstallUserStatus)Convert.ToByte(ddlStatus_Popup.SelectedValue))
                 {
                     case JGConstant.InstallUserStatus.Deactive:
                         SendEmail(
@@ -2962,7 +2983,7 @@ namespace JG_Prospect
             if (dsUsers != null && dsUsers.Tables.Count > 0)
             {
                 DataView dvUsers = dsUsers.Tables[0].DefaultView;
-                dvUsers.RowFilter = string.Format( "[Status] = '{0}'",Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                dvUsers.RowFilter = string.Format("[Status] = '{0}'", Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
                 ddlUsers.DataSource = dvUsers.ToTable();
                 ddlUsers.DataTextField = "FristName";
                 ddlUsers.DataValueField = "Id";
@@ -3256,7 +3277,7 @@ namespace JG_Prospect
                     {
                         //Session["UserGridData"] = dtSalesUser_Grid;
                         //BindUsers(dtSalesUser_Grid);
-                       
+
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
@@ -3519,7 +3540,7 @@ namespace JG_Prospect
 
             txtEmailSubject.Text = objHTMLTemplate.Subject;
             txtEmailBody.Text = string.Concat(
-                                                //objHTMLTemplate.Designation + " --- ",
+                //objHTMLTemplate.Designation + " --- ",
                                                 objHTMLTemplate.Header,
                                                 objHTMLTemplate.Body,
                                                 objHTMLTemplate.Footer
@@ -3545,7 +3566,7 @@ namespace JG_Prospect
             lblEmailTo.Text = strEmail;
 
             upSendEmailToUser.Update();
-            
+
             ScriptManager.RegisterStartupScript
                                 (
                                     this,
@@ -3694,26 +3715,5 @@ namespace JG_Prospect
         #endregion
 
         #endregion
-
-        protected void grdUsers_PreRender(object sender, EventArgs e)
-        {
-            GridView gv = (GridView)sender;            
-
-            if (gv.Rows.Count > 0)
-            {
-                gv.UseAccessibleHeader = true;
-                gv.HeaderRow.TableSection = TableRowSection.TableHeader;
-                gv.FooterRow.TableSection = TableRowSection.TableFooter;
-            }
-
-            if (gv.TopPagerRow != null)
-            {
-                gv.TopPagerRow.TableSection = TableRowSection.TableHeader;
-            }
-            if (gv.BottomPagerRow != null)
-            {
-                gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
-            }
-        }
     }
 }
