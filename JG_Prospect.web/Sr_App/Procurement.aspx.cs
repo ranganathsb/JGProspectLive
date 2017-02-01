@@ -62,8 +62,6 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                
-
                 if (!IsPostBack)
                 {
                     Session["dtVendorAddress"] = null;
@@ -195,8 +193,6 @@ namespace JG_Prospect.Sr_App
                     grdprimaryvendor.DataSource = new List<JG_Prospect.BLL.clsProcurementDataAll>();
                     grdprimaryvendor.DataBind();
 
-                 
-
                 }
                 else
                 {
@@ -221,10 +217,14 @@ namespace JG_Prospect.Sr_App
                     ProductName = item["ProductName"].ToString()
                 });
             }
+            chkProductCategoryList.Items.Clear();
             chkProductCategoryList.DataSource = lstPrdtCat;
             chkProductCategoryList.DataTextField = "ProductName";
             chkProductCategoryList.DataValueField = "ProductId";
             chkProductCategoryList.DataBind();
+
+            chkProductCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
+      
         }
 
         #region Bind VendorMaterialList
@@ -232,8 +232,8 @@ namespace JG_Prospect.Sr_App
         {
             string VendorId = string.IsNullOrEmpty(hdnVendorID.Value) ? "" : hdnVendorID.Value;
             string ProductCatId = ddlprdtCategory.SelectedValue.ToString() == "Select" ? "" : ddlprdtCategory.SelectedValue.ToString();
-            string VendorCatId = ddlVndrCategory.SelectedValue.ToString() == "Select" ? "" : ddlVndrCategory.SelectedValue.ToString();
-            string VendorSubCatId = ddlVendorSubCategory.SelectedValue.ToString() == "Select" ? "" : ddlVendorSubCategory.SelectedValue.ToString();
+            string VendorCatId = ddlVndrCategory.SelectedValue.ToString() == "0" ? "" : ddlVndrCategory.SelectedValue.ToString();
+            string VendorSubCatId = ddlVendorSubCategory.SelectedValue.ToString() == "" ? "" : ddlVendorSubCategory.SelectedValue.ToString();
             string PeriodStart = txtfrmdate.Text;
             string PeriodEnd = txtTodate.Text;
             string PayPeriod = drpPayPeriod.SelectedValue.ToString() == "0" ? "" : drpPayPeriod.SelectedValue.ToString();
@@ -296,7 +296,7 @@ namespace JG_Prospect.Sr_App
             ddlprdtCategory.DataTextField = "ProductName";
             ddlprdtCategory.DataValueField = "ProductId";
             ddlprdtCategory.DataBind();
-            ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            ddlprdtCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlProductCatgoryPopup.DataSource = ds;
             ddlProductCatgoryPopup.DataTextField = "ProductName";
@@ -320,7 +320,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public string GetManufacturerType()
@@ -384,6 +384,13 @@ namespace JG_Prospect.Sr_App
         }
         protected void ddlprdtCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+            if (ddlprdtCategory.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in ddlprdtCategory.Items)
+                        li.Selected = true;
+            }
+
             ddlVndrCategory.SelectedIndex = -1;
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorByProdCat(ddlprdtCategory.SelectedValue.ToString());
@@ -393,7 +400,7 @@ namespace JG_Prospect.Sr_App
                 ViewState["CheckedPc"] = ddlprdtCategory.SelectedValue;
             }
             BindVendorCatPopup();
-            if (ddlprdtCategory.SelectedValue.ToString() != "Select")
+            if (ddlprdtCategory.SelectedValue.ToString() != "Select" && ddlprdtCategory.SelectedValue.ToString() != "")
             {
                 ddlProductCatgoryPopup.SelectedValue = ddlprdtCategory.SelectedValue;
             }
@@ -402,6 +409,10 @@ namespace JG_Prospect.Sr_App
                 BindAllVendorCategory();
             }
             BindFilteredVendorList();
+
+            UpdatePopupProductCategoryList();
+
+           
         }
 
         protected void ddlprdtCategory1_SelectedIndexChanged(object sender, EventArgs e)
@@ -420,31 +431,84 @@ namespace JG_Prospect.Sr_App
             }
             bool IsRetailWholesale = rdoRetailWholesale.Checked;
 
-            string iProductCategoryID = ddlprdtCategory.SelectedValue;
-            if (ddlprdtCategory.SelectedValue.Equals("Select"))
+            DataSet ds = new DataSet();
+            bool dsClone = false;
+            foreach (System.Web.UI.WebControls.ListItem li in ddlprdtCategory.Items)
             {
-                iProductCategoryID = string.Empty;
-            }
-            string iVendorCategoryID = ddlVndrCategory.SelectedValue;
-            if (ddlVndrCategory.SelectedValue.Equals("Select"))
-            {
-                iVendorCategoryID = string.Empty;
-            }
-            string iVendorSubCategoryID = ddlVendorSubCategory.SelectedValue;
-            if (ddlVendorSubCategory.SelectedValue.Equals("Select"))
-            {
-                iVendorSubCategoryID = string.Empty;
+                if (li.Selected == true)
+                {
+                    string iProductCategoryID = li.Value;
+
+                    DataSet ds1 = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, iProductCategoryID, "", "");
+                    if (ds1 != null && ds1.Tables.Count > 0)
+                    {
+                        if (dsClone == false)
+                        {
+                            ds = ds1.Clone();
+                            dsClone = true;
+                        }
+
+                        foreach (DataRow dr in ds1.Tables[0].Rows)
+                            ds.Tables[0].ImportRow(dr);
+                    }
+                }
             }
 
-            DataSet ds = new DataSet();
-            ds = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, iProductCategoryID, iVendorCategoryID, iVendorSubCategoryID);
+            foreach (System.Web.UI.WebControls.ListItem li in ddlVndrCategory.Items)
+            {
+                if (li.Selected == true)
+                {
+                    string iVendorCategoryID = li.Value;
+                    DataSet ds1 = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, "", iVendorCategoryID, "");
+                    if (ds1 != null && ds1.Tables.Count > 0)
+                    {
+                        if (dsClone == false)
+                        {
+                            ds = ds1.Clone();
+                            dsClone = true;
+                        }
+
+                        foreach (DataRow dr in ds1.Tables[0].Rows)
+                            ds.Tables[0].ImportRow(dr);
+                    }
+                }
+            }
+
+            foreach (System.Web.UI.WebControls.ListItem li in ddlVendorSubCategory.Items)
+            {
+                if (li.Selected == true)
+                {
+                    string iVendorSubCategoryID = li.Value;
+                    DataSet ds1 = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, "", "", iVendorSubCategoryID);
+                    if (ds1 != null && ds1.Tables.Count > 0)
+                    {
+                        if (dsClone == false)
+                        {
+                            ds = ds1.Clone();
+                            dsClone = true;
+                        }
+
+                        foreach (DataRow dr in ds1.Tables[0].Rows)
+                            ds.Tables[0].ImportRow(dr);
+                    }
+                }
+            }
+
             if (ds != null && ds.Tables.Count > 0)
             {
                 grdVendorList.DataSource = ds.Tables[0];
             }
             else
             {
-                grdVendorList.DataSource = null;
+                ds = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, "", "", "");
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    grdVendorList.DataSource = ds.Tables[0];
+                }
+                else
+                {
+                    grdVendorList.DataSource = null;
+                }
             }
             grdVendorList.DataBind();
         }
@@ -453,11 +517,23 @@ namespace JG_Prospect.Sr_App
         {
             DataSet ds = new DataSet();
             ds = AdminBLL.Instance.GetVendorCategory(ProductId, rdoRetailWholesale.Checked, rdoManufacturer.Checked);
+            string strPrdtCategory = string.Empty;
+            foreach (System.Web.UI.WebControls.ListItem item in ddlprdtCategory.Items)
+            {
+                if (item.Selected)
+                {
+                    strPrdtCategory += item.Value + ",";
+                }
+            }
+
+            string trimmedPrdtcategory = strPrdtCategory.TrimEnd(',');
+            ds = VendorBLL.Instance.GetCategoryList(trimmedPrdtcategory, "", "2");
+
             ddlVndrCategory.DataSource = ds;
-            ddlVndrCategory.DataTextField = "VendorCategoryName";
+            ddlVndrCategory.DataTextField = "VendorCategoryNm";
             ddlVndrCategory.DataValueField = "VendorCategoryId";
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             BindVendorCatPopup();
         }
 
@@ -495,11 +571,17 @@ namespace JG_Prospect.Sr_App
         }
         protected void ddlVndrCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (ddlVndrCategory.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in ddlVndrCategory.Items)
+                    li.Selected = true;
+            }
+
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorSubCatByVendorCat(ddlVndrCategory.SelectedValue.ToString());
             //string ManufacturerType = GetManufacturerType();
             ViewState["CheckedVc"] = null;
-            if (ddlVndrCategory.SelectedValue.ToString() != "Select")
+            if (ddlVndrCategory.SelectedValue.ToString() != "0" && ddlVndrCategory.SelectedValue.ToString() != "")
             {
                 ddlVendorCatPopup.SelectedValue = ddlVndrCategory.SelectedValue;
                 ddlvendercategoryname.SelectedValue = ddlVndrCategory.SelectedValue;
@@ -511,6 +593,8 @@ namespace JG_Prospect.Sr_App
                 FilterVendorByProductCategory();
             }
             BindFilteredVendorList();
+
+            UpdatePopupVendorCategoryList();
         }
 
         protected void ddlVndrCategory1_SelectedIndexChanged(object sender, EventArgs e)
@@ -522,12 +606,22 @@ namespace JG_Prospect.Sr_App
         public void BindVendorSubCatByVendorCat(string VendorCatId)
         {
             DataSet ds = new DataSet();
-            ds = AdminBLL.Instance.GetVendorSubCategory(VendorCatId, rdoRetailWholesale.Checked, rdoManufacturer.Checked);
+            string strVendorCategory = "";
+            foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
+            {
+                if (li.Selected == true)
+                {
+                    strVendorCategory = strVendorCategory + li.Value + ",";
+                }
+            }
+            string trimmedVendorcategory = strVendorCategory.TrimEnd(',');
+            ds = VendorBLL.Instance.GetCategoryList("", trimmedVendorcategory, "3");
+
             ddlVendorSubCategory.DataSource = ds;
             ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
             ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
             ddlVendorSubCategory.DataBind();
-            ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
         }
 
         public void BindVendorSubCatByVendorCat1(string VendorCatId)
@@ -543,12 +637,20 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlVendorSubCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (ddlVendorSubCategory.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in ddlVendorSubCategory.Items)
+                    li.Selected = true;
+            }
+
             BindFilteredVendorList();
             ViewState["CheckedVsc"] = null;
             if (!ddlVendorSubCategory.SelectedValue.Equals("Select"))
             {
                 ViewState["CheckedVsc"] = ddlVendorSubCategory.SelectedValue;
             }
+
+            UpdatePopupVendorSubCategoryList();
         }
 
         public string GetVendorStatus()
@@ -572,7 +674,7 @@ namespace JG_Prospect.Sr_App
             bindVendorMaterialList();
 
             int VendorID = Convert.ToInt32(string.IsNullOrEmpty(hdnVendorID.Value) ? "0" : hdnVendorID.Value);
-            int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "0" ? "0" : DrpVendorAddress.SelectedValue);
+            int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "Select" ? "0" : DrpVendorAddress.SelectedValue);
             LoadVendorEmails(VendorID, AddressID);
         }
 
@@ -763,7 +865,7 @@ namespace JG_Prospect.Sr_App
         protected void SaveAllData()
         {
             Vendor objvendor = new Vendor();
-            if (ddlVndrCategory.SelectedValue == "Select" && hidIsEditVendor.Value.Equals("true"))
+            if (ddlVndrCategory.SelectedValue == "0" && hidIsEditVendor.Value.Equals("true"))
             {
                 int VendorID = Convert.ToInt32(string.IsNullOrEmpty(hdnVendorID.Value) ? "0" : hdnVendorID.Value);
                 int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "Select" ? "0" : DrpVendorAddress.SelectedValue);
@@ -780,7 +882,7 @@ namespace JG_Prospect.Sr_App
 
             //}
 
-            SaveAddressAndVendorEmail();
+            
             //if (ddlVendorName.SelectedValue != "")
             //    objvendor.vendor_id = Convert.ToInt32(ddlVendorName.SelectedValue);
             //else
@@ -833,7 +935,7 @@ namespace JG_Prospect.Sr_App
             objvendor.TaxId = txtTaxId.Text;
             objvendor.ExpenseCategory = "";
             objvendor.AutoTruckInsurance = "";
-            objvendor.vendor_subcategory_id = Convert.ToInt32((ddlVendorSubCategory.SelectedValue == "Select") ? "0" : ddlVendorSubCategory.SelectedValue);
+            objvendor.vendor_subcategory_id = Convert.ToInt32((ddlVendorSubCategory.SelectedValue == "") ? "0" : ddlVendorSubCategory.SelectedValue);
 
             objvendor.VendorStatus = (ddlVendorStatusfltr.SelectedValue == "Select") ? "" : ddlVendorStatusfltr.SelectedValue;
             if (objvendor.VendorStatus == "All")
@@ -881,7 +983,6 @@ namespace JG_Prospect.Sr_App
                     NewTempID = Convert.ToString(HttpContext.Current.Session["TempID"]);
                 }
 
-
                 if (HttpContext.Current.Session["NotesTempID"] == null)
                 {
                     NotesTempID = Guid.NewGuid().ToString();
@@ -912,13 +1013,8 @@ namespace JG_Prospect.Sr_App
             string trimmedVendorcategory = strVendorCategory.TrimEnd(',');
 
             objvendor.VendorCategories = trimmedVendorcategory;
+            objvendor.vendor_category_id = defaultVendorCatId;
 
-            objvendor.vendor_category_id = Convert.ToInt32(ddlVndrCategory.SelectedValue == "Select" ? "0" : ddlVndrCategory.SelectedValue);
-
-            if (objvendor.vendor_category_id == 0)
-            {
-                objvendor.vendor_category_id = defaultVendorCatId;
-            }
             string strVendorSubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {
@@ -930,7 +1026,6 @@ namespace JG_Prospect.Sr_App
             string trimmedVendorSubcategory = strVendorSubCategory.TrimEnd(',');
             objvendor.VendorSubCategories = trimmedVendorSubcategory;
             objvendor.UserID = JGSession.Username;
-
 
             if (decimal.TryParse(txtDeliveryFee.Text, out objvendor.DeliveryFee))
                 objvendor.DeliveryFee = Convert.ToDecimal(txtDeliveryFee.Text);
@@ -969,11 +1064,9 @@ namespace JG_Prospect.Sr_App
             if (int.TryParse(txtOrderQTYMax.Text, out objvendor.OrderQTY))
                 objvendor.OrderQTY = Convert.ToInt32(txtOrderQTYMax.Text);
 
-
             objvendor.GeneralPhone = txtGeneralPhone.Text;
 
             objvendor.HoursOfOperation = string.Empty;
-            //objvendor.HoursOfOperation = ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
             foreach (System.Web.UI.WebControls.ListItem item in ddlHoursOfOperation.Items)
             {
                 objvendor.HoursOfOperation += item.Value + ",";
@@ -984,34 +1077,19 @@ namespace JG_Prospect.Sr_App
             objvendor.ContactPreferenceText = chkContactPreferenceText.Checked;
             objvendor.ContactPreferenceMail = chkContactPreferenceMail.Checked;
 
-            bool res = VendorBLL.Instance.savevendor(objvendor);
+            Int32 res = VendorBLL.Instance.savevendor(objvendor);
             HttpContext.Current.Session["TempID"] = null;
             lbladdress.Text = "";
-            //if (flag == "")
-            //{
-            if (res)
+          
+            if (res > 0)
             {
-                //objvendor.tblVendorEmail = (DataTable)HttpContext.Current.Session["dtVendorEmail"];
-                //bool emailres = VendorBLL.Instance.InsertVendorEmail(objvendor);
-                //objvendor.tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
-                //bool addressres = VendorBLL.Instance.InsertVendorAddress(objvendor);
+                SaveAddressAndVendorEmail(res.ToString());
+                hdnVendorID.Value = res.ToString();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
-                LblSave.Text = "Vendor Saved/Updated Successfully";
                 hidIsEditVendor.Value = "false";
                 clear();
                 BindFilteredVendorList();
-                pnlcategorypopup.Style.Add("display", "none");
-                //string ManufacturerType = GetManufacturerType();
-                //if (ddlVendorSubCategory.SelectedValue == "Select")
-                //{
-                //    FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, null, GetVendorStatus());
-                //}
-                //else
-                //{
-                //    FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
-                //}
             }
-            //}
 
         }
 
@@ -1023,6 +1101,7 @@ namespace JG_Prospect.Sr_App
 
             txtTaxId.Text = txtWebsite.Text = null;
             ddlWebSite.Items.Clear();
+
             ddlPaymentMethod.ClearSelection();
             ddlPaymentTerms.ClearSelection();
             txtPrimaryCity.Text = "";
@@ -1065,6 +1144,7 @@ namespace JG_Prospect.Sr_App
             txtGeneralPhone.Text = txtFaxNumber.Text = string.Empty;
             ddlVendorStatus.ClearSelection();
             ddlHoursOfOperation.Items.Clear();
+
             HttpContext.Current.Session["TempID"] = "";
             HttpContext.Current.Session["NotesTempID"] = "";
             BindVendorNotes();
@@ -1107,7 +1187,7 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
             ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
             ddlVndrCategory.DataBind();
-            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+            ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
 
             ddlVendorCatPopup.DataSource = ds;
             ddlVendorCatPopup.DataTextField = ds.Tables[0].Columns[1].ToString();
@@ -1582,7 +1662,7 @@ namespace JG_Prospect.Sr_App
                 ddlVndrCategory.DataTextField = ds.Tables[0].Columns[1].ToString();
                 ddlVndrCategory.DataValueField = ds.Tables[0].Columns[0].ToString();
                 ddlVndrCategory.DataBind();
-                ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+                ddlVndrCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 BindVendorCatPopup();
                 ddlVndrCategory.ClearSelection();
                 ddlVendorCatPopup.ClearSelection();
@@ -1613,7 +1693,7 @@ namespace JG_Prospect.Sr_App
 
         public void BindvendorSubCatAfter()
         {
-            if (ddlVndrCategory.SelectedValue.ToString() == "Select")
+            if (ddlVndrCategory.SelectedValue.ToString() == "0")
             {
                 DataSet ds = new DataSet();
                 ds = VendorBLL.Instance.GetVendorSubCategory();
@@ -1621,7 +1701,7 @@ namespace JG_Prospect.Sr_App
                 ddlVendorSubCategory.DataTextField = "VendorSubCategoryName";
                 ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
                 ddlVendorSubCategory.DataBind();
-                ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
+                ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -3435,14 +3515,13 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    ddlVendorSubCategory.SelectedValue = "Select";
+                    ddlVendorSubCategory.SelectedValue = "";
                 }
             }
             catch (Exception ex)
             {
 
             }
-
 
             txtVendorNm.Text = Convert.ToString(ds.Tables[0].Rows[0]["VendorName"]);
 
@@ -3490,8 +3569,6 @@ namespace JG_Prospect.Sr_App
                             ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(s, s));
                         }
                     }
-
-                  
                 }
 
                 if (!string.IsNullOrEmpty(dr["DeliveryFee"].ToString()))
@@ -3727,6 +3804,7 @@ namespace JG_Prospect.Sr_App
                     chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                     chkVendorCategoryList.DataValueField = "VendorCategoryId";
                     chkVendorCategoryList.DataBind();
+                    chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
                 }
             }
 
@@ -3772,6 +3850,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
+                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             if (dscategories.Tables[2].Rows.Count > 0)
             {
@@ -3804,7 +3883,7 @@ namespace JG_Prospect.Sr_App
 
         #region Address Add Edit
 
-        public void SaveAddressAndVendorEmail()
+        public void SaveAddressAndVendorEmail(string VendorID)
         {
             AddVendorAddressToViewState();
             DataTable tblVendorAddress = (DataTable)HttpContext.Current.Session["dtVendorAddress"];
@@ -3817,6 +3896,7 @@ namespace JG_Prospect.Sr_App
                 {
                     dr["AddressID"] = 0;
                 }
+                dr["VendorId"] = VendorID;
 
                 DataTable dtAdd = tblVendorAddress.Clone();
                 dtAdd.ImportRow(dr);
@@ -3826,6 +3906,7 @@ namespace JG_Prospect.Sr_App
                 DataTable dtEmail = tblVendorEmail.Clone();
                 foreach (DataRow drEmail in tblVendorEmail.Rows)
                 {
+                    drEmail["VendorId"] = VendorID;
                     if (drEmail["AddressID"] != null && addressId == drEmail["AddressID"].ToString())
                     {
                         dtEmail.ImportRow(drEmail);
@@ -3862,7 +3943,7 @@ namespace JG_Prospect.Sr_App
 
         protected void BtnSaveLoaction_Click(object sender, EventArgs e)
         {
-            SaveAddressAndVendorEmail();
+            //SaveAddressAndVendorEmail();
         }
         #endregion
 
@@ -3986,6 +4067,11 @@ namespace JG_Prospect.Sr_App
         protected void lblNewAddress_Click(object sender, EventArgs e)
         {
             AddVendorAddressToViewState();
+
+            var addr = txtPrimaryAddress.Text;
+            addr += ", " + txtPrimaryCity.Text;
+            addr += ", " + ddlCountry.SelectedValue;
+            DrpVendorAddress.SelectedItem.Text = addr;
 
             DrpVendorAddress.ClearSelection();
             txtPrimaryCity.Text = "";
@@ -4162,7 +4248,7 @@ namespace JG_Prospect.Sr_App
             {
                 FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
             }
-            else if (ddlVndrCategory.SelectedValue != "Select")
+            else if (ddlVndrCategory.SelectedValue != "0")
             {
                 FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, null, GetVendorStatus());
             }
@@ -4226,7 +4312,12 @@ namespace JG_Prospect.Sr_App
             }
             string Notes = txtAddNotes.Text;
             string TempId = "";
-            if (VendorID == 0)
+            if (VendorID > 0)
+            {
+                Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
+                BindVendorNotes();
+            }
+            else
             {
                 if (HttpContext.Current.Session["NotesTempID"] == null)
                 {
@@ -4237,9 +4328,8 @@ namespace JG_Prospect.Sr_App
                     TempId = Convert.ToString(HttpContext.Current.Session["NotesTempID"]);
                 }
                 HttpContext.Current.Session["NotesTempID"] = TempId;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBoxAddNote", "alert('Please select Vendor from list.');", true);
             }
-            Boolean Save = VendorBLL.Instance.SaveVendorNotes(VendorID, UserId, Notes, TempId);
-            BindVendorNotes();
 
         }
 
@@ -4256,6 +4346,12 @@ namespace JG_Prospect.Sr_App
         protected void chkProductCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
             mpeCategoryPopup.Show();
+            if (chkProductCategoryList.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
+                    li.Selected = true;
+            }
+
             string strPrdtCategory = "";
             foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
             {
@@ -4272,6 +4368,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorCategoryList.DataTextField = "VendorCategoryNm";
                 chkVendorCategoryList.DataValueField = "VendorCategoryId";
                 chkVendorCategoryList.DataBind();
+                chkVendorCategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4304,6 +4401,12 @@ namespace JG_Prospect.Sr_App
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
             mpeCategoryPopup.Show();
+            if (chkVendorCategoryList.Items.Count > 0 && chkVendorCategoryList.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
+                    li.Selected = true;
+            }
+
             string strVendorCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
             {
@@ -4321,6 +4424,7 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataTextField = "VendorSubCategoryName";
                 chkVendorSubcategoryList.DataValueField = "VendorSubCategoryId";
                 chkVendorSubcategoryList.DataBind();
+                chkVendorSubcategoryList.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select All", "0"));
             }
             else
             {
@@ -4348,6 +4452,11 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorSubcategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (chkVendorSubcategoryList.Items[0].Selected)
+            {
+                foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
+                    li.Selected = true;
+            }
             mpeCategoryPopup.Show();
             string strVendorsubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
@@ -4722,19 +4831,22 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlHoursOfOperation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (strHO.Count() == 4)
-            //{
+            string val = ddlHoursOfOperation.SelectedValue;
+            var strHO = val.Split('|');
+            chk24Hours.Checked = false;
+            if (strHO.Count() > 0)
+            {
+                if(strHO[0] == "24")
+                    chk24Hours.Checked = true;
+                ddlDays.SelectedValue = strHO[1];
 
-            //    ddlFromHours.SelectedValue = strHO[0];
-            //    ddlFromAMPM.SelectedValue = strHO[1];
-            //    ddlToHours.SelectedValue = strHO[2];
-            //    ddlToAMPM.SelectedValue = strHO[3];
-            //}
-        }
+                var strFT = strHO[2].Split('-');
 
-        protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
-        {
-            mpeCategoryPopup.Show();
+                ddlFromHours.SelectedValue = strFT[0];
+                ddlFromAMPM.SelectedValue = strFT[1];
+                ddlToHours.SelectedValue = strFT[2];
+                ddlToAMPM.SelectedValue = strFT[3];
+            }
         }
 
         protected void lnkCharge_Click(object sender, EventArgs e)
@@ -4787,6 +4899,48 @@ namespace JG_Prospect.Sr_App
             mp_sold.Show();
         }
         #endregion
+
+        private void UpdatePopupProductCategoryList()
+        {
+            foreach (System.Web.UI.WebControls.ListItem li in ddlprdtCategory.Items)
+                foreach (System.Web.UI.WebControls.ListItem lv in chkProductCategoryList.Items)
+                    if (li.Selected && lv.Value == li.Value)
+                        lv.Selected = li.Selected;
+
+            chkProductCategoryList_SelectedIndexChanged(null, null);
+
+            updtpnlAddVender.Update();
+        }
+
+        private void UpdatePopupVendorCategoryList()
+        {
+            foreach (System.Web.UI.WebControls.ListItem li in ddlVndrCategory.Items)
+                foreach (System.Web.UI.WebControls.ListItem lv in chkVendorCategoryList.Items)
+                    if (li.Selected && lv.Value == li.Value)
+                        lv.Selected = li.Selected;
+
+            chkVendorCategoryList_SelectedIndexChanged(null, null);
+
+            updtpnlAddVender.Update();
+        }
+
+        protected void btnOpenCategoryPopup_Click(object sender, EventArgs e)
+        {
+            mpeCategoryPopup.Show();
+        }
+
+        private void UpdatePopupVendorSubCategoryList()
+        {
+            foreach (System.Web.UI.WebControls.ListItem li in ddlVendorSubCategory.Items)
+                foreach (System.Web.UI.WebControls.ListItem lv in chkVendorSubcategoryList.Items)
+                    if (li.Selected && lv.Value == li.Value)
+                        lv.Selected = li.Selected;
+
+            chkVendorSubcategoryList_SelectedIndexChanged(null, null);
+
+            updtpnlAddVender.Update();
+        }
+
     }
 
     public class NameValue

@@ -23,11 +23,22 @@
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
 
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <link href="../css/chosen.css" rel="stylesheet" />
 
+
+    <%--<script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/jquery-latest.js" ></script>--%>
+    <%--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>--%>
+    <%--<script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>--%>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <%--<script type="text/javascript" src="../js/jquery.ui.core.js"></script>--%>
+    <%--<script type="text/javascript" src="../js/jquery.ui.widget.js"></script>--%>
     <script type="text/javascript" src="../js/jquery.watermarkinput.js"></script>
     <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>        
-
+    <%--<script src="../datetime/js/jquery.ptDayOnlySelect.js" type="text/javascript"></script>
+    <script src="../datetime/js/jquery.ptTimeOnlySelect.js" type="text/javascript"></script>--%>
+    <!--tabs jquery ends-->
+    <!--accordion jquery-->
     <script type="text/javascript" src="../js/ddaccordion.js"></script>
 
     <script type="text/javascript" src="../js/jg-common.js"></script>
