@@ -315,7 +315,7 @@
 
         }
 
-          function GetVendorDetails(e) {
+        function GetVendorDetails(e) {
             //debugger;
             $('#<%=LblSave.ClientID%>').text("");
             if ($('#<%=txtVendorNm.ClientID%>').val() == '') {
@@ -332,24 +332,19 @@
             }
             var selectedChkProductCategoryListValues = "";
             $("[id*=chkVendorCategoryList] input:checked").each(function () {
-                //alert($(this).val());
                 selectedChkProductCategoryListValues += $(this).val();
             });
-            <%--if ($('#<%=ddlVndrCategory.ClientID%>').val() == 'Select' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
-                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
-                return false;
-            }--%>
+    
             if (selectedChkProductCategoryListValues == '' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
                 $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
             }
-            //$("#divModalPopup").show();
+            $("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
             var AddrType = "Other";
-            //$(".vendor_table").find(".fixedAddressrow").each(function (index, node) {
-            //    if (index == 0) {
+            //debugger;
             AddressData.push({
                 AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
                 AddressType: $(".clstxtAddressType0").val(),
@@ -359,8 +354,7 @@
                 Zip: $(".clstxtZip0").val(),
                 Country: $(".clstxtCountry0").val()
             })
-            //}
-            // });
+
             $("#tblVendorLocation").find(".newAddressrow").each(function (index, node) {
                 AddressData.push({
                     AddressType: $("#ddlAddressType1" + index).val(),
@@ -370,6 +364,7 @@
                     Zip: $("#txtZip1" + index).val()
                 })
             });
+
             $("#tblPrimaryEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -396,6 +391,7 @@
                 VendorEmailData.push(EmailData);
 
             });
+
             $("#tblSecEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -421,6 +417,7 @@
                 };
                 VendorEmailData.push(EmailData);
             });
+
             $("#tblAltEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -447,11 +444,9 @@
                 };
                 VendorEmailData.push(EmailData);
             });
-            //console.log(JSON.stringify(VendorEmailData));
-            //console.log(JSON.stringify(AddressData));
 
             var datalength = JSON.parse(JSON.stringify(VendorEmailData)).length;
-            //debugger
+            //debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/PostVendorDetails",
@@ -461,7 +456,6 @@
                 success: function (data) {
                     console.log(data);
                     checkAddress();
-                    //AddOldEmailContent(datalength);
                 }
             });
         }
@@ -486,8 +480,7 @@
             var VendorEmailData = [];
             var vid = $('.clsvendorid').val();
             var AddrType = "Other";
-            //$(".vendor_table").find(".fixedAddressrow").each(function (index, node) {
-            //    if (index == 0) {
+
             AddressData.push({
                 AddressID: ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select") ? "0" : $(".clsvendoraddress").val(),
                 AddressType: $(".clstxtAddressType0").val(),
@@ -497,8 +490,7 @@
                 Zip: $(".clstxtZip0").val(),
                 Country: $(".clstxtCountry0").val()
             })
-            //}
-            // });
+
             $("#tblVendorLocation").find(".newAddressrow").each(function (index, node) {
                 AddressData.push({
                     AddressType: $("#ddlAddressType1" + index).val(),
@@ -508,6 +500,7 @@
                     Zip: $("#txtZip1" + index).val()
                 })
             });
+
             $("#tblPrimaryEmail").find("tr").each(function (index, node) {
                 var c = [];
                 var Emails = [];
@@ -1343,8 +1336,6 @@
                         <asp:ModalPopupExtender ID="mpevendorcatelog" runat="server" TargetControlID="btnAddcategory"
                             PopupControlID="pnlpopup" CancelControlID="btnCancel">
                         </asp:ModalPopupExtender>
-
-
                         <asp:Panel ID="pnlpopup" runat="server" BackColor="White" Height="269px" Width="550px"
                             Style="display: none; border: Solid 3px #A33E3F; border-radius: 10px 10px 0 0;">
                             <table style="border: Solid 3px #A33E3F; width: 100%; height: 100%;" cellpadding="0"
@@ -1373,15 +1364,6 @@
                                 </tr>
                             </table>
                         </asp:Panel>
-
-                        <asp:ModalPopupExtender ID="Mpedeletecategory" runat="server" TargetControlID="btndeletecategory"
-                            PopupControlID="pnlpopup2" CancelControlID="btnCancel2">
-                        </asp:ModalPopupExtender>
-                        <asp:Panel ID="pnlpopup2" runat="server" BackColor="White" Height="269px" Width="550px" CssClass="pnlDeleteVendor"
-                            Style="display: none">
-                        </asp:Panel>
-                        <button id="btnquotes" style="display: none" runat="server">
-                        </button>
                         <button id="btnmateriallist" style="display: none" runat="server">
                         </button>
                         <asp:ModalPopupExtender ID="ModalMateriallist" runat="server" PopupControlID="PanelMateriallist"
@@ -1455,11 +1437,18 @@
                                     <tr>
                                         <td>Product Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlprdtCategory" runat="server" Width="150px" AutoPostBack="true" OnSelectedIndexChanged="ddlprdtCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlprdtCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlprdtCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="190" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                         </td>
                                         <td>Vendor Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlVndrCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <%--<asp:DropDownList ID="ddlVndrCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged"></asp:DropDownList>--%>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlVndrCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlVndrCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                             <br />
                                             <asp:LinkButton ID="lnkAddVendorCategory1" Text="Add Vendor Category" Visible="false" runat="server" OnClick="lnkAddVendorCategory1_Click"></asp:LinkButton>
                                             <br />
@@ -1549,7 +1538,11 @@
                                         </td>
                                         <td>Vendor Sub Category</td>
                                         <td>
-                                            <asp:DropDownList ID="ddlVendorSubCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged"></asp:DropDownList>
+                                            <%--<asp:DropDownList ID="ddlVendorSubCategory" runat="server" Width="150px" AutoPostBack="True" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged"></asp:DropDownList>--%>
+                                            <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="ddlVendorSubCategory" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorSubCategory_SelectedIndexChanged">
+                                                <Style SelectBoxWidth="150" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                <Items></Items>
+                                            </asp:DropDownCheckBoxes>
                                             <br />
                                             <asp:LinkButton ID="lnkAddVendorSubCategory" Text="Add Vendor Sub Category" Visible="false" runat="server"></asp:LinkButton>
                                             <asp:ModalPopupExtender ID="ModalPopupExtender5" runat="server" TargetControlID="lnkAddVendorSubCategory"
@@ -1726,6 +1719,7 @@
                                                                 <br />
                                                                 <asp:RequiredFieldValidator ID="rfvSource" runat="server" ControlToValidate="ddlSource" Display="Dynamic" 
                                                                  ValidationGroup="addvendor" ErrorMessage="Please select the source." ForeColor="Red" InitialValue="0"></asp:RequiredFieldValidator>
+
                                                             </td>
                                                             <td>
                                                                 <label>General Phone No :</label><br />
@@ -1744,7 +1738,7 @@
                                                             <td colspan="2">
                                                                 <label>Hours of operation:</label><br />
                                                                 <asp:CheckBox ID="chk24Hours" runat="server" AutoPostBack="false" Text="24 Hr" />
-                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" TabIndex="3" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
+                                                                <asp:DropDownList ID="ddlHoursOfOperation" runat="server" AutoPostBack="true" Width="180px" OnSelectedIndexChanged="ddlHoursOfOperation_SelectedIndexChanged">
                                                                 </asp:DropDownList>
                                                                 <br />
                                                                 <asp:DropDownList ID="ddlDays" runat="server" TabIndex="3">
@@ -2822,17 +2816,9 @@
                                 <br />
                                 <asp:Label ID="lbladdress" runat="server" ForeColor="Red"></asp:Label>
                             </div>
-
-                            <div id="divModalPopup" style="display: none;">
-                                <div class="modal">
-                                    <div class="center">
-                                        <img alt="Loading..." src="../img/loader.gif" />
-                                    </div>
-                                </div>
-                            </div>
                             <asp:Button ID="btnPageLoad" runat="server" CssClass="cssbtnPageLoad" />
                             <asp:Label ID="dummyLabel" runat="server" />
-                            <asp:ModalPopupExtender ID="mpeCategoryPopup" runat="server" TargetControlID="dummyLabel"
+                            <asp:ModalPopupExtender ID="mpeCategoryPopup" runat="server" BehaviorID="mpe" TargetControlID="dummyLabel"
                                 PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
                             </asp:ModalPopupExtender>
                             <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none;z-index:1000 !important; background: white; border: 5px solid rgb(179, 71, 74)">
@@ -2844,7 +2830,6 @@
                                         <h4>Product Category</h4>
                                         <%--<asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
-                                        <asp:CheckBox ID="chkProductCategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkProductCategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkProductCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>
@@ -2854,7 +2839,6 @@
                                         <h4>Vendor Category</h4>
                                        <%-- <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
-                                        <asp:CheckBox ID="chkVendorCategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkVendorCategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorCategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>
@@ -2864,7 +2848,6 @@
                                         <h4>Vendor Sub Category</h4>
                                         <%--<asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" RepeatLayout="Flow" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                         </asp:CheckBoxList>--%>
-                                        <asp:CheckBox ID="chkVendorSubcategoryList_All" runat="server" AutoPostBack="true" Text="Select All" OnCheckedChanged="chkVendorSubcategoryList_All_CheckedChanged" /><br />
                                         <asp:DropDownCheckBoxes CssClass="form_panel_checkbox_dropdown" ID="chkVendorSubcategoryList" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                             <Style SelectBoxWidth="250" DropDownBoxBoxWidth="250" DropDownBoxBoxHeight="150" />
                                             <Items></Items>
@@ -2874,20 +2857,44 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" ValidationGroup="addvendor" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                     <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
-                                    <asp:ValidationSummary ID="valSum" DisplayMode="BulletList" ShowMessageBox="true" EnableClientScript="true" HeaderText="You must enter a value in the following fields:" runat="server" ValidationGroup="addvendor" />
-                                    <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
+                                    <asp:ValidationSummary ID="valSum" DisplayMode="BulletList" EnableClientScript="true" HeaderText="You must enter a value in the following fields:" runat="server" ValidationGroup="addvendor" />
                                 </div>
                             </asp:Panel>
                             <div class="btn_sec">
                                 <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                 <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClientClick="return GetVendorDetails(this);" OnClick="btnupdateVendor_Click1" />
-                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" OnClick="btnOpenCategoryPopup_Click" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" />
+                                <asp:Button ID="btnOpenCategoryPopup" runat="server" TabIndex="1" Text="Save" CssClass="cssOpenCategoryPopup" ValidationGroup="addvendor" OnClick="btnOpenCategoryPopup_Click" />
                                 <asp:Button ID="Button4" runat="server" TabIndex="1" Text="Save" Visible="false" />
+                                <br />
+                                <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                             </div>
                         </ContentTemplate>
-                      <Triggers>
-                      </Triggers>
                     </asp:UpdatePanel>
+                    <div id="tabs" style="display: none;">
+                        <ul>
+                            <li><a href="#tabs-1">Add/Edit Vendor</a></li>
+                            <li><a href="#tabs-2">Add Product</a></li>
+                            <li><a href="#tabs-3">Payment & Shipping</a></li>
+                        </ul>
+                        <div id="tabs-1">
+                            <asp:UpdatePanel ID="updtpnlAddVender11" UpdateMode="Conditional" runat="server">
+                                <ContentTemplate>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                        <div id="tabs-2">
+                            <asp:UpdatePanel ID="updatepanelAddProduct" UpdateMode="Conditional" runat="server">
+                                <ContentTemplate>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                        <div id="tabs-3">
+                            <asp:UpdatePanel ID="updatepanelPaymentShipping" UpdateMode="Conditional" runat="server">
+                                <ContentTemplate>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
                     <asp:UpdatePanel ID="updateMaterialList" UpdateMode="Conditional" runat="server">
                         <ContentTemplate>
                             <div class="form_panel_custom vendorFilter">
@@ -3426,7 +3433,7 @@
         }
 
         function GetCityStateOnBlur(e) {
-            ////debugger;
+            //debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3434,7 +3441,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    ////debugger;
+                    //debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);
@@ -3444,7 +3451,7 @@
         }
 
         function onclientselect(strZip) {
-            ////debugger;
+            //debugger;
             $.ajax({
                 type: "POST",
                 url: "Procurement.aspx/GetCityState",
@@ -3452,7 +3459,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
                 success: function (data) {
-                    // //debugger;
+                    // debugger;
                     //alert(data.d);
                     var dataInput = (data.d).split("@^");
                     $("#<%=txtPrimaryCity.ClientID%>").val(dataInput[0]);

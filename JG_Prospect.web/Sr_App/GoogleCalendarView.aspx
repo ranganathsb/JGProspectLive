@@ -336,6 +336,7 @@
                             CustomAttributeNames="EventName,EventStartTime,EventColor,EventEndTime,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
                             TimelineView-ReadOnly="true"   
+                            OnAppointmentDataBound ="rsAppointments_AppointmentDataBound"
                             OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true"
                              DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" 
                             OnAppointmentCreated="rsAppointments_AppointmentCreated">
@@ -343,11 +344,11 @@
                             <AdvancedForm Modal="True" />
                             <AppointmentTemplate >
                                 <%--<%#Eval("EventName") %>--%>
-                                <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' ></asp:Label>
                                 <br />
-                                <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' BackColor="Wheat"></asp:Label>
-                                <asp:Label ID="Label6" runat="server" Text=' To ' BackColor="Wheat"></asp:Label>
-                                <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' BackColor="Wheat"></asp:Label>
+                                <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' ></asp:Label>
+                                <asp:Label ID="Label6" runat="server" Text=' To ' ></asp:Label>
+                                <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' ></asp:Label>
                                 <asp:HiddenField ID="hdEventColor" runat="server" Value='<%#Eval("EventColor")%>' />
                              <%--   <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
@@ -637,7 +638,7 @@
                                 Event Location <span>*</span>
                         </td>
                         <td valign="top" class="auto-style2">
-                                <asp:TextBox ID="txtEventLoc"    MaxLength="55"    TabIndex="1" runat="server"></asp:TextBox>
+                                <asp:TextBox ID="txtEventLoc"    MaxLength="100"    TabIndex="1" runat="server"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="SubmitEvent" runat="server"
                                 ControlToValidate="txtEventLoc" ForeColor="Red" ErrorMessage="Please Enter Event Location" Display="None"> </asp:RequiredFieldValidator>
                             </td>
@@ -676,7 +677,7 @@
                                             Interval <span>*</span>
                                     </td>
                                     <td valign="top">
-                                            <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="txtInterval"  Text="1"   TabIndex="1" MaxLength="3" runat="server"></asp:TextBox>
                                          <asp:RequiredFieldValidator ID="RequiredFieldValidator12" ValidationGroup="SubmitEvent" runat="server"
                                             ControlToValidate="txtInterval" ForeColor="Red" ErrorMessage="Please Enter Interval" Display="None"> </asp:RequiredFieldValidator>
                                     </td>
@@ -686,7 +687,7 @@
                                             Max Occurrence <span>*</span>
                                     </td>
                                     <td valign="top"> 
-                                            <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="txtMaxOccu"   Text="1"  TabIndex="1" MaxLength="4" runat="server"></asp:TextBox>
                                          <asp:RequiredFieldValidator ID="RequiredFieldValidator13" ValidationGroup="SubmitEvent" runat="server"
                                             ControlToValidate="txtMaxOccu" ForeColor="Red" ErrorMessage="Please Enter Max Occurrence" Display="None"> </asp:RequiredFieldValidator>
                                         </td>
@@ -699,7 +700,6 @@
                         <td colspan="4">
                             <asp:HiddenField ID="txtinvite"  runat="server"  ></asp:HiddenField>
                             <asp:Button ID="btnEventSubmit" ValidationGroup="SubmitEvent"    runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
-                            
                         </td>
                     </tr>
                 </table>
@@ -737,9 +737,6 @@
 
          });
 
-
-
-
          function callpopupscript() {
              $('.date').attr("disabled", true);
              $("#popup").dialog("open");
@@ -751,7 +748,6 @@
 
              $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
              $('#ContentPlaceHolder1_txtEventEndTime').timepicker();             
-
 
              $("#ContentPlaceHolder1_txtEventColor").val('#5484ed');
              $(".radiol").click(function () {
@@ -784,7 +780,6 @@
                  }
 
              });
-
 
              $("#ContentPlaceHolder1_btnInviteEmail").unbind('click').bind('click', function () {
                  addRow();

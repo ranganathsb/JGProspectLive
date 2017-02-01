@@ -994,33 +994,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnCancel;
         
         /// <summary>
-        /// Mpedeletecategory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender Mpedeletecategory;
-        
-        /// <summary>
-        /// pnlpopup2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlpopup2;
-        
-        /// <summary>
-        /// btnquotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton btnquotes;
-        
-        /// <summary>
         /// btnmateriallist control.
         /// </summary>
         /// <remarks>
@@ -1144,7 +1117,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlprdtCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlprdtCategory;
         
         /// <summary>
         /// ddlVndrCategory control.
@@ -1153,7 +1126,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlVndrCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlVndrCategory;
         
         /// <summary>
         /// lnkAddVendorCategory1 control.
@@ -1315,7 +1288,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlVendorSubCategory;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlVendorSubCategory;
         
         /// <summary>
         /// lnkAddVendorSubCategory control.
@@ -2881,7 +2854,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkProductCategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkProductCategoryList;
         
         /// <summary>
         /// chkVendorCategoryList_All control.
@@ -2899,7 +2872,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorCategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkVendorCategoryList;
         
         /// <summary>
         /// chkVendorSubcategoryList_All control.
@@ -2917,7 +2890,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkVendorSubcategoryList;
+        protected global::Saplin.Controls.DropDownCheckBoxes chkVendorSubcategoryList;
         
         /// <summary>
         /// btnSave control.
@@ -2947,15 +2920,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.ValidationSummary valSum;
         
         /// <summary>
-        /// LblSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblSave;
-        
-        /// <summary>
         /// btnupdateVendor control.
         /// </summary>
         /// <remarks>
@@ -2981,6 +2945,42 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button4;
+        
+        /// <summary>
+        /// LblSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblSave;
+        
+        /// <summary>
+        /// updtpnlAddVender11 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updtpnlAddVender11;
+        
+        /// <summary>
+        /// updatepanelAddProduct control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updatepanelAddProduct;
+        
+        /// <summary>
+        /// updatepanelPaymentShipping control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updatepanelPaymentShipping;
         
         /// <summary>
         /// updateMaterialList control.
