@@ -102,7 +102,7 @@ namespace JG_Prospect.BLL
         {
             return VendorDAL.Instance.deletevendorcategory(vendorcategogyid);
         }
-        public bool savevendor(Vendor objvendor)
+        public Int32 savevendor(Vendor objvendor)
         {
             return VendorDAL.Instance.savevendor(objvendor);
         }

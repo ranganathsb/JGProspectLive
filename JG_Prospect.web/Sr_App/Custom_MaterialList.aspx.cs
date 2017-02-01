@@ -4218,12 +4218,11 @@ namespace JG_Prospect.Sr_App
 
                             if (emailStatusVendorCategory == true)
                             {
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Request Quotes to Vendor Successfully.');", true);
                                 CustomBLL.Instance.UpdateStatusOfJobProdCat(jobId, lProductCatID, JGConstant.EMAIL_STATUS_VENDORCATEGORIES);
                                // bool result = CustomBLL.Instance.UpdateEmailStatusOfCustomMaterialList(jobId, JGConstant.EMAIL_STATUS_VENDORCATEGORIES);//, productTypeId, estimateId);
                                 UpdateEmailStatus(JGConstant.EMAIL_STATUS_VENDORCATEGORIES.ToString());
                                 btnSendEmailToVendors.Text = "Resend Mail to Vendors";
-                                
-
                             }
                         }
                         else
