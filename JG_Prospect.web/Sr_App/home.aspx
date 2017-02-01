@@ -49,16 +49,20 @@
          <asp:UpdatePanel ID="UpdatePanel1" runat="server">
           <ContentTemplate>
                <asp:Label runat="server" ID="lblMessage"></asp:Label>
-                <asp:GridView ID="grdTaskPending" runat="server"  Width = "800px" 
-                AutoGenerateColumns = "false" Font-Names = "Arial"
-                 CssClass="listgrid" CellPadding="3" CellSpacing="3"
-                Font-Size = "11pt" AlternatingRowStyle-BackColor = "#91E8E8" 
-                HeaderStyle-BackColor = "gray" AllowPaging ="true"  ShowFooter = "true" 
+                <asp:GridView ID="grdTaskPending" runat="server" 
+                    ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    EmptyDataText="No Pending Tasks Found !!" CssClass="table" Width="95%" CellSpacing="0" CellPadding="0"
+                    AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical"
                 OnPageIndexChanging = "OnPagingTaskInProgress" 
                 OnRowDataBound ="grdTaskPending_RowDataBound"
                 PagerStyle-HorizontalAlign="Right"
                 PagerStyle-CssClass="paging"
                 PageSize = "10" >
+                 <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                    <HeaderStyle CssClass="trHeader " />
+                    <RowStyle CssClass="FirstRow" />
+                    <AlternatingRowStyle CssClass="AlternateRow " />
                 <Columns>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"  HeaderText = "Due Date">
                     <ItemTemplate>
@@ -102,7 +106,7 @@
 
                 </Columns>
                   <PagerStyle  CssClass = "paging" />
-                <AlternatingRowStyle BackColor="#cccccc"  />
+                
                 </asp:GridView>
             </ContentTemplate>
             <Triggers>
@@ -161,16 +165,22 @@
          <asp:UpdatePanel ID="UpdatePanel2" runat="server">
           <ContentTemplate>
                <asp:Label runat="server" ID="Label1"></asp:Label>
-                <asp:GridView ID="grdTaskClosed" runat="server"  Width = "800px" 
-                AutoGenerateColumns = "false" Font-Names = "Arial"
-                 CssClass="listgrid" CellPadding="3" CellSpacing="3"
-                Font-Size = "11pt" AlternatingRowStyle-BackColor = "#91E8E8" 
-                HeaderStyle-BackColor = "gray" AllowPaging ="true"  ShowFooter = "true" 
+                <asp:GridView ID="grdTaskClosed" runat="server"   
+                    
+                ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                EmptyDataText="No Closed Tasks Found !!" CssClass="table" Width="95%" CellSpacing="0" CellPadding="0"
+                AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical"
+
                 OnPageIndexChanging = "OnPagingTaskClosed" 
                 OnRowDataBound ="grdTaskClosed_RowDataBound"
                 PagerStyle-CssClass="paging"
                 PagerStyle-HorizontalAlign="Right"
                 PageSize = "10" >
+                <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle CssClass="trHeader " />
+                <RowStyle CssClass="FirstRow" />
+                <AlternatingRowStyle CssClass="AlternateRow " />
                 <Columns>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Due Date">
                     <ItemTemplate>
@@ -178,25 +188,25 @@
                         Text='<%# Eval("DueDate")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Task ID#">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"    HeaderText = "Task ID#">
                     <ItemTemplate>
                         <asp:Label ID="lblTaskId" runat="server"
                                 Text='<%# Eval("InstallId")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField ItemStyle-HorizontalAlign="Justify" ItemStyle-VerticalAlign="Top"  HeaderStyle-HorizontalAlign="Center" ItemStyle-Width = "150px"  HeaderText = "Description">
+                <asp:TemplateField ItemStyle-HorizontalAlign="Justify" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px" HeaderStyle-HorizontalAlign="Center"   HeaderText = "Description">
                     <ItemTemplate>
                         <asp:Label ID="lblDesc" runat="server"
                             Text='<%# Eval("Description")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-               <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Status">
+               <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"     HeaderText = "Status">
                     <ItemTemplate>
                         <asp:Label ID="lblStatus" runat="server"
                             Text='<%# Eval("Status")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Hours">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"     HeaderText = "Hours">
                     <ItemTemplate>
                         <asp:Label ID="lblHours" runat="server"
                             Text='<%# Eval("Hours")%>'></asp:Label>
@@ -214,7 +224,7 @@
 
                 </Columns>
                   <PagerStyle  CssClass = "paging" />
-                <AlternatingRowStyle BackColor="#cccccc"  />
+               
                 </asp:GridView>
             </ContentTemplate>
             <Triggers>

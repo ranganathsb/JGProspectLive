@@ -454,8 +454,17 @@ namespace JG_Prospect.Sr_App
         protected void rsAppointments_OnNavigationCommand(object sender, SchedulerNavigationCommandEventArgs e)
         {
             BindEventCalendar();
-        }			
-
+            ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#btnCreateEvent').click(function () {callpopupscript();   });", true);
+        }
+        protected void rsAppointments_AppointmentDataBound(object sender, SchedulerEventArgs e)
+        {
+            string col = e.Appointment.Attributes["EventColor"];
+            if (col != "")
+            {
+                System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(col);
+                e.Appointment.BackColor = color;
+            }
+        }
         //------- End DP --------
 
         protected void rsAppointments_AppointmentClick(object sender, SchedulerEventArgs e)
@@ -1253,6 +1262,23 @@ namespace JG_Prospect.Sr_App
                     drpEventCalender.Items.Add(lst);
                     drpMyCalendar.Items.Add(lst);
                 }
+            }
+            else
+            {
+                string vUsername = Session["Username"].ToString();
+                EventCalendar a = new EventCalendar();
+                a.CalendarName = vUsername +" Calendar";
+                a.InsertionDate = DateTime.Now.Date.ToString("dd-MMM-yyyy");
+                //For checking duplicate calendar name....
+                a.UserId = userId;
+
+                if (userId == 0)
+                {
+                    Response.Redirect("../stafflogin.aspx");
+                }
+                // -------- insert record  ----------
+                new_customerBLL.Instance.AddEventCalendar(a);
+                FillMyCalendarDropDown();
             }
             result.Dispose();
             //------------ End DP ------------

@@ -187,14 +187,14 @@ namespace JG_Prospect.Sr_App.Controls
                 else if (hdTaskLevel.Value == "1")
                 {
                     vFirstLevelId = Convert.ToInt32( hdTaskId.Value);
-                    lnkAddMoreSubTask.CommandName = "2";
+                    lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value;
                     lnkAddMoreSubTask.Visible = true;
                     lbtnInstallId.CssClass = "installidleft";
                     lnkAddMoreSubTask.CssClass = "installidleft";
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
-                    lnkAddMoreSubTask.CommandName = "3";
+                    lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value; ;
                     lnkAddMoreSubTask.Visible = true;
                     lbtnInstallId.CssClass = "installidcenter";
                     lnkAddMoreSubTask.CssClass = "installidcenter";
@@ -438,20 +438,141 @@ namespace JG_Prospect.Sr_App.Controls
         }
 
         //-------- Start DP --------
+
+        private string[] getSUBSubtaskSequencing(string sequence)
+        {
+            String[] ReturnSequence = new String[2];
+
+            String[] numbercomponents = sequence.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+           
+                //if no subtask sequence than start with roman number I.
+                if (numbercomponents.Length == 0) // like number of subtask without alphabet I,II
+                {
+                    int startSequence = 1;
+                    ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                    ReturnSequence[1] = String.Concat(ReturnSequence[0], " - a"); // concat existing roman number with alphabet.
+                    
+                }
+                else  // if task sequence contains alphabet.
+                {
+                    int numbersequence;
+                    numbercomponents[0] = numbercomponents[0].Trim();
+                    numbercomponents[1] = numbercomponents[1].Trim();
+
+
+                    char[] alphabetsequence = numbercomponents[1].ToCharArray();// get aplphabet from sequence
+
+                    bool parsed = ExtensionMethods.TryRomanParse(numbercomponents[0], out numbersequence); // parse roman to integer
+
+                    if (parsed)
+                    {
+                        numbersequence++; // increase integer sequence
+
+                        ReturnSequence[0] = ExtensionMethods.ToRoman(numbersequence); // convert integer sequnce to roman
+                        ReturnSequence[1] = string.Concat(numbercomponents[0], " - ", ++alphabetsequence[0]); // advance alphabet to next alphabet.
+                    }
+                }
+           
+             
+            return ReturnSequence;
+        }
+
         protected void lnkAddMoreSubTask_Click(object sender, EventArgs e)
         {
 
             LinkButton lnkpop = (LinkButton)sender;
-            hdParentTaskId.Value = lnkpop.CommandArgument;
-            hdTaskLvl.Value = lnkpop.CommandName;
+            
+            hdMainParentId.Value = lnkpop.CommandArgument;
+            char[] delimiterChars = { '#' };
+            string[] TaskLvlandInstallId =  lnkpop.CommandName.Split(delimiterChars);
+
+            hdTaskLvl.Value = TaskLvlandInstallId[0];
+            hdParentTaskId.Value = TaskLvlandInstallId[2];
+            if (TaskLvlandInstallId[0] == "2")
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet result = new DataSet();
+                    string vInstallId = "";
+                    string str = "select  * from tbltask where parenttaskid=" + hdParentTaskId.Value + " and  ";
+                    str = str + " Taskid=( select max(taskid) from tbltask where parenttaskid=" + hdParentTaskId.Value + "  and tasklevel=2) order by taskid";
+                    DbCommand command = database.GetSqlStringCommand(str);
+                    command.CommandType = CommandType.Text;
+                    result = database.ExecuteDataSet(command);
+                    if (result.Tables[0].Rows.Count > 0)
+                    {
+                        vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+                    }
+                    string[] subtaskListIDSuggestion = getSUBSubtaskSequencing(vInstallId);
+                    if (subtaskListIDSuggestion.Length > 0)
+                    {
+                        if (subtaskListIDSuggestion.Length > 1)
+                        {
+                            if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
+                            {
+                                txtInstallId.Text = subtaskListIDSuggestion[0];
+                            }
+                            else
+                            {
+                                txtInstallId.Text = subtaskListIDSuggestion[1];
+                                listIDOpt.Text = subtaskListIDSuggestion[0];
+                            }
+                        }
+                        else
+                        {
+                            txtInstallId.Text = subtaskListIDSuggestion[0];
+                            //listIDOpt.Text = subtaskListIDSuggestion[0];
+                        }
+                    }
+                }
+            }
+            else
+            {
+              
+                string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii" };
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet result = new DataSet();
+                    string str = "select  * from tbltask where parenttaskid=" + hdParentTaskId.Value + " and  ";
+                    str = str + " Taskid=( select max(taskid) from tbltask where parenttaskid=" + hdParentTaskId.Value + "  and tasklevel=3) order by taskid";
+                    DbCommand command = database.GetSqlStringCommand(str);
+                    command.CommandType = CommandType.Text;
+                    result = database.ExecuteDataSet(command);
+                    string vNextInstallId = "";
+                    if (result.Tables[0].Rows.Count > 0)
+                    {
+                        string vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+
+                        int cnt = -1;
+                        for (int i = 0; i < roman4.Length; i++)
+                        {
+                            if (vInstallId == roman4[i])
+                            {
+                                cnt = i + 1;
+                            }
+
+                            if (cnt == i)
+                            {
+                                vNextInstallId = roman4[i];
+                                break;
+                            }
+                        }
+                    }
+                    else { vNextInstallId = roman4[0]; }
+                    txtInstallId.Text = vNextInstallId;
+                    result.Dispose();
+                }
+            }
+
             txtMode.Value = "add";
             hdTaskId.Value = "0";
-            mpCalendar.Show();
+            mpSubTask.Show();
             
         }
         protected void btnCalClose_Click(object sender, EventArgs e)
         {
-            mpCalendar.Hide();
+            mpSubTask.Hide();
             //mpcalendar.show();
         }
         protected void btnAddMoreSubtask_Click(object sender, EventArgs e)
@@ -471,7 +592,7 @@ namespace JG_Prospect.Sr_App.Controls
                     if (txtMode.Value == "add")
                     {
                         database.AddInParameter(command, "@TaskId", DbType.Int32, 0);
-                        database.AddInParameter(command, "@Title", DbType.String, txtTitle.Text);
+                        database.AddInParameter(command, "@Title", DbType.String, "");
                         database.AddInParameter(command, "@Description", DbType.String, txtTaskDesc.Text);
                         database.AddInParameter(command, "@Status", DbType.Int32, 1);
                         database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
@@ -480,12 +601,13 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@TaskLevel", DbType.Int32, Convert.ToInt32(hdTaskLvl.Value));
                         database.AddInParameter(command, "@ParentTaskId", DbType.Int32, Convert.ToInt32(hdParentTaskId.Value));
                         database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
+                        database.AddInParameter(command, "@MainParentId", DbType.Int32, Convert.ToInt32(hdMainParentId.Value));
 
                     }
                     else
                     {
                         database.AddInParameter(command, "@TaskId", DbType.Int32, Convert.ToInt32(hdTaskId.Value));
-                        database.AddInParameter(command, "@Title", DbType.String, txtTitle.Text);
+                        database.AddInParameter(command, "@Title", DbType.String, "");
                         database.AddInParameter(command, "@Description", DbType.String, txtTaskDesc.Text);
                         database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
                         database.AddInParameter(command, "@Status", DbType.Int32, 1);
@@ -494,10 +616,11 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
                         database.AddInParameter(command, "@TaskLevel", DbType.Int32, 0);
                         database.AddInParameter(command, "@ParentTaskId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@MainParentId", DbType.Int32, 0);
                     }
                     
                     database.ExecuteNonQuery(command);
-                    mpCalendar.Hide();
+                    mpSubTask.Hide();
                     Response.Redirect(Request.Url.ToString(),false );
 
                 }
@@ -530,7 +653,7 @@ namespace JG_Prospect.Sr_App.Controls
                     result = database.ExecuteDataSet(command);
                     if(result.Tables[0].Rows.Count>0)
                     {
-                        txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
+                        //txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
                         txtTaskDesc.Text = result.Tables[0].Rows[0]["Description"].ToString();
                         txtInstallId.Text = result.Tables[0].Rows[0]["InstallId"].ToString();
                     }
@@ -543,7 +666,7 @@ namespace JG_Prospect.Sr_App.Controls
                 // return 0;
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
-            mpCalendar.Show();
+            mpSubTask.Show();
 
         }
         // -------- End DP -------
@@ -1435,7 +1558,6 @@ namespace JG_Prospect.Sr_App.Controls
                         listIDOpt.Text = subtaskListIDSuggestion[0];
 
                     }
-
                 }
                 else
                 {

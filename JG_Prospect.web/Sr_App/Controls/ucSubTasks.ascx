@@ -126,7 +126,7 @@
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
                                                         CommandArgument='<%# Eval("TaskId")%>' /></h5>
 
-                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server"  OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server"   OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                                                            
                                                  </ItemTemplate>
                                         </asp:TemplateField>
@@ -447,7 +447,7 @@
                 </asp:GridView>
             </div>
             <asp:LinkButton ID="lnkFake" runat="server" ></asp:LinkButton>
-                  <cc1:ModalPopupExtender ID="mpCalendar" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
+                  <cc1:ModalPopupExtender ID="mpSubTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
                     BackgroundCssClass="modalBackground">
                     </cc1:ModalPopupExtender>
                             <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
@@ -459,7 +459,7 @@
                                                 <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
                                             </td>
                                         </tr>
-                                        <tr>
+                                       <%-- <tr>
                                             <td   align="left">  Task Title <span>*</span>
                                             </td>
                                             <td >
@@ -468,12 +468,12 @@
                                                     runat="server" ControlToValidate="txtTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                        
-                                        </tr>
+                                        </tr>--%>
                                           <tr>
                                             <td   align="left">  Install ID <span>*</span>
                                             </td>
                                             <td >
-                                                <asp:TextBox ID="txtInstallId"   runat="server"></asp:TextBox>
+                                                <asp:TextBox Enabled="false" ID="txtInstallId"   runat="server"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitSubTask"
                                                     runat="server" ControlToValidate="txtInstallId" ForeColor="Red" ErrorMessage="Please Enter Install ID" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
@@ -494,6 +494,7 @@
                                             <td colspan="2">
                                                 <asp:HiddenField ID="txtMode" runat="server" />
                                                 <asp:HiddenField ID="hdParentTaskId" runat="server" />
+                                                <asp:HiddenField ID="hdMainParentId" runat="server" />
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit"  OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
