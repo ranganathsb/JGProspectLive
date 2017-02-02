@@ -911,7 +911,7 @@ namespace JG_Prospect
                                 {
                                     strRedirectUrl = "~/home.aspx";
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "sales" || Convert.ToString(Session["DesigNew"]) == "SalesUser" || Convert.ToString(Session["DesigNew"]) == "SSE")
+                                else if (Convert.ToString(Session["DesigNew"]) == "sales" || Convert.ToString(Session["DesigNew"]).Trim() == "Admin Recruiter" || Convert.ToString(Session["DesigNew"]) == "SalesUser" || Convert.ToString(Session["DesigNew"]) == "SSE")
                                 {
                                     strRedirectUrl = "~/Sr_App/home.aspx";
                                 }
