@@ -492,7 +492,7 @@ namespace JG_Prospect.Sr_App
                             #region - if Rows[0][6] is haveing value
                             ddlstatus.SelectedValue = ds.Tables[0].Rows[0][6].ToString();
                             Session["PreviousStatusNew"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
-                            if (ddlstatus.SelectedValue == "Install Prospect")
+                            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InstallProspect)
                             {
                                 rqDesignition.Enabled = false;
                                 RequiredFieldValidator3.Enabled = false;
@@ -548,7 +548,7 @@ namespace JG_Prospect.Sr_App
                                 rqSource.Enabled = true;
                                 lblConfirmPass.Visible = false;
                             }
-                            else if (ddlstatus.SelectedValue == "Applicant")
+                            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Applicant)
                             {
                                 rqDesignition.Enabled = false;
                                 RequiredFieldValidator3.Enabled = false;
@@ -605,7 +605,7 @@ namespace JG_Prospect.Sr_App
                                 rqSource.Enabled = true;
                                 lblConfirmPass.Visible = false;
                             }
-                            else if (ddlstatus.SelectedValue == "OfferMade")
+                            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade)
                             {
                                 rqDesignition.Enabled = true;
                                 RequiredFieldValidator3.Enabled = true;
@@ -672,7 +672,7 @@ namespace JG_Prospect.Sr_App
                                 rqEmpType.Enabled = true;
                                 #endregion
                             }
-                            else if (ddlstatus.SelectedValue == "Active")
+                            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
                             {
                                 rqDesignition.Enabled = true;
                                 RequiredFieldValidator3.Enabled = true;
@@ -741,8 +741,8 @@ namespace JG_Prospect.Sr_App
                                 rqEmpType.Enabled = true;
                                 #endregion
 
-                                if ((ddlstatus.SelectedValue == "Active")
-                                    || (ddlstatus.SelectedValue == "OfferMade"))
+                                if ((GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
+                                    || (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade))
                                 {
                                     showHideNewHireSection(true);
                                 }
@@ -1271,11 +1271,11 @@ namespace JG_Prospect.Sr_App
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                 objuser.Source = ddlSource.SelectedValue;
                 objuser.Notes = txtNotes.Text;
-                if (txtReson.Visible == true && ddlstatus.SelectedValue != "InterviewDate")
+                if (txtReson.Visible == true && GetEnumValueForStatus() != JGConstant.InstallUserStatus.InterviewDate)
                 {
                     objuser.Reason = txtReson.Text;
                 }
-                else if (dtInterviewDate.Visible == true && ddlstatus.SelectedValue == "InterviewDate")
+                else if (dtInterviewDate.Visible == true && GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     objuser.Reason = Convert.ToString(dtInterviewDate.Text);
                 }
@@ -1438,7 +1438,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
                 }
-                if (ddlstatus.SelectedValue == "InterviewDate")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     objuser.InterviewTime = ddlInsteviewtime.SelectedItem.Text;
                 }
@@ -1446,7 +1446,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.InterviewTime = "";
                 }
-                if (ddlstatus.SelectedValue == "Active")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
                 {
                     objuser.ActivationDate = DateTime.Today.ToShortDateString();
                     objuser.UserActivated = Convert.ToString(Session["Username"]);
@@ -1569,7 +1569,7 @@ namespace JG_Prospect.Sr_App
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                 objuser.Source = ddlSource.SelectedValue;
                 objuser.Notes = txtNotes.Text;
-                if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
+                if (txtReson.Visible == true && GetEnumValueForStatus() == JGConstant.InstallUserStatus.Rejected)
                 {
                     str_Reason = txtReson.Text;
                     objuser.Reason = txtReson.Text;
@@ -1577,7 +1577,7 @@ namespace JG_Prospect.Sr_App
                     objuser.RejectionTime = DateTime.Now.ToShortTimeString();
                     objuser.RejectedUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 }
-                else if (dtInterviewDate.Visible == true && ddlstatus.SelectedValue == "InterviewDate")
+                else if (dtInterviewDate.Visible == true && GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     str_Reason = txtReson.Text;
                     objuser.Reason = Convert.ToString(dtInterviewDate.Text);
@@ -1717,7 +1717,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
                 }
-                if (ddlstatus.SelectedValue == "InterviewDate")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     objuser.InterviewTime = ddlInsteviewtime.SelectedItem.Text;
                 }
@@ -1726,7 +1726,7 @@ namespace JG_Prospect.Sr_App
                     objuser.InterviewTime = "";
                 }
                 objuser.DateSourced = DateTime.Today.ToShortDateString();
-                if (ddlstatus.SelectedValue == "Active")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
                 {
                     objuser.ActivationDate = DateTime.Today.ToShortDateString();
                     objuser.UserActivated = Convert.ToString(Session["Username"]);
@@ -1837,16 +1837,16 @@ namespace JG_Prospect.Sr_App
                         //lblmsg.CssClass = "success";
                         //lblmsg.Text = "User has been created successfully";
                         //if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
-                        if (ddlstatus.SelectedValue == "Deactive")
+                        if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
                         {
                             SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
                         }
 
-                        if (ddlstatus.SelectedValue == "InterviewDate")
+                        if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                         {
                             btnSaveInterview_Click(sender, e);
                         }
-                        if (ddlstatus.SelectedValue == "OfferMade")
+                        if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade)
                         {
                             btnSaveOfferMade_Click(sender, e);
                         }
@@ -2151,7 +2151,7 @@ namespace JG_Prospect.Sr_App
                 objuser.Source = ddlSource.SelectedValue;
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
-                if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
+                if (txtReson.Visible == true && GetEnumValueForStatus() == JGConstant.InstallUserStatus.Rejected)
                 {
                     str_Reason = txtReson.Text;
                     objuser.Reason = txtReson.Text;
@@ -2159,7 +2159,7 @@ namespace JG_Prospect.Sr_App
                     objuser.RejectionTime = DateTime.Now.ToShortTimeString();
                     objuser.RejectedUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 }
-                else if (dtInterviewDate.Visible == true && ddlstatus.SelectedValue == "InterviewDate")
+                else if (dtInterviewDate.Visible == true && GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     str_Reason = Convert.ToString(dtInterviewDate.Text);
                     objuser.Reason = Convert.ToString(dtInterviewDate.Text);
@@ -2335,7 +2335,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.InstallerType = ddlInstallerType.SelectedValue;
                 }
-                if (ddlstatus.SelectedValue == "InterviewDate")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
                 {
                     objuser.InterviewTime = ddlInsteviewtime.SelectedItem.Text;
                 }
@@ -2343,7 +2343,7 @@ namespace JG_Prospect.Sr_App
                 {
                     objuser.InterviewTime = "";
                 }
-                if (ddlstatus.SelectedValue == "Active")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
                 {
                     objuser.ActivationDate = DateTime.Today.ToShortDateString();
                     objuser.UserActivated = Convert.ToString(Session["Username"]);
@@ -2418,7 +2418,7 @@ namespace JG_Prospect.Sr_App
                 objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
                 objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
 
-                if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
+                if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
                 {
                     Session["installId"] = GetUpdatedId(Convert.ToString(Session["installId"]));
                     objuser.InstallId = Convert.ToString(Session["installId"]);
@@ -2439,7 +2439,7 @@ namespace JG_Prospect.Sr_App
                     AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
 
-                    if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
+                    if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate || GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade || GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
                     {
                         SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
                     }
@@ -2468,6 +2468,12 @@ namespace JG_Prospect.Sr_App
             {
 
             }
+        }
+
+        // Get status enum for status dropdown value.
+        private JGConstant.InstallUserStatus GetEnumValueForStatus()
+        {
+            return (JGConstant.InstallUserStatus)Enum.Parse(typeof(JGConstant.InstallUserStatus), ddlstatus.SelectedValue);
         }
 
         protected void btn_UploadFiles_Click(object sender, EventArgs e)
@@ -2805,7 +2811,7 @@ namespace JG_Prospect.Sr_App
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
             fullTouchPointLog(" Status To : " + ddlstatus.SelectedItem.Text.ToString());
 
-            if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
+            if (Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Active).ToString() && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
                 if (Convert.ToString(Session["PreviousStatusNew"]) != "")
@@ -2814,17 +2820,17 @@ namespace JG_Prospect.Sr_App
                 }
                 return;
             }
-            if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Active).ToString()) && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 //binddata();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have rights change the status.')", true);
                 return;
             }
-            else if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active" && ddlstatus.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
+            else if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Active).ToString() && GetEnumValueForStatus() != JGConstant.InstallUserStatus.Deactive) && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayPassword();", true);
             }
-            if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
+            if (Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Active).ToString() && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
                 if (Convert.ToString(Session["PreviousStatusNew"]) != "")
@@ -2834,7 +2840,7 @@ namespace JG_Prospect.Sr_App
                 return;
             }
 
-            if (ddlstatus.SelectedValue == "Install Prospect")
+            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InstallProspect)
             {
                 if (Convert.ToString(Session["PreviousStatusNew"]) != "")
                 {
@@ -2842,34 +2848,34 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    ddlstatus.SelectedValue = "Applicant";
+                    ddlstatus.SelectedValue = Convert.ToInt32(JGConstant.InstallUserStatus.Applicant).ToString();
                 }
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Install Prospect')", true);
                 return;
             }
-            else if (ddlstatus.SelectedValue == "Deactive")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
             {
-                if (Convert.ToString(Session["PreviousStatusNew"]) != "Active" && Convert.ToString(Session["PreviousStatusNew"]) != "")
+                if (Convert.ToString(Session["PreviousStatusNew"]) != Convert.ToInt32(JGConstant.InstallUserStatus.Active).ToString() && Convert.ToString(Session["PreviousStatusNew"]) != "")
                 {
                     ddlstatus.SelectedValue = Convert.ToString(Session["PreviousStatusNew"]);
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User should be active to deactivate.')", true);
                     return;
                 }
             }
-            else if (ddlstatus.SelectedValue == "Applicant")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Applicant)
             {
                 ddlInsteviewtime.Visible = false;
                 dtInterviewDate.Visible = false;
                 txtReson.Visible = false;
             }
-            else if (ddlstatus.SelectedValue == "Rejected")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Rejected)
             {
                 ddlInsteviewtime.Visible = false;
                 dtInterviewDate.Visible = false;
                 RequiredFieldValidator7.Enabled = true;
                 txtReson.Visible = true;
             }
-            else if (ddlstatus.SelectedValue == "InterviewDate")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.InterviewDate)
             {
                 LoadUsersByRecruiterDesgination();
                 txtReson.Visible = false;
@@ -2877,14 +2883,14 @@ namespace JG_Prospect.Sr_App
                 dtInterviewDate.Visible = true;
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
                 ddlInsteviewtime.Visible = true;
-                ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ddlInsteviewtime.SelectedValue = "10:00";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
                 showHideNewHireSection(false);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
-            else if (ddlstatus.SelectedValue == "Deactive")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
             {
                 ddlInsteviewtime.Visible = false;
                 txtReson.Visible = true;
@@ -2893,7 +2899,7 @@ namespace JG_Prospect.Sr_App
                 showHideNewHireSection(false);
                 dtResignation.Text = DateTime.Now.ToShortDateString();
             }
-            else if (ddlstatus.SelectedValue == "OfferMade")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade)
             {
                 ddlOfferMade();
                 showHideNewHireSection(true);
@@ -2906,7 +2912,7 @@ namespace JG_Prospect.Sr_App
                 dtInterviewDate.Visible = false;
                 showHideNewHireSection(false);
             }
-            if (ddlstatus.SelectedValue == "Active")
+            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -2925,7 +2931,7 @@ namespace JG_Prospect.Sr_App
                 rqdtResignition.Enabled = false;
             }
 
-            if (ddlstatus.SelectedValue == "Active"
+            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active
                 && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))
                 && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
@@ -2940,7 +2946,7 @@ namespace JG_Prospect.Sr_App
                 return;
             }
 
-            if (ddlstatus.SelectedValue == "Deactive" && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have permission to Activate or Deactivate user')", true);
                 if (Convert.ToString(Session["ddlStatus"]) != "")
@@ -2950,14 +2956,14 @@ namespace JG_Prospect.Sr_App
 
                 return;
             }
-            if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
+            if ((GetEnumValueForStatus() ==  JGConstant.InstallUserStatus.OfferMade) && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
             {
                 showHideNewHireSection(true);
                 txtReson.Visible = false;
                 //pnlnewHire.Visible = true;
                 RequiredFieldValidator7.Enabled = true;
             }
-            else if ((ddlstatus.SelectedValue == "Active"))
+            else if ((GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active))
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -3003,8 +3009,8 @@ namespace JG_Prospect.Sr_App
                 ddlInstallerType.Visible = false;
             }
 
-            if ((ddlstatus.SelectedValue == "Active")
-                || (ddlstatus.SelectedValue == "OfferMade"))
+            if ((GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
+                || (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade))
             {
                 showHideNewHireSection(true);
             }
@@ -3016,7 +3022,7 @@ namespace JG_Prospect.Sr_App
             #region NewRequiredFields
 
 
-            if (ddlstatus.SelectedValue == "Applicant")
+            if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Applicant)
             {
                 rqDesignition.Enabled = false;
                 RequiredFieldValidator3.Enabled = false;
@@ -3071,7 +3077,7 @@ namespace JG_Prospect.Sr_App
                 rqSource.Enabled = true;
                 lblConfirmPass.Visible = false;
             }
-            else if (ddlstatus.SelectedValue == "OfferMade")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade)
             {
                 ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "OfferMade";
                 rqDesignition.Enabled = true;
@@ -3141,7 +3147,7 @@ namespace JG_Prospect.Sr_App
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 //return;
             }
-            else if (ddlstatus.SelectedValue == "Active")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
             {
                 rqDesignition.Enabled = true;
                 RequiredFieldValidator3.Enabled = true;
@@ -3213,7 +3219,7 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 return;
             }
-            else if (ddlstatus.SelectedValue == "Deactive")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
             {
                 rqDesignition.Enabled = false;
                 RequiredFieldValidator3.Enabled = false;
@@ -3292,7 +3298,7 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
                 return;
             }
-            else if (ddlstatus.SelectedValue == "Active")
+            else if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Active)
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
                 return;
@@ -4879,7 +4885,7 @@ namespace JG_Prospect.Sr_App
             GridView1.DataSource = null;
             ddlcitizen.SelectedValue = "0";
             //ddldesignation.SelectedValue = "Jr. Sales";
-            ddlstatus.SelectedValue = "Applicant";
+            ddlstatus.SelectedValue = Convert.ToInt32(JGConstant.InstallUserStatus.Applicant).ToString();
             ddlInstallerType.SelectedValue = "Foreman";
             txtHireDate.Text = DateTime.Today.ToShortDateString();
             ddlWorkerCompCode.SelectedValue = "0";
@@ -5022,7 +5028,7 @@ namespace JG_Prospect.Sr_App
             string newId = string.Empty;
 
             var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
-            if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (ddlstatus.SelectedValue != "Deactive"))
+            if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (GetEnumValueForStatus() != JGConstant.InstallUserStatus.Deactive))
             {
                 if (SalesId != "")
                 {
@@ -5052,11 +5058,11 @@ namespace JG_Prospect.Sr_App
                     SalesId = "ADM0001";
                 }
             }
-            else if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation == JGConstant.DesignationType.Admin || selDesignation == JGConstant.DesignationType.Office_Manager || selDesignation == JGConstant.DesignationType.Recruiter) && (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive) && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
-            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue != "Deactive"))
+            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (GetEnumValueForStatus() != JGConstant.InstallUserStatus.Deactive))
             {
                 if (SalesId != "")
                 {
@@ -5086,7 +5092,7 @@ namespace JG_Prospect.Sr_App
                     SalesId = "SLE0001";
                 }
             }
-            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((selDesignation == JGConstant.DesignationType.Jr_Sales || selDesignation == JGConstant.DesignationType.Jr_Project_Manager || selDesignation == JGConstant.DesignationType.Sales_Manager || selDesignation == JGConstant.DesignationType.Sr_Sales) && (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive) && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
@@ -5140,12 +5146,12 @@ namespace JG_Prospect.Sr_App
                 //}
                 Body.Append("<br>");
                 Body.Append(strFooter);
-                if (ddlstatus.SelectedValue == "OfferMade")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.OfferMade)
                 {
                     //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
                     //createForeMenForJobAcceptance(Convert.ToString(Body));
                 }
-                if (ddlstatus.SelectedValue == "Deactive")
+                if (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive)
                 {
                     //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
                     //CreateDeactivationAttachment(Convert.ToString(Body));
@@ -6096,7 +6102,7 @@ namespace JG_Prospect.Sr_App
             {
                 SalesId = Convert.ToString(dtId.Rows[0][0]);
             }
-            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
+            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (GetEnumValueForStatus() != JGConstant.InstallUserStatus.Deactive))
             {
                 if (SalesId != "")
                 {
@@ -6108,11 +6114,11 @@ namespace JG_Prospect.Sr_App
                     SalesId = "ADM0001";
                 }
             }
-            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive) && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (GetEnumValueForStatus() != JGConstant.InstallUserStatus.Deactive))
             {
                 if (SalesId != "")
                 {
@@ -6124,7 +6130,7 @@ namespace JG_Prospect.Sr_App
                     SalesId = "SLE0001";
                 }
             }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (GetEnumValueForStatus() == JGConstant.InstallUserStatus.Deactive) && (SalesId != ""))
             {
                 SalesId = SalesId + "-X";
             }
