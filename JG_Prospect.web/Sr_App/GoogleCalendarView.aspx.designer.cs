@@ -463,6 +463,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.HiddenField txtinvite;
         
         /// <summary>
+        /// hdEventId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdEventId;
+        
+        /// <summary>
+        /// hdEventFile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdEventFile;
+        
+        /// <summary>
         /// btnEventSubmit control.
         /// </summary>
         /// <remarks>

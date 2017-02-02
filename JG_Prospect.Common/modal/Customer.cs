@@ -100,6 +100,9 @@ namespace JG_Prospect.Common.modal
         public int EventType;
         public string RecurrenceRule;
         public string TimeZone;
+        public int EventId;
+        public int MaxOccurance;
+        public int Interval;
         //------ End DP -----
 
     }

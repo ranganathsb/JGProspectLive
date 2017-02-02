@@ -26,7 +26,10 @@ ALTER PROCEDURE [dbo].[AddAnnualEvent]
 	@EventType int,
 	@EventRepeat int,
 	@TimeZone varchar(400),
-	@RecurrenceRule nvarchar(1000)
+	@RecurrenceRule nvarchar(1000),
+	@MaxOccurance int,
+	@Interval int,
+	@EventId int
 	
 AS
 BEGIN
@@ -34,13 +37,34 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	insert into dbo.tbl_AnnualEvents 
-	(EventName,EventDate,EventAddedBy,EventEndDate,EventStartTime,EventEndTime,EventLoc,
-	EventDesc,EventColor,EventCal,EventFile,EventType,EventRepeat,RecurrenceRule,TimeZone)
-	values
-	(@Eventname,@EventDate,@EventAddedBy,@EventEndDate,@EventStartTime,@EventEndTime,@EventLoc,@EventDesc,
-	@EventColor,@EventCal,@EventFile,@EventType,@EventRepeat,@RecurrenceRule,@TimeZone)
+	if @EventId=0
+
+		begin
+			-- Insert statements for procedure here
+			insert into dbo.tbl_AnnualEvents 
+			(EventName,EventDate,EventAddedBy,EventEndDate,EventStartTime,EventEndTime,EventLoc,
+			EventDesc,EventColor,EventCal,EventFile,EventType,EventRepeat,
+			RecurrenceRule,TimeZone,MaxOccurance,Interval)
+			values
+			(@Eventname,@EventDate,@EventAddedBy,@EventEndDate,@EventStartTime,@EventEndTime,@EventLoc,@EventDesc,
+			@EventColor,@EventCal,@EventFile,@EventType,@EventRepeat,
+			@RecurrenceRule,@TimeZone,@MaxOccurance,@Interval)
+
+		end
+
+	else
+		
+		begin
+			update dbo.tbl_AnnualEvents  set
+			EventName=@EventName,EventDate=@EventDate,EventEndDate=@EventEndDate
+			,EventStartTime=@EventStartTime,EventEndTime=@EventEndTime,EventLoc=@EventLoc,
+			EventDesc=@EventDesc,EventColor=@EventColor,EventCal=@EventCal,
+			EventFile=@EventFile,EventType=@EventType,EventRepeat=@EventRepeat,
+			RecurrenceRule=@RecurrenceRule,TimeZone=@TimeZone,
+			MaxOccurance=@MaxOccurance,Interval=@Interval
+			where ID=@EventId
+
+		end
 
 END
 

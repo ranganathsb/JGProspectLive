@@ -312,7 +312,8 @@
                         
                         if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString() == "Admin"  || Session["DesigNew"].ToString() == "Office Manager" || Session["DesigNew"].ToString() == "Sales Manager" || Session["DesigNew"].ToString() == "ForeMan")
                        { %>
-                    <input type="button"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;height:30px;width:75px"  value="Create" id="btnCreateEvent"/>          
+                    <input type="button"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;height:30px;width:75px" 
+                         value="Create" id="btnCreateEvent"/>          
 
                     <asp:Button ID="btnCreateCal" runat="server" Text="Create Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="120px" OnClick="btnCreateCal_Click"   />
                     <% } %>
@@ -333,12 +334,13 @@
                             AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
                             ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
                             EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView"
-                            CustomAttributeNames="EventName,EventStartTime,EventColor,EventEndTime,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
+                            CustomAttributeNames="EventName,EventStartTime,EventColor,EventEndTime,ID,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
                             TimelineView-ReadOnly="true"   
                             OnAppointmentDataBound ="rsAppointments_AppointmentDataBound"
                             OnNavigationCommand="rsAppointments_OnNavigationCommand" EnableRecurrenceSupport="true"
                              DataRecurrenceField="RecurrenceRule" DataRecurrenceParentKeyField="ID" DisplayDeleteConfirmation="false" 
+                            OnAppointmentClick="rsAppointments_AppointmentClick"
                             OnAppointmentCreated="rsAppointments_AppointmentCreated">
                             <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
                             <AdvancedForm Modal="True" />
@@ -349,6 +351,7 @@
                                 <asp:Label ID="Label3" runat="server" Text='<%#Eval("EventStartTime")%>' ></asp:Label>
                                 <asp:Label ID="Label6" runat="server" Text=' To ' ></asp:Label>
                                 <asp:Label ID="Label5" runat="server" Text='<%#Eval("EventEndTime")%>' ></asp:Label>
+                                <%--<asp:LinkButton ID="lnkEditEvent" runat="server" Text='Edit' CommandArgument='<%#Eval("id")%>' OnClick="EditEvent_Click" ></asp:LinkButton>--%>
                                 <asp:HiddenField ID="hdEventColor" runat="server" Value='<%#Eval("EventColor")%>' />
                              <%--   <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
@@ -699,6 +702,8 @@
                     <tr>
                         <td colspan="4">
                             <asp:HiddenField ID="txtinvite"  runat="server"  ></asp:HiddenField>
+                            <asp:HiddenField ID="hdEventId"  runat="server"  ></asp:HiddenField>
+                            <asp:HiddenField ID="hdEventFile"  runat="server"  ></asp:HiddenField>
                             <asp:Button ID="btnEventSubmit" ValidationGroup="SubmitEvent"    runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit" OnClientClick="javascript:return gotoInvite();" OnClick="btnEventSubmit_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
                         </td>
                     </tr>
@@ -729,13 +734,141 @@
 
              });
 
-
              $(".date").datepicker();
              $('#btnCreateEvent').unbind('click').bind('click', function () {
                  callpopupscript();
              });
 
          });
+
+         function populateEvent(EvntId) {
+                       
+             var params = '{"vEventId":"' + EvntId + '"}';
+             $.ajax({
+                 type: "POST",
+                 url: "AnnualEventWebService.asmx/GetAnnualEventById",
+                 //crossDomain: true,
+                 data: params,
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (data) {
+
+                     var parsed = $.parseJSON(data.d);
+
+                     if (parsed.length > 0) {
+                         $.each(parsed, function (i, item) {
+                             $('#ContentPlaceHolder1_hdEventId').val(item.Id);
+                             $('#ContentPlaceHolder1_txtEventName').val(item.eventname);
+                             $('#ContentPlaceHolder1_txtEventLoc').val(item.eventloc);
+                             $('#ContentPlaceHolder1_txtEventDesc').val(item.eventdesc);
+                             $('#ContentPlaceHolder1_txtEventStartTime').val(item.eventstarttime);
+                             $('#ContentPlaceHolder1_txtEventEndTime').val(item.eventendtime);
+                             var vEventStartDate =new Date(parseInt(item.eventdate.substr(6)));                                       
+                             var vEventEndDate = new Date(parseInt(item.eventenddate.substr(6)));
+                             $('#ContentPlaceHolder1_txtEventStartDate').datepicker('setDate', vEventStartDate);
+                             $("#ContentPlaceHolder1_txtEventEndDate").datepicker('setDate', vEventEndDate);
+
+                             $("#ContentPlaceHolder1_txtEventColor").val(item.eventcolor);
+                             $(".selectedeventcolor").attr("style", "background-color:" + item.eventcolor + "");
+                             $(".radiol").each(function (index) {
+                                 var chkval = $(this).val();
+                                 if (chkval == item.eventcolor) {
+                                     $(this).trigger("click");
+                                 }
+                             });
+                             $("#ContentPlaceHolder1_hdEventId").val(item.Id);
+                             $("#ContentPlaceHolder1_hdEventFile").val(item.eventfile);
+
+                             $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").each(function (index) {
+                                 var chkval = $(this).val();
+                                 if (chkval == item.eventtype) {
+                                     $(this).trigger('click');
+                                     $(this).prop('checked', true);
+                                 }
+                             });
+                             $('#ContentPlaceHolder1_drpEventCalender').val(item.eventcal);
+
+                             $("#ContentPlaceHolder1_rdoRepeatEvent input[type='radio']").each(function (index) {
+                                 var chkval = $(this).val();
+                                 if (chkval == item.eventrepeat) {
+                                     $(this).attr('checked', true);
+                                 }
+                             });
+
+                             $("#ContentPlaceHolder1_txtMaxOccu").val(item.maxoccurance);
+                             $("#ContentPlaceHolder1_txtInterval").val(item.interval);
+                         });
+
+                         $('.date').attr("disabled", true);
+                         $("#popup").dialog("open");
+                         $('.date').removeAttr("disabled");
+                         $(".date").datepicker({
+                             minDate: 0,
+                             dateFormat: "dd-M-yy"
+                         });
+
+                         $('#ContentPlaceHolder1_txtEventStartTime').timepicker({});
+                         $('#ContentPlaceHolder1_txtEventEndTime').timepicker();
+
+                         $(".radiol").click(function () {
+                             $("#ContentPlaceHolder1_txtEventColor").val($(this).val());
+                             $(".selectedeventcolor").attr("style", "background-color:" + $(this).val() + "");
+                         });
+                         $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").click(function () {
+                             if ($(this).val() == 2) {
+
+                                 if ($(this).attr('checked')) {
+                                     $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
+                                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", false);
+                                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                                 }
+                                 else {
+                                     $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
+                                     //$('#ContentPlaceHolder1_txtEventEndDate').val('');
+                                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                                 }
+                             }
+                             else {
+                                 if ($(this).attr('checked')) {
+                                     $('#ContentPlaceHolder1_chkEventType_1').prop("checked", false);
+                                     var vStartDate = $('#ContentPlaceHolder1_txtEventStartDate').val();
+
+                                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", true);
+                                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", true);
+                                     $('#ContentPlaceHolder1_txtEventStartTime').val('');
+                                     $('#ContentPlaceHolder1_txtEventEndTime').val('');
+
+                                     $('#ContentPlaceHolder1_txtEventEndDate').val(vStartDate);
+                                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                                 }
+                                 else {
+                                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                                 }
+                             }
+                         });
+
+                         $("#ContentPlaceHolder1_btnInviteEmail").unbind('click').bind('click', function () {
+                             addRow();
+                         });
+
+                     }
+                 },
+                 async: false,
+                 failure: function (response) {
+                     alert(response.d);
+                 }
+             });
+
+         }
+
+
+
+
+
 
          function callpopupscript() {
              $('.date').attr("disabled", true);
@@ -757,29 +890,45 @@
 
              $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
 
-             $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").click(function () {
-
+             $("#ContentPlaceHolder1_chkEventType input[type='checkbox']").click(function () {                                       
                  if ($(this).val() == 2) {
-                     $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
-                     $('#ContentPlaceHolder1_txtEventEndDate').val('');
-                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", false);
-                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
-                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+
+                     if ($(this).attr('checked')) {
+                         $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);                                                
+                         $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", false);
+                         $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                         $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                     }
+                     else
+                     {
+                         $('#ContentPlaceHolder1_chkEventType_0').prop("checked", false);
+                         //$('#ContentPlaceHolder1_txtEventEndDate').val('');
+                         $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                         $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                         $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                     }
                  }
                  else {
-                     $('#ContentPlaceHolder1_chkEventType_1').prop("checked", false);
-                     var vStartDate = $('#ContentPlaceHolder1_txtEventStartDate').val();
+                     if ($(this).attr('checked')) {
+                         $('#ContentPlaceHolder1_chkEventType_1').prop("checked", false);
+                         var vStartDate = $('#ContentPlaceHolder1_txtEventStartDate').val();
 
-                     $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", true);
-                     $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", true);
-                     $('#ContentPlaceHolder1_txtEventStartTime').val('');
-                     $('#ContentPlaceHolder1_txtEventEndTime').val('');
+                         $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", true);
+                         $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", true);
+                         $('#ContentPlaceHolder1_txtEventStartTime').val('');
+                         $('#ContentPlaceHolder1_txtEventEndTime').val('');
 
-                     $('#ContentPlaceHolder1_txtEventEndDate').val(vStartDate);
-                     $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                         $('#ContentPlaceHolder1_txtEventEndDate').val(vStartDate);
+                         $("#ContentPlaceHolder1_rdoRepeatEvent").find('input').prop("disabled", true);
+                     }
+                     else {
+                         $('#ContentPlaceHolder1_txtEventStartTime').prop("disabled", false);
+                         $('#ContentPlaceHolder1_txtEventEndTime').prop("disabled", false);
+                     }
                  }
-
              });
+
+            
 
              $("#ContentPlaceHolder1_btnInviteEmail").unbind('click').bind('click', function () {
                  addRow();

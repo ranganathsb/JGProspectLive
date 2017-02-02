@@ -223,6 +223,10 @@ namespace JG_Prospect.Sr_App
             a.EventDesc = txtEventDesc.Text;
             a.EventCal = Convert.ToInt32(drpEventCalender.SelectedValue);
             a.EventColor = txtEventColor.Value ;
+            a.EventId = 0;
+            a.MaxOccurance =Convert.ToInt32( txtMaxOccu.Text);
+            a.Interval =Convert.ToInt32( txtInterval.Text);
+
             if (rdoRepeatEvent.SelectedValue == "")
             {
                 a.EventRepeat = 0;
@@ -311,57 +315,57 @@ namespace JG_Prospect.Sr_App
             {
                 Response.Redirect("../stafflogin.aspx");
             }
-           
 
             string strInviteUsers = txtinvite.Value;
 
+            int vMAxEventId = 0;
+            if (hdEventId.Value == "")
+            {
+                DataSet result = new DataSet();
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DbCommand command = database.GetStoredProcCommand("GetMaxNo");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@colname", DbType.String, "ID");
+                        database.AddInParameter(command, "@tblname", DbType.String, "tbl_AnnualEvents");
+                        result = database.ExecuteDataSet(command);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+                if (result.Tables[0].Rows.Count > 0)
+                {
+                    vMAxEventId = Convert.ToInt32(result.Tables[0].Rows[0]["maxno"].ToString()) + 1;
+                }
+                result.Dispose();
+            }
+            else
+            {
+                a.EventId = Convert.ToInt32(hdEventId.Value);
+                vMAxEventId = Convert.ToInt32(hdEventId.Value);
+                a.EventFile = hdEventFile.Value;
+
+            }
             //For checking duplicate event....
             DataSet ds = new DataSet();
             ds = new_customerBLL.Instance.CheckDuplicateAnnualEvent(a);
             if (ds.Tables[0].Rows.Count == 0)
             {
-               
                 a.EventAddedBy = userId;
 
                 try
                 {
-                    int vMAxEventId = 0;
-                    if (flEventFile.HasFile)
+                   if (flEventFile.HasFile)
                     {
-                        // to check file extension
-                        //if (FileUploadControl.PostedFile.ContentType == "image/jpeg")
-                        // { }
-
-                        DataSet result = new DataSet();
-                        try
-                        {
-                            SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                            {
-                                DbCommand command = database.GetStoredProcCommand("GetMaxNo");
-                                command.CommandType = CommandType.StoredProcedure;
-                                database.AddInParameter(command, "@colname", DbType.String, "ID");
-                                database.AddInParameter(command, "@tblname", DbType.String, "tbl_AnnualEvents");
-                                result = database.ExecuteDataSet(command);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            //LogManager.Instance.WriteToFlatFile(ex);
-                        }
-                        if(result.Tables[0].Rows.Count>0)
-                        {
-                            vMAxEventId = Convert.ToInt32(result.Tables[0].Rows[0]["maxno"].ToString()) + 1;
-                        }
-                        result.Dispose();
-
                         var originalDirectory = new DirectoryInfo(Server.MapPath(JGConstant.EventCalendar_Upload_Folder));
 
                         string imageName = Path.GetFileName(flEventFile.FileName);
                         NewImageName =vMAxEventId+"_"+ userId + "_"+imageName;
                         a.EventFile = NewImageName;
-
-                        //string NewImageName = Guid.NewGuid() + "-" + imageName;
-
                         string pathString = System.IO.Path.Combine(originalDirectory.ToString(), NewImageName);
                         bool isExists = System.IO.Directory.Exists(originalDirectory.ToString());
 
@@ -375,42 +379,43 @@ namespace JG_Prospect.Sr_App
                 {
                     // error
                 }
-
-                // -------- insert record  ----------
                 try
                 {
+                    // add-edit annual events
                     new_customerBLL.Instance.AddAnnualEvent(a);
-                   
-                    // send an email to invites
-                    string strbody = "";
-                    strbody = strbody + "<p class='MsoNormal'><span style='font-size: 13.3333px;'>Dear User,On behalf of JMGrove Construction &amp; Supply LLC, I would like to invite you for this Event.</span></p>";
-                    strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'><br /></span></p> ";
-                    strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'>If you have any questions please contact the HR department at</span></p> ";
-                    strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'>hr@jmgroveconstructions.com</span></p> ";
-                    strbody = strbody + "  <p class='MsoNormal' style='font-size: 13.3333px;'><br /></p> ";
 
-                    string strHeader = " <div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg' /></div>";
-                    strHeader = strHeader + "<div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif' /></div>";
+                    if (strInviteUsers != "")
+                    {
+                        // send an email to invites
+                        string strbody = "";
+                        strbody = strbody + "<p class='MsoNormal'><span style='font-size: 13.3333px;'>Dear User,On behalf of JMGrove Construction &amp; Supply LLC, I would like to invite you for this Event.</span></p>";
+                        strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'><br /></span></p> ";
+                        strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'>If you have any questions please contact the HR department at</span></p> ";
+                        strbody = strbody + " <p class='MsoNormal'><span style='font-size: 13.3333px;'>hr@jmgroveconstructions.com</span></p> ";
+                        strbody = strbody + "  <p class='MsoNormal' style='font-size: 13.3333px;'><br /></p> ";
 
-                    string strFooter = "";
-                    strFooter = strFooter + " <br />";
-                    strFooter = strFooter + " <div> ";
-                    strFooter = strFooter + " <p style='font-size: 13.3333px;'>J.M. Grove - Construction &amp; Supply&nbsp;<br /> ";
-                    strFooter = strFooter + " <a href='http://web.jmgrovebuildingsupply.com/Sr_App/jmgroveconstruction.com'>jmgroveconstruction.com&nbsp;</a><br /> ";
-                    strFooter = strFooter + " <a href='http://jmgrovebuildingsupply.com/'>http://jmgrovebuildingsupply.com/</a><br />";
-                    strFooter = strFooter + " <a href='http://web.jmgrovebuildingsupply.com/login.aspx'>http://web.jmgrovebuildingsupply.com/login.aspx</a><br />";
-                    strFooter = strFooter + " <a href='http://jmgroverealestate.com/'>http://jmgroverealestate.com/</a><br />";
-                    strFooter = strFooter + " <br />";
-                    strFooter = strFooter + " 72 E Lancaster Ave<br />";
-                    strFooter = strFooter + " Malvern, Pa 19355<br />";
-                    strFooter = strFooter + " Human Resources<br />";
-                    strFooter = strFooter + " Office:(215) 274-5182 Ext. 4<br />";
-                    strFooter = strFooter + " <a href='mailto:Hr@jmgroveconstruction.com'>Hr@jmgroveconstruction.com</a></p> ";
-                    strFooter = strFooter + " <div style='font-size: 13.3333px;'><a href='https://www.facebook.com/JMGrove1com/'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/fb.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/tw.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/236e0d0b-832c-4543-81a6-f6c460d302f0_zpsl4nh3ane.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/gpls.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/pinterest_zpspioq6pve.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/pint.png' /></a><br />";
-                    strFooter = strFooter + " <a href='http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/hbt.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/youtube_zpsxyhfmm1b.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/yt.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/c3894afd-7a37-43e2-917c-5ffb7a5036a2_zpschul0pqd.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/houzz.png' /></a>&nbsp;<a href='http://s49.photobucket.com/user/jmg1/media/4478596b-67f4-444e-992a-624af3e56255_zpsoi8p1uyv.jpg.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/linkin.jpg' /></a></div>";
-                    strFooter = strFooter + " <div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/footer.png' /></div></div>";
+                        string strHeader = " <div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg' /></div>";
+                        strHeader = strHeader + "<div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif' /></div>";
 
-                    if(strInviteUsers!=""){
+                        string strFooter = "";
+                        strFooter = strFooter + " <br />";
+                        strFooter = strFooter + " <div> ";
+                        strFooter = strFooter + " <p style='font-size: 13.3333px;'>J.M. Grove - Construction &amp; Supply&nbsp;<br /> ";
+                        strFooter = strFooter + " <a href='http://web.jmgrovebuildingsupply.com/Sr_App/jmgroveconstruction.com'>jmgroveconstruction.com&nbsp;</a><br /> ";
+                        strFooter = strFooter + " <a href='http://jmgrovebuildingsupply.com/'>http://jmgrovebuildingsupply.com/</a><br />";
+                        strFooter = strFooter + " <a href='http://web.jmgrovebuildingsupply.com/login.aspx'>http://web.jmgrovebuildingsupply.com/login.aspx</a><br />";
+                        strFooter = strFooter + " <a href='http://jmgroverealestate.com/'>http://jmgroverealestate.com/</a><br />";
+                        strFooter = strFooter + " <br />";
+                        strFooter = strFooter + " 72 E Lancaster Ave<br />";
+                        strFooter = strFooter + " Malvern, Pa 19355<br />";
+                        strFooter = strFooter + " Human Resources<br />";
+                        strFooter = strFooter + " Office:(215) 274-5182 Ext. 4<br />";
+                        strFooter = strFooter + " <a href='mailto:Hr@jmgroveconstruction.com'>Hr@jmgroveconstruction.com</a></p> ";
+                        strFooter = strFooter + " <div style='font-size: 13.3333px;'><a href='https://www.facebook.com/JMGrove1com/'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/fb.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/tw.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/236e0d0b-832c-4543-81a6-f6c460d302f0_zpsl4nh3ane.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/gpls.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/pinterest_zpspioq6pve.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/pint.png' /></a><br />";
+                        strFooter = strFooter + " <a href='http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/hbt.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/youtube_zpsxyhfmm1b.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/yt.png' /></a><a href='http://s49.photobucket.com/user/jmg1/media/c3894afd-7a37-43e2-917c-5ffb7a5036a2_zpschul0pqd.png.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/houzz.png' /></a>&nbsp;<a href='http://s49.photobucket.com/user/jmg1/media/4478596b-67f4-444e-992a-624af3e56255_zpsoi8p1uyv.jpg.html'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/linkin.jpg' /></a></div>";
+                        strFooter = strFooter + " <div style='font-size: 13.3333px;'><img src='http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/footer.png' /></div></div>";
+
+                    
 
                         foreach (string useremail in strInviteUsers.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
                         {
@@ -450,7 +455,7 @@ namespace JG_Prospect.Sr_App
         }
         
 
-        //--------- Start DP ---------
+        //--------- Start DP ---------      
         protected void rsAppointments_OnNavigationCommand(object sender, SchedulerNavigationCommandEventArgs e)
         {
             BindEventCalendar();
@@ -469,6 +474,8 @@ namespace JG_Prospect.Sr_App
 
         protected void rsAppointments_AppointmentClick(object sender, SchedulerEventArgs e)
         {
+            string hEvId = e.Appointment.Attributes["ID"];
+            ScriptManager.RegisterStartupScript(Page, GetType(), "script2", "populateEvent(" + hEvId + ");", true);
             //if (usertType == Admin)
             //{
             //    con = new SqlConnection(strcon);
@@ -1296,7 +1303,7 @@ namespace JG_Prospect.Sr_App
                 {
                     DbCommand command = database.GetStoredProcCommand("GetInstallUsersByStatus");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@Status", DbType.String, "Active");
+                    database.AddInParameter(command, "@Status", DbType.String, "1");
                     result = database.ExecuteDataSet(command);
                 }
             }

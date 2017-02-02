@@ -310,6 +310,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@EventRepeat", DbType.Int32, Event.EventRepeat);
                     database.AddInParameter(command, "@RecurrenceRule", DbType.String, Event.RecurrenceRule);
                     database.AddInParameter(command, "@TimeZone", DbType.String, Event.TimeZone);
+                    database.AddInParameter(command, "@EventId", DbType.Int32, Event.EventId);
+                    database.AddInParameter(command, "@MaxOccurance", DbType.Int32, Event.MaxOccurance);
+                    database.AddInParameter(command, "@Interval", DbType.Int32, Event.Interval);
                      //-------- End DP ----------
                     database.ExecuteNonQuery(command);
                    
@@ -417,6 +420,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("CheckDuplicateAnnualEvent");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@EventId", DbType.String, Event.EventId);
                     database.AddInParameter(command, "@Eventname", DbType.String, Event.EventName);
                     database.AddInParameter(command, "@EventDate", DbType.Date, Convert.ToDateTime(Event.Eventdate)); 
                     result = database.ExecuteDataSet(command);
