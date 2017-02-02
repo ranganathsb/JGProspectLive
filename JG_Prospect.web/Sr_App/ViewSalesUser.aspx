@@ -1755,29 +1755,8 @@
                                 <tr>
                                     <td colspan="1" style="vertical-align: top; ">
                                         <label>Designation<span>*</span></label>
-                                        <asp:DropDownList Width="160px" ID="ddldesignation" AppendDataBoundItems="true" TabIndex="508" runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                            <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
-                                            <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                        <asp:DropDownList Width="160px" ID="ddldesignation" TabIndex="508"  runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
+                                            
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqDesignition" runat="server" ControlToValidate="ddldesignation"
@@ -1793,29 +1772,8 @@
 
                                     </td>
                                     <td colspan="2" style="vertical-align: top;">Position Applied For
-                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                            <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
-                                            <%--<asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>--%>
+                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" runat="server" ClientIDMode="Static" AutoPostBack="false">
+                                            
                                         </asp:DropDownList>
                                     </td>
                                     <td colspan="4">

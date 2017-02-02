@@ -5796,8 +5796,29 @@ namespace JG_Prospect.Sr_App
         private void FillControls()
         {
             ddlstatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlstatus);
+            BindDesignations();
             FillPhoneTypeDropDown();
             FillCountryDropDown();
+        }
+
+        private void BindDesignations()
+        {
+            DataSet dsDesignation = new DataSet();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+            if (dsDesignation.Tables.Count > 0)
+            {
+                ddldesignation.DataSource = dsDesignation.Tables[0];
+                ddldesignation.DataTextField = "DesignationName";
+                ddldesignation.DataValueField = "ID";
+                ddldesignation.DataBind();
+
+                ddlPositionAppliedFor.DataSource = dsDesignation.Tables[0];
+                ddlPositionAppliedFor.DataTextField = "DesignationName";
+                ddlPositionAppliedFor.DataValueField = "ID";
+                ddlPositionAppliedFor.DataBind();
+            }
+            ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+            ddlPositionAppliedFor.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
         }
         private void FillPhoneTypeDropDown()
         {
