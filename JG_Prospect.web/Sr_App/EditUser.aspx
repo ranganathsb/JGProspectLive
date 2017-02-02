@@ -1214,17 +1214,17 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Email Body:<br />
-                                    <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
-                                    <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
-                                        runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Custom Message:<br />
                                     <asp:TextBox ID="txtEmailCustomMessage" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
                                     <asp:RequiredFieldValidator ID="rfvEmailCustomMessage" ValidationGroup="vgEmailToUser" Display="None"
                                         runat="server" ControlToValidate="txtEmailCustomMessage" ForeColor="Red" ErrorMessage="Please enter custom message for email." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email Body:<br />
+                                    <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                    <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
+                                        runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
                                 </td>
                             </tr>
                             <tr>

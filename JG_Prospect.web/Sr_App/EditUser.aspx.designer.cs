@@ -1120,24 +1120,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailSubject;
         
         /// <summary>
-        /// txtEmailBody control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmailBody;
-        
-        /// <summary>
-        /// rfvEmailBody control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailBody;
-        
-        /// <summary>
         /// txtEmailCustomMessage control.
         /// </summary>
         /// <remarks>
@@ -1154,6 +1136,24 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailCustomMessage;
+        
+        /// <summary>
+        /// txtEmailBody control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmailBody;
+        
+        /// <summary>
+        /// rfvEmailBody control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailBody;
         
         /// <summary>
         /// btnSendEmailToUser control.
