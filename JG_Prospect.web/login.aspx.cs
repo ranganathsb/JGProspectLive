@@ -1092,7 +1092,7 @@ namespace JG_Prospect
 
                             if (JGSession.IsFirstTime == true)
                             {
-                                Response.Redirect("changepassword.aspx", false);
+                                Response.Redirect("~/changepassword.aspx", false);
                             }
                             else
                             {

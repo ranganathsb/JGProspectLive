@@ -900,7 +900,7 @@ namespace JG_Prospect
 
                             if (JGSession.IsFirstTime == true)
                             {
-                                strRedirectUrl = "changepassword.aspx";
+                                strRedirectUrl = "~/changepassword.aspx";
                             }
 
                             if (Convert.ToString(Session["DesigNew"]) != "" && JGSession.IsFirstTime == false)

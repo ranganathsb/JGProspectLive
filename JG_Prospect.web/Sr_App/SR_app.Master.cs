@@ -21,7 +21,7 @@ namespace JG_Prospect.Sr_App
 
                 if (JGSession.IsFirstTime == true)
                 {
-                    Response.Redirect("changepassword.aspx", false);
+                    Response.Redirect("~/changepassword.aspx", false);
                 }
 
                 if ((string)Session["usertype"] == "MM" || (string)Session["usertype"] == "SSE")

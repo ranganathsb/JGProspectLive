@@ -80,7 +80,7 @@
         <ul>
             <li><a href="home.aspx">Home</a></li>
             <li>|</li>
-            <li><a href="/changepassword.aspx">Change Password</a></li>
+            <li><a href='<%=Page.ResolveUrl("~/changepassword.aspx")%>'>Change Password</a></li>
         </ul>
         <div class="clr">
         </div>
