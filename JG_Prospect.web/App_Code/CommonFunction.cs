@@ -357,8 +357,6 @@ namespace JG_Prospect.App_Code
                         );
 
                 objDocument.Close();
-
-                return strFilePath;
             }
             catch
             { }
@@ -370,7 +368,8 @@ namespace JG_Prospect.App_Code
                 }
                 objDocument = null;
             }
-            return string.Empty;
+
+            return strFilePath;
         }
 
         /// <summary>

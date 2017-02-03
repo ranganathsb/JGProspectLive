@@ -852,6 +852,7 @@
                         </asp:GridView>
                     </ContentTemplate>
                     <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="lbtnDeactivateSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnChangeStatusForSelected" EventName="Click" />
                     </Triggers>
