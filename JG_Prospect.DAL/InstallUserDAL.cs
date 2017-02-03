@@ -1729,6 +1729,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("DeactivateInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.AddInParameter(command, "@DeactiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString());
                     database.ExecuteNonQuery(command);
                 }
                 return true;
@@ -1756,7 +1757,6 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("DeleteInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
-                    database.AddInParameter(command, "@DeactiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString());
                     database.ExecuteNonQuery(command);
                 }
                 return true;
