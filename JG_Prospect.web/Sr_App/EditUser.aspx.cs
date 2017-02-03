@@ -120,6 +120,15 @@ namespace JG_Prospect
                 lbtnDeleteSelected.Visible = false;
             }
 
+            if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
+            {
+                lbtnDeleteSelected.Visible = true;
+            }
+            else
+            {
+                lbtnDeleteSelected.Visible = false;
+            }
+
             if (!IsPostBack)
             {
                 CalendarExtender1.StartDate = DateTime.Now;
@@ -3352,15 +3361,6 @@ namespace JG_Prospect
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
-                    }
-
-                    if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
-                    {
-                        lbtnDeleteSelected.Visible = true;
-                    }
-                    else
-                    {
-                        lbtnDeleteSelected.Visible = false;
                     }
                 }
             }
