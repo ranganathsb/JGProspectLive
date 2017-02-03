@@ -778,13 +778,30 @@
     function hideSubTaskEditView(divid, rowindex) {
 
         $('#<%=hdnCurrentEditingRow.ClientID%>').val('');
-        $('.edit-subtask > tbody > tr').eq(rowindex + 1).remove();
-        $(divid).slideUp('slow');
+       // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
+        // $(divid).slideUp('slow');
+        
+        var row = $('.edit-subtask').find('tr').eq(rowindex + 2);
+
+        //alert(row);
+
+        if (row.length) {
+            $('html, body').animate({
+                scrollTop: row.offset().top - 100
+            }, 2000);
+
+        }
+        
+
+    }
+
+    function ShowAddNewSubTaskSection(divid) {
+       
+        $(divid).slideDown('slow');
 
         $('html, body').animate({
-            scrollTop: $(divid).offset().top - 100
+            scrollTop: $(divid).offset().top - 200
         }, 2000);
-
 
     }
     

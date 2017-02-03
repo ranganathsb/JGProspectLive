@@ -455,7 +455,7 @@ namespace JG_Prospect.Sr_App.Controls
                 upAddSubTask.Update();
                 hdnCurrentEditingRow.Value = intRowIndex.ToString();
 
-                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#",divSubTask.ClientID,"',", hdnCurrentEditingRow.Value, ")"), true);
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#",divSubTask.ClientID,"',", hdnCurrentEditingRow.Value, ");"), true);
             }
             else if (e.CommandName.Equals("sub-task-feedback"))
             {
@@ -845,7 +845,8 @@ namespace JG_Prospect.Sr_App.Controls
                 FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
 
                 SetSubTaskDetails();
-                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+                //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
             }
 
         }
@@ -965,13 +966,15 @@ namespace JG_Prospect.Sr_App.Controls
                 upAttachmentsData.Update();
             }
 
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+            //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
         }
 
         protected void btnSaveSubTask_Click(object sender, EventArgs e)
         {
             SaveSubTask();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
         }
 
         #endregion
@@ -1270,7 +1273,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             string strScript = string.Format(
-                                                "$('#{0}').slideDown('slow');",
+                                                "ShowAddNewSubTaskSection('#{0}');",
                                                 divSubTask.ClientID
                                             );
 
