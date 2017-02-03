@@ -1233,6 +1233,18 @@ namespace JG_Prospect.Sr_App
         {
             //---------- start DP ------------
             int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+     
+            if (userId == 0 )
+            {
+                Response.Redirect("../stafflogin.aspx");
+            }
+            else if (Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()].ToString() == "")
+            {
+                Response.Redirect("../stafflogin.aspx");
+            }
+
+            string vUsername = Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()].ToString();
+
             DataSet result = new DataSet();
             try
             {
@@ -1272,17 +1284,14 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                string vUsername = Session["Username"].ToString();
+                
                 EventCalendar a = new EventCalendar();
                 a.CalendarName = vUsername +" Calendar";
                 a.InsertionDate = DateTime.Now.Date.ToString("dd-MMM-yyyy");
                 //For checking duplicate calendar name....
                 a.UserId = userId;
 
-                if (userId == 0)
-                {
-                    Response.Redirect("../stafflogin.aspx");
-                }
+                
                 // -------- insert record  ----------
                 new_customerBLL.Instance.AddEventCalendar(a);
                 FillMyCalendarDropDown();

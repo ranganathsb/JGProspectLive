@@ -855,6 +855,14 @@
                              addRow();
                          });
 
+                         $('#ContentPlaceHolder1_txtInterval').bind('keypress', function (e) {
+                             return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+                         })
+
+                         $('#ContentPlaceHolder1_txtMaxOccu').bind('keypress', function (e) {
+                             return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+                         })
+
                      }
                  },
                  async: false,
@@ -878,6 +886,10 @@
                  minDate: 0,
                  dateFormat: "dd-M-yy"
              });
+
+             $('#ContentPlaceHolder1_txtMaxOccu').bind('keypress', function (e) {
+                 return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+             })
 
              $('#ContentPlaceHolder1_txtEventStartTime').timepicker();
              $('#ContentPlaceHolder1_txtEventEndTime').timepicker();             
@@ -928,7 +940,13 @@
                  }
              });
 
-            
+             $('#ContentPlaceHolder1_txtInterval').bind('keypress', function (e) {
+                 return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+             })
+
+             $('#ContentPlaceHolder1_txtMaxOccu').bind('keypress', function (e) {
+                 return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+             })
 
              $("#ContentPlaceHolder1_btnInviteEmail").unbind('click').bind('click', function () {
                  addRow();
@@ -961,6 +979,8 @@
              isValid = Page_ClientValidate('SubmitCalendar');
              return isValid;
          }
+
+        
 
          function gotoInvite() {
 
