@@ -396,7 +396,7 @@ namespace JG_Prospect.Sr_App.Controls
                 //    }
                 //}
                 //else
-                {
+                //{
                     int intRowIndex = Convert.ToInt32(e.CommandArgument);
                     hdnSubTaskId.Value = gvSubTasks.DataKeys[intRowIndex]["TaskId"].ToString();
                     hdnTaskApprovalId.Value = (gvSubTasks.Rows[intRowIndex].FindControl("hdnTaskApprovalId") as HiddenField).Value;
@@ -450,11 +450,12 @@ namespace JG_Prospect.Sr_App.Controls
                     SetTaskDesignationDetails(dtTaskDesignationDetails);
 
                     FillSubtaskAttachments(Convert.ToInt32(hdnSubTaskId.Value));
-                }
-
+                //}
+                
                 upAddSubTask.Update();
+                hdnCurrentEditingRow.Value = intRowIndex.ToString();
 
-                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#",divSubTask.ClientID,"',", hdnCurrentEditingRow.Value, ")"), true);
             }
             else if (e.CommandName.Equals("sub-task-feedback"))
             {
@@ -920,18 +921,18 @@ namespace JG_Prospect.Sr_App.Controls
             ShowAddNewSubTaskSection(false);
         }
 
-        protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
-            {
-                trDateHours.Visible = true;
-            }
-            else
-            {
-                trDateHours.Visible = false;
-            }
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
-        }
+        //protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
+        //    {
+        //        trDateHours.Visible = true;
+        //    }
+        //    else
+        //    {
+        //        trDateHours.Visible = false;
+        //    }
+        //    ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+        //}
 
         protected void ddlUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
         {
