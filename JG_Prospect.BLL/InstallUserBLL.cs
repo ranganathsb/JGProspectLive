@@ -264,9 +264,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.getEmailTemplate(status, Part);
         }
 
-        public bool DeleteInstallUser(int id)
+        public bool DeactivateInstallUsers(List<Int32> lstIDs)
         {
-            return InstallUserDAL.Instance.DeleteInstallUser(id);
+            return InstallUserDAL.Instance.DeactivateInstallUsers(lstIDs);
         }
 
         public bool DeleteInstallUsers(List<Int32> lstIDs)

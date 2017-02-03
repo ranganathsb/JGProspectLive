@@ -104,7 +104,12 @@ namespace JG_Prospect.Sr_App
             try
             {
                 string key = GridViewUser.DataKeys[e.RowIndex].Values[0].ToString();
-                bool result = InstallUserBLL.Instance.DeleteInstallUser(Convert.ToInt32(key));
+                
+                // below method can be changed to "DeleteInstallUsers", when we decide to delete record from database.
+                // please review "edituser.aspx" page for the same.
+                List<int> lstIds = new List<int>(){ Convert.ToInt32(key)};
+                bool result = InstallUserBLL.Instance.DeactivateInstallUsers(lstIds);
+
                 binddata();
 
                 if (result)
@@ -229,8 +234,10 @@ namespace JG_Prospect.Sr_App
             }
             else if (e.CommandName == "Delete")
             {
-                int id = Convert.ToInt32(e.CommandArgument.ToString());
-                InstallUserBLL.Instance.DeleteInstallUser(id);
+                // below method can be changed to "DeleteInstallUsers", when we decide to delete record from database.
+                // please review "edituser.aspx" page for the same.
+                List<int> lstIds = new List<int>(){ Convert.ToInt32(e.CommandArgument.ToString())};;
+                InstallUserBLL.Instance.DeactivateInstallUsers(lstIds);
             }
             else if (e.CommandName == "ShowPicture")
             {

@@ -680,7 +680,10 @@
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
+                                        <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
+                                            CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <br />
+                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -869,7 +872,14 @@
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                     </td>
                     <td align="right">
-                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected" OnClick="lbtnDeleteSelected_Click" />
+                        <asp:LinkButton ID="lbtnDeactivateSelected" runat="server" Text="Deactivate Selected" 
+                            OnClientClick="return confirm('Are you sure you want to deactivate selected users?')"
+                            OnClick="lbtnDeactivateSelected_Click" />
+                        <br />
+                        <br />
+                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected"
+                             OnClientClick="return confirm('Are you sure you want to delete selected users?')"
+                            OnClick="lbtnDeleteSelected_Click" />
                         <br />
                         <br />
                         <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />

@@ -535,6 +535,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
         
         /// <summary>
+        /// lbtnDeactivateSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnDeactivateSelected;
+        
+        /// <summary>
         /// lbtnDeleteSelected control.
         /// </summary>
         /// <remarks>

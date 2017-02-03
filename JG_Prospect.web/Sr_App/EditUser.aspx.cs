@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 namespace JG_Prospect
 {
     #region '--Enums--'
-    
+
     public class HrData
     {
         public string status { get; set; }
@@ -238,6 +238,7 @@ namespace JG_Prospect
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
+                    LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -299,6 +300,16 @@ namespace JG_Prospect
                             default:
                                 break;
                         }
+                    }
+
+
+                    if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
+                    {
+                        lnkDelete.Visible = true;
+                    }
+                    else
+                    {
+                        lnkDelete.Visible = false;
                     }
                 }
             }
@@ -402,10 +413,18 @@ namespace JG_Prospect
                 //}
 
             }
+            else if (e.CommandName == "DeactivateSalesUser")
+            {
+                List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
+                if (InstallUserBLL.Instance.DeactivateInstallUsers(lstIds))
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deactivated Successfully');", true);
+                }
+            }
             else if (e.CommandName == "DeleteSalesUser")
             {
-                int id = Convert.ToInt32(e.CommandArgument.ToString());
-                if (InstallUserBLL.Instance.DeleteInstallUser(id))
+                List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
+                if (InstallUserBLL.Instance.DeleteInstallUsers(lstIds))
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deleted Successfully');", true);
                 }
@@ -1023,7 +1042,7 @@ namespace JG_Prospect
                 lstAttachments.Add(attachment);
             }
 
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 
+            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates,
                 HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
 
             //binddata();
@@ -1515,6 +1534,36 @@ namespace JG_Prospect
             return;
         }
 
+        protected void lbtnDeactivateSelected_Click(object sender, EventArgs e)
+        {
+            List<Int32> lstIDs = new List<int>();
+
+            foreach (GridViewRow objUserRow in grdUsers.Rows)
+            {
+                if (((CheckBox)objUserRow.FindControl("chkSelected")).Checked)
+                {
+                    lstIDs.Add(Convert.ToInt32(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]));
+                }
+            }
+
+            if (lstIDs.Count > 0)
+            {
+                if (InstallUserBLL.Instance.DeactivateInstallUsers(lstIDs))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User deactivated Successfully.");
+                    GetSalesUsersStaticticsAndData();
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User can not be deactivated. Please try again.");
+                }
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Please select user(s) to deactivated.");
+            }
+        }
+
         protected void lbtnDeleteSelected_Click(object sender, EventArgs e)
         {
             List<Int32> lstIDs = new List<int>();
@@ -1531,7 +1580,7 @@ namespace JG_Prospect
             {
                 if (InstallUserBLL.Instance.DeleteInstallUsers(lstIDs))
                 {
-                    CommonFunction.ShowAlertFromUpdatePanel(this, "User Deleted Successfully.");
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User deleted Successfully.");
                     GetSalesUsersStaticticsAndData();
                 }
                 else
@@ -3303,6 +3352,15 @@ namespace JG_Prospect
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
+                    }
+
+                    if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
+                    {
+                        lbtnDeleteSelected.Visible = true;
+                    }
+                    else
+                    {
+                        lbtnDeleteSelected.Visible = false;
                     }
                 }
             }

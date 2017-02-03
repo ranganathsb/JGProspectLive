@@ -1712,24 +1712,26 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool DeleteInstallUser(int id)
+        public bool DeactivateInstallUsers(List<Int32> lstIDs)
         {
             try
             {
+                DataTable dtIDs = new DataTable();
+                dtIDs.Columns.Add(new DataColumn("ID", typeof(Int32)));
+
+                foreach (var item in lstIDs)
+                {
+                    dtIDs.Rows.Add(item);
+                }
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("UDP_deleteInstalluser");
+                    DbCommand command = database.GetStoredProcCommand("DeactivateInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@id", DbType.Int32, id);
-                    database.AddInParameter(command, "@DeactiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString());
-                    database.AddOutParameter(command, "@result", DbType.Int32, 1);
-                    database.ExecuteScalar(command);
-                    int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
-                    if (res == 1)
-                        return true;
-                    else
-                        return false;
+                    database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.ExecuteNonQuery(command);
                 }
+                return true;
             }
             catch (Exception ex)
             {
@@ -1754,6 +1756,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("DeleteInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.AddInParameter(command, "@DeactiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString());
                     database.ExecuteNonQuery(command);
                 }
                 return true;
