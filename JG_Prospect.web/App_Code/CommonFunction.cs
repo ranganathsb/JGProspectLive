@@ -786,6 +786,38 @@ namespace JG_Prospect
             }
         }
 
+        public static string AdminUserId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["AdminUserId"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["AdminUserId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["AdminUserId"] = value;
+            }
+        }
+
+        public static string UserType
+        {
+            get
+            {
+                if (HttpContext.Current.Session["usertype"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["usertype"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["usertype"] = value;
+            }
+        }
+
         public static string Username
         {
             get
@@ -799,6 +831,22 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["Username"] = value;
+            }
+        }
+
+        public static string GuIdAtLogin
+        {
+            get
+            {
+                if (HttpContext.Current.Session["GuIdAtLogin"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["GuIdAtLogin"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["GuIdAtLogin"] = value;
             }
         }
 
@@ -937,5 +985,60 @@ namespace JG_Prospect
             }
         }
 
+        public static bool IsGooglePlus
+        {
+            get
+            {
+                if (HttpContext.Current.Session["GooglePlus"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["GooglePlus"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["GooglePlus"] = value;
+            }
+        }
+
+        public static bool IsFacebook
+        {
+            get
+            {
+                if (HttpContext.Current.Session["facebook"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["facebook"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["facebook"] = value;
+            }
+        }
+
+        public static bool IsYahoo
+        {
+            get
+            {
+                if (HttpContext.Current.Session["yahoo"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["yahoo"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["yahoo"] = value;
+            }
+        }
+
+        public static bool IsMicrosoft
+        {
+            get
+            {
+                if (HttpContext.Current.Session["microsoft"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["microsoft"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["microsoft"] = value;
+            }
+        }
     }
 }
