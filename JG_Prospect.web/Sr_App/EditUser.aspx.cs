@@ -428,6 +428,7 @@ namespace JG_Prospect
                 if (InstallUserBLL.Instance.DeactivateInstallUsers(lstIds))
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deactivated Successfully');", true);
+                    GetSalesUsersStaticticsAndData();
                 }
             }
             else if (e.CommandName == "DeleteSalesUser")
@@ -436,6 +437,7 @@ namespace JG_Prospect
                 if (InstallUserBLL.Instance.DeleteInstallUsers(lstIds))
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deleted Successfully');", true);
+                    GetSalesUsersStaticticsAndData();
                 }
             }
             else if (e.CommandName == "ShowPicture")
@@ -3362,6 +3364,8 @@ namespace JG_Prospect
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
                     }
+
+                    upUsers.Update();
                 }
             }
             else

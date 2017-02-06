@@ -647,8 +647,9 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
             <div style="width: auto; border:1px solid #ccc; padding:3px;">
-                <asp:UpdatePanel ID="upUsers" runat="server">
+                <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
+
                         <div style="float: left; padding-top: 10px; margin-bottom:-40px;">
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
@@ -664,6 +665,7 @@
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
                         </div>
+
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
