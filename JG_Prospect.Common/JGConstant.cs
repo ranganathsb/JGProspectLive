@@ -9,6 +9,8 @@ namespace JG_Prospect.Common
 {
     public class JGConstant
     {
+        #region '--Constants--'
+        
         public static CultureInfo CULTURE = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
         public const string JUSTIN_LOGIN_ID = "jgrove@jmgroveconstruction.com";//"jgtest2@gmail.com"; //" jgrove@jmgroveconstruction.com"
@@ -71,7 +73,12 @@ namespace JG_Prospect.Common
 
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
         public const string ProfilPic_Upload_Folder = "~/UploadeProfile";
-        public const string Default_PassWord = "jmgrove";
+        public const string Default_PassWord = "jmgrove"; 
+
+        #endregion
+
+        #region '--Enums--'
+        
         /// <summary>
         /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
         /// </summary>
@@ -193,7 +200,9 @@ namespace JG_Prospect.Common
                 ,
             ReferralApplicant = 10
                 , Deleted = 11
-        }
+        } 
+
+        #endregion
 
         #region '-- Page Name --'
 
@@ -201,7 +210,6 @@ namespace JG_Prospect.Common
         /// Master Calendar Direct URL 
         /// </summary>
         public const string PG_PATH_MASTER_CALENDAR = "~/Sr_App/GoogleCalendarView.aspx";
-
 
         #endregion
 

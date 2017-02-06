@@ -49,21 +49,13 @@ namespace JG_Prospect.Sr_App
         {
             txtpassword.Attributes["value"] = txtpassword.Text;
             txtpassword1.Attributes["value"] = txtpassword1.Text;
+
             base.OnPreRender(e);
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
-
-            if (Session["Username"] != null)
-            {
-                // txtSource.Text = Session["Username"].ToString();
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
-            }
 
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
