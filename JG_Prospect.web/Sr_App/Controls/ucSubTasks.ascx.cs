@@ -161,7 +161,6 @@ namespace JG_Prospect.Sr_App.Controls
                 FillInitialData();
                 hdnAdminMode.Value = this.IsAdminMode.ToString();
             }
-           
         }
 
         #endregion
@@ -454,6 +453,13 @@ namespace JG_Prospect.Sr_App.Controls
                     ReturnSequence[1] = String.Concat(ReturnSequence[0], " - a"); // concat existing roman number with alphabet.
                     
                 }
+                else if (numbercomponents.Length == 1) // like number of subtask without alphabet I,II
+                {
+                    int startSequence = 1;
+                    ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                    ReturnSequence[1] = String.Concat(sequence, " - a"); // concat existing roman number with alphabet.
+
+                }
                 else  // if task sequence contains alphabet.
                 {
                     int numbersequence;
@@ -473,8 +479,7 @@ namespace JG_Prospect.Sr_App.Controls
                         ReturnSequence[1] = string.Concat(numbercomponents[0], " - ", ++alphabetsequence[0]); // advance alphabet to next alphabet.
                     }
                 }
-           
-             
+          
             return ReturnSequence;
         }
 
@@ -494,7 +499,7 @@ namespace JG_Prospect.Sr_App.Controls
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DataSet result = new DataSet();
-                    string vInstallId = "";
+                    string vInstallId = TaskLvlandInstallId[1];
                     string str = "select  * from tbltask where parenttaskid=" + hdParentTaskId.Value + " and  ";
                     str = str + " Taskid=( select max(taskid) from tbltask where parenttaskid=" + hdParentTaskId.Value + "  and tasklevel=2) order by taskid";
                     DbCommand command = database.GetSqlStringCommand(str);
