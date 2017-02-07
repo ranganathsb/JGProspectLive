@@ -46,3 +46,37 @@ BEGIN
        
  END
  GO
+
+
+CREATE TABLE tblRoles_ApplicationFeatures
+(
+Id INT IDENTITY(1,1) UNIQUE NOT NULL,
+RoleId INT NOT NULL,
+ApplicationFeatureId INT NOT NULL,
+IsEnabled BIT NOT NULL,
+PRIMARY KEY(RoleId, ApplicationFeatureId)
+)
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 07 Feb 2017
+-- Description:	Gets all application features for role.
+-- =============================================
+CREATE PROCEDURE [dbo].[GetApplicationFeaturesByRoleId]
+	@RoleId INT
+AS
+BEGIN
+	
+	SELECT *
+	FROM tblRoles_ApplicationFeatures
+	WHERE RoleId = @RoleId
+	ORDER BY RoleId
+
+ END
+ GO
+

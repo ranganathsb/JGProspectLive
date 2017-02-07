@@ -200,7 +200,21 @@ namespace JG_Prospect.Common
                 ,
             ReferralApplicant = 10
                 , Deleted = 11
-        } 
+        }
+
+        public enum UserRoles
+        { 
+            Admin = 1
+        }
+
+        /// <summary>
+        /// Gets key names to access ApplicationFeatures from database.
+        /// Keep updating this class to have all KEY values as per database.
+        /// </summary>
+        public enum ApplicationFeatures
+        {
+
+        }
 
         #endregion
 

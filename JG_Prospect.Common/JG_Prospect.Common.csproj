@@ -112,6 +112,7 @@
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />
     <Compile Include="modal\prospect.cs" />
+    <Compile Include="modal\Roles_ApplicationFeatures.cs" />
     <Compile Include="modal\shutters.cs" />
     <Compile Include="modal\Shutter_accessories.cs" />
     <Compile Include="modal\SrSalesReport.cs" />
