@@ -984,7 +984,18 @@
                                 <td align="right">Task</td>
                                 <td>: </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlTechTask" runat="server" />
+                                    <asp:DropDownList ID="ddlTechTask" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlTechTask_SelectedIndexChanged" />
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ControlToValidate="ddlTechTask" ErrorMessage="Select Tech Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Sub Task</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlTechSubTask" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
                                 </td>
                             </tr>
                             <tr>
@@ -1304,7 +1315,13 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Tech Task" Visible="false" ItemStyle-Width="100">
                                 <ItemTemplate>
-                                    <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" />
+                                    Tech Task: <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_Popup_ddlTechTask_SelectedIndexChanged" />
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ErrorMessage="Please select tech task." InitialValue="0"
+                                        ControlToValidate="ddlTechTask" ValidationGroup="vgChangeStatus" Display="None" />
+                                    <br />
+                                    Sub Task: <asp:DropDownList ID="ddlTechSubTask" runat="server" Width="95" />
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ErrorMessage="Please select tech sub task." InitialValue="0"
+                                        ControlToValidate="ddlTechSubTask" ValidationGroup="vgChangeStatus" Display="None" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Reason" Visible="false">
