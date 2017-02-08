@@ -31,6 +31,15 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.GridView gvSubTasks;
         
         /// <summary>
+        /// hdnCurrentEditingRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCurrentEditingRow;
+        
+        /// <summary>
         /// lnkFake control.
         /// </summary>
         /// <remarks>
@@ -38,15 +47,6 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkFake;
-        
-        /// <summary>
-        /// mpSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpSubTask;
         
         /// <summary>
         /// pnlCalendar control.
@@ -73,16 +73,7 @@ namespace JG_Prospect.Sr_App.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtInstallId;
-        
-        /// <summary>
-        /// RequiredFieldValidator2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
+        protected global::System.Web.UI.WebControls.HiddenField txtInstallId;
         
         /// <summary>
         /// txtTaskDesc control.
@@ -91,7 +82,7 @@ namespace JG_Prospect.Sr_App.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTaskDesc;
+        protected global::CKEditor.NET.CKEditorControl txtTaskDesc;
         
         /// <summary>
         /// RequiredFieldValidator1 control.

@@ -2,6 +2,7 @@
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
 
@@ -45,7 +46,7 @@
             border-style:solid; 
             border-color:#CCCCCC; 
             padding:1px; 
-            width:700px; 
+            width:100%; 
             Height:450px; 
             
         }    
@@ -59,7 +60,7 @@
             <div id="divSubTaskGrid">
                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                    EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                    EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound"
                     OnRowCommand="gvSubTasks_RowCommand"
@@ -112,9 +113,11 @@
                                 <asp:Literal ID="ltrlInstallId" Visible="false" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
                                
-                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false" CssClass="subtasklevel" BorderColor="Transparent"  Width="500px" BorderStyle="None">
+                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" 
+                                    ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false" 
+                                    CssClass="subtasklevel" BorderColor="Transparent"  Width="500px" BorderStyle="None">
                                     <Columns>
-                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" 
+                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" 
                                          HeaderStyle-Width="80"
                                             SortExpression="InstallId">
                                             <ItemTemplate>
@@ -123,8 +126,7 @@
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
                                                 <h5>
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>' 
-                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
-                                                        CommandArgument='<%# Eval("TaskId")%>' /></h5>
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"   /></h5>
 
                                                 <asp:LinkButton ID="lnkAddMoreSubTask" runat="server"   OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                                                            
@@ -136,7 +138,7 @@
                                                 <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
                                                     <div style="padding-bottom: 5px;">
                                                        
-                                                        <%# Eval("Description")%>
+                                                        <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                     </div>
                                                 </div>
                                             </ItemTemplate>
@@ -427,7 +429,7 @@
                                                                     )
                                                     %>
                                                 </asp:HyperLink>
-                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -438,55 +440,38 @@
                                                 placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
                                             <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
                                                 AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                            
                                         </td>
                                     </tr>
                                 </table>
                             </ItemTemplate>
                         </asp:TemplateField>
-                    </Columns>
+                    </Columns> 
                 </asp:GridView>
             </div>
+            <asp:HiddenField ID="hdnCurrentEditingRow" runat="server" />
             <asp:LinkButton ID="lnkFake" runat="server" ></asp:LinkButton>
-                  <cc1:ModalPopupExtender ID="mpSubTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
+                 <%-- <cc1:ModalPopupExtender ID="mpSubTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
                     BackgroundCssClass="modalBackground">
-                    </cc1:ModalPopupExtender>
+                    </cc1:ModalPopupExtender>--%>
+                    
                             <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
-                           
-                                <h1><b>Add Sub Task</b></h1>
                                     <table border="1" cellspacing="5" cellpadding="5">
                                         <tr>
                                             <td colspan="4">
                                                 <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
                                             </td>
                                         </tr>
-                                       <%-- <tr>
-                                            <td   align="left">  Task Title <span>*</span>
-                                            </td>
-                                            <td >
-                                                <asp:TextBox ID="txtTitle"   runat="server"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
-                                            </td>
-                                       
-                                        </tr>--%>
-                                          <tr>
-                                            <td   align="left">  Install ID <span>*</span>
-                                            </td>
-                                            <td >
-                                                <asp:TextBox Enabled="false" ID="txtInstallId"   runat="server"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtInstallId" ForeColor="Red" ErrorMessage="Please Enter Install ID" Display="None"> </asp:RequiredFieldValidator>
-                                            </td>
-                                       
-                                        </tr>
                                         <tr>
-                                            <td   align="left">  Task Description <span>*</span>
+                                            <td   align="left" valign="top">  Task Description <span>*</span>
                                             </td>
-                                            <td >
-                                                
-                                                <asp:TextBox ID="txtTaskDesc" TextMode="MultiLine" Columns="15" Rows="8" runat="server"></asp:TextBox>
+                                            <td > 
+                                                <asp:HiddenField   ID="txtInstallId"   runat="server"></asp:HiddenField>
+                                                <%--<asp:TextBox ID="txtTaskDesc" TextMode="MultiLine" Columns="45" Rows="15" runat="server"></asp:TextBox>--%>
+                                               
+                                                <CKEditor:CKEditorControl runat="server" BasePath="/ckeditor/" ID="txtTaskDesc"   AutoPostBack="false"  ></CKEditor:CKEditorControl>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
+                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="Static"> </asp:RequiredFieldValidator>
                                             </td>
                                        
                                         </tr>
@@ -497,7 +482,9 @@
                                                 <asp:HiddenField ID="hdMainParentId" runat="server" />
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
-                                                <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" TabIndex="5" Text="Submit"  OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
+                                                <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" 
+                                                    TabIndex="5" Text="Submit"  
+                                                    OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
                                                 <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6" OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                             </td>
                                         </tr>
@@ -508,8 +495,8 @@
 
         </ContentTemplate>
     </asp:UpdatePanel>
-
-
+    
+   
      <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
 
     <br />
@@ -662,6 +649,7 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
                                         OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -756,9 +744,10 @@
 <%--Popup Ends--%>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
+
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
-
+    
     $(function () {
         ucSubTasks_Initialize();
     });
@@ -774,7 +763,7 @@
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        DestroyCKEditors();
+        //DestroyCKEditors();
     });
 
     function ucSubTasks_Initialize() {
@@ -796,7 +785,8 @@
         }
 
     }
-
+    
+    
     function txtSubTaskDescription_Blur(editor) {
         if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
             if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
@@ -898,4 +888,44 @@
         args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
     }
 
+
+
+    //----------- Start DP ---------
+
+    $('#<%=pnlCalendar.ClientID%>').hide();
+
+    function showSubTaskEditView(divid, rowindex) {
+
+        var html = $('<tr>').append($('<td colspan="5">').append($(divid)));
+
+        $('.edit-subtask > tbody > tr').eq(rowindex + 1).after(html);
+
+        $(divid).slideDown('slow');
+
+        $('html, body').animate({
+            scrollTop: $(divid).offset().top - 100
+        }, 2000);
+
+
+    }
+    function hideSubTaskEditView(divid, rowindex) {
+
+        //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
+        // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
+        // $(divid).slideUp('slow');
+        $('#<%=pnlCalendar.ClientID%>').hide();
+        var row = $('.edit-subtask').find('tr').eq(rowindex + 2);
+
+        //alert(row);
+
+        if (row.length) {
+            $('html, body').animate({
+                scrollTop: row.offset().top - 100
+            }, 2000);
+
+        }
+
+
+    }
+    //--------------- End DP ---------------
 </script>

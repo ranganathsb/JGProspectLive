@@ -13,7 +13,7 @@ create PROCEDURE [dbo].[AddSubTasks]
 	-- Add the parameters for the stored procedure here
 	@TaskId int,
 	@Title varchar(400),
-	@Description varchar(100),
+	@Description varchar(max),
 	@Status int,
 	@IsDeleted int,
     @CreatedOn datetime,
