@@ -22,8 +22,7 @@
 
     <script>
         function showAptTestPage(PageUrl) {
-                 
-            debugger;            
+                            
         var $dialog = $('<div class="Aptitude-popup"></div>')
                        .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
                        .dialog({
@@ -437,7 +436,7 @@
         }
 
         function ShowPhoneExtOnType(optionSelected, txtPhoneID, phoneExtID, PhoneISDCode) {
-            debugger
+            //debugger
             if ((optionSelected.lastIndexOf('Other') < 0) && (optionSelected != 'skype') && (optionSelected != 'whatsapp')) {
                 //Show Ext text box        
                 
@@ -828,7 +827,7 @@
                     var PhoneTxt = PhoneCombainValue[2];
                     var PhoneExt = PhoneCombainValue[3];
                     var PhoneType = PhoneCombainValue[4];
-                    debugger
+                    //debugger
                     $('<div/>', {
                         'class': 'ExtAddPhone', html: GetHtml(chkPhonePro, PhoneISDCode, PhoneTxt, PhoneExt, PhoneType)
                     }).hide().appendTo('#container').slideDown('slow');
@@ -1049,7 +1048,7 @@
             }
 
             $("#<%= phoneTypeDropDownList.ClientID %> option").each(function () {
-                debugger;
+                //debugger;
                 if ($(this).text() == newPhoneType) {
                     alert("Phone Type already exists");                    
                     IsAlreadyExist = true;
@@ -1672,7 +1671,7 @@
                                         <asp:RequiredFieldValidator ID="rqPhone" runat="server" ControlToValidate="txtPhone"
                                             ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Phone No"></asp:RequiredFieldValidator>
                                         <asp:TextBox ID="txtPhone" runat="server" MaxLength="12" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
-                                            onkeypress="return IsNumeric(event);" Width="150"></asp:TextBox>                                        
+                                            onkeydown="return IsNumeric(event,true);" Width="150"></asp:TextBox>                                        
                                     </td>
                                     <td>&nbsp;&nbsp;Ext. <%--extension--%>
                                         <br /><asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25"></asp:TextBox></td>

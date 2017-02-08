@@ -11,7 +11,7 @@
             <div id="divSubTaskGrid">
                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                    EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                    EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound"
                     OnRowCommand="gvSubTasks_RowCommand"
@@ -33,7 +33,7 @@
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                             SortExpression="Description">
                             <ItemTemplate>
-                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
+                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 400px;">
                                     <div style="padding-bottom: 5px;">
                                         <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
                                     </div>
@@ -185,8 +185,7 @@
                                             </asp:DropDownCheckBoxes>--%>
                                             <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" SelectionMode="Multiple"
                                                 CssClass="chosen-select" data-placeholder="Select"
-                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
-                                            </asp:ListBox>
+                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
                                             <asp:Label ID="lblAssigned" runat="server" />
                                         </td>
                                     </tr>
@@ -380,7 +379,7 @@
                                 </small>
                             </td>
                             <td>Type:
-                                <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server" />
+                                <asp:DropDownList ID="ddlTaskType" runat="server" />
                                 &nbsp;&nbsp;Priority:
                                 <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
                             </td>
@@ -485,7 +484,7 @@
                                     ValidationExpression="(\d+\.\d{1,2})?\d*" />
                             </td>
                         </tr>
-                        <tr id="trDateHours" runat="server" visible="false">
+                        <tr id="trDateHours">
                             <td>Due Date:<asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
                             </td>
                             <td>Hrs of Task:                   
@@ -507,6 +506,7 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
                                         OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
+                                    <asp:HiddenField ID="hdnCurrentEditingRow" runat="server" />
                                 </div>
                             </td>
                         </tr>
@@ -593,7 +593,7 @@
         </asp:UpdatePanel>
     </div>
 
-
+    
 
 </div>
 
@@ -640,14 +640,31 @@
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
         }
 
+        implementTaskPriorityRule();
+
+    }
+
+
+    function implementTaskPriorityRule() {
+        $('#trDateHours').hide();
+
+        $('#<%=ddlTaskType.ClientID%>').change(function () {
+            var type = $(this).val();
+            if (type == "3") {
+                $('#trDateHours').show();
+            }
+            else {
+                $('#trDateHours').hide();
+            }
+        });
     }
 
     function txtSubTaskDescription_Blur(editor) {
-        if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+        <%--if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
             if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
                 $('#<%=btnSaveSubTask.ClientID%>').click();
             }
-        }
+        }--%>
     }
 
     function OnSaveSubTaskClick() {
@@ -664,6 +681,7 @@
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
+
 
     function ucSubTasks_ApplyDropZone() {
         //remove already attached dropzone.
@@ -743,4 +761,48 @@
         args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
     }
 
+    function showSubTaskEditView(divid, rowindex) {
+
+        var html = $('<tr>').append($('<td colspan="5">').append($(divid)));
+
+        $('.edit-subtask > tbody > tr').eq(rowindex + 1).after(html);
+
+        $(divid).slideDown('slow');
+
+        $('html, body').animate({
+            scrollTop: $(divid).offset().top - 100
+        }, 2000);
+
+
+    }
+    function hideSubTaskEditView(divid, rowindex) {
+
+        $('#<%=hdnCurrentEditingRow.ClientID%>').val('');
+       // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
+        // $(divid).slideUp('slow');
+        
+        var row = $('.edit-subtask').find('tr').eq(rowindex + 2);
+
+        //alert(row);
+
+        if (row.length) {
+            $('html, body').animate({
+                scrollTop: row.offset().top - 100
+            }, 2000);
+
+        }
+        
+
+    }
+
+    function ShowAddNewSubTaskSection(divid) {
+       
+        $(divid).slideDown('slow');
+
+        $('html, body').animate({
+            scrollTop: $(divid).offset().top - 200
+        }, 2000);
+
+    }
+    
 </script>

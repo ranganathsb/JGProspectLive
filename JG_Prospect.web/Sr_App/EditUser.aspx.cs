@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 namespace JG_Prospect
 {
     #region '--Enums--'
-    
+
     public class HrData
     {
         public string status { get; set; }
@@ -117,6 +117,15 @@ namespace JG_Prospect
             else
             {
                 lbtnChangeStatusForSelected.Visible =
+                lbtnDeleteSelected.Visible = false;
+            }
+
+            if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
+            {
+                lbtnDeleteSelected.Visible = true;
+            }
+            else
+            {
                 lbtnDeleteSelected.Visible = false;
             }
 
@@ -238,6 +247,7 @@ namespace JG_Prospect
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
+                    LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -262,17 +272,6 @@ namespace JG_Prospect
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
 
-                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskId").ToString()))
-                        {
-                            hypTechTask.Text = string.Concat(
-                                                                                string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
-                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskId") :
-                                                                                    DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
-                                                                            );
-                            hypTechTask.NavigateUrl = Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
-                            hypTechTask.Visible = true;
-                        }
-
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
                             case JGConstant.InstallUserStatus.Applicant:
@@ -283,6 +282,40 @@ namespace JG_Prospect
                             case JGConstant.InstallUserStatus.InstallProspect:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #FFA500";
+                                    break;
+                                }
+                            case JGConstant.InstallUserStatus.InterviewDate:
+                                {
+                                    if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskId").ToString()))
+                                    {
+                                        string strParentTechTaskId = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "ParentTechTaskId"));
+                                        if (string.IsNullOrEmpty(strParentTechTaskId))
+                                        {
+                                            strParentTechTaskId = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TechTaskId"));
+                                            hypTechTask.Text = string.Concat(
+                                                                                "TaskID#",
+                                                                                string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
+                                                                                DataBinder.Eval(e.Row.DataItem, "TechTaskId") :
+                                                                                DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
+                                                                            );
+                                        }
+                                        else
+                                        {
+                                            hypTechTask.Text = string.Concat(
+                                                                                "SubTaskID#",
+                                                                                string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId").ToString()) ?
+                                                                                DataBinder.Eval(e.Row.DataItem, "TechTaskId") :
+                                                                                DataBinder.Eval(e.Row.DataItem, "TechTaskInstallId")
+                                                                            );
+                                        }
+
+                                        hypTechTask.NavigateUrl = string.Format(
+                                                                                Page.ResolveUrl("~/Sr_App/TaskGenerator.aspx?TaskId={0}&hstid={1}"),
+                                                                                strParentTechTaskId,
+                                                                                DataBinder.Eval(e.Row.DataItem, "TechTaskId")
+                                                                               );
+                                        hypTechTask.Visible = true;
+                                    }
                                     break;
                                 }
                             case JGConstant.InstallUserStatus.Rejected:
@@ -299,6 +332,16 @@ namespace JG_Prospect
                             default:
                                 break;
                         }
+                    }
+
+
+                    if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
+                    {
+                        lnkDelete.Visible = true;
+                    }
+                    else
+                    {
+                        lnkDelete.Visible = false;
                     }
                 }
             }
@@ -402,12 +445,22 @@ namespace JG_Prospect
                 //}
 
             }
+            else if (e.CommandName == "DeactivateSalesUser")
+            {
+                List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
+                if (InstallUserBLL.Instance.DeactivateInstallUsers(lstIds))
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deactivated Successfully');", true);
+                    GetSalesUsersStaticticsAndData();
+                }
+            }
             else if (e.CommandName == "DeleteSalesUser")
             {
-                int id = Convert.ToInt32(e.CommandArgument.ToString());
-                if (InstallUserBLL.Instance.DeleteInstallUser(id))
+                List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
+                if (InstallUserBLL.Instance.DeleteInstallUsers(lstIds))
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Deleted Successfully');", true);
+                    GetSalesUsersStaticticsAndData();
                 }
             }
             else if (e.CommandName == "ShowPicture")
@@ -605,7 +658,7 @@ namespace JG_Prospect
             else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 LoadUsersByRecruiterDesgination(ddlUsers);
-                FillTechTaskDropDown(ddlTechTask);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -876,6 +929,27 @@ namespace JG_Prospect
             return;
         }
 
+        protected void ddlTechTask_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlTechTask.SelectedIndex > 0)
+            {
+                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC");
+                ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                ddlTechSubTask.DataTextField = "Title";
+                ddlTechSubTask.DataValueField = "TaskId";
+                ddlTechSubTask.DataBind();
+            }
+            else
+            {
+                ddlTechSubTask.DataSource = null;
+                ddlTechSubTask.DataTextField = "Title";
+                ddlTechSubTask.DataValueField = "TaskId";
+                ddlTechSubTask.DataBind();
+            }
+            ddlTechSubTask.Items.Insert(0, new ListItem("--select--", "0"));
+            ddlTechSubTask.SelectedValue = "0";
+        }
+
         protected void btnSaveInterview_Click(object sender, EventArgs e)
         {
             DataSet ds = new DataSet();
@@ -922,7 +996,7 @@ namespace JG_Prospect
                 , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
 
             //AssignedTask if any or Default
-            AssignedTaskToUser(Convert.ToInt32(Session["EditId"]), ddlTechTask);
+            AssignedTaskToUser(Convert.ToInt32(Session["EditId"]), ddlTechTask, ddlTechSubTask);
 
             Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
 
@@ -1023,7 +1097,7 @@ namespace JG_Prospect
                 lstAttachments.Add(attachment);
             }
 
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates, 
+            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates,
                 HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
 
             //binddata();
@@ -1137,14 +1211,43 @@ namespace JG_Prospect
             {
                 DropDownList ddlInterviewTime = e.Row.FindControl("ddlInterviewTime") as DropDownList;
                 DropDownList ddlTechTask = e.Row.FindControl("ddlTechTask") as DropDownList;
+                DropDownList ddlTechSubTask = e.Row.FindControl("ddlTechSubTask") as DropDownList;
 
                 ddlInterviewTime.DataSource = GetTimeIntervals();
                 ddlInterviewTime.DataBind();
                 ddlInsteviewtime.SelectedValue = DataBinder.Eval(e.Row.DataItem, "InterviewTime").ToString();
 
-                FillTechTaskDropDown(ddlTechTask);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
 
             }
+        }
+
+        protected void grdUsers_Popup_ddlTechTask_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlTechTask = sender as DropDownList;
+            GridViewRow objGridRow = ddlTechTask.NamingContainer as GridViewRow;
+            DropDownList ddlTechSubTask = objGridRow.FindControl("ddlTechSubTask") as DropDownList;
+            if (ddlTechTask != null && ddlTechSubTask != null)
+            {
+                if (ddlTechTask.SelectedIndex > 0)
+                {
+                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC");
+                    ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                    ddlTechSubTask.DataTextField = "Title";
+                    ddlTechSubTask.DataValueField = "TaskId";
+                    ddlTechSubTask.DataBind();
+                }
+                else
+                {
+                    ddlTechSubTask.DataSource = null;
+                    ddlTechSubTask.DataTextField = "Title";
+                    ddlTechSubTask.DataValueField = "TaskId";
+                    ddlTechSubTask.DataBind();
+                }
+                ddlTechSubTask.Items.Insert(0, new ListItem("--select--", "0"));
+                ddlTechSubTask.SelectedValue = "0";
+            }
+            upChangeStatusForSelected.Update();
         }
 
         protected void btnCancelChangeStatusForSelected_Click(object sender, EventArgs e)
@@ -1252,7 +1355,7 @@ namespace JG_Prospect
                                 );
 
                         //AssignedTask if any or Default
-                        AssignedTaskToUser(intId, (DropDownList)objUserRow.FindControl("ddlTechTask"));
+                        AssignedTaskToUser(intId, (DropDownList)objUserRow.FindControl("ddlTechTask"), (DropDownList)objUserRow.FindControl("ddlTechSubTask"));
 
                         break;
 
@@ -1515,6 +1618,36 @@ namespace JG_Prospect
             return;
         }
 
+        protected void lbtnDeactivateSelected_Click(object sender, EventArgs e)
+        {
+            List<Int32> lstIDs = new List<int>();
+
+            foreach (GridViewRow objUserRow in grdUsers.Rows)
+            {
+                if (((CheckBox)objUserRow.FindControl("chkSelected")).Checked)
+                {
+                    lstIDs.Add(Convert.ToInt32(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]));
+                }
+            }
+
+            if (lstIDs.Count > 0)
+            {
+                if (InstallUserBLL.Instance.DeactivateInstallUsers(lstIDs))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User deactivated Successfully.");
+                    GetSalesUsersStaticticsAndData();
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User can not be deactivated. Please try again.");
+                }
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Please select user(s) to deactivated.");
+            }
+        }
+
         protected void lbtnDeleteSelected_Click(object sender, EventArgs e)
         {
             List<Int32> lstIDs = new List<int>();
@@ -1531,7 +1664,7 @@ namespace JG_Prospect
             {
                 if (InstallUserBLL.Instance.DeleteInstallUsers(lstIDs))
                 {
-                    CommonFunction.ShowAlertFromUpdatePanel(this, "User Deleted Successfully.");
+                    CommonFunction.ShowAlertFromUpdatePanel(this, "User deleted Successfully.");
                     GetSalesUsersStaticticsAndData();
                 }
                 else
@@ -2992,20 +3125,40 @@ namespace JG_Prospect
         /// </summary>
         private void LoadUsersByRecruiterDesgination(DropDownList ddlUsers)
         {
+            ddlUsers.SelectedIndex = -1;
+            ddlUsers.Items.Clear();
+
             DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Admin Recruiter,Office Manager,Recruiter,ITLead,");
             if (dsUsers != null && dsUsers.Tables.Count > 0)
             {
                 DataView dvUsers = dsUsers.Tables[0].DefaultView;
-                dvUsers.RowFilter = string.Format("[Status] = '{0}'", Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
-                ddlUsers.DataSource = dvUsers.ToTable();
-                ddlUsers.DataTextField = "FristName";
-                ddlUsers.DataValueField = "Id";
-                ddlUsers.DataBind();
+                dvUsers.RowFilter = string.Format(
+                                                    "[Status] IN ('{0}','{1}')",
+                                                    Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString(),
+                                                    Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()
+                                                );
+                dvUsers.Sort = "[Status] ASC";
+
+                DataTable dtUsers = dvUsers.ToTable();
+
+                for (int i = 0; i < dtUsers.Rows.Count; i++)
+                {
+                    DataRow objUser = dtUsers.Rows[i];
+                    ddlUsers.Items.Add(new ListItem(objUser["FristName"].ToString(), objUser["Id"].ToString()));
+                    if (objUser["Status"].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
+                    {
+                        ddlUsers.Items[i].Attributes.Add("style", "color: red;");
+                    }
+                }
+                //ddlUsers.DataSource = dvUsers.ToTable();
+                //ddlUsers.DataTextField = "FristName";
+                //ddlUsers.DataValueField = "Id";
+                //ddlUsers.DataBind();
             }
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
-        private void FillTechTaskDropDown(DropDownList ddlTechTask)
+        private void FillTechTaskDropDown(DropDownList ddlTechTask, DropDownList ddlTechSubTask)
         {
             DataSet dsTechTask;
 
@@ -3019,11 +3172,17 @@ namespace JG_Prospect
                 //{
                 //    dtTechTask.Rows[iCurrentRow]["TitleWithLink"] = dtTechTask.Rows[iCurrentRow]["Title"] + " - <a href=TaskGenerator.aspx?TaskId=" + dtTechTask.Rows[iCurrentRow]["TaskId"] + ">" + dtTechTask.Rows[iCurrentRow]["TaskId"] +"</a>";
                 //}
+
                 ddlTechTask.DataSource = dtTechTask;
                 ddlTechTask.DataTextField = "Title";
                 ddlTechTask.DataValueField = "TaskId";
                 ddlTechTask.DataBind();
             }
+            ddlTechTask.Items.Insert(0, new ListItem("--select--", "0"));
+            ddlTechTask.SelectedValue = "0";
+
+            ddlTechSubTask.Items.Insert(0, new ListItem("--select--", "0"));
+            ddlTechSubTask.SelectedValue = "0";
         }
 
         //private void BindGrid()
@@ -3304,6 +3463,8 @@ namespace JG_Prospect
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
                     }
+
+                    upUsers.Update();
                 }
             }
             else
@@ -3596,7 +3757,7 @@ namespace JG_Prospect
 
         #region 'Assigned Task ToUser'
 
-        private void AssignedTaskToUser(int intEditId, DropDownList ddlTechTask)
+        private void AssignedTaskToUser(int intEditId, DropDownList ddlTechTask, DropDownList ddlTechSubTask)
         {
             string ApplicantId = intEditId.ToString();
 
@@ -3607,14 +3768,14 @@ namespace JG_Prospect
                 //bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), Session["EditId"].ToString());
 
                 // save assigned user a TASK.
-                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), ApplicantId);
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(Convert.ToUInt64(ddlTechSubTask.SelectedValue), ApplicantId);
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechSubTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
-                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue, ddlTechTask.SelectedItem.Text);
+                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue, ddlTechSubTask.SelectedValue, ddlTechTask.SelectedItem.Text);
             }
         }
 
@@ -3638,7 +3799,7 @@ namespace JG_Prospect
             //}
         }
 
-        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strTaskTitle)
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strSubTaskId, string strTaskTitle)
         {
             try
             {
@@ -3666,7 +3827,18 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                                                                            "{0}?TaskId={1}&hstid={2}", 
+                                                                            string.Concat(
+                                                                                            Request.Url.Scheme, 
+                                                                                            Uri.SchemeDelimiter, 
+                                                                                            Request.Url.Host.Split('?')[0], 
+                                                                                            "/Sr_App/TaskGenerator.aspx"
+                                                                                         ), 
+                                                                            strTaskId, 
+                                                                            strSubTaskId
+                                                                        )
+                                            );
 
                     strBody = strHeader + strBody + strFooter;
 

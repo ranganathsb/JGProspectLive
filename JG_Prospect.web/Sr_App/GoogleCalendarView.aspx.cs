@@ -40,6 +40,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            CommonFunction.AuthenticateUser();
+
             RadWindow2.VisibleOnPageLoad = false;
             if (!IsPostBack)
             {

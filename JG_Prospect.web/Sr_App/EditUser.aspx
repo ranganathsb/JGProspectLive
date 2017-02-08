@@ -647,8 +647,9 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
             <div style="width: auto; border:1px solid #ccc; padding:3px;">
-                <asp:UpdatePanel ID="upUsers" runat="server">
+                <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
+
                         <div style="float: left; padding-top: 10px; margin-bottom:-40px;">
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
@@ -665,6 +666,7 @@
                             </asp:DropDownList>
                         </div>
 
+
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
@@ -680,7 +682,10 @@
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this record?')"
+                                        <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
+                                            CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <br />
+                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -849,6 +854,7 @@
                         </asp:GridView>
                     </ContentTemplate>
                     <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="lbtnDeactivateSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnChangeStatusForSelected" EventName="Click" />
                     </Triggers>
@@ -869,7 +875,14 @@
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                     </td>
                     <td align="right">
-                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected" OnClick="lbtnDeleteSelected_Click" />
+                        <asp:LinkButton ID="lbtnDeactivateSelected" runat="server" Text="Deactivate Selected" 
+                            OnClientClick="return confirm('Are you sure you want to deactivate selected users?')"
+                            OnClick="lbtnDeactivateSelected_Click" />
+                        <br />
+                        <br />
+                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected"
+                             OnClientClick="return confirm('Are you sure you want to delete selected users?')"
+                            OnClick="lbtnDeleteSelected_Click" />
                         <br />
                         <br />
                         <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
@@ -971,7 +984,18 @@
                                 <td align="right">Task</td>
                                 <td>: </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlTechTask" runat="server" />
+                                    <asp:DropDownList ID="ddlTechTask" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlTechTask_SelectedIndexChanged" />
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ControlToValidate="ddlTechTask" ErrorMessage="Select Tech Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Sub Task</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlTechSubTask" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
                                 </td>
                             </tr>
                             <tr>
@@ -1291,7 +1315,13 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Tech Task" Visible="false" ItemStyle-Width="100">
                                 <ItemTemplate>
-                                    <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" />
+                                    Tech Task: <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_Popup_ddlTechTask_SelectedIndexChanged" />
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ErrorMessage="Please select tech task." InitialValue="0"
+                                        ControlToValidate="ddlTechTask" ValidationGroup="vgChangeStatus" Display="None" />
+                                    <br />
+                                    Sub Task: <asp:DropDownList ID="ddlTechSubTask" runat="server" Width="95" />
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ErrorMessage="Please select tech sub task." InitialValue="0"
+                                        ControlToValidate="ddlTechSubTask" ValidationGroup="vgChangeStatus" Display="None" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Reason" Visible="false">

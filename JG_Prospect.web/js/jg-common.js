@@ -1,5 +1,4 @@
-﻿// test
-/********************************************* CK Editor (Html Editor) ******************************************************/
+﻿/********************************************* CK Editor (Html Editor) ******************************************************/
 var arrCKEditor = new Array();
 
 function SetCKEditor(Id, onBlurCallBack) {
@@ -326,4 +325,28 @@ function updateQueryStringParameter(uri, key, value) {
     else {
         return uri + separator + key + "=" + value;
     }
+}
+
+
+function IsNumeric(e, blWholeNumber) {
+    var keyCode = e.which ? e.which : e.keyCode;
+    
+    if(keyCode >= 48 && keyCode <= 57) {
+        return true; // 0-9    
+    }
+    else if(keyCode == 9) {
+        return true; // tab 
+    }
+    else if(keyCode == 37 || keyCode == 38) {
+        return true; // left - right arrow
+    }
+    else if(keyCode == 8 || keyCode == 46) {
+        return true; // back space - delete
+    }
+    else if (!blWholeNumber && keyCode == 190) {
+        if (this.value.indexOf('.') == -1) {
+            return true; // period
+        }
+    }
+    return false;
 }
