@@ -487,6 +487,12 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <%--Fake fields are a workaround for chrome autofill getting the wrong fields--%>
+        <div style="position:fixed;top:-999px;left:-999px;">
+            <input type="text" name="fakeusernameremembered"/>
+            <input type="password" name="fakepasswordremembered"/>
+        </div>
+        <%--Fake fields are a workaround for chrome autofill getting the wrong fields--%>
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" AsyncPostBackTimeout="360000">
             <Services>
                 <%-- <asp:ServiceReference Path="~/SuggestSearch.asmx" />--%>
