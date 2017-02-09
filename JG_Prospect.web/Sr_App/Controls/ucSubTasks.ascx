@@ -76,7 +76,8 @@
                             <ItemTemplate >
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <h5>
-                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
+                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu"
+                             data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                         CommandArgument='<%# Container.DataItemIndex  %>' /></h5>
                                 <span>+</span>
                             </ItemTemplate>
@@ -893,7 +894,8 @@
     //----------- Start DP ---------
 
     $('#<%=pnlCalendar.ClientID%>').hide();
-
+    
+    $('#<%=divSubTask.ClientID%>').hide();
     function showSubTaskEditView(divid, rowindex) {
 
         var html = $('<tr>').append($('<td colspan="5">').append($(divid)));
