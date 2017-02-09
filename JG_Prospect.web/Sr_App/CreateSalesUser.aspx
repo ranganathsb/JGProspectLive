@@ -1674,7 +1674,7 @@
                                             onkeydown="return IsNumeric(event,true);" Width="150"></asp:TextBox>                                        
                                     </td>
                                     <td>&nbsp;&nbsp;Ext. <%--extension--%>
-                                        <br /><asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25"></asp:TextBox></td>
+                                        <br /><asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25" onkeydown="return IsNumeric(event,true);"></asp:TextBox></td>
                                     <td style="padding-left: 0px !important; padding-right: 0px !important;">Phone Type
                                         <asp:DropDownList ID="phoneTypeDropDownList" TabIndex="506" OnPreRender="phoneTypeDropDownList_PreRender" runat="server">                                            
                                         </asp:DropDownList>
@@ -1755,7 +1755,7 @@
                                     <td colspan="1" style="vertical-align: top; ">
                                         <label>Designation<span>*</span></label>
                                         <asp:DropDownList Width="160px" ID="ddldesignation" AppendDataBoundItems="true" TabIndex="508" runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
+                                            <%--<asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
                                             <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                             <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
@@ -1769,14 +1769,13 @@
                                             <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
                                             <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
                                             <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
                                             <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
                                             <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
                                             <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
                                             <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>--%>
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqDesignition" runat="server" ControlToValidate="ddldesignation"
@@ -1793,7 +1792,7 @@
                                     </td>
                                     <td colspan="2" style="vertical-align: top;">Position Applied For
                                         <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
+                                            <%--<asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
                                             <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                             <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
@@ -1806,7 +1805,7 @@
                                             <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
+                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>--%>
                                             <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
                                             <%--<asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
                                             <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
@@ -3125,6 +3124,19 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
+															Country
+                                                                    <br />                                                                  
+                                                                <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
+                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
+                                                                    <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                            </td>
+                                                        </tr>txtZipSecAdd
+                                                        <tr>
+                                                            <td>
 															Zip
                                                                     <br />
                                                                 <asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>
@@ -3157,19 +3169,6 @@
                                                                 <label></label>
                                                                 <asp:RequiredFieldValidator ID="rqCity" runat="server" ControlToValidate="txtCity"
                                                                     Display="Dynamic" ForeColor="Red" ValidationGroup="submit">Enter City</asp:RequiredFieldValidator>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-															Country
-                                                                    <br />                                                                  
-                                                                <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
-                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
-                                                                    <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
-                                                                    <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
-                                                                    </select>
-                                                                </div>
-                                                                
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -3214,6 +3213,9 @@
                                                                     ForeColor="Blue" Display="Dynamic" ValidationGroup="submit">Enter Mailing Address</asp:RequiredFieldValidator><br />
 
                                                             </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Zip
