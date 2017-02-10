@@ -259,18 +259,18 @@ namespace JG_Prospect.Sr_App
                     if (txtInterval.Text != "")			
                     {			
                         vInterval = Convert.ToInt16(txtInterval.Text);			
-                    }			
-                    if (rdoRepeatEvent.SelectedValue == "1")			
-                    {			
-                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
-                        {			
-                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";";			
-                        }			
-                        else			
-                        {			
-                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";";			
-                        }			
-                    }			
+                    }
+                    if (rdoRepeatEvent.SelectedValue == "1")
+                    {
+                        if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")
+                        {
+                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;UNTIL=" + vEndDate.ToString("yyyyMMdd") + "T" + Convert.ToDateTime(txtEventEndTime.Text).ToString("hhmmss") + "Z" + ";INTERVAL=" + vInterval + ";BYDAY=MO,TU,WE,TH,FR,SA,SU";
+                        }
+                        else
+                        {
+                            rrule = rrule + "\n\rRRULE:FREQ=DAILY;COUNT=" + vMaxOcc + ";INTERVAL=" + vInterval + ";BYDAY=MO,TU,WE,TH,FR,SA,SU";
+                        }
+                    }	
                     else if (rdoRepeatEvent.SelectedValue == "2")			
                     {			
                         if (txtEventEndDate.Text != "" && txtMaxOccu.Text == "")			
