@@ -83,7 +83,7 @@
                 changeMonth: true,
                 changeYear: true,
                 yearRange: '1950:2050',
-                maxDate: 'today'
+                minDate: 'today'
             });
         });
 
@@ -3134,7 +3134,7 @@
                                                                 </div>
                                                                 
                                                             </td>
-                                                        </tr>txtZipSecAdd
+                                                        </tr>
                                                         <tr>
                                                             <td>
 															Zip
@@ -3214,7 +3214,7 @@
 
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        <tr style="height:69px;">
                                                             <td></td>
                                                         </tr>
                                                         <tr>
