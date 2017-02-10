@@ -1439,7 +1439,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 OnAddNewSubTask(sender, e);
             }
-
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", "$('#" + pnlCalendar.ClientID + "').hide();", true);
             ShowAddNewSubTaskSection(false);
         }
 
@@ -1768,7 +1768,7 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                     else
                     {
-                        txtTaskListID.Text = subtaskListIDSuggestion[1];
+                        txtTaskListID.Text = subtaskListIDSuggestion[0];
                         listIDOpt.Text = subtaskListIDSuggestion[0];
 
                     }

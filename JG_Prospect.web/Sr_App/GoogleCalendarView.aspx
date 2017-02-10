@@ -726,7 +726,21 @@
                  },
                  close: function () {
                      $('#datePicker').datepicker('hide');
+                     $('#ContentPlaceHolder1_hdEventId').val(0);
+                     $('#ContentPlaceHolder1_txtEventName').val('');
+                     $('#ContentPlaceHolder1_txtEventLoc').val('');
+                     $('#ContentPlaceHolder1_txtEventDesc').val('');
+                     $('#ContentPlaceHolder1_txtEventStartTime').val('');
+                     $('#ContentPlaceHolder1_txtEventEndTime').val('');
+                     $('#ContentPlaceHolder1_txtEventStartDate').datepicker('setDate', new Date());
+                     $("#ContentPlaceHolder1_txtEventEndDate").datepicker('setDate', new Date());
+                     $("#ContentPlaceHolder1_hdEventFile").val('');
+                     $("#ContentPlaceHolder1_txtMaxOccu").val('');
+                     $("#ContentPlaceHolder1_txtInterval").val('');
                      $("#popup").dialog("close");
+                     $('#btnCreateEvent').unbind('click').bind('click', function () {
+                         callpopupscript();
+                     });
                  },
                  ok: function () {
                      $("#ContentPlaceHolder1_btnEventSubmit").click();
