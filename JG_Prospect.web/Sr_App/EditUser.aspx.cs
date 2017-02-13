@@ -3145,7 +3145,7 @@ namespace JG_Prospect
                 {
                     DataRow objUser = dtUsers.Rows[i];
                     ddlUsers.Items.Add(new ListItem(objUser["FristName"].ToString(), objUser["Id"].ToString()));
-                    if (objUser["Status"].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
+                    if (objUser["Status"].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                     {
                         ddlUsers.Items[i].Attributes.Add("style", "color: red;");
                     }
