@@ -151,9 +151,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.getSource();
         }
 
-        public void DeleteSource(string Source)
+        public bool DeleteSource(string Source)
         {
-            InstallUserDAL.Instance.DeleteSource(Source);
+            return InstallUserDAL.Instance.DeleteSource(Source);
         }
         public DataSet GetAttachment(int id)
         {
