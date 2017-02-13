@@ -3864,11 +3864,11 @@ namespace JG_Prospect.Sr_App
                             ddlSource.Items.Add("Select Source");
                             ddlSource.SelectedIndex = 0;
                         }
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record can not be deleted.')", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true);
                     }
                     else
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record can not be deleted.')", true);
                     }
                 }
             }
