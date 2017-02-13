@@ -190,17 +190,28 @@ namespace JG_Prospect.Sr_App.Controls
                 string vTaskApproveId =hdnTaskApprovalId.Value;
                 txtEstimatedHours.Text = estHours.Text;       //(gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
 
+                string lnkClasslvl = "";
+                lnkClasslvl = "";
+
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                {
+                    if (Convert.ToInt32(hdTaskId.Value) == Convert.ToInt32(Request.QueryString["hstid"]))
+                    {
+                        e.Row.CssClass = " yellowthickborder";
+                    }
+                }
+
                 if (hdTaskLevel.Value=="3" )
                 {
                     lnkAddMoreSubTask.Visible = false;
-                    lbtnInstallId.CssClass = "installidright";
-               }
+                    lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
+                }
                 else if (hdTaskLevel.Value == "1")
                 {
                     vFirstLevelId = Convert.ToInt32( hdTaskId.Value);
                     lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
                     lnkAddMoreSubTask.Visible = true;
-                    lbtnInstallId.CssClass = "installidleft";
+                    lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidleft";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                 }
@@ -208,12 +219,12 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString(); 
                     lnkAddMoreSubTask.Visible = true;
-                    lbtnInstallId.CssClass = "installidcenter";
+                    lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidcenter";
                 }
-               
-                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
-                 lbtnInstallId.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
+                
+                lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
+                lbtnInstallId.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
             }
         }
         #endregion
