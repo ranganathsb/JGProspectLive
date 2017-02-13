@@ -1062,7 +1062,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public void DeleteSource(string Source)
+        public bool DeleteSource(string Source)
         {
             try
             {
@@ -1072,13 +1072,13 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Source", DbType.String, Source);
                     database.ExecuteScalar(command);
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-
+                return false;
             }
-
         }
 
         public void DeleteImage(string Source)

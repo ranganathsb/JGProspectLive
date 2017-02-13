@@ -3145,7 +3145,7 @@ namespace JG_Prospect
                 {
                     DataRow objUser = dtUsers.Rows[i];
                     ddlUsers.Items.Add(new ListItem(objUser["FristName"].ToString(), objUser["Id"].ToString()));
-                    if (objUser["Status"].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
+                    if (objUser["Status"].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                     {
                         ddlUsers.Items[i].Attributes.Add("style", "color: red;");
                     }
@@ -3821,9 +3821,11 @@ namespace JG_Prospect
 
                     strsubject = strsubject.Replace("#ID#", strTaskId);
                     strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
+                    strsubject = strsubject.Replace("#TaskTitle#", strTaskTitle);
 
                     strBody = strBody.Replace("#ID#", strTaskId);
                     strBody = strBody.Replace("#TaskTitleID#", strTaskTitle);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskTitle);
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
