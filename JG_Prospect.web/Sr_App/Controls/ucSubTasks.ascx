@@ -24,7 +24,8 @@
                         <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
                             SortExpression="InstallId">
                             <ItemTemplate>
-                                <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
+                                <asp:Label ID="lblInstallId" runat="server" CssClass="context-menu" style="cursor:pointer;"
+                                     data-highlighter='<%# Eval("TaskId")%>' Text='<%# Eval("InstallId") %>' />
                                 <h5>
                                     <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                         CommandArgument='<%# Container.DataItemIndex  %>' /></h5>

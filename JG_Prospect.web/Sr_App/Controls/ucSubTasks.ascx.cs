@@ -227,7 +227,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (this.IsAdminMode)
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = false;
+                    e.Row.FindControl("lblInstallId").Visible = false;
                 }
                 else
                 {
@@ -310,7 +310,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = true;
+                    e.Row.FindControl("lblInstallId").Visible = true;
                     e.Row.FindControl("lbtnInstallId").Visible = false;
                 }
 
