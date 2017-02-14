@@ -939,7 +939,7 @@ namespace JG_Prospect.Sr_App.Controls
                         if (result.Tables[0].Rows.Count > 0)
                         {
                             //txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
-                            txtTaskDesc.Text = result.Tables[0].Rows[0]["Description"].ToString();
+                            txtTaskDesc.Text =Server.HtmlDecode( result.Tables[0].Rows[0]["Description"].ToString());
                             txtInstallId.Value = result.Tables[0].Rows[0]["InstallId"].ToString();
                         }
                         result.Dispose();

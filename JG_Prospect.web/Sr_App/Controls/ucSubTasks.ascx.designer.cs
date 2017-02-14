@@ -55,7 +55,7 @@ namespace JG_Prospect.Sr_App.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlCalendar;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlCalendar;
         
         /// <summary>
         /// Label1 control.
@@ -82,7 +82,7 @@ namespace JG_Prospect.Sr_App.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl txtTaskDesc;
+        protected global::System.Web.UI.WebControls.TextBox txtTaskDesc;
         
         /// <summary>
         /// RequiredFieldValidator1 control.

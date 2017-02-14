@@ -2,7 +2,7 @@
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
+
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
 
@@ -40,7 +40,7 @@
             opacity:0.7; 
             z-index : 100 !important
         } 
-        .modalPopup { 
+        /*.modalPopup { 
             background-color:#FFFFFF; 
             border-width:1px; 
             border-style:solid; 
@@ -49,7 +49,7 @@
             width:100%; 
             Height:450px; 
             
-        }    
+        }*/    
 
 </style>
 
@@ -129,7 +129,8 @@
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"   /></h5>
 
-                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server"   OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
+                                                      OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                                                            
                                                  </ItemTemplate>
                                         </asp:TemplateField>
@@ -456,23 +457,25 @@
                     BackgroundCssClass="modalBackground">
                     </cc1:ModalPopupExtender>--%>
                     
-                            <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
-                                    <table border="1" cellspacing="5" cellpadding="5">
+                            <div id="pnlCalendar" runat="server"   align="center" class="tasklistfieldset" style="display: none;" >
+                                    <table border="1" cellspacing="5" cellpadding="5" width="90%">
                                         <tr>
                                             <td colspan="4">
                                                 <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td   align="left" valign="top">  Task Description <span>*</span>
-                                            </td>
-                                            <td > 
+                                             
+                                            <td colspan="2" > 
+                                                Task Description <span>*</span>
+                                                <br />
                                                 <asp:HiddenField   ID="txtInstallId"   runat="server"></asp:HiddenField>
-                                                <%--<asp:TextBox ID="txtTaskDesc" TextMode="MultiLine" Columns="45" Rows="15" runat="server"></asp:TextBox>--%>
+                                               <asp:TextBox ID="txtTaskDesc" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                
-                                                <CKEditor:CKEditorControl runat="server" BasePath="/ckeditor/" ID="txtTaskDesc"   AutoPostBack="false"  ></CKEditor:CKEditorControl>
+                                              
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
-                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="Static"> </asp:RequiredFieldValidator>
+                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" 
+                                                    ErrorMessage="Please Enter Task Description" Display="Static"> </asp:RequiredFieldValidator>
                                             </td>
                                        
                                         </tr>
@@ -486,12 +489,13 @@
                                                 <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" 
                                                     TabIndex="5" Text="Submit"  
                                                     OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
-                                                <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6" OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                                <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
+                                                     OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                             </td>
                                         </tr>
                                     </table>
                            
-                            </asp:Panel>
+                            </div>
  
 
         </ContentTemplate>
@@ -748,6 +752,9 @@
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
+
+
+
     
     $(function () {
         ucSubTasks_Initialize();
@@ -783,10 +790,12 @@
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+            SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
         }
 
     }
     
+
     
     function txtSubTaskDescription_Blur(editor) {
         if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
@@ -891,11 +900,21 @@
 
 
 
-    //----------- Start DP ---------
 
-    $('#<%=pnlCalendar.ClientID%>').hide();
+
+    //----------- Start DP ---------
     
+    $('#<%=pnlCalendar.ClientID%>').hide();
     $('#<%=divSubTask.ClientID%>').hide();
+
+    function txtTaskDesc_Blur(editor) {
+        //if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+        <%--if (confirm('Do you wish to save description?')) {
+            $('#<%=btnAddMoreSubtask.ClientID%>').click();
+        }--%>
+        // }
+    }
+
     function showSubTaskEditView(divid, rowindex) {
 
         var html = $('<tr>').append($('<td colspan="5">').append($(divid)));
@@ -912,7 +931,7 @@
     }
     function hideSubTaskEditView(divid, rowindex) {
 
-        //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
+    //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
         // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
         // $(divid).slideUp('slow');
         $('#<%=pnlCalendar.ClientID%>').hide();
@@ -924,10 +943,8 @@
             $('html, body').animate({
                 scrollTop: row.offset().top - 100
             }, 2000);
-
         }
-
-
     }
     //--------------- End DP ---------------
+
 </script>
