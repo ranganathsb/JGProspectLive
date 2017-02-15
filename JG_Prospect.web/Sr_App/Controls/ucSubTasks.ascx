@@ -33,6 +33,10 @@
     {
         border:none;
     }
+    .taskdesc a{
+        text-decoration:underline;
+        color:blue;
+    }
 
     .modalBackground { 
             background-color:#333333; 
@@ -122,23 +126,22 @@
                                          HeaderStyle-Width="80"
                                             SortExpression="InstallId">
                                             <ItemTemplate>
-                                                
+                                                <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ></asp:HiddenField>
+                                                <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ></asp:HiddenField>
                                                 <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ></asp:HiddenField>
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
                                                 <h5>
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"   /></h5>
-
-                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
+                                                    <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
                                                       OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
-                                                                                           
                                                  </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
                                             SortExpression="Description">
                                             <ItemTemplate>
                                                 <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
-                                                    <div style="padding-bottom: 5px;">
+                                                    <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px;width:98%;">
                                                        
                                                         <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                     </div>

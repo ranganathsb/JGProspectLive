@@ -181,15 +181,16 @@ namespace JG_Prospect.Sr_App.Controls
                 HiddenField hdTaskId = e.Row.FindControl("hdTaskId") as HiddenField;
                 LinkButton lnkAddMoreSubTask = e.Row.FindControl("lnkAddMoreSubTask") as LinkButton;
                 LinkButton lbtnInstallId = e.Row.FindControl("lbtnInstallId") as LinkButton;
-
-
+                HiddenField hdURL = e.Row.FindControl("hdURL") as HiddenField;
+                HiddenField hdTitle = e.Row.FindControl("hdTitle") as HiddenField;
+                HtmlGenericControl dvDesc = e.Row.FindControl("dvDesc") as HtmlGenericControl;
                 GridViewRow gvMasterRow = (GridViewRow)e.Row.Parent.Parent.Parent.Parent;
 
                 HiddenField hdnTaskApprovalId = gvMasterRow.FindControl("hdnTaskApprovalId") as HiddenField;
                 TextBox estHours = gvMasterRow.FindControl("txtEstimatedHours") as TextBox;
                 string vTaskApproveId =hdnTaskApprovalId.Value;
                 txtEstimatedHours.Text = estHours.Text;       //(gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
-
+                dvDesc.InnerHtml = "";
                 string lnkClasslvl = "";
                 lnkClasslvl = "";
 
@@ -205,6 +206,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     lnkAddMoreSubTask.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
+                    dvDesc.InnerHtml =Server.HtmlDecode( DataBinder.Eval(e.Row.DataItem, "Description").ToString());
                 }
                 else if (hdTaskLevel.Value == "1")
                 {
@@ -214,6 +216,15 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidleft";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
+
+                    string strhtml = "";
+                    strhtml = strhtml  +  "<strong>Title: " +(e.Row.DataItem as DataRowView)["Title"].ToString() + "</strong></br>";
+                    strhtml = strhtml + " <strong>URL: <a href='" + (e.Row.DataItem as DataRowView)["URL"].ToString() + "'>" + (e.Row.DataItem as DataRowView)["URL"].ToString() + "</a></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br>";
+                    strhtml = strhtml + (e.Row.DataItem as DataRowView)["Description"].ToString();
+                    
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml) ;  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                    
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
@@ -221,6 +232,7 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.Visible = true;
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidcenter";
+                    dvDesc.InnerHtml =Server.HtmlDecode( DataBinder.Eval(e.Row.DataItem, "Description").ToString());
                 }
                 
                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
@@ -606,6 +618,7 @@ namespace JG_Prospect.Sr_App.Controls
                             new DataColumn("MainParentId"),
                             new DataColumn("Description"),
                             new DataColumn("Title"),
+                            new DataColumn("URL"),
                             new DataColumn("TaskLevel")
                         };
                 dt11.Columns.AddRange(cls);
@@ -627,6 +640,7 @@ namespace JG_Prospect.Sr_App.Controls
                         dr["MainParentId"] = result1.Tables[0].Rows[0]["MainParentId"].ToString();
                         dr["Description"] = result1.Tables[0].Rows[0]["Description"].ToString();
                         dr["Title"] = result1.Tables[0].Rows[0]["Title"].ToString();
+                        dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
                         dr["TaskLevel"] = result1.Tables[0].Rows[0]["TaskLevel"].ToString();
                         dt11.Rows.Add(dr);
                     }
@@ -650,6 +664,7 @@ namespace JG_Prospect.Sr_App.Controls
                             dr["MainParentId"] = result.Tables[0].Rows[i]["MainParentId"].ToString();
                             dr["Description"] = result.Tables[0].Rows[i]["Description"].ToString();
                             dr["Title"] = result.Tables[0].Rows[i]["Title"].ToString();
+                            dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
                             dr["TaskLevel"] = result.Tables[0].Rows[i]["TaskLevel"].ToString();
 
                             dt11.Rows.Add(dr);
@@ -671,6 +686,7 @@ namespace JG_Prospect.Sr_App.Controls
                                     dr["MainParentId"] = result3.Tables[0].Rows[j]["MainParentId"].ToString();
                                     dr["Description"] = result3.Tables[0].Rows[j]["Description"].ToString();
                                     dr["Title"] = result3.Tables[0].Rows[j]["Title"].ToString();
+                                    dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
                                     dr["TaskLevel"] = result3.Tables[0].Rows[j]["TaskLevel"].ToString();
 
                                     dt11.Rows.Add(dr);
@@ -1016,8 +1032,6 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
         // -------- End DP -------
-
-       
 
         protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
         {
