@@ -1700,7 +1700,7 @@
                                         <label></label>
                                         <asp:TextBox ID="txtSource" runat="server" Width="140px" TabIndex="512"></asp:TextBox>
                                         &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
                                         <br />
                                         <label>
                                         </label>
@@ -4946,9 +4946,9 @@
         $(function () {
             Initialize();
             $.fn.hitch = function (scope, fn) {
-                return function () {
-                    return fn.apply(scope, arguments);
-                }
+                //return function () {
+                //    return fn.apply(scope, arguments);
+                //}
             }
         });
 
