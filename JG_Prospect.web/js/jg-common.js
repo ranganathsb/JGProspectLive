@@ -15,7 +15,30 @@ function SetCKEditor(Id, onBlurCallBack) {
             // Show toolbar on startup (optional).
             //startupFocus: true,
             startupFocus: false,
-            enterMode: CKEDITOR.ENTER_BR
+            enterMode: CKEDITOR.ENTER_BR,
+            on: {
+                blur: function (event) {
+                    event.editor.updateElement();
+                },
+                fileUploadResponse:function (evt) {
+                        // Prevent the default response handler.
+                        evt.stop();
+
+                        // Ger XHR and response.
+                        var data = evt.data,
+                            xhr = data.fileLoader.xhr,
+                            response = xhr.responseText.split('|');
+
+                        var jsonarray = JSON.parse(response[0]);
+
+                        if (jsonarray && jsonarray.uploaded != "1") {
+                            // Error occurred during upload.                
+                            evt.cancel();
+                        } else {
+                            data.url = jsonarray.url;
+                        }
+                    }
+            }
         });
 
     var editor = CKEDITOR.instances[Id];
@@ -24,34 +47,36 @@ function SetCKEditor(Id, onBlurCallBack) {
 
     arrCKEditor.push(editor);
 
-    editor.on('blur', function (event) {
+    // Commented yogesh keraliya : 02152017 
+    // Editor blur event auto update of underlying element.
+    //editor.on('blur', function (event) {
 
-        event.editor.updateElement();
-        
-        if (typeof (onBlurCallBack) == 'function') {
-            console.log(event.editor.name + ' editor lost focus.');
-            onBlurCallBack(event.editor);
-        }
-    });
+    //    event.editor.updateElement();
 
-    editor.on('fileUploadResponse', function (evt) {
-        // Prevent the default response handler.
-        evt.stop();
+    //    if (typeof (onBlurCallBack) == 'function') {
+    //        console.log(event.editor.name + ' editor lost focus.');
+    //        onBlurCallBack(event.editor);
+    //    }
+    //});
 
-        // Ger XHR and response.
-        var data = evt.data,
-            xhr = data.fileLoader.xhr,
-            response = xhr.responseText.split('|');
+    //editor.on('fileUploadResponse', function (evt) {
+    //    // Prevent the default response handler.
+    //    evt.stop();
 
-        var jsonarray = JSON.parse(response[0]);
+    //    // Ger XHR and response.
+    //    var data = evt.data,
+    //        xhr = data.fileLoader.xhr,
+    //        response = xhr.responseText.split('|');
 
-        if (jsonarray && jsonarray.uploaded != "1") {
-            // Error occurred during upload.                
-            evt.cancel();
-        } else {
-            data.url = jsonarray.url;
-        }
-    });
+    //    var jsonarray = JSON.parse(response[0]);
+
+    //    if (jsonarray && jsonarray.uploaded != "1") {
+    //        // Error occurred during upload.                
+    //        evt.cancel();
+    //    } else {
+    //        data.url = jsonarray.url;
+    //    }
+    //});
 }
 
 function SetCKEditorForPageContent(Id, AutosavebuttonId) {
@@ -71,9 +96,7 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
-
                     event.editor.updateElement();
-                    // event.editor.destroy();
                     $(AutosavebuttonId).click();
                 },
                 fileUploadResponse: function (event) {
@@ -330,17 +353,17 @@ function updateQueryStringParameter(uri, key, value) {
 
 function IsNumeric(e, blWholeNumber) {
     var keyCode = e.which ? e.which : e.keyCode;
-    
-    if(keyCode >= 48 && keyCode <= 57) {
+
+    if (keyCode >= 48 && keyCode <= 57) {
         return true; // 0-9    
     }
-    else if(keyCode == 9) {
+    else if (keyCode == 9) {
         return true; // tab 
     }
-    else if(keyCode == 37 || keyCode == 38) {
+    else if (keyCode == 37 || keyCode == 38) {
         return true; // left - right arrow
     }
-    else if(keyCode == 8 || keyCode == 46) {
+    else if (keyCode == 8 || keyCode == 46) {
         return true; // back space - delete
     }
     else if (!blWholeNumber && keyCode == 190) {
