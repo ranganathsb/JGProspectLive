@@ -133,8 +133,10 @@
                                                 <h5>
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"   /></h5>
-                                                    <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
+
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
                                                       OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                                                           
                                                  </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
