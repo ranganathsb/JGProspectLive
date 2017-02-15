@@ -465,37 +465,34 @@
                             <div id="pnlCalendar" runat="server"   align="center" class="tasklistfieldset" style="display: none;" >
                                     <table border="1" cellspacing="5" cellpadding="5" width="90%">
                                         <tr>
-                                            <td colspan="4">
-                                                <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
+                                            <td>
+                                                 ListID: <asp:TextBox   ID="txtInstallId"   runat="server"></asp:TextBox>
                                             </td>
                                         </tr>
                                         <tr>
-                                             
-                                            <td colspan="2" > 
+                                            <td > 
                                                 Task Description <span>*</span>
                                                 <br />
-                                                <asp:HiddenField   ID="txtInstallId"   runat="server"></asp:HiddenField>
                                                <asp:TextBox ID="txtTaskDesc" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
-                                               
-                                              
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
                                                     runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" 
                                                     ErrorMessage="Please Enter Task Description" Display="Static"> </asp:RequiredFieldValidator>
                                             </td>
-                                       
                                         </tr>
                                         <tr>
-                                            <td colspan="2">
+                                            <td>
                                                 <asp:HiddenField ID="txtMode" runat="server" />
                                                 <asp:HiddenField ID="hdParentTaskId" runat="server" />
                                                 <asp:HiddenField ID="hdMainParentId" runat="server" />
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
-                                                <asp:Button ID="btnAddMoreSubtask"  runat="server" Height="30px" Width="70px" 
-                                                    TabIndex="5" Text="Submit"  
-                                                    OnClick="btnAddMoreSubtask_Click"  Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="SubmitSubTask" />
-                                                <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
-                                                     OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                                <div class="btn_sec">
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                        TabIndex="5" Text="Submit"   CssClass="ui-button" 
+                                                        OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
+                                                </div>
+                                               <%-- <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
+                                                     OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />--%>
                                             </td>
                                         </tr>
                                     </table>
@@ -757,10 +754,7 @@
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
-
-
-
-    
+   
     $(function () {
         ucSubTasks_Initialize();
     });
@@ -796,6 +790,18 @@
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
             SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
+
+
+            $('#<%=txtInstallId.ClientID%>').bind('keypress', function (e) {
+                  return false;
+            });
+
+            $('#<%=txtInstallId.ClientID%>').bind('keydown', function (e) {
+                if (e.keyCode === 8 || e.which === 8) {
+                    return false;
+                }
+            });
+
         }
 
     }

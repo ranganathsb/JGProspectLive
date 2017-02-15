@@ -794,17 +794,17 @@ namespace JG_Prospect.Sr_App.Controls
                         {
                             if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
                             {
-                                txtInstallId.Value  = subtaskListIDSuggestion[0];
+                                txtInstallId.Text  = subtaskListIDSuggestion[0];
                             }
                             else
                             {
-                                txtInstallId.Value  = subtaskListIDSuggestion[1];
+                                txtInstallId.Text = subtaskListIDSuggestion[1];
                                 listIDOpt.Text = subtaskListIDSuggestion[0];
                             }
                         }
                         else
                         {
-                            txtInstallId.Value = subtaskListIDSuggestion[0];
+                            txtInstallId.Text = subtaskListIDSuggestion[0];
                             //listIDOpt.Text = subtaskListIDSuggestion[0];
                         }
                     }
@@ -843,7 +843,7 @@ namespace JG_Prospect.Sr_App.Controls
                         }
                     }
                     else { vNextInstallId = roman4[0]; }
-                    txtInstallId.Value = vNextInstallId;
+                    txtInstallId.Text = vNextInstallId;
                     result.Dispose();
                 }
             }
@@ -855,12 +855,12 @@ namespace JG_Prospect.Sr_App.Controls
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
 
         }
-        protected void btnCalClose_Click(object sender, EventArgs e)
-        {
-            //mpSubTask.Hide();
-            //mpcalendar.show();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
-        }
+        //protected void btnCalClose_Click(object sender, EventArgs e)
+        //{
+        //    //mpSubTask.Hide();
+        //    //mpcalendar.show();
+        //    ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+        //}
         protected void btnAddMoreSubtask_Click(object sender, EventArgs e)
         {
             //LinkButton lnkpop = (LinkButton)sender;
@@ -889,7 +889,7 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
                         database.AddInParameter(command, "@TaskLevel", DbType.Int32, Convert.ToInt32(hdTaskLvl.Value));
                         database.AddInParameter(command, "@ParentTaskId", DbType.Int32, Convert.ToInt32(hdParentTaskId.Value));
-                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Value);
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
                         database.AddInParameter(command, "@MainParentId", DbType.Int32, Convert.ToInt32(hdMainParentId.Value));
 
                     }
@@ -898,7 +898,7 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@TaskId", DbType.Int32, Convert.ToInt32(hdTaskId.Value));
                         database.AddInParameter(command, "@Title", DbType.String, "");
                         database.AddInParameter(command, "@Description", DbType.String, vTaskDescEncode);
-                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Value);
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
                         database.AddInParameter(command, "@Status", DbType.Int32, 1);
                         database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
                         database.AddInParameter(command, "@CreatedOn", DbType.DateTime, DateTime.Now.Date);
@@ -956,7 +956,7 @@ namespace JG_Prospect.Sr_App.Controls
                         {
                             //txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
                             txtTaskDesc.Text =Server.HtmlDecode( result.Tables[0].Rows[0]["Description"].ToString());
-                            txtInstallId.Value = result.Tables[0].Rows[0]["InstallId"].ToString();
+                            txtInstallId.Text = result.Tables[0].Rows[0]["InstallId"].ToString();
                         }
                         result.Dispose();
                     }

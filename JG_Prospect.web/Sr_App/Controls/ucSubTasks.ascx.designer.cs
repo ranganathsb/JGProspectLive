@@ -58,22 +58,13 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlCalendar;
         
         /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-        
-        /// <summary>
         /// txtInstallId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField txtInstallId;
+        protected global::System.Web.UI.WebControls.TextBox txtInstallId;
         
         /// <summary>
         /// txtTaskDesc control.
@@ -146,15 +137,6 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAddMoreSubtask;
-        
-        /// <summary>
-        /// btnCalClose control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCalClose;
         
         /// <summary>
         /// ValidationSummary2 control.
