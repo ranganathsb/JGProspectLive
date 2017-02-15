@@ -606,3 +606,146 @@ BEGIN
 END
 GO
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---- Published on Live 02132017 -----
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/****** Object:  StoredProcedure [dbo].[UDP_BulkInstallUser]    Script Date: 15-Feb-17 11:10:01 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[UDP_BulkInstallUser]
+	@XMLDOC2 xml
+AS
+BEGIN
+
+SET NOCOUNT ON; 
+
+	CREATE TABLE #table_xml
+	(
+		FirstName varchar(50),
+		LastName varchar(50),
+		Email varchar(50),
+		phone VARCHAR(50),
+		Designation VARCHAR(50),
+		Status VARCHAR(50),
+		Notes VARCHAR(50),
+		PrimeryTradeId int,
+		SecondoryTradeId VARCHAR(50),
+		Source VARCHAR(50),
+		UserType VARCHAR(50),
+		Email2 VARCHAR(50),
+		Phone2 VARCHAR(50),
+		CompanyName VARCHAR(50),
+		SourceUser VARCHAR(50),
+		DateSourced VARCHAR(50),
+		ActionTaken VARCHAR(2)
+	)
+
+
+	CREATE TABLE #UploadableData
+	(
+		FirstName varchar(50),
+		LastName varchar(50),
+		Email varchar(50),
+		phone VARCHAR(50),
+		Designation VARCHAR(50),
+		Status VARCHAR(50),
+		Notes VARCHAR(50),
+		PrimeryTradeId int,
+		SecondoryTradeId VARCHAR(50),
+		Source VARCHAR(50),
+		UserType VARCHAR(50),
+		Email2 VARCHAR(50),
+		Phone2 VARCHAR(50),
+		CompanyName VARCHAR(50),
+		SourceUser VARCHAR(50),
+		DateSourced VARCHAR(50),
+		ActionTaken VARCHAR(2)
+	)
+
+
+	DECLARE @rowexistcnt INT
+
+	INSERT INTO #table_xml
+		(FirstName,LastName,Email,phone,[Designation],[Status],[Notes],[PrimeryTradeId],[SecondoryTradeId],[Source],[UserType],[Email2],[Phone2],[CompanyName],[SourceUser],[DateSourced] ,ActionTaken)
+	SELECT
+		   [Table].[Column].value('(firstname/text()) [1]','VARCHAR(50)') AS FirstName,
+		   [Table].[Column].value('(lastname/text()) [1]','VARCHAR(50)') AS LastName,
+		   [Table].[Column].value('(Email/text()) [1]','VARCHAR(50)') AS Email,
+		   [Table].[Column].value('(phone/text()) [1]','VARCHAR(50)') AS phone,
+		   [Table].[Column].value('(Designation/text()) [1]','VARCHAR(50)') AS Designation,
+		   [Table].[Column].value('(status/text()) [1]','VARCHAR(20)') AS status,
+		   [Table].[Column].value('(Notes/text()) [1]','VARCHAR(50)') AS Notes,
+		   [Table].[Column].value('(PrimeryTradeId/text()) [1]','int') AS PrimeryTradeId,
+		   [Table].[Column].value('(SecondoryTradeId/text()) [1]','VARCHAR(50)') AS SecondoryTradeId,
+		   [Table].[Column].value('(Source/text()) [1]','VARCHAR(50)') AS Source,
+		   [Table].[Column].value('(UserType/text()) [1]','VARCHAR(50)') AS EmaUserType,
+		   [Table].[Column].value('(Email2/text()) [1]','VARCHAR(50)') AS Email2,
+		   [Table].[Column].value('(Phone2/text()) [1]','VARCHAR(50)') AS Phone2,
+		   [Table].[Column].value('(CompanyName/text()) [1]','VARCHAR(50)') AS CompanyName,
+		   [Table].[Column].value('(SourceUser/text()) [1]','VARCHAR(50)') AS SourceUser,
+		   [Table].[Column].value('(DateSourced/text()) [1]','VARCHAR(50)') AS DateSourced ,
+		   'U'
+      FROM
+			@XMLDOC2.nodes('/ArrayOfUser1/user1')AS [Table]([Column])	
+
+	  --select @rowexistcnt = count(*) from tblInstallUsers inner join #table_xml on  tblInstallUsers.Phone =#table_xml.phone or tblInstallUsers.Email = #table_xml.Email 
+	  SELECT @rowexistcnt = count(*) 
+	  FROM #table_xml 
+	  WHERE phone NOT IN (
+							SELECT phone 
+							FROM tblInstallUsers 
+							WHERE phone != ''
+						) OR 
+			Email NOT IN (	
+							SELECT Email 
+							FROM tblInstallUsers 
+							WHERE Email != ''
+						)
+
+	  --insert into #UploadableData
+			--(FirstName,LastName,Email,phone,Designation,Status,Notes,PrimeryTradeId,SecondoryTradeId,Source,UserType,Email2,Phone2,CompanyName,SourceUser,DateSourced)
+	  --select FirstName,LastName,Email,phone,Designation,Status,Notes,PrimeryTradeId,SecondoryTradeId,Source,UserType,Email2,Phone2,CompanyName,SourceUser,DateSourced
+	  ----select #table_xml.FirstName,#table_xml.LastName,#table_xml.Email,#table_xml.phone,#table_xml.Designation,#table_xml.Status,#table_xml.Notes,#table_xml.PrimeryTradeId,#table_xml.SecondoryTradeId,#table_xml.Source,#table_xml.UserType,#table_xml.Email2,#table_xml.Phone2,#table_xml.CompanyName,#table_xml.SourceUser,#table_xml.DateSourced 
+	  
+	  --from #table_xml 
+	  --  #table_xml where 
+			--	phone IN (select phone from tblInstallUsers where phone != '') or 
+			--	Email IN (select Email from tblInstallUsers where Email != '')
+
+		--inner join tblInstallUsers on  #table_xml.phone = tblInstallUsers.Phone  
+		--or #table_xml.Email = tblInstallUsers.Email 
+
+	IF (@rowexistcnt>0)
+	BEGIN
+		UPDATE #table_xml 
+		SET 
+			ActionTaken = 'I'
+		WHERE 
+			phone NOT IN (select phone from tblInstallUsers where phone != '') or 
+			Email NOT IN (select Email from tblInstallUsers where Email != '')
+
+		INSERT INTO tblInstallUsers
+	  			 ([FristName],[LastName],[Email],[Phone],[DesignationId],[Status],[Notes],[PrimeryTradeId],[SecondoryTradeId],[Source],[UserType],[Email2],[Phone2],[CompanyName],[SourceUser],[DateSourced])
+		SELECT FirstName,LastName,Email,phone,CAST(Designation AS INT),Status,Notes,PrimeryTradeId,SecondoryTradeId,Source,UserType,Email2,Phone2,CompanyName,SourceUser,DateSourced 
+		FROM #table_xml 
+		WHERE phone NOT IN(select phone from tblInstallUsers where phone != '') 
+				OR 
+			Email NOT IN(select Email from tblInstallUsers where Email != '')
+
+		SELECT * 
+		FROM #table_xml
+	END
+	ELSE
+	BEGIN
+		SELECT * FROM #table_xml
+		--select * from #UploadableData 
+		--inner join #table_xml on  tblInstallUsers.Phone =#table_xml.phone --or tblInstallUsers.Email =user1.Email 
+	END
+
+	RETURN;
+END
+GO

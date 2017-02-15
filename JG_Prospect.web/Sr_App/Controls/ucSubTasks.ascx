@@ -639,12 +639,24 @@
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+            UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>','#<%=btnSaveSubTask.ClientID%>');
         }
 
         implementTaskPriorityRule();
 
     }
 
+    //  Created By : Yogesh K
+    // To updat element underlying CKEditor before work submited to server.
+    function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+        $(ButtonId).bind('click', function () {
+            var editor = CKEDITOR.instances[CKEditorId];
+            console.log(editor);
+            if (editor) {
+                editor.updateElement();
+            }
+        });
+    }
 
     function implementTaskPriorityRule() {
         $('#trDateHours').hide();

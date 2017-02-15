@@ -77,7 +77,7 @@ namespace JG_Prospect.Sr_App
             if (sender != null)
             {
                 gvDesignationList.PageIndex = e.NewPageIndex;
-                gvDesignationList.DataSource = (DataSet)ViewState["DesignationData"];
+                gvDesignationList.DataSource = (List<Designation>)ViewState["DesignationData"];
                 gvDesignationList.DataBind();
             }
         }
@@ -104,7 +104,7 @@ namespace JG_Prospect.Sr_App
         #region "--Private Methods--"
         protected void bindGrid()
         {
-            DataSet ds = DesignationBLL.Instance.GetAllDesignationByDepartmentID(Convert.ToInt32(Session["DepartmentId"].ToString()));
+            List<Designation> ds = DesignationBLL.Instance.GetAllDesignationByDepartmentID(Convert.ToInt32(Session["DepartmentId"].ToString()));
             ViewState["DesignationData"] = ds;
             gvDesignationList.DataSource = ds;
             gvDesignationList.DataBind();

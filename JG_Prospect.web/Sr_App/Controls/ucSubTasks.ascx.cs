@@ -968,13 +968,13 @@ namespace JG_Prospect.Sr_App.Controls
 
             //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
 
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", divSubTask.ClientID, "',", String.IsNullOrEmpty(hdnCurrentEditingRow.Value) == true ? "0" : hdnCurrentEditingRow.Value, ");"), true);
         }
 
         protected void btnSaveSubTask_Click(object sender, EventArgs e)
         {
             SaveSubTask();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", divSubTask.ClientID, "',", String.IsNullOrEmpty(hdnCurrentEditingRow.Value) == true ? "0": hdnCurrentEditingRow.Value, ");"), true);
         }
 
         #endregion

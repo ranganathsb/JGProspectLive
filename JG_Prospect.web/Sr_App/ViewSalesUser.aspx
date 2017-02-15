@@ -2,12 +2,13 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <%@ Register Src="~/UserControl/ucAuditTrailByUser.ascx" TagPrefix="ucAudit" TagName="UserListing" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css?v=1" rel="stylesheet" />
-    <script type="text/javascript" src="../js/dropzone.js"></script>
+    <%----%>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
 
@@ -18,26 +19,21 @@
     <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet"/>
 
 
-    <script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>
-
-    <script>
-        function showAptTestPage(PageUrl) {
-                 
-            debugger;            
-        var $dialog = $('<div class="Aptitude-popup"></div>')
-                       .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
-                       .dialog({
-                           autoOpen: false,
-                           modal: true,
-                           height: 625,
-                           width: 800,
-                           title: "Aptitude Test"
-                       });
-        $dialog.dialog('open');
-    }
-</script>
+    <%--<script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>--%>
 
     <script type="text/javascript">
+        function showAptTestPage(PageUrl) {
+            var $dialog = $('<div class="Aptitude-popup"></div>')
+                           .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
+                           .dialog({
+                               autoOpen: false,
+                               modal: true,
+                               height: 625,
+                               width: 800,
+                               title: "Aptitude Test"
+                           });
+            $dialog.dialog('open');
+        }
 
         function changeFlag(countrolD) {            
             $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
@@ -68,6 +64,26 @@
             document.getElementById('interviewDatefade').style.display = 'block';
         }
 
+        function GetSelectedValue(e) {
+            //get selected value and check if subject is selected else show alert box
+            var SelectedValue = e.options[e.selectedIndex].value;
+            if (SelectedValue > 0) {
+                //get selected text and set to label
+                var SelectedText = e.options[e.selectedIndex].text;
+                if (SelectedText == "Active") {
+                    doOpen();
+                }
+                else {
+                    doClose();
+                }
+                //set selected value to label
+            }
+        }
+
+        function doOpen() { $find("cpe2")._doOpen(); }
+        function doClose() { $find("cpe2")._doClose(); }
+
+
     </script>
     <script type="text/javascript">
         $(function () {
@@ -87,29 +103,8 @@
                 maxDate: 'today'
             });
         });
-
     </script>
 
-    <script type="text/javascript">
-        function GetSelectedValue(e) {
-            //get selected value and check if subject is selected else show alert box
-            var SelectedValue = e.options[e.selectedIndex].value;
-            if (SelectedValue > 0) {
-                //get selected text and set to label
-                var SelectedText = e.options[e.selectedIndex].text;
-                if (SelectedText == "Active") {
-                    doOpen();
-                }
-                else {
-                    doClose();
-                }
-                //set selected value to label
-            }
-        }
-
-        function doOpen() { $find("cpe2")._doOpen(); }
-        function doClose() { $find("cpe2")._doClose(); }
-    </script>
     <script type="text/javascript">
         
         function checkTextAreaMaxLength(textBox, e, length) {
@@ -197,90 +192,7 @@
         }
     </script>
 
-    <script type="text/javascript">
-
-        Dropzone.autoDiscover = false;
-
-        $(function () {
-            Initialize(); 
-        });
-
-        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
-
-        prmTaskGenerator.add_endRequest(function () {
-            Initialize();
-        });
-
-        function Initialize() {
-            ApplyDropZone();          
-        }
-
-        
-        var objWorkFileDropzone;
-        
-        //Dropzone.autoDiscover = false;
-        //Dropzone.options.dropzoneForm = false;
-
-        function ApplyDropZone() {
-            ////User's drag and drop file attachment related code
-
-            //remove already attached dropzone.
-            if (objWorkFileDropzone) {
-                objWorkFileDropzone.destroy();
-                objWorkFileDropzone = null;
-            }
-            
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
-            //remove already attached dropzone.
-        }
-
-        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
-            //debugger;
-            return new Dropzone(strDropzoneSelector,
-                {
-                    maxFiles: 5,
-                    url: "UploadFile.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: strPreviewSelector,
-                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            //debugger;
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
-                            // saves attachment.
-                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
-                            //this.removeFile(file);
-                            //$(".loading").hide();
-                        });
-                    }
-                });
-        }
-
-        function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-            var attachments;
-
-            if ($(hdnControlID).val()) {
-                attachments = $(hdnControlID).val() + serverfilename + "^";
-            }
-            else {
-                attachments = serverfilename + "^";
-            }
-
-            $(hdnControlID).val(attachments);
-        }
-
-    </script>
+    
 
     <script type="text/javascript">
         function ValidateCheckBox() {
@@ -437,7 +349,7 @@
         }
 
         function ShowPhoneExtOnType(optionSelected, txtPhoneID, phoneExtID, PhoneISDCode) {
-            debugger
+            
             if ((optionSelected.lastIndexOf('Other') < 0) && (optionSelected != 'skype') && (optionSelected != 'whatsapp')) {
                 //Show Ext text box        
                 
@@ -828,7 +740,7 @@
                     var PhoneTxt = PhoneCombainValue[2];
                     var PhoneExt = PhoneCombainValue[3];
                     var PhoneType = PhoneCombainValue[4];
-                    debugger
+                    
                     $('<div/>', {
                         'class': 'ExtAddPhone', html: GetHtml(chkPhonePro, PhoneISDCode, PhoneTxt, PhoneExt, PhoneType)
                     }).hide().appendTo('#container').slideDown('slow');
@@ -1049,7 +961,7 @@
             }
 
             $("#<%= phoneTypeDropDownList.ClientID %> option").each(function () {
-                debugger;
+                ;
                 if ($(this).text() == newPhoneType) {
                     alert("Phone Type already exists");                    
                     IsAlreadyExist = true;
@@ -1068,12 +980,12 @@
                 data: "{'strNewPhoneType':'" + newPhoneType + "'}",
 
                 success: function (data) {
-                    //debugger;
+                    //;
 
                     var dataInput = (data.d.split('#'));
                     //myString.split('/')
                     if (dataInput != '') {
-                        //debugger;
+                        //;
                         var title = "";
 
                         $("#dialog")[0].innerHTML = "";
@@ -1113,7 +1025,7 @@
         }
 
         function CheckDuplicateCustomerCred(obj, type) {
-            //debugger;
+            //;
             var valueForValid = "";
             if (type == 1) {
                 var contact = obj.value
@@ -1131,12 +1043,12 @@
                 data: "{'pValueForValidation':'" + valueForValid + "', 'strCurrentID':'" + $('#<%= hidID.ClientID %>').val() + "','pValidationType':" + type + "}",
 
                 success: function (data) {
-                    //debugger;
+                    //;
 
                     var dataInput = (data.d.split('#'));
                     //myString.split('/')
                     if (dataInput != '') {
-                        //debugger;
+                        //;
                         var title = "";
                         var existsMessage = "";
                         $("#dialog")[0].innerHTML = "";
@@ -1788,7 +1700,7 @@
                                         <label></label>
                                         <asp:TextBox ID="txtSource" runat="server" Width="140px" TabIndex="512"></asp:TextBox>
                                         &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
                                         <br />
                                         <label>
                                         </label>
@@ -5023,8 +4935,98 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
-    <script src="../js/jquery.dd.min.js"></script>
+    
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
     <script type="text/javascript">
+
+        Dropzone.autoDiscover = false;
+
+        $(function () {
+            Initialize();
+            $.fn.hitch = function (scope, fn) {
+                //return function () {
+                //    return fn.apply(scope, arguments);
+                //}
+            }
+        });
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+            Initialize();
+        });
+
+        function Initialize() {
+            ApplyDropZone();
+        }
+
+
+        var objWorkFileDropzone;
+
+        //Dropzone.autoDiscover = false;
+        //Dropzone.options.dropzoneForm = false;
+
+        function ApplyDropZone() {
+            ////User's drag and drop file attachment related code
+
+            //remove already attached dropzone.
+            if (objWorkFileDropzone) {
+                objWorkFileDropzone.destroy();
+                objWorkFileDropzone = null;
+            }
+
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            //remove already attached dropzone.
+        }
+
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+            //;
+            return new Dropzone(strDropzoneSelector,
+                {
+                    maxFiles: 5,
+                    url: "UploadFile.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: strPreviewSelector,
+                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            //;
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+
+                            // saves attachment.
+                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
+                            //this.removeFile(file);
+                            //$(".loading").hide();
+                        });
+                    }
+                });
+            }
+
+            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+                var attachments;
+
+                if ($(hdnControlID).val()) {
+                    attachments = $(hdnControlID).val() + serverfilename + "^";
+                }
+                else {
+                    attachments = serverfilename + "^";
+                }
+
+                $(hdnControlID).val(attachments);
+            }
+
         $(document).ready(function () {
 
 
@@ -5067,10 +5069,10 @@
             }
 
             //On UpdatePanel Refresh
-            //debugger;
+            //;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
             if (prm != null) {
-                // debugger;
+                // ;
                 prm.add_beginRequest(function (sender, e) {
                     if (sender._postBackSettings.panelsToUpdate != null) {
                         $(".loading").show();
@@ -5101,12 +5103,6 @@
         --%>
 
     </script>
-
-
-    <script src="../js/intTel/intlTelInput.js"></script>
-
-
-
 
     <%--
     <asp:Panel ID="Panel2" runat="server">
