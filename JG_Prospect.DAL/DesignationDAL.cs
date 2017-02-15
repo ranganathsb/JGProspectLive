@@ -43,7 +43,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetDesignationByFilter(int? DesignationID, int? DepartmentID)
+        public List<Designation> GetDesignationByFilter(int? DesignationID, int? DepartmentID)
         {
             try
             {
@@ -55,7 +55,24 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationID);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
-                    return returndata;
+
+                    List<Designation> lstDesignations = new List<Designation>();
+
+                    if (returndata != null && returndata.Tables.Count > 0) {
+                        foreach (DataRow drDesignation in returndata.Tables[0].Rows)
+                        {
+                            lstDesignations.Add(new Designation() 
+                            { 
+                                ID = Convert.ToInt32(drDesignation["ID"]),
+                                DesignationName = Convert.ToString(drDesignation["DesignationName"]),
+                                DepartmentID = Convert.ToInt32(drDesignation["DepartmentID"]),
+                                DepartmentName = Convert.ToString(drDesignation["DepartmentName"]),
+                                IsActive = Convert.ToBoolean(drDesignation["IsActive"])
+                            });
+                        }
+                    }
+
+                    return lstDesignations;
                 }
             }
             catch (Exception ex)

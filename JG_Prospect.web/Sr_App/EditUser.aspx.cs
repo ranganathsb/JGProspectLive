@@ -2416,51 +2416,53 @@ namespace JG_Prospect
             //Validate data -- Mobile no , email is entered or so...
             for (int i = 0; i < dtExcel.Rows.Count; i++)
             {
-                if (dtExcel.Rows[i]["Email1"] != null)
-                    if (dtExcel.Rows[i]["Email1"].ToString().Trim() == "")
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Email1 value for all the records";
-                        UcStatusPopUp.changeText();
-                        return false;
-                    }
+                if (dtExcel.Rows[i]["Email1"] != null && dtExcel.Rows[i]["Email1"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Email1 value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
 
-                if (dtExcel.Rows[i]["PhoneNo1"] != null)
-                    if (dtExcel.Rows[i]["PhoneNo1"].ToString().Trim() == "")
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter PhoneNo1 value for all the records";
-                        UcStatusPopUp.changeText();
-                        return false;
-                    }
+                if (dtExcel.Rows[i]["PhoneNo1"] != null && dtExcel.Rows[i]["PhoneNo1"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter PhoneNo1 value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
 
-                if (dtExcel.Rows[i]["FirstName"] != null)
-                    if (dtExcel.Rows[i]["FirstName"].ToString().Trim() == "")
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter FirstName value for all the records";
-                        UcStatusPopUp.changeText();
-                        return false;
-                    }
+                if (dtExcel.Rows[i]["FirstName"] != null && dtExcel.Rows[i]["FirstName"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter FirstName value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
 
-                if (dtExcel.Rows[i]["LastName"] != null)
-                    if (dtExcel.Rows[i]["LastName"].ToString().Trim() == "")
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter LastName value for all the records";
-                        UcStatusPopUp.changeText();
-                        return false;
-                    }
+                if (dtExcel.Rows[i]["LastName"] != null && dtExcel.Rows[i]["LastName"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter LastName value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
 
-                if (dtExcel.Rows[i]["Designition"] != null)
-                    if (dtExcel.Rows[i]["Designition"].ToString().Trim() == "")
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
-                        UcStatusPopUp.changeText();
-                        return false;
-                    }
+                if (dtExcel.Rows[i]["Designition"] != null && dtExcel.Rows[i]["Designition"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
 
+                if (dtExcel.Rows[i]["Status"] != null && dtExcel.Rows[i]["Status"].ToString().Trim() == "")
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Status value for all the records";
+                    UcStatusPopUp.changeText();
+                    return false;
+                }
             }
 
             return true;
@@ -2468,6 +2470,8 @@ namespace JG_Prospect
 
         public void CreateUserObjectXml(DataTable dtExcel, out XmlDocument xmlDoc)
         {
+            List<Designation> lstDesignation = DesignationBLL.Instance.GetAllDesignation();
+
             List<user1> list = new List<user1>();
             string helper = "";
             user1 objuser = null;
@@ -2504,6 +2508,17 @@ namespace JG_Prospect
                     objuser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
                     objuser.CompanyName = dtExcel.Rows[i]["CompanyName"].ToString().Trim();
                     objuser.status = dtExcel.Rows[i]["status"].ToString().Trim();
+
+                    JGConstant.InstallUserStatus objInstallUserStatus;
+                    if (Enum.TryParse<JGConstant.InstallUserStatus>(objuser.status, true, out objInstallUserStatus))
+                    {
+                        objuser.status = Convert.ToByte(objInstallUserStatus).ToString();
+                    }
+                    else
+                    {
+                        objuser.status = string.Empty;
+                    }
+
                     objuser.phone = dtExcel.Rows[i]["PhoneNo1"].ToString().Trim();
                     objuser.Phone2 = dtExcel.Rows[i]["PhoneNo2"].ToString().Trim();
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
@@ -2511,6 +2526,18 @@ namespace JG_Prospect
                     objuser.DateSourced = dtExcel.Rows[i]["DateSource"].ToString().Trim();
                     objuser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
                     objuser.Designation = dtExcel.Rows[i]["Designition"].ToString().Trim();
+
+                    Designation objDesi = lstDesignation.FirstOrDefault(d => d.DesignationName.ToUpper().Trim() == objuser.Designation.ToUpper().Trim());
+                    if (objDesi != null)
+                    {
+                        objuser.Designation = objDesi.ID.ToString();
+                        //objuser.Designationid = objDesi.ID.ToString();
+                    }
+                    else
+                    {
+                        objuser.Designation = "";
+                    }
+
                     //objuser.status = dtExcel.Rows[i][10].ToString().Trim();
 
                     //objuser.Designation = dtExcel.Rows[i][1].ToString().Trim();
@@ -2587,8 +2614,10 @@ namespace JG_Prospect
                     #endregion
                     //|| objuser.phonetype == ""
                     //|| objuser.PrimeryTradeId == 0
-                    if (objuser.Email == "" || objuser.Designation == "" || objuser.firstname == "" || objuser.lastname == "" || objuser.Source == "" ||
-                        objuser.phone == "" || objuser.CompanyName == "")
+                    if (objuser.Email == "" || objuser.phone == "" ||
+                        objuser.Designation == "" || objuser.status == "" ||
+                        objuser.firstname == "" || objuser.lastname == "" || objuser.Source == "" ||
+                        objuser.CompanyName == "")
                     {
                         IsValid = false;
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Upload file contains data error or matching data exists, please check and upload again');", true);
@@ -3830,14 +3859,14 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
                     strBody = strBody.Replace("#TaskLink#", string.Format(
-                                                                            "{0}?TaskId={1}&hstid={2}", 
+                                                                            "{0}?TaskId={1}&hstid={2}",
                                                                             string.Concat(
-                                                                                            Request.Url.Scheme, 
-                                                                                            Uri.SchemeDelimiter, 
-                                                                                            Request.Url.Host.Split('?')[0], 
+                                                                                            Request.Url.Scheme,
+                                                                                            Uri.SchemeDelimiter,
+                                                                                            Request.Url.Host.Split('?')[0],
                                                                                             "/Sr_App/TaskGenerator.aspx"
-                                                                                         ), 
-                                                                            strTaskId, 
+                                                                                         ),
+                                                                            strTaskId,
                                                                             strSubTaskId
                                                                         )
                                             );
