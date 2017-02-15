@@ -2,6 +2,7 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <%@ Register Src="~/UserControl/ucAuditTrailByUser.ascx" TagPrefix="ucAudit" TagName="UserListing" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -1461,92 +1462,6 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
-    <script type="text/javascript">
-
-        Dropzone.autoDiscover = false;
-
-        $(function () {
-            Initialize();
-        });
-
-        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
-
-        prmTaskGenerator.add_endRequest(function () {
-            Initialize();
-        });
-
-        function Initialize() {
-            ApplyDropZone();
-        }
-
-
-        var objWorkFileDropzone;
-
-        //Dropzone.autoDiscover = false;
-        //Dropzone.options.dropzoneForm = false;
-
-        function ApplyDropZone() {
-            ////User's drag and drop file attachment related code
-
-            //remove already attached dropzone.
-            if (objWorkFileDropzone) {
-                objWorkFileDropzone.destroy();
-                objWorkFileDropzone = null;
-            }
-
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
-            //remove already attached dropzone.
-        }
-
-        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
-            //;
-            return new Dropzone(strDropzoneSelector,
-                {
-                    maxFiles: 5,
-                    url: "UploadFile.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: strPreviewSelector,
-                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            //;
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
-                            // saves attachment.
-                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
-                            //this.removeFile(file);
-                            //$(".loading").hide();
-                        });
-                    }
-                });
-            }
-
-            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-                var attachments;
-
-                if ($(hdnControlID).val()) {
-                    attachments = $(hdnControlID).val() + serverfilename + "^";
-                }
-                else {
-                    attachments = serverfilename + "^";
-                }
-
-                $(hdnControlID).val(attachments);
-            }
-
-    </script>
-
     <input type="hidden" id="hidID" runat="server" />
     <input type="hidden" id="hidDesignationBeforeChange" runat="server" />
     <input type="hidden" id="hidExtEmail" runat="server" />
@@ -5020,8 +4935,98 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
-    <script src="../js/jquery.dd.min.js"></script>
+    
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
     <script type="text/javascript">
+
+        Dropzone.autoDiscover = false;
+
+        $(function () {
+            Initialize();
+            $.fn.hitch = function (scope, fn) {
+                return function () {
+                    return fn.apply(scope, arguments);
+                }
+            }
+        });
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+            Initialize();
+        });
+
+        function Initialize() {
+            ApplyDropZone();
+        }
+
+
+        var objWorkFileDropzone;
+
+        //Dropzone.autoDiscover = false;
+        //Dropzone.options.dropzoneForm = false;
+
+        function ApplyDropZone() {
+            ////User's drag and drop file attachment related code
+
+            //remove already attached dropzone.
+            if (objWorkFileDropzone) {
+                objWorkFileDropzone.destroy();
+                objWorkFileDropzone = null;
+            }
+
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            //remove already attached dropzone.
+        }
+
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+            //;
+            return new Dropzone(strDropzoneSelector,
+                {
+                    maxFiles: 5,
+                    url: "UploadFile.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: strPreviewSelector,
+                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            //;
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+
+                            // saves attachment.
+                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
+                            //this.removeFile(file);
+                            //$(".loading").hide();
+                        });
+                    }
+                });
+            }
+
+            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+                var attachments;
+
+                if ($(hdnControlID).val()) {
+                    attachments = $(hdnControlID).val() + serverfilename + "^";
+                }
+                else {
+                    attachments = serverfilename + "^";
+                }
+
+                $(hdnControlID).val(attachments);
+            }
+
         $(document).ready(function () {
 
 
@@ -5098,12 +5103,6 @@
         --%>
 
     </script>
-
-
-    <script src="../js/intTel/intlTelInput.js"></script>
-
-
-
 
     <%--
     <asp:Panel ID="Panel2" runat="server">
