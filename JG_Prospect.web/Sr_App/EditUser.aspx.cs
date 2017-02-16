@@ -3832,8 +3832,11 @@ namespace JG_Prospect
         {
             try
             {
-                string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                //string strHTMLTemplateName = "Task Generator Auto Email";
+                //DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Task_Generator_Auto_Email, JGSession.DesignationId.ToString());
+
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -3843,10 +3846,14 @@ namespace JG_Prospect
                     string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
                     string fullname = FName + " " + LName;
 
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    //string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    //string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    //string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    //string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = objHTMLTemplate.Header;
+                    string strBody = objHTMLTemplate.Body;
+                    string strFooter =objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
 
                     strsubject = strsubject.Replace("#ID#", strTaskId);
                     strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
@@ -3873,6 +3880,8 @@ namespace JG_Prospect
 
                     strBody = strHeader + strBody + strFooter;
 
+                    string strHTMLTemplateName = "Task Generator Auto Email";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
                     List<Attachment> lstAttachments = new List<Attachment>();
                     // your remote SMTP server IP.
                     for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
@@ -3886,7 +3895,7 @@ namespace JG_Prospect
                         }
                     }
 
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                    CommonFunction.SendEmail(HTMLTemplates.Task_Generator_Auto_Email.ToString(), emailId, strsubject, strBody, lstAttachments);
                 }
             }
             catch (Exception ex)
