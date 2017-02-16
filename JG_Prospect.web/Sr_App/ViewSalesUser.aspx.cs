@@ -441,7 +441,7 @@ namespace JG_Prospect.Sr_App
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-                            ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
+                            ddlPositionAppliedFor.Items.FindByValue(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
                         }
 
                         if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
@@ -1780,7 +1780,7 @@ namespace JG_Prospect.Sr_App
                 objuser.cThree = txtcThree.Text;
                 objuser.UserType = "SalesUser";
 
-                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Value;
                 objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
@@ -2397,7 +2397,7 @@ namespace JG_Prospect.Sr_App
                 objuser.bThree = txtbThree.Text;
                 objuser.cThree = txtcThree.Text;
 
-                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Value;
                 objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
