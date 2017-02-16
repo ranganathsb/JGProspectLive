@@ -668,7 +668,7 @@
 
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
-                            AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
+                            AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
                             OnPageIndexChanging="grdUsers_PageIndexChanging">
                             <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="TopAndBottom" />
@@ -1284,7 +1284,7 @@
                             ControlToValidate="ddlRecruiter_Popup" ValidationGroup="vgChangeStatus" Display="None" />
                     </div>
                     <br />
-                    <asp:GridView ID="grdUsers_Popup" runat="server" AutoGenerateColumns="false" DataKeyNames="Id"
+                    <asp:GridView ID="grdUsers_Popup" runat="server" AutoGenerateColumns="false" DataKeyNames="Id,DesignationID"
                         CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
                         OnRowDataBound="grdUsers_Popup_RowDataBound">
                         <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />

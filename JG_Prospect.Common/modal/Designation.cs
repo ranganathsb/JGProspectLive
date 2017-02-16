@@ -8,10 +8,10 @@ namespace JG_Prospect.Common.modal
 {
     public class Designation
     {
-        public int ID;
-        public string DesignationName;
-        public bool IsActive;
-        public int DepartmentID;
-        public string DepartmentName;
+        public int ID { get; set; }
+        public string DesignationName { get; set; }
+        public bool IsActive { get; set; }
+        public int DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
     }
 }

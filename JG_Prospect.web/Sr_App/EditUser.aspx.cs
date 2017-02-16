@@ -572,6 +572,7 @@ namespace JG_Prospect
             Session["EditId"] = Id.Text;
             Session["EditStatus"] = ddl.SelectedValue;
             Session["DesignitionSC"] = lblDesignation.Text;
+            Session["DesignitionIdSC"] = grdUsers.DataKeys[grow.RowIndex]["DesignationID"].ToString();
             Session["FirstNameNewSC"] = lblFirstName.Text;
             Session["LastNameNewSC"] = lblLastName.Text;
 
@@ -685,39 +686,6 @@ namespace JG_Prospect
                 txtpassword2.Attributes.Add("value", "jmgrove");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
                 return;
-                /*
-                DataSet ds = new DataSet();
-                string email = "";
-                string HireDate = "";
-                string EmpType = "";
-                string PayRates = "";
-                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), txtReason.Text);
-                if (ds.Tables.Count > 0)
-                {
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
-                        {
-                            email = Convert.ToString(ds.Tables[0].Rows[0][0]);
-                        }
-                        if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
-                        {
-                            HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
-                        }
-                        if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
-                        {
-                            EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
-                        }
-                        if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
-                        {
-                            PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
-                        }
-                    }
-                }
-                SendEmail(email, lblFirstName.Text, lblLastName.Text, "Offer Made", txtReason.Text, lblDesignation.Text, HireDate, EmpType, PayRates, 105);
-                binddata();
-                return;
-                */
             }
 
             if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InstallProspect).ToString())
@@ -917,7 +885,7 @@ namespace JG_Prospect
                         }
                     }
                 }
-                SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Deactivation", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), HireDate, EmpType, PayRates, 0);
+                SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Deactivation", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, 0);
             }
             else
             {
@@ -992,7 +960,7 @@ namespace JG_Prospect
             }
 
             SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]),
-                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), HireDate, EmpType, PayRates, HTMLTemplates.InterviewDateAutoEmail
+                "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, HTMLTemplates.InterviewDateAutoEmail
                 , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
 
             //AssignedTask if any or Default
@@ -1097,7 +1065,7 @@ namespace JG_Prospect
                 lstAttachments.Add(attachment);
             }
 
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, HireDate, EmpType, PayRates,
+            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates,
                 HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
 
             //binddata();
@@ -1264,7 +1232,7 @@ namespace JG_Prospect
 
         protected void btnSaveStatusForSelected_Click(object sender, EventArgs e)
         {
-            int intId;
+            int intId, intDesignationId;
             string strEmail, strHireDate, strEmployeeType, strPayRates, strFirstName, strLastName, strDesignation, strReason, strTime;
             DateTime? dtDate = null;
 
@@ -1281,6 +1249,7 @@ namespace JG_Prospect
                 strTime = string.Empty;
 
                 intId = Convert.ToInt32(grdUsers_Popup.DataKeys[objUserRow.RowIndex]["Id"]);
+                intDesignationId = Convert.ToInt32(grdUsers_Popup.DataKeys[objUserRow.RowIndex]["DesignationID"]);
                 strFirstName = ((Literal)objUserRow.FindControl("ltrlFirstName")).Text;
                 strLastName = ((Literal)objUserRow.FindControl("ltrlLastName")).Text;
                 strDesignation = ((Literal)objUserRow.FindControl("ltrlDesignation")).Text;
@@ -1330,7 +1299,8 @@ namespace JG_Prospect
                                     strLastName,
                                     "Deactivation",
                                     strReason,
-                                    ((Literal)objUserRow.FindControl("ltrlDesignation")).Text,
+                                    strDesignation,
+                                    intDesignationId,
                                     strHireDate,
                                     strEmployeeType,
                                     strPayRates,
@@ -1346,6 +1316,7 @@ namespace JG_Prospect
                                     "Interview Date Auto Email",
                                     strReason,
                                     strDesignation,
+                                    intDesignationId,
                                     strHireDate,
                                     strEmployeeType,
                                     strPayRates,
@@ -1365,7 +1336,7 @@ namespace JG_Prospect
                         #region '-- PDF Attachment --'
 
                         //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, strDesignation);
-                        DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Contract_Template, JGSession.DesignationId.ToString());
+                        DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Contract_Template, intDesignationId.ToString());
                         string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
                         strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
                         strHtml = strHtml.Replace("#FirstName#", strFirstName);
@@ -1425,6 +1396,7 @@ namespace JG_Prospect
                                     "Offer Made",
                                     strReason,
                                     strDesignation,
+                                    intDesignationId,
                                     strHireDate,
                                     strEmployeeType,
                                     strPayRates,
@@ -1687,6 +1659,7 @@ namespace JG_Prospect
             dtUsers.Columns.Add("FirstName");
             dtUsers.Columns.Add("LastName");
             dtUsers.Columns.Add("Designation");
+            dtUsers.Columns.Add("DesignationID");
             dtUsers.Columns.Add("InterviewDate");
             dtUsers.Columns.Add("InterviewTime");
 
@@ -1699,8 +1672,9 @@ namespace JG_Prospect
                                         (objUserRow.FindControl("lblFirstName") as Label).Text,
                                         (objUserRow.FindControl("lblLastName") as Label).Text,
                                         (objUserRow.FindControl("lblDesignation") as Label).Text,
+                                        Convert.ToString(grdUsers.DataKeys[objUserRow.RowIndex]["DesignationID"]),
                                         DateTime.Now.AddDays(1).ToShortDateString(),
-                                        "10:00"
+                                        "10:00 AM"
                                     );
                 }
             }
@@ -2857,9 +2831,9 @@ namespace JG_Prospect
             return true;
         }
 
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
-            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, JGSession.DesignationId.ToString());
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
 
             //DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
             //if (ds == null)
@@ -3832,8 +3806,11 @@ namespace JG_Prospect
         {
             try
             {
-                string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                //string strHTMLTemplateName = "Task Generator Auto Email";
+                //DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Task_Generator_Auto_Email, JGSession.DesignationId.ToString());
+
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -3843,10 +3820,14 @@ namespace JG_Prospect
                     string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
                     string fullname = FName + " " + LName;
 
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    //string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    //string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    //string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    //string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = objHTMLTemplate.Header;
+                    string strBody = objHTMLTemplate.Body;
+                    string strFooter = objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
 
                     strsubject = strsubject.Replace("#ID#", strTaskId);
                     strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
@@ -3873,6 +3854,8 @@ namespace JG_Prospect
 
                     strBody = strHeader + strBody + strFooter;
 
+                    string strHTMLTemplateName = "Task Generator Auto Email";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
                     List<Attachment> lstAttachments = new List<Attachment>();
                     // your remote SMTP server IP.
                     for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
@@ -3886,7 +3869,7 @@ namespace JG_Prospect
                         }
                     }
 
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                    CommonFunction.SendEmail(HTMLTemplates.Task_Generator_Auto_Email.ToString(), emailId, strsubject, strBody, lstAttachments);
                 }
             }
             catch (Exception ex)
