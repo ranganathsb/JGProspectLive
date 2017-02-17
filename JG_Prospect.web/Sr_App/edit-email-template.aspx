@@ -12,16 +12,18 @@
             <ContentTemplate>
                 <table width="100%">
                     <tr>
-                        <td width="80" valign="top">Name:
-                        </td>
+                        <%--<td width="80" valign="top">Name:
+                        </td>--%>
                         <td>
-                            <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" />
+                            <b>Email Template Name:</b><br />
+                            <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" Width="500px" />
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">Designation:
-                        </td>
+                      <%--  <td valign="top">Designation:
+                        </td>--%>
                         <td>
+                          <b> Used For Designation:</b><br />
                             <asp:DropDownList ID="ddlDesignation" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged" />
                             <asp:RequiredFieldValidator ID="rfvDesignation" runat="server" ControlToValidate="ddlDesignation"
                                 InitialValue="0" ValidationGroup="vgTemplate" Display="None"
@@ -35,9 +37,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">Subject:
-                        </td>
+                        <%--<td valign="top">Subject:
+                        </td>--%>
                         <td>
+                           <b> Email Subject:</b><br />
                             <asp:TextBox ID="txtSubject" runat="server" MaxLength="3500" Width="90%" />
                             <asp:RequiredFieldValidator ID="rfvSubject" runat="server" ControlToValidate="txtSubject"
                                 InitialValue="" ValidationGroup="vgTemplate" Display="None"
@@ -45,9 +48,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">Header:
-                        </td>
+                        <%--<td valign="top">Header:
+                        </td>--%>
                         <td>
+                          <b> Email Header: </b><br />
                             <asp:TextBox ID="txtHeader" runat="server" TextMode="MultiLine" Width="90%" />
                             <asp:RequiredFieldValidator ID="rfvHeader" runat="server" ControlToValidate="txtHeader"
                                 InitialValue="" ValidationGroup="vgTemplate" Display="None"
@@ -55,9 +59,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">Body:
-                        </td>
+                        <%--<td valign="top">Body:
+                        </td>--%>
                         <td>
+                           <b> Email Body:</b> <br />
                             <asp:TextBox ID="txtBody" runat="server" TextMode="MultiLine" Width="90%" />
                             <asp:RequiredFieldValidator ID="rfvBody" runat="server" ControlToValidate="txtBody"
                                 InitialValue="" ValidationGroup="vgTemplate" Display="None"
@@ -65,9 +70,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td valign="top">Footer:
-                        </td>
+                        <%--<td valign="top">Footer:
+                        </td>--%>
                         <td>
+                           <b>Email Footer:</b><br />
                             <asp:TextBox ID="txtFooter" runat="server" TextMode="MultiLine" Width="90%" />
                             <asp:RequiredFieldValidator ID="rfvFooter" runat="server" ControlToValidate="txtFooter"
                                 InitialValue="" ValidationGroup="vgTemplate" Display="None"

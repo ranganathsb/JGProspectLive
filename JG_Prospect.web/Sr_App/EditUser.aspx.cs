@@ -1020,7 +1020,7 @@ namespace JG_Prospect
                 }
             }
             //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
-            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Contract_Template, JGSession.DesignationId.ToString());
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, Convert.ToString(Session["DesignitionIdSC"]));
             string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
             strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
             strHtml = strHtml.Replace("#FirstName#", hdnFirstName.Value);
@@ -1336,7 +1336,7 @@ namespace JG_Prospect
                         #region '-- PDF Attachment --'
 
                         //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, strDesignation);
-                        DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Contract_Template, intDesignationId.ToString());
+                        DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, intDesignationId.ToString());
                         string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
                         strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
                         strHtml = strHtml.Replace("#FirstName#", strFirstName);

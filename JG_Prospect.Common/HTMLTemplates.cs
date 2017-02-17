@@ -67,7 +67,7 @@ namespace JG_Prospect.Common
         VendorCategoryEmail_Template = 57,
         VendorEmail_Template = 58,
         Windows_And_Doors = 59,
-        Contract_AutoEmail_Template = 60,
+        Offer_Made_Attachment_Template = 60,
         QuoteRequest = 61,
         Acceptance_And_Payment_Confirmation = 62,
         Proposal_Tracking_For_Not_Sold_Job = 63,

@@ -13,14 +13,14 @@
             <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
             <AlternatingRowStyle CssClass="AlternateRow " />
             <Columns>
-                <asp:TemplateField HeaderText="Id">
+                <asp:TemplateField HeaderText="Id" Visible="false">
                     <ItemTemplate>
-                        <asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />
+                        <%--<asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />--%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Name">
                     <ItemTemplate>
-                        <%# Eval("Name") %>
+                        <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />                        
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Subject">

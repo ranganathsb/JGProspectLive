@@ -5808,7 +5808,7 @@ namespace JG_Prospect.Sr_App
         private void BindDesignations()
         {
             DataSet dsDesignation = new DataSet();
-            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+            dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0,0);
             if (dsDesignation.Tables.Count > 0)
             {
                 ddldesignation.DataSource = dsDesignation.Tables[0];
