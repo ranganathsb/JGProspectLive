@@ -789,7 +789,11 @@
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+            UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>', '#<%=btnSaveSubTask.ClientID%>');
+
+
             SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
+            UpdateTaskDescBeforeSubmit('<%=txtTaskDesc.ClientID%>', '#<%=btnAddMoreSubtask.ClientID%>');
 
 
             $('#<%=txtInstallId.ClientID%>').bind('keypress', function (e) {
@@ -803,10 +807,7 @@
             });
 
         }
-
     }
-    
-
     
     function txtSubTaskDescription_Blur(editor) {
         if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
@@ -910,7 +911,17 @@
     }
 
 
-
+    //  Created By : Yogesh K
+    // To updat element underlying CKEditor before work submited to server.
+    function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+        $(ButtonId).bind('click', function () {
+            var editor = CKEDITOR.instances[CKEditorId];
+            console.log(editor);
+            if (editor) {
+                editor.updateElement();
+            }
+        });
+    }
 
 
     //----------- Start DP ---------
