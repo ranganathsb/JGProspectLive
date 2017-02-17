@@ -15,7 +15,7 @@
                         <td width="80" valign="top">Name:
                         </td>
                         <td>
-                            <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" />
+                            <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" Width="500px" />
                         </td>
                     </tr>
                     <tr>
