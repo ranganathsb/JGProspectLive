@@ -884,7 +884,7 @@
                             </div>
                         </div>
                         <div class="btn_sec" style="float: left;">
-                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" />
+                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" style="padding:0px 10px 0px 10px!important;" />
                         </div>
                         <div class="hide">
                             <input id="hdnBulkUploadFile" runat="server" type="hidden" />
