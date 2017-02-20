@@ -187,11 +187,21 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
     if ($(strDropzoneSelector).attr("data-accepted-files")) {
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
+    
+    var strUrl = 'taskattachmentupload.aspx';
+    switch ($(strDropzoneSelector).attr("data-upload-path-code")) {
+        case '1':
+            strUrl = 'userbulkupload.aspx';
+            break;
+        default:
+            strUrl = 'taskattachmentupload.aspx';
+            break;
+    }
 
     var objDropzone = new Dropzone(strDropzoneSelector,
         {
             maxFiles: 5,
-            url: "taskattachmentupload.aspx",
+            url: strUrl,
             thumbnailWidth: 90,
             thumbnailHeight: 90,
             acceptedFiles: strAcceptedFiles,

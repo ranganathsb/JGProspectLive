@@ -1434,6 +1434,65 @@ namespace JG_Prospect
 
         #endregion
 
+        protected void btnUploadNew_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(hdnBulkUploadFile.Value))
+                {
+                    string strFilePath = Server.MapPath("~/UploadedExcel/" + hdnBulkUploadFile.Value.Split('^')[0].Split('@')[0]);
+
+                    string FileName = Path.GetFileName(strFilePath);
+                    string Extension = Path.GetExtension(strFilePath);
+
+                    if (File.Exists(strFilePath) && (Extension == ".xlsx" || Extension == ".csv"))
+                    { 
+                        DataTable dtExcel = new DataTable();
+                        ExcelPackage package = new ExcelPackage();
+
+                        switch (Extension)
+                        {
+                            case ".xls":
+                            case ".xlsx":
+                                Stream objStream = File.OpenRead(strFilePath);
+                                package = new ExcelPackage(objStream);
+                                dtExcel = ToDataTable(package);
+                                break;
+
+                            case ".csv":
+                                dtExcel = ReadCsvFile(strFilePath);
+                                break;
+                        }
+
+                        if (validateUploadedData(dtExcel) == false)
+                        {
+                            //binddata();
+                            GetSalesUsersStaticticsAndData(); ;
+                            UcStatusPopUp.changeText();
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
+                            return;
+                        }
+                        else
+                        {
+                            Import_To_Grid(dtExcel);
+                            //binddata();
+                            GetSalesUsersStaticticsAndData();
+                        }
+                    }
+                    else
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Please Select xlsx or csv file.";
+                        UcStatusPopUp.changeText();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("EditUser-btnUploadNew_Click", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+            }
+        }
+
         protected void btnUpload_Click(object sender, EventArgs e)
         {
             try
