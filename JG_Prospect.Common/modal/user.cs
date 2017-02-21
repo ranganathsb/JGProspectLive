@@ -201,6 +201,7 @@ namespace JG_Prospect.Common.modal
         public string Email2;//Add By ratnakar
         public string Notes; // Add By ratnakar
         public string Designation;
+        public int DesignationId;
         public string usertype;
         public string status;
         public string phone;
@@ -214,6 +215,7 @@ namespace JG_Prospect.Common.modal
         public int PrimeryTradeId;
         public int SecondoryTradeId;
         public string Source;
+        public int SourceId;
         public string SuiteAptRoom;
         public int FullTimePosition;
         public bool DrugTest;

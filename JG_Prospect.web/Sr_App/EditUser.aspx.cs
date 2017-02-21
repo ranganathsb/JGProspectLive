@@ -1446,17 +1446,15 @@ namespace JG_Prospect
                     string Extension = Path.GetExtension(strFilePath);
 
                     if (File.Exists(strFilePath) && (Extension == ".xlsx" || Extension == ".csv"))
-                    { 
+                    {
                         DataTable dtExcel = new DataTable();
-                        ExcelPackage package = new ExcelPackage();
 
                         switch (Extension)
                         {
                             case ".xls":
                             case ".xlsx":
                                 Stream objStream = File.OpenRead(strFilePath);
-                                package = new ExcelPackage(objStream);
-                                dtExcel = ToDataTable(package);
+                                dtExcel = ReadExcelFile(new ExcelPackage(objStream));
                                 break;
 
                             case ".csv":
@@ -1464,19 +1462,16 @@ namespace JG_Prospect
                                 break;
                         }
 
-                        if (validateUploadedData(dtExcel) == false)
+                        if (ValidateUploadedData(dtExcel))
                         {
-                            //binddata();
-                            GetSalesUsersStaticticsAndData(); ;
-                            UcStatusPopUp.changeText();
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
-                            return;
+                            ImportIntsallUsers(dtExcel);
+                            GetSalesUsersStaticticsAndData();
                         }
                         else
                         {
-                            Import_To_Grid(dtExcel);
-                            //binddata();
-                            GetSalesUsersStaticticsAndData();
+                            GetSalesUsersStaticticsAndData(); ;
+                            UcStatusPopUp.changeText();
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
                         }
                     }
                     else
@@ -1521,7 +1516,7 @@ namespace JG_Prospect
 
                         DataTable dtExcel = FillValueFromFiles(directoryPath, Extension);
 
-                        if (validateUploadedData(dtExcel) == false)
+                        if (ValidateUploadedData(dtExcel) == false)
                         {
                             //binddata();
                             GetSalesUsersStaticticsAndData(); ;
@@ -1531,7 +1526,7 @@ namespace JG_Prospect
                         }
                         else
                         {
-                            Import_To_Grid(dtExcel);
+                            ImportIntsallUsers(dtExcel);
                             //binddata();
                             GetSalesUsersStaticticsAndData();
                         }
@@ -2168,109 +2163,6 @@ namespace JG_Prospect
             return SalesId;
         }
 
-        private void Import_To_Grid(DataTable dtExcel)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            CreateUserObjectXml(dtExcel, out xmlDoc);
-
-            DataSet ds = new DataSet();
-
-            if (xmlDoc.OuterXml != "")
-                ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
-
-            pnlAddNewUser.Visible = false;
-            pnlDuplicate.Visible = false;
-
-            #region '-- Process Excel data --'
-            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
-            {
-
-                int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                where (string)ReturnDr["ActionTaken"] != "I"
-                                select (string)ReturnDr["Email"]).Count();
-
-                if (RowCount > 0) // if found any row not Inserted than
-                {
-                    DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                                  where (string)ReturnDr["ActionTaken"] != "I"
-                                                  select ReturnDr).CopyToDataTable();
-
-                    Session["DuplicateUsers"] = DuplicateRecords;
-
-                    listDuplicateUsers.DataSource = DuplicateRecords;
-                    listDuplicateUsers.DataBind();
-
-                    lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
-
-                    pnlDuplicate.Visible = true;
-                }
-
-                RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                            where (string)ReturnDr["ActionTaken"] == "I"
-                            select (string)ReturnDr["Email"]).Count();
-
-                if (RowCount > 0) // if row Inserted / Added
-                {
-                    DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                                 where (string)ReturnDr["ActionTaken"] == "I"
-                                                 select ReturnDr).CopyToDataTable();
-
-                    lstNewUserAdd.DataSource = InsertedRecords;
-                    lstNewUserAdd.DataBind();
-
-                    lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
-
-                    pnlAddNewUser.Visible = true;
-                    //Session["DuplicateUsers"] = ds.Tables[0];
-                    //listDuplicateUsers.DataSource = ds.Tables[0];
-                    //listDuplicateUsers.DataBind();
-                }
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
-            }
-            else
-            {
-                //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
-                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
-                UcStatusPopUp.changeText();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
-            }
-            #endregion
-        }
-
-        public DataTable ToDataTable(ExcelPackage package)
-        {
-            DataTable table = new DataTable();
-            try
-            {
-                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
-                foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
-                {
-                    table.Columns.Add(firstRowCell.Text);
-                }
-
-                for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
-                {
-                    var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
-                    var newRow = table.NewRow();
-                    foreach (var cell in row)
-                    {
-                        newRow[cell.Start.Column - 1] = cell.Text;
-                    }
-                    table.Rows.Add(newRow);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                UtilityBAL.AddException("EditUser-ToDataTable", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-                return null;
-
-            }
-
-            return table;
-        }
-
         private DataTable FillValueFromFiles(string FilePath, string Extension)
         {
             DataTable dtExcel = new DataTable();
@@ -2282,7 +2174,7 @@ namespace JG_Prospect
                 case ".xlsx":
 
                     package = new ExcelPackage(BulkProspectUploader.FileContent);
-                    dtExcel = ToDataTable(package);
+                    dtExcel = ReadExcelFile(package);
 
                     break;
 
@@ -2294,15 +2186,79 @@ namespace JG_Prospect
             return dtExcel;
         }
 
-        /// <summary>
-        /// Read CSV File and return Data Table.
-        /// </summary>
-        /// <returns></returns>
+        public DataTable GetImportIntsallUsersDataTable()
+        {
+            DataTable objDataTable = new DataTable();
+
+            objDataTable.Columns.Add("Designation", typeof(string));
+            objDataTable.Columns.Add("Status", typeof(string));
+            objDataTable.Columns.Add("DateSourced", typeof(string));
+            objDataTable.Columns.Add("Source", typeof(string));
+            objDataTable.Columns.Add("FirstName", typeof(string));
+            objDataTable.Columns.Add("LastName", typeof(string));
+            objDataTable.Columns.Add("Email", typeof(string));
+            objDataTable.Columns.Add("Phone1", typeof(string));
+            objDataTable.Columns.Add("Phone1Type", typeof(string));
+            objDataTable.Columns.Add("Phone2", typeof(string));
+            objDataTable.Columns.Add("Phone2Type", typeof(string));
+            objDataTable.Columns.Add("Address", typeof(string));
+            objDataTable.Columns.Add("Zip", typeof(string));
+            objDataTable.Columns.Add("State", typeof(string));
+            objDataTable.Columns.Add("City", typeof(string));
+            objDataTable.Columns.Add("Suit_Apt_Room", typeof(string));
+            objDataTable.Columns.Add("Notes", typeof(string));
+
+            return objDataTable;
+        }
+
+        public DataTable ReadExcelFile(ExcelPackage package)
+        {
+            DataTable dtUser = GetImportIntsallUsersDataTable();
+            try
+            {
+                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+
+                // excluding 1st row containing heading.
+                for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
+                {
+                    var row = workSheet.Cells[rowNumber, 1, rowNumber, dtUser.Columns.Count];
+                    var drUser = dtUser.NewRow();
+                    int intEmptyColumnCount = 0;
+                    foreach (var cell in row)
+                    {
+                        drUser[cell.Start.Column - 1] = cell.Text;
+                        if (string.IsNullOrEmpty(cell.Text))
+                        {
+                            intEmptyColumnCount++;
+                        }
+                    }
+
+                    // stop looping, if end of file.
+                    // we have default value 'Applicant' in designation column, so, it will never be blank. So, we used -1 in below condition.
+                    if (intEmptyColumnCount >= dtUser.Columns.Count - 1)
+                    {
+                        break;
+                    }
+
+                    dtUser.Rows.Add(drUser);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("EditUser-ReadExcelFile", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+                return null;
+
+            }
+
+            return dtUser;
+        }
+
         public DataTable ReadCsvFile(string FileSaveWithPath)
         {
             /// Ref Site :http://www.c-sharpcorner.com/blogs/read-csv-file-into-data-table1
 
-            DataTable dtCsv = new DataTable();
+            DataTable dtUser = GetImportIntsallUsersDataTable();
             string Fulltext;
 
             //string FileSaveWithPath = Server.MapPath("\\Files\\Import" + System.DateTime.Now.ToString("ddMMyyyy_hhmmss") + ".csv");
@@ -2317,50 +2273,29 @@ namespace JG_Prospect
                     {
                         string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
                         {
-                            if (i == 0)
+                            // excluding 1st row containing heading.
+                            if (i > 0)
                             {
-                                for (int j = 0; j < rowValues.Count(); j++)
-                                {
-                                    if ((j == rowValues.Count() - 1) && (rowValues[j].IndexOf("\r") > 0)) //CSV last col value many have "/r"
-                                    {
-                                        // Remove /r from value 
-                                        dtCsv.Columns.Add(rowValues[j].Replace("\r", ""));
-                                    }
-                                    else
-                                    {
-                                        dtCsv.Columns.Add(rowValues[j]); //add headers - 
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                DataRow dr = dtCsv.NewRow();
+                                DataRow drUser = dtUser.NewRow();
                                 for (int k = 0; k < rowValues.Count(); k++)
                                 {
                                     if ((k == rowValues.Count() - 1) && (rowValues[k].IndexOf("\r") > 0)) //CSV last col value many have "/r"
                                         // Remove /r from value                                         
-                                        dr[k] = rowValues[k].ToString().Replace("\r", "");
+                                        drUser[k] = rowValues[k].ToString().Replace("\r", "");
                                     else
-                                        dr[k] = rowValues[k].ToString();
+                                        drUser[k] = rowValues[k].ToString();
 
                                 }
-                                dtCsv.Rows.Add(dr); //add other rows  
+                                dtUser.Rows.Add(drUser); //add other rows  
                             }
                         }
                     }
                 }
             }
 
-            return dtCsv;
+            return dtUser;
         }
 
-        /// <summary>
-        /// Fill Data from file , return DataTable
-        /// </summary>
-        /// <param name="FilePath"></param>
-        /// <param name="Extension"></param>
-        /// <param name="FileName"></param>
-        /// <returns></returns>
         private DataTable FillValueFromFiles_old(string FilePath, string Extension, string FileName)
         {
             string conStr = "";
@@ -2409,113 +2344,134 @@ namespace JG_Prospect
             return dtExcel;
         }
 
-        private bool validateUploadedData(DataTable dtExcel)
+        private bool ValidateUploadedData(DataTable dtUser)
         {
-            if (dtExcel == null)
+            bool IsValid = true;
+            if (dtUser == null)
             {
-
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
                 UcStatusPopUp.changeText();
-                return false;
+                IsValid = false;
             }
-            if (dtExcel.Columns.Contains("Email1") == false
-                || dtExcel.Columns.Contains("PhoneNo1") == false
-                || dtExcel.Columns.Contains("status") == false  // as CSV has status\r
-                || dtExcel.Columns.Contains("FirstName") == false
-                || dtExcel.Columns.Contains("LastName") == false
-                || dtExcel.Columns.Contains("CompanyName") == false
-                || dtExcel.Columns.Contains("PhoneNo2") == false
-                || dtExcel.Columns.Contains("Email1") == false
-                || dtExcel.Columns.Contains("Email2") == false
-                || dtExcel.Columns.Contains("DateSource") == false
-                || dtExcel.Columns.Contains("Notes") == false
-                || dtExcel.Columns.Contains("Designition") == false)
-            {
-
-                UcStatusPopUp.ucPopUpHeader = "";
-                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Files / columns. </br> Please refer Sample file";
-                UcStatusPopUp.changeText();
-                return false;
-            }
-
-            if (dtExcel.Rows.Count <= 0)
+            else if (dtUser.Rows.Count <= 0)
             {
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.ucPopUpMsg = "No data found to uploade , Kindly check the uploaded file";
                 UcStatusPopUp.changeText();
+                IsValid = false;
             }
-
-            //Validate data -- Mobile no , email is entered or so...
-            for (int i = 0; i < dtExcel.Rows.Count; i++)
+            else
             {
-                if (dtExcel.Rows[i]["Email1"] != null && dtExcel.Rows[i]["Email1"].ToString().Trim() == "")
+                // Validate data -- Mobile no , email is entered or so...
+                for (int i = 0; i < dtUser.Rows.Count; i++)
                 {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Email1 value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
-                }
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Designation"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
+                        UcStatusPopUp.changeText();
 
-                if (dtExcel.Rows[i]["PhoneNo1"] != null && dtExcel.Rows[i]["PhoneNo1"].ToString().Trim() == "")
-                {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter PhoneNo1 value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
-                }
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Status"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Status value for all the records";
+                        UcStatusPopUp.changeText();
 
-                if (dtExcel.Rows[i]["FirstName"] != null && dtExcel.Rows[i]["FirstName"].ToString().Trim() == "")
-                {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter FirstName value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
-                }
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Source"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Source value for all the records";
+                        UcStatusPopUp.changeText();
 
-                if (dtExcel.Rows[i]["LastName"] != null && dtExcel.Rows[i]["LastName"].ToString().Trim() == "")
-                {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter LastName value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
-                }
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["FirstName"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter First Name value for all the records";
+                        UcStatusPopUp.changeText();
 
-                if (dtExcel.Rows[i]["Designition"] != null && dtExcel.Rows[i]["Designition"].ToString().Trim() == "")
-                {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
-                }
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["LastName"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Last Name value for all the records";
+                        UcStatusPopUp.changeText();
 
-                if (dtExcel.Rows[i]["Status"] != null && dtExcel.Rows[i]["Status"].ToString().Trim() == "")
-                {
-                    UcStatusPopUp.ucPopUpHeader = "";
-                    UcStatusPopUp.ucPopUpMsg = "Kindly enter Status value for all the records";
-                    UcStatusPopUp.changeText();
-                    return false;
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Email"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Email value for all the records";
+                        UcStatusPopUp.changeText();
+
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Phone1"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Primary Contact Phone value for all the records";
+                        UcStatusPopUp.changeText();
+
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Phone1Type"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Phone Type value for all the records";
+                        UcStatusPopUp.changeText();
+
+                        IsValid = false;
+                        break;
+                    }
+                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Zip"])))
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Zip value for all the records";
+                        UcStatusPopUp.changeText();
+
+                        IsValid = false;
+                        break;
+                    }
                 }
             }
 
-            return true;
+            return IsValid;
         }
 
-        public void CreateUserObjectXml(DataTable dtExcel, out XmlDocument xmlDoc)
+        public XmlDocument GetIntsallUsersXmlDoc(DataTable dtExcel)
         {
-            List<Designation> lstDesignation = DesignationBLL.Instance.GetAllDesignation();
-
-            List<user1> list = new List<user1>();
             string helper = "";
-            user1 objuser = null;
-            xmlDoc = new XmlDocument();
             bool IsValid = true;
+
+            List<Designation> lstDesignation = DesignationBLL.Instance.GetAllDesignation();
+            DataTable dtSource = InstallUserBLL.Instance.GetSource().Tables[0];
+
+            List<user1> lstIntsallUsers = new List<user1>();
+            user1 objIntsallUser = null;
 
             for (int i = 0; i < dtExcel.Rows.Count; i++)
             {
                 try
                 {
-                    #region
+                    objIntsallUser = new user1();
+
+                    #region Old - Field Description
+
                     //0 ID #: ---	1 *Designitions:--	2 status:	-- 3 Date Sourced: 	-- 4 *First Name*  	-- 5 *Last Name	-- 6 * Source	-- 7 *Primary contact phone #:(3-3-4)
                     //8 *phone type:(drop down: Cell Phone #, House Phone #, Work Phone #, Alt #)	-- 9 secondary contact phone #(3-3-4)	-- 10 phone type:(drop down: Cell Phone #, House Phone #, Work Phone #, Alt #)
                     //11 *Company Name	-- 12 *Primary Trade 	-- 13 SecondaryTrade* (list as many secondary… 1 primary)	
@@ -2525,142 +2481,115 @@ namespace JG_Prospect
                     //27 How many full time positions have you had in the past 5 years?	 -- 28 Can you tell me a little about any sales or construction industry experience you have?
                     //29 No FELONY or DUI charges?  -- 30 Will you be able to pass a drug test and background check?  -- 31  What are your salary requirements for this position?
                     //32 If selected for position, when will you be available to start?
+
                     #endregion
 
-                    objuser = new user1();
+                    #region Values From Excel
 
-                    #region BindUserObject
-
-                    objuser.Email = dtExcel.Rows[i]["Email1"].ToString().Trim();
-
-                    if (objuser.Email == "")
-                        break;
-                    objuser.Email2 = dtExcel.Rows[i]["Email2"].ToString().Trim();
-
-                    objuser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();  //changes by Ratnakar
-                    objuser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
-                    objuser.CompanyName = dtExcel.Rows[i]["CompanyName"].ToString().Trim();
-                    objuser.status = dtExcel.Rows[i]["status"].ToString().Trim();
+                    Designation objDesignation = lstDesignation.FirstOrDefault(d => d.DesignationName
+                                                                                     .ToUpper()
+                                                                                    .Trim() == dtExcel.Rows[i]["Designation"]
+                                                                                                      .ToString()
+                                                                                                      .ToUpper()
+                                                                                                      .Trim()
+                                                                              );
+                    if (objDesignation != null)
+                    {
+                        objIntsallUser.DesignationId = objDesignation.ID;
+                        objIntsallUser.Designation = objDesignation.ID.ToString();
+                    }
+                    else
+                    {
+                        objIntsallUser.DesignationId = 0;
+                        objIntsallUser.Designation = string.Empty;
+                    }
 
                     JGConstant.InstallUserStatus objInstallUserStatus;
-                    if (Enum.TryParse<JGConstant.InstallUserStatus>(objuser.status, true, out objInstallUserStatus))
+                    if (Enum.TryParse<JGConstant.InstallUserStatus>(dtExcel.Rows[i]["Status"].ToString().Trim(), true, out objInstallUserStatus))
                     {
-                        objuser.status = Convert.ToByte(objInstallUserStatus).ToString();
+                        objIntsallUser.status = Convert.ToByte(objInstallUserStatus).ToString();
                     }
                     else
                     {
-                        objuser.status = string.Empty;
+                        objIntsallUser.status = string.Empty;
                     }
 
-                    objuser.phone = dtExcel.Rows[i]["PhoneNo1"].ToString().Trim();
-                    objuser.Phone2 = dtExcel.Rows[i]["PhoneNo2"].ToString().Trim();
-                    objuser.SourceUser = Convert.ToString(Session["userid"]);
-                    objuser.Source = Convert.ToString(Session["Username"]);
-                    objuser.DateSourced = dtExcel.Rows[i]["DateSource"].ToString().Trim();
-                    objuser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
-                    objuser.Designation = dtExcel.Rows[i]["Designition"].ToString().Trim();
-
-                    Designation objDesi = lstDesignation.FirstOrDefault(d => d.DesignationName.ToUpper().Trim() == objuser.Designation.ToUpper().Trim());
-                    if (objDesi != null)
-                    {
-                        objuser.Designation = objDesi.ID.ToString();
-                        //objuser.Designationid = objDesi.ID.ToString();
-                    }
-                    else
-                    {
-                        objuser.Designation = "";
-                    }
-
-                    //objuser.status = dtExcel.Rows[i][10].ToString().Trim();
-
-                    //objuser.Designation = dtExcel.Rows[i][1].ToString().Trim();
-                    //objuser.status = "Applicant";
                     //objuser.DateSourced = DateTime.Now.ToString();
-                    //objuser.firstname = dtExcel.Rows[i][4].ToString().Trim();
-                    //objuser.lastname = dtExcel.Rows[i][5].ToString().Trim();
-                    //objuser.SourceUser = Convert.ToString(Session["userid"]);
                     //objuser.Source = Convert.ToString(Session["Username"]);
+                    objIntsallUser.DateSourced = dtExcel.Rows[i]["DateSourced"].ToString().Trim();
+                    objIntsallUser.Source = dtExcel.Rows[i]["Source"].ToString().Trim();
 
-                    //objuser.phone = dtExcel.Rows[i][7].ToString().Trim();
-                    //objuser.phonetype = dtExcel.Rows[i][8].ToString().Trim();
-                    //objuser.Phone2 = dtExcel.Rows[i][9].ToString().Trim();
-                    //objuser.Phone2Type = dtExcel.Rows[i][10].ToString().Trim();
+                    objIntsallUser.SourceId = (from DataRow drSource in dtSource.Rows
+                                               where (string)drSource["Source"] == objIntsallUser.Source
+                                               select (int)drSource["Id"]).FirstOrDefault();
 
-                    //objuser.CompanyName = dtExcel.Rows[i][11].ToString().Trim();
+                    objIntsallUser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();
+                    objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
 
-                    //helper = dtExcel.Rows[i][12].ToString().Trim();
-                    //objuser.PrimeryTradeId = helper == "" ? 0 : Convert.ToInt32(helper);
+                    objIntsallUser.Email = dtExcel.Rows[i]["Email"].ToString().Trim();
+                    objIntsallUser.phone = dtExcel.Rows[i]["Phone1"].ToString().Trim();
+                    objIntsallUser.phonetype = dtExcel.Rows[i]["Phone1Type"].ToString().Trim();
+                    objIntsallUser.Phone2 = dtExcel.Rows[i]["Phone2"].ToString().Trim();
+                    objIntsallUser.Phone2Type = dtExcel.Rows[i]["Phone2Type"].ToString().Trim();
 
-                    //helper = dtExcel.Rows[i][13].ToString().Trim();
-                    //objuser.SecondoryTradeId = helper == "" ? 0 : Convert.ToInt32(helper);
+                    objIntsallUser.address = dtExcel.Rows[i]["Address"].ToString().Trim();
+                    objIntsallUser.zip = dtExcel.Rows[i]["Zip"].ToString().Trim();
+                    objIntsallUser.state = dtExcel.Rows[i]["State"].ToString().Trim();
+                    objIntsallUser.city = dtExcel.Rows[i]["City"].ToString().Trim();
+                    objIntsallUser.SuiteAptRoom = dtExcel.Rows[i]["Suit_Apt_Room"].ToString().Trim();
 
-                    //objuser.address = dtExcel.Rows[i][14].ToString().Trim();
-                    //objuser.zip = dtExcel.Rows[i][15].ToString().Trim();
-                    //objuser.state = dtExcel.Rows[i][16].ToString().Trim();
-                    //objuser.city = dtExcel.Rows[i][17].ToString().Trim();
-                    //objuser.SuiteAptRoom = dtExcel.Rows[i][18].ToString().Trim();
-
-                    //objuser.Address2 = dtExcel.Rows[i][19].ToString().Trim();
-                    //objuser.Zip2 = dtExcel.Rows[i][20].ToString().Trim();
-                    //objuser.State2 = dtExcel.Rows[i][21].ToString().Trim();
-                    //objuser.City2 = dtExcel.Rows[i][22].ToString().Trim();
-                    //objuser.SuiteAptRoom2 = dtExcel.Rows[i][23].ToString().Trim();
-
-                    //helper = dtExcel.Rows[i][24].ToString().Trim().ToLower();
-
-                    if (helper == "yes" || helper == "true")
-                        objuser.CurrentEmployement = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.CurrentEmployement = false;
-
-                    //objuser.LeavingReason = dtExcel.Rows[i][25].ToString().Trim();
-
-                    //helper = dtExcel.Rows[i][26].ToString().Trim().ToLower();
-
-                    if (helper == "yes" || helper == "true")
-                        objuser.PrevApply = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.PrevApply = false;
-
-                    //helper = dtExcel.Rows[i][27].ToString().Trim();
-                    //objuser.FullTimePosition = helper == "" ? 0 : Convert.ToInt32(helper);
-                    //objuser.SalesExperience = dtExcel.Rows[i][28].ToString().Trim();
-
-                    //helper = dtExcel.Rows[i][29].ToString().Trim().ToLower();
-
-                    if (helper == "yes" || helper == "true")
-                        objuser.FELONY = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.FELONY = false;
-
-                    //helper = dtExcel.Rows[i][30].ToString().Trim().ToLower();
-
-                    if (helper == "yes" || helper == "true")
-                        objuser.DrugTest = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.DrugTest = false;
-
-                    //objuser.SalaryReq = dtExcel.Rows[i][31].ToString().Trim();
-                    //objuser.Avialability = dtExcel.Rows[i][32].ToString().Trim();
-                    objuser.UserType = "SalesUser";
+                    objIntsallUser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
 
                     #endregion
-                    //|| objuser.phonetype == ""
-                    //|| objuser.PrimeryTradeId == 0
-                    if (objuser.Email == "" || objuser.phone == "" ||
-                        objuser.Designation == "" || objuser.status == "" ||
-                        objuser.firstname == "" || objuser.lastname == "" || objuser.Source == "" ||
-                        objuser.CompanyName == "")
+
+                    #region Other Values
+
+                    objIntsallUser.Email2 = string.Empty;
+
+                    objIntsallUser.CompanyName = string.Empty;
+
+                    objIntsallUser.SourceUser = Convert.ToString(Session["userid"]);
+
+                    if (helper == "yes" || helper == "true")
+                    {
+                        objIntsallUser.CurrentEmployement = true;
+                        objIntsallUser.PrevApply = true;
+                        objIntsallUser.FELONY = true;
+                        objIntsallUser.DrugTest = true;
+                    }
+                    else if (helper == "no" || helper == "false")
+                    {
+                        objIntsallUser.CurrentEmployement = false;
+                        objIntsallUser.PrevApply = false;
+                        objIntsallUser.FELONY = false;
+                        objIntsallUser.DrugTest = false;
+                    }
+
+                    objIntsallUser.UserType = "SalesUser";
+
+                    #endregion
+
+                    if (
+                        string.IsNullOrEmpty(objIntsallUser.Designation) ||
+                        string.IsNullOrEmpty(objIntsallUser.status) ||
+                        string.IsNullOrEmpty(objIntsallUser.Source) ||
+                        string.IsNullOrEmpty(objIntsallUser.firstname) ||
+                        string.IsNullOrEmpty(objIntsallUser.lastname) ||
+                        string.IsNullOrEmpty(objIntsallUser.Email) ||
+                        string.IsNullOrEmpty(objIntsallUser.phone) ||
+                        string.IsNullOrEmpty(objIntsallUser.phonetype) ||
+                        string.IsNullOrEmpty(objIntsallUser.zip)
+                       )
                     {
                         IsValid = false;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Upload file contains data error or matching data exists, please check and upload again');", true);
-                        return;
+                        break;
                     }
-                    list.Add(objuser);
+                    else
+                    {
+                        lstIntsallUsers.Add(objIntsallUser);
+                    }
 
-                    #region commented
-
-
+                    #region Commented - CheckDuplicate
 
                     //DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(dtExcel.Rows[i][5].ToString().Trim(), dtExcel.Rows[i][3].ToString().Trim());
 
@@ -2692,6 +2621,8 @@ namespace JG_Prospect
                 }
             }
 
+            #region Commented - CheckDuplicate
+
             ////check duplicacy of data in sheet itself
             //var duplicate = from c in list.AsEnumerable()
             //                group c by c.Email into grp
@@ -2702,16 +2633,28 @@ namespace JG_Prospect
             //    IsValid = false;
             //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Upload file contains data error or matching data exists, please check and upload again');", true);
             //    return;
-            //}
+            //} 
 
+            #endregion
+
+            XmlDocument xmlDoc = null;
 
             if (IsValid)
             {
-                xmlDoc.LoadXml(Serialize(list));
+                xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(Serialize(lstIntsallUsers));
 
                 if (xmlDoc.FirstChild.NodeType == XmlNodeType.XmlDeclaration)
+                {
                     xmlDoc.RemoveChild(xmlDoc.FirstChild);
+                }
             }
+            else
+            {
+                CommonFunction.ShowAlertFromPage(this, "Upload file contains data error or matching data exists, please check and upload again.");
+            }
+
+            return xmlDoc;
         }
 
         public void CreateDuplicateUserObjectXml(DataTable dt, out XmlDocument xmlDoc)
@@ -2818,6 +2761,83 @@ namespace JG_Prospect
 
             if (xmlDoc.FirstChild.NodeType == XmlNodeType.XmlDeclaration)
                 xmlDoc.RemoveChild(xmlDoc.FirstChild);
+        }
+
+        private void ImportIntsallUsers(DataTable dtExcel)
+        {
+            XmlDocument xmlDoc = GetIntsallUsersXmlDoc(dtExcel);
+
+            if (xmlDoc != null)
+            {
+                DataSet dsImportResult = null;
+
+                if (xmlDoc.OuterXml != "")
+                {
+                    dsImportResult = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
+                }
+
+                pnlAddNewUser.Visible = false;
+                pnlDuplicate.Visible = false;
+
+                #region '-- Process Import Result --'
+
+                // duplicate users
+                if (dsImportResult != null && dsImportResult.Tables.Count > 0 && dsImportResult.Tables[0].Rows.Count > 0)
+                {
+
+                    int RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                                    where (string)ReturnDr["ActionTaken"] != "I"
+                                    select (string)ReturnDr["Email"]).Count();
+
+                    if (RowCount > 0) // if found any row not Inserted than
+                    {
+                        DataTable DuplicateRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                                                      where (string)ReturnDr["ActionTaken"] != "I"
+                                                      select ReturnDr).CopyToDataTable();
+
+                        Session["DuplicateUsers"] = DuplicateRecords;
+
+                        listDuplicateUsers.DataSource = DuplicateRecords;
+                        listDuplicateUsers.DataBind();
+
+                        lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
+
+                        pnlDuplicate.Visible = true;
+                    }
+
+                    RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                                where (string)ReturnDr["ActionTaken"] == "I"
+                                select (string)ReturnDr["Email"]).Count();
+
+                    if (RowCount > 0) // if row Inserted / Added
+                    {
+                        DataTable InsertedRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                                                     where (string)ReturnDr["ActionTaken"] == "I"
+                                                     select ReturnDr).CopyToDataTable();
+
+                        lstNewUserAdd.DataSource = InsertedRecords;
+                        lstNewUserAdd.DataBind();
+
+                        lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
+
+                        pnlAddNewUser.Visible = true;
+                        //Session["DuplicateUsers"] = ds.Tables[0];
+                        //listDuplicateUsers.DataSource = ds.Tables[0];
+                        //listDuplicateUsers.DataBind();
+                    }
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
+                }
+                else
+                {
+                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
+                    UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
+                    UcStatusPopUp.changeText();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
+                }
+
+                #endregion
+            }
         }
 
         public static string Serialize(object dataToSerialize)
