@@ -1206,3 +1206,40 @@ BEGIN
 END  
 GO
 
+
+/****** Object:  StoredProcedure [dbo].[SP_CheckNewUserFromOtherSite]    Script Date: 22-Feb-17 11:03:52 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 22 Feb 2017  
+-- Description: Checks if a user is new or not, by comparing the pwd with default pwd.
+-- =============================================  
+ALTER PROCEDURE [dbo].[SP_CheckNewUserFromOtherSite] 
+	@userEmail VARCHAR(50), 
+	@userID INT = 0,
+	@DefaultPassWord VARCHAR(50)
+AS
+BEGIN
+
+	DECLARE @IsNewUser NVARCHAR(10) = 'NO';
+	
+	IF EXISTS (
+				SELECT Id 
+				FROM tblInstallUsers 
+				WHERE 
+					ID = @userID
+					AND  Email = @userEmail
+					AND  Password = @DefaultPassWord
+			  )
+	BEGIN
+		SET  @IsNewUser	 ='YES'
+	END
+
+	SELECT @IsNewUser
+END
+GO
+
