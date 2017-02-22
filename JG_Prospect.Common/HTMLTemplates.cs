@@ -79,6 +79,8 @@ namespace JG_Prospect.Common
         Active_Auto_Email = 69,
         Deactive_Auto_Email = 70,
         Task_Generator_Auto_Email = 71,
-        Task_Assignment_Requested = 72
+        Task_Assignment_Requested = 72,
+        PHP_HR_Welcome_Auto_Email = 73,
+        Applicant_Recontact_Auto_Email = 74
     }
 }

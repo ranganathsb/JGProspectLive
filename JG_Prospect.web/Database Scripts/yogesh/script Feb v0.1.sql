@@ -1174,3 +1174,35 @@ SET NOCOUNT ON;
 END
 GO
 
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplateMasters]    Script Date: 22-Feb-17 10:25:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 27 Jan 2017  
+-- Description: Gets all Master HTMLTemplates.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[GetHTMLTemplateMasters]  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ SELECT   
+   [Id]  
+   ,[Name]  
+   ,[Subject]  
+   ,[Header]  
+   ,[Body]  
+   ,[Footer]  
+   ,[DateUpdated]  
+ FROM tblHTMLTemplatesMaster
+ WHERE Id IN (1,36,60,69,70,71,72,73,74)   
+ ORDER BY Id ASC  
+  
+END  
+GO
+
