@@ -293,7 +293,7 @@ function DestroyGallery() {
         subtaskSliders.destroy();
     }
 }
-/********************************************* General Functions ******************************************************/
+/********************************************* Chosen Dropdown Functions ******************************************************/
 function ChosenDropDown(options) {
     var _options = options || {};
     $('.chosen-select').chosen(_options);
@@ -348,6 +348,17 @@ function copyToClipboard(strDataToCopy) {
     //clipboard.destroy();
 }
 
+// gets value of a parameter from query string.
+function GetQueryStringParameterValue(param) {
+    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for (var i = 0; i < url.length; i++) {
+        var urlparam = url[i].split('=');
+        if (urlparam[0] == param) {
+            return urlparam[1];
+        }
+    }
+}
+
 //common code check query string parameter, if already exists then replace value else add that parameter. 
 function updateQueryStringParameter(uri, key, value) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -359,7 +370,6 @@ function updateQueryStringParameter(uri, key, value) {
         return uri + separator + key + "=" + value;
     }
 }
-
 
 function IsNumeric(e, blWholeNumber) {
     var keyCode = e.which ? e.which : e.keyCode;

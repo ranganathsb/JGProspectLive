@@ -1862,6 +1862,10 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UDP_GetInstallerUserDetailsByLoginId");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@loginid", DbType.String, loginid);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@ApplicantStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -1976,6 +1980,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userid", DbType.String, userid);
                     database.AddInParameter(command, "@password", DbType.String, password);
                     database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@ApplicantStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString());
                     database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
                     database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);

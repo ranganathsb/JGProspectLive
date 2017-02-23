@@ -20,6 +20,7 @@ using ASPSnippets.TwitterAPI;
 using DotNetOpenAuth.AspNet.Clients;
 using JG_Prospect.Common;
 using System.Web.Services;
+using JG_Prospect.Common.modal;
 
 namespace JG_Prospect
 {
@@ -36,7 +37,6 @@ namespace JG_Prospect
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
             //if (Session["PopUpOnSessionExpire"] == null)
             //{
             //    if (c != 0 && Session["LogOut"]!=null)
@@ -647,7 +647,7 @@ namespace JG_Prospect
                 #endregion
 
                 #region Microsoft login
-                
+
                 if (JGSession.IsMicrosoft == true)
                 {
                     try
@@ -829,8 +829,9 @@ namespace JG_Prospect
 
                 // Check if request is coming from www.jmgroveconstruction.com's Employment page
                 Uri UrlReferer = Request.UrlReferrer;
-                if ( UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
+                if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
                 {
+                    // Login Request.
                     if (Request.Form.Count > 0 && !String.IsNullOrEmpty(Request.Form["txtloginid"]) && !String.IsNullOrEmpty(Request.Form["txtpassword"]))
                     {
                         String strUserName = Request.Form["txtloginid"];
@@ -842,6 +843,12 @@ namespace JG_Prospect
                             txtpassword.Text = strUserPassword;
                             btnsubmit_Click(sender, e);
                         }
+                    }
+
+                    // New user request : Welcome email and Login
+                    if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && !string.IsNullOrEmpty(Request.QueryString["Email"]))
+                    {
+                        CheckForNewUserFromOtherSite(Convert.ToString(Request.QueryString["Email"]), Convert.ToInt32(Request.QueryString["ID"]));
                     }
                 }
             }
@@ -861,7 +868,7 @@ namespace JG_Prospect
                 if (rdSalesIns.Checked)
                 {
                     JGSession.IsInstallUser = true;
-            
+
                     #region 'Install User'
 
                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
@@ -875,6 +882,7 @@ namespace JG_Prospect
                             JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -891,7 +899,7 @@ namespace JG_Prospect
                         {
                             JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                             JGSession.UserLoginId = txtloginid.Text.Trim();
-                            JGSession.UserPassword= txtpassword.Text.Trim();
+                            JGSession.UserPassword = txtpassword.Text.Trim();
 
                             if (txtloginid.Text.Trim() == AdminInstallerId)
                             {
@@ -902,77 +910,84 @@ namespace JG_Prospect
 
                             RememberMe();
 
-                            if (JGSession.IsFirstTime == true)
+                            if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant) 
                             {
-                                strRedirectUrl = "~/changepassword.aspx";
+                                strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
                             }
-
-                            if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false)
+                            else
                             {
-                                #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
+                                if (JGSession.IsFirstTime == true)
+                                {
+                                    strRedirectUrl = "~/changepassword.aspx";
+                                }
 
-                                if (Convert.ToString(JGSession.Designation) == "Jr. Sales" || Convert.ToString(JGSession.Designation) == "Jr Project Manager")
+                                if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false)
                                 {
-                                    strRedirectUrl = "~/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "sales" || Convert.ToString(JGSession.Designation).Trim() == "Admin Recruiter" || Convert.ToString(JGSession.Designation) == "SalesUser" || Convert.ToString(JGSession.Designation) == "SSE")
-                                {
-                                    strRedirectUrl = "~/Sr_App/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager" || Convert.ToString(JGSession.Designation).Contains("IT"))
-                                {
-                                    if (Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Office Manager")
+                                    #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
+
+                                    if (Convert.ToString(JGSession.Designation) == "Jr. Sales" || Convert.ToString(JGSession.Designation) == "Jr Project Manager")
                                     {
-                                        strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
+                                        strRedirectUrl = "~/home.aspx";
                                     }
-                                    else
+                                    else if (Convert.ToString(JGSession.Designation) == "sales" || Convert.ToString(JGSession.Designation).Trim() == "Admin Recruiter" || Convert.ToString(JGSession.Designation) == "SalesUser" || Convert.ToString(JGSession.Designation) == "SSE")
                                     {
                                         strRedirectUrl = "~/Sr_App/home.aspx";
                                     }
+                                    else if (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager" || Convert.ToString(JGSession.Designation).Contains("IT"))
+                                    {
+                                        if (Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Office Manager")
+                                        {
+                                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
+                                        }
+                                        else
+                                        {
+                                            strRedirectUrl = "~/Sr_App/home.aspx";
+                                        }
 
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation).StartsWith("Installer"))
+                                    {
+                                        Response.Redirect("~/Installer/InstallerHome.aspx", false);
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "SSE")
+                                    {
+                                        strRedirectUrl = "~/Sr_App/home.aspx";
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "SubContractor")
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+
+                                    #endregion
                                 }
-                                else if (Convert.ToString(JGSession.Designation).StartsWith("Installer"))
-                                {
-                                    Response.Redirect("~/Installer/InstallerHome.aspx", false);
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "SSE")
-                                {
-                                    strRedirectUrl = "~/Sr_App/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
+                                else if (Convert.ToString(JGSession.Designation) == "Installer" && JGSession.IsFirstTime == false)
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
-                                else if (Convert.ToString(JGSession.Designation) == "SubContractor")
+                                else if (Convert.ToString(JGSession.Designation) == "Jr. Sales" && JGSession.IsFirstTime == false)
+                                {
+                                    strRedirectUrl = "~/home.aspx";
+                                }
+                                else if (Convert.ToString(JGSession.Designation) == "SSE" && JGSession.IsFirstTime == false)
+                                {
+                                    strRedirectUrl = "~/Sr_App/home.aspx";
+                                }
+                                else if ((Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan") && JGSession.IsFirstTime == false)
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
                                 else
                                 {
-                                    strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                 }
-
-                                #endregion
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "Installer" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "Jr. Sales" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/home.aspx";
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "SSE" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Sr_App/home.aspx";
-                            }
-                            else if ((Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan") && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                            }
-                            else
-                            {
-                                // Response.Redirect("~/Installer/InstallerHome.aspx");//
                             }
                         }
                         else
@@ -1215,14 +1230,52 @@ namespace JG_Prospect
             Response.Cookies["Password"].Value = txtpassword.Text.Trim();
         }
 
-        [WebMethod]
-        public static string CheckForNewUserFromOtherSite(String UserEmail, int UserID)
+        public void CheckForNewUserFromOtherSite(string UserEmail, int UserID)
         {
-            string strReturnValue;
+            string strReturnValue = InstallUserBLL.Instance.CheckForNewUserByEmaiID(UserEmail, UserID, JG_Prospect.Common.JGConstant.Default_PassWord);
 
-            strReturnValue = InstallUserBLL.Instance.CheckForNewUserByEmaiID(UserEmail, UserID, JG_Prospect.Common.JGConstant.Default_PassWord);
+            if (strReturnValue == "YES")
+            {
+                SendWelcomeEmail(UserEmail, UserID);
 
-            return strReturnValue;
+                Page.ClientScript.RegisterStartupScript
+                        (
+                            Page.GetType(),
+                            "TheConfirm_Ok_Cancel",
+                            string.Format(
+                                            "TheConfirm_Ok_Cancel('{0}',{1},{2},'{3}');",
+                                            "Your username is the phone # or email you have entered, your default password is \"jmgrove\". Select continue to proceed with application process or cancel. Save your username and password for future use.You have successfully been entered into JMGrove\'s Human Resource Database,and should have also received an email with login details",
+                                            "function () {}",
+                                            "function () {}",
+                                            "Login Guidance"
+                                         ),
+                            true
+                        );
+            }
+        }
+
+        public void SendWelcomeEmail(string UserEmail, int UserID)
+        {
+            DataSet ds = InstallUserBLL.Instance.getuserdetails(UserID);
+            DataRow drUser = null;
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                drUser = ds.Tables[0].Rows[0];
+
+                string strName = Convert.ToString(drUser["FristName"]) + " " + Convert.ToString(drUser["Lastname"]);
+                string strUserEmail = Convert.ToString(drUser["Email"]);
+                string strUserDesignation = Convert.ToString(drUser["Designation"]);
+                string strUserDesignationId = Convert.ToString(drUser["DesignationId"]);
+
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, strUserDesignationId);
+
+                string strHeader = objHTMLTemplate.Header;
+                string strSubject = objHTMLTemplate.Subject;
+                string strBody = objHTMLTemplate.Body.Replace("#name#", strName).Replace("#Designation#", strUserDesignation);
+                string strFooter = objHTMLTemplate.Footer;
+
+                JG_Prospect.App_Code.CommonFunction.SendEmail(strUserDesignationId, strUserEmail, strSubject, strBody, objHTMLTemplate.Attachments);
+            }
         }
 
         #endregion
