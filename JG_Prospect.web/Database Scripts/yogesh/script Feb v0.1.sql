@@ -1243,3 +1243,76 @@ BEGIN
 END
 GO
 
+
+UPDATE tblHTMLTemplatesMaster
+SET
+	Subject = '*Interview Date Reminder -- JMGrove -Construction & Supply',
+	Header = '<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>',
+	Body = '<p class="MsoNormal">Dear #name#,Welcome to JMGrove Construction &amp; SupplyLLC. I would like to invite you an informational interview soon to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>',
+	Footer = '<p>J.M. Grove - Construction &amp; Supply <br />
+<a href="jmgroveconstruction.com">jmgroveconstruction.com </a><br />
+<a href="http://jmgrovebuildingsupply.com/"> http://jmgrovebuildingsupply.com/</a><br />
+<a href="http://web.jmgrovebuildingsupply.com/login.aspx">http://web.jmgrovebuildingsupply.com/login.aspx</a><br />
+<a href="http://jmgroverealestate.com/">http://jmgroverealestate.com/</a><br />
+<br />
+ 72 E Lancaster Ave<br />
+Malvern, Pa 19355<br />
+Human Resources<br />
+Office:(215) 274-5182 Ext. 4<br />
+<a href="mailto:Hr@jmgroveconstruction.com">Hr@jmgroveconstruction.com </a></p>
+<div><a href="https://www.facebook.com/JMGrove1com/"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/fb.png" /></a><a href="http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/tw.png" /></a><a href="http://s49.photobucket.com/user/jmg1/media/236e0d0b-832c-4543-81a6-f6c460d302f0_zpsl4nh3ane.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/gpls.png" /></a><a href="http://s49.photobucket.com/user/jmg1/media/pinterest_zpspioq6pve.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/pint.png" /></a><br />
+ <a href="http://s49.photobucket.com/user/jmg1/media/twitter_zpsiiplyhiq.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/hbt.png" /></a><a href="http://s49.photobucket.com/user/jmg1/media/youtube_zpsxyhfmm1b.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/yt.png" /></a><a href="http://s49.photobucket.com/user/jmg1/media/c3894afd-7a37-43e2-917c-5ffb7a5036a2_zpschul0pqd.png.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/houzz.png" /></a> <a href="http://s49.photobucket.com/user/jmg1/media/4478596b-67f4-444e-992a-624af3e56255_zpsoi8p1uyv.jpg.html"><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/linkin.jpg" /></a></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/footer.png" /></div>'
+
+WHERE ID IN (73, 74)
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_GETInstallUserDetails]    Script Date: 23-Feb-17 9:44:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 23 Feb 2017  
+-- Updated By : Bhavik J. Vaishnani
+--					 Added CountryCode
+-- Updated By : Yogesh
+--					Added designation join to support new as well as old structure.
+-- Description: Get an install user by id.
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GETInstallUserDetails]
+	@id int
+As 
+BEGIN
+
+	SELECT 
+		u.Id,FristName,Lastname,Email,[Address], ISNULL(d.DesignationName, Designation) AS Designation,
+		[Status],[Password],Phone,Picture,Attachements,zip,[state],city,
+		Bussinessname,SSN,SSN1,SSN2,[Signature],DOB,Citizenship,' ',
+		EIN1,EIN2,A,B,C,D,E,F,G,H,[5],[6],[7],maritalstatus,PrimeryTradeId,SecondoryTradeId,Source,Notes,StatusReason,GeneralLiability,PCLiscense,WorkerComp,HireDate,TerminitionDate,WorkersCompCode,NextReviewDate,EmpType,LastReviewDate,PayRates,ExtraEarning,ExtraEarningAmt,PayMethod,Deduction,DeductionType,AbaAccountNo,AccountNo,AccountType,PTradeOthers,
+		STradeOthers,DeductionReason,InstallId,SuiteAptRoom,FullTimePosition,ContractorsBuilderOwner,MajorTools,DrugTest,ValidLicense,TruckTools,PrevApply,LicenseStatus,CrimeStatus,StartDate,SalaryReq,Avialability,ResumePath,skillassessmentstatus,assessmentPath,WarrentyPolicy,CirtificationTraining,businessYrs,underPresentComp,websiteaddress,PersonName,PersonType,CompanyPrinciple,UserType,Email2,Phone2,CompanyName,SourceUser,DateSourced,InstallerType,BusinessType,CEO,LegalOfficer,President,Owner,AllParteners,MailingAddress,Warrantyguarantee,WarrantyYrs,MinorityBussiness,WomensEnterprise,InterviewTime,CruntEmployement,CurrentEmoPlace,LeavingReason,CompLit,FELONY,shortterm,LongTerm,BestCandidate,TalentVenue,Boardsites,NonTraditional,ConSalTraning,BestTradeOne,BestTradeTwo,BestTradeThree
+		,aOne,aOneTwo,bOne,cOne,aTwo,aTwoTwo,bTwo,cTwo,aThree,aThreeTwo,bThree,cThree,TC,ExtraIncomeType,RejectionDate ,UserInstallId
+        ,PositionAppliedFor, PhoneExtNo, PhoneISDCode ,DesignationID, CountryCode
+		,NameMiddleInitial , IsEmailPrimaryEmail, IsPhonePrimaryPhone, IsEmailContactPreference, IsCallContactPreference, IsTextContactPreference, IsMailContactPreference
+	
+	FROM tblInstallUsers u 
+			LEFT JOIN tbl_Designation d ON u.DesignationID = d.ID
+
+	WHERE u.ID=@id
+
+END
+GO
+
