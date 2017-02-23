@@ -60,7 +60,6 @@
 
           function checkUserIsNewUserAndShowMsg(UserEmail,UserId)
           {
-              debugger;
               $.ajax({
                   type: "POST",
                   url: "stafflogin.aspx/CheckForNewUserFromOtherSite",
@@ -69,7 +68,6 @@
                   data: "{'UserEmail':'" + UserEmail + "','UserID':" + UserId + "}",
 
                   success: function (data) {
-                  
                       if (data.d == 'YES') {
                           TheConfirm_Ok_Cancel('Your username is the phone # or email you have entered, your default password is "jmgrove". Select continue to proceed with application process or cancel. Save your username and password for future use.You have successfully been entered into JMGrove\'s Human Resource Database,and should have also received an email with login details'
                           , function () {
@@ -81,7 +79,7 @@
 
                   },
                   error: function (req, status, err) {
-                      debugger;
+                      
                   }
               });
           }

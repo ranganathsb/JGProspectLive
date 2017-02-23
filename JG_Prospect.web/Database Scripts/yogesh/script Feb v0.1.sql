@@ -1174,3 +1174,72 @@ SET NOCOUNT ON;
 END
 GO
 
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplateMasters]    Script Date: 22-Feb-17 10:25:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 27 Jan 2017  
+-- Description: Gets all Master HTMLTemplates.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[GetHTMLTemplateMasters]  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ SELECT   
+   [Id]  
+   ,[Name]  
+   ,[Subject]  
+   ,[Header]  
+   ,[Body]  
+   ,[Footer]  
+   ,[DateUpdated]  
+ FROM tblHTMLTemplatesMaster
+ WHERE Id IN (1,36,60,69,70,71,72,73,74)   
+ ORDER BY Id ASC  
+  
+END  
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[SP_CheckNewUserFromOtherSite]    Script Date: 22-Feb-17 11:03:52 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 22 Feb 2017  
+-- Description: Checks if a user is new or not, by comparing the pwd with default pwd.
+-- =============================================  
+ALTER PROCEDURE [dbo].[SP_CheckNewUserFromOtherSite] 
+	@userEmail VARCHAR(50), 
+	@userID INT = 0,
+	@DefaultPassWord VARCHAR(50)
+AS
+BEGIN
+
+	DECLARE @IsNewUser NVARCHAR(10) = 'NO';
+	
+	IF EXISTS (
+				SELECT Id 
+				FROM tblInstallUsers 
+				WHERE 
+					ID = @userID
+					AND  Email = @userEmail
+					AND  Password = @DefaultPassWord
+			  )
+	BEGIN
+		SET  @IsNewUser	 ='YES'
+	END
+
+	SELECT @IsNewUser
+END
+GO
+
