@@ -96,7 +96,7 @@
         </div>
   </div>
   <!--nav section-->
-  <div class="nav">
+  <div class="nav" id="divMenu" runat="server">
   <ul>
   <li id="Lidashboard" runat="server" ><a href="<%= Page.ResolveUrl("~/home.aspx")%>">Dashboard</a></li>
   <%--<li id="Lidefineperiod" runat="server" visible="false"><a href="/DefinePeriod.aspx">Pay Schedule</a></li>--%>

@@ -1898,6 +1898,7 @@
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucRenewSession.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
+    <Content Include="ViewApplicantUser.aspx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1942,6 +1943,13 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JGApplicant.Master.cs">
+      <DependentUpon>JGApplicant.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JGApplicant.Master.designer.cs">
+      <DependentUpon>JGApplicant.Master</DependentUpon>
     </Compile>
     <Compile Include="MCQTest\ExamSummary.aspx.cs">
       <DependentUpon>ExamSummary.aspx</DependentUpon>
@@ -2094,6 +2102,13 @@
     <Compile Include="Utilits\EmailCommonHelper.cs" />
     <Compile Include="Utilits\SessionsCommon.cs" />
     <Compile Include="Utilits\YandexManager.cs" />
+    <Compile Include="ViewApplicantUser.aspx.cs">
+      <DependentUpon>ViewApplicantUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewApplicantUser.aspx.designer.cs">
+      <DependentUpon>ViewApplicantUser.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Webmail\checkemail.aspx.cs">
       <DependentUpon>checkemail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2997,6 +3012,7 @@
     <Content Include="JGCalender\jquery\jquery-2.1.1.min.map" />
     <Content Include="JGCalender\JsonResponse.ashx" />
     <Content Include="js\JCarousel.js.rej" />
+    <Content Include="JGApplicant.Master" />
     <None Include="PDFS\Escrow_a.pdfEscrow_a.pdf" />
     <None Include="PDFS\Escrow_shyam.pdfEscrow_shyam.pdf" />
     <None Include="PDFS\FacePage_ennavation.pdfFacePage_ennavation.pdf" />

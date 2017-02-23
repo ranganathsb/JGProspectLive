@@ -927,6 +927,22 @@ namespace JG_Prospect
             }
         }
 
+        public static JGConstant.InstallUserStatus? UserStatus
+        {
+            get
+            {
+                if (HttpContext.Current.Session["UserStatus"] == null)
+                {
+                    return null;
+                }
+                return (JGConstant.InstallUserStatus)Convert.ToInt32(HttpContext.Current.Session["UserStatus"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["UserStatus"] = value;
+            }
+        }
+
         public static string Designation
         {
             get

@@ -882,6 +882,7 @@ namespace JG_Prospect
                             JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -909,77 +910,84 @@ namespace JG_Prospect
 
                             RememberMe();
 
-                            if (JGSession.IsFirstTime == true)
+                            if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant) 
                             {
-                                strRedirectUrl = "~/changepassword.aspx";
+                                strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
                             }
-
-                            if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false)
+                            else
                             {
-                                #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
+                                if (JGSession.IsFirstTime == true)
+                                {
+                                    strRedirectUrl = "~/changepassword.aspx";
+                                }
 
-                                if (Convert.ToString(JGSession.Designation) == "Jr. Sales" || Convert.ToString(JGSession.Designation) == "Jr Project Manager")
+                                if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false)
                                 {
-                                    strRedirectUrl = "~/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "sales" || Convert.ToString(JGSession.Designation).Trim() == "Admin Recruiter" || Convert.ToString(JGSession.Designation) == "SalesUser" || Convert.ToString(JGSession.Designation) == "SSE")
-                                {
-                                    strRedirectUrl = "~/Sr_App/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager" || Convert.ToString(JGSession.Designation).Contains("IT"))
-                                {
-                                    if (Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Office Manager")
+                                    #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
+
+                                    if (Convert.ToString(JGSession.Designation) == "Jr. Sales" || Convert.ToString(JGSession.Designation) == "Jr Project Manager")
                                     {
-                                        strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
+                                        strRedirectUrl = "~/home.aspx";
                                     }
-                                    else
+                                    else if (Convert.ToString(JGSession.Designation) == "sales" || Convert.ToString(JGSession.Designation).Trim() == "Admin Recruiter" || Convert.ToString(JGSession.Designation) == "SalesUser" || Convert.ToString(JGSession.Designation) == "SSE")
                                     {
                                         strRedirectUrl = "~/Sr_App/home.aspx";
                                     }
+                                    else if (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager" || Convert.ToString(JGSession.Designation).Contains("IT"))
+                                    {
+                                        if (Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Office Manager")
+                                        {
+                                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
+                                        }
+                                        else
+                                        {
+                                            strRedirectUrl = "~/Sr_App/home.aspx";
+                                        }
 
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation).StartsWith("Installer"))
+                                    {
+                                        Response.Redirect("~/Installer/InstallerHome.aspx", false);
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "SSE")
+                                    {
+                                        strRedirectUrl = "~/Sr_App/home.aspx";
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+                                    else if (Convert.ToString(JGSession.Designation) == "SubContractor")
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    }
+
+                                    #endregion
                                 }
-                                else if (Convert.ToString(JGSession.Designation).StartsWith("Installer"))
-                                {
-                                    Response.Redirect("~/Installer/InstallerHome.aspx", false);
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "SSE")
-                                {
-                                    strRedirectUrl = "~/Sr_App/home.aspx";
-                                }
-                                else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
+                                else if (Convert.ToString(JGSession.Designation) == "Installer" && JGSession.IsFirstTime == false)
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
-                                else if (Convert.ToString(JGSession.Designation) == "SubContractor")
+                                else if (Convert.ToString(JGSession.Designation) == "Jr. Sales" && JGSession.IsFirstTime == false)
+                                {
+                                    strRedirectUrl = "~/home.aspx";
+                                }
+                                else if (Convert.ToString(JGSession.Designation) == "SSE" && JGSession.IsFirstTime == false)
+                                {
+                                    strRedirectUrl = "~/Sr_App/home.aspx";
+                                }
+                                else if ((Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan") && JGSession.IsFirstTime == false)
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
                                 else
                                 {
-                                    strRedirectUrl = "~/Installer/InstallerHome.aspx";
+                                    // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                 }
-
-                                #endregion
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "Installer" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "Jr. Sales" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/home.aspx";
-                            }
-                            else if (Convert.ToString(JGSession.Designation) == "SSE" && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Sr_App/home.aspx";
-                            }
-                            else if ((Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan") && JGSession.IsFirstTime == false)
-                            {
-                                strRedirectUrl = "~/Installer/InstallerHome.aspx";
-                            }
-                            else
-                            {
-                                // Response.Redirect("~/Installer/InstallerHome.aspx");//
                             }
                         }
                         else
