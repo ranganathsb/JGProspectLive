@@ -15,6 +15,7 @@ namespace JG_Prospect.Sr_App
         protected void Page_Load(object sender, EventArgs e)
         {
             //Page.Form.DefaultButton = searchbutton.UniqueID;
+            String EmailCountResponse = Utilits.YandexManager.GetUnreadEmailCount("jmgroveconstruction.com","jgrove@jmgroveconstruction.com");
 
             if (Session["loginid"] != null)
             {

@@ -91,7 +91,7 @@
         </div>
         <ul>
             <!--Email with # of unread msgs and new font-->
-            <li id="test"><a href="javascript:window.open('http://www.gmail.com/mail/','mywindow','width=600,height=400')" target="_blank">Email(<asp:Label ID="lbl_unreadCount" runat="server"></asp:Label>)</a></li>
+            <li id="test"><a href="javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')" target="_blank">Email(<asp:Label ID="lbl_unreadCount" runat="server"></asp:Label>)</a></li>
             <li>Voice Mail(0)</li>
             <li>|</li>
             <li>Chat(1)</li>

@@ -341,19 +341,26 @@ namespace JG_Prospect.Sr_App.Controls
 
                 SetStatusSelectedValue(ddlStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
-                if (this.IsAdminMode)
+                if (!this.IsAdminMode)
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = false;
-                }
-                else
-                {
-                    e.Row.FindControl("lbtnInstallId").Visible = false;
-
+                    //if (true)
+                    //{
+                    //    e.Row.FindControl("ltrlInstallId").Visible = false; 
+                    //}
                     if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
                     {
                         ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
                     }
                 }
+                //else
+                //{
+                //    e.Row.FindControl("lbtnInstallId").Visible = false;
+
+                //    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
+                //    {
+                //        ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
+                //    }
+                //}
 
                 //if (controlMode == "0")
                 //{

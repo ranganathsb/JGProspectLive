@@ -327,7 +327,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DefaultPassWord", DbType.String, DefaultPW);
                     
 
-                    dsResult = database.ExecuteDataSet(command);
+                    //dsResult = database.ExecuteDataSet(command);
 
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;

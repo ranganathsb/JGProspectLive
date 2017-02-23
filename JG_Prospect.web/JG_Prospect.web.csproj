@@ -141,6 +141,14 @@
     <Reference Include="itextsharp.xmlworker">
       <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
+    <Reference Include="MailApi, Version=6.0.2.220, Culture=neutral, PublicKeyToken=cd85b70fb26f9fc1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\MailApi.dll</HintPath>
+    </Reference>
+    <Reference Include="MailServerApi, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7795db04536a1a7a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\MailServerApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -245,6 +253,9 @@
     <Reference Include="Telerik.Web.UI, Version=2013.1.403.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Telerik.Web.UI.DLL</HintPath>
+    </Reference>
+    <Reference Include="WebMail">
+      <HintPath>External Dependencies\WebMail.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -1081,6 +1092,8 @@
     <Content Include="External Dependencies\Ionic.Zip.dll" />
     <Content Include="External Dependencies\itextsharp.dll" />
     <Content Include="External Dependencies\itextsharp.xmlworker.dll" />
+    <Content Include="External Dependencies\MailApi.dll" />
+    <Content Include="External Dependencies\MailServerApi.dll" />
     <Content Include="External Dependencies\Microsoft.Owin.dll" />
     <Content Include="External Dependencies\Microsoft.Owin.Security.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
@@ -1897,6 +1910,8 @@
     </Content>
     <Content Include="WebForm1.aspx" />
     <Content Include="ProspectReport.aspx" />
+    <Content Include="Webmail\checkemail.aspx" />
+    <Content Include="Webmail\checkmail.html" />
     <Content Include="WebServices\JGWebService.asmx" />
   </ItemGroup>
   <ItemGroup>
@@ -2079,6 +2094,13 @@
     <Compile Include="Utilits\EmailCommonHelper.cs" />
     <Compile Include="Utilits\SessionsCommon.cs" />
     <Compile Include="Utilits\YandexManager.cs" />
+    <Compile Include="Webmail\checkemail.aspx.cs">
+      <DependentUpon>checkemail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Webmail\checkemail.aspx.designer.cs">
+      <DependentUpon>checkemail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -2613,7 +2635,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
