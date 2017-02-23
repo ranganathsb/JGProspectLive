@@ -1316,3 +1316,99 @@ BEGIN
 END
 GO
 
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetInstallerUserDetailsByLoginId]    Script Date: 23-Feb-17 10:38:18 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 23 Feb 2017
+-- Updated By : Yogesh
+--					Added applicant status to allow applicant to login.
+-- Description: Get an install user by email and status.
+-- =============================================
+ALTER ProcEDURE [dbo].[UDP_GetInstallerUserDetailsByLoginId]
+	@loginId varchar(50) ,
+	@ActiveStatus varchar(5) = '1',
+	@ApplicantStatus varchar(5) = '2',
+	@InterviewDateStatus varchar(5) = '5',
+	@OfferMadeStatus varchar(5) = '6'
+AS
+BEGIN
+	
+	SELECT Id,FristName,Lastname,Email,Address,Designation,[Status],
+		[Password],[Address],Phone,Picture,Attachements,usertype , Picture,IsFirstTime,DesignationID
+	FROM tblInstallUsers 
+	WHERE 
+		Email = @loginId AND 
+		(
+			[Status] = @ActiveStatus OR 
+			[Status] = @ApplicantStatus OR
+			[Status] = @OfferMadeStatus OR 
+			[Status] = @InterviewDateStatus
+		)
+
+	--# This query does not make sense, the guy was really stupid.
+	/*SELECT Id,FristName,Lastname,Email,Address,Designation,[Status],
+		[Password],[Address],Phone,Picture,Attachements,usertype 
+	from tblInstallUsers 
+	where (Email = @loginId and Status='Active')  OR 
+	(Email = @loginId AND (Designation = 'SubContractor' OR Designation='Installer') AND 
+	(Status='OfferMade' OR Status='Offer Made' OR Status='Active'))*/
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[UDP_IsValidInstallerUser]    Script Date: 23-Feb-17 10:43:33 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 23 Feb 2017
+-- Updated By : Yogesh
+--					Added applicant status to allow applicant to login.
+-- Description: Get an install user by email, pwd and status.
+-- =============================================
+ALTER ProcEDURE [dbo].[UDP_IsValidInstallerUser]
+	@userid varchar(50),
+	@password varchar(50),
+	@ActiveStatus varchar(5) = '1',
+	@ApplicantStatus varchar(5) = '2',
+	@InterviewDateStatus varchar(5) = '5',
+	@OfferMadeStatus varchar(5) = '6',
+	@result int output
+AS
+BEGIN
+	
+	IF EXISTS(
+				SELECT Id 
+				FROM tblInstallUsers 
+				WHERE 
+					Email = @userid AND 
+					Password = @password AND 
+					  (
+						[Status] = @ActiveStatus OR 
+						[Status] = @ApplicantStatus OR 
+						[Status] = @InterviewDateStatus OR 
+						[Status] = @OfferMadeStatus
+					  )
+			)
+	BEGIN
+		SET @result ='1'
+	END
+	ELSE
+	BEGIN
+		SET @result='0'
+	END
+
+	RETURN @result
+
+END
+GO
+
