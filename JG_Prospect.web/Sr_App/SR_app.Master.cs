@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using JG_Prospect.BLL;
+using JG_Prospect.Common.RestServiceJSONParser;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.Sr_App
 {
@@ -14,8 +16,6 @@ namespace JG_Prospect.Sr_App
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Page.Form.DefaultButton = searchbutton.UniqueID;
-            String EmailCountResponse = Utilits.YandexManager.GetUnreadEmailCount("jmgroveconstruction.com","jgrove@jmgroveconstruction.com");
 
             if (Session["loginid"] != null)
             {
@@ -41,6 +41,7 @@ namespace JG_Prospect.Sr_App
                     li_department.Visible = true;
                 }
                 AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
+               
             }
             else
             {
@@ -49,6 +50,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+       
 
         protected void searchbutton_Click(object sender, EventArgs e)
         {

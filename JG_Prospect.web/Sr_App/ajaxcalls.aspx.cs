@@ -1,4 +1,6 @@
 ﻿using JG_Prospect.BLL;
+using JG_Prospect.Common.RestServiceJSONParser;
+using JG_Prospect.Utilits;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -58,6 +60,15 @@ namespace JG_Prospect.Sr_App
             }
 
             return SearchSuggestions;
+        }
+
+
+        [WebMethod]
+        public static string GetEmailCounters()
+        {
+            YandexEmailCountersResponse EmailCounters = YandexManager.GetUnreadEmailCount(AppSettingsValues.GetDomainActiveUserEmailCreation, "jgrove@jmgroveconstruction.com");
+            return JsonConvert.SerializeObject(EmailCounters.counters, Formatting.Indented);
+
         }
 
 

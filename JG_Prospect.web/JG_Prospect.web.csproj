@@ -237,6 +237,7 @@
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DataVisualization.Design" />
     <Reference Include="System.Web.Extensions" />
@@ -1911,7 +1912,6 @@
     <Content Include="WebForm1.aspx" />
     <Content Include="ProspectReport.aspx" />
     <Content Include="Webmail\checkemail.aspx" />
-    <Content Include="Webmail\checkmail.html" />
     <Content Include="WebServices\JGWebService.asmx" />
   </ItemGroup>
   <ItemGroup>

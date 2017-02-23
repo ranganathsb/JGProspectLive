@@ -4,11 +4,11 @@ namespace JG_Prospect.Utilits
 {
     public static class AppSettingsValues
     {
-        public static string GetDomainActiveUserEailCreation
+        public static string GetDomainActiveUserEmailCreation
         {
             get
             {
-                return ConfigurationManager.AppSettings["CreateActiveUserEailForDomai"].ToString();
+                return ConfigurationManager.AppSettings["CreateActiveUserEmailForDomain"].ToString();
             }
 
         }

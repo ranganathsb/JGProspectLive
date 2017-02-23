@@ -13,7 +13,7 @@ namespace JG_Prospect.Utilits
         {
             strUserName =  ValidateAndGetEmailIDBeforCreating(strUserName);
 
-            string strDomainName = Utilits.AppSettingsValues.GetDomainActiveUserEailCreation;
+            string strDomainName = Utilits.AppSettingsValues.GetDomainActiveUserEmailCreation;
 
             if (Utilits.YandexManager.CheckDomain(strDomainName))
             {

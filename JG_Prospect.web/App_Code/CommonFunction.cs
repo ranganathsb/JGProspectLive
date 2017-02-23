@@ -17,6 +17,13 @@ namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
+
+        public static String PreConfiguredAdminUserId
+        {
+            get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }
+
+        }
+
         /// <summary>
         /// Call to show javascript alert message from page.
         /// </summary>
@@ -192,7 +199,7 @@ namespace JG_Prospect.App_Code
                     foreach (AlternateView objAlternateView in lstAlternateView)
                     {
                         Msg.AlternateViews.Add(objAlternateView);
-                    } 
+                    }
                 }
 
                 SmtpClient sc = new SmtpClient(

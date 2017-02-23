@@ -6,6 +6,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
 using JG_Prospect.BLL;
+using JG_Prospect.App_Code;
+using JG_Prospect.Common.RestServiceJSONParser;
+using JG_Prospect.Utilits;
+using Newtonsoft.Json;
 
 namespace JG_Prospect.Sr_App
 {
@@ -35,6 +39,7 @@ namespace JG_Prospect.Sr_App
                 {
                     // Li_Installer.Visible = false;
                 }
+                SetEmailCountersAccess();
             }
             else
             {
@@ -77,5 +82,19 @@ namespace JG_Prospect.Sr_App
             // ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayPassword();", true);
             // return;
         }
+
+
+        // Created By: Yogesh Keraliya
+        // TODO: If user is admin then only show email link as of now.
+        private void SetEmailCountersAccess()
+        {
+            if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
+            {
+                hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
+                this.Page.ClientScript.RegisterStartupScript( this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+                
+            }
+        }
+
     }
 }

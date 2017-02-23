@@ -92,6 +92,7 @@
     <Compile Include="HTMLTemplates.cs" />
     <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />
+    <Compile Include="JGDataContracts.cs" />
     <Compile Include="Logger\ErrorLog.cs" />
     <Compile Include="Logger\LogCategory.cs" />
     <Compile Include="Logger\LogManager.cs" />
