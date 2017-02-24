@@ -257,9 +257,9 @@ namespace JG_Prospect.BLL
 
 
         //--------- Start DP -----------
-        public DataSet  GetInProgressTasks()
+        public DataSet GetInProgressTasks(int userid, int desigid)
         {
-            return TaskGeneratorDAL.Instance.GetInProgressTasks();
+            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid);
         }
 
         public DataSet GetClosedTasks()

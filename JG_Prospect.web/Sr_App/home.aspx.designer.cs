@@ -31,6 +31,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
+        /// tblInProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblInProgress;
+        
+        /// <summary>
+        /// drpDesigInProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList drpDesigInProgress;
+        
+        /// <summary>
+        /// drpUsersInProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList drpUsersInProgress;
+        
+        /// <summary>
         /// lblMessage control.
         /// </summary>
         /// <remarks>
@@ -47,6 +74,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView grdTaskPending;
+        
+        /// <summary>
+        /// UpdatePanel2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
         
         /// <summary>
         /// drpDesignation control.
@@ -67,13 +103,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.DropDownList drpUsers;
         
         /// <summary>
-        /// drpStatus control.
+        /// drpStatusClose control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpStatus;
+        protected global::System.Web.UI.WebControls.DropDownList drpStatusClose;
         
         /// <summary>
         /// txtTitle control.
@@ -85,22 +121,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
         
         /// <summary>
-        /// UpdatePanel2 control.
+        /// lblMsgClose control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
-        
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label lblMsgClose;
         
         /// <summary>
         /// grdTaskClosed control.

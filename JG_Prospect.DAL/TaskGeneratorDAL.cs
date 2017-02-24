@@ -1484,7 +1484,7 @@ namespace JG_Prospect.DAL
 
         //------------ Start DP ------------
 
-        public DataSet GetInProgressTasks()
+        public DataSet GetInProgressTasks(int userid,int desigid)
         {
             try
             {
@@ -1493,6 +1493,8 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetInProgressTasks");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }
