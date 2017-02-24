@@ -2223,19 +2223,19 @@ namespace JG_Prospect
                 {
                     var row = workSheet.Cells[rowNumber, 1, rowNumber, dtUser.Columns.Count];
                     var drUser = dtUser.NewRow();
-                    int intEmptyColumnCount = 0;
+                    int intFilledColumnCount = 0;
                     foreach (var cell in row)
                     {
                         drUser[cell.Start.Column - 1] = cell.Text;
-                        if (string.IsNullOrEmpty(cell.Text))
+                        if (!string.IsNullOrEmpty(cell.Text))
                         {
-                            intEmptyColumnCount++;
+                            intFilledColumnCount++;
                         }
                     }
 
                     // stop looping, if end of file.
                     // we have default value 'Applicant' in designation column, so, it will never be blank. So, we used -1 in below condition.
-                    if (intEmptyColumnCount >= dtUser.Columns.Count - 1)
+                    if (intFilledColumnCount <= 1)
                     {
                         break;
                     }
@@ -2346,19 +2346,18 @@ namespace JG_Prospect
 
         private bool ValidateUploadedData(DataTable dtUser)
         {
+            DataTable dtUserError = GetImportIntsallUsersDataTable();
+            string strMessage = string.Empty;
+
             bool IsValid = true;
             if (dtUser == null)
             {
-                UcStatusPopUp.ucPopUpHeader = "";
-                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
-                UcStatusPopUp.changeText();
+                strMessage = "Kindly validate uploaded Data / File.";
                 IsValid = false;
             }
             else if (dtUser.Rows.Count <= 0)
             {
-                UcStatusPopUp.ucPopUpHeader = "";
-                UcStatusPopUp.ucPopUpMsg = "No data found to uploade , Kindly check the uploaded file";
-                UcStatusPopUp.changeText();
+                strMessage = "No data found to uploade , Kindly check the uploaded file";
                 IsValid = false;
             }
             else
@@ -2366,88 +2365,95 @@ namespace JG_Prospect
                 // Validate data -- Mobile no , email is entered or so...
                 for (int i = 0; i < dtUser.Rows.Count; i++)
                 {
+                    bool blRowValid = true;
+
                     if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Designation"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Designition value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Status"])))
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Status value for all the records";
-                        UcStatusPopUp.changeText();
 
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Status"])))
+                    {
+                        strMessage = "Kindly enter Status value for all the records";
+
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Source"])))
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Source"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Source value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Source value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["FirstName"])))
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["FirstName"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter First Name value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter First Name value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["LastName"])))
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["LastName"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Last Name value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Last Name value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Email"])))
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Email"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Email value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Email value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
-                    else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Phone1"])))
+                    if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Phone1"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Primary Contact Phone value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Primary Contact Phone value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
                     else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Phone1Type"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Phone Type value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Phone Type value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
                     }
                     else if (string.IsNullOrEmpty(Convert.ToString(dtUser.Rows[i]["Zip"])))
                     {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Zip value for all the records";
-                        UcStatusPopUp.changeText();
+                        strMessage = "Kindly enter Zip value for all the records";
 
+                        blRowValid =
                         IsValid = false;
-                        break;
+                    }
+
+                    if (!blRowValid)
+                    {
+                        dtUserError.Rows.Add(dtUser.Rows[i].ItemArray);
                     }
                 }
+            }
+
+            if (!IsValid)
+            {
+                grdBulkUploadUserErrors.DataSource = dtUserError;
+                grdBulkUploadUserErrors.DataBind();
+
+                ScriptManager.RegisterStartupScript
+                    (
+                        this,
+                        this.GetType(),
+                        "ShowPopup_divBulkUploadUserErrors",
+                        string.Concat(
+                                        "ShowPopupWithTitle('#", divBulkUploadUserErrors.ClientID, "','Information');"
+                                     ),
+                        true
+                    );
             }
 
             return IsValid;
@@ -3835,6 +3841,18 @@ namespace JG_Prospect
                                                  ),
                                     true
                                 );
+        }
+
+        public string grdBulkUploadUserErrors_GetCellText(object strInput)
+        {
+            if (!string.IsNullOrEmpty(Convert.ToString(strInput)))
+            {
+                return strInput.ToString();
+            }
+            else
+            {
+                return "<div style=\"color: blue;font-weight:bold;text-align: center;font-size: 20px;\">x</div>";
+            }
         }
 
         #region 'Assigned Task ToUser'

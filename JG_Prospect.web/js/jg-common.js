@@ -166,6 +166,10 @@ function ShowPopupWithTitle(varControlID, strTitle) {
 
     var dialogwidth = windowWidth + "px";
 
+    if ($(varControlID).attr('data-width')) {
+        dialogwidth = $(varControlID).attr('data-width');
+    }
+
     var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
 
     // this will update title of current dialog.

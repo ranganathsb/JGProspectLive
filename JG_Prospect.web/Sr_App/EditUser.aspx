@@ -1238,6 +1238,68 @@
     <%--Modal Popup Ends--%>
     <%--Popup Stars--%>
     <div class="hide">
+        <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
+            <div style="padding:5px 10px;">
+                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue;font-weight:bold;text-align: center;font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
+            </div>
+            <div style="max-height:500px; height:500px; overflow: auto;">
+                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false" 
+                    CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
+                    <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                    <HeaderStyle CssClass="trHeader " />
+                    <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                    <AlternatingRowStyle CssClass="AlternateRow " />
+                    <Columns>
+                        <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("FirstName")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("LastName")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Email")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Designation")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Status")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Source*"  HeaderStyle-Width="60" ItemStyle-Width="60">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Source")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1Type")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                            <ItemTemplate>
+                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Zip")) %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+            </div>
+            <br />
+        </div>
         <%--Send Email To User Popup--%>
         <div id="divSendEmailToUser" runat="server" title="Send Email">
             <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
