@@ -827,7 +827,7 @@ namespace JG_Prospect
                     }
                 }
 
-                // Check if request is coming from www.jmgroveconstruction.com's Employment page
+                // Check if request is coming from www.jmgroveconstruction.com's Employment page, for login
                 Uri UrlReferer = Request.UrlReferrer;
                 if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("employment.php"))
                 {
@@ -844,7 +844,11 @@ namespace JG_Prospect
                             btnsubmit_Click(sender, e);
                         }
                     }
+                }
 
+                // Check if request is coming from www.jmgroveconstruction.com's Employment page, for new applicant user.
+                if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("sendemployee.php"))
+                {
                     // New user request : Welcome email and Login
                     if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && !string.IsNullOrEmpty(Request.QueryString["Email"]))
                     {
@@ -1236,7 +1240,7 @@ namespace JG_Prospect
 
             if (strReturnValue == "YES")
             {
-                SendWelcomeEmail(UserEmail, UserID);
+                string strPhoupText = SendWelcomeEmail(UserEmail, UserID);
 
                 Page.ClientScript.RegisterStartupScript
                         (
@@ -1244,7 +1248,7 @@ namespace JG_Prospect
                             "TheConfirm_Ok_Cancel",
                             string.Format(
                                             "TheConfirm_Ok_Cancel('{0}',{1},{2},'{3}');",
-                                            "Your username is the phone # or email you have entered, your default password is \"jmgrove\". Select continue to proceed with application process or cancel. Save your username and password for future use.You have successfully been entered into JMGrove\'s Human Resource Database,and should have also received an email with login details",
+                                            strPhoupText,
                                             "function () {}",
                                             "function () {}",
                                             "Login Guidance"
@@ -1254,8 +1258,16 @@ namespace JG_Prospect
             }
         }
 
-        public void SendWelcomeEmail(string UserEmail, int UserID)
+        public string SendWelcomeEmail(string UserEmail, int UserID)
         {
+            string strPopupText = "";
+            strPopupText += "You have successfully been entered into JMGrove Human Resource Database and should have also received an email with login details. ";
+            strPopupText += "Your username is the phone #: {0} or Email: {1} you have entered, your default password is \"jmgrove\". ";
+            strPopupText += "Select continue to proceed with application process or cancel. Save your username and password for future use. ";
+
+            string strUserEmail = "";
+            string strUserPhone = "";
+
             DataSet ds = InstallUserBLL.Instance.getuserdetails(UserID);
             DataRow drUser = null;
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -1263,9 +1275,10 @@ namespace JG_Prospect
                 drUser = ds.Tables[0].Rows[0];
 
                 string strName = Convert.ToString(drUser["FristName"]) + " " + Convert.ToString(drUser["Lastname"]);
-                string strUserEmail = Convert.ToString(drUser["Email"]);
                 string strUserDesignation = Convert.ToString(drUser["Designation"]);
                 string strUserDesignationId = Convert.ToString(drUser["DesignationId"]);
+                strUserEmail = Convert.ToString(drUser["Email"]);
+                strUserPhone = Convert.ToString(drUser["Phone"]);
 
                 DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, strUserDesignationId);
 
@@ -1276,6 +1289,8 @@ namespace JG_Prospect
 
                 JG_Prospect.App_Code.CommonFunction.SendEmail(strUserDesignationId, strUserEmail, strSubject, strBody, objHTMLTemplate.Attachments);
             }
+
+            return string.Format(strPopupText, strUserPhone, strUserEmail);
         }
 
         #endregion
