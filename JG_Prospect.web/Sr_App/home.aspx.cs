@@ -442,53 +442,46 @@ namespace JG_Prospect.Sr_App
                     
                 // fill status dropdowns
                 //----- If manager level then show all statuses
-                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+
+                string[] arrStatus;
+                if (  (string)Session["DesigNew"] == "Admin" )
                 {
-                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
+                     arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
                         JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
                         JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
                         JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
                         JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
                         JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
                     };
-                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
-                    drpStatusClosed.DataTextField = "Text";
-                    drpStatusClosed.DataValueField = "Value";
-                    drpStatusClosed.DataBind();
-                    drpStatusClosed.Items.Insert(0, new ListItem("--All--", "0"));
-
-                    for (int i = 0; i < drpStatusClosed.Items.Count; i++)
-                    {
-                        if (lblStatus.Value == drpStatusClosed.Items[i].Value)
-                        {
-                            drpStatusClosed.SelectedIndex = i;
-                        }
-                    }
+                    
+                }
+                else if ((string)Session["DesigNew"] == "ITLead" ||   (string)Session["DesigNew"] == "Office Manager")
+                {
+                    arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
+                        JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
+                        JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
+                        JGConstant.TaskStatus.SpecsInProgress.ToString(),
+                        JGConstant.TaskStatus.Finished.ToString(),
+                        JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString()
+                    };
                 }
                 else
                 {
                     //----- If user level then show Test,Live,Finished statuses
-                    string[] arrStatus = new string[] {JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString()};
-                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
-                    drpStatusClosed.DataTextField = "Text";
-                    drpStatusClosed.DataValueField = "Value";
-                    drpStatusClosed.DataBind();
-                    drpStatusClosed.Items.Insert(0, new ListItem("--All--", "0"));
-                    for (int i = 0; i < drpStatusClosed.Items.Count; i++)
-                    {
-                        if (drpStatusClosed.Items[i].Text == "Closed")
-                        {
-                            drpStatusClosed.Items[i].Attributes.CssStyle.Add("color", "Grey");
-                        }
-                        if (drpStatusClosed.Items[i].Text == "Billed")
-                        {
-                            drpStatusClosed.Items[i].Attributes.CssStyle.Add("color", "Green");
-                        }
+                    arrStatus = new string[] { JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString() };
+                }
 
-                        if (lblStatus.Value == drpStatusClosed.Items[i].Value)
-                        {
-                            drpStatusClosed.SelectedIndex = i;
-                        }
+                drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
+                drpStatusClosed.DataTextField = "Text";
+                drpStatusClosed.DataValueField = "Value";
+                drpStatusClosed.DataBind();
+                drpStatusClosed.Items.Insert(0, new ListItem("--All--", "0"));
+                for (int i = 0; i < drpStatusClosed.Items.Count; i++)
+                {
+
+                    if (lblStatus.Value == drpStatusClosed.Items[i].Value)
+                    {
+                        drpStatusClosed.SelectedIndex = i;
                     }
                 }
 
