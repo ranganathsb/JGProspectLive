@@ -114,7 +114,8 @@ namespace JG_Prospect.Common
             Deleted = 9,
             Finished = 10,
             Test = 11,
-            Live = 12
+            Live = 12,
+            Billed=13
         }
 
         public enum TaskPriority

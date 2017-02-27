@@ -50,12 +50,14 @@ namespace JG_Prospect.Sr_App
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
                     tblInProgress.Visible = true;
+                    tblClosedTask.Visible = true;
                 }
                 else
                 {
                     tblInProgress.Visible = false;
+                    tblClosedTask.Visible = false;
                 }
-                LoadFilterUsersByDesgination();
+                LoadFilterUsersByDesgination("");
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
             }
@@ -64,23 +66,33 @@ namespace JG_Prospect.Sr_App
 
         protected void drpDesigInProgress_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadFilterUsersByDesgination();
+            string designation = drpDesigInProgress.SelectedValue;
+            LoadFilterUsersByDesgination(designation);
             //SearchTasks(null);
             BindTaskInProgressGrid();
         }
 
+        protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designation = drpDesigClosed.SelectedValue;
+            LoadFilterUsersByDesgination(designation);
+            //SearchTasks(null);
+            BindTaskClosedGrid();
+        }
         protected void drpUsersInProgress_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindTaskInProgressGrid();
         }
 
-        private void LoadFilterUsersByDesgination()
+        protected void drpUsersClosed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindTaskClosedGrid();
+        }
+        private void LoadFilterUsersByDesgination(string designation)
         {
             DataSet dsUsers;
             // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
             // DropDownList ddlDesignation = (DropDownList)sender;
-            string designation = drpDesigInProgress.SelectedValue;
-
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designation);
             //drpUsersInProgress.Items.Clear();
            
@@ -90,6 +102,13 @@ namespace JG_Prospect.Sr_App
             drpUsersInProgress.DataBind();
             drpUsersInProgress.Items.Insert(0, new ListItem("--All--", "0"));
             drpUsersInProgress.SelectedIndex = 0;
+
+            drpUsersClosed.DataSource = dsUsers;
+            drpUsersClosed.DataTextField = "FristName";
+            drpUsersClosed.DataValueField = "Id";
+            drpUsersClosed.DataBind();
+            drpUsersClosed.Items.Insert(0, new ListItem("--All--", "0"));
+            drpUsersClosed.SelectedIndex = 0;
 
         }
 
@@ -104,6 +123,14 @@ namespace JG_Prospect.Sr_App
             drpDesigInProgress.DataBind();
             drpDesigInProgress.Items.Insert(0, new ListItem("--All--", "0"));
             drpDesigInProgress.SelectedIndex = 0;
+
+
+            drpDesigClosed .DataValueField = "Id";
+            drpDesigClosed.DataTextField = "DesignationName";
+            drpDesigClosed.DataSource = dsDesignation.Tables[0];
+            drpDesigClosed.DataBind();
+            drpDesigClosed.Items.Insert(0, new ListItem("--All--", "0"));
+            drpDesigClosed.SelectedIndex = 0;
         }
 
        private void BindTaskInProgressGrid()
@@ -148,7 +175,28 @@ namespace JG_Prospect.Sr_App
         private void BindTaskClosedGrid()
         {
             DataSet ds = new DataSet();
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks();
+
+            int userId = 0;
+            int desigID = 0;
+            if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+            {
+                userId = 0;
+                if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
+                {
+                    userId = Convert.ToInt32(drpUsersClosed.SelectedValue);
+                }
+            }
+            else
+            {
+                userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            }
+            if (Convert.ToInt32(drpDesigClosed.SelectedValue) > 0)
+            {
+                desigID = Convert.ToInt32(drpDesigClosed.SelectedValue);
+            }
+
+            // if loggedin user is not manager then show tasks assigned to loggedin user only 
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
@@ -156,7 +204,7 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                lblMessage.Text = "No Closed Tasks Found !!!";
+                //lblMessage.Text = "No In-Progress Tasks Found !!!";
                 grdTaskClosed.DataSource = null;
                 grdTaskClosed.DataBind();
 
@@ -166,6 +214,7 @@ namespace JG_Prospect.Sr_App
         protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
         {
             BindTaskInProgressGrid();
+            
             grdTaskPending.PageIndex = e.NewPageIndex;
             grdTaskPending.DataBind();
         }
@@ -262,7 +311,15 @@ namespace JG_Prospect.Sr_App
                 //----- If manager level then show all statuses
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
-                    drpStatusInPro.DataSource = CommonFunction.GetTaskStatusList();
+                    //drpStatusInPro.DataSource = CommonFunction.GetTaskStatusList();
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
+                        JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
+                        JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
+                        JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
+                        JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
+                        JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
+                    };
+                    drpStatusInPro.DataSource = FillStatusDropDowns(arrStatus); 
                     drpStatusInPro.DataTextField = "Text";
                     drpStatusInPro.DataValueField = "Value";
                     drpStatusInPro.DataBind();
@@ -290,7 +347,7 @@ namespace JG_Prospect.Sr_App
                 else
                 {
                     //----- If user level then show Test,Live,Finished statuses
-                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString(), JGConstant.TaskStatus.Finished.ToString() };
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(),  JGConstant.TaskStatus.Finished.ToString() };
                     drpStatusInPro.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
                     drpStatusInPro.DataTextField = "Text";
                     drpStatusInPro.DataValueField = "Value";
@@ -311,10 +368,8 @@ namespace JG_Prospect.Sr_App
                         {
                             drpStatusInPro.SelectedIndex = i;
                         }
-
                     }
                 }
-
             }
         }
 
@@ -344,8 +399,16 @@ namespace JG_Prospect.Sr_App
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Label lblStatus = e.Row.FindControl("lblStatus") as Label;
+                HiddenField lblStatus = e.Row.FindControl("lblStatus") as HiddenField;
                 Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                DropDownList drpStatusClosed = e.Row.FindControl("drpStatusClosed") as DropDownList;
+                HiddenField lblTaskIdClosed = e.Row.FindControl("lblTaskIdClosed") as HiddenField;
+               
+                LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
+                HiddenField lblParentTaskIdClosed = e.Row.FindControl("lblParentTaskIdClosed") as HiddenField;
+
+                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdClosed.Value + "&hstid=" + lblTaskIdClosed.Value;
+
                 if (lblDueDate.Text != "")
                 {
                     DateTime dtDue = new DateTime();
@@ -353,17 +416,80 @@ namespace JG_Prospect.Sr_App
                     lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
                 }
 
-                if (lblStatus.Text == "4")
+                if (lblStatus.Value == "7")
                 {
-                    lblStatus.Text = "In Progress";
+                    //lblStatus.Value = "In Progress"
+                    e.Row.BackColor = System.Drawing.Color.LightGray;
                 }
-                else if (lblStatus.Text == "3")
+                else if (lblStatus.Value == "13")
                 {
-                    lblStatus.Text = "Assigned";
+                    //lblStatus.Value = "Assigned";
+                    //lblStatus.ForeColor = System.Drawing.Color.LawnGreen;
+                    e.Row.BackColor = System.Drawing.Color.Green;
                 }
-                else if (lblStatus.Text == "2")
+                else if (lblStatus.Value == "9")
                 {
-                    lblStatus.Text = "Requested";
+                    //lblStatus.Value = "Requested";
+                    //lblStatus.ForeColor = System.Drawing.Color.Red;
+                    e.Row.BackColor = System.Drawing.Color.Gray;
+                }
+                else
+                {
+                    e.Row.BackColor = System.Drawing.Color.Transparent;
+                }
+                
+                int vTaskId = Convert.ToInt32(lblTaskIdClosed.Value);
+                    
+                // fill status dropdowns
+                //----- If manager level then show all statuses
+                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                {
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
+                        JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
+                        JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
+                        JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
+                        JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
+                        JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
+                    };
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
+                    drpStatusClosed.DataTextField = "Text";
+                    drpStatusClosed.DataValueField = "Value";
+                    drpStatusClosed.DataBind();
+                    drpStatusClosed.Items.Insert(0, new ListItem("--All--", "0"));
+
+                    for (int i = 0; i < drpStatusClosed.Items.Count; i++)
+                    {
+                        if (lblStatus.Value == drpStatusClosed.Items[i].Value)
+                        {
+                            drpStatusClosed.SelectedIndex = i;
+                        }
+                    }
+                }
+                else
+                {
+                    //----- If user level then show Test,Live,Finished statuses
+                    string[] arrStatus = new string[] {JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString()};
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
+                    drpStatusClosed.DataTextField = "Text";
+                    drpStatusClosed.DataValueField = "Value";
+                    drpStatusClosed.DataBind();
+                    drpStatusClosed.Items.Insert(0, new ListItem("--All--", "0"));
+                    for (int i = 0; i < drpStatusClosed.Items.Count; i++)
+                    {
+                        if (drpStatusClosed.Items[i].Text == "Closed")
+                        {
+                            drpStatusClosed.Items[i].Attributes.CssStyle.Add("color", "Grey");
+                        }
+                        if (drpStatusClosed.Items[i].Text == "Billed")
+                        {
+                            drpStatusClosed.Items[i].Attributes.CssStyle.Add("color", "Green");
+                        }
+
+                        if (lblStatus.Value == drpStatusClosed.Items[i].Value)
+                        {
+                            drpStatusClosed.SelectedIndex = i;
+                        }
+                    }
                 }
 
             }
@@ -388,6 +514,7 @@ namespace JG_Prospect.Sr_App
                 }
 
                 BindTaskInProgressGrid();
+                BindTaskClosedGrid();
             }
             catch (Exception ex)
             {
@@ -395,8 +522,33 @@ namespace JG_Prospect.Sr_App
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
         }
-        
 
+        protected void drpStatusClosed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddl_status = (DropDownList)sender;
+            GridViewRow row = (GridViewRow)ddl_status.Parent.Parent;
+            int idx = row.RowIndex;
+
+            //Retrieve bookid and studentid from Gridview and status(dropdownlist)
+            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdClosed")).Value);
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
+                    command.CommandType = CommandType.Text;
+                    database.ExecuteNonQuery (command);
+                }
+
+                BindTaskClosedGrid();
+            }
+            catch (Exception ex)
+            {
+                // return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
         //[System.Web.Services.WebMethod]
         //public static string GetAllScripts(string strScriptId)
         //{

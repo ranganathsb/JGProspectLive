@@ -85,49 +85,40 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel UpdatePanel2;
         
         /// <summary>
-        /// drpDesignation control.
+        /// tblClosedTask control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpDesignation;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblClosedTask;
         
         /// <summary>
-        /// drpUsers control.
+        /// drpDesigClosed control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpUsers;
+        protected global::System.Web.UI.WebControls.DropDownList drpDesigClosed;
         
         /// <summary>
-        /// drpStatusClose control.
+        /// drpUsersClosed control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpStatusClose;
+        protected global::System.Web.UI.WebControls.DropDownList drpUsersClosed;
         
         /// <summary>
-        /// txtTitle control.
+        /// Label1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTitle;
-        
-        /// <summary>
-        /// lblMsgClose control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMsgClose;
+        protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
         /// grdTaskClosed control.

@@ -1505,7 +1505,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks()
+        public DataSet GetClosedTasks(int userid, int desigid)
         {
             try
             {
@@ -1514,6 +1514,8 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetClosedTasks");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }

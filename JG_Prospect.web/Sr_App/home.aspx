@@ -144,103 +144,83 @@
 
 
         <h2>Commits, Closed-Billed</h2>
-        <div>
-           
-     
-            
-            
-        </div>
+
          <asp:UpdatePanel ID="UpdatePanel2" runat="server">
           <ContentTemplate>
               
-               <table>
+            <table id="tblClosedTask" runat="server">
                 <tr>
                     <td>Designation</td>
                     <td>Users</td>
-                    <td>Status</td>
-                    <td>Task Title</td>
+
                 </tr>
                 <tr>
                     <td>
-                        <asp:DropDownList ID="drpDesignation" runat="server">
-                            <asp:ListItem Text="Admin" Value="1"></asp:ListItem>
-                            <asp:ListItem Text="ITLead" Value="2"></asp:ListItem>
+                        <asp:DropDownList ID="drpDesigClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
                         </asp:DropDownList>
                     </td>
                     <td>
-                         <asp:DropDownList ID="drpUsers" runat="server">
-                             <asp:ListItem Text="User-A" Value="1"></asp:ListItem>
-                             <asp:ListItem Text="User-B" Value="2"></asp:ListItem>
+                         <asp:DropDownList ID="drpUsersClosed" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
+                        </asp:DropDownList>
+                    </td>
+                   <%-- <td>
+                        <asp:DropDownList ID="drpStatusInProgress" runat="server" AutoPostBack="true" >
                         </asp:DropDownList>
                     </td>
                     <td>
-                        <asp:DropDownList ID="drpStatusClose" runat="server" AutoPostBack="true"  >
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                        <asp:TextBox ID="txtTitle" runat="server"></asp:TextBox>
-                    </td>
+                        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+                    </td>--%>
                 </tr>
             </table>
-              <asp:Label runat="server" ID="lblMsgClose"></asp:Label>
-                <asp:GridView ID="grdTaskClosed" runat="server"   
-                    
-                ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                EmptyDataText="No Closed Tasks Found !!" CssClass="table" Width="95%" CellSpacing="0" CellPadding="0"
-                AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical"
-                OnPageIndexChanging = "OnPagingTaskClosed" 
-                OnRowDataBound ="grdTaskClosed_RowDataBound"
-                PagerStyle-CssClass="paging"
-                PagerStyle-HorizontalAlign="Right"
-                PageSize = "10" >
-                <HeaderStyle CssClass="trHeader " />
-                <RowStyle CssClass="FirstRow" />
-                <AlternatingRowStyle CssClass="AlternateRow " />
+
+               <asp:Label runat="server" ID="Label1"></asp:Label>
+                <asp:GridView ID="grdTaskClosed" runat="server" 
+                    ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    EmptyDataText="No Closed Tasks Found !!" CssClass="table" Width="95%" CellSpacing="0" CellPadding="0"
+                    AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical"
+                    OnPageIndexChanging = "OnPagingTaskClosed" 
+                    OnRowDataBound ="grdTaskClosed_RowDataBound"
+                    PagerStyle-HorizontalAlign="Right"
+                    PagerStyle-CssClass="paging"
+                    PageSize = "10" >
+                    <HeaderStyle CssClass="trHeader " />
+                    <RowStyle CssClass="FirstRow" />
+                    <AlternatingRowStyle CssClass="AlternateRow " />
                 <Columns>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Due Date">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
                     <ItemTemplate>
-                        <asp:Label ID="lblDueDate" runat="server"
-                        Text='<%# Eval("DueDate")%>'></asp:Label>
+                        <asp:HiddenField ID="lblTaskIdClosed" runat="server" Value='<%# Eval("TaskId")%>' />
+                        <asp:HiddenField ID="lblParentTaskIdClosed" runat="server" Value='<%# Eval("ParentTaskId")%>' />
+                        <asp:Label ID="lblDueDate" runat="server"  Text='<%# Eval("DueDate")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"    HeaderText = "Task ID#">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                     <ItemTemplate>
-                        <asp:Label ID="lblTaskId" runat="server"
-                                Text='<%# Eval("InstallId")%>'></asp:Label>
+                        <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField ItemStyle-HorizontalAlign="Justify" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px" HeaderStyle-HorizontalAlign="Center"   HeaderText = "Description">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" ItemStyle-Width = "300px"  HeaderText = "Description">
                     <ItemTemplate>
                         <asp:Label ID="lblDesc" runat="server"
                             Text='<%# Eval("Description")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-               <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"     HeaderText = "Status">
+               <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  ItemStyle-Width = "120px"  HeaderText = "Status">
                     <ItemTemplate>
-                        <asp:Label ID="lblStatus" runat="server"
-                            Text='<%# Eval("Status")%>'></asp:Label>
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-Width = "150px"     HeaderText = "Hours">
-                    <ItemTemplate>
-                      
+                        <asp:HiddenField ID="lblStatus" runat="server" Value='<%# Eval("Status")%>'></asp:HiddenField>
+                        <asp:DropDownList ID="drpStatusClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpStatusClosed_SelectedIndexChanged" >
+                        </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
 
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"  ItemStyle-Width = "150px"  HeaderText = "Approve">
-                    <ItemTemplate>
-                        <asp:CheckBox ID="chkAdmin" runat="server" />
-                        <asp:CheckBox ID="chkITLead" runat="server" />
-                        <asp:CheckBox ID="chkUser" runat="server" />
-
-                    </ItemTemplate>
-                </asp:TemplateField>
 
                 </Columns>
                   <PagerStyle  CssClass = "paging" />
-               
+                
                 </asp:GridView>
+
+
             </ContentTemplate>
             <Triggers>
             <asp:AsyncPostBackTrigger ControlID = "grdTaskClosed" />
