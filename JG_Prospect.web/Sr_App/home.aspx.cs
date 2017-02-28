@@ -266,10 +266,16 @@ namespace JG_Prospect.Sr_App
                     //lblStatus.ForeColor = System.Drawing.Color.Red;
                     e.Row.BackColor = System.Drawing.Color.Yellow;
                 }
-                else if (lblStatus.Value == "1")
+                else  
                 {
-                    //lblStatus.Value = "Open";
-                    e.Row.BackColor = System.Drawing.Color.Transparent;
+                    ////lblStatus.Value = "Open";
+                    System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
+                    e.Row.BackColor = clr;
+                    //e.Row.BorderColor = System.Drawing.Color.Black;
+                    //foreach (TableCell cell in e.Row.Cells)
+                    //{
+                    //    cell.BorderColor = System.Drawing.Color.Black;
+                    //}
                 }
 
                 try
@@ -436,7 +442,8 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    e.Row.BackColor = System.Drawing.Color.Transparent;
+                    System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
+                    e.Row.BackColor = clr;
                 }
                 
                 int vTaskId = Convert.ToInt32(lblTaskIdClosed.Value);
