@@ -458,7 +458,6 @@ namespace JG_Prospect
                             ddlCountry.SelectedValue = ds.Tables[0].Rows[0]["CountryCode"].ToString();
                         }
 
-
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
 
                         if (lstDesig != null)
@@ -1141,6 +1140,8 @@ namespace JG_Prospect
                     lnkEscrow.Visible = false;
                     lnkFacePage.Visible = false;
                 }
+
+                Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
             }
             else
             {
@@ -1174,6 +1175,15 @@ namespace JG_Prospect
             #endregion
 
             pnlFngPrint.Visible = false;
+        }
+
+        private string GetViewSalesUserAlertPopup()
+        {
+            string alertMessage = "For consideration for the designation #designation#; please fill in the additional required fields & complete timed aptitude test. When all is complete you may schedule an \"tech task interview date and time with a Manager\"";
+
+            alertMessage = alertMessage.Replace("#designation#", ddlPositionAppliedFor.SelectedItem.Text);
+
+            return alertMessage;
         }
 
         private void SetUserControlValue(string LoginID)
@@ -4690,7 +4700,7 @@ namespace JG_Prospect
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4739,7 +4749,7 @@ namespace JG_Prospect
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4758,7 +4768,7 @@ namespace JG_Prospect
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4793,7 +4803,7 @@ namespace JG_Prospect
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;

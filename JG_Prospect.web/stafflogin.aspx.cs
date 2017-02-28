@@ -1249,7 +1249,7 @@ namespace JG_Prospect
                             string.Format(
                                             "TheConfirm_Ok_Cancel('{0}',{1},{2},'{3}');",
                                             strPhoupText,
-                                            "function () {}",
+                                            String.Concat("\"",UserEmail,"^", JG_Prospect.Common.JGConstant.Default_PassWord,"\""),
                                             "function () {}",
                                             "Login Guidance"
                                          ),

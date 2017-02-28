@@ -122,6 +122,14 @@
             alert(loginFailMsg);
         }
 
+        function AutoLoginApplicant(email,pwd)
+        {
+            $('#<%=txtloginid.ClientID%>').val(email);
+            $('#<%=txtpassword.ClientID%>').val(pwd);
+
+            $('#<%=btnsubmit.ClientID%>').click();
+
+        }
     </script>
     
 </head>
