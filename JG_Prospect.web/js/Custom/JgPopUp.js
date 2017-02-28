@@ -45,10 +45,8 @@ function TheConfirm_Ok_Cancel(dialogText, okFunc, cancelFunc, dialogTitle) {
                 //}
                 //$(this).dialog('destroy');
                 if (okFunc) {
-                    alert(okFunc);
                     var vals = okFunc.split("^");
                     if (vals && vals.length > 0) {
-                        alert(vals[0],' ',vals[1]);
                         AutoLoginApplicant(vals[0], vals[1]);
                     }
                 }

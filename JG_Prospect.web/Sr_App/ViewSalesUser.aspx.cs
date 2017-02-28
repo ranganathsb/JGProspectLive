@@ -768,9 +768,14 @@ namespace JG_Prospect.Sr_App
                         }
 
 
-                        if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        if (ds.Tables[0].Rows[0]["Source"].ToString() != "")
                         {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                            System.Web.UI.WebControls.ListItem lstSource = ddlSource.Items.FindByText(ds.Tables[0].Rows[0]["Source"].ToString().Trim());
+
+                            if (lstSource != null)
+                            {
+                                ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource); 
+                            }
                         }
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
                         {
@@ -879,7 +884,15 @@ namespace JG_Prospect.Sr_App
                         dtResignation.Text = ds.Tables[0].Rows[0][45].ToString();
                         ddlWorkerCompCode.SelectedValue = ds.Tables[0].Rows[0][46].ToString();
                         dtReviewDate.Text = ds.Tables[0].Rows[0][47].ToString();
-                        ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["EmpType"].ToString()))
+                        {
+                            System.Web.UI.WebControls.ListItem lstEmpType = ddlEmpType.Items.FindByValue(ds.Tables[0].Rows[0]["EmpType"].ToString());
+
+                            if (lstEmpType != null)
+                            {
+                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);  
+                            }
+                        }
                         dtLastDate.Text = ds.Tables[0].Rows[0][49].ToString();
                         txtPayRates.Text = ds.Tables[0].Rows[0][50].ToString();
                         //ddlExtraEarning.SelectedValue = ;
@@ -986,15 +999,27 @@ namespace JG_Prospect.Sr_App
                             //txtContractor3.Text = str_Contractor3;
                         }
                         //txtMajorTools.Text = Convert.ToString(ds.Tables[0].Rows[0][66]);
-                        if (Convert.ToString(ds.Tables[0].Rows[0][67]) != "")
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["CrimeStatus"].ToString()))
                         {
-                            if (Convert.ToBoolean(ds.Tables[0].Rows[0][67]))
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["CrimeStatus"]))
                             {
                                 rdoDrugtestYes.Checked = true;
                             }
                             else
                             {
                                 rdoDrugtestNo.Checked = true;
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FELONY"].ToString()))
+                        {
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["FELONY"]))
+                            {
+                                rdoGuiltyYes.Checked = true;
+                            }
+                            else
+                            {
+                                rdoGuiltyYes.Checked = true;
                             }
                         }
 
@@ -1185,6 +1210,14 @@ namespace JG_Prospect.Sr_App
 
         #region ' -- Button --'
 
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() != "")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
         protected void btnreset_Click(object sender, EventArgs e)
         {
             clearcontrols();
@@ -4686,7 +4719,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4735,7 +4768,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4754,7 +4787,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4789,7 +4822,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -5806,7 +5839,7 @@ namespace JG_Prospect.Sr_App
         private void BindDesignations()
         {
             DataSet dsDesignation = new DataSet();
-            dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0,0);
+            dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 0);
             if (dsDesignation.Tables.Count > 0)
             {
                 ddldesignation.DataSource = dsDesignation.Tables[0];
@@ -6627,13 +6660,5 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            if (txtTouchPointLogNote.Text.Trim() != "")
-            {
-                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
-                txtTouchPointLogNote.Text = "";
-            }
-        }
     }
 }
