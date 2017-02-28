@@ -615,15 +615,30 @@ namespace JG_Prospect.App_Code
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
 
-            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
-            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
-            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
-            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
-            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
-            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
-            objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
-            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
-            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
+            //----------- Start DP -----------------
+            //objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
+            //objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
+            //objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
+            //objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
+            //objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
+            //objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            //objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
+            //objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
+            //objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
+            //objListItemCollection.Add(new ListItem("Test", Convert.ToByte(JGConstant.TaskStatus.Test).ToString()));
+            //objListItemCollection.Add(new ListItem("Live", Convert.ToByte(JGConstant.TaskStatus.Live).ToString()));
+
+            int enumlen = Enum.GetNames(typeof(JGConstant.TaskStatus)).Length;
+
+            foreach (var item in Enum.GetNames(typeof(JGConstant.TaskStatus)))
+            {
+                int enumval = (int)Enum.Parse(typeof(JGConstant.TaskStatus), item);
+                if (item != "Deleted")
+                {
+                    objListItemCollection.Add(new ListItem(item, enumval.ToString()));
+                }
+            }
+            //----------- End DP -----------------
 
             if (CheckAdminAndItLeadMode())
             {

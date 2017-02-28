@@ -226,6 +226,7 @@ namespace JG_Prospect.Sr_App
             grdTaskClosed.DataBind();
         }
 
+        
         protected void grdTaskPending_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -311,15 +312,15 @@ namespace JG_Prospect.Sr_App
                 //----- If manager level then show all statuses
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
-                    //drpStatusInPro.DataSource = CommonFunction.GetTaskStatusList();
-                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
-                        JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
-                        JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
-                        JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
-                        JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
-                        JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
-                    };
-                    drpStatusInPro.DataSource = FillStatusDropDowns(arrStatus); 
+                    drpStatusInPro.DataSource = CommonFunction.GetTaskStatusList();
+                    //string[] arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
+                    //    JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
+                    //    JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
+                    //    JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
+                    //    JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
+                    //    JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
+                    //};
+                    //drpStatusInPro.DataSource = FillStatusDropDowns(arrStatus); 
                     drpStatusInPro.DataTextField = "Text";
                     drpStatusInPro.DataValueField = "Value";
                     drpStatusInPro.DataBind();
@@ -446,14 +447,7 @@ namespace JG_Prospect.Sr_App
                 string[] arrStatus;
                 if (  (string)Session["DesigNew"] == "Admin" )
                 {
-                     arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
-                        JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
-                        JGConstant.TaskStatus.Pending.ToString(),  JGConstant.TaskStatus.ReOpened.ToString(),
-                        JGConstant.TaskStatus.Closed.ToString() ,JGConstant.TaskStatus.SpecsInProgress.ToString(),
-                        JGConstant.TaskStatus.Deleted.ToString(),JGConstant.TaskStatus.Finished.ToString(),
-                        JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString(),JGConstant.TaskStatus.Billed.ToString(),
-                    };
-                    
+                    drpStatusClosed.DataSource = CommonFunction.GetTaskStatusList();
                 }
                 else if ((string)Session["DesigNew"] == "ITLead" ||   (string)Session["DesigNew"] == "Office Manager")
                 {
@@ -464,14 +458,16 @@ namespace JG_Prospect.Sr_App
                         JGConstant.TaskStatus.Finished.ToString(),
                         JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString()
                     };
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
                 }
                 else
                 {
                     //----- If user level then show Test,Live,Finished statuses
                     arrStatus = new string[] { JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString() };
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
                 }
 
-                drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
+                 
                 drpStatusClosed.DataTextField = "Text";
                 drpStatusClosed.DataValueField = "Value";
                 drpStatusClosed.DataBind();
