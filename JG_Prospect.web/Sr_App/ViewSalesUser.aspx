@@ -1700,7 +1700,7 @@
                                         <label></label>
                                         <asp:TextBox ID="txtSource" runat="server" Width="140px" TabIndex="512"></asp:TextBox>
                                         &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
+                                <asp:Button runat="server" ID="btnDeleteSource" OnClientClick="javascript:return confirm('are you sure you want to delete this source? All users entered by this source will be replaced with JG - Source by default.');" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
                                         <br />
                                         <label>
                                         </label>

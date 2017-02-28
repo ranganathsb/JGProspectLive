@@ -5,7 +5,7 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[DeleteInstallUsers]    Script Date: 03-Feb-17 9:59:43 AM ******/
 SET ANSI_NULLS ON
-GOC:\work\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.web\Database Scripts\yogesh\
+
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
