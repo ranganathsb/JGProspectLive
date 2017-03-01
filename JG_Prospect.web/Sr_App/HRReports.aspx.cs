@@ -31,10 +31,11 @@ namespace JG_Prospect.Sr_App
             if (!IsPostBack)
             {
                 BindControls();
-                FillCustomer();
-                DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
-                bindPayPeriod(dsCurrentPeriod);
+
+                ddlStatus.SelectedValue = Convert.ToString((byte)JGConstant.InstallUserStatus.OfferMade);
+
                 filterHrData();
+
                 GetActiveUsers();
                 GetActiveContractors();
             }
@@ -292,7 +293,17 @@ namespace JG_Prospect.Sr_App
 
         public void filterHrData()
         {
-            DateTime fromDate = Convert.ToDateTime(txtDtFromfilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            DateTime fromDate = DateTime.MinValue;
+
+            if (string.IsNullOrEmpty(txtDtFromfilter.Text) || txtDtFromfilter.Text.ToUpper() == "ALL") 
+            {
+                fromDate = DateTime.MinValue;
+            }
+            else
+            {
+                fromDate = Convert.ToDateTime(txtDtFromfilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            }
+            
             DateTime toDate = Convert.ToDateTime(txtDtToFilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
             if (fromDate < toDate)
             {
@@ -321,16 +332,8 @@ namespace JG_Prospect.Sr_App
         private void BindControls()
         {
             ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
-        }
-
-        private void FillCustomer()
-        {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
-            dr["Id"] = "0";
-            dr["Username"] = "--Select--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
+        
+            DataSet dds = new_customerBLL.Instance.GeUsersForDropDown();
             if (dds.Tables[0].Rows.Count > 0)
             {
                 ddlUsers.DataSource = dds.Tables[0];
@@ -338,6 +341,7 @@ namespace JG_Prospect.Sr_App
                 ddlUsers.DataTextField = "Username";
                 ddlUsers.DataBind();
             }
+            ddlUsers.Items.Insert(0, new ListItem("--Select--","0"));
 
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
             if (dsDesignation != null && dsDesignation.Tables.Count > 0)
@@ -349,10 +353,8 @@ namespace JG_Prospect.Sr_App
                 ddldesignation.DataBind();
                 ddldesignation.Items.Insert(0, new ListItem("All", "0"));
             }
-        }
 
-        private void bindPayPeriod(DataSet dsCurrentPeriod)
-        {
+            DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
             DataSet ds = UserBLL.Instance.getallperiod();
 
             if (ds.Tables[0].Rows.Count > 0)
@@ -385,6 +387,8 @@ namespace JG_Prospect.Sr_App
                 drpPayPeriod.DataBind();
             }
 
+            txtDtFromfilter.Text = "All";// DateTime.Now.AddYears(-1).ToString("MM/dd/yyyy");
+            txtDtToFilter.Text = DateTime.Now.ToString("MM/dd/yyyy");
         }
 
         public void GetActiveUsers()

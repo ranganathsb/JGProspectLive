@@ -2417,7 +2417,14 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@status", DbType.String, status);
                     database.AddInParameter(command, "@designation", DbType.String, designation);
-                    database.AddInParameter(command, "@fromdate", DbType.Date, fromDate);
+                    if (fromDate == DateTime.MinValue)
+                    {
+                        database.AddInParameter(command, "@fromdate", DbType.Date, DBNull.Value);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@fromdate", DbType.Date, fromDate);
+                    }
                     database.AddInParameter(command, "@todate", DbType.Date, toDate);
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
