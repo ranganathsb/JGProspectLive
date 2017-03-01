@@ -2447,6 +2447,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetActiveUserContractor");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@action", DbType.String, "1");
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }
@@ -2468,6 +2469,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetActiveUserContractor");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@action", DbType.String, "2");
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }

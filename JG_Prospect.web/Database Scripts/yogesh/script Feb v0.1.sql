@@ -1714,3 +1714,32 @@ BEGIN
 	
 END
 GO
+
+/****** Object:  StoredProcedure [dbo].[sp_GetActiveUserContractor]    Script Date: 01-Mar-17 11:37:07 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[sp_GetActiveUserContractor]
+	@action nvarchar(5)=null,    
+	@ActiveStatus VARChAR(5) = '1'  
+AS
+BEGIN
+	IF(@action='1')
+	BEGIN
+		SELECT 
+				t.Id,t.FristName, t.LastName,t.Designation,t.Status ,t.Source, ISNULL(U.Username,'')  AS AddedBy, t.CreatedDateTime,t.notes 
+		FROM tblInstallUsers t LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+		WHERE t.status = @ActiveStatus
+	END	
+	ELSE IF(@action='2')
+	BEGIN
+		SELECT t.Id,t.FristName, t.LastName,t.Designation,t.Status ,t.Source, ISNULL(U.Username,'')  AS AddedBy, t.CreatedDateTime,t.notes 
+		FROM tblInstallUsers t LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+				LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+		WHERE t.status = @ActiveStatus and (t.Designation='SubContractor' OR t.Designation='CommercialOnly')
+	END	
+END
+GO
