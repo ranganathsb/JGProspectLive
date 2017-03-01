@@ -326,7 +326,7 @@
                                                 <asp:TemplateField ShowHeader="True" HeaderText="Id" ControlStyle-ForeColor="Black"
                                                     ItemStyle-HorizontalAlign="Center" Visible="true">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblid" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
+                                                        <a href='ViewSalesUser.aspx?id=<%#Eval("Id")%>'><asp:Label ID="lblid" runat="server" Text='<%#Eval("Id")%>'></asp:Label></a>
                                                     </ItemTemplate>
                                                     <ControlStyle ForeColor="Black" />
                                                     <ControlStyle ForeColor="Black" />
@@ -355,7 +355,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblStatus" runat="server" Text='<%#Eval("Status")%>'></asp:Label>
+                                                        <asp:Label ID="lblStatus" runat="server" Text='<%# ((JG_Prospect.Common.JGConstant.InstallUserStatus)Convert.ToInt32(Eval("Status"))).ToString()%>'></asp:Label>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                                 </asp:TemplateField>
@@ -406,7 +406,7 @@
                                                 <asp:TemplateField ShowHeader="True" HeaderText="Employee ID" ControlStyle-ForeColor="Black"
                                                     ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblEmployeeID" runat="server" Text='<%# Bind("Id") %>'></asp:Label>
+                                                       <a href='ViewSalesUser.aspx?id=<%#Eval("Id")%>'> <asp:Label ID="lblEmployeeID" runat="server" Text='<%# Eval("Id") %>'></asp:Label></a>
                                                     </ItemTemplate>
                                                     <ControlStyle ForeColor="Black" />
                                                     <ControlStyle ForeColor="Black" />

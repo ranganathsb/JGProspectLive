@@ -87,6 +87,8 @@
     </script>
     <script type="text/javascript">
         $(function () {
+            
+            pageLoad();
             $("#DOBdatepicker").datepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -130,38 +132,7 @@
                 return true;
         }
 
-        function pageLoad() {
-            $(document).ready(function () {
-
-                changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
-
-            $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-           });
-
-            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-            });--%>
-
-            $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
-                var url = window.location.href
-                var arr = url.split("/");
-                var currDomainName = arr[0] + "//" + arr[2];
-                showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
-            });
-
-            var text_max = 50;
-            $('#textarea_CharCount').html(text_max + ' characters remaining');
-
-            $('#<%=txtREasonChange.ClientID%>').keyup(function () {
-                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
-                var text_remaining = text_max - text_length;
-
-                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
-            });
-        });
-
-    }
+        //function pageLoad() { $(document).ready(function () {    });  }
 
     function ClosePassword() {
         document.getElementById('litePassword').style.display = 'none';
@@ -328,10 +299,6 @@
             });
 
 
-
-
-
-
             $("#btnNewHireMinus").click(function () {
                 $('.tblNewHire td').hide("slow");
                 $('#btnNewHirePluse').show();
@@ -374,6 +341,33 @@
         }
         function pageLoad() {
             $(document).ready(function () {
+                 changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+
+            $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+           });
+
+            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+            });--%>
+
+            $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
+                
+                var url = window.location.href
+                var arr = url.split("/");
+                var currDomainName = arr[0] + "//" + arr[2];
+                showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
+            });
+
+            var text_max = 50;
+            $('#textarea_CharCount').html(text_max + ' characters remaining');
+
+            $('#<%=txtREasonChange.ClientID%>').keyup(function () {
+                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
+                var text_remaining = text_max - text_length;
+
+                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
+            });
 
                 SetSectionShowHideOnReady();
 
