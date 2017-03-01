@@ -2012,6 +2012,10 @@ namespace JG_Prospect
 
             ddlUserStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlUserStatus, "--All--", "0");
 
+            ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.Active)).Enabled = false;
+            ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.OfferMade)).Enabled = false;
+   
+
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
             DataRow drSource = dsSource.Tables[0].NewRow();
