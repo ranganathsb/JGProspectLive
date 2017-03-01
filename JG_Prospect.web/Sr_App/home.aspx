@@ -29,6 +29,20 @@
         .table tr{
             border:solid 1px #fff;
         }
+
+
+
+        .badge {
+    padding: 1px 5px 2px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #ffffff;
+    background-color: #e55456;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 8px;
+}
    
     </style>
 </asp:Content>
@@ -38,7 +52,7 @@
         <ul class="appointment_tab">
             <li><a href="home.aspx" class="active">Sales Calendar</a></li>
             <li><a href="GoogleCalendarView.aspx">Master  Calendar</a></li>
-            <li><a href="#">Construction Calendar</a></li>
+            <li><a href="#">Operations Calendar</a></li>
             <li><a href="CallSheet.aspx">Call Sheet</a></li>
             <li id="li_AnnualCalender" visible="false" runat="server"><a href="#" runat="server">Annual Event Calendar</a> </li>
         </ul>
@@ -50,6 +64,14 @@
             <br />
             <asp:Label runat="server" ID="lblMessage"></asp:Label>
         </asp:Panel>--%>
+         <h2>Alerts</h2>
+        <h2>
+            New Tasks <asp:LinkButton ID="lblNewCounter" runat="server"  CssClass="badge badge-error" ></asp:LinkButton> 
+            <asp:Label ID="lblNewCounter0" runat="server"  CssClass="badge badge-error" ></asp:Label> 
+            Frozen Tasks <asp:LinkButton id="lblFrozenCounter" runat="server" CssClass="badge badge-error"  ></asp:LinkButton>
+            <asp:Label id="lblFrozenCounter0" runat="server" CssClass="badge badge-error"  ></asp:label>
+        </h2>
+
         <h2>In Progress, Assigned-Requested</h2>
          <asp:UpdatePanel ID="UpdatePanel1" runat="server">
           <ContentTemplate>

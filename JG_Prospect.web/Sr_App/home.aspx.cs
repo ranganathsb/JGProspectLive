@@ -46,7 +46,12 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    pnlTestEmail.Visible = true;
                 //}
+
+                //----------------- Start DP ------------
                 FillDesignation();
+                lblFrozenCounter0.Visible = false;
+                lblNewCounter0.Visible = false;
+
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
                     tblInProgress.Visible = true;
@@ -60,6 +65,89 @@ namespace JG_Prospect.Sr_App
                 LoadFilterUsersByDesgination("");
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
+               
+                // ----- get new and frozen task counts for current payperiod
+                DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                DateTime firstOfNextMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
+                DateTime lastOfThisMonth = firstOfNextMonth.AddDays(-1);
+                DateTime MiddleDate = Convert.ToDateTime("15-" + DateTime.Now.Month + "-" + DateTime.Now.Year);
+                string strnew = "";
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DataSet result = new DataSet();
+                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        {
+                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        {
+                                strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        DbCommand command = database.GetSqlStringCommand(strnew );
+                        command.CommandType = CommandType.Text;
+                        result = database.ExecuteDataSet(command);
+                        lblNewCounter.Visible = false;
+                        lblNewCounter0.Visible = true;
+                        lblNewCounter0.Text = "0";
+                        if (result.Tables[0].Rows.Count > 0)
+                        {
+                            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
+                            {
+                                lblNewCounter.Visible = true;
+                                lblNewCounter0.Visible = false;
+                                lblNewCounter.Text = result.Tables[0].Rows[0]["cntnew"].ToString();
+                            }
+                        }
+                        result.Dispose();
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+                
+                string strfrozen = "";
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DataSet result = new DataSet();
+                            
+                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        {
+                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        {
+                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        DbCommand command = database.GetSqlStringCommand(strfrozen);
+                        command.CommandType = CommandType.Text;
+                        result = database.ExecuteDataSet(command);
+
+                        lblFrozenCounter.Visible = false;
+                        lblFrozenCounter0.Visible = true;
+                        lblFrozenCounter0.Text = "0";
+                        if (result.Tables[0].Rows.Count > 0)
+                        {
+                            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
+                            {
+                                lblFrozenCounter.Visible = true;
+                                lblFrozenCounter0.Visible = false;
+                                lblFrozenCounter.Text = result.Tables[0].Rows[0]["cntnew"].ToString();
+                            }
+                        }
+                        result.Dispose();
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+                
+                //----------------- End DP ------------
             }
             lblMessage.Text = "";
         }
