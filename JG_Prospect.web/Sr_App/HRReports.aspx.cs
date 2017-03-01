@@ -8,16 +8,26 @@ using JG_Prospect.Common.modal;
 using JG_Prospect.Common;
 using System.Data;
 using JG_Prospect.BLL;
+using JG_Prospect.App_Code;
+
 namespace JG_Prospect.Sr_App
 {
     public partial class HRReports : System.Web.UI.Page
     {
+        #region '--Members--'
+
+        #endregion
+
+        #region '--Properties--'
+
+        #endregion
+
+        #region '--Page Events--'
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Username"] == null)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
-            }
+            CommonFunction.AuthenticateUser();
+
             if (!IsPostBack)
             {
                 BindControls();
@@ -30,74 +40,62 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void BindControls()
+        #endregion
+
+        #region '--Control Events--'
+
+        protected void ddlStatus_PreRender(object sender, EventArgs e)
         {
-            ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
 
-        private void FillCustomer()
+        protected void txtDtFromfilter_TextChanged(object sender, EventArgs e)
         {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
-            dr["Id"] = "0";
-            dr["Username"] = "--Select--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
-            if (dds.Tables[0].Rows.Count > 0)
-            {
-                ddlUsers.DataSource = dds.Tables[0];
-                ddlUsers.DataValueField = "Id";
-                ddlUsers.DataTextField = "Username";
-                ddlUsers.DataBind();
-            }
-
-            DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
-            if (dsDesignation != null && dsDesignation.Tables.Count > 0)
-            {
-                ddldesignation.Items.Clear();
-                ddldesignation.DataValueField = "Id";
-                ddldesignation.DataTextField = "DesignationName";
-                ddldesignation.DataSource = dsDesignation.Tables[0];
-                ddldesignation.DataBind();
-                ddldesignation.Items.Insert(0, new ListItem("All", "0"));
-            }
+            filterHrData();
         }
 
-        private void bindPayPeriod(DataSet dsCurrentPeriod)
+        protected void txtDtToFilter_TextChanged(object sender, EventArgs e)
         {
-            DataSet ds = UserBLL.Instance.getallperiod();
+            filterHrData();
+        }
 
-            if (ds.Tables[0].Rows.Count > 0)
+        protected void drpPayPeriod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (drpPayPeriod.SelectedIndex != -1)
             {
-                drpPayPeriod.Items.Insert(0, new ListItem("Select", "0"));
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                DataSet ds = UserBLL.Instance.getperioddetails(Convert.ToInt16(drpPayPeriod.SelectedValue));
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    DataRow dr = ds.Tables[0].Rows[i];
-                    drpPayPeriod.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
+                    txtDtFrom.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                    txtDtTo.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
                 }
-                drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-
-                // Filter Drop down for Pay Period
-
-                ddlPayPeriodFilter.Items.Insert(0, new ListItem("Select", "0"));
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    DataRow dr = ds.Tables[0].Rows[i];
-                    ddlPayPeriodFilter.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
-                }
-                ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
             }
-            else
-            {
-                drpPayPeriod.DataSource = null;
-                drpPayPeriod.DataBind();
-            }
-
         }
+
+        protected void ddlPayPeriodFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlPayPeriodFilter.SelectedIndex != -1)
+            {
+                DataSet ds = UserBLL.Instance.getperioddetails(Convert.ToInt16(ddlPayPeriodFilter.SelectedValue));
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    txtDtFromfilter.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                    txtDtToFilter.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                }
+            }
+            filterHrData();
+        }
+
+        protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            filterHrData();
+        }
+
+        protected void ddldesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            filterHrData();
+        }
+
         protected void btnExport_Click(object sender, EventArgs e)
         {
 
@@ -287,39 +285,10 @@ namespace JG_Prospect.Sr_App
                 string message = ex.Message;
             }
         }
-        protected void drpPayPeriod_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (drpPayPeriod.SelectedIndex != -1)
-            {
-                DataSet ds = UserBLL.Instance.getperioddetails(Convert.ToInt16(drpPayPeriod.SelectedValue));
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    txtDtFrom.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                    txtDtTo.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-                }
-            }
-        }
-        protected void ddlPayPeriodFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddlPayPeriodFilter.SelectedIndex != -1)
-            {
-                DataSet ds = UserBLL.Instance.getperioddetails(Convert.ToInt16(ddlPayPeriodFilter.SelectedValue));
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    txtDtFromfilter.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                    txtDtToFilter.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-                }
-            }
-            filterHrData();
-        }
-        protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            filterHrData();
-        }
-        protected void ddldesignation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            filterHrData();
-        }
+
+        #endregion
+
+        #region '--Methods--'
 
         public void filterHrData()
         {
@@ -349,14 +318,73 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void txtDtFromfilter_TextChanged(object sender, EventArgs e)
+        private void BindControls()
         {
-            filterHrData();
+            ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
         }
 
-        protected void txtDtToFilter_TextChanged(object sender, EventArgs e)
+        private void FillCustomer()
         {
-            filterHrData();
+            DataSet dds = new DataSet();
+            dds = new_customerBLL.Instance.GeUsersForDropDown();
+            DataRow dr = dds.Tables[0].NewRow();
+            dr["Id"] = "0";
+            dr["Username"] = "--Select--";
+            dds.Tables[0].Rows.InsertAt(dr, 0);
+            if (dds.Tables[0].Rows.Count > 0)
+            {
+                ddlUsers.DataSource = dds.Tables[0];
+                ddlUsers.DataValueField = "Id";
+                ddlUsers.DataTextField = "Username";
+                ddlUsers.DataBind();
+            }
+
+            DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            if (dsDesignation != null && dsDesignation.Tables.Count > 0)
+            {
+                ddldesignation.Items.Clear();
+                ddldesignation.DataValueField = "Id";
+                ddldesignation.DataTextField = "DesignationName";
+                ddldesignation.DataSource = dsDesignation.Tables[0];
+                ddldesignation.DataBind();
+                ddldesignation.Items.Insert(0, new ListItem("All", "0"));
+            }
+        }
+
+        private void bindPayPeriod(DataSet dsCurrentPeriod)
+        {
+            DataSet ds = UserBLL.Instance.getallperiod();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                drpPayPeriod.Items.Insert(0, new ListItem("Select", "0"));
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    DataRow dr = ds.Tables[0].Rows[i];
+                    drpPayPeriod.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
+                }
+                drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+
+                // Filter Drop down for Pay Period
+
+                ddlPayPeriodFilter.Items.Insert(0, new ListItem("Select", "0"));
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    DataRow dr = ds.Tables[0].Rows[i];
+                    ddlPayPeriodFilter.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
+                }
+                ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+            }
+            else
+            {
+                drpPayPeriod.DataSource = null;
+                drpPayPeriod.DataBind();
+            }
+
         }
 
         public void GetActiveUsers()
@@ -398,9 +426,7 @@ namespace JG_Prospect.Sr_App
             }
 
         }
-        protected void ddlStatus_PreRender(object sender, EventArgs e)
-        {
-            ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
-        }
+
+        #endregion
     }
 }
