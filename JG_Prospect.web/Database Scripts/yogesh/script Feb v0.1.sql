@@ -1683,3 +1683,34 @@ BEGIN
   AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)    
 END
 GO
+
+/****** Object:  StoredProcedure [dbo].[sp_FilterHrData]    Script Date: 01-Mar-17 10:40:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[sp_FilterHrData]
+	@status nvarchar(250)='',
+	@designation nvarchar(500)='',
+	@fromdate date = NULL,
+	@todate date
+AS
+BEGIN
+	
+	SELECT t.Id,t.FristName, t.LastName,t.Designation,t.Status ,t.Source, ISNULL(U.Username,'')  AS AddedBy, t.CreatedDateTime 
+	FROM tblInstallUsers t 
+		LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser
+		LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id
+	WHERE t.Status=@status 
+		AND 
+			(
+				t.Designation=(Case When @designation = 'ALL' Then t.Designation Else @designation End)
+				OR
+				Convert(Nvarchar(max),t.DesignationID)=(Case When @designation IN ('All','0') Then t.DesignationID Else @designation End)
+			)
+		AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@fromdate, t.CreatedDateTime)  as date) 
+		AND CAST (t.CreatedDateTime  as date) <= CAST( @todate  as date)
+	
+END
+GO
