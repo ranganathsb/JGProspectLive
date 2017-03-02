@@ -412,7 +412,9 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blAdminStatus)
                 {
-                    e.Row.FindControl("divAdmin").Visible = true;
+                    HtmlGenericControl divAdmin = (HtmlGenericControl)e.Row.FindControl("divAdmin");
+                    divAdmin.Visible = true;
+                    
                 }
                 if (chkITLead.Enabled)
                 {
@@ -420,7 +422,9 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blTechLeadStatus)
                 {
-                    e.Row.FindControl("divITLead").Visible = true;
+                    HtmlGenericControl divITLead = (HtmlGenericControl)e.Row.FindControl("divITLead");
+                    divITLead.Visible = true;
+                  
                 }
                 if (chkUser.Enabled)
                 {
@@ -428,13 +432,25 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blOtherUserStatus)
                 {
-                    e.Row.FindControl("divUser").Visible = true;
+                    HtmlGenericControl divUser = (HtmlGenericControl)e.Row.FindControl("divUser");
+                    divUser.Visible = true;
                 }
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = true;
-                    e.Row.FindControl("lbtnInstallId").Visible = false;
+                   Literal ltrlInstallId = (Literal)e.Row.FindControl("ltrlInstallId");
+
+                    if (ltrlInstallId != null)
+                    {
+                        ltrlInstallId.Visible = false;
+                    }
+
+                  LinkButton lbtnInstallId = (LinkButton) e.Row.FindControl("lbtnInstallId");
+
+                    if (lbtnInstallId != null)
+                    {
+                        lbtnInstallId.Visible = false;
+                    }
                 }
 
                 string strRowCssClass = string.Empty;
