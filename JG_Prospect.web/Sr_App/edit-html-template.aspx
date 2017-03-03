@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" ValidateRequest="false"
     CodeBehind="edit-html-template.aspx.cs" Inherits="JG_Prospect.Sr_App.edit_html_template" %>
 
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -62,7 +62,7 @@
                             </td>--%>
                             <td>
                               <b> Email Header: </b><br />
-                                <asp:TextBox ID="txtHeader" runat="server" TextMode="MultiLine" Width="90%" />
+                                <asp:Editor ID="txtHeader" runat="server" Width="90%" />
                                 <asp:RequiredFieldValidator ID="rfvHeader" runat="server" ControlToValidate="txtHeader"
                                     InitialValue="" ValidationGroup="vgTemplate" Display="None"
                                     ErrorMessage="Please enter header." />
@@ -73,7 +73,7 @@
                             </td>--%>
                             <td>
                                <b> Email Body:</b> <br />
-                                <asp:TextBox ID="txtBody" runat="server" TextMode="MultiLine" Width="90%" />
+                                <asp:Editor ID="txtBody" runat="server" Width="90%" />
                                 <asp:RequiredFieldValidator ID="rfvBody" runat="server" ControlToValidate="txtBody"
                                     InitialValue="" ValidationGroup="vgTemplate" Display="None"
                                     ErrorMessage="Please enter body." />
@@ -84,7 +84,7 @@
                             </td>--%>
                             <td>
                                <b>Email Footer:</b><br />
-                                <asp:TextBox ID="txtFooter" runat="server" TextMode="MultiLine" Width="90%" />
+                                <asp:Editor ID="txtFooter" runat="server" Width="90%" />
                                 <asp:RequiredFieldValidator ID="rfvFooter" runat="server" ControlToValidate="txtFooter"
                                     InitialValue="" ValidationGroup="vgTemplate" Display="None"
                                     ErrorMessage="Please enter footer." />
@@ -124,9 +124,9 @@
         });
 
         function EmailTemplate_Initialize() {
-            SetCKEditor('<%=txtHeader.ClientID%>');
-            SetCKEditor('<%=txtBody.ClientID%>');
-            SetCKEditor('<%=txtFooter.ClientID%>');
+            //SetCKEditor('<%=txtHeader.ClientID%>');
+            //SetCKEditor('<%=txtBody.ClientID%>');
+            //SetCKEditor('<%=txtFooter.ClientID%>');
         }
     </script>
 </asp:Content>

@@ -57,9 +57,9 @@ namespace JG_Prospect.Sr_App
 
                     txtName.Text = objHTMLTemplatesMaster.Name;
                     txtSubject.Text = objHTMLTemplatesMaster.Subject;
-                    txtHeader.Text = objHTMLTemplatesMaster.Header;
-                    txtBody.Text = objHTMLTemplatesMaster.Body;
-                    txtFooter.Text = objHTMLTemplatesMaster.Footer;
+                    txtHeader.Content = objHTMLTemplatesMaster.Header;
+                    txtBody.Content = objHTMLTemplatesMaster.Body;
+                    txtFooter.Content = objHTMLTemplatesMaster.Footer;
                     trMasterCopy.Visible = true;
                 }
             }
@@ -77,16 +77,16 @@ namespace JG_Prospect.Sr_App
                 DesignationHTMLTemplate objDesignationHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(this.HTMLTemplate.Value, ddlDesignation.SelectedValue);
 
                 txtSubject.Text = objDesignationHTMLTemplate.Subject;
-                txtHeader.Text = objDesignationHTMLTemplate.Header;
-                txtBody.Text = objDesignationHTMLTemplate.Body;
-                txtFooter.Text = objDesignationHTMLTemplate.Footer;
+                txtHeader.Content = objDesignationHTMLTemplate.Header;
+                txtBody.Content = objDesignationHTMLTemplate.Body;
+                txtFooter.Content = objDesignationHTMLTemplate.Footer;
                 trMasterCopy.Visible = (objDesignationHTMLTemplate.Id == 0);
             }
             else
             {
-                txtHeader.Text =
-                txtBody.Text =
-                txtFooter.Text =
+                txtHeader.Content =
+                txtBody.Content =
+                txtFooter.Content =
                 txtSubject.Text = string.Empty;
                 trMasterCopy.Visible = false;
             }
@@ -98,9 +98,9 @@ namespace JG_Prospect.Sr_App
             objDesignationHTMLTemplate.HTMLTemplatesMasterId = (byte)this.HTMLTemplate.Value;
             objDesignationHTMLTemplate.Designation = ddlDesignation.SelectedValue;
             objDesignationHTMLTemplate.Subject = txtSubject.Text;
-            objDesignationHTMLTemplate.Header = txtHeader.Text;
-            objDesignationHTMLTemplate.Body = txtBody.Text;
-            objDesignationHTMLTemplate.Footer = txtFooter.Text;
+            objDesignationHTMLTemplate.Header = txtHeader.Content;
+            objDesignationHTMLTemplate.Body = txtBody.Content;
+            objDesignationHTMLTemplate.Footer = txtFooter.Content;
             if (HTMLTemplateBLL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate))
             {
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Designation template updated.");
