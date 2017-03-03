@@ -5,30 +5,41 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel">
-        <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
-            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-            OnRowCommand="grdHtmlTemplates_RowCommand">
-            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-            <HeaderStyle CssClass="trHeader " />
-            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-            <AlternatingRowStyle CssClass="AlternateRow " />
-            <Columns>
-                <asp:TemplateField HeaderText="Id" Visible="false">
-                    <ItemTemplate>
-                        <%--<asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />--%>
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:TemplateField HeaderText="Name">
-                    <ItemTemplate>
-                        <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />                        
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:TemplateField HeaderText="Subject">
-                    <ItemTemplate>
-                        <%# Eval("Subject") %>
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-        </asp:GridView>
+        <!-- appointment tabs section start -->
+        <ul class="appointment_tab">
+            <li><a href="Price_control.aspx">Product Line Estimate</a></li>
+            <li><a href="Inventory.aspx">Inventory</a></li>
+            <li><a href="Maintenace.aspx">Maintainance</a></li>
+            <li><a href="email-template-maintainance.aspx">Maintainance New</a></li>
+        </ul>
+        <!-- appointment tabs section end -->
+        <h1>Maintainance</h1>
+        <div style="padding:5px;">
+            <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
+                CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
+                OnRowCommand="grdHtmlTemplates_RowCommand">
+                <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle CssClass="trHeader " />
+                <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                <AlternatingRowStyle CssClass="AlternateRow " />
+                <Columns>
+                    <asp:TemplateField HeaderText="Id" Visible="false">
+                        <ItemTemplate>
+                            <%--<asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />--%>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Name">
+                        <ItemTemplate>
+                            <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />                        
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Subject">
+                        <ItemTemplate>
+                            <%# Eval("Subject") %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
+        </div>
     </div>
 </asp:Content>
