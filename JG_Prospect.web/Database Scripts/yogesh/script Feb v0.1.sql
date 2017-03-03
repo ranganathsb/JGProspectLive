@@ -1746,7 +1746,11 @@ GO
 
 
 ALTER TABLE tblHTMLTemplatesMaster
-ADD [Type] BIT DEFAULT 1
+ADD [Type] TINYINT DEFAULT 1
+
+UPDATE tblHTMLTemplatesMaster
+SET [Type] = 1
+WHERE ID NOT IN (7, 50, 60)
 GO
 
 UPDATE tblHTMLTemplatesMaster
