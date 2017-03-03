@@ -362,6 +362,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
+
         <%--Fake fields are a workaround for chrome autofill getting the wrong fields--%>
         <div style="position:fixed;top:-999px;left:-999px;">
             <input type="text" name="fakeusernameremembered"/>
@@ -372,7 +373,6 @@
             <Services>
                 <%-- <asp:ServiceReference Path="~/SuggestSearch.asmx" />--%>
             </Services>
-
         </ajaxToolkit:ToolkitScriptManager>
         <%-- <asp:ScriptManager ID="scriptmanager1" EnablePageMethods="true" runat="server">
     </asp:ScriptManager>--%>

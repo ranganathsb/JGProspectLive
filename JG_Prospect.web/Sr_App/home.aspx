@@ -33,7 +33,7 @@
         <ul class="appointment_tab">
             <li><a href="home.aspx" class="active">Sales Calendar</a></li>
             <li><a href="GoogleCalendarView.aspx">Master  Calendar</a></li>
-            <li><a href="#">Construction Calendar</a></li>
+            <li><a href="ITDashboard.aspx">Operations Calendar</a></li>
             <li><a href="CallSheet.aspx">Call Sheet</a></li>
             <li id="li_AnnualCalender" visible="false" runat="server"><a href="#" runat="server">Annual Event Calendar</a> </li>
         </ul>

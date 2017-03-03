@@ -1,0 +1,58 @@
+-- ================================================
+-- Template generated from Template Explorer using:
+-- Create Procedure (New Menu).SQL
+--
+-- Use the Specify Values for Template Parameters 
+-- command (Ctrl-Shift-M) to fill in the parameter 
+-- values below.
+--
+-- This block of comments will not be included in
+-- the definition of the procedure.
+-- ================================================
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+create PROCEDURE [dbo].[GetEventByCalendar]
+	-- Add the parameters for the stored procedure here
+	@Year varchar(10),
+	@calid int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT 
+		a.ID,a.EventName,a.EventDate,a.EventAddedBy,a.ApplicantId,u.Username,i.FristName,i.LastName,i.Phone,
+		 a.RecurrenceRule,a.EventStartTime,a.EventEndTime,a.EventEndDate,
+		 a.EventDesc,a.EventLoc,a.EventColor,a.EventFile
+	FROM 
+		tbl_AnnualEvents a 
+		OUTER APPLY 
+		(
+			SELECT TOP 1 Id, Username, FirstName AS FristName
+			FROM tblUsers
+			WHERE tblUsers.id = a.EventAddedBy AND ISNULL(a.IsInstallUser,0) = 0
+
+			UNION
+
+			SELECT TOP 1  Id, Email AS Username, FristName
+			FROM tblInstallUsers
+			WHERE tblInstallUsers.id = a.EventAddedBy AND ISNULL(a.IsInstallUser,1) = 1
+		) u --INNER JOIN  tblUsers u ON u.Id = a.EventAddedBy 
+		LEFT JOIN tblInstallUsers i ON i.Id = a.ApplicantId 
+	WHERE 
+		a.EventName IS NOT NULL 
+			AND a.EventName !='InterViewDetails' 
+			AND DATEPART(yyyy,EventDate)=@Year
+			AND a.EventCal = @calid
+END
+
+

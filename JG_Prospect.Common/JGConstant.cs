@@ -73,12 +73,21 @@ namespace JG_Prospect.Common
 
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
         public const string ProfilPic_Upload_Folder = "~/UploadeProfile";
-        public const string Default_PassWord = "jmgrove"; 
+
+        public const string Default_PassWord = "jmgrove";
+        
+
+        //-------- start DP ---------
+        public const string EventCalendar_Upload_Folder = "~/EventCalendar";
+        //-------- End DP ------------
+
+
 
         #endregion
 
         #region '--Enums--'
-        
+
+
         /// <summary>
         /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
         /// </summary>
@@ -114,7 +123,10 @@ namespace JG_Prospect.Common
             Closed = 7,
             SpecsInProgress = 8,
             Deleted = 9,
-            Finished = 10
+            Finished = 10,
+            Test = 11,
+            Live = 12,
+            Billed=13
         }
 
         public enum TaskPriority

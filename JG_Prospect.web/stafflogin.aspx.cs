@@ -925,7 +925,7 @@ namespace JG_Prospect
                                     strRedirectUrl = "~/changepassword.aspx";
                                 }
 
-                                if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false)
+                                else if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false && (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager"))
                                 {
                                     #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
 
@@ -972,7 +972,13 @@ namespace JG_Prospect
 
                                     #endregion
                                 }
-                                else if (Convert.ToString(JGSession.Designation) == "Installer" && JGSession.IsFirstTime == false)
+
+                                else if (Convert.ToString(JGSession.Designation).Contains("IT") || Convert.ToString(JGSession.Designation).ToLower().Contains("developer"))
+                                {
+                                    strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                }
+
+                                else if (Convert.ToString(JGSession.Designation).StartsWith("Installer") && JGSession.IsFirstTime == false)
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
@@ -988,10 +994,11 @@ namespace JG_Prospect
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
-                                else
+                               else
                                 {
                                     // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                 }
+                                                
                             }
                         }
                         else

@@ -1485,6 +1485,51 @@ namespace JG_Prospect.DAL
             }
         }
 
+        //------------ Start DP ------------
+
+        public DataSet GetInProgressTasks(int userid,int desigid)
+        {
+            try
+            {
+                DataSet result = new DataSet();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetInProgressTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetClosedTasks(int userid, int desigid)
+        {
+            try
+            {
+                DataSet result = new DataSet();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetClosedTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        //------------- End DP--------------
+
         #endregion
     }
 }
