@@ -26,15 +26,21 @@ namespace JG_Prospect.Sr_App
 
         private void FillHtmlTemplates()
         {
-            grdHtmlTemplates.DataSource = HTMLTemplateBLL.Instance.GetHTMLTemplateMasters();
-            grdHtmlTemplates.DataBind();
-        }
+            DataSet dsHtmlTemplates = HTMLTemplateBLL.Instance.GetHTMLTemplateMasters();
+            if (dsHtmlTemplates != null && dsHtmlTemplates.Tables.Count > 0)
+            {
+                DataView dvHtmlTemplates = dsHtmlTemplates.Tables[0].DefaultView;
 
-        protected void grdHtmlTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            
-        }
+                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0}", Convert.ToByte(Common.HTMLTemplateTypes.AutoEmailTemplate));
+                grdTemplates_AutoEmail.DataSource = dvHtmlTemplates.ToTable();
+                grdTemplates_AutoEmail.DataBind();
 
+
+                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0}", Convert.ToByte(Common.HTMLTemplateTypes.Template));
+                repTemplates_Template.DataSource = dvHtmlTemplates.ToTable();
+                repTemplates_Template.DataBind();
+            }
+        }
 
         [WebMethod]
         public static string GetCompanyAddress()

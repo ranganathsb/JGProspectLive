@@ -51,22 +51,18 @@
                 </tr>
             </table>
             <br />
-            <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
-                CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-                OnRowCommand="grdHtmlTemplates_RowCommand">
+            <h3>Auto Email Templates</h3>
+            <asp:GridView ID="grdTemplates_AutoEmail" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
+                CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
                 <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                 <HeaderStyle CssClass="trHeader " />
                 <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                 <AlternatingRowStyle CssClass="AlternateRow " />
                 <Columns>
-                    <asp:TemplateField HeaderText="Id" Visible="false">
-                        <ItemTemplate>
-                            <%--<asp:HyperLink ID="hypEdit" runat="server" Text='<%#Eval("Id")%>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />--%>
-                        </ItemTemplate>
-                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
-                            <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id")) %>' />                        
+                            <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' 
+                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.AutoEmailTemplate).ToString()) %>' />                        
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Subject">
@@ -76,6 +72,22 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
+            <br />
+            <h3>Templates</h3>
+            <asp:Repeater ID="repTemplates_Template" runat="server" >
+                <HeaderTemplate>
+                    <ul style="display:block; width:100%;">
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <li style="float:left; width: 30%; padding: 10px 10px 10px 0px;">
+                        <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' 
+                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.Template).ToString()) %>' />                        
+                    </li>
+                </ItemTemplate>
+                <FooterTemplate>
+                    </ul>
+                </FooterTemplate>
+            </asp:Repeater>
         </div>
     </div>
     <script type="text/javascript">

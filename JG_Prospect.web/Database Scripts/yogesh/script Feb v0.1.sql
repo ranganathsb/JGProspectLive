@@ -1743,3 +1743,90 @@ BEGIN
 	END	
 END
 GO
+
+
+ALTER TABLE tblHTMLTemplatesMaster
+ADD [Type] BIT DEFAULT 1
+GO
+
+UPDATE tblHTMLTemplatesMaster
+SET [Type] = 2
+WHERE ID IN (7, 50, 60)
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplateMasterById]    Script Date: 03-Mar-17 8:50:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Gets a Master HTMLTemplate.
+-- =============================================
+ALTER PROCEDURE [dbo].[GetHTMLTemplateMasterById]
+	@Id INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM tblHTMLTemplatesMaster 
+	WHERE Id = @Id
+
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplateMasters]    Script Date: 03-Mar-17 8:52:28 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 27 Jan 2017  
+-- Description: Gets all Master HTMLTemplates.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[GetHTMLTemplateMasters]  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ SELECT *
+ FROM tblHTMLTemplatesMaster
+ WHERE Id IN (1, 7, 36,50, 60,69,70,71,72,73,74)   
+ ORDER BY Id ASC  
+  
+END  
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplates]    Script Date: 03-Mar-17 8:55:22 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 11 Jan 2017
+-- Description:	Gets all HTMLTemplates
+-- =============================================
+ALTER PROCEDURE [dbo].[GetHTMLTemplates]
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT *
+	FROM tblHTMLTemplatesMaster 
+	ORDER BY Id ASC
+
+END
+GO

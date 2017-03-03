@@ -67,6 +67,7 @@ namespace JG_Prospect.DAL
                         objHTMLTemplate = new HTMLTemplatesMaster();
 
                         objHTMLTemplate.Id = Convert.ToInt32(dr["Id"]);
+                        objHTMLTemplate.Type = Convert.ToInt32(dr["Type"]);
                         objHTMLTemplate.Name = Convert.ToString(dr["Name"]);
                         objHTMLTemplate.Subject = Convert.ToString(dr["Subject"]);
                         objHTMLTemplate.Header = Convert.ToString(dr["Header"]);

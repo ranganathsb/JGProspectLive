@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace JG_Prospect.Common
 {
+    public enum HTMLTemplateTypes
+    {
+        AutoEmailTemplate = 1,
+        Template = 2
+    }
+
     public enum HTMLTemplates
     {
         InterviewDateAutoEmail = 1,
@@ -19,9 +25,9 @@ namespace JG_Prospect.Common
         Custom_Other = 9,
         Custom_Other_TM = 10,
         Custom_Template = 11,
-        CustomerServiceAutoEmail =12,
+        CustomerServiceAutoEmail = 12,
         CustomerEmail_Template = 13,
-        DeactiveAutoEmail  =14,
+        DeactiveAutoEmail = 14,
         Decking_ExteriorRailing = 15,
         Decking_Railing_Post_Columns = 16,
         Electric = 17,
@@ -39,7 +45,7 @@ namespace JG_Prospect.Common
         Installer_Work_Order_template = 29,
         Kitchen_Test = 30,
         Kitchens = 31,
-        Masonry_Flat_Work_And_RetainingWalls = 32,
+        Masonry_Flat_Work_And_RetainingWalls = 32,
         Masonry_Flat_Retaining_Walls = 33,
         Masonry_Siding = 34,
         New_Residential_Construction = 35,
