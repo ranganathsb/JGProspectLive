@@ -432,7 +432,7 @@ namespace JG_Prospect.Sr_App
 
                     if (result.Tables[0].Rows.Count > 0)
                     {
-                        grdFrozenTask.DataSource = TaskGeneratorBLL.Instance.GetInProgressTasks(0, 0); //result;
+                        grdFrozenTask.DataSource = result;
                         grdFrozenTask.DataBind();
                     }
                     else
