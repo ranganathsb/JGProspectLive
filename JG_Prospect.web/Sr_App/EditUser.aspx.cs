@@ -986,36 +986,45 @@ namespace JG_Prospect
             InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);
 
             DataSet ds = new DataSet();
-            string email = "";
-            string HireDate = "";
-            string EmpType = "";
-            string PayRates = "";
-            string Desig = "";
+            string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
+            email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
 
             ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
                 {
-                    if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Email"]) != "")
                     {
-                        email = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                        email = Convert.ToString(ds.Tables[0].Rows[0]["Email"]);
                     }
-                    if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]) != "")
                     {
-                        HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                        HireDate = Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]);
                     }
-                    if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]) != "")
                     {
-                        EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
+                        EmpType = Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]);
                     }
-                    if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]) != "")
                     {
-                        PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
+                        PayRates = Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]);
                     }
                     if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
                     {
                         Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FristName"].ToString()))
+                    {
+                        FirstName = ds.Tables[0].Rows[0]["FristName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["LastName"].ToString()))
+                    {
+                        LastName = ds.Tables[0].Rows[0]["LastName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["Address"].ToString()))
+                    {
+                        Address = ds.Tables[0].Rows[0]["Address"].ToString();
                     }
                 }
             }
@@ -1023,13 +1032,22 @@ namespace JG_Prospect
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, Convert.ToString(Session["DesignitionIdSC"]));
             string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
             strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
-            strHtml = strHtml.Replace("#FirstName#", hdnFirstName.Value);
-            strHtml = strHtml.Replace("#LastName#", hdnLastName.Value);
-            strHtml = strHtml.Replace("#Address#", string.Empty);
+            strHtml = strHtml.Replace("#FirstName#", FirstName);
+            strHtml = strHtml.Replace("#LastName#", LastName);
+            strHtml = strHtml.Replace("#Address#", Address);
             strHtml = strHtml.Replace("#Designation#", Desig);
-            if (!string.IsNullOrEmpty(EmpType) && EmpType.Length > 1)
+            if (!string.IsNullOrEmpty(EmpType))
             {
+                int intEmpType = 0;
+                int.TryParse( EmpType, out intEmpType);
+
+                if (intEmpType > 0)
+                {
+                   EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                }
+                
                 strHtml = strHtml.Replace("#EmpType#", EmpType);
+
             }
             else
             {
@@ -1065,7 +1083,7 @@ namespace JG_Prospect
                 lstAttachments.Add(attachment);
             }
 
-            SendEmail(email, hdnFirstName.Value, hdnLastName.Value, "Offer Made", txtReason.Text, Desig, Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates,
+            SendEmail(email, FirstName, LastName, "Offer Made", txtReason.Text, Desig, Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates,
                 HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
 
             //binddata();

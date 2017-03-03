@@ -476,7 +476,7 @@ namespace JG_Prospect.Sr_App
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
             ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID);
-            if (ds.Tables[0].Rows.Count > 0)
+            if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
                 grdTaskPending.DataBind();
@@ -515,7 +515,7 @@ namespace JG_Prospect.Sr_App
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
             ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID);
-            if (ds.Tables[0].Rows.Count > 0)
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
                 grdTaskClosed.DataBind();

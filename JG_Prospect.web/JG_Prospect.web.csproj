@@ -1642,7 +1642,6 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
-    <Content Include="OfferMade.html" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -1708,6 +1707,7 @@
     <Content Include="Sr_App\InstallCreateUser.aspx" />
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
     <Content Include="Sr_App\Inventory.aspx" />
+    <Content Include="Sr_App\ITDashboard.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
@@ -1909,7 +1909,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="WebForm1.aspx" />
     <Content Include="ProspectReport.aspx" />
     <Content Include="Webmail\checkemail.aspx" />
     <Content Include="WebServices\JGWebService.asmx" />
@@ -2040,6 +2039,13 @@
     </Compile>
     <Compile Include="Sr_App\html-template-maintainance.aspx.designer.cs">
       <DependentUpon>html-template-maintainance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>
@@ -2910,13 +2916,6 @@
     </Compile>
     <Compile Include="WeatherControl.ascx.designer.cs">
       <DependentUpon>WeatherControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
     <Compile Include="ProspectReport.aspx.cs">
       <DependentUpon>ProspectReport.aspx</DependentUpon>

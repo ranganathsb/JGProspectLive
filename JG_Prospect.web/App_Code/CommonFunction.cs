@@ -12,6 +12,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Linq;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace JG_Prospect.App_Code
 {
@@ -475,6 +477,27 @@ namespace JG_Prospect.App_Code
             }
 
             return ReturnSequence;
+        }
+
+        /// <summary>
+        /// Enumeration description assiciated with it.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetEnumDescription(Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute[] attributes =
+                (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute),
+                false);
+
+            if (attributes != null &&
+                attributes.Length > 0)
+                return attributes[0].Description;
+            else
+                return value.ToString();
         }
 
         /// <summary>

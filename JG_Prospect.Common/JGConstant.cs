@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace JG_Prospect.Common
 {
@@ -111,6 +112,7 @@ namespace JG_Prospect.Common
             Deleted = 2,
             Modified = 3,
         }
+
 
         public enum TaskStatus
         {
@@ -228,6 +230,29 @@ namespace JG_Prospect.Common
 
         }
 
+        
+        /// <summary>
+        /// Get employment statuses for system.
+        /// </summary>
+        public enum EmploymentType
+        {
+
+            [Description("Part Time - Remote")]
+            PartTimeRemote = 1,
+            [Description("Full Time - Remote")]
+            FullTimeRemote = 2,
+            [Description("Part Time - Onsite")]
+            PartTimeOnsite = 3,
+            [Description("Full Time - Onsite")]
+            FullTimeOnsite = 4, 
+            [Description("Internship")]
+            Internship = 5,
+            [Description("Temp")]
+            Temp = 6,
+            [Description("Sub")]
+            Sub = 7
+            
+        }
         #endregion
 
         #region '-- Page Name --'
