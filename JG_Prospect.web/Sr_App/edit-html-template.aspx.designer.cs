@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App {
     
     
-    public partial class edit_email_template {
+    public partial class edit_html_template {
         
         /// <summary>
         /// vsTemplate control.
@@ -67,6 +67,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTableRow trMasterCopy;
         
         /// <summary>
+        /// trSubject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trSubject;
+        
+        /// <summary>
         /// txtSubject control.
         /// </summary>
         /// <remarks>
@@ -91,7 +100,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHeader;
+        protected global::AjaxControlToolkit.HTMLEditor.Editor txtHeader;
         
         /// <summary>
         /// rfvHeader control.
@@ -109,7 +118,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBody;
+        protected global::AjaxControlToolkit.HTMLEditor.Editor txtBody;
         
         /// <summary>
         /// rfvBody control.
@@ -127,7 +136,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtFooter;
+        protected global::AjaxControlToolkit.HTMLEditor.Editor txtFooter;
         
         /// <summary>
         /// rfvFooter control.

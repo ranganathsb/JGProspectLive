@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App {
     
     
-    public partial class email_template_maintainance {
+    public partial class html_template_maintainance {
         
         /// <summary>
         /// txtCompanyAddress control.

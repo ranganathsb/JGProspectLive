@@ -273,7 +273,7 @@ table th[class*="col-"] {
             <li><a href="Price_control.aspx">Product Line Estimate</a></li>
             <li><a href="Inventory.aspx">Inventory</a></li>
             <li><a href="Maintenace.aspx">Maintainance</a></li>
-            <li><a href="email-template-maintainance.aspx">Maintainance New</a></li>
+            <li><a href="html-template-maintainance.aspx">Maintainance New</a></li>
         </ul>
         <!-- appointment tabs section end -->
         <h1>
