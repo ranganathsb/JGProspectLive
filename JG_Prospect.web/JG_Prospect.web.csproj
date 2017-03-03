@@ -1642,6 +1642,7 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="OfferMade.html" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -2648,7 +2649,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
