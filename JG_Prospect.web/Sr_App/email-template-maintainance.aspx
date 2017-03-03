@@ -15,6 +15,42 @@
         <!-- appointment tabs section end -->
         <h1>Maintainance</h1>
         <div style="padding:5px;">
+            <table>
+                <tr>
+                    <td>
+                        <label>Company Address</label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtCompanyAddress" runat="server" CssClass="cls_textbox"></asp:TextBox>
+                    </td>
+                    <td>
+                        <label>Zip</label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtZip" runat="server" CssClass="cls_textbox"></asp:TextBox>
+                    </td>
+                    <td>
+                        <label>City</label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtCity" runat="server" CssClass="cls_textbox"></asp:TextBox>
+                    </td>
+
+                    <td>
+                        <label>State<span></span></label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtState" runat="server" CssClass="cls_textbox"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:HiddenField ID="hdnCompanyAddressId" runat="server" />
+                        <div class="btn_sec">
+                            <input type="button" id="btnupdate" runat="server" style="width: 80px;" onclick="UpdateCompanyAddress();" value="Update" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br />
             <asp:GridView ID="grdHtmlTemplates" runat="server"  AutoGenerateColumns="false" DataKeyNames="Id"
                 CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
                 OnRowCommand="grdHtmlTemplates_RowCommand">
@@ -42,4 +78,49 @@
             </asp:GridView>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetComapnyAddress();
+        });
+
+        function GetComapnyAddress() {
+            $.ajax({
+                type: "POST",
+                url: "email-template-maintainance.aspx/GetCompanyAddress",
+                // data: "{'strZip':'" + $(".list_limit li[style*='background-color: lemonchiffon']").text() + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "JSON",
+                success: function (data) {
+                    var response = JSON.parse(data.d);
+                    $('#<%=hdnCompanyAddressId.ClientID%>').val(response.Table[0].intCompanyId);
+                    $('#<%=txtCompanyAddress.ClientID%>').val(response.Table[0].strCompanyAddress);
+                    $('#<%=txtCity.ClientID%>').val(response.Table[0].strCity);
+                    $('#<%=txtZip.ClientID%>').val(response.Table[0].strZipCode);
+                    $('#<%=txtState.ClientID%>').val(response.Table[0].strState);
+                }
+            });
+        }
+        function UpdateCompanyAddress() {
+            var Id = $('#<%=hdnCompanyAddressId.ClientID%>').val();
+            var CompanyAddress = $('#<%=txtCompanyAddress.ClientID%>').val();
+            var CompanyCity = $('#<%=txtCity.ClientID%>').val();
+            var CompanyState = $('#<%=txtState.ClientID%>').val();
+            var CompanyZipCode = $('#<%=txtZip.ClientID%>').val();
+            $.ajax({
+                type: "POST",
+                url: "email-template-maintainance.aspx/UpdateCompanyAddress",
+                data: "{'Id':'" + Id + "','Address':'" + CompanyAddress + "','City':'" + CompanyCity + "','State':'" + CompanyState + "','ZipCode':'" + CompanyZipCode + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "JSON",
+                success: function (data) {
+                    if (data.d = 'Success') {
+                        GetComapnyAddress();
+                    }
+                    else {
+                        alert("Company address can not be updated. Please try later.");
+                    }
+                }
+            });
+        }
+    </script>
 </asp:Content>
