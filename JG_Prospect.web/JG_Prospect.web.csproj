@@ -1689,6 +1689,7 @@
     <Content Include="Sr_App\InstallCreateUser.aspx" />
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
     <Content Include="Sr_App\Inventory.aspx" />
+    <Content Include="Sr_App\ITDashboard.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
@@ -2001,6 +2002,13 @@
     </Compile>
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>

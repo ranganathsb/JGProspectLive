@@ -904,6 +904,10 @@ namespace JG_Prospect
                                     }
 
                                 }
+                                else if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString().ToLower().Contains("developer")   )
+                                {
+                                    strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                }
                                 else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
                                 {
                                     Response.Redirect("~/Installer/InstallerHome.aspx", false);
@@ -945,6 +949,7 @@ namespace JG_Prospect
                             }
                             else
                             {
+                                
                                 // Response.Redirect("~/Installer/InstallerHome.aspx");//
                             }
                         }

@@ -25,16 +25,14 @@ using System.Data.Common;
 using JG_Prospect.DAL.Database;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
-
 namespace JG_Prospect.Sr_App
 {
-    public partial class home : System.Web.UI.Page
+    public partial class ITDashboard : System.Web.UI.Page
     {
-        ErrorLog logManager = new ErrorLog();
         protected void Page_Load(object sender, EventArgs e)
         {
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
-         
+
             if (!Page.IsPostBack)
             {
                 //Session["AppType"] = "SrApp";
@@ -63,14 +61,14 @@ namespace JG_Prospect.Sr_App
                     tblClosedTask.Visible = false;
                 }
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
-                LoadFilterUsersByDesgination("", drpUsersClosed );
+                LoadFilterUsersByDesgination("", drpUsersClosed);
                 LoadFilterUsersByDesgination("", drpUserFrozen);
                 LoadFilterUsersByDesgination("", drpUserNew);
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
                 BindFrozenTasks();
                 BindNewTasks();
-               
+
                 // ----- get new and frozen task counts for current payperiod
                 DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 DateTime firstOfNextMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
@@ -89,9 +87,9 @@ namespace JG_Prospect.Sr_App
                         }
                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
                         {
-                                strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
                         }
-                        DbCommand command = database.GetSqlStringCommand(strnew );
+                        DbCommand command = database.GetSqlStringCommand(strnew);
                         command.CommandType = CommandType.Text;
                         result = database.ExecuteDataSet(command);
                         lblNewCounter.Visible = false;
@@ -112,14 +110,14 @@ namespace JG_Prospect.Sr_App
                 catch (Exception ex)
                 {
                 }
-                
+
                 string strfrozen = "";
                 try
                 {
                     SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
                         DataSet result = new DataSet();
-                            
+
                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
                         {
                             strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
@@ -152,11 +150,13 @@ namespace JG_Prospect.Sr_App
                 catch (Exception ex)
                 {
                 }
-                
+
                 //----------------- End DP ------------
             }
             lblMessage.Text = "";
         }
+
+
 
         protected void grdTaskPending_PreRender(object sender, EventArgs e)
         {
@@ -249,7 +249,7 @@ namespace JG_Prospect.Sr_App
         {
             mpNewFrozenTask.Show();
         }
-        
+
         protected void btnCalClose_Click(object sender, EventArgs e)
         {
             mpNewFrozenTask.Hide();
@@ -266,7 +266,7 @@ namespace JG_Prospect.Sr_App
         protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
         {
             string designation = drpDesigClosed.SelectedValue;
-            LoadFilterUsersByDesgination(designation, drpUsersClosed );
+            LoadFilterUsersByDesgination(designation, drpUsersClosed);
             //SearchTasks(null);
             BindTaskClosedGrid();
         }
@@ -299,15 +299,15 @@ namespace JG_Prospect.Sr_App
         {
             BindNewTasks();
         }
-     
-        private void LoadFilterUsersByDesgination(string designation,DropDownList drp)
+
+        private void LoadFilterUsersByDesgination(string designation, DropDownList drp)
         {
             DataSet dsUsers;
             // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
             // DropDownList ddlDesignation = (DropDownList)sender;
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designation);
             //drpUsersInProgress.Items.Clear();
-           
+
             drp.DataSource = dsUsers;
             drp.DataTextField = "FristName";
             drp.DataValueField = "Id";
@@ -322,7 +322,7 @@ namespace JG_Prospect.Sr_App
         {
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
             //drpDesigInProgress .Items.Clear();
-            
+
             drpDesigInProgress.DataValueField = "Id";
             drpDesigInProgress.DataTextField = "DesignationName";
             drpDesigInProgress.DataSource = dsDesignation.Tables[0];
@@ -331,7 +331,7 @@ namespace JG_Prospect.Sr_App
             drpDesigInProgress.SelectedIndex = 0;
 
 
-            drpDesigClosed .DataValueField = "Id";
+            drpDesigClosed.DataValueField = "Id";
             drpDesigClosed.DataTextField = "DesignationName";
             drpDesigClosed.DataSource = dsDesignation.Tables[0];
             drpDesigClosed.DataBind();
@@ -382,7 +382,7 @@ namespace JG_Prospect.Sr_App
 
                     if (result.Tables[0].Rows.Count > 0)
                     {
-                        grdNewTask.DataSource =result;
+                        grdNewTask.DataSource = result;
                         grdNewTask.DataBind();
                     }
                     else
@@ -441,7 +441,7 @@ namespace JG_Prospect.Sr_App
                         grdFrozenTask.DataSource = null;
                         grdFrozenTask.DataBind();
                     }
-                   
+
                     result.Dispose();
                 }
             }
@@ -449,9 +449,9 @@ namespace JG_Prospect.Sr_App
             {
             }
 
-           
+
         }
-       private void BindTaskInProgressGrid()
+        private void BindTaskInProgressGrid()
         {
             DataSet ds = new DataSet();
 
@@ -469,7 +469,7 @@ namespace JG_Prospect.Sr_App
             {
                 userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
             }
-            if(Convert.ToInt32(drpDesigInProgress.SelectedValue)>0)
+            if (Convert.ToInt32(drpDesigInProgress.SelectedValue) > 0)
             {
                 desigID = Convert.ToInt32(drpDesigInProgress.SelectedValue);
             }
@@ -577,7 +577,7 @@ namespace JG_Prospect.Sr_App
                     lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
                 }
 
-                if (lblStatus.Value  == "4")
+                if (lblStatus.Value == "4")
                 {
                     //lblStatus.Value = "In Progress";
                     e.Row.BackColor = System.Drawing.Color.Orange;
@@ -594,7 +594,7 @@ namespace JG_Prospect.Sr_App
                     //lblStatus.ForeColor = System.Drawing.Color.Red;
                     e.Row.BackColor = System.Drawing.Color.Yellow;
                 }
-                else  
+                else
                 {
                     ////lblStatus.Value = "Open";
                     System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
@@ -617,9 +617,9 @@ namespace JG_Prospect.Sr_App
                         result = database.ExecuteDataSet(command);
                         if (result.Tables[0].Rows.Count > 0)
                         {
-                            for(int i=0;i<result.Tables[0].Rows.Count ;i++)
+                            for (int i = 0; i < result.Tables[0].Rows.Count; i++)
                             {
-                                if (result.Tables[0].Rows[i]["EstimatedHours"] != null && result.Tables[0].Rows[i]["EstimatedHours"]!="")
+                                if (result.Tables[0].Rows[i]["EstimatedHours"] != null && result.Tables[0].Rows[i]["EstimatedHours"] != "")
                                 {
                                     if (result.Tables[0].Rows[i]["Designation"].ToString() == "ITLead" || result.Tables[0].Rows[i]["Designation"].ToString() == "Admin")
                                     {
@@ -659,8 +659,8 @@ namespace JG_Prospect.Sr_App
                     drpStatusInPro.DataValueField = "Value";
                     drpStatusInPro.DataBind();
                     drpStatusInPro.Items.Insert(0, new ListItem("--All--", "0"));
-                    
-                    for(int i=0;i<drpStatusInPro.Items.Count;i++)
+
+                    for (int i = 0; i < drpStatusInPro.Items.Count; i++)
                     {
                         if (drpStatusInPro.Items[i].Text == "Assigned")
                         {
@@ -671,7 +671,7 @@ namespace JG_Prospect.Sr_App
                             drpStatusInPro.Items[i].Attributes.CssStyle.Add("color", "Red");
                         }
 
-                        if(lblStatus.Value==drpStatusInPro.Items[i].Value)
+                        if (lblStatus.Value == drpStatusInPro.Items[i].Value)
                         {
                             drpStatusInPro.SelectedIndex = i;
                         }
@@ -682,7 +682,7 @@ namespace JG_Prospect.Sr_App
                 else
                 {
                     //----- If user level then show Test,Live,Finished statuses
-                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(),  JGConstant.TaskStatus.Finished.ToString() };
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Finished.ToString() };
                     drpStatusInPro.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
                     drpStatusInPro.DataTextField = "Text";
                     drpStatusInPro.DataValueField = "Value";
@@ -715,7 +715,7 @@ namespace JG_Prospect.Sr_App
                 Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusClosed = e.Row.FindControl("drpStatusClosed") as DropDownList;
                 HiddenField lblTaskIdClosed = e.Row.FindControl("lblTaskIdClosed") as HiddenField;
-               
+
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdClosed = e.Row.FindControl("lblParentTaskIdClosed") as HiddenField;
 
@@ -750,18 +750,18 @@ namespace JG_Prospect.Sr_App
                     System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
                     e.Row.BackColor = clr;
                 }
-                
+
                 int vTaskId = Convert.ToInt32(lblTaskIdClosed.Value);
-                    
+
                 // fill status dropdowns
                 //----- If manager level then show all statuses
 
                 string[] arrStatus;
-                if (  (string)Session["DesigNew"] == "Admin" )
+                if ((string)Session["DesigNew"] == "Admin")
                 {
                     drpStatusClosed.DataSource = CommonFunction.GetTaskStatusList();
                 }
-                else if ((string)Session["DesigNew"] == "ITLead" ||   (string)Session["DesigNew"] == "Office Manager")
+                else if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Office Manager")
                 {
                     arrStatus = new string[] { JGConstant.TaskStatus.Open.ToString(),JGConstant.TaskStatus.Requested.ToString(), 
                         JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.InProgress.ToString(),
@@ -770,16 +770,16 @@ namespace JG_Prospect.Sr_App
                         JGConstant.TaskStatus.Finished.ToString(),
                         JGConstant.TaskStatus.Test.ToString(),JGConstant.TaskStatus.Live.ToString()
                     };
-                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);
                 }
                 else
                 {
                     //----- If user level then show Test,Live,Finished statuses
                     arrStatus = new string[] { JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Live.ToString() };
-                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus); 
+                    drpStatusClosed.DataSource = FillStatusDropDowns(arrStatus);
                 }
 
-                 
+
                 drpStatusClosed.DataTextField = "Text";
                 drpStatusClosed.DataValueField = "Value";
                 drpStatusClosed.DataBind();
@@ -821,7 +821,7 @@ namespace JG_Prospect.Sr_App
                 if (lblStatus.Text == "4")
                 {
                     lblStatus.Text = "In Progress";
-                   
+
                 }
                 else if (lblStatus.Text == "3")
                 {
@@ -887,7 +887,7 @@ namespace JG_Prospect.Sr_App
 
 
             //Retrieve bookid and studentid from Gridview and status(dropdownlist)
-            int vTaskId =Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdInPro")).Value);
+            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdInPro")).Value);
 
             try
             {
@@ -895,7 +895,7 @@ namespace JG_Prospect.Sr_App
                 {
                     DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
                     command.CommandType = CommandType.Text;
-                    database.ExecuteNonQuery (command);
+                    database.ExecuteNonQuery(command);
                 }
 
                 BindTaskInProgressGrid();
@@ -923,7 +923,7 @@ namespace JG_Prospect.Sr_App
                 {
                     DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
                     command.CommandType = CommandType.Text;
-                    database.ExecuteNonQuery (command);
+                    database.ExecuteNonQuery(command);
                 }
 
                 BindTaskClosedGrid();
@@ -954,7 +954,6 @@ namespace JG_Prospect.Sr_App
             }
             return objListItemCollection;
         }
-
-     
     }
+     
 }
