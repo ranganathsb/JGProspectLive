@@ -892,7 +892,7 @@ namespace JG_Prospect
                                 {
                                     strRedirectUrl = "~/Sr_App/home.aspx";
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
+                                else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager")
                                 {
                                     if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
                                     {
@@ -904,7 +904,7 @@ namespace JG_Prospect
                                     }
 
                                 }
-                                else if (Session["DesigNew"].ToString() == "ITLead" || Session["DesigNew"].ToString().ToLower().Contains("developer")   )
+                                else if (Convert.ToString(Session["DesigNew"]).Contains("IT") || Session["DesigNew"].ToString().ToLower().Contains("developer"))
                                 {
                                     strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
                                 }
