@@ -26,6 +26,19 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected HTMLTemplateTypes? HTMLTemplateType
+        {
+            get
+            {
+                HTMLTemplateTypes objHTMLTemplateTypes;
+                if (Enum.TryParse<HTMLTemplateTypes>(Request["Type"], out objHTMLTemplateTypes))
+                {
+                    return objHTMLTemplateTypes;
+                }
+                return null;
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
@@ -49,6 +62,11 @@ namespace JG_Prospect.Sr_App
                     txtFooter.Text = objHTMLTemplatesMaster.Footer;
                     trMasterCopy.Visible = true;
                 }
+            }
+
+            if (this.HTMLTemplateType.HasValue && this.HTMLTemplateType.Value == HTMLTemplateTypes.Template) 
+            {
+                trSubject.Visible = false;
             }
         }
 

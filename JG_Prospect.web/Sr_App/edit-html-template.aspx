@@ -46,7 +46,7 @@
                             <td colspan="2" style="font-weight: bold;">We do not have designation specific copy for selected designation. So, we have loaded master copy in fields given below. You can modify and save designation specific copy.
                             </td>
                         </tr>
-                        <tr>
+                        <tr id="trSubject" runat="server">
                             <%--<td valign="top">Subject:
                             </td>--%>
                             <td>
