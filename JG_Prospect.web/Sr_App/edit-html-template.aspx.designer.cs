@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App {
     
     
-    public partial class edit_email_template {
+    public partial class edit_html_template {
         
         /// <summary>
         /// vsTemplate control.

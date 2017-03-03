@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace JG_Prospect.Sr_App
 {
-    public partial class edit_email_template : System.Web.UI.Page
+    public partial class edit_html_template : System.Web.UI.Page
     {
         protected HTMLTemplates? HTMLTemplate
         {
@@ -109,7 +109,7 @@ namespace JG_Prospect.Sr_App
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Sr_App/email-template-maintainance.aspx");
+            Response.Redirect("~/Sr_App/html-template-maintainance.aspx");
         }
     }
 }

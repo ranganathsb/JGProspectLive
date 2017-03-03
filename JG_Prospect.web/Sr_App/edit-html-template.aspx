@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" ValidateRequest="false"
-    CodeBehind="edit-email-template.aspx.cs" Inherits="JG_Prospect.Sr_App.edit_email_template" %>
+    CodeBehind="edit-html-template.aspx.cs" Inherits="JG_Prospect.Sr_App.edit_html_template" %>
 
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
@@ -12,7 +12,7 @@
             <li><a href="Price_control.aspx">Product Line Estimate</a></li>
             <li><a href="Inventory.aspx">Inventory</a></li>
             <li><a href="Maintenace.aspx">Maintainance</a></li>
-            <li><a href="email-template-maintainance.aspx">Maintainance New</a></li>
+            <li><a href="html-template-maintainance.aspx">Maintainance New</a></li>
         </ul>
         <!-- appointment tabs section end -->
         <h1>Edit Email Templates</h1>

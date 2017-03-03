@@ -1,5 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="email-template-maintainance.aspx.cs" 
-    Inherits="JG_Prospect.Sr_App.email_template_maintainance" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="html-template-maintainance.aspx.cs" 
+    Inherits="JG_Prospect.Sr_App.html_template_maintainance" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -62,7 +62,7 @@
                     <asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
                             <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' 
-                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.AutoEmailTemplate).ToString()) %>' />                        
+                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-html-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.AutoEmailTemplate).ToString()) %>' />                        
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Subject">
@@ -81,7 +81,7 @@
                 <ItemTemplate>
                     <li style="float:left; width: 30%; padding: 10px 10px 10px 0px;">
                         <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>' 
-                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-email-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.Template).ToString()) %>' />                        
+                                NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-html-template.aspx?MasterId=" + Eval("Id") + "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.Template).ToString()) %>' />                        
                     </li>
                 </ItemTemplate>
                 <FooterTemplate>
@@ -98,7 +98,7 @@
         function GetComapnyAddress() {
             $.ajax({
                 type: "POST",
-                url: "email-template-maintainance.aspx/GetCompanyAddress",
+                url: "html-template-maintainance.aspx/GetCompanyAddress",
                 // data: "{'strZip':'" + $(".list_limit li[style*='background-color: lemonchiffon']").text() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
@@ -120,7 +120,7 @@
             var CompanyZipCode = $('#<%=txtZip.ClientID%>').val();
             $.ajax({
                 type: "POST",
-                url: "email-template-maintainance.aspx/UpdateCompanyAddress",
+                url: "html-template-maintainance.aspx/UpdateCompanyAddress",
                 data: "{'Id':'" + Id + "','Address':'" + CompanyAddress + "','City':'" + CompanyCity + "','State':'" + CompanyState + "','ZipCode':'" + CompanyZipCode + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
