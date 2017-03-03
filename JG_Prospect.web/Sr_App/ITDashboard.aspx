@@ -133,7 +133,7 @@
                 border-color: #dddddd;
             }
 
-    .scroll tr {
+    /*.dashboard tr {
         display: flex;
     }
 
@@ -145,19 +145,72 @@
         line-height: none !important;
     }
 
-    .scroll thead tr:after {
+    .dashboard thead tr:after {
+        content:'';
         overflow-y: scroll;
         visibility: hidden;
         height: 0;
     }
  
-    .scroll thead th {
+    .dashboard thead th {
         flex: 1 auto;
         display: block;
-
+        background-color: #000 !important;
     }
 
-    .scroll tbody {
+    .dashboard tbody {
+        display: block;
+        width: 100%;
+        overflow-y: auto;
+        height: 370px;
+    }*/
+
+table.table tr.trHeader {
+    background:none !important;
+}
+
+table.table th
+{
+    border:none;
+}
+.dashboard tr {
+        display: flex;
+    }
+
+  .dashboard td {
+       border-spacing: 0px !important;
+        padding: 3px !important;
+        flex: 1 auto;
+        word-wrap: break-word;
+        background: none !important;
+        padding: 3px 0 0 0 !important;
+        line-height: none !important;
+    }
+
+    .dashboard thead tr:after {
+        content: '';
+        overflow-y: scroll;
+        visibility: hidden;
+        height: 0;
+    }
+
+    .dashboard thead th {
+        flex: 1 auto;
+        display: block;
+        padding: 0px;
+        background-color: #000;
+    }
+
+
+.dashboard thead th:first-child {
+border-top-left-radius: 4px;
+}
+.dashboard thead th:last-child {
+border-top-right-radius: 4px;
+}
+
+ 
+ .dashboard tbody {
         display: block;
         width: 100%;
         overflow-y: auto;
@@ -220,14 +273,14 @@
                     <asp:Label runat="server" ID="Label2"></asp:Label>
                     <asp:GridView ID="grdFrozenTask" runat="server"  OnPreRender ="grdFrozenTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                        HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                        HeaderStyle-BorderColor="White"    CssClass="table scroll"
+                          HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                            CssClass="table dashboard"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdFrozenTask"   OnRowDataBound ="grdFrozenTask_RowDataBound"  PageSize = "20" >
-                        <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
-                        <AlternatingRowStyle CssClass="AlternateRow " />
+                         <HeaderStyle CssClass="trHeader" />
+                        <AlternatingRowStyle CssClass="AlternateRow" />
                         <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
@@ -290,19 +343,19 @@
                     <asp:Label runat="server" ID="Label3"></asp:Label>
                     <asp:GridView ID="grdNewTask" runat="server"  OnPreRender ="grdNewTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                        HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                        HeaderStyle-BorderColor="White"    CssClass="table scroll"
+                         HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                           CssClass="table dashboard"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdNewTask"   OnRowDataBound ="grdNewTask_RowDataBound"  PageSize = "20" >
-                        <HeaderStyle CssClass="trHeader " />
-                        <RowStyle CssClass="FirstRow" />
-                        <AlternatingRowStyle CssClass="AlternateRow " />
+                         <RowStyle CssClass="FirstRow" />
+                         <HeaderStyle CssClass="trHeader" />
+                        <AlternatingRowStyle CssClass="AlternateRow" />
                         <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
-                         HeaderStyle-Width="100px"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
+                         HeaderStyle-Width="10%"  ItemStyle-Width = "10%"  HeaderText = "Due Date">
                         <ItemTemplate>
                             <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                             <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
@@ -310,26 +363,26 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
-                        HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
+                        HeaderStyle-Width="10%" ItemStyle-Width = "10%"  HeaderText = "Task ID#">
                         <ItemTemplate>
                             <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
-                         HeaderStyle-Width="300px" ItemStyle-Width = "300px"  HeaderText = "Title">
+                         HeaderStyle-Width="30%" ItemStyle-Width = "30%"  HeaderText = "Title">
                         <ItemTemplate>
                             <asp:Label ID="lblDesc" runat="server"
                                 Text='<%# Eval("Title")%>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
                    <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
-                        HeaderStyle-Width="120px" ItemStyle-Width = "120px"  HeaderText = "Status">
+                        HeaderStyle-Width="20%" ItemStyle-Width = "20%"  HeaderText = "Status">
                         <ItemTemplate>
                             <asp:Label ID="lblStatus" runat="server" Text='<%# Eval("Status")%>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
-                         HeaderStyle-Width="150px"   ItemStyle-Width = "150px"  HeaderText = "Hours">
+                         HeaderStyle-Width="20%"   ItemStyle-Width = "20%"  HeaderText = "Hours">
                         <ItemTemplate>
                              <asp:Label ID="lblHoursLeadInPro" runat="server"  ></asp:Label> <br />
                             <asp:Label ID="lblHoursDevInPro" runat="server"  ></asp:Label>
@@ -384,13 +437,13 @@
                 <asp:Label runat="server" ID="lblMessage"></asp:Label>
                 <asp:GridView ID="grdTaskPending" runat="server"  OnPreRender ="grdTaskPending_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                        HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                        HeaderStyle-BorderColor="White"    CssClass="table scroll"
+                        HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                          CssClass="table dashboard"
                         EmptyDataText="No Pending Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPagingTaskInProgress"   OnRowDataBound ="grdTaskPending_RowDataBound"  PageSize = "20" >
-                        <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
+                         <HeaderStyle CssClass="trHeader " />
                         <AlternatingRowStyle CssClass="AlternateRow " />
                         <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
@@ -436,10 +489,8 @@
 
                         </ItemTemplate>
                     </asp:TemplateField>
-
                     </Columns>
-             
-                
+               
                     </asp:GridView>
             </ContentTemplate>
             <Triggers>
@@ -454,7 +505,6 @@
                 <tr>
                     <td>Designation</td>
                     <td>Users</td>
-
                 </tr>
                 <tr>
                     <td>
@@ -479,8 +529,9 @@
                 <asp:GridView ID="grdTaskClosed" runat="server" 
                      OnPreRender="grdTaskClosed_PreRender"
                     ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                    EmptyDataText="No Closed Tasks Found !!" CssClass="table scroll" Width="100%" CellSpacing="0" CellPadding="0"
+                    HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    EmptyDataText="No Closed Tasks Found !!" CssClass="table dashboard" Width="100%" 
+                    CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Both" OnPageIndexChanging = "OnPagingTaskClosed" 
                     OnRowDataBound ="grdTaskClosed_RowDataBound" PagerStyle-HorizontalAlign="Right"  PageSize = "20" >
                     <HeaderStyle CssClass="trHeader " />
@@ -489,19 +540,22 @@
                     <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
                     <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                 <Columns>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  HeaderStyle-Width="100px"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
+                    HeaderStyle-Width="100px"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
                     <ItemTemplate>
                         <asp:HiddenField ID="lblTaskIdClosed" runat="server" Value='<%# Eval("TaskId")%>' />
                         <asp:HiddenField ID="lblParentTaskIdClosed" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                         <asp:Label ID="lblDueDate" runat="server"  Text='<%# Eval("DueDate")%>'></asp:Label>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
+                     HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                     <ItemTemplate>
                         <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  HeaderStyle-Width="300px" ItemStyle-Width = "300px"  HeaderText = "Title">
+                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
+                     HeaderStyle-Width="300px" ItemStyle-Width = "300px"  HeaderText = "Title">
                     <ItemTemplate>
                         <asp:Label ID="lblDesc" runat="server"
                             Text='<%# Eval("Title")%>'></asp:Label>
