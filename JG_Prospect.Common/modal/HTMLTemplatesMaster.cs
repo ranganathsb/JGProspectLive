@@ -10,6 +10,7 @@ namespace JG_Prospect.Common.modal
     {
         public int Id { get; set; }
         public int Type { get; set; }
+        public byte? Category { get; set; }
         public string Name { get; set; }
         public string Subject { get; set; }
         public string Header { get; set; }

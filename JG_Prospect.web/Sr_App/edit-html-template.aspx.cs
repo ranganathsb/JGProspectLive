@@ -26,6 +26,19 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        //protected HTMLTemplateCategories? HTMLTemplateCategory
+        //{
+        //    get
+        //    {
+        //        HTMLTemplateCategories objHTMLTemplateCategory;
+        //        if (Enum.TryParse<HTMLTemplateCategories>(Request["Category"], out objHTMLTemplateCategory))
+        //        {
+        //            return objHTMLTemplateCategory;
+        //        }
+        //        return null;
+        //    }
+        //}
+
         protected HTMLTemplateTypes? HTMLTemplateType
         {
             get
@@ -47,6 +60,16 @@ namespace JG_Prospect.Sr_App
             {
                 if (this.HTMLTemplate.HasValue)
                 {
+                    ddlCategory.DataSource = CommonFunction.GetHTMLTemplateCategoryList();
+                    ddlCategory.DataTextField = "Text";
+                    ddlCategory.DataValueField = "Value";
+                    ddlCategory.DataBind();
+                    ddlCategory.Items.Insert(0, new ListItem("--Select--", "0"));
+                    //if (this.HTMLTemplateCategory.HasValue)
+                    //{
+                    //    ddlCategory.SelectedValue = Convert.ToByte(this.HTMLTemplateCategory.Value).ToString();
+                    //}
+
                     ddlDesignation.DataSource = DesignationBLL.Instance.GetAllDesignation();
                     ddlDesignation.DataTextField = "DesignationName";
                     ddlDesignation.DataValueField = "ID";
@@ -60,12 +83,18 @@ namespace JG_Prospect.Sr_App
                     txtHeader.Content = objHTMLTemplatesMaster.Header;
                     txtBody.Content = objHTMLTemplatesMaster.Body;
                     txtFooter.Content = objHTMLTemplatesMaster.Footer;
+
+                    if (objHTMLTemplatesMaster.Category.HasValue)
+                    {
+                        ddlCategory.SelectedValue = objHTMLTemplatesMaster.Category.Value.ToString();
+                    }
                     trMasterCopy.Visible = true;
                 }
             }
 
             if (this.HTMLTemplateType.HasValue && this.HTMLTemplateType.Value == HTMLTemplateTypes.Template) 
             {
+                trCategory.Visible =
                 trSubject.Visible = false;
             }
         }
@@ -97,11 +126,20 @@ namespace JG_Prospect.Sr_App
             DesignationHTMLTemplate objDesignationHTMLTemplate = new DesignationHTMLTemplate();
             objDesignationHTMLTemplate.HTMLTemplatesMasterId = (byte)this.HTMLTemplate.Value;
             objDesignationHTMLTemplate.Designation = ddlDesignation.SelectedValue;
+
+            byte? intMasterCategory = null;
+            // category field is visible and used only for auto email template type.
+            // so, we are setting it to 0 for rest of the types.
+            if (ddlCategory.SelectedIndex > 0)
+            {
+                intMasterCategory = Convert.ToByte(ddlCategory.SelectedValue);
+            }
+
             objDesignationHTMLTemplate.Subject = txtSubject.Text;
             objDesignationHTMLTemplate.Header = txtHeader.Content;
             objDesignationHTMLTemplate.Body = txtBody.Content;
             objDesignationHTMLTemplate.Footer = txtFooter.Content;
-            if (HTMLTemplateBLL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate))
+            if (HTMLTemplateBLL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate, intMasterCategory))
             {
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Designation template updated.");
                 Response.Redirect(Request.Url.ToString());

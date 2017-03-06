@@ -67,13 +67,31 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlInputButton btnupdate;
         
         /// <summary>
-        /// grdTemplates_AutoEmail control.
+        /// grdTemplates_HRAutoEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTemplates_AutoEmail;
+        protected global::System.Web.UI.WebControls.GridView grdTemplates_HRAutoEmail;
+        
+        /// <summary>
+        /// grdTemplates_SalesAutoEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView grdTemplates_SalesAutoEmail;
+        
+        /// <summary>
+        /// grdTemplates_VendorAutoEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView grdTemplates_VendorAutoEmail;
         
         /// <summary>
         /// repTemplates_Template control.

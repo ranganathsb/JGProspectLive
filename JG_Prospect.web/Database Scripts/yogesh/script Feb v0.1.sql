@@ -1891,3 +1891,349 @@ GO
 ---- Published on Live 03032017 -----
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE tblHTMLTemplatesMaster
+ADD [Category] TINYINT NULL
+GO
+
+UPDATE tblHTMLTemplatesMaster
+SET [Category] = 1
+WHERE [Type] = 1
+GO
+
+UPDATE tblHTMLTemplatesMaster
+SET [Category] = 2
+WHERE ID IN (48)
+GO
+
+UPDATE tblHTMLTemplatesMaster
+SET [Category] = 3
+WHERE ID IN (57, 58)
+GO
+
+INSERT INTO [dbo].[tblHTMLTemplatesMaster]
+           ([Id]
+           ,[Name]
+           ,[Subject]
+           ,[Header]
+           ,[Body]
+           ,[Footer]
+           ,[DateUpdated]
+           ,[Type]
+           ,[Category])
+     VALUES
+           (75
+           ,'Deactive_Attachment_Template'
+           ,''
+           ,'<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>'
+           ,'<p class="MsoNormal">Dear #name#,On behalf of JMGrove Construction &amp; SupplyLLC, I would like to invite you an informational interview on &nbsp;#Date# &amp; #time# &nbsp;to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>'
+           ,'J.M. Grove - Construction & Supply 
+jmgroveconstruction.com 
+http://jmgrovebuildingsupply.com/
+http://web.jmgrovebuildingsupply.com/login.aspx
+http://jmgroverealestate.com/
+
+72 E Lancaster Ave
+Malvern, Pa 19355
+Human Resources
+Office:(215) 274-5182 Ext. 4
+Hr@jmgroveconstruction.com
+
+
+ 
+'
+           ,GETDATE()
+           ,2
+           ,NULL)
+GO
+
+INSERT INTO [dbo].[tblHTMLTemplatesMaster]
+           ([Id]
+           ,[Name]
+           ,[Subject]
+           ,[Header]
+           ,[Body]
+           ,[Footer]
+           ,[DateUpdated]
+           ,[Type]
+           ,[Category])
+     VALUES
+           (76
+           ,'JG_Personal_Company_EmailTemplate'
+           ,'*Interview Date Reminder -- JMGrove -Construction & Supply'
+           ,'<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>'
+           ,'<p class="MsoNormal">Dear #name#,On behalf of JMGrove Construction &amp; SupplyLLC, I would like to invite you an informational interview on &nbsp;#Date# &amp; #time# &nbsp;to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>'
+           ,'J.M. Grove - Construction & Supply 
+jmgroveconstruction.com 
+http://jmgrovebuildingsupply.com/
+http://web.jmgrovebuildingsupply.com/login.aspx
+http://jmgroverealestate.com/
+
+72 E Lancaster Ave
+Malvern, Pa 19355
+Human Resources
+Office:(215) 274-5182 Ext. 4
+Hr@jmgroveconstruction.com
+
+
+ 
+'
+           ,GETDATE()
+           ,1
+           ,1)
+GO
+
+INSERT INTO [dbo].[tblHTMLTemplatesMaster]
+           ([Id]
+           ,[Name]
+           ,[Subject]
+           ,[Header]
+           ,[Body]
+           ,[Footer]
+           ,[DateUpdated]
+           ,[Type]
+           ,[Category])
+     VALUES
+           (77
+           ,'HR_Request_FormFill_EmailTemplate'
+           ,'*Interview Date Reminder -- JMGrove -Construction & Supply'
+           ,'<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>'
+           ,'<p class="MsoNormal">Dear #name#,On behalf of JMGrove Construction &amp; SupplyLLC, I would like to invite you an informational interview on &nbsp;#Date# &amp; #time# &nbsp;to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>'
+           ,'J.M. Grove - Construction & Supply 
+jmgroveconstruction.com 
+http://jmgrovebuildingsupply.com/
+http://web.jmgrovebuildingsupply.com/login.aspx
+http://jmgroverealestate.com/
+
+72 E Lancaster Ave
+Malvern, Pa 19355
+Human Resources
+Office:(215) 274-5182 Ext. 4
+Hr@jmgroveconstruction.com
+
+
+ 
+'
+           ,GETDATE()
+           ,1
+           ,1)
+GO
+
+INSERT INTO [dbo].[tblHTMLTemplatesMaster]
+           ([Id]
+           ,[Name]
+           ,[Subject]
+           ,[Header]
+           ,[Body]
+           ,[Footer]
+           ,[DateUpdated]
+           ,[Type]
+           ,[Category])
+     VALUES
+           (78
+           ,'Verbal_Warning_AutoEmailTemplate'
+           ,'*Interview Date Reminder -- JMGrove -Construction & Supply'
+           ,'<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>'
+           ,'<p class="MsoNormal">Dear #name#,On behalf of JMGrove Construction &amp; SupplyLLC, I would like to invite you an informational interview on &nbsp;#Date# &amp; #time# &nbsp;to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>'
+           ,'J.M. Grove - Construction & Supply 
+jmgroveconstruction.com 
+http://jmgrovebuildingsupply.com/
+http://web.jmgrovebuildingsupply.com/login.aspx
+http://jmgroverealestate.com/
+
+72 E Lancaster Ave
+Malvern, Pa 19355
+Human Resources
+Office:(215) 274-5182 Ext. 4
+Hr@jmgroveconstruction.com
+
+
+ 
+'
+           ,GETDATE()
+           ,1
+           ,1)
+GO
+
+INSERT INTO [dbo].[tblHTMLTemplatesMaster]
+           ([Id]
+           ,[Name]
+           ,[Subject]
+           ,[Header]
+           ,[Body]
+           ,[Footer]
+           ,[DateUpdated]
+           ,[Type]
+           ,[Category])
+     VALUES
+           (79
+           ,'Written_Warning_AutoEmailTemplate'
+           ,'*Interview Date Reminder -- JMGrove -Construction & Supply'
+           ,'<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/header.jpg" /></div>
+<div><img src="http://web.jmgrovebuildingsupply.com/CustomerDocs/DefaultEmailContents/logo.gif" /></div>'
+           ,'<p class="MsoNormal">Dear #name#,On behalf of JMGrove Construction &amp; SupplyLLC, I would like to invite you an informational interview on &nbsp;#Date# &amp; #time# &nbsp;to discuss the position of: #Designation#.<span style="font-size: 10pt; font-family: verdana, sans-serif;"><o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">You will be meeting&nbsp;at:<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72 E.Lancaster Ave,&nbsp;<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Malvern Pa,19355<o:p /></span></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">Feel free to browse our family of companies and our about uspage for more information. If you have any questions or need help locating theoffice, feel free to contact me on my cell phone 717-669-1930<o:p /></span></p>
+<p class="MsoNormal"><b><u><span style="font-size: 10pt; font-family: verdana, sans-serif;">Directions &amp; Temporary Parking</span></u></b><span style="font-size: 10pt; font-family: verdana, sans-serif;">:&nbsp;Theinterview location is at our future Corporate office (72 E. Lancaster Ave,Malvern Pa, 19355). It is a commercial new construction site, and the interviewwill be&nbsp;conducted&nbsp;in our construction trailer on site. (See attached)<o:p /></span></p>
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;</span></p>
+<p></p>
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;located on the shoulder of the road in front of the&quot;Harron Building - 70 E. Lancaster Ave&quot; and between &quot;Sunrise ofPaoli: Senior Living center - 324 E Lancaster Ave&quot; and across from&quot;Extra Space Storage- 65 E Lancaster Ave&quot; (Please see attached)<o:p /></span></p>
+<p><br />
+</p>'
+           ,'J.M. Grove - Construction & Supply 
+jmgroveconstruction.com 
+http://jmgrovebuildingsupply.com/
+http://web.jmgrovebuildingsupply.com/login.aspx
+http://jmgroverealestate.com/
+
+72 E Lancaster Ave
+Malvern, Pa 19355
+Human Resources
+Office:(215) 274-5182 Ext. 4
+Hr@jmgroveconstruction.com
+
+
+ 
+'
+           ,GETDATE()
+           ,1
+           ,1)
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetHTMLTemplateMasters]    Script Date: 06-Mar-17 9:42:18 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 27 Jan 2017  
+-- Description: Gets all Master HTMLTemplates.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[GetHTMLTemplateMasters]  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ SELECT *
+ FROM tblHTMLTemplatesMaster
+ WHERE Id IN (1, 7, 12, 28, 36, 41, 48, 50, 57, 58, 60,69,70,71,72,73,74, 75, 76, 77, 78, 79)   
+ ORDER BY Id ASC  
+  
+END  
+GO
+
+/****** Object:  StoredProcedure [dbo].[SaveDesignationHTMLTemplate]    Script Date: 06-Mar-17 8:54:51 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 27 Jan 2017
+-- Description:	Saves designation HTMLTemplate either inserts or updates.
+-- =============================================
+ALTER PROCEDURE [dbo].[SaveDesignationHTMLTemplate]
+	@HTMLTemplatesMasterId	INT,
+	@MasterCategory			TINYINT,
+	@Designation			VARCHAR(50),
+	@Subject				VARCHAR(4000),
+	@Header					NVARCHAR(max),
+	@Body					NVARCHAR(max),
+	@Footer					NVARCHAR(max)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [tblHTMLTemplatesMaster]
+	SET
+		Category = @MasterCategory
+	WHERE Id = @HTMLTemplatesMasterId
+
+	IF EXISTS (SELECT ID 
+					FROM [tblDesignationHTMLTemplates] 
+					WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation)
+		BEGIN
+
+			UPDATE [dbo].[tblDesignationHTMLTemplates]
+			   SET
+				  [Subject] = @Subject
+				  ,[Header] = @Header
+				  ,[Body] = @Body
+				  ,[Footer] = @Footer
+				  ,[DateUpdated] = GETDATE()
+			 WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation
+
+		END
+	ELSE
+		BEGIN
+			INSERT INTO [dbo].[tblDesignationHTMLTemplates]
+				   ([HTMLTemplatesMasterId]
+				   ,[Designation]
+				   ,[Subject]
+				   ,[Header]
+				   ,[Body]
+				   ,[Footer]
+				   ,[DateUpdated])
+			 VALUES
+				   (@HTMLTemplatesMasterId
+				   ,@Designation
+				   ,@Subject
+				   ,@Header
+				   ,@Body
+				   ,@Footer
+				   ,GETDATE())
+		END
+
+END
+GO
+

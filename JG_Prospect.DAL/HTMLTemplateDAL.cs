@@ -67,7 +67,15 @@ namespace JG_Prospect.DAL
                         objHTMLTemplate = new HTMLTemplatesMaster();
 
                         objHTMLTemplate.Id = Convert.ToInt32(dr["Id"]);
-                        objHTMLTemplate.Type = Convert.ToInt32(dr["Type"]);
+                        objHTMLTemplate.Type = Convert.ToByte(dr["Type"]);
+                        if (!string.IsNullOrEmpty(Convert.ToString(dr["Category"])))
+                        {
+                            objHTMLTemplate.Category = Convert.ToByte(dr["Category"]);
+                        }
+                        else
+                        {
+                            objHTMLTemplate.Category = null;
+                        }
                         objHTMLTemplate.Name = Convert.ToString(dr["Name"]);
                         objHTMLTemplate.Subject = Convert.ToString(dr["Subject"]);
                         objHTMLTemplate.Header = Convert.ToString(dr["Header"]);
@@ -102,8 +110,8 @@ namespace JG_Prospect.DAL
                     DataSet dsHTMLTemplate = database.ExecuteDataSet(command);
                     DesignationHTMLTemplate objHTMLTemplate = null;
                     if (
-                        dsHTMLTemplate != null && 
-                        dsHTMLTemplate.Tables.Count > 0 && 
+                        dsHTMLTemplate != null &&
+                        dsHTMLTemplate.Tables.Count > 0 &&
                         dsHTMLTemplate.Tables[0].Rows.Count > 0
                        )
                     {
@@ -129,7 +137,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool SaveDesignationHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
+        public bool SaveDesignationHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate, byte? intMasterCategory)
         {
             try
             {
@@ -138,6 +146,14 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("SaveDesignationHTMLTemplate");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@HTMLTemplatesMasterId", DbType.Int16, objDesignationHTMLTemplate.HTMLTemplatesMasterId);
+                    if (intMasterCategory.HasValue)
+                    {
+                        database.AddInParameter(command, "@MasterCategory", DbType.Byte, intMasterCategory);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@MasterCategory", DbType.Byte, DBNull.Value);
+                    }
                     database.AddInParameter(command, "@Designation", DbType.String, objDesignationHTMLTemplate.Designation);
                     database.AddInParameter(command, "@Subject", DbType.String, objDesignationHTMLTemplate.Subject);
                     database.AddInParameter(command, "@Header", DbType.String, objDesignationHTMLTemplate.Header);

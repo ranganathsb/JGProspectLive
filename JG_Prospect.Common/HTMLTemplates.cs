@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace JG_Prospect.Common
 {
+    public enum HTMLTemplateCategories
+    {
+        HRAutoEmail = 1,
+        SalesAutoEmail = 2,
+        VendorAutoEmail = 3
+    }
+
     public enum HTMLTemplateTypes
     {
         AutoEmailTemplate = 1,
@@ -87,6 +94,11 @@ namespace JG_Prospect.Common
         Task_Generator_Auto_Email = 71,
         Task_Assignment_Requested = 72,
         PHP_HR_Welcome_Auto_Email = 73,
-        Applicant_Recontact_Auto_Email = 74
+        Applicant_Recontact_Auto_Email = 74,
+        Deactive_Attachment_Template = 75,
+        JG_Personal_Company_EmailTemplate = 76,
+        HR_Request_FormFill_EmailTemplate = 77,
+        Verbal_Warning_AutoEmailTemplate = 78,
+        Written_Warning_AutoEmailTemplate = 79
     }
 }

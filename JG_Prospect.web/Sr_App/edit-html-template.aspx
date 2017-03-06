@@ -29,6 +29,15 @@
                                 <asp:TextBox ID="txtName" runat="server" ReadOnly="true" Enabled="false" Width="500px" />
                             </td>
                         </tr>
+                        <tr id="trCategory" runat="server">
+                            <td>
+                                <b> Category:</b><br />
+                                <asp:DropDownList ID="ddlCategory" runat="server" />
+                                <asp:RequiredFieldValidator ID="rfvCategory" runat="server" ControlToValidate="ddlCategory"
+                                    InitialValue="0" ValidationGroup="vgTemplate" Display="None"
+                                    ErrorMessage="Please select category." />
+                            </td>
+                        </tr>
                         <tr>
                           <%--  <td valign="top">Designation:
                             </td>--%>

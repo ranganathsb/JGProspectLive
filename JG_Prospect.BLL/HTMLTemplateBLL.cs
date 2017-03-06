@@ -40,9 +40,9 @@ namespace JG_Prospect.BLL
             return HTMLTemplateDAL.Instance.GetDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
         }
 
-        public bool SaveDesignationHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
+        public bool SaveDesignationHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate, byte? intMasterCategory)
         {
-            return HTMLTemplateDAL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate);
+            return HTMLTemplateDAL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate, intMasterCategory);
         }
 
         public bool DeleteDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
