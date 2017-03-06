@@ -661,6 +661,17 @@ namespace JG_Prospect.App_Code
             return objListItemCollection;
         }
 
+        public static System.Web.UI.WebControls.ListItemCollection GetHTMLTemplateCategoryList()
+        {
+            ListItemCollection objListItemCollection = new ListItemCollection();
+
+            objListItemCollection.Add(new ListItem("HR Auto Email", Convert.ToInt16(HTMLTemplateCategories.HRAutoEmail).ToString()));
+            objListItemCollection.Add(new ListItem("Vendor Auto Email", Convert.ToInt16(HTMLTemplateCategories.VendorAutoEmail).ToString()));
+            objListItemCollection.Add(new ListItem("Sales Auto Email", Convert.ToInt16(HTMLTemplateCategories.SalesAutoEmail).ToString()));
+
+            return objListItemCollection;
+        }
+
         public static string GetTaskRowCssClass(JGConstant.TaskStatus objTaskStatus, JGConstant.TaskPriority? objTaskPriority)
         {
             string strRowCssClass = string.Empty;

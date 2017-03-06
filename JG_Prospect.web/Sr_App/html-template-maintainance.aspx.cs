@@ -31,10 +31,19 @@ namespace JG_Prospect.Sr_App
             {
                 DataView dvHtmlTemplates = dsHtmlTemplates.Tables[0].DefaultView;
 
-                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0}", Convert.ToByte(Common.HTMLTemplateTypes.AutoEmailTemplate));
-                grdTemplates_AutoEmail.DataSource = dvHtmlTemplates.ToTable();
-                grdTemplates_AutoEmail.DataBind();
+                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0} AND [Category] = {1}", Convert.ToByte(Common.HTMLTemplateTypes.AutoEmailTemplate), Convert.ToByte(Common.HTMLTemplateCategories.HRAutoEmail));
+                grdTemplates_HRAutoEmail.DataSource = dvHtmlTemplates.ToTable();
+                grdTemplates_HRAutoEmail.DataBind();
 
+
+                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0} AND [Category] = {1}", Convert.ToByte(Common.HTMLTemplateTypes.AutoEmailTemplate), Convert.ToByte(Common.HTMLTemplateCategories.SalesAutoEmail));
+                grdTemplates_SalesAutoEmail.DataSource = dvHtmlTemplates.ToTable();
+                grdTemplates_SalesAutoEmail.DataBind();
+
+
+                dvHtmlTemplates.RowFilter = string.Format("[Type] = {0} AND [Category] = {1}", Convert.ToByte(Common.HTMLTemplateTypes.AutoEmailTemplate), Convert.ToByte(Common.HTMLTemplateCategories.VendorAutoEmail));
+                grdTemplates_VendorAutoEmail.DataSource = dvHtmlTemplates.ToTable();
+                grdTemplates_VendorAutoEmail.DataBind();
 
                 dvHtmlTemplates.RowFilter = string.Format("[Type] = {0}", Convert.ToByte(Common.HTMLTemplateTypes.Template));
                 repTemplates_Template.DataSource = dvHtmlTemplates.ToTable();
