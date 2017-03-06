@@ -240,36 +240,49 @@ border-top-right-radius: 4px;
 
         <asp:UpdatePanel runat="server" ID="upAlerts" >
             <ContentTemplate>
-             <h2 runat="server" id="lblalert">Alerts</h2>
+              
             <h2 runat="server" id="lblalertpopup">
-                New Tasks <asp:LinkButton ID="lblNewCounter" runat="server"  CssClass="badge badge-error" OnClick="lnkNewCounter_Click" ></asp:LinkButton> 
+               Alerts: Non Frozen Tasks <asp:LinkButton ID="lblNewCounter" runat="server"  CssClass="badge badge-error" OnClick="lnkNewCounter_Click" ></asp:LinkButton> 
                 <asp:Label ID="lblNewCounter0" runat="server"  CssClass="badge badge-error" ></asp:Label> 
-                Frozen Tasks <asp:LinkButton id="lblFrozenCounter" runat="server" CssClass="badge badge-error" OnClick="lnkFrozenCounter_Click" ></asp:LinkButton>
+                Partial Frozen Tasks <asp:LinkButton id="lblFrozenCounter" runat="server" CssClass="badge badge-error" OnClick="lnkFrozenCounter_Click" ></asp:LinkButton>
                 <asp:Label id="lblFrozenCounter0" runat="server" CssClass="badge badge-error"   ></asp:label>
             </h2>
-
+ 
                  <!--  ------- Start DP new/frozen tasks popup ------  -->
               <button id="btnFake" style="display: none" runat="server"></button>
               <cc1:ModalPopupExtender ID="mpNewFrozenTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="btnFake"
             CancelControlID="btnFake" BackgroundCssClass="modalBackground">
             </cc1:ModalPopupExtender>
                 <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
-                    <h2>Frozen Tasks</h2>
-                    <table id="Table1" runat="server">
-                        <tr>
-                            <td>Designation</td><td>Users</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:DropDownList ID="drpDesigFrozen" runat="server"  >
-                                </asp:DropDownList>
-                            </td>
-                            <td>
-                                <asp:DropDownList ID="drpUserFrozen" runat="server"  >
-                                </asp:DropDownList>
-                            </td>
-                        </tr>
-                    </table>
+                      
+                <table id="Table2" runat="server">
+                    <tr>
+                        <td align="left" width="45%">
+                            <h2>Partial Frozen Tasks</h2>
+                        </td>
+                        <td  align="center" width="35%">
+                                <table id="Table7" runat="server"  >
+                                <tr>
+                                    <td>Designation</td><td>Users</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:DropDownList ID="drpDesigFrozen" runat="server" >
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                            <asp:DropDownList ID="drpUserFrozen" runat="server" >
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td  align="right">&nbsp;</td>
+                    </tr>
+                </table>
+
+
+
                     <asp:Label runat="server" ID="Label2"></asp:Label>
                     <asp:GridView ID="grdFrozenTask" runat="server"  OnPreRender ="grdFrozenTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
@@ -281,8 +294,8 @@ border-top-right-radius: 4px;
                         <RowStyle CssClass="FirstRow" />
                          <HeaderStyle CssClass="trHeader" />
                         <AlternatingRowStyle CssClass="AlternateRow" />
-                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
-                        <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
+                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys" />
                     <Columns>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="100px"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
@@ -323,23 +336,36 @@ border-top-right-radius: 4px;
                 
                     </asp:GridView>    
                     
+                  
+                <table id="Table5" runat="server">
+                    <tr>
+                        <td align="left" width="45%">
+                            <h2>Non Frozen Tasks</h2>
+                        </td>
+                        <td  align="center" width="35%">
+                                <table id="Table6" runat="server"  >
+                                <tr>
+                                    <td>Designation</td><td>Users</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:DropDownList ID="drpDesigNew" runat="server"   >
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                            <asp:DropDownList ID="drpUserNew" runat="server" >
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td  align="right">&nbsp;</td>
+                    </tr>
+                </table>
 
-                    <h2>New Tasks</h2>
-                    <table id="Table2" runat="server">
-                        <tr>
-                            <td>Designation</td><td>Users</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:DropDownList ID="drpDesigNew" runat="server" >
-                                </asp:DropDownList>
-                            </td>
-                            <td>
-                                <asp:DropDownList ID="drpUserNew" runat="server" >
-                                </asp:DropDownList>
-                            </td>
-                        </tr>
-                    </table>
+
+
+
                     <asp:Label runat="server" ID="Label3"></asp:Label>
                     <asp:GridView ID="grdNewTask" runat="server"  OnPreRender ="grdNewTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
@@ -351,7 +377,7 @@ border-top-right-radius: 4px;
                          <RowStyle CssClass="FirstRow" />
                          <HeaderStyle CssClass="trHeader" />
                         <AlternatingRowStyle CssClass="AlternateRow" />
-                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
+                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
@@ -407,33 +433,37 @@ border-top-right-radius: 4px;
           <!-- --------- End DP -------  -->
             </ContentTemplate>
         </asp:UpdatePanel>
-        <h2>In Progress, Assigned-Requested</h2>
+        
          <asp:UpdatePanel ID="UpdatePanel1" runat="server">
           <ContentTemplate>
+            
                 <table id="tblInProgress" runat="server">
-                <tr>
-                    <td>Designation</td>
-                    <td>Users</td>
+                    <tr>
+                        <td align="left" width="45%">
+                            <h2>In Progress, Assigned-Requested</h2>
+                        </td>
+                        <td  align="center" width="35%">
+                                <table id="Table3" runat="server"  >
+                                <tr>
+                                    <td>Designation</td><td>Users</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:DropDownList ID="drpDesigInProgress" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                            <asp:DropDownList ID="drpUsersInProgress" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td  align="right">&nbsp;</td>
+                    </tr>
+                </table>
 
-                </tr>
-                <tr>
-                    <td>
-                        <asp:DropDownList ID="drpDesigInProgress" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                            <asp:DropDownList ID="drpUsersInProgress" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                    <%-- <td>
-                        <asp:DropDownList ID="drpStatusInProgress" runat="server" AutoPostBack="true" >
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-                    </td>--%>
-                </tr>
-            </table>
+
                 <asp:Label runat="server" ID="lblMessage"></asp:Label>
                 <asp:GridView ID="grdTaskPending" runat="server"  OnPreRender ="grdTaskPending_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
@@ -445,7 +475,7 @@ border-top-right-radius: 4px;
                         <RowStyle CssClass="FirstRow" />
                          <HeaderStyle CssClass="trHeader " />
                         <AlternatingRowStyle CssClass="AlternateRow " />
-                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
+                        <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  HeaderStyle-Width="100px"
@@ -497,33 +527,36 @@ border-top-right-radius: 4px;
                 <asp:AsyncPostBackTrigger ControlID = "grdTaskPending" />
             </Triggers>
        </asp:UpdatePanel>
-        <h2>Commits, Closed-Billed</h2>
+        <h2></h2>
          <asp:UpdatePanel ID="upClosedTask" runat="server">
              <ContentTemplate>
-         
-                <table id="tblClosedTask" runat="server">
-                <tr>
-                    <td>Designation</td>
-                    <td>Users</td>
-                </tr>
-                <tr>
-                    <td>
-                        <asp:DropDownList ID="drpDesigClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                         <asp:DropDownList ID="drpUsersClosed" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                   <%-- <td>
-                        <asp:DropDownList ID="drpStatusInProgress" runat="server" AutoPostBack="true" >
-                        </asp:DropDownList>
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-                    </td>--%>
-                </tr>
-            </table>
+      
+                <table id="Table4" runat="server">
+                    <tr>
+                        <td align="left" width="55%">
+                            <h2>Commits, Closed-Billed</h2>
+                        </td>
+                        <td  align="center" width="35%">
+                                <table id="tblClosedTask" runat="server"  >
+                                <tr>
+                                    <td>Designation</td><td>Users</td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        <asp:DropDownList ID="drpDesigClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                         <asp:DropDownList ID="drpUsersClosed" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td  align="right">&nbsp;</td>
+                    </tr>
+                </table>
+
 
                <asp:Label runat="server" ID="Label1"></asp:Label>
                 <asp:GridView ID="grdTaskClosed" runat="server" 
@@ -537,7 +570,7 @@ border-top-right-radius: 4px;
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
-                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="TopAndBottom" />
+                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
                     <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                 <Columns>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
