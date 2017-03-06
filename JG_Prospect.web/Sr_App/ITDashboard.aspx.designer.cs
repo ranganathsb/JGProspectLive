@@ -31,6 +31,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upAlerts;
         
         /// <summary>
+        /// lblalert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblalert;
+        
+        /// <summary>
+        /// lblalertpopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblalertpopup;
+        
+        /// <summary>
         /// lblNewCounter control.
         /// </summary>
         /// <remarks>

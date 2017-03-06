@@ -54,11 +54,15 @@ namespace JG_Prospect.Sr_App
                 {
                     tblInProgress.Visible = true;
                     tblClosedTask.Visible = true;
+                    lblalert.Visible = true;
+                    lblalertpopup.Visible = true;
                 }
                 else
                 {
                     tblInProgress.Visible = false;
                     tblClosedTask.Visible = false;
+                    lblalert.Visible = false;
+                    lblalertpopup.Visible = false;
                 }
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
                 LoadFilterUsersByDesgination("", drpUsersClosed);

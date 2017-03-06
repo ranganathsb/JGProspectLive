@@ -240,8 +240,8 @@ border-top-right-radius: 4px;
 
         <asp:UpdatePanel runat="server" ID="upAlerts" >
             <ContentTemplate>
-             <h2>Alerts</h2>
-            <h2>
+             <h2 runat="server" id="lblalert">Alerts</h2>
+            <h2 runat="server" id="lblalertpopup">
                 New Tasks <asp:LinkButton ID="lblNewCounter" runat="server"  CssClass="badge badge-error" OnClick="lnkNewCounter_Click" ></asp:LinkButton> 
                 <asp:Label ID="lblNewCounter0" runat="server"  CssClass="badge badge-error" ></asp:Label> 
                 Frozen Tasks <asp:LinkButton id="lblFrozenCounter" runat="server" CssClass="badge badge-error" OnClick="lnkFrozenCounter_Click" ></asp:LinkButton>
