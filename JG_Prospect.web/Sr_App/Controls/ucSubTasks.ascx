@@ -468,15 +468,34 @@
                                             <td>
                                                  ListID: <asp:TextBox   ID="txtInstallId"   runat="server"></asp:TextBox>
                                             </td>
+                                            
+                                            <td>
+                                                 Sub Title <span style="color: red;">*</span>: <asp:TextBox   ID="txtSubSubTitle"   runat="server"></asp:TextBox>
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtSubSubTitle" ForeColor="Red" 
+                                                    ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                            
+                                            <td>
+                                                 Priority <span style="color: red;">*</span>: <asp:DropDownList ID="drpSubTaskPriority" runat="server"  />
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                                    ControlToValidate="drpSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                                            </td>
+                                            
+                                            <td>
+                                                 Type <span style="color: red;">*</span>:  <asp:DropDownList ID="drpSubTaskType" runat="server" />
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                                    ControlToValidate="drpSubTaskType" ErrorMessage="Please enter Task Type." />
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td > 
-                                                Task Description <span>*</span>
+                                                Task Description <span style="color: red;">*</span>:
                                                 <br />
                                                <asp:TextBox ID="txtTaskDesc" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
                                                     runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" 
-                                                    ErrorMessage="Please Enter Task Description" Display="Static"> </asp:RequiredFieldValidator>
+                                                    ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
                                             </td>
                                         </tr>
                                         <tr>
@@ -528,20 +547,24 @@
                                     </a>
                                 </small>
                             </td>
-                            <td>Type:
+                            <td>Type <span style="color: red;">*</span>:
                                 <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server" />
-                                &nbsp;&nbsp;Priority:
+                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
+                                    ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                                &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
                                 <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
+                                    ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
                             </td>
                         </tr>
                         <tr>
-                            <td>Title <span style="color: red;"></span>:
+                            <td>Title <span style="color: red;">*</span>:
                                 <br />
                                 <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
                                 <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
                                     ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
-                            <td>Url <span style="color: red;"></span>:
+                            <td>Url <span style="color: red;">*</span>:
                                 <br />
                                 <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
                                 <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"

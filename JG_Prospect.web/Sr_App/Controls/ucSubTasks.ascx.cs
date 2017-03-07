@@ -324,6 +324,8 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlTaskPriority.DataValueField = "Value";
                     ddlTaskPriority.DataBind();
 
+                    
+
                     if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()))
                     {
                         ddlTaskPriority.SelectedValue = DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString();
@@ -904,7 +906,7 @@ namespace JG_Prospect.Sr_App.Controls
                     if (txtMode.Value == "add")
                     {
                         database.AddInParameter(command, "@TaskId", DbType.Int32, 0);
-                        database.AddInParameter(command, "@Title", DbType.String, "");
+                        database.AddInParameter(command, "@Title", DbType.String, txtSubSubTitle.Text );
                         database.AddInParameter(command, "@Description", DbType.String, vTaskDescEncode);
                         database.AddInParameter(command, "@Status", DbType.Int32, 1);
                         database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
@@ -914,12 +916,14 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@ParentTaskId", DbType.Int32, Convert.ToInt32(hdParentTaskId.Value));
                         database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
                         database.AddInParameter(command, "@MainParentId", DbType.Int32, Convert.ToInt32(hdMainParentId.Value));
+                        database.AddInParameter(command, "@TaskType", DbType.Int32,Convert.ToInt32(drpSubTaskType.SelectedValue.ToString()));
+                        database.AddInParameter(command, "@TaskPriority", DbType.Int32, Convert.ToInt32(drpSubTaskPriority.SelectedValue.ToString()));
 
                     }
                     else
                     {
                         database.AddInParameter(command, "@TaskId", DbType.Int32, Convert.ToInt32(hdTaskId.Value));
-                        database.AddInParameter(command, "@Title", DbType.String, "");
+                        database.AddInParameter(command, "@Title", DbType.String, txtSubSubTitle.Text);
                         database.AddInParameter(command, "@Description", DbType.String, vTaskDescEncode);
                         database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
                         database.AddInParameter(command, "@Status", DbType.Int32, 1);
@@ -929,6 +933,8 @@ namespace JG_Prospect.Sr_App.Controls
                         database.AddInParameter(command, "@TaskLevel", DbType.Int32, 0);
                         database.AddInParameter(command, "@ParentTaskId", DbType.Int32, 0);
                         database.AddInParameter(command, "@MainParentId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@TaskType", DbType.Int32, Convert.ToInt32(drpSubTaskType.SelectedValue.ToString()));
+                        database.AddInParameter(command, "@TaskPriority", DbType.Int32, Convert.ToInt32(drpSubTaskPriority.SelectedValue.ToString()));
                     }
 
                     database.ExecuteNonQuery(command);
@@ -980,6 +986,17 @@ namespace JG_Prospect.Sr_App.Controls
                             //txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
                             txtTaskDesc.Text =Server.HtmlDecode( result.Tables[0].Rows[0]["Description"].ToString());
                             txtInstallId.Text = result.Tables[0].Rows[0]["InstallId"].ToString();
+                            txtSubSubTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
+                            ListItem item = drpSubTaskType.Items.FindByValue(result.Tables[0].Rows[0]["TaskType"].ToString());
+                            if (item != null)
+                            {
+                                drpSubTaskType.SelectedIndex = drpSubTaskType.Items.IndexOf(item);
+                            }
+                            ListItem itemPri = drpSubTaskPriority.Items.FindByValue(result.Tables[0].Rows[0]["TaskPriority"].ToString());
+                            if (itemPri != null)
+                            {
+                                drpSubTaskPriority.SelectedIndex = drpSubTaskPriority.Items.IndexOf(itemPri);
+                            }
                         }
                         result.Dispose();
                     }
@@ -2061,10 +2078,37 @@ namespace JG_Prospect.Sr_App.Controls
             ddlSubTaskPriority.DataValueField = "Value";
             ddlSubTaskPriority.DataBind();
 
+            ddlSubTaskPriority.Items.RemoveAt(0);
+            ddlSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
+            ddlSubTaskPriority.SelectedIndex = 0;
+
+
+            drpSubTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+            drpSubTaskPriority.DataTextField = "Text";
+            drpSubTaskPriority.DataValueField = "Value";
+            drpSubTaskPriority.DataBind();
+
+            drpSubTaskPriority.Items.RemoveAt(0);
+            drpSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
+            drpSubTaskPriority.SelectedIndex = 0;
+
             ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
             ddlTaskType.DataTextField = "Text";
             ddlTaskType.DataValueField = "Value";
             ddlTaskType.DataBind();
+
+            ddlTaskType.Items.RemoveAt(0);
+            ddlTaskType.Items.Insert(0, new ListItem("--None--", ""));
+            ddlTaskType.SelectedIndex = 0;
+
+            drpSubTaskType.DataSource = CommonFunction.GetTaskTypeList();
+            drpSubTaskType.DataTextField = "Text";
+            drpSubTaskType.DataValueField = "Value";
+            drpSubTaskType.DataBind();
+
+            drpSubTaskType.Items.RemoveAt(0);
+            drpSubTaskType.Items.Insert(0, new ListItem("--None--", ""));
+            drpSubTaskType.SelectedIndex = 0;
         }
 
         public void SetSubTaskView()
@@ -2247,7 +2291,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
             }
-            ddlSubTaskPriority.SelectedValue = "0";
+            ddlSubTaskPriority.SelectedIndex  = 0;
             btnSaveSubTaskAttachment.Visible = false;
             rptSubTaskAttachments.DataSource = null;
             rptSubTaskAttachments.DataBind();

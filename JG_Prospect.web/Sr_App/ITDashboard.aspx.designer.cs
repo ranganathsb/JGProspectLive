@@ -31,15 +31,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upAlerts;
         
         /// <summary>
-        /// lblalert control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblalert;
-        
-        /// <summary>
         /// lblalertpopup control.
         /// </summary>
         /// <remarks>
@@ -112,13 +103,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Panel pnlCalendar;
         
         /// <summary>
-        /// Table1 control.
+        /// Table2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table1;
+        protected global::System.Web.UI.HtmlControls.HtmlTable Table2;
+        
+        /// <summary>
+        /// Table7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable Table7;
         
         /// <summary>
         /// drpDesigFrozen control.
@@ -157,13 +157,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView grdFrozenTask;
         
         /// <summary>
-        /// Table2 control.
+        /// Table5 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table2;
+        protected global::System.Web.UI.HtmlControls.HtmlTable Table5;
+        
+        /// <summary>
+        /// Table6 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable Table6;
         
         /// <summary>
         /// drpDesigNew control.
