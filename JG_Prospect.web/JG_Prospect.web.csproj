@@ -264,12 +264,19 @@
     <Content Include="AddResourcesJr.aspx" />
     <Content Include="AssignProspect.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
+    <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\aspsnippets.facebookapi.dll" />
     <Content Include="bin\ASPSnippets.GoogleAPI.dll" />
     <Content Include="bin\ASPSnippets.SmsAPI.dll" />
     <Content Include="bin\ASPSnippets.TwitterAPI.dll" />
     <Content Include="bin\BarcodeLib.dll" />
     <Content Include="bin\CKEditor.NET.dll" />
+    <Content Include="bin\DotNetOpenAuth.AspNet.dll" />
+    <Content Include="bin\DotNetOpenAuth.Core.dll" />
+    <Content Include="bin\DotNetOpenAuth.OAuth.Consumer.dll" />
+    <Content Include="bin\DotNetOpenAuth.OAuth.dll" />
+    <Content Include="bin\DotNetOpenAuth.OpenId.dll" />
+    <Content Include="bin\DotNetOpenAuth.OpenId.RelyingParty.dll" />
     <Content Include="bin\DropDownCheckBoxes.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EPPlus.dll" />
@@ -279,8 +286,14 @@
     <Content Include="bin\Google.GData.Extensions.dll" />
     <Content Include="bin\GoogleMaps.LocationServices.dll" />
     <Content Include="bin\Ionic.Zip.dll" />
+    <Content Include="bin\itextsharp.dll" />
+    <Content Include="bin\itextsharp.xmlworker.dll" />
+    <Content Include="bin\MailApi.dll" />
+    <Content Include="bin\MailServerApi.dll" />
     <Content Include="bin\Microsoft.Data.Edm.dll" />
     <Content Include="bin\Microsoft.Data.OData.dll" />
+    <Content Include="bin\Microsoft.Owin.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
@@ -293,14 +306,32 @@
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\Mono.Math.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
+    <Content Include="bin\Org.Mentalis.Security.Cryptography.dll" />
+    <Content Include="bin\Owin.dll" />
+    <Content Include="bin\System.Net.Http.dll" />
+    <Content Include="bin\System.Net.Http.Formatting.dll" />
+    <Content Include="bin\System.Net.Http.WebRequest.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Http.dll" />
     <Content Include="bin\System.Web.Http.OData.dll" />
+    <Content Include="bin\System.Web.Http.Tracing.dll" />
+    <Content Include="bin\System.Web.Http.WebHost.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Optimization.dll" />
     <Content Include="bin\System.Web.Providers.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
+    <Content Include="bin\WebGrease.dll" />
+    <Content Include="bin\WebMail.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
@@ -1033,25 +1064,7 @@
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
     <Content Include="Database Scripts\DataScripts\12212016-ImageRef#.txt" />
-    <Content Include="Database Scripts\Dipavali\GetClosedTasks.txt" />
     <Content Include="Database Scripts\Dipavali\Scripts_Feb_2017_ITSN050_v0.1.sql" />
-    <Content Include="Database Scripts\Dipavali\SP-AddEventCalendar.sql" />
-    <Content Include="Database Scripts\Dipavali\SP-CheckDuplicateCalendarEvent.sql" />
-    <Content Include="Database Scripts\Dipavali\SP-GetAllEventCalendar.sql" />
-    <Content Include="Database Scripts\Dipavali\SP-GetMaxNo.sql" />
-    <Content Include="Database Scripts\Dipavali\SP_AddAnnualEvent.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_AddSubTasks.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_CheckDuplicateAnnualEvent.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_GetEventByCalendar.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_GetEventCalendar.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_GetInProgressTasks.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_GetInstallUsersByStatus.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_usp_GetSubTasks.txt" />
-    <Content Include="Database Scripts\Dipavali\SP_usp_GetSubTasksLevel23.txt" />
-    <Content Include="Database Scripts\Dipavali\TBL-tbl_AnnualEvents.txt" />
-    <Content Include="Database Scripts\Dipavali\TBL-tbl_EventCalendar.sql" />
-    <Content Include="Database Scripts\Dipavali\TBL-tbl_tblTask.txt" />
-    <Content Include="Database Scripts\Dipavali\UpdateQuery.txt" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
@@ -2674,7 +2687,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
