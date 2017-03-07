@@ -774,7 +774,7 @@ namespace JG_Prospect.Sr_App
 
                             if (lstSource != null)
                             {
-                                ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource); 
+                                ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource);
                             }
                         }
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
@@ -890,7 +890,7 @@ namespace JG_Prospect.Sr_App
 
                             if (lstEmpType != null)
                             {
-                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);  
+                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);
                             }
                         }
                         dtLastDate.Text = ds.Tables[0].Rows[0][49].ToString();
@@ -3716,8 +3716,10 @@ namespace JG_Prospect.Sr_App
                         break;
                     case JGConstant.DesignationType.IT_Jr_Net_Developer:
                     case JGConstant.DesignationType.IT_Sr_Net_Developer:
-                        lbtnAptTestLink.Text = "Aptitude test for .Net";
-                        lbtnAptTestLink.PostBackUrl = "";
+                        lbtnAptTestLink2.Text =
+                        lbtnAptTestLink1.Text = "Aptitude test for .Net";
+                        lbtnAptTestLink2.PostBackUrl =
+                        lbtnAptTestLink1.PostBackUrl = "";
 
                         break;
                     case JGConstant.DesignationType.IT_Android_Developer:
@@ -3742,8 +3744,10 @@ namespace JG_Prospect.Sr_App
                         break;
                     default:
 
-                        lbtnAptTestLink.Text = "";
-                        lbtnAptTestLink.PostBackUrl = "";
+                        lbtnAptTestLink2.Text =
+                        lbtnAptTestLink1.Text = "";
+                        lbtnAptTestLink2.PostBackUrl =
+                        lbtnAptTestLink1.PostBackUrl = "";
                         break;
                 }
 
@@ -4719,7 +4723,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-                label:
+            label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4768,7 +4772,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-                label1:
+            label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4787,7 +4791,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-            label:
+        label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4822,7 +4826,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-            label1:
+        label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;

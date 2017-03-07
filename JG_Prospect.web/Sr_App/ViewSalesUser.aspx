@@ -351,13 +351,20 @@
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
 
-            $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
+            $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
                 
                 var url = window.location.href
                 var arr = url.split("/");
                 var currDomainName = arr[0] + "//" + arr[2];
                 showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
             });
+                $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
+
+                    var url = window.location.href
+                    var arr = url.split("/");
+                    var currDomainName = arr[0] + "//" + arr[2];
+                    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
+                });
 
             var text_max = 50;
             $('#textarea_CharCount').html(text_max + ' characters remaining');
@@ -1807,9 +1814,7 @@
                             </table>
 
 
-                            <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
-                                <asp:LinkButton ID="lbtnAptTestLink" OnClientClick="return false" runat="server"></asp:LinkButton>
-                            </div>
+                            
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
                                 <tr>
@@ -1851,7 +1856,10 @@
                                         <input type="button" id="btnSkillAssMinusNew" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-AdminAssess">Skill Assessment</div>
+                                        <div id="div-AdminAssess" style="float:left;">Skill Assessment</div>
+                                        <div style="float: right; margin-right: 25px;">
+                                            <asp:LinkButton ID="lbtnAptTestLink1" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -2294,7 +2302,10 @@
 
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-BasicAssessment"></div>
+                                        <div id="div-BasicAssessment" style="float:left;"></div>
+                                        <div style="float: right; margin-right: 25px;">
+                                            <asp:LinkButton ID="lbtnAptTestLink2" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
