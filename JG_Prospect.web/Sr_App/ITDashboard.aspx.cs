@@ -71,7 +71,7 @@ namespace JG_Prospect.Sr_App
                 BindFrozenTasks();
                 BindNewTasks();
 
-                // ----- get new and frozen task counts for current payperiod
+                // ----- get NEW and FROZEN task counts for current payperiod
                 DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 DateTime firstOfNextMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
                 DateTime lastOfThisMonth = firstOfNextMonth.AddDays(-1);
@@ -96,14 +96,14 @@ namespace JG_Prospect.Sr_App
                         result = database.ExecuteDataSet(command);
                         lblNewCounter.Visible = false;
                         lblNewCounter0.Visible = true;
-                        lblNewCounter0.Text = "0";
+                        lblNewCounter0.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
                         if (result.Tables[0].Rows.Count > 0)
                         {
                             if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
                             {
                                 lblNewCounter.Visible = true;
                                 lblNewCounter0.Visible = false;
-                                lblNewCounter.Text = result.Tables[0].Rows[0]["cntnew"].ToString();
+                                lblNewCounter.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
                             }
                         }
                         result.Dispose();
@@ -136,14 +136,14 @@ namespace JG_Prospect.Sr_App
 
                         lblFrozenCounter.Visible = false;
                         lblFrozenCounter0.Visible = true;
-                        lblFrozenCounter0.Text = "0";
+                        lblFrozenCounter0.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
                         if (result.Tables[0].Rows.Count > 0)
                         {
                             if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
                             {
                                 lblFrozenCounter.Visible = true;
                                 lblFrozenCounter0.Visible = false;
-                                lblFrozenCounter.Text = result.Tables[0].Rows[0]["cntnew"].ToString();
+                                lblFrozenCounter.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
                             }
                         }
                         result.Dispose();

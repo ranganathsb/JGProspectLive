@@ -49,7 +49,7 @@
             overflow-y:auto;
         }    
 
-        .badge {
+        .badge1 {
     padding: 1px 5px 2px;
     font-size: 12px;
     font-weight: bold;
@@ -59,6 +59,7 @@
     -webkit-border-radius: 9px;
     -moz-border-radius: 9px;
     border-radius: 8px;
+    display:inline;
 }
 
 
@@ -242,10 +243,10 @@ border-top-right-radius: 4px;
             <ContentTemplate>
               
             <h2 runat="server" id="lblalertpopup">
-               Alerts: Non Frozen Tasks <asp:LinkButton ID="lblNewCounter" runat="server"  CssClass="badge badge-error" OnClick="lnkNewCounter_Click" ></asp:LinkButton> 
-                <asp:Label ID="lblNewCounter0" runat="server"  CssClass="badge badge-error" ></asp:Label> 
-                Partial Frozen Tasks <asp:LinkButton id="lblFrozenCounter" runat="server" CssClass="badge badge-error" OnClick="lnkFrozenCounter_Click" ></asp:LinkButton>
-                <asp:Label id="lblFrozenCounter0" runat="server" CssClass="badge badge-error"   ></asp:label>
+               Alerts: <asp:LinkButton ID="lblNewCounter" runat="server"   OnClick="lnkNewCounter_Click" ></asp:LinkButton> 
+                <asp:Label ID="lblNewCounter0" runat="server"  ></asp:Label> 
+                 <asp:LinkButton id="lblFrozenCounter" runat="server" OnClick="lnkFrozenCounter_Click" ></asp:LinkButton>
+                <asp:Label id="lblFrozenCounter0" runat="server" ></asp:label>
             </h2>
  
                  <!--  ------- Start DP new/frozen tasks popup ------  -->
@@ -255,9 +256,9 @@ border-top-right-radius: 4px;
             </cc1:ModalPopupExtender>
                 <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
                       
-                <table id="Table2" runat="server">
+                <table id="Table2" runat="server" width="100%">
                     <tr>
-                        <td align="left" width="45%">
+                        <td align="left" width="35%">
                             <h2>Partial Frozen Tasks</h2>
                         </td>
                         <td  align="center" width="35%">
@@ -332,14 +333,13 @@ border-top-right-radius: 4px;
                         </ItemTemplate>
                     </asp:TemplateField>
                     </Columns>
-             
-                
+              
                     </asp:GridView>    
                     
                   
-                <table id="Table5" runat="server">
+                <table id="Table5" runat="server" width="100%">
                     <tr>
-                        <td align="left" width="45%">
+                        <td align="left" width="35%">
                             <h2>Non Frozen Tasks</h2>
                         </td>
                         <td  align="center" width="35%">
@@ -437,13 +437,13 @@ border-top-right-radius: 4px;
          <asp:UpdatePanel ID="UpdatePanel1" runat="server">
           <ContentTemplate>
             
-                <table id="tblInProgress" runat="server">
+                <table width="100%" >
                     <tr>
-                        <td align="left" width="45%">
+                        <td align="left" width="35%">
                             <h2>In Progress, Assigned-Requested</h2>
                         </td>
                         <td  align="center" width="35%">
-                                <table id="Table3" runat="server"  >
+                                <table id="tblInProgress" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
                                 </tr>
@@ -531,9 +531,9 @@ border-top-right-radius: 4px;
          <asp:UpdatePanel ID="upClosedTask" runat="server">
              <ContentTemplate>
       
-                <table id="Table4" runat="server">
+                <table width="100%">
                     <tr>
-                        <td align="left" width="55%">
+                        <td align="left" width="35%">
                             <h2>Commits, Closed-Billed</h2>
                         </td>
                         <td  align="center" width="35%">

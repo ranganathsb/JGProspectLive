@@ -238,15 +238,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblInProgress;
         
         /// <summary>
-        /// Table3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table3;
-        
-        /// <summary>
         /// drpDesigInProgress control.
         /// </summary>
         /// <remarks>
@@ -290,15 +281,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel upClosedTask;
-        
-        /// <summary>
-        /// Table4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table4;
         
         /// <summary>
         /// tblClosedTask control.
