@@ -545,6 +545,9 @@
                 $(".tblSkillAssessment td").show("slow");
                 $('#btnSkillAssPlusNew').hide();
                 $('#btnSkillAssMinusNew').show();
+
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else if ((optionSelected == "Jr. Sales") || (optionSelected == "Jr Project Manager") || (optionSelected == "Sr. Sales") || (optionSelected == "Sales Manager")) {
                 $('#div-SalesAssess').html(optionSelected + " Skill Assessment")
@@ -556,18 +559,20 @@
                 $('#btnSalesPlusNew').hide();
                 $('#btnSalesAssMinusNew').show();
 
-
-
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else if (optionSelected == "Recruiter") {
                 $('#div-RecuiterAssess').html(optionSelected + " Skill Assessment")
                 $('.tblRecruiterMain').show("slow");
                 $('.tblRecruiterMain td').show("slow");
 
-
                 $(".tblRecruiterAssMinusNew td").show("slow");
                 $('#btnRecruiterPlusNew').hide();
                 $('#btnRecruiterAssMinusNew').show();
+
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else {
                 // show for all user.
@@ -575,9 +580,15 @@
 
                 if ((optionSelected == "0") || (optionSelected == "--Select--")) {
                     $('#div-BasicAssessment').html("Select Skill Assessment")
+
+                    $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test');
+                    $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test');
                 }
                 else {
                     $('#div-BasicAssessment').html(optionSelected + " Skill Assessment");
+
+                    $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                    $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
                 }
 
 
