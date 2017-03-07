@@ -1674,6 +1674,7 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -3065,6 +3066,7 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
+    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
