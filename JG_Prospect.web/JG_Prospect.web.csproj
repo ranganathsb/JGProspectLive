@@ -255,9 +255,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Telerik.Web.UI.DLL</HintPath>
     </Reference>
-    <Reference Include="WebMail">
-      <HintPath>External Dependencies\WebMail.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Activation.aspx" />
