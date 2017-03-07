@@ -496,7 +496,7 @@
         //===ready===END
         function ShowHideRespectiveTableData(optionSelected) {
             if (optionSelected == '') {
-                optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %>').val();
+                optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %> option:selected').text();
             }
 
             $('#btnGeneralPlus').hide();
