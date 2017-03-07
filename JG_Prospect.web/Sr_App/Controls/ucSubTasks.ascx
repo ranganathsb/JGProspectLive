@@ -132,8 +132,8 @@
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
                                                 <h5>
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
-                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"   /></h5>
-
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'    /></h5>
+                                                
                                                 <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
                                                       OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                                                            
