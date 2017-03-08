@@ -1742,6 +1742,7 @@
     <Content Include="Sr_App\ITDashboard.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
+    <Content Include="Sr_App\manage-aptitude-tests.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
     <Content Include="Sr_App\OverheadExp.aspx" />
     <Content Include="Sr_App\Price_control.aspx" />
@@ -2078,6 +2079,13 @@
     </Compile>
     <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
       <DependentUpon>ITDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.designer.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>
@@ -2687,6 +2695,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
