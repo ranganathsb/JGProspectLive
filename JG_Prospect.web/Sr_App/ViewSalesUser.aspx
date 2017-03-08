@@ -352,19 +352,11 @@
             });--%>
 
             $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
-                
-                var url = window.location.href
-                var arr = url.split("/");
-                var currDomainName = arr[0] + "//" + arr[2];
-                showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
             });
-                $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
-
-                    var url = window.location.href
-                    var arr = url.split("/");
-                    var currDomainName = arr[0] + "//" + arr[2];
-                    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
-                });
+            $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+            });
 
             var text_max = 50;
             $('#textarea_CharCount').html(text_max + ' characters remaining');
