@@ -2242,3 +2242,36 @@ GO
 -- Live publish on 03072017
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE MCQ_Exam
+DROP COLUMN ExamType
+GO
+
+ALTER TABLE MCQ_Exam
+ADD DesignationID INT REFERENCES tbl_Designation DEFAULT 1 NOT NULL
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 09 Mar 2017
+-- Description:	Gets all exams by designation.
+-- =============================================
+CREATE PROCEDURE [dbo].[GetMCQ_Exams]
+	@DesignationID	INT = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT e.*, d.DesignationName
+	FROM MCQ_Exam e INNER JOIN tbl_Designation d
+		ON e.DesignationID = d.ID
+	WHERE d.ID = ISNULL(@DesignationID, d.ID)
+
+END
+GO

@@ -39,6 +39,11 @@ namespace JG_Prospect.BLL
             return AptitudeTestDAL.Instance.GetExamNameByExamID(ExamId);
         }
 
+        public DataTable GetMCQ_Exams(int? intDesignationID)
+        {
+            return AptitudeTestDAL.Instance.GetMCQ_Exams(intDesignationID);
+        }
+
         public string GetExamDurationByID(string examID)
         {
             return AptitudeTestDAL.Instance.GetExamDurationByID(examID);

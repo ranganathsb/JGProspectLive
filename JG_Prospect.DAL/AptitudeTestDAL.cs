@@ -215,5 +215,26 @@ namespace JG_Prospect.DAL
             //throw new NotImplementedException();
             return ".Net Aptitude Test";
         }
+
+        public DataTable GetMCQ_Exams(int? intDesignationID) 
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetMCQ_Exams");
+                    command.CommandType = CommandType.StoredProcedure;
+                    if (intDesignationID.HasValue)
+                    {
+                        database.AddInParameter(command, "@DesignationID", DbType.Int32, intDesignationID.Value);
+                    }
+                    return database.ExecuteDataSet(command).Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

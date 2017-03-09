@@ -13,6 +13,15 @@ namespace JG_Prospect.Sr_App {
     public partial class manage_aptitude_tests {
         
         /// <summary>
+        /// upExams control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upExams;
+        
+        /// <summary>
         /// ddlDesignation control.
         /// </summary>
         /// <remarks>
@@ -20,5 +29,14 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDesignation;
+        
+        /// <summary>
+        /// grdExams control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView grdExams;
     }
 }
