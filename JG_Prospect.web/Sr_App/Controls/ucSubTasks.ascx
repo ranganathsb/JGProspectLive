@@ -62,7 +62,7 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate> 
             <div id="divSubTaskGrid">
-                <div style="float: left;margin-top:15px;  ">
+                <div style="float: right;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
