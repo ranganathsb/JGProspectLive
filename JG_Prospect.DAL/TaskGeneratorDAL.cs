@@ -1487,7 +1487,7 @@ namespace JG_Prospect.DAL
 
         //------------ Start DP ------------
 
-        public DataSet GetInProgressTasks(int userid,int desigid)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
         {
             try
             {
@@ -1498,6 +1498,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@search", DbType.String, vSearch);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }
@@ -1508,7 +1509,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid)
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
         {
             try
             {
@@ -1519,6 +1520,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@search", DbType.String, vSearch);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }

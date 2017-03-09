@@ -62,16 +62,33 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
+                <div style="float: left;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearchFrozen" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                                <asp:Button ID="btnSearchFrozen" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchFrozen_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSizeFrozen" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSizeFrozen_SelectedIndexChanged">
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Selected="True" Text="20" Value="20" />
+                                    <asp:ListItem Text="30" Value="30" />
+                                    <asp:ListItem Text="40" Value="40" />
+                                    <asp:ListItem Text="50" Value="50" />
+                                </asp:DropDownList>
+                            </div>
+
                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
-                    OnRowDataBound="gvSubTasks_RowDataBound"
-                    OnRowCommand="gvSubTasks_RowCommand"
+                    OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "20"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
+                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         

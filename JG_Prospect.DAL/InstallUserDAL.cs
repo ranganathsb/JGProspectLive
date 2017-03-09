@@ -2292,6 +2292,30 @@ namespace JG_Prospect.DAL
             }
         }
 
+        //------------ start DP ------------
+        public DataSet GetTaskUsers(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        //------------- end DP -------------
+
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
         {
             DataSet dsResult = null;

@@ -71,6 +71,25 @@ namespace JG_Prospect.Sr_App
 
         }
 
+        //---------- Start DP ---------
+        [WebMethod]
+        public static string GetTaskUsers(string searchterm)
+        {
+            DataSet dsSuggestions;
+
+            string SearchSuggestions = string.Empty;
+
+            dsSuggestions = InstallUserBLL.Instance.GetTaskUsers(searchterm);
+
+            if (dsSuggestions != null && dsSuggestions.Tables.Count > 0 && dsSuggestions.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsSuggestions.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        //---------- End DP ---------
 
         #endregion
 

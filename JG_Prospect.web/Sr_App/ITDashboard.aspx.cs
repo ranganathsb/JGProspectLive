@@ -244,11 +244,13 @@ namespace JG_Prospect.Sr_App
 
         protected void lnkNewCounter_Click(object sender, EventArgs e)
         {
+            txtSearchFrozen.Text = "";
             mpNewFrozenTask.Show();
         }
 
         protected void lnkFrozenCounter_Click(object sender, EventArgs e)
         {
+            txtSearchFrozen.Text = "";
             mpNewFrozenTask.Show();
         }
 
@@ -417,15 +419,43 @@ namespace JG_Prospect.Sr_App
                 {
                     DataSet result = new DataSet();
 
-                    if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                    if (txtSearchFrozen.Text != "")
                     {
-                        strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                        strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        {
+                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b,tbltaskassignedusers as c,tblInstallUsers as t ";
+                            strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
+                            strfrozen = strfrozen + " AND  ( ";
+                            strfrozen = strfrozen + " t.FristName LIKE '%"+txtSearchFrozen.Text+"%'  or ";
+                            strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                            strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
+                            strfrozen = strfrozen + " ) ";
+                            strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        {
+                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b ,tbltaskassignedusers as c,tblInstallUsers as t ";
+                            strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
+                            strfrozen = strfrozen + " AND  ( ";
+                            strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                            strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                            strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
+                            strfrozen = strfrozen + " ) ";
+                            strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        }
                     }
-                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                    else
                     {
-                        strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                        strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        {
+                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        }
+                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        {
+                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        }
                     }
                     DbCommand command = database.GetSqlStringCommand(strfrozen);
                     command.CommandType = CommandType.Text;
@@ -459,10 +489,15 @@ namespace JG_Prospect.Sr_App
 
             int userId = 0;
             int desigID = 0;
+            string strSearch = "";
             if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
             {
                 userId = 0;
-                if (Convert.ToInt32(drpUsersInProgress.SelectedValue) > 0)
+                if (txtSearchInPro.Text!="")
+                {
+                    strSearch = txtSearchInPro.Text;
+                }
+                else if (Convert.ToInt32(drpUsersInProgress.SelectedValue) > 0)
                 {
                     userId = Convert.ToInt32(drpUsersInProgress.SelectedValue);
                 }
@@ -477,7 +512,7 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID);
+            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch);
             if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
@@ -498,10 +533,15 @@ namespace JG_Prospect.Sr_App
 
             int userId = 0;
             int desigID = 0;
+            string strSearch = "";
             if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
             {
                 userId = 0;
-                if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
+                if (txtSearchInPro.Text != "")
+                {
+                    strSearch = txtSearchInPro.Text;
+                }
+                else if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
                 {
                     userId = Convert.ToInt32(drpUsersClosed.SelectedValue);
                 }
@@ -516,7 +556,7 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID);
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID,strSearch);
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
@@ -936,6 +976,58 @@ namespace JG_Prospect.Sr_App
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
         }
+
+        protected void drpPageSizeInpro_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdTaskPending.PageSize = Convert.ToInt32(drpPageSizeInpro.SelectedValue);
+            grdTaskPending.PageIndex = 0;
+            BindTaskInProgressGrid();
+        }
+
+        protected void btnSearchInPro_Click(object sender, EventArgs e)
+        {
+            BindTaskInProgressGrid();
+        }
+
+        protected void drpPageSizeClosed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdTaskClosed.PageSize = Convert.ToInt32(drpPageSizeClosed.SelectedValue);
+            grdTaskClosed.PageIndex = 0;
+            BindTaskClosedGrid();
+        }
+
+        protected void btnSearchClosed_Click(object sender, EventArgs e)
+        {
+            BindTaskClosedGrid();
+        }
+
+        protected void drpPageSizeNew_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdNewTask.PageSize = Convert.ToInt32(drpPageSizeNew.SelectedValue);
+            grdNewTask.PageIndex = 0;
+            BindNewTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
+        }
+
+            protected void drpPageSizeFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            grdFrozenTask.PageSize = Convert.ToInt32(drpPageSizeFrozen.SelectedValue);
+            grdFrozenTask.PageIndex = 0;
+            BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
+        }
+
+        protected void btnSearchFrozen_Click(object sender, EventArgs e)
+        {
+            BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
+        }
+
+
+
         private System.Web.UI.WebControls.ListItemCollection FillStatusDropDowns(string[] lst)
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
