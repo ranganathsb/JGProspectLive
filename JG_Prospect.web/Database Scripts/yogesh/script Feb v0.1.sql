@@ -2251,6 +2251,21 @@ ALTER TABLE MCQ_Exam
 ADD DesignationID INT REFERENCES tbl_Designation DEFAULT 1 NOT NULL
 GO
 
+ALTER TABLE MCQ_CorrectAnswer
+ADD OptionID BIGINT REFERENCES MCQ_Option
+GO
+
+UPDATE a
+SET
+	a.OptionID = o.OptionID
+FROM MCQ_CorrectAnswer a INNER JOIN MCQ_Option o
+	ON a.AnswerText = o.OptionText
+GO
+
+ALTER TABLE MCQ_CorrectAnswer
+DROP COLUMN AnswerText
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2275,3 +2290,43 @@ BEGIN
 
 END
 GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 09 Mar 2017
+-- Description:	Gets exam details by exam id.
+-- =============================================
+CREATE PROCEDURE [dbo].[GetMCQ_ExamByID]
+	@ExamID	INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT e.*, d.DesignationName
+	FROM MCQ_Exam e INNER JOIN tbl_Designation d
+		ON e.DesignationID = d.ID
+	WHERE e.ExamID = @ExamID
+
+	SELECT q.*, a.OptionID AS AnswerOptionID
+	FROM MCQ_Question q INNER JOIN MCQ_CorrectAnswer a
+			ON q.QuestionID = a.QuestionID
+	WHERE q.ExamID = @ExamID
+	ORDER BY q.QuestionID ASC
+
+	SELECT o.*
+	FROM MCQ_Option o 
+	WHERE o.QuestionID IN (
+							SELECT q.QuestionID 
+							FROM MCQ_Question q
+							WHERE q.ExamID = @ExamID )
+	ORDER BY o.QuestionID ASC
+
+END
+GO
+

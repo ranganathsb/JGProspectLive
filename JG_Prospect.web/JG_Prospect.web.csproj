@@ -1769,6 +1769,7 @@
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
+    <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
     <Content Include="Sr_App\WebForm1.aspx" />
@@ -2114,6 +2115,13 @@
     </Compile>
     <Compile Include="Sr_App\userbulkupload.aspx.designer.cs">
       <DependentUpon>userbulkupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.designer.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\ViewSalesUser.aspx.cs">
       <DependentUpon>ViewSalesUser.aspx</DependentUpon>

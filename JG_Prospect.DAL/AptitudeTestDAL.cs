@@ -236,5 +236,23 @@ namespace JG_Prospect.DAL
                 throw ex;
             }
         }
+
+        public DataSet GetMCQ_ExamByID(Int64 intExamID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetMCQ_ExamByID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ExamID", DbType.Int64, intExamID);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
