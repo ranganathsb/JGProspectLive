@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression,string vsearch)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -258,14 +258,14 @@ namespace JG_Prospect.BLL
 
 
         //--------- Start DP -----------
-        public DataSet GetInProgressTasks(int userid, int desigid)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
         {
-            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid);
+            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch);
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid)
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
         {
-            return TaskGeneratorDAL.Instance.GetClosedTasks(userid,desigid);
+            return TaskGeneratorDAL.Instance.GetClosedTasks(userid, desigid, vSearch);
         }
         //------- End DP ----------
 

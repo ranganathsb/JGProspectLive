@@ -60,18 +60,35 @@
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>
+        <ContentTemplate> 
             <div id="divSubTaskGrid">
+                <div style="float: right;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                                <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSize" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSize_SelectedIndexChanged">
+                                    <asp:ListItem Text="5" Value="5" />
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Text="15" Value="15" />
+                                    <asp:ListItem Text="20" Value="20" />
+                                    <asp:ListItem Text="25" Value="25" />
+                                </asp:DropDownList>
+                            </div>
+
                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
-                    OnRowDataBound="gvSubTasks_RowDataBound"
-                    OnRowCommand="gvSubTasks_RowCommand"
+                    OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
+                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         
@@ -787,6 +804,9 @@
     prmTaskGenerator.add_endRequest(function () {
         console.log('end req.');
         ucSubTasks_Initialize();
+
+        SetUserAutoSuggestion();
+        SetUserAutoSuggestionUI();
     });
 
     prmTaskGenerator.add_beginRequest(function () {
@@ -795,6 +815,74 @@
         DestroyDropzones();
         //DestroyCKEditors();
     });
+
+
+    $(document).ready(function () {
+        SetUserAutoSuggestion();
+        SetUserAutoSuggestionUI();
+    });
+
+
+
+
+    function SetUserAutoSuggestion() {
+
+        $("#<%=txtSearch.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsers",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=btnSearch.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearch.ClientID%>').click();
+                }
+            });
+        }
+
+    function SetUserAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+
 
     function ucSubTasks_Initialize() {
 

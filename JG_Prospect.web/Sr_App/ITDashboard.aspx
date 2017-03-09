@@ -62,7 +62,12 @@
     display:inline;
 }
 
-
+        .ui-autocomplete{
+            z-index:999999999 !important;
+            max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+        }
         .pagination-ys {
     padding-left: 0;
     margin: 5px 0;
@@ -218,6 +223,11 @@ border-top-right-radius: 4px;
         height: 370px;
     }
 
+ .itdashtitle
+ {
+     margin-left:7px;
+ }
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -239,7 +249,7 @@ border-top-right-radius: 4px;
             <asp:Label runat="server" ID="lblMessage"></asp:Label>
         </asp:Panel>--%>
 
-        <asp:UpdatePanel runat="server" ID="upAlerts" >
+        <asp:UpdatePanel runat="server" ID="upAlerts" UpdateMode="Conditional">
             <ContentTemplate>
               
             <h2 runat="server" id="lblalertpopup">
@@ -251,17 +261,17 @@ border-top-right-radius: 4px;
  
                  <!--  ------- Start DP new/frozen tasks popup ------  -->
               <button id="btnFake" style="display: none" runat="server"></button>
-              <cc1:ModalPopupExtender ID="mpNewFrozenTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="btnFake"
+              <cc1:ModalPopupExtender ID="mpNewFrozenTask" runat="server" PopupControlID="pnlNewFrozenTask" TargetControlID="btnFake"
             CancelControlID="btnFake" BackgroundCssClass="modalBackground">
             </cc1:ModalPopupExtender>
-                <asp:Panel ID="pnlCalendar" runat="server" CssClass="modalPopup" align="center" >
+                <asp:Panel ID="pnlNewFrozenTask" runat="server" CssClass="modalPopup" align="center" >
                       
                 <table id="Table2" runat="server" width="100%">
                     <tr>
-                        <td align="left" width="35%">
-                            <h2>Partial Frozen Tasks</h2>
+                        <td align="left" width="30%">
+                            <h2 class="itdashtitle">Partial Frozen Tasks</h2>
                         </td>
-                        <td  align="center" width="35%">
+                        <td  align="center" width="30%">
                                 <table id="Table7" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
@@ -278,7 +288,23 @@ border-top-right-radius: 4px;
                                 </tr>
                             </table>
                         </td>
-                        <td  align="right">&nbsp;</td>
+                        <td  align="right">
+                            <div style="float: left;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearchFrozen" runat="server" CssClass="textbox" placeholder="search users"  />
+                                <asp:Button ID="btnSearchFrozen" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchFrozen_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSizeFrozen" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSizeFrozen_SelectedIndexChanged">
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Selected="True" Text="20" Value="20" />
+                                    <asp:ListItem Text="30" Value="30" />
+                                    <asp:ListItem Text="40" Value="40" />
+                                    <asp:ListItem Text="50" Value="50" />
+                                </asp:DropDownList>
+                            </div>
+
+                        </td>
                     </tr>
                 </table>
 
@@ -339,10 +365,10 @@ border-top-right-radius: 4px;
                   
                 <table id="Table5" runat="server" width="100%">
                     <tr>
-                        <td align="left" width="35%">
-                            <h2>Non Frozen Tasks</h2>
+                        <td align="left" width="30%">
+                            <h2 class="itdashtitle">Non Frozen Tasks</h2>
                         </td>
-                        <td  align="center" width="35%">
+                        <td  align="center" width="30%">
                                 <table id="Table6" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
@@ -359,7 +385,19 @@ border-top-right-radius: 4px;
                                 </tr>
                             </table>
                         </td>
-                        <td  align="right">&nbsp;</td>
+                        <td  align="right">
+                             <div style="float: left;margin-top:15px;  ">
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSizeNew" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSizeNew_SelectedIndexChanged">
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Selected="True" Text="20" Value="20" />
+                                    <asp:ListItem Text="30" Value="30" />
+                                    <asp:ListItem Text="40" Value="40" />
+                                    <asp:ListItem Text="50" Value="50" />
+                                </asp:DropDownList>
+                            </div>
+                        </td>
                     </tr>
                 </table>
 
@@ -434,15 +472,15 @@ border-top-right-radius: 4px;
             </ContentTemplate>
         </asp:UpdatePanel>
         
-         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+         <asp:UpdatePanel ID="UpdatePanel1" runat="server" width="100%" >
           <ContentTemplate>
             
                 <table width="100%" >
                     <tr>
-                        <td align="left" width="35%">
-                            <h2>In Progress, Assigned-Requested</h2>
+                        <td align="left" width="30%">
+                            <h2 class="itdashtitle">In Progress, Assigned-Requested</h2>
                         </td>
-                        <td  align="center" width="35%">
+                        <td  align="center" width="30%">
                                 <table id="tblInProgress" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
@@ -459,7 +497,23 @@ border-top-right-radius: 4px;
                                 </tr>
                             </table>
                         </td>
-                        <td  align="right">&nbsp;</td>
+                        <td  align="right">
+
+                            <div style="float: left;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearchInPro" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                                <asp:Button ID="btnSearchInPro" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchInPro_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSizeInpro" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSizeInpro_SelectedIndexChanged">
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Selected="True" Text="20" Value="20" />
+                                    <asp:ListItem Text="30" Value="30" />
+                                    <asp:ListItem Text="40" Value="40" />
+                                    <asp:ListItem Text="50" Value="50" />
+                                </asp:DropDownList>
+                            </div>
+                        </td>
                     </tr>
                 </table>
 
@@ -533,10 +587,10 @@ border-top-right-radius: 4px;
       
                 <table width="100%">
                     <tr>
-                        <td align="left" width="35%">
-                            <h2>Commits, Closed-Billed</h2>
+                        <td align="left" width="30%">
+                            <h2 class="itdashtitle">Commits, Closed-Billed</h2>
                         </td>
-                        <td  align="center" width="35%">
+                        <td  align="center" width="30%">
                                 <table id="tblClosedTask" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
@@ -553,7 +607,22 @@ border-top-right-radius: 4px;
                                 </tr>
                             </table>
                         </td>
-                        <td  align="right">&nbsp;</td>
+                        <td  align="right">
+                             <div style="float: left;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearchClosed" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                                <asp:Button ID="btnSearchClosed" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchClosed_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSizeClosed" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSizeClosed_SelectedIndexChanged">
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Selected="True" Text="20" Value="20" />
+                                    <asp:ListItem Text="30" Value="30" />
+                                    <asp:ListItem Text="40" Value="40" />
+                                    <asp:ListItem Text="50" Value="50" />
+                                </asp:DropDownList>
+                            </div>
+                        </td>
                     </tr>
                 </table>
 
@@ -564,14 +633,14 @@ border-top-right-radius: 4px;
                     ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No Closed Tasks Found !!" CssClass="table dashboard" Width="100%" 
-                    CellSpacing="0" CellPadding="0"
+                    CellSpacing="0" CellPadding="0" 
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Both" OnPageIndexChanging = "OnPagingTaskClosed" 
                     OnRowDataBound ="grdTaskClosed_RowDataBound" PagerStyle-HorizontalAlign="Right"  PageSize = "20" >
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
-                    <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
+                    <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys"  />
                 <Columns>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                     HeaderStyle-Width="100px"  ItemStyle-Width = "100px"  HeaderText = "Due Date">
@@ -635,6 +704,211 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
 
     </div>
 
+     
 
+     
+    <script  type="text/javascript" >
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+            SetInProTaskAutoSuggestion();
+            SetInProTaskAutoSuggestionUI();
+
+            SetClosedTaskAutoSuggestion();
+            SetClosedTaskAutoSuggestionUI();
+
+            SetFrozenTaskAutoSuggestion();
+            SetFrozenTaskAutoSuggestionUI();
+        });
+
+        $(document).ready(function () {
+            SetInProTaskAutoSuggestion();
+            SetInProTaskAutoSuggestionUI();
+
+            SetClosedTaskAutoSuggestion();
+            SetClosedTaskAutoSuggestionUI();
+
+            SetFrozenTaskAutoSuggestion();
+            SetFrozenTaskAutoSuggestionUI();
+
+        });
+
+
+        function SetFrozenTaskAutoSuggestion() {
+
+            $("#<%=txtSearchFrozen.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsers",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearchFrozen.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=btnSearchFrozen.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearchFrozen.ClientID%>').click();
+                }
+            });
+        }
+
+        function SetFrozenTaskAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+
+        function SetClosedTaskAutoSuggestion() {
+
+            $("#<%=txtSearchClosed.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsers",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearchClosed.ClientID%>").removeClass("ui-autocomplete-loading");
+                 }
+             });
+         },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=btnSearchClosed.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearchClosed.ClientID%>').click();
+                }
+            });
+        }
+
+        function SetClosedTaskAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+
+
+
+        function SetInProTaskAutoSuggestion() {
+
+            $("#<%=txtSearchInPro.ClientID%>").catcomplete({
+         delay: 500,
+         source: function (request, response) {
+             $.ajax({
+                 type: "POST",
+                 url: "ajaxcalls.aspx/GetTaskUsers",
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 data: JSON.stringify({ searchterm: request.term }),
+                 success: function (data) {
+                     // Handle 'no match' indicated by [ "" ] response
+                     if (data.d) {
+
+                         response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                     }
+                     // remove loading spinner image.                                
+                     $("#<%=txtSearchInPro.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=txtSearchInPro.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearchInPro.ClientID%>').click();
+                }
+            });
+        }
+
+        function SetInProTaskAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+    </script>
 </asp:Content>
 

@@ -171,7 +171,26 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '---- gvSubTasksLevels_RowDataBound ---'
 
+        protected void gvSubTasks_PreRender(object sender, EventArgs e)
+        {
+            GridView gv = (GridView)sender;
 
+            if (gv.Rows.Count > 0)
+            {
+                gv.UseAccessibleHeader = true;
+                gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gv.FooterRow.TableSection = TableRowSection.TableFooter;
+            }
+
+            if (gv.TopPagerRow != null)
+            {
+                gv.TopPagerRow.TableSection = TableRowSection.TableHeader;
+            }
+            if (gv.BottomPagerRow != null)
+            {
+                gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+            }
+        }
         
         protected void gvSubTasksLevels_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -1985,7 +2004,19 @@ namespace JG_Prospect.Sr_App.Controls
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text).Tables[0];
+        }
+
+        protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gvSubTasks.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+            gvSubTasks.PageIndex = 0;
+            SetSubTaskDetails();
+        }
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            SetSubTaskDetails();
         }
 
         public void SetSubTaskDetails(List<Task> lstSubtasks)
