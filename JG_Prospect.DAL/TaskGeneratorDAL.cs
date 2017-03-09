@@ -563,7 +563,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression,string vsearch)
         {
             try
             {
@@ -577,7 +577,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
 
                     database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
-
+                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch );
+                    
                     database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
                     database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
                     database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);

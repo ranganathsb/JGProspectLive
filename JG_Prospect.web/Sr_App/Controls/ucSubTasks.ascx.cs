@@ -2004,7 +2004,19 @@ namespace JG_Prospect.Sr_App.Controls
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text).Tables[0];
+        }
+
+        protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gvSubTasks.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+            gvSubTasks.PageIndex = 0;
+            SetSubTaskDetails();
+        }
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            SetSubTaskDetails();
         }
 
         public void SetSubTaskDetails(List<Task> lstSubtasks)
