@@ -42,29 +42,32 @@ namespace JG_Prospect.Sr_App
                 {
                     dtExam = dsExam.Tables[0];
 
-                    ltrlTitle.Text = Convert.ToString(dtExam.Rows[0]["ExamTitle"]);
-                    ltrlDescription.Text = Convert.ToString(dtExam.Rows[0]["ExamDescription"]);
-                    ltrlDuration.Text = Convert.ToString(dtExam.Rows[0]["ExamDuration"]);
-                    ltrlPassPercentage.Text = Convert.ToString(dtExam.Rows[0]["PassPercentage"]);
-                    imgActive.Visible = Convert.ToBoolean(dtExam.Rows[0]["IsActive"]);
-                    ltrlDesignation.Text = Convert.ToString(dtExam.Rows[0]["DesignationName"]);
-
-                    if (imgActive.Visible)
+                    if (dtExam.Rows.Count > 0)
                     {
-                        imgActive.Src = Page.ResolveUrl("~/img/success.png");
-                    }
+                        ltrlTitle.Text = Convert.ToString(dtExam.Rows[0]["ExamTitle"]);
+                        ltrlDescription.Text = Convert.ToString(dtExam.Rows[0]["ExamDescription"]);
+                        ltrlDuration.Text = Convert.ToString(dtExam.Rows[0]["ExamDuration"]);
+                        ltrlPassPercentage.Text = Convert.ToString(dtExam.Rows[0]["PassPercentage"]);
+                        imgActive.Visible = Convert.ToBoolean(dtExam.Rows[0]["IsActive"]);
+                        ltrlDesignation.Text = Convert.ToString(dtExam.Rows[0]["DesignationName"]);
 
-                    if (dsExam.Tables.Count > 1)
-                    {
-                        dtQuestions = dsExam.Tables[1];
-
-                        if (dsExam.Tables.Count > 2)
+                        if (imgActive.Visible)
                         {
-                            dtOptions = dsExam.Tables[2];
+                            imgActive.Src = Page.ResolveUrl("~/img/success.png");
                         }
 
-                        repQuestions.DataSource = dtQuestions;
-                        repQuestions.DataBind();
+                        if (dsExam.Tables.Count > 1)
+                        {
+                            dtQuestions = dsExam.Tables[1];
+
+                            if (dsExam.Tables.Count > 2)
+                            {
+                                dtOptions = dsExam.Tables[2];
+                            }
+
+                            repQuestions.DataSource = dtQuestions;
+                            repQuestions.DataBind();
+                        } 
                     }
                 }
             }

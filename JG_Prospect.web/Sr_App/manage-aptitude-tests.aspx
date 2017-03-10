@@ -42,7 +42,6 @@
                                 <Columns>
                                     <asp:TemplateField HeaderText="Name">
                                         <ItemTemplate>
-                                            <a href='<%# string.Format("{0}?ExamID={1}", Page.ResolveUrl("~/sr_app/add-edit-aptitude-test.aspx"), Eval("ExamID")) %>'>Edit</a> | 
                                             <a href='<%# string.Format("{0}?ExamID={1}", Page.ResolveUrl("~/sr_app/view-aptitude-test.aspx"), Eval("ExamID")) %>'><%# Eval("ExamTitle") %></a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -69,6 +68,11 @@
                                     <asp:TemplateField HeaderText="Designation">
                                         <ItemTemplate>
                                             <%# Eval("DesignationName") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="">
+                                        <ItemTemplate>
+                                            <a href='<%# string.Format("{0}?ExamID={1}", Page.ResolveUrl("~/sr_app/add-edit-aptitude-test.aspx"), Eval("ExamID")) %>'>Edit</a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
