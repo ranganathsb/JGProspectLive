@@ -15,82 +15,124 @@
             <li><a href="manage-aptitude-tests.aspx.aspx">Aptitude Tests</a></li>
         </ul>
         <!-- appointment tabs section end -->
-        <h1>Aptitude Test</h1>
+        <h1>
+            <asp:Literal ID="ltrlPageHeader" runat="server" /></h1>
         <div>
-            <table width="100%">
+            <asp:ValidationSummary ID="vsExam" runat="server" ValidationGroup="vgExam" ShowMessageBox="true" ShowModelStateErrors="false" />
+            <table width="100%" cellpadding="0" cellspacing="3" border="0">
                 <tr>
-                    <th width="100">Title:</th>
-                    <td colspan="5">
-                        <asp:Literal ID="ltrlTitle" runat="server" />
-                        <img id="imgActive" runat="server" /></td>
-                </tr>
-                <tr>
-                    <th width="100">Description:</th>
-                    <td colspan="5">
-                        <asp:Literal ID="ltrlDescription" runat="server" /></td>
-                </tr>
-                <tr>
-                    <th width="100">Designation:</th>
+                    <th width="80" class="noborder">Title:</th>
                     <td>
-                        <asp:Literal ID="ltrlDesignation" runat="server" /></td>
-                    <th width="80">Duration:</th>
-                    <td width="100">
-                        <asp:Literal ID="ltrlDuration" runat="server" /></td>
-                    <th width="120">Pass Percentage:</th>
-                    <td>
-                        <asp:Literal ID="ltrlPassPercentage" runat="server" /></td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        <strong>Questions:</strong>
+                        <asp:TextBox ID="txtTitle" runat="server" MaxLength="200" Width="250" />
+                        <asp:RequiredFieldValidator ID="rfvTitle" runat="server" ControlToValidate="txtTitle" InitialValue="" ValidationGroup="vgExam"
+                            ErrorMessage="Please enter Title." Display="None" />
+                        &nbsp;
+                        <asp:CheckBox ID="chkActive" runat="server" Text="Active?" TextAlign="Left" /></td>
+                    <th width="120" align="right" class="noborder">Duration:</th>
+                    <td width="15">
+                        <asp:TextBox ID="txtDuration" runat="server" Width="15" MaxLength="3" onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                        <asp:RequiredFieldValidator ID="rfvDuration" runat="server" ControlToValidate="txtDuration" InitialValue="" ValidationGroup="vgExam"
+                            ErrorMessage="Please enter Duration." Display="None" />
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                        <asp:Repeater ID="repQuestions" runat="server">
-                            <HeaderTemplate>
-                                <table>
-                            </HeaderTemplate>
-                            <ItemTemplate>
-                                <tr>
-                                    <td width="10">
-                                        <%# (Container.ItemIndex + 1) + "." %>
-                                    </td>
-                                    <td width="">
-                                        <b><%# Eval("Question") %></b>
-                                    </td>
-                                    <td width="250">
-                                        <b>Positive Marks</b> : <%# Eval("PositiveMarks") %> , <b>Negetive Marks</b> : <%# Eval("NegetiveMarks") %>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">
-                                        <asp:Repeater ID="repOptions" runat="server" DataSource='<%# GetOptionsByQuestionID(Convert.ToInt64(Eval("QuestionID"))) %>'>
-                                            <HeaderTemplate>
-                                                <ol>
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-                                                <li style="float: left; width: 30%;">
-                                                    <span style='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "font-weight:bold;": "" %>'>
-                                                        <%# Eval("OptionText") %>
-                                                    </span>
-                                                </li>
-                                            </ItemTemplate>
-                                            <FooterTemplate>
-                                                </ol>
-                                            </FooterTemplate>
-                                        </asp:Repeater>
-                                    </td>
-                                </tr>
-                            </ItemTemplate>
-                            <FooterTemplate>
-                                </table>
-                            </FooterTemplate>
-                        </asp:Repeater>
+                    <th class="noborder">Description:</th>
+                    <td>
+                        <asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine" Rows="3" Width="100%" />
+                        <asp:RequiredFieldValidator ID="rfvDescription" runat="server" ControlToValidate="txtDescription" InitialValue="" ValidationGroup="vgExam"
+                            ErrorMessage="Please enter Description." Display="None" /></td>
+                    <th class="noborder" align="right">Pass Percentage:</th>
+                    <td>
+                        <asp:TextBox ID="txtPassPercentage" runat="server" Width="15" MaxLength="3" onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                        <asp:RequiredFieldValidator ID="rfvPassPercentage" runat="server" ControlToValidate="txtPassPercentage" InitialValue="" ValidationGroup="vgExam"
+                            ErrorMessage="Please enter Pass Percentage." Display="None" />
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="6" align="rigt">
+                    <th class="noborder">Designation:</th>
+                    <td>
+                        <asp:DropDownList ID="ddlDesignation" runat="server" />
+                        <asp:RequiredFieldValidator ID="rfvDesignation" runat="server" ControlToValidate="ddlDesignation" InitialValue="0" ValidationGroup="vgExam"
+                            ErrorMessage="Please select Designation." Display="None" />
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table width="100%" cellpadding="0" cellspacing="3" border="0">
+                            <tr>
+                                <td>
+                                    <strong>Questions:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Repeater ID="repQuestions" runat="server">
+                                        <HeaderTemplate>
+                                            <table width="100%" cellpadding="0" cellspacing="3" border="0">
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <tr>
+                                                <td width="10" valign="top">
+                                                    <%# (Container.ItemIndex + 1) + "." %>
+                                                </td>
+                                                <td valign="top">
+                                                    <asp:TextBox ID="txtQuestion" runat="server" TextMode="MultiLine" Rows="2" Width="100%"
+                                                        Text='<%# Eval("Question") %>' />
+                                                    <asp:RequiredFieldValidator ID="rfvQuestion" runat="server" ControlToValidate="txtQuestion" InitialValue="" ValidationGroup="vgExam"
+                                                        ErrorMessage="Please enter Question." Display="None" />
+                                                </td>
+                                                <td width="250" valign="top" align="right">
+                                                    <b>Positive Marks</b> :
+                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' />
+                                                    <br />
+                                                    <b>Negetive Marks</b> :
+                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# Eval("NegetiveMarks") %>' />
+                                                    <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
+                                                        ErrorMessage="Please enter Positive Marks." Display="None" />
+                                                    <asp:RequiredFieldValidator ID="rfvNegetiveMarks" runat="server" ControlToValidate="txtNegetiveMarks" InitialValue="" ValidationGroup="vgExam"
+                                                        ErrorMessage="Please enter Negetive Marks." Display="None" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <asp:Repeater ID="repOptions" runat="server" DataSource='<%# GetOptionsByQuestionID(Convert.ToInt64(Eval("QuestionID"))) %>'>
+                                                        <HeaderTemplate>
+                                                            <ol style="list-style-type: upper-alpha; margin-left: 25px;">
+                                                        </HeaderTemplate>
+                                                        <ItemTemplate>
+                                                            <li>
+                                                                <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
+                                                                <input data-id="rdo-is-answer" type="radio" name='<%# "Q" + Eval("QuestionID") %>' value='<%#(Container.ItemIndex)%>'
+                                                                    checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "checked" : "false"%>' />
+                                                                <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
+                                                                    ErrorMessage="Please enter Option Text." Display="None" />
+                                                            </li>
+                                                        </ItemTemplate>
+                                                        <FooterTemplate>
+                                                            </ol>
+                                                        </FooterTemplate>
+                                                    </asp:Repeater>
+                                                </td>
+                                            </tr>
+                                        </ItemTemplate>
+                                        <FooterTemplate>
+                                            </table>
+                                        </FooterTemplate>
+                                    </asp:Repeater>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="btn_sec">
+                            <asp:Button ID="btnSaveExam" runat="server" Text="Save Exam" CssClass="ui-button" ValidationGroup="vgExam" OnClick="btnSaveExam_Click" />
+                        </div>
+                    </td>
+                    <td align="rigt">
                         <a href='<%=Page.ResolveUrl("~/sr_app/manage-aptitude-tests.aspx") %>'>Aptitude Tests</a>
                     </td>
                 </tr>

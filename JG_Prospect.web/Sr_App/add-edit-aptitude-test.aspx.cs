@@ -1,5 +1,6 @@
 ﻿using JG_Prospect.App_Code;
 using JG_Prospect.BLL;
+using JG_Prospect.Common.modal;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,39 +37,45 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                DataSet dsExam = AptitudeTestBLL.Instance.GetMCQ_ExamByID(this.ExamID);
+                FillddlDesignation();
 
-                if (dsExam != null && dsExam.Tables.Count > 0)
+                if (this.ExamID > 0)
                 {
-                    dtExam = dsExam.Tables[0];
+                    ltrlPageHeader.Text = "Edit Aptitude Test";
 
-                    if (dtExam.Rows.Count > 0)
+                    DataSet dsExam = AptitudeTestBLL.Instance.GetMCQ_ExamByID(this.ExamID);
+
+                    if (dsExam != null && dsExam.Tables.Count > 0)
                     {
-                        ltrlTitle.Text = Convert.ToString(dtExam.Rows[0]["ExamTitle"]);
-                        ltrlDescription.Text = Convert.ToString(dtExam.Rows[0]["ExamDescription"]);
-                        ltrlDuration.Text = Convert.ToString(dtExam.Rows[0]["ExamDuration"]);
-                        ltrlPassPercentage.Text = Convert.ToString(dtExam.Rows[0]["PassPercentage"]);
-                        imgActive.Visible = Convert.ToBoolean(dtExam.Rows[0]["IsActive"]);
-                        ltrlDesignation.Text = Convert.ToString(dtExam.Rows[0]["DesignationName"]);
+                        dtExam = dsExam.Tables[0];
 
-                        if (imgActive.Visible)
+                        if (dtExam.Rows.Count > 0)
                         {
-                            imgActive.Src = Page.ResolveUrl("~/img/success.png");
-                        }
+                            txtTitle.Text = Convert.ToString(dtExam.Rows[0]["ExamTitle"]);
+                            txtDescription.Text = Convert.ToString(dtExam.Rows[0]["ExamDescription"]);
+                            txtDuration.Text = Convert.ToString(dtExam.Rows[0]["ExamDuration"]);
+                            txtPassPercentage.Text = Convert.ToString(dtExam.Rows[0]["PassPercentage"]);
+                            chkActive.Checked = Convert.ToBoolean(dtExam.Rows[0]["IsActive"]);
+                            ddlDesignation.SelectedValue = Convert.ToString(dtExam.Rows[0]["DesignationID"]);
 
-                        if (dsExam.Tables.Count > 1)
-                        {
-                            dtQuestions = dsExam.Tables[1];
-
-                            if (dsExam.Tables.Count > 2)
+                            if (dsExam.Tables.Count > 1)
                             {
-                                dtOptions = dsExam.Tables[2];
-                            }
+                                dtQuestions = dsExam.Tables[1];
 
-                            repQuestions.DataSource = dtQuestions;
-                            repQuestions.DataBind();
+                                if (dsExam.Tables.Count > 2)
+                                {
+                                    dtOptions = dsExam.Tables[2];
+                                }
+
+                                repQuestions.DataSource = dtQuestions;
+                                repQuestions.DataBind();
+                            }
                         }
                     }
+                }
+                else
+                {
+                    ltrlPageHeader.Text = "Add Aptitude Test";
                 }
             }
         }
@@ -99,6 +106,24 @@ namespace JG_Prospect.Sr_App
             }
 
             return false;
+        }
+
+        private void FillddlDesignation()
+        {
+            List<Designation> lstDesignations = DesignationBLL.Instance.GetAllDesignation();
+            if (lstDesignations != null && lstDesignations.Any())
+            {
+                ddlDesignation.DataSource = lstDesignations;
+                ddlDesignation.DataTextField = "DesignationName";
+                ddlDesignation.DataValueField = "ID";
+                ddlDesignation.DataBind();
+            }
+            ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
+        }
+
+        protected void btnSaveExam_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
