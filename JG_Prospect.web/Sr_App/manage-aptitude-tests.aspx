@@ -24,6 +24,11 @@
                         </td>
                     </tr>
                     <tr>
+                        <td align="right">
+                            <a href='<%=Page.ResolveUrl("~/sr_app/add-edit-aptitude-test.aspx") %>'>Add New Aptitude Test</a>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <asp:GridView ID="grdExams" runat="server" AutoGenerateColumns="false" DataKeyNames="ExamId"
                                 CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
@@ -37,6 +42,7 @@
                                 <Columns>
                                     <asp:TemplateField HeaderText="Name">
                                         <ItemTemplate>
+                                            <a href='<%# string.Format("{0}?ExamID={1}", Page.ResolveUrl("~/sr_app/add-edit-aptitude-test.aspx"), Eval("ExamID")) %>'>Edit</a> | 
                                             <a href='<%# string.Format("{0}?ExamID={1}", Page.ResolveUrl("~/sr_app/view-aptitude-test.aspx"), Eval("ExamID")) %>'><%# Eval("ExamTitle") %></a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -67,6 +73,11 @@
                                     </asp:TemplateField>
                                 </Columns>
                             </asp:GridView>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <a href='<%=Page.ResolveUrl("~/sr_app/add-edit-aptitude-test.aspx") %>'>Add New Aptitude Test</a>
                         </td>
                     </tr>
                 </table>

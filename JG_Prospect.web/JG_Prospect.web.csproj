@@ -1678,6 +1678,7 @@
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
     <Content Include="ShowResourcesJr.aspx" />
+    <Content Include="Sr_App\add-edit-aptitude-test.aspx" />
     <Content Include="Sr_App\AddEvents.aspx" />
     <Content Include="Sr_App\ajaxcalls.aspx" />
     <Content Include="Sr_App\AttachQuotes.aspx" />
@@ -2017,6 +2018,13 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.designer.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\Controls\ucSubTasks.ascx.cs">
       <DependentUpon>ucSubTasks.ascx</DependentUpon>
