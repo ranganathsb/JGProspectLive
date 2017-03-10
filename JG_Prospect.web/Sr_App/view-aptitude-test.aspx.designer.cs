@@ -31,24 +31,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlImage imgActive;
         
         /// <summary>
-        /// ltrlDescription control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlDescription;
-        
-        /// <summary>
-        /// ltrlDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlDesignation;
-        
-        /// <summary>
         /// ltrlDuration control.
         /// </summary>
         /// <remarks>
@@ -58,6 +40,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlDuration;
         
         /// <summary>
+        /// ltrlDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlDescription;
+        
+        /// <summary>
         /// ltrlPassPercentage control.
         /// </summary>
         /// <remarks>
@@ -65,6 +56,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrlPassPercentage;
+        
+        /// <summary>
+        /// ltrlDesignation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlDesignation;
         
         /// <summary>
         /// repQuestions control.

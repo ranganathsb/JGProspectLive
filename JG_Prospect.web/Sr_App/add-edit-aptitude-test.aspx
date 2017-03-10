@@ -17,9 +17,9 @@
         <!-- appointment tabs section end -->
         <h1>
             <asp:Literal ID="ltrlPageHeader" runat="server" /></h1>
-        <div>
-            <asp:ValidationSummary ID="vsExam" runat="server" ValidationGroup="vgExam" ShowMessageBox="true" ShowModelStateErrors="false" />
-            <table width="100%" cellpadding="0" cellspacing="3" border="0">
+        <div class="form_panel_custom">
+            <asp:ValidationSummary ID="vsExam" runat="server" ValidationGroup="vgExam" ShowMessageBox="true" ShowSummary="false" />
+            <table class="aptitude-test" width="100%" cellpadding="0" cellspacing="3" border="0">
                 <tr>
                     <th width="80" class="noborder">Title:</th>
                     <td>
@@ -60,34 +60,32 @@
                 </tr>
                 <tr>
                     <td colspan="4">
+                        <h4>Questions:</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
                         <table width="100%" cellpadding="0" cellspacing="3" border="0">
-                            <tr>
-                                <td>
-                                    <strong>Questions:</strong>
-                                </td>
-                            </tr>
                             <tr>
                                 <td>
                                     <asp:Repeater ID="repQuestions" runat="server">
                                         <HeaderTemplate>
-                                            <table width="100%" cellpadding="0" cellspacing="3" border="0">
+                                            <table class="question-list" width="100%" cellpadding="0" cellspacing="0" border="0">
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <tr>
-                                                <td width="10" valign="top">
+                                            <tr class="question">
+                                                <td width="15" align="center" valign="top">
                                                     <%# (Container.ItemIndex + 1) + "." %>
                                                 </td>
                                                 <td valign="top">
                                                     <asp:TextBox ID="txtQuestion" runat="server" TextMode="MultiLine" Rows="2" Width="100%"
                                                         Text='<%# Eval("Question") %>' />
                                                     <asp:RequiredFieldValidator ID="rfvQuestion" runat="server" ControlToValidate="txtQuestion" InitialValue="" ValidationGroup="vgExam"
-                                                        ErrorMessage="Please enter Question." Display="None" />
+                                                        ErrorMessage='<%# "Please enter Question " + (Container.ItemIndex + 1) + "." %>' Display="None" />
                                                 </td>
                                                 <td width="250" valign="top" align="right">
                                                     <b>Positive Marks</b> :
-                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' />
-                                                    <br />
-                                                    <b>Negetive Marks</b> :
+                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' /> <b>Negetive Marks</b> :
                                                     <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# Eval("NegetiveMarks") %>' />
                                                     <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
                                                         ErrorMessage="Please enter Positive Marks." Display="None" />
@@ -99,15 +97,15 @@
                                                 <td colspan="3">
                                                     <asp:Repeater ID="repOptions" runat="server" DataSource='<%# GetOptionsByQuestionID(Convert.ToInt64(Eval("QuestionID"))) %>'>
                                                         <HeaderTemplate>
-                                                            <ol style="list-style-type: upper-alpha; margin-left: 25px;">
+                                                            <ol class="option-list">
                                                         </HeaderTemplate>
                                                         <ItemTemplate>
-                                                            <li>
+                                                            <li class='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "answer": "" %>'>
                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
                                                                 <input data-id="rdo-is-answer" type="radio" name='<%# "Q" + Eval("QuestionID") %>' value='<%#(Container.ItemIndex)%>'
                                                                     checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "checked" : "false"%>' />
                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
-                                                                    ErrorMessage="Please enter Option Text." Display="None" />
+                                                                    ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
                                                             </li>
                                                         </ItemTemplate>
                                                         <FooterTemplate>

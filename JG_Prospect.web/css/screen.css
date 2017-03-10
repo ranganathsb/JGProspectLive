@@ -1889,3 +1889,30 @@ display: block;
 .badge-inverse:hover {
   background-color: #1a1a1a;
 }
+
+.aptitude-test {
+}
+
+.aptitude-test .question-list .question {
+    background-color: white;
+    line-height: 20px;
+}
+
+.aptitude-test .question-list .question p {
+    margin:0;
+    padding:0;
+}
+
+.aptitude-test .option-list {
+    margin-left: 25px;
+    list-style-type: upper-alpha;
+}
+
+.aptitude-test .option-list li {
+    margin-bottom: 5px;
+}
+
+.aptitude-test .option-list li.answer {
+    font-weight: bold;
+    text-decoration: underline;
+}
