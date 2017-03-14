@@ -78,6 +78,7 @@
                                                     <%# (Container.ItemIndex + 1) + "." %>
                                                 </td>
                                                 <td valign="top">
+                                                    <asp:HiddenField ID="hdnQuestionID" runat="server" Value='<%# Eval("QuestionID") %>' />
                                                     <asp:TextBox ID="txtQuestion" runat="server" TextMode="MultiLine" Rows="2" Width="100%"
                                                         Text='<%# Eval("Question") %>' />
                                                     <asp:RequiredFieldValidator ID="rfvQuestion" runat="server" ControlToValidate="txtQuestion" InitialValue="" ValidationGroup="vgExam"
@@ -85,8 +86,8 @@
                                                 </td>
                                                 <td width="250" valign="top" align="right">
                                                     <b>Positive Marks</b> :
-                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' /> <b>Negetive Marks</b> :
-                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# Eval("NegetiveMarks") %>' />
+                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" /> <b>Negetive Marks</b> :
+                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# Eval("NegetiveMarks") %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                     <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
                                                         ErrorMessage="Please enter Positive Marks." Display="None" />
                                                     <asp:RequiredFieldValidator ID="rfvNegetiveMarks" runat="server" ControlToValidate="txtNegetiveMarks" InitialValue="" ValidationGroup="vgExam"
@@ -101,9 +102,10 @@
                                                         </HeaderTemplate>
                                                         <ItemTemplate>
                                                             <li class='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "answer": "" %>'>
+                                                                <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <input data-id="rdo-is-answer" type="radio" name='<%# "Q" + Eval("QuestionID") %>' value='<%#(Container.ItemIndex)%>'
-                                                                    checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "checked" : "false"%>' />
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" GroupName='<%# "Q" + Eval("QuestionID") %>'
+                                                                    Checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))%>' />
                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
                                                             </li>
@@ -119,6 +121,11 @@
                                             </table>
                                         </FooterTemplate>
                                     </asp:Repeater>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:LinkButton ID="lbtnAddQuestion" runat="server" Text="Add Question" OnClick="lbtnAddQuestion_Click" />
                                 </td>
                             </tr>
                         </table>
@@ -137,4 +144,11 @@
             </table>
         </div>
     </div>
+    <script type="text/javascript">
+        function rdoIsAnswer_Click(sender) {
+            var $sender = $(sender);
+            $('input[data-id="' + $sender.attr('data-id') + '"]').prop('checked',false);
+            $sender.prop('checked', true);
+        }
+    </script>
 </asp:Content>
