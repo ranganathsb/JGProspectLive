@@ -331,7 +331,6 @@
     <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
     <Content Include="bin\WebGrease.dll" />
-    <Content Include="bin\WebMail.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
