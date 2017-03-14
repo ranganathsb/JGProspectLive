@@ -2330,3 +2330,322 @@ BEGIN
 END
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Adds exam details.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertMCQ_Exam]
+	@ExamTitle	varchar
+	,@ExamDescription	varchar
+	,@IsActive	bit
+	,@CourseID	bigint
+	,@ExamDuration	int
+	,@PassPercentage	float
+	,@DesignationID	int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[MCQ_Exam]
+           ([ExamTitle]
+           ,[ExamDescription]
+           ,[IsActive]
+           ,[CourseID]
+           ,[ExamDuration]
+           ,[PassPercentage]
+           ,[DesignationID])
+     VALUES
+           (@ExamTitle
+           ,@ExamDescription
+           ,@IsActive
+           ,@CourseID
+           ,@ExamDuration
+           ,@PassPercentage
+           ,@DesignationID)
+
+	SELECT SCOPE_IDENTITY()
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Updates exam details.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateMCQ_Exam]
+	@ExamID	bigint
+	,@ExamTitle	varchar
+	,@ExamDescription	varchar
+	,@IsActive	bit
+	,@CourseID	bigint
+	,@ExamDuration	int
+	,@PassPercentage	float
+	,@DesignationID	int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[MCQ_Exam]
+	   SET [ExamTitle] = @ExamTitle
+		  ,[ExamDescription] = @ExamDescription
+		  ,[IsActive] = @IsActive
+		  ,[CourseID] = @CourseID
+		  ,[ExamDuration] = @ExamDuration
+		  ,[PassPercentage] = @PassPercentage
+		  ,[DesignationID] = @DesignationID
+	 WHERE ExamID = @ExamID
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Adds exam questions.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertMCQ_Question]
+	@Question	varchar
+	,@QuestionType	bigint
+	,@PositiveMarks	bigint
+	,@NegetiveMarks	bigint
+	,@PictureURL	varchar
+	,@ExamID	bigint
+	,@AnswerTemplate	varchar
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[MCQ_Question]
+           ([Question]
+           ,[QuestionType]
+           ,[PositiveMarks]
+           ,[NegetiveMarks]
+           ,[PictureURL]
+           ,[ExamID]
+           ,[AnswerTemplate])
+     VALUES
+           (@Question
+           ,@QuestionType
+           ,@PositiveMarks
+           ,@NegetiveMarks
+           ,@PictureURL
+           ,@ExamID
+           ,@AnswerTemplate)
+
+	SELECT SCOPE_IDENTITY()
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Updates exam question.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateMCQ_Question]
+	@QuestionID	bigint
+	,@Question	varchar
+	,@QuestionType	bigint
+	,@PositiveMarks	bigint
+	,@NegetiveMarks	bigint
+	,@PictureURL	varchar
+	,@ExamID	bigint
+	,@AnswerTemplate	varchar
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[MCQ_Question]
+	   SET [Question] = @Question
+		  ,[QuestionType] = @QuestionType
+		  ,[PositiveMarks] = @PositiveMarks
+		  ,[NegetiveMarks] = @NegetiveMarks
+		  ,[PictureURL] = @PictureURL
+		  ,[ExamID] = @ExamID
+		  ,[AnswerTemplate] = @AnswerTemplate
+	 WHERE QuestionID = @QuestionID
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Deletes exam question including options and answers.
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteMCQ_Question]
+	@QuestionID	bigint
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DELETE
+	FROM [dbo].[MCQ_CorrectAnswer]
+	WHERE QuestionID = @QuestionID
+
+	DELETE
+	FROM [dbo].[MCQ_Option]
+	WHERE QuestionID = @QuestionID
+
+	DELETE
+	FROM [dbo].[MCQ_Question]
+	WHERE QuestionID = @QuestionID
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Adds option for exam questions.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertMCQ_Option]
+	@OptionText varchar
+	,@QuestionID bigint
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	INSERT INTO [dbo].[MCQ_Option]
+           ([OptionText]
+           ,[QuestionID])
+     VALUES
+           (@OptionText
+           ,@QuestionID)
+
+	SELECT SCOPE_IDENTITY()
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Updates option for exam question.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateMCQ_Option]
+	@OptionID	bigint
+	,@OptionText varchar
+	,@QuestionID bigint
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[MCQ_Option]
+	   SET OptionText = @OptionText
+		  ,QuestionID = @QuestionID
+	 WHERE OptionID = @OptionID
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Adds answer for exam question.
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertMCQ_CorrectAnswer]
+	@OptionText varchar
+	,@QuestionID bigint
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @OptionID BIGINT
+
+	SELECT TOP 1 @OptionID = OptionID
+	FROM [dbo].[MCQ_Option] o
+	WHERE o.OptionText = @OptionText AND QuestionID = @QuestionID
+
+	INSERT INTO [dbo].[MCQ_CorrectAnswer]
+           ([OptionID]
+           ,[QuestionID])
+     VALUES
+           (@OptionID
+           ,@QuestionID)
+
+	SELECT SCOPE_IDENTITY()
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 14 Mar 2017
+-- Description:	Updates answer for exam question.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateMCQ_CorrectAnswer]
+	@OptionText varchar
+	,@QuestionID bigint
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @OptionID BIGINT
+
+	SELECT TOP 1 @OptionID = OptionID
+	FROM [dbo].[MCQ_Option] o
+	WHERE o.OptionText = @OptionText AND QuestionID = @QuestionID
+
+	UPDATE [dbo].[MCQ_CorrectAnswer]
+	   SET OptionID = @OptionID
+	WHERE OptionID = @OptionID
+
+END
+GO
