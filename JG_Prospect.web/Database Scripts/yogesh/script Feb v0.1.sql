@@ -2340,8 +2340,8 @@ GO
 -- Description:	Adds exam details.
 -- =============================================
 CREATE PROCEDURE [dbo].[InsertMCQ_Exam]
-	@ExamTitle	varchar
-	,@ExamDescription	varchar
+	@ExamTitle	varchar(500)
+	,@ExamDescription	varchar(500)
 	,@IsActive	bit
 	,@CourseID	bigint
 	,@ExamDuration	int
@@ -2386,8 +2386,8 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[UpdateMCQ_Exam]
 	@ExamID	bigint
-	,@ExamTitle	varchar
-	,@ExamDescription	varchar
+	,@ExamTitle	varchar(500)
+	,@ExamDescription	varchar(500)
 	,@IsActive	bit
 	,@CourseID	bigint
 	,@ExamDuration	int
@@ -2422,13 +2422,13 @@ GO
 -- Description:	Adds exam questions.
 -- =============================================
 CREATE PROCEDURE [dbo].[InsertMCQ_Question]
-	@Question	varchar
+	@Question	varchar(500)
 	,@QuestionType	bigint
 	,@PositiveMarks	bigint
 	,@NegetiveMarks	bigint
-	,@PictureURL	varchar
+	,@PictureURL	varchar(500)
 	,@ExamID	bigint
-	,@AnswerTemplate	varchar
+	,@AnswerTemplate	varchar(500)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -2468,13 +2468,13 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[UpdateMCQ_Question]
 	@QuestionID	bigint
-	,@Question	varchar
+	,@Question	varchar(500)
 	,@QuestionType	bigint
 	,@PositiveMarks	bigint
 	,@NegetiveMarks	bigint
-	,@PictureURL	varchar
+	,@PictureURL	varchar(500)
 	,@ExamID	bigint
-	,@AnswerTemplate	varchar
+	,@AnswerTemplate	varchar(500)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -2536,7 +2536,7 @@ GO
 -- Description:	Adds option for exam questions.
 -- =============================================
 CREATE PROCEDURE [dbo].[InsertMCQ_Option]
-	@OptionText varchar
+	@OptionText varchar(500)
 	,@QuestionID bigint
 AS
 BEGIN
@@ -2567,7 +2567,7 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[UpdateMCQ_Option]
 	@OptionID	bigint
-	,@OptionText varchar
+	,@OptionText varchar(500)
 	,@QuestionID bigint
 AS
 BEGIN
@@ -2593,7 +2593,7 @@ GO
 -- Description:	Adds answer for exam question.
 -- =============================================
 CREATE PROCEDURE [dbo].[InsertMCQ_CorrectAnswer]
-	@OptionText varchar
+	@OptionText varchar(500)
 	,@QuestionID bigint
 AS
 BEGIN
@@ -2629,7 +2629,7 @@ GO
 -- Description:	Updates answer for exam question.
 -- =============================================
 CREATE PROCEDURE [dbo].[UpdateMCQ_CorrectAnswer]
-	@OptionText varchar
+	@OptionText varchar(500)
 	,@QuestionID bigint
 AS
 BEGIN
