@@ -149,7 +149,10 @@
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
                                                 <h5>
                                                     <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
-                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'    /></h5>
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="EditSubTask_Click"  />
+                                                     <asp:LinkButton  ID="lbtnInstallIdRemove"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="RemoveClick"  />
+                                                </h5>
                                                 
                                                 <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
                                                       OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
@@ -352,14 +355,15 @@
                         <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
                             ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
                             <ItemTemplate>
-                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate>
-                                        <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                    <HeaderTemplate >
+                                        <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                            
                                             <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
+                                                <ul class="gallery list-unstyled sub-task-attachments-list">
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
+                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
 
                                             <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
                                             <br />
@@ -378,10 +382,40 @@
                                     <FooterTemplate>
                                         </ul>
                                             </div>
+                                        
                                         </div>
                                     </FooterTemplate>
                                 </asp:Repeater>
-                                <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+
+                                 <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
+
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
+                                                <ContentTemplate>
+                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                            <div id="divSubTaskDropzone1" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" class="dropzone dropzonetask">
+                                                <div class="fallback" >
+                                                    <input name="file" type="file" multiple />
+                                                    <input type="submit" value="Upload"     />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
+                                            </div>
+                                           
+                                        </td>
+                                     </tr>
+                                </table>
+
+
+                               <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
@@ -472,6 +506,10 @@
                         </asp:TemplateField>
                     </Columns> 
                 </asp:GridView>
+
+                 <asp:Button ID="btnSaveGridAttachment" runat="server"  
+                  OnClick="btnSaveGridAttachment_Click" Style="display: none;" Text="Save Attachement" />
+                <asp:HiddenField ID="hdDropZoneTaskId" runat="server"      />
             </div>
             <asp:HiddenField ID="hdnCurrentEditingRow" runat="server" />
             <asp:LinkButton ID="lnkFake" runat="server" ></asp:LinkButton>
@@ -893,9 +931,11 @@
 
         LoadImageGallery('.sub-task-attachments-list');
 
-        var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+        //----------- start DP -----
+        GridDropZone();
+        //----------- end DP -----
 
-        // alert(controlmode);
+        var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
@@ -942,6 +982,7 @@
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
+   
 
     function ucSubTasks_ApplyDropZone() {
         //remove already attached dropzone.
@@ -949,7 +990,6 @@
             objSubTaskDropzone.destroy();
             objSubTaskDropzone = null;
         }
-
         if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
             objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                 maxFiles: 5,
@@ -984,6 +1024,7 @@
             objSubtaskNoteDropzone.destroy();
             objSubTaskNoteDropzone = null;
         }
+
         objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
     }
 
@@ -1037,6 +1078,11 @@
 
     //----------- Start DP ---------
     
+    function SetHiddenTaskId(vId) {
+        $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
+      }
+
+
     $('#<%=pnlCalendar.ClientID%>').hide();
     $('#<%=divSubTask.ClientID%>').hide();
 
@@ -1078,6 +1124,46 @@
             }, 2000);
         }
     }
+    
+    function GridDropZone() {
+        Dropzone.autoDiscover = false;
+
+        $(".dropzonetask").each(function () {
+            // debugger;
+            var objSubTaskDropzone1;
+
+            $(this).dropzone({
+                maxFiles: 5,
+                url: "taskattachmentupload.aspx",
+                thumbnailWidth: 90,
+                thumbnailHeight: 90,
+                init: function () {
+                    dzClosure = this;
+
+                    this.on("maxfilesexceeded", function (data) {
+                        alert('you are reached maximum attachment upload limit.');
+                    });
+
+                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                    this.on("success", function (file, response) {
+                        // Success coding goes here
+
+                        var filename = response.split("^");
+                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                        if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveGridAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
     //--------------- End DP ---------------
 
 </script>
