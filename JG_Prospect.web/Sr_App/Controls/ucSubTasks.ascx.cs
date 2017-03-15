@@ -2151,6 +2151,20 @@ namespace JG_Prospect.Sr_App.Controls
         public void SetSubTaskDetails()
         {
             DataTable dtSubTaskDetails = GetSubTasks();
+
+            if (dtSubTaskDetails.Rows.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                {
+                    int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
+                    int selectedIndex = dtSubTaskDetails.AsEnumerable()
+                    .Select((Row, Index) => new { Row, Index })
+                    .Single(x => Convert.ToInt32(x.Row[0]) == vHSTid).Index;
+                    int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
+                    gvSubTasks.PageIndex = pageIndexofSelectedRow;
+                    gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                }
+            }
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
             upSubTasks.Update();
