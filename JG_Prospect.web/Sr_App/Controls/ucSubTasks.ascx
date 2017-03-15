@@ -62,7 +62,7 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate> 
             <div id="divSubTaskGrid">
-                <div style="float: right;margin-top:15px;  ">
+                <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
@@ -82,13 +82,14 @@
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
+                    OnPageIndexChanging = "OnPagingGvSubTasks"
                     OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
                     <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
-                        <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys" />
+                        <PagerStyle HorizontalAlign="Left"  CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         

@@ -191,6 +191,13 @@ namespace JG_Prospect.Sr_App.Controls
                 gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
             }
         }
+
+        protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
+        {
+            SetSubTaskDetails();
+            gvSubTasks.PageIndex = e.NewPageIndex;
+            gvSubTasks.DataBind();
+        }
         
         protected void gvSubTasksLevels_RowDataBound(object sender, GridViewRowEventArgs e)
         {
