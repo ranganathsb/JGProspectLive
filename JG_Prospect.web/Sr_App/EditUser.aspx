@@ -279,22 +279,6 @@
             return isValidFile;
         }
 
-        function SetDesignationForTask() {
-            var dID = $('#<%=ddlDesignationForTask.ClientID%>').val();
-            $.ajax({
-                type: "POST",
-                url: "EditUser.aspx/GetTasksForDesignation",
-                contentType: "application/json; charset=utf-8",
-                dataType: "JSON",
-                data: JSON.stringify({ designationID: dID }),
-                success: function (Result) {
-                    $('#<%=ddlTechTask.ClientID%>').empty();
-                    $.each(Result.d, function (key, value) {
-                        $('#<%=ddlTechTask.ClientID%>').append($("<option></option>").val(value.TaskId).html(value.Title));
-                    });
-                }
-            });
-            }
     </script>
     <script>
         function pageLoad() {
@@ -996,7 +980,7 @@
                                 <td align="right">Designation</td>
                                 <td>: </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" onchange="SetDesignationForTask();"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" OnSelectedIndexChanged="ddlDesignationForTask_SelectedIndexChanged"></asp:DropDownList>
                                 </td>
                             </tr>
                             <tr>
