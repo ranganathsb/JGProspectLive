@@ -562,7 +562,7 @@
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <div class="btn_sec">
-                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                                         TabIndex="5" Text="Submit"   CssClass="ui-button" 
                                                         OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
                                                 </div>
@@ -972,6 +972,11 @@
     function OnSaveSubTaskClick() {
         $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
         return Page_ClientValidate('vgSubTask');
+    }
+
+    function OnAddMoreSubtaskClick() {
+        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+        return Page_ClientValidate('SubmitSubTask');
     }
 
     function copytoListID(sender) {
