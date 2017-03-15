@@ -980,7 +980,7 @@
                                 <td align="right">Designation</td>
                                 <td>: </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" OnSelectedIndexChanged="ddlDesignationForTask_SelectedIndexChanged"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignationForTask_SelectedIndexChanged"></asp:DropDownList>
                                 </td>
                             </tr>
                             <tr>
