@@ -970,6 +970,7 @@
     }
 
     function OnSaveSubTaskClick() {
+        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
         return Page_ClientValidate('vgSubTask');
     }
 
