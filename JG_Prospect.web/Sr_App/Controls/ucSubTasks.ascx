@@ -356,6 +356,33 @@
                         <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
                             ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
                             <ItemTemplate>
+
+                                  <table>
+                                    <tr>
+                                        <td>
+                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
+                                                <ContentTemplate>
+                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                            <div id="divSubTaskDropzone1" style="width: 250px;" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" 
+                                                class="dropzone dropzonetask dropzonJgStyle">
+                                                <div class="fallback" >
+                                                    <input name="file" type="file" multiple />
+                                                   <%-- <input type="submit" value="Upload"     />--%>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
+                                            </div>
+                                           
+                                        </td>
+                                     </tr>
+                                </table>
+
                                 <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
                                     <HeaderTemplate >
                                         <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
@@ -390,30 +417,7 @@
 
                                  <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
 
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
-                                                <ContentTemplate>
-                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
-                                                </ContentTemplate>
-                                            </asp:UpdatePanel>
-                                            <div id="divSubTaskDropzone1" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" class="dropzone dropzonetask">
-                                                <div class="fallback" >
-                                                    <input name="file" type="file" multiple />
-                                                    <input type="submit" value="Upload"     />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
-                                            </div>
-                                           
-                                        </td>
-                                     </tr>
-                                </table>
+                              
 
 
                                <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />

@@ -2158,9 +2158,66 @@ namespace JG_Prospect.Sr_App.Controls
                 if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
                 {
                     int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
+
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DataSet result1 = new DataSet();
+                        DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where  ParentTaskId is null and TaskLevel=1 and TaskId= " + vHSTid + " ");
+                        command1.CommandType = CommandType.Text;
+                        result1 = database.ExecuteDataSet(command1);
+                        if (result1.Tables[0].Rows.Count > 0)
+                        {
+                            vHSTid = Convert.ToInt32( result1.Tables[0].Rows[0]["TaskId"].ToString());
+                        }
+                        else
+                        {
+                            DataSet result2 = new DataSet();
+                            DbCommand command2 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vHSTid + " ");
+                            command2.CommandType = CommandType.Text;
+                            result2 = database.ExecuteDataSet(command2);
+                            if (result2.Tables[0].Rows.Count > 0)
+                            {
+                                vHSTid = Convert.ToInt32(result2.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                            }
+                            else
+                            {
+                                DataSet result3 = new DataSet();
+                                DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and TaskId= " + vHSTid + " ");
+                                command3.CommandType = CommandType.Text;
+                                result3 = database.ExecuteDataSet(command3);
+                                if (result3.Tables[0].Rows.Count > 0)
+                                {
+                                    int vparentid = Convert.ToInt32(result3.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                                    DataSet result4 = new DataSet();
+                                    DbCommand command4 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vparentid + " ");
+                                    command4.CommandType = CommandType.Text;
+                                    result4 = database.ExecuteDataSet(command4);
+                                    if (result4.Tables[0].Rows.Count > 0)
+                                    {
+                                        vHSTid = Convert.ToInt32(result4.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                                    }
+                                    command4.Dispose();
+                                    result4.Dispose();
+                                }
+                                command3.Dispose();
+                                result3.Dispose();
+                            }
+                            command2.Dispose();
+                            result2.Dispose();
+                        }
+                        command1.Dispose();
+                        result1.Dispose();
+
+
+                        
+                    }
+
+
+
+
                     int selectedIndex = dtSubTaskDetails.AsEnumerable()
                     .Select((Row, Index) => new { Row, Index })
-                    .Single(x => Convert.ToInt32(x.Row[0]) == vHSTid).Index;
+                    .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid).Index;
                     int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
                     gvSubTasks.PageIndex = pageIndexofSelectedRow;
                     gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
