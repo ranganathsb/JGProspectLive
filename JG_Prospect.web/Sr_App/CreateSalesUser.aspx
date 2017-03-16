@@ -414,11 +414,6 @@
 
             });
 
-
-
-
-
-
             $("#btnNewHireMinus").click(function () {
                 $('.tblNewHire td').hide("slow");
                 $('#btnNewHirePluse').show();
