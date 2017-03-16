@@ -2081,11 +2081,11 @@ namespace JG_Prospect.Sr_App.Controls
             return strPlaceholder;
         }
 
-        private DataTable GetSubTasks()
+        private DataSet GetSubTasks()
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text, gvSubTasks.PageIndex, gvSubTasks.PageSize);
         }
 
         protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -2150,7 +2150,8 @@ namespace JG_Prospect.Sr_App.Controls
 
         public void SetSubTaskDetails()
         {
-            DataTable dtSubTaskDetails = GetSubTasks();
+            DataSet dsSubTaskDetails = GetSubTasks();
+            DataTable dtSubTaskDetails = dsSubTaskDetails.Tables[0];
 
             if (dtSubTaskDetails.Rows.Count > 0)
             {
@@ -2166,6 +2167,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
             gvSubTasks.DataSource = dtSubTaskDetails;
+            gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
             gvSubTasks.DataBind();
             upSubTasks.Update();
 

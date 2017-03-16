@@ -909,7 +909,7 @@ namespace JG_Prospect
 
             if (ddlTechTask.SelectedIndex > 0)
             {
-                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
+                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
                 ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
                 ddlTechSubTask.DataTextField = "Title";
                 ddlTechSubTask.DataValueField = "TaskId";
@@ -1227,7 +1227,7 @@ namespace JG_Prospect
 
                 if (ddlTechTask.SelectedIndex > 0)
                 {
-                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
+                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
                     ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
                     ddlTechSubTask.DataTextField = "Title";
                     ddlTechSubTask.DataValueField = "TaskId";

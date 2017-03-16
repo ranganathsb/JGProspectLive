@@ -563,7 +563,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression,string vsearch)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -588,6 +588,15 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
 
                     returndata = database.ExecuteDataSet(command);
 

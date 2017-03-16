@@ -83,7 +83,7 @@
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
                     OnPageIndexChanging = "OnPagingGvSubTasks"
-                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5" AllowCustomPaging="true"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
