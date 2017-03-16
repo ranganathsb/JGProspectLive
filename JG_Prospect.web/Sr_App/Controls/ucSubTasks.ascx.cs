@@ -306,25 +306,19 @@ namespace JG_Prospect.Sr_App.Controls
                 //---------- Start DP ----------
                 Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
                 GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
+                
                 DataSet resultTask = new DataSet();
-                DataTable dtTask = new DataTable();
-                dtTask =GetTasksHeirarchy(Convert.ToInt32(lblTaskId.Text));
-                resultTask.Tables.Add(dtTask);
-                grdTaskLevels.DataSource = resultTask;
-                grdTaskLevels.DataBind();
-
                 try
                 {
-                //    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                //    {
-                //        DbCommand command = database.GetStoredProcCommand("usp_GetSubTasksLevel23");
-                //        command.CommandType = CommandType.StoredProcedure;
-                //        database.AddInParameter(command, "@taskId", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
-                //        resultTask = database.ExecuteDataSet(command);
-                //    }
-
-                //    grdTaskLevels.DataSource = resultTask;
-                //    grdTaskLevels.DataBind();
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DbCommand command = database.GetStoredProcCommand("GetParentChildTasks");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskid", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
+                        resultTask = database.ExecuteDataSet(command);
+                    }
+                    grdTaskLevels.DataSource = resultTask;
+                    grdTaskLevels.DataBind();
                 }
                 catch (Exception ex)
                 {
@@ -600,9 +594,6 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 e.Row.CssClass = strRowCssClass;
-
-
-
             }
 
         }
@@ -732,115 +723,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
         //-------- Start DP --------
-
-        private DataTable GetTasksHeirarchy(int vParentId)
-        {
-            DataTable dt11 = new DataTable();
-
-            try
-            {
-                
-                DataColumn[] cls = {
-	                        new DataColumn("TaskId"),
-	                        new DataColumn("ParentTaskId"),
-	                        new DataColumn("InstallId"),
-                            new DataColumn("MainParentId"),
-                            new DataColumn("Description"),
-                            new DataColumn("Title"),
-                            new DataColumn("URL"),
-                            new DataColumn("TaskLevel")
-                        };
-                dt11.Columns.AddRange(cls);
-
-                DataRow dr = dt11.NewRow();
-                // ========= Level 1==============
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DataSet result1 = new DataSet();
-                    DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=1 and TaskId= " + vParentId + " ");
-                    command1.CommandType = CommandType.Text;
-                    result1 = database.ExecuteDataSet(command1);
-                    if (result1.Tables[0].Rows.Count > 0)
-                    {
-                        dr = dt11.NewRow();
-                        dr["TaskId"] = result1.Tables[0].Rows[0]["TaskId"].ToString();
-                        dr["ParentTaskId"] = result1.Tables[0].Rows[0]["ParentTaskId"].ToString();
-                        dr["InstallId"] = result1.Tables[0].Rows[0]["InstallId"].ToString();
-                        dr["MainParentId"] = result1.Tables[0].Rows[0]["MainParentId"].ToString();
-                        dr["Description"] = result1.Tables[0].Rows[0]["Description"].ToString();
-                        dr["Title"] = result1.Tables[0].Rows[0]["Title"].ToString();
-                        dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                        dr["TaskLevel"] = result1.Tables[0].Rows[0]["TaskLevel"].ToString();
-                        dt11.Rows.Add(dr);
-                    }
-                    command1.Dispose();
-                    result1.Dispose();
-
-                    // ========= Level 2 ==============
-
-                    DataSet result = new DataSet();
-                    DbCommand command = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and ParentTaskId= " + vParentId + " ");
-                    command.CommandType = CommandType.Text;
-                    result = database.ExecuteDataSet(command);
-                    if (result.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < result.Tables[0].Rows.Count; i++)
-                        {
-                            dr = dt11.NewRow();
-                            dr["TaskId"] = result.Tables[0].Rows[i]["TaskId"].ToString();
-                            dr["ParentTaskId"] = result.Tables[0].Rows[i]["ParentTaskId"].ToString();
-                            dr["InstallId"] = result.Tables[0].Rows[i]["InstallId"].ToString();
-                            dr["MainParentId"] = result.Tables[0].Rows[i]["MainParentId"].ToString();
-                            dr["Description"] = result.Tables[0].Rows[i]["Description"].ToString();
-                            dr["Title"] = result.Tables[0].Rows[i]["Title"].ToString();
-                            dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                            dr["TaskLevel"] = result.Tables[0].Rows[i]["TaskLevel"].ToString();
-
-                            dt11.Rows.Add(dr);
-                            // GetTasksHeirarchy(Convert.ToInt32(result.Tables[0].Rows[0]["TaskId"].ToString()));
-
-                            // ========= Level 3 ==============
-                            DataSet result3 = new DataSet();
-                            DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and ParentTaskId= " + Convert.ToInt32(result.Tables[0].Rows[i]["TaskId"].ToString()) + " ");
-                            command3.CommandType = CommandType.Text;
-                            result3 = database.ExecuteDataSet(command3);
-                            if (result3.Tables[0].Rows.Count > 0)
-                            {
-                                for (int j = 0; j < result3.Tables[0].Rows.Count; j++)
-                                {
-                                    dr = dt11.NewRow();
-                                    dr["TaskId"] = result3.Tables[0].Rows[j]["TaskId"].ToString();
-                                    dr["ParentTaskId"] = result3.Tables[0].Rows[j]["ParentTaskId"].ToString();
-                                    dr["InstallId"] = result3.Tables[0].Rows[j]["InstallId"].ToString();
-                                    dr["MainParentId"] = result3.Tables[0].Rows[j]["MainParentId"].ToString();
-                                    dr["Description"] = result3.Tables[0].Rows[j]["Description"].ToString();
-                                    dr["Title"] = result3.Tables[0].Rows[j]["Title"].ToString();
-                                    dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                                    dr["TaskLevel"] = result3.Tables[0].Rows[j]["TaskLevel"].ToString();
-
-                                    dt11.Rows.Add(dr);
-                                }
-                            }
-                            result3.Dispose();
-                        }
-                    }
-
-                    result.Dispose();
-                }
-            }
-
-            catch (Exception ex)
-            {
-                // return 0;
-                //LogManager.Instance.WriteToFlatFile(ex);
-            }
-
-
-            return dt11;
-
-        }
-
-
+        
         private string[] getSUBSubtaskSequencing(string sequence)
         {
             String[] ReturnSequence = new String[2];
