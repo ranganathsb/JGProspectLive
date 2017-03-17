@@ -99,7 +99,7 @@
              <li>|</li>
             <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
             <li>|</li>
-            <li>Chat(1)</li>
+            <li><a ID="hypChat"  href="#" onclick="javascript:OpenChatWindow();"> Chat </a> </li>
         </ul>
         <div class="ProfilImg" style="width:90px;">
             <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
@@ -155,4 +155,30 @@
         });
     }
 
+    function OpenChatWindow() {
+
+        $.ajax({
+            type: "POST",
+            url: "ajaxcalls.aspx/LogintoChat",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+                if (data.d) {
+                    var counters = JSON.parse(data.d);
+                    console.log(counters);
+                    if (counters == "1") {
+                        window.open('/Sr_App/JabbRChat.aspx', "JMG - Chat", "width=600,height=600,scrollbars=yes");
+                    }
+                    else {
+                        alert('Couldn\'t Login to Chat application right now, Please try again later.');
+                    }
+                }
+                else {
+                    alert('Couldn\'t Login to Chat application right now, Please try again later.');
+                }
+            }
+        });
+                
+    }
 </script>

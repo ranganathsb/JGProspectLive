@@ -22,7 +22,7 @@ namespace JG_Prospect.Sr_App
             {
                 lbluser.Text = Session["Username"].ToString();
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
-                if (JGSession.LoginUserID != null)                
+                if (JGSession.LoginUserID != null)
                     hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
                 else
                     hLnkEditProfil.NavigateUrl = "#";
@@ -67,7 +67,7 @@ namespace JG_Prospect.Sr_App
 
             objUserAudit.LogOutTime = DateTime.Now;
             objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
-            
+
             UserAuditTrailBLL.Instance.UpdateUserLogOutTime(objUserAudit);
 
         }
@@ -91,10 +91,10 @@ namespace JG_Prospect.Sr_App
             if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
             {
                 hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
-                this.Page.ClientScript.RegisterStartupScript( this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
-                
+                this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+
             }
         }
-
+        
     }
 }

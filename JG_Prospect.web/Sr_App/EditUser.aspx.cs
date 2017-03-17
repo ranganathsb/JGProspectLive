@@ -659,7 +659,7 @@ namespace JG_Prospect
             else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 LoadUsersByRecruiterDesgination(ddlUsers);
-                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -897,11 +897,19 @@ namespace JG_Prospect
             return;
         }
 
+        protected void ddlDesignationForTask_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
+        }
+
         protected void ddlTechTask_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ddlTechSubTask.ClearSelection();
+            ddlTechSubTask.Items.Clear();
+
             if (ddlTechTask.SelectedIndex > 0)
             {
-                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
+                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
                 ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
                 ddlTechSubTask.DataTextField = "Title";
                 ddlTechSubTask.DataValueField = "TaskId";
@@ -1203,8 +1211,7 @@ namespace JG_Prospect
                 ddlInterviewTime.DataBind();
                 ddlInsteviewtime.SelectedValue = DataBinder.Eval(e.Row.DataItem, "InterviewTime").ToString();
 
-                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
-
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "DesignationID")));
             }
         }
 
@@ -1215,9 +1222,12 @@ namespace JG_Prospect
             DropDownList ddlTechSubTask = objGridRow.FindControl("ddlTechSubTask") as DropDownList;
             if (ddlTechTask != null && ddlTechSubTask != null)
             {
+                ddlTechSubTask.ClearSelection();
+                ddlTechSubTask.Items.Clear();
+
                 if (ddlTechTask.SelectedIndex > 0)
                 {
-                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
+                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
                     ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
                     ddlTechSubTask.DataTextField = "Title";
                     ddlTechSubTask.DataValueField = "TaskId";
@@ -3268,11 +3278,24 @@ namespace JG_Prospect
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
-        private void FillTechTaskDropDown(DropDownList ddlTechTask, DropDownList ddlTechSubTask)
+        private void FillTechTaskDropDown(DropDownList ddlTechTask, DropDownList ddlTechSubTask, int intDesignationId)
         {
+            ddlTechTask.ClearSelection();
+            ddlTechTask.Items.Clear();
+
+            ddlTechSubTask.ClearSelection();
+            ddlTechSubTask.Items.Clear();
+
             DataSet dsTechTask;
 
-            dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+            if (intDesignationId == 0)
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+            }
+            else
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(intDesignationId);
+            }
 
             if (dsTechTask != null & dsTechTask.Tables.Count > 0)
             {

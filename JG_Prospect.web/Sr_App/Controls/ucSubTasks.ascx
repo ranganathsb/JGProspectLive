@@ -55,6 +55,23 @@
             
         }*/    
 
+   .lSGallery 
+   {
+       width:auto !important;
+   }
+    .lSGallery li
+   {
+       width:50px!important;
+   }
+    .form_panel_custom ul
+    {
+        margin:0px!important;
+    }
+    .dropzonetbl td
+    {
+        border:none!important;
+        border-right:none!important;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -62,7 +79,7 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate> 
             <div id="divSubTaskGrid">
-                <div style="float: right;margin-top:15px;  ">
+                <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
@@ -82,13 +99,14 @@
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
-                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
+                    OnPageIndexChanging = "OnPagingGvSubTasks"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5" AllowCustomPaging="true"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
                     <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
-                        <PagerStyle HorizontalAlign="Right"  CssClass="pagination-ys" />
+                        <PagerStyle HorizontalAlign="Left"  CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         
@@ -353,43 +371,10 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
                             <ItemTemplate>
-                                <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate >
-                                        <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
-                                            
-                                            <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled sub-task-attachments-list">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
 
-                                            <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
-                                            <br />
-                                            <h5>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
-                                            <div>
-                                                <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
-                                                    CommandName="delete-attachment" />
-                                            </div>
-                                        </li>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </ul>
-                                            </div>
-                                        
-                                        </div>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-
-                                 <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
-
-                                <table>
+                                  <table border="0" class="dropzonetbl" style="width:100%;">
                                     <tr>
                                         <td>
                                             <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
@@ -397,10 +382,11 @@
                                                     <input id="hdnAttachments1" runat="server" type="hidden" />
                                                 </ContentTemplate>
                                             </asp:UpdatePanel>
-                                            <div id="divSubTaskDropzone1" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" class="dropzone dropzonetask">
+                                            <div id="divSubTaskDropzone1" style="width: 250px;" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" 
+                                                class="dropzone dropzonetask dropzonJgStyle">
                                                 <div class="fallback" >
                                                     <input name="file" type="file" multiple />
-                                                    <input type="submit" value="Upload"     />
+                                                   <%-- <input type="submit" value="Upload"     />--%>
                                                 </div>
                                             </div>
                                         </td>
@@ -409,13 +395,64 @@
                                         <td>
                                             <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
                                             </div>
-                                           
                                         </td>
                                      </tr>
-                                </table>
+                                
+                                      <tr>
+                                          <td>
 
+                                              <table border="0" class="dropzonetbl" style="width:100%;">
+                                                  <tr>
+                                                      <td style="width:40%;">
+                                                           <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" 
+                                                               Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' 
+                                                               AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                      </td>
+                                                      <td>
+                                                           <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                <HeaderTemplate >
+                                                                    <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                            
+                                                                        <div class="lSSlideWrapper usingCss">
+                                                                            <ul class="gallery list-unstyled sub-task-attachments-list">
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
+                                                                         <h5>
+                                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
+                                                                        <div>
+                                                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
+                                                                                CommandName="delete-attachment" />
+                                                                        </div>
+                                                                        <br />
+                                                                        <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
+                                            
+                                          
+                                                                    </li>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    </ul>
+                                                                        </div>
+                                        
+                                                                    </div>
+                                                                </FooterTemplate>
+                                                            </asp:Repeater>
 
-                               <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                             <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
+                             
+                                                      </td>
+                                                      
+                                                  </tr>
+                                              </table>
+                                          </td>
+
+                                      </tr>
+                               
+                                      </table>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
@@ -561,7 +598,7 @@
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <div class="btn_sec">
-                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                                         TabIndex="5" Text="Submit"   CssClass="ui-button" 
                                                         OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
                                                 </div>
@@ -969,7 +1006,13 @@
     }
 
     function OnSaveSubTaskClick() {
+        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
         return Page_ClientValidate('vgSubTask');
+    }
+
+    function OnAddMoreSubtaskClick() {
+        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+        return Page_ClientValidate('SubmitSubTask');
     }
 
     function copytoListID(sender) {

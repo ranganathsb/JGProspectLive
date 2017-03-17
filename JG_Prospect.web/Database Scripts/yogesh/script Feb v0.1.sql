@@ -2649,3 +2649,457 @@ BEGIN
 
 END
 GO
+
+
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 16-Mar-17 10:15:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 115, 1, 'Description DESC'
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@searchterm  as varchar(300),
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+IF @searchterm = '' 
+	BEGIN
+		;WITH 
+		Tasklist AS
+		(	
+
+
+			SELECT
+				Tasks.*,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+				Row_number() OVER
+				(
+					ORDER BY
+						CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+						CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+						CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+						CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+						CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+						CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+						CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+						CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+						CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+						CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+						CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+						CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+				) AS RowNo_Order
+			FROM
+				(
+					SELECT 
+						Tasks.*,
+						CASE Tasks.[Status]
+							WHEN @AssignedStatus THEN 1
+							WHEN @RequestedStatus THEN 1
+
+							WHEN @InProgressStatus THEN 2
+							WHEN @PendingStatus THEN 2
+							WHEN @ReOpenedStatus THEN 2
+
+							WHEN @OpenStatus THEN 
+								CASE 
+									WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+									ELSE 4
+								END
+
+							WHEN @SpecsInProgressStatus THEN 4
+
+							WHEN @ClosedStatus THEN 5
+
+							WHEN @DeletedStatus THEN 6
+
+							ELSE 7
+
+						END AS StatusOrder,
+						TaskApprovals.Id AS TaskApprovalId,
+						TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+						TaskApprovals.Description AS TaskApprovalDescription,
+						TaskApprovals.UserId AS TaskApprovalUserId,
+						TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+					FROM 
+						[TaskListView] Tasks 
+							LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+					WHERE
+						Tasks.ParentTaskId = @TaskId 
+						-- condition added by DP 23-jan-17 ---
+						and Tasks.TaskLevel=1
+				) Tasks
+			)
+			-- get records
+			SELECT * 
+			FROM Tasklist 
+			ORDER BY RowNo_Order
+	END
+ELSE
+	BEGIN
+		;WITH 
+		Tasklist AS
+		(	
+			SELECT
+				Tasks.*,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+				Row_number() OVER
+				(
+					ORDER BY
+						CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+						CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+						CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+						CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+						CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+						CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+						CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+						CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+						CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+						CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+						CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+						CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+				) AS RowNo_Order
+			FROM
+				(
+					SELECT 
+						Tasks.*,
+						CASE Tasks.[Status]
+							WHEN @AssignedStatus THEN 1
+							WHEN @RequestedStatus THEN 1
+
+							WHEN @InProgressStatus THEN 2
+							WHEN @PendingStatus THEN 2
+							WHEN @ReOpenedStatus THEN 2
+
+							WHEN @OpenStatus THEN 
+								CASE 
+									WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+									ELSE 4
+								END
+
+							WHEN @SpecsInProgressStatus THEN 4
+
+							WHEN @ClosedStatus THEN 5
+
+							WHEN @DeletedStatus THEN 6
+
+							ELSE 7
+
+						END AS StatusOrder,
+						TaskApprovals.Id AS TaskApprovalId,
+						TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+						TaskApprovals.Description AS TaskApprovalDescription,
+						TaskApprovals.UserId AS TaskApprovalUserId,
+						TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+					FROM 
+						tblinstallusers as a,
+						[TaskListView] Tasks 
+							LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+							left join [tbltaskassignedusers] t on Tasks.TaskId=t.TaskId 
+					WHERE
+						Tasks.ParentTaskId = @TaskId 
+						and a.Id=t.UserId and a.Fristname like '%'+@searchterm+'%'
+						-- condition added by DP 23-jan-17 ---
+						and Tasks.TaskLevel=1
+				) Tasks
+			)
+			-- get records
+			SELECT * 
+			FROM Tasklist 
+			ORDER BY RowNo_Order
+	END
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[usp_GetSubTasks]    Script Date: 16-Mar-17 10:15:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 04/07/2016
+-- Description:	Load all sub tasks of a task.
+-- =============================================
+-- usp_GetSubTasks 115, 1, 'Description DESC'
+ALTER PROCEDURE [dbo].[usp_GetSubTasks] 
+(
+	@TaskId INT,
+	@Admin BIT,
+	@SortExpression	VARCHAR(250) = 'CreatedOn DESC',
+	@searchterm  as varchar(300),
+	@OpenStatus		TINYINT = 1,
+    @RequestedStatus	TINYINT = 2,
+    @AssignedStatus	TINYINT = 3,
+    @InProgressStatus	TINYINT = 4,
+    @PendingStatus	TINYINT = 5,
+    @ReOpenedStatus	TINYINT = 6,
+    @ClosedStatus	TINYINT = 7,
+    @SpecsInProgressStatus	TINYINT = 8,
+    @DeletedStatus	TINYINT = 9,
+	@PageIndex INT = NULL, 
+	@PageSize INT = NULL
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @StartIndex INT  = 0
+
+	IF @PageIndex IS NULL
+	BEGIN
+		SET @PageIndex = 0
+	END
+
+	IF @PageSize IS NULL
+	BEGIN
+		SET @PageSize = 0
+	END
+
+	SET @StartIndex = (@PageIndex * @PageSize) + 1
+	
+	IF @searchterm = '' 
+	BEGIN
+		;WITH 
+		Tasklist AS
+		(	
+			SELECT
+				Tasks.*,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+				Row_number() OVER
+				(
+					ORDER BY
+						CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+						CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+						CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+						CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+						CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+						CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+						CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+						CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+						CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+						CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+						CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+						CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+				) AS RowNo_Order
+			FROM
+				(
+					SELECT 
+						Tasks.*,
+						CASE Tasks.[Status]
+							WHEN @AssignedStatus THEN 1
+							WHEN @RequestedStatus THEN 1
+
+							WHEN @InProgressStatus THEN 2
+							WHEN @PendingStatus THEN 2
+							WHEN @ReOpenedStatus THEN 2
+
+							WHEN @OpenStatus THEN 
+								CASE 
+									WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+									ELSE 4
+								END
+
+							WHEN @SpecsInProgressStatus THEN 4
+
+							WHEN @ClosedStatus THEN 5
+
+							WHEN @DeletedStatus THEN 6
+
+							ELSE 7
+
+						END AS StatusOrder,
+						TaskApprovals.Id AS TaskApprovalId,
+						TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+						TaskApprovals.Description AS TaskApprovalDescription,
+						TaskApprovals.UserId AS TaskApprovalUserId,
+						TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+					FROM 
+						[TaskListView] Tasks 
+							LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+					WHERE
+						Tasks.ParentTaskId = @TaskId 
+						-- condition added by DP 23-jan-17 ---
+						and Tasks.TaskLevel=1
+				) Tasks
+		)
+
+		-- get records
+		SELECT * 
+		FROM Tasklist 
+		WHERE 
+			RowNo_Order >= @StartIndex AND 
+			(
+				@PageSize = 0 OR 
+				RowNo_Order < (@StartIndex + @PageSize)
+			)
+		ORDER BY RowNo_Order
+
+		-- get records count
+		SELECT
+			COUNT(*) AS TotalRecords
+		FROM 
+			[TaskListView] Tasks 
+				LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+		WHERE
+			Tasks.ParentTaskId = @TaskId 
+			-- condition added by DP 23-jan-17 ---
+			and Tasks.TaskLevel=1
+	END
+	ELSE
+	BEGIN
+		;WITH 
+		Tasklist AS
+		(	
+			SELECT
+				Tasks.*,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 1) AS AdminOrITLeadEstimatedHours,
+				(SELECT TOP 1 EstimatedHours 
+					FROM [TaskApprovalsView] TaskApprovals 
+					WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours,
+				Row_number() OVER
+				(
+					ORDER BY
+						CASE WHEN @SortExpression = 'InstallId DESC' THEN Tasks.InstallId END DESC,
+						CASE WHEN @SortExpression = 'InstallId ASC' THEN Tasks.InstallId END ASC,
+						CASE WHEN @SortExpression = 'TaskId DESC' THEN Tasks.TaskId END DESC,
+						CASE WHEN @SortExpression = 'TaskId ASC' THEN Tasks.TaskId END ASC,
+						CASE WHEN @SortExpression = 'Title DESC' THEN Tasks.Title END DESC,
+						CASE WHEN @SortExpression = 'Title ASC' THEN Tasks.Title END ASC,
+						CASE WHEN @SortExpression = 'Description DESC' THEN Tasks.Description END DESC,
+						CASE WHEN @SortExpression = 'Description ASC' THEN Tasks.Description END ASC,
+						CASE WHEN @SortExpression = 'TaskDesignations DESC' THEN Tasks.TaskDesignations END DESC,
+						CASE WHEN @SortExpression = 'TaskDesignations ASC' THEN Tasks.TaskDesignations END ASC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers DESC' THEN Tasks.TaskAssignedUsers END DESC,
+						CASE WHEN @SortExpression = 'TaskAssignedUsers ASC' THEN Tasks.TaskAssignedUsers END ASC,
+						CASE WHEN @SortExpression = 'Status ASC' THEN Tasks.StatusOrder END ASC,
+						CASE WHEN @SortExpression = 'Status DESC' THEN Tasks.StatusOrder END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn DESC' THEN Tasks.CreatedOn END DESC,
+						CASE WHEN @SortExpression = 'CreatedOn ASC' THEN Tasks.CreatedOn END ASC
+				) AS RowNo_Order
+			FROM
+				(
+					SELECT 
+						Tasks.*,
+						CASE Tasks.[Status]
+							WHEN @AssignedStatus THEN 1
+							WHEN @RequestedStatus THEN 1
+
+							WHEN @InProgressStatus THEN 2
+							WHEN @PendingStatus THEN 2
+							WHEN @ReOpenedStatus THEN 2
+
+							WHEN @OpenStatus THEN 
+								CASE 
+									WHEN ISNULL([TaskPriority],'') <> '' THEN 3
+									ELSE 4
+								END
+
+							WHEN @SpecsInProgressStatus THEN 4
+
+							WHEN @ClosedStatus THEN 5
+
+							WHEN @DeletedStatus THEN 6
+
+							ELSE 7
+
+						END AS StatusOrder,
+						TaskApprovals.Id AS TaskApprovalId,
+						TaskApprovals.EstimatedHours AS TaskApprovalEstimatedHours,
+						TaskApprovals.Description AS TaskApprovalDescription,
+						TaskApprovals.UserId AS TaskApprovalUserId,
+						TaskApprovals.IsInstallUser AS TaskApprovalIsInstallUser
+					FROM 
+						tblinstallusers as a,
+						[TaskListView] Tasks 
+							LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+							LEFT JOIN [tbltaskassignedusers] t on Tasks.TaskId=t.TaskId
+					WHERE
+						Tasks.ParentTaskId = @TaskId 
+						and a.Id=t.UserId and a.Fristname like '%'+@searchterm+'%'
+						-- condition added by DP 23-jan-17 ---
+						and Tasks.TaskLevel=1
+				) Tasks
+		)
+		-- get records
+		SELECT * 
+		FROM Tasklist 
+		WHERE 
+			RowNo_Order >= @StartIndex AND 
+			(
+				@PageSize = 0 OR 
+				RowNo_Order < (@StartIndex + @PageSize)
+			)
+		ORDER BY RowNo_Order
+
+		-- get records count
+		SELECT
+			COUNT(*) AS TotalRecords
+		FROM 
+			tblinstallusers as a,
+			[TaskListView] Tasks 
+				LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin
+				LEFT JOIN [tbltaskassignedusers] t on Tasks.TaskId=t.TaskId
+		WHERE
+			Tasks.ParentTaskId = @TaskId 
+			and a.Id=t.UserId and a.Fristname like '%'+@searchterm+'%'
+			-- condition added by DP 23-jan-17 ---
+			and Tasks.TaskLevel=1
+	END
+END
+GO
