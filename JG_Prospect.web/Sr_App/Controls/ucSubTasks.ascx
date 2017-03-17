@@ -55,14 +55,16 @@
             
         }*/    
 
-   .lSGallery 
+   /*.lSGallery 
    {
-       width:auto !important;
+       width:400px;
+       background-color:aqua;
+       overflow:hidden;
    }
     .lSGallery li
    {
-       width:50px!important;
-   }
+       width:40px!important;
+   }*/
     .form_panel_custom ul
     {
         margin:0px!important;
@@ -71,6 +73,10 @@
     {
         border:none!important;
         border-right:none!important;
+    }
+    .sub-task-attachments-list 
+    {
+        height:270px!important;
     }
 </style>
 
@@ -296,7 +302,8 @@
                             <ItemTemplate>
                             </ItemTemplate>
                         </asp:TemplateField>--%>
-                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
+                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" 
+                            ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                             <ItemTemplate>
                                 <table>
                                     <tr>
@@ -370,7 +377,7 @@
 
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
+                        <asp:TemplateField HeaderText="Attachments, IMGs, Docs, Videos & Recordings" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
                             ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
                             <ItemTemplate>
 
