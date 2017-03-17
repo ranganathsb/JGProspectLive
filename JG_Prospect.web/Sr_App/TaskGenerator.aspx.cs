@@ -372,23 +372,23 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
-        {
-            FillAcceptanceLog();
+        //protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
+        //{
+        //    FillAcceptanceLog();
 
-            upAcceptanceLog.Update();
+        //    upAcceptanceLog.Update();
 
-            ScriptManager.RegisterStartupScript(
-                                                    (sender as Control),
-                                                    this.GetType(),
-                                                    "ShowPopup_AcceptanceLog",
-                                                    string.Format(
-                                                                    "ShowPopup(\"#{0}\");",
-                                                                    divAcceptanceLog.ClientID
-                                                                ),
-                                                    true
-                                              );
-        }
+        //    ScriptManager.RegisterStartupScript(
+        //                                            (sender as Control),
+        //                                            this.GetType(),
+        //                                            "ShowPopup_AcceptanceLog",
+        //                                            string.Format(
+        //                                                            "ShowPopup(\"#{0}\");",
+        //                                                            divAcceptanceLog.ClientID
+        //                                                        ),
+        //                                            true
+        //                                      );
+        //}
 
         #endregion
 
@@ -932,12 +932,14 @@ namespace JG_Prospect.Sr_App
 
         private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
         {
+            HyperLink lnkUserId = new HyperLink();
+
             if (dtUsers.Rows.Count > 0)
             {
                 var rows = dtUsers.AsEnumerable();
 
-                //get all users comma seperated ids with interviewdate status
-                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with Active status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "Active") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -947,6 +949,11 @@ namespace JG_Prospect.Sr_App
                     if (ddlUsers != null)
                     {
                         item = ddlUsers.Items.FindByValue(user);
+
+                        // To Create Link with UserId
+                        lnkUserId.Text = user;
+                        lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
+                        ddlUsers.Controls.Add(lnkUserId);
                     }
                     else
                     {
@@ -959,6 +966,35 @@ namespace JG_Prospect.Sr_App
                     }
                 }
 
+                InterviewDateUsers = string.Empty;
+
+                //get all users comma seperated ids with interviewdate and Offer Made status
+                InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date" || r.Field<string>("Status") == "OfferMade" || r.Field<string>("Status") == "Offer Made") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply blue color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        
+                        // To Create Link with UserId
+                        lnkUserId.Text = user;
+                        lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
+                        ddlUsers.Controls.Add(lnkUserId);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
+
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:blue;");
+                    }
+                }
             }
         }
 
