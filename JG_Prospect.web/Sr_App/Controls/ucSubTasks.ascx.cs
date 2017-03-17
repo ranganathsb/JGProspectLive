@@ -462,7 +462,7 @@ namespace JG_Prospect.Sr_App.Controls
                                     {
                                         strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
                                     }
-                                    strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString();
+                                    strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
                                 }
                                 else
                                 {
@@ -472,7 +472,7 @@ namespace JG_Prospect.Sr_App.Controls
                                     {
                                         vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
                                     }
-                                    vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString();
+                                    vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
                                     strfile = strfile + "," + vstrfile;
                                 }
                             }
@@ -1319,7 +1319,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                lbtnDelete.CommandArgument = files[0] + "|" + files[1];
+                lbtnDelete.CommandArgument = files[4] + "|" + files[1];
 
                 if (files[1].Length > 13)// sort name with ....
                 {
