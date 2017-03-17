@@ -13,11 +13,11 @@
     </div>
     </form>
     <form name="frmJabbRChatLogin" action="http://chat.jmgrovebuildingsupply.com/account/login?ReturnUrl=%2F" method="post">
-        <input type="text" id="username" name="username" value="<%=JG_Prospect.JGSession.UserLoginId.Replace("@",".")%>" placeholder="Username" />
-        <input type="password" id="password" name="password" value="<%=JG_Prospect.JGSession.UserPassword%>" class="span10" placeholder="Password" />
+        <input type="text" id="username" name="username" value="<%=UserName%>" placeholder="Username" />
+        <input type="password" id="password" name="password" value="<%=Password%>" class="span10" placeholder="Password" />
     </form>
     <script type="text/javascript">
-        //document.frmJabbRChatLogin.submit();
+        document.frmJabbRChatLogin.submit();
     </script>
 </body>
 </html>

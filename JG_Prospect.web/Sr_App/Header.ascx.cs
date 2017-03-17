@@ -110,7 +110,14 @@ namespace JG_Prospect.Sr_App
 
                 if (SendHttpWebRequest(server + "/account/login", arrPostData).StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Response.Redirect("~/sr_app/JabbRChat.aspx");
+                    ScriptManager.RegisterStartupScript
+                        (
+                            this.Page, 
+                            this.Page.GetType(),
+                            "JabbRChatLogin", 
+                            string.Format("window.open('{0}');", Page.ResolveUrl("~/sr_app/JabbRChat.aspx")), 
+                            true
+                        );
                 }
             }
         }
