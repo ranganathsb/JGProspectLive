@@ -49,6 +49,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor hypEmail;
         
         /// <summary>
+        /// lbtnChat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnChat;
+        
+        /// <summary>
         /// imgProfile control.
         /// </summary>
         /// <remarks>

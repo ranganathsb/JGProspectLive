@@ -99,7 +99,7 @@
              <li>|</li>
             <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
             <li>|</li>
-            <li>Chat(1)</li>
+            <li><asp:LinkButton ID="lbtnChat" runat="server" Text="Chat(1)" OnClick="lbtnChat_Click" /></li>
         </ul>
         <div class="ProfilImg" style="width:90px;">
             <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />

@@ -22,7 +22,7 @@ namespace JG_Prospect.Sr_App
             {
                 lbluser.Text = Session["Username"].ToString();
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
-                if (JGSession.LoginUserID != null)                
+                if (JGSession.LoginUserID != null)
                     hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
                 else
                     hLnkEditProfil.NavigateUrl = "#";
@@ -67,7 +67,7 @@ namespace JG_Prospect.Sr_App
 
             objUserAudit.LogOutTime = DateTime.Now;
             objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
-            
+
             UserAuditTrailBLL.Instance.UpdateUserLogOutTime(objUserAudit);
 
         }
@@ -91,9 +91,46 @@ namespace JG_Prospect.Sr_App
             if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
             {
                 hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
-                this.Page.ClientScript.RegisterStartupScript( this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
-                
+                this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+
             }
+        }
+
+        protected void lbtnChat_Click(object sender, EventArgs e)
+        {
+            string server = "http://chat.jmgrovebuildingsupply.com";
+
+            var strPostData = string.Format("username={0}&email={1}&password={2}&confirmPassword={2}", JGSession.UserLoginId.Replace("@", "."), JGSession.UserLoginId, JGSession.UserPassword);
+            var arrPostData = System.Text.Encoding.ASCII.GetBytes(strPostData);
+
+            if (SendHttpWebRequest(server + "/account/create", arrPostData).StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                strPostData = string.Format("username={0}&password={1}", JGSession.UserLoginId.Replace("@", "."), JGSession.UserPassword);
+                arrPostData = System.Text.Encoding.ASCII.GetBytes(strPostData);
+
+                if (SendHttpWebRequest(server + "/account/login", arrPostData).StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Response.Redirect("~/sr_app/JabbRChat.aspx");
+                }
+            }
+        }
+
+        private System.Net.HttpWebResponse SendHttpWebRequest(string strUrl, byte[] arrPostData)
+        {
+            var objRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(strUrl);
+
+            objRequest.Method = "POST";
+            objRequest.ContentType = "application/x-www-form-urlencoded";
+            objRequest.ContentLength = arrPostData.Length;
+
+            objRequest.Headers.Add("sec-jabbr-client", "1");
+
+            using (var stream = objRequest.GetRequestStream())
+            {
+                stream.Write(arrPostData, 0, arrPostData.Length);
+            }
+
+            return (System.Net.HttpWebResponse)objRequest.GetResponse();
         }
 
     }
