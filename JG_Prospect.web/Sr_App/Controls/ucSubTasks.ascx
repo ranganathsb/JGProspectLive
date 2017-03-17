@@ -55,6 +55,23 @@
             
         }*/    
 
+   .lSGallery 
+   {
+       width:auto !important;
+   }
+    .lSGallery li
+   {
+       width:50px!important;
+   }
+    .form_panel_custom ul
+    {
+        margin:0px!important;
+    }
+    .dropzonetbl td
+    {
+        border:none!important;
+        border-right:none!important;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -354,10 +371,10 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
                             <ItemTemplate>
 
-                                  <table>
+                                  <table border="0" class="dropzonetbl" style="width:100%;">
                                     <tr>
                                         <td>
                                             <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
@@ -378,49 +395,64 @@
                                         <td>
                                             <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
                                             </div>
-                                           
                                         </td>
                                      </tr>
-                                </table>
+                                
+                                      <tr>
+                                          <td>
 
-                                <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate >
-                                        <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                              <table border="0" class="dropzonetbl" style="width:100%;">
+                                                  <tr>
+                                                      <td style="width:40%;">
+                                                           <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" 
+                                                               Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' 
+                                                               AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                      </td>
+                                                      <td>
+                                                           <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                <HeaderTemplate >
+                                                                    <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
                                             
-                                            <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled sub-task-attachments-list">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
-
-                                            <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
-                                            <br />
-                                            <h5>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
-                                            <div>
-                                                <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
-                                                    CommandName="delete-attachment" />
-                                            </div>
-                                        </li>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </ul>
-                                            </div>
+                                                                        <div class="lSSlideWrapper usingCss">
+                                                                            <ul class="gallery list-unstyled sub-task-attachments-list">
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
+                                                                         <h5>
+                                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
+                                                                        <div>
+                                                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
+                                                                                CommandName="delete-attachment" />
+                                                                        </div>
+                                                                        <br />
+                                                                        <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
+                                            
+                                          
+                                                                    </li>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    </ul>
+                                                                        </div>
                                         
-                                        </div>
-                                    </FooterTemplate>
-                                </asp:Repeater>
+                                                                    </div>
+                                                                </FooterTemplate>
+                                                            </asp:Repeater>
 
-                                 <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
+                                                             <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
+                             
+                                                      </td>
+                                                      
+                                                  </tr>
+                                              </table>
+                                          </td>
 
-                              
-
-
-                               <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                      </tr>
+                               
+                                      </table>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">

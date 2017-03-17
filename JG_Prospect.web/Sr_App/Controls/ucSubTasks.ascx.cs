@@ -458,10 +458,22 @@ namespace JG_Prospect.Sr_App.Controls
                                 if (k == 0)
                                 {
                                     strfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if(!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString();
                                 }
                                 else
                                 {
-                                    strfile = strfile + "," + dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    string vstrfile = "";
+                                    vstrfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if (!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString();
+                                    strfile = strfile + "," + vstrfile;
                                 }
                             }
                             if (strfile != "")
@@ -1341,7 +1353,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (files.Length > 3)// if there are attachements available.
                 {
-                    ltlCreatedUser.Text = files[4]; // created user name
+                    ltlCreatedUser.Text = files[2]; // created user name
                     ltlUpdateTime.Text = string.Concat(
                                                         "<span>",
                                                         string.Format(
