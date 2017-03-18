@@ -2056,7 +2056,7 @@ namespace JG_Prospect.Sr_App.Controls
                     SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
                         DataSet result1 = new DataSet();
-                        DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where  ParentTaskId is null and TaskLevel=1 and TaskId= " + vHSTid + " ");
+                        DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where   TaskLevel=1 and TaskId= " + vHSTid + " ");
                         command1.CommandType = CommandType.Text;
                         result1 = database.ExecuteDataSet(command1);
                         if (result1.Tables[0].Rows.Count > 0)
