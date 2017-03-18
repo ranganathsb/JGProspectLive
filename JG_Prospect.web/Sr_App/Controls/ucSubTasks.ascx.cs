@@ -1295,7 +1295,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
             else if (e.CommandName == "delete-attachment")
             {
@@ -2101,20 +2101,19 @@ namespace JG_Prospect.Sr_App.Controls
                         }
                         command1.Dispose();
                         result1.Dispose();
-
-
-                        
                     }
 
-
-
-
-                    int selectedIndex = dtSubTaskDetails.AsEnumerable()
+                    var selectedIndexEle = dtSubTaskDetails.AsEnumerable()
                     .Select((Row, Index) => new { Row, Index })
-                    .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid).Index;
-                    int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
-                    gvSubTasks.PageIndex = pageIndexofSelectedRow;
-                    gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                    .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid);
+
+                    if (selectedIndexEle != null)
+                    {
+                        int selectedIndex = selectedIndexEle.Index;
+                        int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
+                        gvSubTasks.PageIndex = pageIndexofSelectedRow;
+                        gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                    }
                 }
             }
             gvSubTasks.DataSource = dtSubTaskDetails;
