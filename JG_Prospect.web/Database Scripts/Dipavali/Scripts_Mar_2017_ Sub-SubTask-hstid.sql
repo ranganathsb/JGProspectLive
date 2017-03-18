@@ -18,21 +18,19 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-create PROCEDURE  [dbo].[GetParentChildTasks]
-	-- Add the parameters for the stored procedure here
+CREATE PROCEDURE  [dbo].[GetFirstParentTaskFromChild] 
 	@taskid int
 AS
 BEGIN
-	
-select TaskId,ParentTaskId,InstallId,MainParentId,Description,Title,URL,TaskLevel
- from tbltask where taskid=@taskid  and tasklevel=1
-union all
---- level-2
-select TaskId,ParentTaskId,InstallId,MainParentId,Description,Title,URL,TaskLevel
- from tbltask where parenttaskid=@taskid and tasklevel=2
-union all
---- level-3
-select TaskId,ParentTaskId,InstallId,MainParentId,Description,Title,URL,TaskLevel
- from tbltask where tasklevel=3 and parenttaskid in (select taskid from tbltask where parenttaskid=@taskid) 
+	select TaskId as TaskId from tblTask where   TaskLevel=1 and TaskId=@taskid
+
+	union all
+
+	select ParentTaskId as TaskId from tblTask where TaskLevel=2 and TaskId=@taskid
+
+	union all
+
+	select ParentTaskId as TaskId from tblTask where tasklevel=2 and taskid in (
+	select ParentTaskId from tblTask where TaskLevel=3 and TaskId=@taskid )
 END
 GO
