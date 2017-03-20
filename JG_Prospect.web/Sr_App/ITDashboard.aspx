@@ -335,7 +335,7 @@ border-top-right-radius: 4px;
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  
@@ -429,7 +429,7 @@ border-top-right-radius: 4px;
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="10%" ItemStyle-Width = "10%"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
@@ -542,7 +542,7 @@ border-top-right-radius: 4px;
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  HeaderStyle-Width="300px" ItemStyle-Width = "300px"  HeaderText = "Title">
@@ -653,7 +653,7 @@ border-top-right-radius: 4px;
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
                      HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                     <ItemTemplate>
-                        <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                        <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
@@ -732,6 +732,13 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             SetFrozenTaskAutoSuggestionUI();
 
         });
+
+        $(".context-menu").bind("contextmenu", function () {
+            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            copyToClipboard(urltoCopy);
+            return false;
+        });
+
 
 
         function SetFrozenTaskAutoSuggestion() {
