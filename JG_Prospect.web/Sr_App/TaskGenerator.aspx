@@ -95,7 +95,7 @@
                                             <Texts SelectBoxCaption="--Open--" />
                                         </asp:DropDownCheckBoxes>--%>
 
-                                        <asp:Panel runat="server" ID="panel1" ScrollBars="Auto" Height="70px" Width="200px" BorderStyle="Solid" BorderWidth="1px" >
+                                        <asp:Panel runat="server" ID="panel1" ScrollBars="Auto" Height="70px" Width="200px" BorderStyle="Solid" BorderWidth="1px">
                                             <asp:DataList ID="dlAssignedUsers" runat="server" OnItemDataBound="dlAssignedUsers_ItemDataBound">
                                                 <ItemTemplate>
                                                     <asp:CheckBox ID='chkId'
@@ -114,7 +114,7 @@
                                             <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
                                         </span>
 
-                                        <%--<asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
+<%--                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </td>
@@ -259,7 +259,7 @@
 
     <%--Popup Starts--%>
     <div class="hide">
-
+        <%--  <div>--%>
         <div id="divAcceptanceLog" runat="server" title="Acceptance Log">
             <asp:UpdatePanel ID="upAcceptanceLog" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -272,11 +272,11 @@
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
                         <Columns>
-                            <asp:TemplateField HeaderText="User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                            <asp:TemplateField HeaderText="Applicant User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
                                     <%# string.Concat(Eval("UserFirstName").ToString()," - ") %>
                                     <asp:HyperLink runat="server" ForeColor="Blue"
-                                        NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
+                                        NavigateUrl='<%# Eval("UserId", "ViewSalesUser.aspx?Id={0}") %>'
                                         Text='<%# Eval("UserId")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -285,11 +285,20 @@
                                     <%# Convert.ToBoolean(Eval("IsAccepted"))? "Accepted" : "Rejected" %>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Date" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                            <asp:TemplateField HeaderText="Assigned By" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%# string.Concat(Eval("UserFirstName").ToString()," - ") %>
+                                    <asp:HyperLink runat="server" ForeColor="Blue"
+                                        NavigateUrl='<%# Eval("UserId", "ViewSalesUser.aspx?Id={0}") %>'
+                                        Text='<%# Eval("UserId")%>' />
+                                    <asp:Label ID="lblDateTime" runat="server" Text='<%#Eval("DateCreated")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <%--<asp:TemplateField HeaderText="Date" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
                                     <%#Eval("DateCreated")%>
                                 </ItemTemplate>
-                            </asp:TemplateField>
+                            </asp:TemplateField>--%>
                         </Columns>
                     </asp:GridView>
                 </ContentTemplate>
@@ -575,6 +584,11 @@
             }
         }
 
+        function ClosePopup(varControlID)
+        {
+            $(varControlID).dialog('close');
+        }
+
         function AppendMinimizeButton(objDialog) {
 
             var varTarget = $('#' + objDialog.attr('id'));
@@ -638,4 +652,4 @@
         }
 
     </script>
-    </asp:Content>
+</asp:Content>

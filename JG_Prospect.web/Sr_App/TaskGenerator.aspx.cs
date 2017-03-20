@@ -952,6 +952,23 @@ namespace JG_Prospect.Sr_App
             dlAssignedUsers.DataSource = dsUsers;
             dlAssignedUsers.DataBind();
 
+            FillAcceptanceLog();
+
+            upAcceptanceLog.Update();
+
+            //ScriptManager.RegisterStartupScript(
+            //                                        (dlAssignedUsers),
+            //                                        this.GetType(),
+            //                                        "ShowPopup_AcceptanceLog",
+            //                                        string.Format(
+            //                                                        "ShowPopup(\"#{0}\");",
+            //                                                        divAcceptanceLog.ClientID
+            //                                                    ),
+            //                                        true
+            //                                  );
+            dlAssignedUsers.Attributes.Add("onmouseover", "javascript:ShowPopup(" + divAcceptanceLog.ClientID + ");");
+            dlAssignedUsers.Attributes.Add("onmouseout", "javascript:ClosePopup(" + divAcceptanceLog.ClientID + ");");
+
             //HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
         }
 
