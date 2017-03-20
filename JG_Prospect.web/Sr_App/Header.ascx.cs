@@ -95,50 +95,6 @@ namespace JG_Prospect.Sr_App
 
             }
         }
-
-        protected void lbtnChat_Click(object sender, EventArgs e)
-        {
-            string server = "http://chat.jmgrovebuildingsupply.com";
-
-            var strPostData = string.Format("username={0}&email={1}&password={2}&confirmPassword={2}", JGSession.UserLoginId.Replace("@", "."), JGSession.UserLoginId, JGSession.UserPassword);
-            var arrPostData = System.Text.Encoding.ASCII.GetBytes(strPostData);
-
-            if (SendHttpWebRequest(server + "/account/create", arrPostData).StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                strPostData = string.Format("username={0}&password={1}", JGSession.UserLoginId.Replace("@", "."), JGSession.UserPassword);
-                arrPostData = System.Text.Encoding.ASCII.GetBytes(strPostData);
-
-                if (SendHttpWebRequest(server + "/account/login", arrPostData).StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    ScriptManager.RegisterStartupScript
-                        (
-                            this.Page, 
-                            this.Page.GetType(),
-                            "JabbRChatLogin", 
-                            string.Format("window.open('{0}');", Page.ResolveUrl("~/sr_app/JabbRChat.aspx")), 
-                            true
-                        );
-                }
-            }
-        }
-
-        private System.Net.HttpWebResponse SendHttpWebRequest(string strUrl, byte[] arrPostData)
-        {
-            var objRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(strUrl);
-
-            objRequest.Method = "POST";
-            objRequest.ContentType = "application/x-www-form-urlencoded";
-            objRequest.ContentLength = arrPostData.Length;
-
-            objRequest.Headers.Add("sec-jabbr-client", "1");
-
-            using (var stream = objRequest.GetRequestStream())
-            {
-                stream.Write(arrPostData, 0, arrPostData.Length);
-            }
-
-            return (System.Net.HttpWebResponse)objRequest.GetResponse();
-        }
-
+        
     }
 }

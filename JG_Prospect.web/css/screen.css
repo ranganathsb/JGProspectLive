@@ -1916,3 +1916,8 @@ display: block;
     font-weight: bold;
     text-decoration: underline;
 }
+
+.updateProgress {
+background-image: url("/img/ajax-loader.gif");
+align-content:flex-end;
+}
