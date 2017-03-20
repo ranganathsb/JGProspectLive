@@ -88,20 +88,20 @@
         </ul>
         <div class="clr">
         </div>
-        <ul>
+        <%--<ul>
             <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone Dashboard</a></li>
         </ul>
         <div class="clr">
-        </div>
+        </div>--%>
         <ul>
             <!--Email with # of unread msgs and new font-->
             <li id="test"><a id="hypEmail" runat="server" style="color:white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error hide"></label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
              <li>|</li>
-            <li>Voice Mail(0)</li>
+            <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
             <li>|</li>
             <li>Chat(1)</li>
         </ul>
-        <div class="ProfilImg">
+        <div class="ProfilImg" style="width:90px;">
             <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
             <asp:HyperLink class="caption" runat="server" ID="hLnkEditProfil" Text="Edit"></asp:HyperLink>
             <%--<a href="#"><div class="caption">Edit</div></a>--%>

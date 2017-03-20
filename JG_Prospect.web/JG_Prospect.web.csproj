@@ -1675,6 +1675,7 @@
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
     <Content Include="ShowResourcesJr.aspx" />
+    <Content Include="Sr_App\add-edit-aptitude-test.aspx" />
     <Content Include="Sr_App\AddEvents.aspx" />
     <Content Include="Sr_App\ajaxcalls.aspx" />
     <Content Include="Sr_App\AttachQuotes.aspx" />
@@ -1739,6 +1740,7 @@
     <Content Include="Sr_App\ITDashboard.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
+    <Content Include="Sr_App\manage-aptitude-tests.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
     <Content Include="Sr_App\OverheadExp.aspx" />
     <Content Include="Sr_App\Price_control.aspx" />
@@ -1765,6 +1767,7 @@
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
+    <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
     <Content Include="Sr_App\WebForm1.aspx" />
@@ -2013,6 +2016,13 @@
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.designer.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\Controls\ucSubTasks.ascx.cs">
       <DependentUpon>ucSubTasks.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2076,6 +2086,13 @@
     <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
       <DependentUpon>ITDashboard.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.designer.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2103,6 +2120,13 @@
     </Compile>
     <Compile Include="Sr_App\userbulkupload.aspx.designer.cs">
       <DependentUpon>userbulkupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.designer.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\ViewSalesUser.aspx.cs">
       <DependentUpon>ViewSalesUser.aspx</DependentUpon>
@@ -2684,6 +2708,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>

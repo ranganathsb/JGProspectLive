@@ -39,6 +39,16 @@ namespace JG_Prospect.BLL
             return AptitudeTestDAL.Instance.GetExamNameByExamID(ExamId);
         }
 
+        public DataTable GetMCQ_Exams(int? intDesignationID)
+        {
+            return AptitudeTestDAL.Instance.GetMCQ_Exams(intDesignationID);
+        }
+
+        public DataSet GetMCQ_ExamByID(Int64 intExamID)
+        {
+            return AptitudeTestDAL.Instance.GetMCQ_ExamByID(intExamID);
+        }
+
         public string GetExamDurationByID(string examID)
         {
             return AptitudeTestDAL.Instance.GetExamDurationByID(examID);
@@ -67,6 +77,52 @@ namespace JG_Prospect.BLL
         public bool InsertPerformance(int InstallUserID, int ExamID, int marksEarned, int totalMarks, float percentage, int Status)
         {
             return AptitudeTestDAL.Instance.InsertPerformance(InstallUserID, ExamID, marksEarned, totalMarks, percentage, Status);
+        }
+
+
+        public long InsertMCQ_Exam(MCQ_Exam objMCQ_Exam)
+        {
+            return AptitudeTestDAL.Instance.InsertMCQ_Exam(objMCQ_Exam);
+        }
+
+        public void UpdateMCQ_Exam(MCQ_Exam objMCQ_Exam)
+        {
+            AptitudeTestDAL.Instance.UpdateMCQ_Exam(objMCQ_Exam);
+        }
+
+        public long InsertMCQ_Question(MCQ_Question objMCQ_Question)
+        {
+            return AptitudeTestDAL.Instance.InsertMCQ_Question(objMCQ_Question);
+        }
+
+        public void UpdateMCQ_Question(MCQ_Question objMCQ_Question)
+        {
+            AptitudeTestDAL.Instance.UpdateMCQ_Question(objMCQ_Question);
+        }
+
+        public void DeleteMCQ_Question(long intQuestionID)
+        {
+            AptitudeTestDAL.Instance.DeleteMCQ_Question(intQuestionID);
+        }
+
+        public long InsertMCQ_Option(MCQ_Option objMCQ_Option)
+        {
+            return AptitudeTestDAL.Instance.InsertMCQ_Option(objMCQ_Option);
+        }
+
+        public void UpdateMCQ_Option(MCQ_Option objMCQ_Option)
+        {
+            AptitudeTestDAL.Instance.UpdateMCQ_Option(objMCQ_Option);
+        }
+
+        public long InsertMCQ_CorrectAnswer(MCQ_Option objMCQ_Option)
+        {
+            return AptitudeTestDAL.Instance.InsertMCQ_CorrectAnswer(objMCQ_Option);
+        }
+
+        public void UpdateMCQ_CorrectAnswer(MCQ_Option objMCQ_Option)
+        {
+            AptitudeTestDAL.Instance.UpdateMCQ_CorrectAnswer(objMCQ_Option);
         }
     }
 }

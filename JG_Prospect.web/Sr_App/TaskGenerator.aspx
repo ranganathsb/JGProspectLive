@@ -14,15 +14,16 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../css/chosen.css" rel="stylesheet" />
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
-    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />    
-    
-    <script src="../ckeditor/ckeditor.js"></script>    
+    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
+
+    <script src="../ckeditor/ckeditor.js"></script>
     <script src="../js/clipboard.min.js"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
-   
+
 
     <div class="right_panel">
         <hr />
@@ -85,22 +86,39 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </td>
-                            <td>Assigned:    
-
+                            <td>Assigned:
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
-                                        <asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="true" OnSelectedIndexChanged="ddlAssignedUsers_SelectedIndexChanged">
+                                        <%--<asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
+                                            AutoPostBack="true" OnSelectedIndexChanged="ddlAssignedUsers_SelectedIndexChanged" style="top: 0px; left: 0px">
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                             <Texts SelectBoxCaption="--Open--" />
-                                        </asp:DropDownCheckBoxes>
-                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />
+                                        </asp:DropDownCheckBoxes>--%>
+
+                                        <asp:Panel runat="server" ID="panel1" ScrollBars="Auto" Height="70px" Width="200px" BorderStyle="Solid" BorderWidth="1px">
+                                            <asp:DataList ID="dlAssignedUsers" runat="server" OnItemDataBound="dlAssignedUsers_ItemDataBound">
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID='chkId'
+                                                        runat="server" Text='<%#DataBinder.Eval(Container.DataItem, "FristName")%>' Font-Size="12px" Font-Bold="false" />
+                                                    <asp:HyperLink runat="server"
+                                                        NavigateUrl='<%#"ViewSalesUser.aspx?Id=" + DataBinder.Eval(Container.DataItem, "Id").ToString()%>'
+                                                        ID="Hyperlink1"> <%#DataBinder.Eval(Container.DataItem, "Id")%>
+                                                    </asp:HyperLink>
+                                                    <asp:Label runat="server" ID="lblId" Text='<%#DataBinder.Eval(Container.DataItem, "Id")%>' Visible="false"></asp:Label>
+                                                    <asp:Label runat="server" ID="lblStatus" Text='<%#DataBinder.Eval(Container.DataItem, "Status")%>' Visible="false"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:DataList>
+                                        </asp:Panel>
+
+                                        <span style="padding-left: 20px;">
+                                            <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
+                                        </span>
+
+<%--                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <span style="padding-left: 20px;">
-                                    <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
-                                </span>
                             </td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td class="valigntop">Task Title <span style="color: red;">*</span>:<br />
@@ -210,7 +228,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="display:none;">
+                        <tr style="display: none;">
                             <td colspan="2"><b>Task Description:</b>
                                 <asp:TextBox ID="txtTUDesc" TextMode="MultiLine" ReadOnly="true" Style="width: 100%;" Rows="10" runat="server"></asp:TextBox>
                             </td>
@@ -241,7 +259,7 @@
 
     <%--Popup Starts--%>
     <div class="hide">
-
+        <%--  <div>--%>
         <div id="divAcceptanceLog" runat="server" title="Acceptance Log">
             <asp:UpdatePanel ID="upAcceptanceLog" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -254,11 +272,11 @@
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
                         <Columns>
-                            <asp:TemplateField HeaderText="User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                            <asp:TemplateField HeaderText="Applicant User" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
                                     <%# string.Concat(Eval("UserFirstName").ToString()," - ") %>
                                     <asp:HyperLink runat="server" ForeColor="Blue"
-                                        NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
+                                        NavigateUrl='<%# Eval("UserId", "ViewSalesUser.aspx?Id={0}") %>'
                                         Text='<%# Eval("UserId")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -267,11 +285,20 @@
                                     <%# Convert.ToBoolean(Eval("IsAccepted"))? "Accepted" : "Rejected" %>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Date" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                            <asp:TemplateField HeaderText="Assigned By" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%# string.Concat(Eval("UserFirstName").ToString()," - ") %>
+                                    <asp:HyperLink runat="server" ForeColor="Blue"
+                                        NavigateUrl='<%# Eval("UserId", "ViewSalesUser.aspx?Id={0}") %>'
+                                        Text='<%# Eval("UserId")%>' />
+                                    <asp:Label ID="lblDateTime" runat="server" Text='<%#Eval("DateCreated")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <%--<asp:TemplateField HeaderText="Date" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left">
                                 <ItemTemplate>
                                     <%#Eval("DateCreated")%>
                                 </ItemTemplate>
-                            </asp:TemplateField>
+                            </asp:TemplateField>--%>
                         </Columns>
                     </asp:GridView>
                 </ContentTemplate>
@@ -505,7 +532,6 @@
         </div>
     </div>
     <%--Popup Ends--%>
-
     <script type="text/javascript">
 
         var workspecEditor;
@@ -556,6 +582,11 @@
                     of: window
                 });
             }
+        }
+
+        function ClosePopup(varControlID)
+        {
+            $(varControlID).dialog('close');
         }
 
         function AppendMinimizeButton(objDialog) {

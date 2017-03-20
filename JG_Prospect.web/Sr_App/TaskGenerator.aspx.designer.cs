@@ -112,22 +112,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upnlAssigned;
         
         /// <summary>
-        /// ddlAssignedUsers control.
+        /// panel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlAssignedUsers;
+        protected global::System.Web.UI.WebControls.Panel panel1;
         
         /// <summary>
-        /// lbtnViewAcceptanceLog control.
+        /// dlAssignedUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnViewAcceptanceLog;
+        protected global::System.Web.UI.WebControls.DataList dlAssignedUsers;
         
         /// <summary>
         /// chkTechTask control.
