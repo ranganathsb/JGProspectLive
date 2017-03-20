@@ -909,11 +909,12 @@ namespace JG_Prospect
 
             if (ddlTechTask.SelectedIndex > 0)
             {
-                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
-                ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
-                ddlTechSubTask.DataTextField = "Title";
-                ddlTechSubTask.DataValueField = "TaskId";
-                ddlTechSubTask.DataBind();
+                //DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
+                //ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                //ddlTechSubTask.DataTextField = "Title";
+                //ddlTechSubTask.DataValueField = "TaskId";
+                //ddlTechSubTask.DataBind();
+                FillSubTaskDropDown(Convert.ToInt64(ddlTechTask.SelectedValue), ddlTechSubTask);
             }
             else
             {
@@ -1227,11 +1228,12 @@ namespace JG_Prospect
 
                 if (ddlTechTask.SelectedIndex > 0)
                 {
-                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
-                    ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
-                    ddlTechSubTask.DataTextField = "Title";
-                    ddlTechSubTask.DataValueField = "TaskId";
-                    ddlTechSubTask.DataBind();
+                    //DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
+                    //ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                    //ddlTechSubTask.DataTextField = "Title";
+                    //ddlTechSubTask.DataValueField = "TaskId";
+                    //ddlTechSubTask.DataBind();
+                    FillSubTaskDropDown(Convert.ToInt64(ddlTechTask.SelectedValue), ddlTechSubTask);
                 }
                 else
                 {
@@ -3316,6 +3318,60 @@ namespace JG_Prospect
 
             ddlTechSubTask.Items.Insert(0, new ListItem("--select--", "0"));
             ddlTechSubTask.SelectedValue = "0";
+        }
+
+        private void FillSubTaskDropDown(long intTaskId, DropDownList ddlTechSubTask)
+        {
+            DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetTaskHierarchy(intTaskId, CommonFunction.CheckAdminAndItLeadMode());
+
+            DataTable dtLevel1SubTasks = null;
+            DataTable dtLevel2SubTasks = null;
+            DataTable dtLevel3SubTasks = null;
+
+            if (dsSubTasks != null && dsSubTasks.Tables.Count > 0 && dsSubTasks.Tables[0].Rows.Count > 0)
+            {
+                DataView dvSubTasks = dsSubTasks.Tables[0].DefaultView;
+
+                dvSubTasks.RowFilter = string.Format("TaskId <> {0} AND TaskLevel = 1", intTaskId);
+                dtLevel1SubTasks = dvSubTasks.ToTable();
+
+                foreach (DataRow drSubTask1 in dtLevel1SubTasks.Rows)
+                {
+                    string strTaskId = Convert.ToString(drSubTask1["TaskId"]);
+                    string strTitle = Convert.ToString(drSubTask1["Title"]);
+
+                    ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+
+                    dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 2", strTaskId);
+                    dtLevel2SubTasks = dvSubTasks.ToTable();
+
+                    foreach (DataRow drSubTask2 in dtLevel2SubTasks.Rows)
+                    {
+                        strTaskId = Convert.ToString(drSubTask2["TaskId"]);
+                        strTitle = "|--" + Convert.ToString(drSubTask2["Title"]);
+
+                        ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+
+                        dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 3", strTaskId);
+                        dtLevel3SubTasks = dvSubTasks.ToTable();
+
+                        foreach (DataRow drSubTask3 in dtLevel3SubTasks.Rows)
+                        {
+                            strTaskId = Convert.ToString(drSubTask3["TaskId"]);
+                            strTitle = "|----" + Convert.ToString(drSubTask3["Title"]);
+
+                            ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ddlTechSubTask.DataSource = null;
+                ddlTechSubTask.DataTextField = "Title";
+                ddlTechSubTask.DataValueField = "TaskId";
+                ddlTechSubTask.DataBind();
+            }
         }
 
         //private void BindGrid()

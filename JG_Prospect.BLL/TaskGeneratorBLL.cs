@@ -118,6 +118,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
         }
 
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
+        }
+
         public DataSet GetAllUsersNDesignationsForFilter()
         {
             return TaskGeneratorDAL.Instance.GetAllUsersNDesignationsForFilter();
