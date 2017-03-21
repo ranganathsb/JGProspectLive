@@ -146,8 +146,8 @@ namespace JG_Prospect.Sr_App
             objvendor.TaxId = txtTaxId.Text;
             objvendor.ExpenseCategory = txtExpenseCat.Text;
             objvendor.AutoTruckInsurance = txtAutoInsurance.Text;
-            bool res = VendorBLL.Instance.savevendor(objvendor);
-            if (res)
+            int res = VendorBLL.Instance.savevendor(objvendor);
+            if (res > 0)
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
             }

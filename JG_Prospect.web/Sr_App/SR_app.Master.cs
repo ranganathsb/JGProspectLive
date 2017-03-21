@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using JG_Prospect.BLL;
+using JG_Prospect.Common.RestServiceJSONParser;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.Sr_App
 {
@@ -14,14 +16,13 @@ namespace JG_Prospect.Sr_App
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Page.Form.DefaultButton = searchbutton.UniqueID;
 
             if (Session["loginid"] != null)
             {
 
                 if (JGSession.IsFirstTime == true)
                 {
-                    Response.Redirect("changepassword.aspx", false);
+                    Response.Redirect("~/changepassword.aspx", false);
                 }
 
                 if ((string)Session["usertype"] == "MM" || (string)Session["usertype"] == "SSE")
@@ -40,6 +41,7 @@ namespace JG_Prospect.Sr_App
                     li_department.Visible = true;
                 }
                 AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
+               
             }
             else
             {
@@ -48,6 +50,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+       
 
         protected void searchbutton_Click(object sender, EventArgs e)
         {

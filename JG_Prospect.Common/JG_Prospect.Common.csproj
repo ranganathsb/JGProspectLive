@@ -92,6 +92,7 @@
     <Compile Include="HTMLTemplates.cs" />
     <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />
+    <Compile Include="JGDataContracts.cs" />
     <Compile Include="Logger\ErrorLog.cs" />
     <Compile Include="Logger\LogCategory.cs" />
     <Compile Include="Logger\LogManager.cs" />
@@ -107,11 +108,15 @@
     <Compile Include="modal\Department.cs" />
     <Compile Include="modal\Designation.cs" />
     <Compile Include="modal\DesignationHTMLTemplate.cs" />
-    <Compile Include="modal\HTMLTemplatesMater.cs" />
+    <Compile Include="modal\HTMLTemplatesMaster.cs" />
+    <Compile Include="modal\MCQ_Exam.cs" />
+    <Compile Include="modal\MCQ_Option.cs" />
+    <Compile Include="modal\MCQ_Question.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />
     <Compile Include="modal\prospect.cs" />
+    <Compile Include="modal\Roles_ApplicationFeatures.cs" />
     <Compile Include="modal\shutters.cs" />
     <Compile Include="modal\Shutter_accessories.cs" />
     <Compile Include="modal\SrSalesReport.cs" />

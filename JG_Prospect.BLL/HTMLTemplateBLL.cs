@@ -25,14 +25,29 @@ namespace JG_Prospect.BLL
             set { ; }
         }
 
-        public DataSet GetHTMLTemplates()
+        public DataSet GetHTMLTemplateMasters()
         {
-            return HTMLTemplateDAL.Instance.GetHTMLTemplates();
+            return HTMLTemplateDAL.Instance.GetHTMLTemplateMasters();
         }
 
-        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation = null)
+        public HTMLTemplatesMaster GetHTMLTemplateMasterById(HTMLTemplates objHTMLTemplates)
+        {
+            return HTMLTemplateDAL.Instance.GetHTMLTemplateMasterById(objHTMLTemplates);
+        }
+
+        public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
         {
             return HTMLTemplateDAL.Instance.GetDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
+        }
+
+        public bool SaveDesignationHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate, byte? intMasterCategory)
+        {
+            return HTMLTemplateDAL.Instance.SaveDesignationHTMLTemplate(objDesignationHTMLTemplate, intMasterCategory);
+        }
+
+        public bool DeleteDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
+        {
+            return HTMLTemplateDAL.Instance.DeleteDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
         }
     }
 }

@@ -2,14 +2,13 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <%@ Register Src="~/UserControl/ucAuditTrailByUser.ascx" TagPrefix="ucAudit" TagName="UserListing" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css?v=1" rel="stylesheet" />
-
-    <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
-    <script type="text/javascript" src="../js/dropzone.js"></script>
+    <%----%>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
 
@@ -17,54 +16,26 @@
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
     <link href="../Styles/dd.css" rel="stylesheet" />
-    <link type="text/css" href="../css/flags24.css" rel="Stylesheet"/>
+    <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet" />
 
 
-    <script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>
-
-    <script>
-        function showAptTestPage(PageUrl) {
-                 
-            debugger;            
-        var $dialog = $('<div class="Aptitude-popup"></div>')
-                       .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
-                       .dialog({
-                           autoOpen: false,
-                           modal: true,
-                           height: 625,
-                           width: 800,
-                           title: "Aptitude Test"
-                       });
-        $dialog.dialog('open');
-        }
-
-        function ValidateUserDetals()
-        {
-            debugger
-            if (validateUserEmail() == false) {
-                return false;
-            }
-
-            return true;
-        }
-
-        function validateUserEmail()
-        {
-            if ($('#<%=chkPrimaryEmailMain.ClientID%>').is(':checked') == true) {                
-                return true;
-            }
-
-            
-            TheConfirm_OkOnly('Kindly select any one email as PrimaryEmail', 'Email Validation Alert');
-            
-            return false;
-        }
-
-</script>
+    <%--<script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>--%>
 
     <script type="text/javascript">
+        function showAptTestPage(PageUrl) {
+            var $dialog = $('<div class="Aptitude-popup"></div>')
+                           .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
+                           .dialog({
+                               autoOpen: false,
+                               modal: true,
+                               height: 625,
+                               width: 800,
+                               title: "Aptitude Test"
+                           });
+            $dialog.dialog('open');
+        }
 
-        function changeFlag(countrolD) {            
+        function changeFlag(countrolD) {
             $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
         }
 
@@ -93,29 +64,6 @@
             document.getElementById('interviewDatefade').style.display = 'block';
         }
 
-    </script>
-    <script type="text/javascript">
-        $(function () {
-            $("#DOBdatepicker").datepicker({
-                changeMonth: true,
-                changeYear: true,
-                yearRange: '1950:2050',
-                maxDate: 'today'
-            });
-        });
-
-        $(function () {
-            $("#txtStartDate").datepicker({
-                changeMonth: true,
-                changeYear: true,
-                yearRange: '1950:2050',
-                maxDate: 'today'
-            });
-        });
-
-    </script>
-
-    <script type="text/javascript">
         function GetSelectedValue(e) {
             //get selected value and check if subject is selected else show alert box
             var SelectedValue = e.options[e.selectedIndex].value;
@@ -134,9 +82,33 @@
 
         function doOpen() { $find("cpe2")._doOpen(); }
         function doClose() { $find("cpe2")._doClose(); }
+
+
     </script>
     <script type="text/javascript">
-        
+        $(function () {
+            
+            pageLoad();
+            $("#DOBdatepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1950:2050',
+                maxDate: 'today'
+            });
+        });
+
+        $(function () {
+            $("#txtStartDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1950:2050',
+                maxDate: 'today'
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+
         function checkTextAreaMaxLength(textBox, e, length) {
 
             var mLen = textBox["MaxLength"];
@@ -160,56 +132,27 @@
                 return true;
         }
 
-        
-        $(document).ready(function () {
+        //function pageLoad() { $(document).ready(function () {    });  }
 
-           changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+    function ClosePassword() {
+        document.getElementById('litePassword').style.display = 'none';
+        document.getElementById('fadePassword').style.display = 'none';
+    }
 
-           $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-            });
+    function overlayPassword() {
+        document.getElementById('litePassword').style.display = 'block';
+        document.getElementById('fadePassword').style.display = 'block';
+    }
 
-            
-            
-            $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
-                var url = window.location.href
-                var arr = url.split("/");
-                var currDomainName = arr[0] + "//" + arr[2];
-                showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
-            });
+    function ClosePopup() {
+        document.getElementById('light').style.display = 'none';
+        document.getElementById('fade').style.display = 'none';
+    }
 
-            var text_max = 50;
-            $('#textarea_CharCount').html(text_max + ' characters remaining');
-
-            $('#<%=txtREasonChange.ClientID%>').keyup(function () {
-                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
-                var text_remaining = text_max - text_length;
-
-                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
-            });
-        });
-
-   
-
-        function ClosePassword() {
-            document.getElementById('litePassword').style.display = 'none';
-            document.getElementById('fadePassword').style.display = 'none';
-        }
-
-        function overlayPassword() {
-            document.getElementById('litePassword').style.display = 'block';
-            document.getElementById('fadePassword').style.display = 'block';
-        }
-
-        function ClosePopup() {
-            document.getElementById('light').style.display = 'none';
-            document.getElementById('fade').style.display = 'none';
-        }
-
-        function overlay() {
-            document.getElementById('light').style.display = 'block';
-            document.getElementById('fade').style.display = 'block';
-        }
+    function overlay() {
+        document.getElementById('light').style.display = 'block';
+        document.getElementById('fade').style.display = 'block';
+    }
 
     </script>
     <script type="text/javascript">
@@ -220,90 +163,7 @@
         }
     </script>
 
-    <script type="text/javascript">
 
-        Dropzone.autoDiscover = false;
-
-        $(function () {
-            Initialize(); 
-        });
-
-        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
-
-        prmTaskGenerator.add_endRequest(function () {
-            Initialize();
-        });
-
-        function Initialize() {
-            ApplyDropZone();          
-        }
-
-        
-        var objWorkFileDropzone;
-        
-        //Dropzone.autoDiscover = false;
-        //Dropzone.options.dropzoneForm = false;
-
-        function ApplyDropZone() {
-            ////User's drag and drop file attachment related code
-
-            //remove already attached dropzone.
-            if (objWorkFileDropzone) {
-                objWorkFileDropzone.destroy();
-                objWorkFileDropzone = null;
-            }
-            
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
-            //remove already attached dropzone.
-        }
-
-        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
-            //debugger;
-            return new Dropzone(strDropzoneSelector,
-                {
-                    maxFiles: 5,
-                    url: "UploadFile.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: strPreviewSelector,
-                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            //var res = eval('(' + data.xhr.responseText + ')');
-                            alert('you are reached maximum attachment upload limit.');
-                        });
-
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            //debugger;
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
-
-                            // saves attachment.
-                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
-                            //this.removeFile(file);
-                            //$(".loading").hide();
-                        });
-                    }
-                });
-        }
-
-        function AddAttachmenttoViewState(serverfilename, hdnControlID) {
-            var attachments;
-
-            if ($(hdnControlID).val()) {
-                attachments = $(hdnControlID).val() + serverfilename + "^";
-            }
-            else {
-                attachments = serverfilename + "^";
-            }
-
-            $(hdnControlID).val(attachments);
-        }
-
-    </script>
 
     <script type="text/javascript">
         function ValidateCheckBox() {
@@ -338,8 +198,8 @@
             }
             return isValidFile;
         }
-         
-         
+
+
     </script>
     <script type="text/javascript">
 
@@ -422,7 +282,7 @@
 
             });
 
-             
+
 
             // Basic Skill Assessment section
             $("#btnBasicAssMinusNew").click(function () {
@@ -437,10 +297,6 @@
                 $('#btnBasicAssMinusNew').show();
 
             });
-
-
-
-
 
 
             $("#btnNewHireMinus").click(function () {
@@ -460,10 +316,10 @@
         }
 
         function ShowPhoneExtOnType(optionSelected, txtPhoneID, phoneExtID, PhoneISDCode) {
-            debugger
+
             if ((optionSelected.lastIndexOf('Other') < 0) && (optionSelected != 'skype') && (optionSelected != 'whatsapp')) {
                 //Show Ext text box        
-                
+
                 $(phoneExtID).show("slow");
                 $(txtPhoneID).intlTelInput();
                 if (PhoneISDCode != '') {
@@ -477,15 +333,40 @@
                 //var countryData = $(txtPhoneID).intlTelInput("getSelectedCountryData");
                 //alert(countryData.iso2);
             }
-            else
-            {
+            else {
                 //Hide Ext text box                
-                $(phoneExtID).hide("slow");                
+                $(phoneExtID).hide("slow");
                 $(txtPhoneID).intlTelInput("destroy");
             }
         }
         function pageLoad() {
             $(document).ready(function () {
+                 changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+
+            $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+           });
+
+            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
+                changeFlag('#<%=ddlCountry.ClientID%>');
+            });--%>
+
+            $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+            });
+            $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+            });
+
+            var text_max = 50;
+            $('#textarea_CharCount').html(text_max + ' characters remaining');
+
+            $('#<%=txtREasonChange.ClientID%>').keyup(function () {
+                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
+                var text_remaining = text_max - text_length;
+
+                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
+            });
 
                 SetSectionShowHideOnReady();
 
@@ -558,7 +439,7 @@
                 /// Email  == START
                 $('#AddExtEmail').click(function () {
                     $('<div/>', {
-                        'class': 'ExtAddEmail', html: GetHtmlForEmail('','')
+                        'class': 'ExtAddEmail', html: GetHtmlForEmail('')
                     }).hide().appendTo('#EmailContainer').slideDown('slow');//Get the html from template and hide and slideDown for transtion.
                 });
 
@@ -607,7 +488,7 @@
         //===ready===END
         function ShowHideRespectiveTableData(optionSelected) {
             if (optionSelected == '') {
-                optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %>').val();
+                optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %> option:selected').text();
             }
 
             $('#btnGeneralPlus').hide();
@@ -617,7 +498,7 @@
 
             $('.tblRecruiterAssMinusNew td').hide();
             $('#btnRecruiterAssMinusNew').hide();
-            
+
             $('.tblSalesAssesment td').hide();
             $('#btnSalesAssMinusNew').hide();
 
@@ -656,6 +537,9 @@
                 $(".tblSkillAssessment td").show("slow");
                 $('#btnSkillAssPlusNew').hide();
                 $('#btnSkillAssMinusNew').show();
+
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else if ((optionSelected == "Jr. Sales") || (optionSelected == "Jr Project Manager") || (optionSelected == "Sr. Sales") || (optionSelected == "Sales Manager")) {
                 $('#div-SalesAssess').html(optionSelected + " Skill Assessment")
@@ -667,18 +551,20 @@
                 $('#btnSalesPlusNew').hide();
                 $('#btnSalesAssMinusNew').show();
 
-
-
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else if (optionSelected == "Recruiter") {
                 $('#div-RecuiterAssess').html(optionSelected + " Skill Assessment")
                 $('.tblRecruiterMain').show("slow");
                 $('.tblRecruiterMain td').show("slow");
 
-
                 $(".tblRecruiterAssMinusNew td").show("slow");
                 $('#btnRecruiterPlusNew').hide();
                 $('#btnRecruiterAssMinusNew').show();
+
+                $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
             }
             else {
                 // show for all user.
@@ -686,9 +572,15 @@
 
                 if ((optionSelected == "0") || (optionSelected == "--Select--")) {
                     $('#div-BasicAssessment').html("Select Skill Assessment")
+
+                    $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test');
+                    $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test');
                 }
                 else {
                     $('#div-BasicAssessment').html(optionSelected + " Skill Assessment");
+
+                    $('#<%=lbtnAptTestLink1.ClientID%>').html('Aptitude test for ' + optionSelected);
+                    $('#<%=lbtnAptTestLink2.ClientID%>').html('Aptitude test for ' + optionSelected);
                 }
 
 
@@ -704,7 +596,28 @@
             return '$' + n2.split('').reverse().join('');
         }
 
-        
+        function SetEmailValuefromCtlToHid() {
+            var delimeter = '|,|';
+            var strEmailIds = '';
+
+            var mailEmail = $('#<%= txtemail.ClientID %>').val();
+
+            validateEmail(mailEmail);
+
+            $('#EmailContainer .ExtEmailClass').each(function () {
+                if (this.value != '') {
+
+                    if (strEmailIds == '') {
+                        strEmailIds = strEmailIds + this.value;
+                    }
+                    else {
+                        strEmailIds = strEmailIds + delimeter + this.value;
+                    }
+                }
+            });
+
+            $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
+        }
 
         function SetPhoneValuefromCtlToHid() {
             var delimeter = '|,|';
@@ -743,8 +656,7 @@
                     PhoneISDCode[i] = countryData.iso2;
                     txtPhoneExt[i] = $(PhoneExtID).val();
                 }
-                else
-                {
+                else {
                     PhoneISDCode[i] = "";
                     txtPhoneExt[i] = "";
                 }
@@ -753,7 +665,19 @@
             });
 
             i = 0;
-            
+            //== Getting value of Phone Type Checkbox 
+            $('#container .PrimaryPhonechk').each(function () {
+                if (this.checked == true) {
+                    chkPhoneProroty[i] = "1";
+                }
+                else {
+                    chkPhoneProroty[i] = "0";
+                }
+
+                i++;
+            });
+
+            i = 0;
             //== Getting value of Phone Type textBox
             $('#container .ExtPhoneClass').each(function () {
                 txtPhone[i] = this.value;
@@ -764,7 +688,7 @@
             for (i = 0; i < len; i++) {
                 //var txtPhone = html.find('[name=AddedPhone' + i + ']');
                 if (txtPhone[i] != '') {
-                    var strPhoneCombainValue = 0 + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
+                    var strPhoneCombainValue = chkPhoneProroty[i] + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
 
                     if (strPhoneValue == '') {
                         strPhoneValue = strPhoneCombainValue;
@@ -776,15 +700,17 @@
             }
 
 
+
+
             //chkPhoneProroty[i] + Subdelimeter + txtPhone[i] + Subdelimeter + ddlPhoneType[i];
             //So it will be like Eg.for 1 record =="1|%|9429822|%|WorkPhone
             //So it will be like Eg.for 2 record =="1|%|9429822|%|WorkPhone|,|0|%|937660|%|HomePhone
-            
+
             $('#<%= hidExtPhone.ClientID %>').val(strPhoneValue);
         }
 
         function ReadPhoneValuesFromHidGenControls() {
-            
+
             var PhoneValue = $('#<%= hidExtPhone.ClientID %>').val();
             var delimeter = '|,|';
             var Subdelimeter = '|%|';
@@ -816,7 +742,7 @@
                     var PhoneTxt = PhoneCombainValue[2];
                     var PhoneExt = PhoneCombainValue[3];
                     var PhoneType = PhoneCombainValue[4];
-                    debugger
+
                     $('<div/>', {
                         'class': 'ExtAddPhone', html: GetHtml(chkPhonePro, PhoneISDCode, PhoneTxt, PhoneExt, PhoneType)
                     }).hide().appendTo('#container').slideDown('slow');
@@ -845,57 +771,18 @@
             });
         }
 
-        /// Set email value on the base of control selected.
-        function SetEmailValuefromCtlToHid() {
-            var delimeter = '|,|';
-            var Subdelimeter = '|%|';
-            var len = $('.ExtAddEmail').length;
-            var strEmailIds = [];
-            var chkPrimaryEmail = [];
-            var strEmailValue = '';
-            var i = 0;
-            
-            //var mailEmail = $('#%= txtemail.ClientID %>').val();
-
-            //validateEmail(mailEmail);
-            debugger
-            i = 0;
-            //== Getting value of Email Primary Checkbox 
-            
-            $('#EmailContainer .ExtEmailClass').each(function () {
-                        strEmailIds[i] = this.value; 
-                i++;
-            });
-
-
-            for (i = 0; i < len; i++) {
-                if (strEmailIds[i] != '') {
-                    var strEmaileCombainValue = chkPrimaryEmail[i] + Subdelimeter + strEmailIds[i];
-                    if (strEmailValue == '') {
-                        strEmailValue = strEmaileCombainValue;
-                    }
-                    else {
-                        strEmailValue = strEmailValue + delimeter + strEmaileCombainValue;
-                    }
-                } 
-            }
-            
-            $('#<%= hidExtEmail.ClientID %>').val(strEmailValue);
-        }
-
         function ReadEmailValuesFromHidGenControls() {
-            
+
             var emailValue = $('#<%= hidExtEmail.ClientID %>').val();
-            debugger;
+
             var delimeter = '|,|';
-            var Subdelimeter = '|%|';
 
             if (emailValue == '') {
                 return;
             }
 
             if (emailValue.lastIndexOf(delimeter) < 0) {
-                //if delimeter is not found then add it.
+                //only One emailID without 
                 emailValue = emailValue + delimeter;
             }
 
@@ -905,16 +792,11 @@
 
             $('#EmailContainer').empty(); // cear div contails
 
-            for (i = 0; i < emaiArray.length; i++) { 
+            for (i = 0; i < emaiArray.length; i++) {
 
                 if (emaiArray[i] != '') {
-                    
-                    var EmailCombainValue = emaiArray[i].split(Subdelimeter)
-                    var ChkEmailPrimary = EmailCombainValue[0];
-                    var Email = EmailCombainValue[1];
-
                     $('<div/>', {
-                        'class': 'ExtAddEmail', html: GetHtmlForEmail(ChkEmailPrimary, Email)
+                        'class': 'ExtAddEmail', html: GetHtmlForEmail(emaiArray[i])
                     }).hide().appendTo('#EmailContainer').slideDown('slow');
                 }
             }
@@ -952,7 +834,7 @@
                 var optionSelected = $("option:selected", this).text();
                 var PhoneExtID = '#' + this.getAttribute("AddtxtPhoneExtID");
                 var txtPhoneID = '#' + this.getAttribute("AddtxtPhoneID");
-                var PhoneISDCode =  this.getAttribute("PhoneISDCode");
+                var PhoneISDCode = this.getAttribute("PhoneISDCode");
 
                 ShowPhoneExtOnType(optionSelected, txtPhoneID, PhoneExtID, PhoneISDCode);
             });
@@ -964,7 +846,7 @@
         function AddPhoneTypDdl(newPhoneType) {
 
             $('<div/>', {
-                'class': 'ExtAddPhone', html: GetHtml('', '', '', '',newPhoneType)
+                'class': 'ExtAddPhone', html: GetHtml('', '', '', '', newPhoneType)
             }).hide().appendTo('#container').slideDown('slow');//Get the html from template and hide and slideDown for transtion.
 
             functionCallAfterPhonTypeAdded();
@@ -992,18 +874,17 @@
             if (chkPhonePro == "1") {
                 $html.find('[name=chkPrimaryPhone' + len + ']').attr("checked", true);
             }
-            
+
             if (PhoneExt != '') {
                 $html.find('[id=AddedPhoneExt' + len + ']').attr("value", PhoneExt);
             }
 
             // Setting ISD Code so later can fetch value from att
-            
+
             if (PhoneISDCode) {
                 $html.find('[id=<%=ddlPhontType.ClientID%>' + len + ']').attr("PhoneISDCode", PhoneISDCode);
             }
-            else
-            {
+            else {
                 //setting default value as US..
                 $html.find('[id=<%=ddlPhontType.ClientID%>' + len + ']').attr("PhoneISDCode", "us");
             }
@@ -1015,19 +896,13 @@
             return $html.html();
         }
 
-        function GetHtmlForEmail(ChkEmailPrimary, strEmailValue) {
+        function GetHtmlForEmail(strEmailValue) {
 
             var len = $('.ExtAddEmail').length;
 
             var $html = $('.ExtAddEmailTemplate').clone();
             $html.find('[name=txtExtEmail]')[0].name = "txtExtEmail" + len;
             $html.find('[name=txtExtEmail' + len + ']').attr("value", strEmailValue);
-
-            $html.find('[name=chkPrimaryEmail]')[0].name = "chkPrimaryEmail" + len;
-
-            if (ChkEmailPrimary == "1") {
-                $html.find('[name=chkPrimaryEmail' + len + ']').attr("checked", true);
-            }
 
             return $html.html();
         }
@@ -1060,7 +935,7 @@
                 }
             });
         }
-         
+
         function CheckDuplicatePhone(obj) {
             if (obj.value != "") {
                 CheckDuplicateCustomerCred(obj, 1);
@@ -1074,20 +949,22 @@
                 SetEmailValuefromCtlToHid();
             }
         }
-        
+
         // == Add New Phone Type in To DB..
         function AddNewPhoneType(newPhoneType) {
-            newPhoneType = "Other : " + newPhoneType;
 
+            newPhoneType = "Other : " + newPhoneType;
+            alert(newPhoneType);
             var IsAlreadyExist = false;
-            if (newPhoneType == null || newPhoneType == 'null') {
+
+            if (newPhoneType == null) {
                 return false;
             }
 
             $("#<%= phoneTypeDropDownList.ClientID %> option").each(function () {
-                debugger;
+                ;
                 if ($(this).text() == newPhoneType) {
-                    alert("Phone Type already exists");                    
+                    alert("Phone Type already exists");
                     IsAlreadyExist = true;
                     return false;
                 }
@@ -1104,12 +981,12 @@
                 data: "{'strNewPhoneType':'" + newPhoneType + "'}",
 
                 success: function (data) {
-                    //debugger;
+                    //;
 
                     var dataInput = (data.d.split('#'));
                     //myString.split('/')
                     if (dataInput != '') {
-                        //debugger;
+                        //;
                         var title = "";
 
                         $("#dialog")[0].innerHTML = "";
@@ -1145,11 +1022,11 @@
             $('.ddlPhoneTypeExt').append($("<option></option>").attr("value", newPhoneType).text(newPhoneType));
 
             AddPhoneTypDdl(newPhoneType);
-            
+
         }
 
         function CheckDuplicateCustomerCred(obj, type) {
-            //debugger;
+            //;
             var valueForValid = "";
             if (type == 1) {
                 var contact = obj.value
@@ -1167,12 +1044,12 @@
                 data: "{'pValueForValidation':'" + valueForValid + "', 'strCurrentID':'" + $('#<%= hidID.ClientID %>').val() + "','pValidationType':" + type + "}",
 
                 success: function (data) {
-                    //debugger;
+                    //;
 
                     var dataInput = (data.d.split('#'));
                     //myString.split('/')
                     if (dataInput != '') {
-                        //debugger;
+                        //;
                         var title = "";
                         var existsMessage = "";
                         $("#dialog")[0].innerHTML = "";
@@ -1197,7 +1074,7 @@
                             {
                                 id: "Yes",
                                 text: "Yes",
-                                click: function () {                                    
+                                click: function () {
                                     window.location = "CreateSalesUser.aspx?id=" + dataInput[0];
                                 }
                             },
@@ -1221,14 +1098,10 @@
 
     </script>
     <style type="text/css">
-        .trChkbox tr label
-        {
-
-        }
-        #ui-dialog-title
-        {
+        #ui-dialog-title {
             background: #ccc;
         }
+
         .tblGen-Secon tr td {
             padding-left: 55px !important;
         }
@@ -1242,7 +1115,22 @@
             margin-bottom: 0;
         }
 
-        
+        .PrimaryPhonechk {
+            display: inline-block;
+            margin-left: -28px;
+            padding-left: 28px;
+            background: url('img/main-header-bg.png') no-repeat 0 0;
+            line-height: 24px;
+        }
+
+        .PrimaryEmailchk {
+            display: inline-block;
+            margin-left: -28px;
+            padding-left: 28px;
+            background: url('img/main-header-bg.png') no-repeat 0 0;
+            line-height: 24px;
+        }
+
         .tr-RadioButton span label {
             padding-top: 0px !important;
             padding-left: 3px;
@@ -1267,7 +1155,7 @@
             display: inline-block;
             font-size: 0.9em;
             font-weight: 400;
-            border: 0; 
+            border: 0;
             margin: 0;
             margin-left: 45px !important;
         }
@@ -1579,7 +1467,8 @@
     <input type="hidden" id="hidDesignationBeforeChange" runat="server" />
     <input type="hidden" id="hidExtEmail" runat="server" />
     <input type="hidden" id="hidExtPhone" runat="server" />
-    <input type="hidden" id="hidPhoneISDCode" runat="server" /> <%--for Default Phone no. old one--%>
+    <input type="hidden" id="hidPhoneISDCode" runat="server" />
+    <%--for Default Phone no. old one--%>
     <input type="hidden" id="hidTouchPointGUID" runat="server" />
 
     <%--<div class="loading" style="display: none">Loading&#8230;</div>--%>
@@ -1598,8 +1487,8 @@
                 <h1>Create Admin Sales Users
                 </h1>
                 <asp:ValidationSummary ID="ValidationSummary1" runat="server" Style="padding: 5px" HeaderText="Following error occurs....." ShowMessageBox="true"
-                    DisplayMode="BulletList" ShowSummary="true" ValidationGroup="submit" ShowModelStateErrors="true" ShowValidationErrors="true" 
-                    BackColor="Snow" ForeColor="Red" Font-Size="X-Large" Font-Italic="true"  />
+                    DisplayMode="BulletList" ShowSummary="true" ValidationGroup="submit" ShowModelStateErrors="true" ShowValidationErrors="true"
+                    BackColor="Snow" ForeColor="Red" Font-Size="X-Large" Font-Italic="true" />
                 <div class="form_panel_custom">
                     <span>
                         <%--<asp:Label ID="lblmsg" runat="server" Visible="false"></asp:Label>--%>
@@ -1637,9 +1526,10 @@
                                         <label>
                                             <asp:Label ID="lblUser" runat="server" ForeColor="Black" Text="User Status"></asp:Label>
                                             <asp:Label ID="lblReqDesig" ForeColor="Red" runat="server" Text="*"></asp:Label>></label>
-                                              
-                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
-                                            <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
+
+                                        <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px"
+                                            OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
+                                            <%-- <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
                                             <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>
                                             <asp:ListItem Text="Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" Value="InterviewDate"></asp:ListItem>
                                             <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem> 
@@ -1647,20 +1537,19 @@
                                                 
                                             <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
 
-                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
-                                            
+                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>--%>
+
                                             <%--<asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>--%>
-                                            
-                                        </asp:DropDownList>                                        
+                                        </asp:DropDownList>
                                     </td>
-                                    <td colspan="3">                                        
+                                    <td colspan="3">
                                         <label>Date Sourced</label>
                                         <asp:TextBox ID="txtDateSourced" runat="server" Width="239px" TabIndex="505"></asp:TextBox>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="7">
-                                        <table style="margin-left:0px;">
+                                        <table style="margin-left: 0px;">
                                             <tr>
                                                 <td style="vertical-align: top; width: 220px; padding-right: 0px !important;">First Name<span><asp:Label ID="lblReqFName" Text="*" ForeColor="Green" runat="server"></asp:Label></span>
                                                     <br />
@@ -1695,7 +1584,7 @@
                                                 <td style="padding-right: 0px !important;">Phone#<asp:Label ID="lblPhoneReq" runat="server" Text="*" ForeColor="Red"></asp:Label>
                                                     <asp:RequiredFieldValidator ID="rqPhone" runat="server" ControlToValidate="txtPhone"
                                                         ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Phone No"></asp:RequiredFieldValidator>
-                                                    <asp:TextBox ID="txtPhone" runat="server" MaxLength="12" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
+                                                    <asp:TextBox ID="txtPhone" runat="server" MaxLength="14" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
                                                         onkeypress="return IsNumeric(event);" Width="150"></asp:TextBox>
                                                 </td>
                                                 <td>&nbsp;&nbsp;Ext. <%--extension--%>
@@ -1708,8 +1597,8 @@
                                                 <td style="padding-left: 0px !important;">
                                                     <input id="AddExtPhone" value="Add Phone" style="margin-top: 12px; height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
                                                 </td>
-                                                <td style="padding-right: 0px !important; margin-top: 19px; padding-top: 25px;">
-                                                    <asp:CheckBox class="PrimaryEmailMain" ID="chkPrimaryEmailMain" runat="server" Style="color: #fff; margin-top: 19px;" />
+                                                <td style="padding-right: 0px !important; margin-top: 15px;">
+                                                    <asp:CheckBox class="PrimaryEmailMain" ID="chkPrimaryEmailMain" runat="server" Style="color: #fff; margin-top: 18px;" />
                                                 </td>
                                                 <td style="vertical-align: top; padding-right: 0px !important;">Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span><br />
                                                     <asp:TextBox ID="txtemail" runat="server" MaxLength="40" OnTextChanged="txtemail_TextChanged" onblur="CheckDuplicateEmail(this)" Width="150px" TabIndex="507"></asp:TextBox><%--TabIndex="117"--%>
@@ -1728,13 +1617,14 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>                                    
+                                    <td></td>
                                     <td colspan="4" class="style2" style="vertical-align: top">
                                         <div style="margin-top: 10px;" class="ExtAddPhoneTemplate">
                                             <div class="PhontType"></div>
-                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">                                            
+                                            <input name="RemovePhone" class="RemovePhoneBtn" value="-" id="RemovePhone" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
+                                            <input name="chkPrimaryPhone" class="PrimaryPhonechk" id="chkPrimaryPhone" style="color: #fff;" type="checkbox" onclick="SetPhoneValuefromCtlToHid();">
                                             <input type="text" name="AddedPhone" id="txtAddedPhone" class="ExtPhoneClass" maxlength="256" onkeypress="return IsNumeric(event);" onblur="CheckDuplicatePhone(this);" style="width: 150px" />
-                                            <input type="text" name="AddedPhoneExt" id="AddedPhoneExt" class="ExtPhoneClassExt" maxlength="256" onkeypress="return IsNumeric(event);"  style="width: 25px" />
+                                            <input type="text" name="AddedPhoneExt" id="AddedPhoneExt" class="ExtPhoneClassExt" maxlength="256" onkeypress="return IsNumeric(event);" style="width: 25px" />
                                             <asp:DropDownList CssClass="ddlPhoneTypeExt" ID="ddlPhontType" AddtxtPhoneExtID="AddedPhoneExt" AddtxtPhoneID="txtAddedPhone" PhoneISDCode="us" data-dopdorcout="ddlCount" OnPreRender="ddlPhontType_PreRender" runat="server">
                                             </asp:DropDownList>
                                         </div>
@@ -1745,7 +1635,7 @@
                                         <div style="margin-top: 10px;" class="ExtAddEmailTemplate" id="ExtAddEmailTemplate">
                                             <%--<div class="EmailType"></div>--%>
                                             <input name="RemoveEmail" class="RemovePhoneBtn" value="-" id="RemoveEmail" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
-                                            
+                                            <input name="chkPrimaryEmail" class="PrimaryEmailchk" id="chkEmailPhone" style="color: #fff;" type="checkbox" onclick="SetEmailValuefromCtlToHid();">
                                             <input type="text" name="txtExtEmail" class="ExtEmailClass" value="" onblur="CheckDuplicateEmail(this)" placeholder="Email" maxlength="256" style="width: 180px" />
                                         </div>
 
@@ -1756,9 +1646,8 @@
                                 <tr>
                                     <td colspan="2">
                                         <table>
-                                            <tr class="trChkbox">
-                                                <td>
-                                                    Contact Preference
+                                            <tr>
+                                                <td>Contact Preference
                                                 </td>
                                                 <td>
                                                     <asp:CheckBox ID="ContactPreferenceChkEmail" runat="server" Text="Email" />
@@ -1777,31 +1666,9 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="1" style="vertical-align: top; ">
+                                    <td colspan="1" style="vertical-align: top;">
                                         <label>Designation<span>*</span></label>
-                                        <asp:DropDownList Width="160px" ID="ddldesignation" AppendDataBoundItems="true" TabIndex="508" runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                            <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
-                                            <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                        <asp:DropDownList Width="160px" ID="ddldesignation" TabIndex="508" runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqDesignition" runat="server" ControlToValidate="ddldesignation"
@@ -1817,29 +1684,7 @@
 
                                     </td>
                                     <td colspan="2" style="vertical-align: top;">Position Applied For
-                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false">
-                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                            <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
-                                            <%--<asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>--%>
+                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" runat="server" ClientIDMode="Static" AutoPostBack="false">
                                         </asp:DropDownList>
                                     </td>
                                     <td colspan="4">
@@ -1854,7 +1699,7 @@
                                         <label></label>
                                         <asp:TextBox ID="txtSource" runat="server" Width="140px" TabIndex="512"></asp:TextBox>
                                         &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
-                                <asp:Button runat="server" ID="btnDeleteSource" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                <asp:Button runat="server" ID="btnDeleteSource" OnClientClick="javascript:return confirm('are you sure you want to delete this source? All users entered by this source will be replaced with JG - Source by default.');" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
                                         <br />
                                         <label>
                                         </label>
@@ -1870,16 +1715,16 @@
                                         <asp:DropDownList ID="ddlEmpType" runat="server" Width="170px" AutoPostBack="true" OnSelectedIndexChanged="ddlEmpType_SelectedIndexChanged">
                                             <%--TabIndex="155"--%>
                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                            <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
-                                            <asp:ListItem Text="Internship" Value="Internship"></asp:ListItem>
-                                            <asp:ListItem Text="Part Time - Remote" Value="Part Time - Remote"></asp:ListItem>
-                                            <asp:ListItem Text="Part Time - Onsite" Value="Part Time - Onsite"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time - Remote" Value="Full Time - Remote"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time - Onsite" Value="Full Time - Onsite"></asp:ListItem>
+                                            <asp:ListItem Text="Temp" Value="6"></asp:ListItem>
+                                            <asp:ListItem Text="Internship" Value="5"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Remote" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Onsite" Value="3"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Remote" Value="2"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Onsite" Value="4"></asp:ListItem>
                                             <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
                                             <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
                                             <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
-                                            <asp:ListItem Text="Sub" Value="Sub"></asp:ListItem>
+                                            <asp:ListItem Text="Sub" Value="7"></asp:ListItem>
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
@@ -1916,7 +1761,7 @@
                                 </tr>
                             </table>
                         </li>
-                        <li style="width: 97%;"> 
+                        <li style="width: 97%;">
                             <div>
                                 <div class="grid">
                                     <div class="clsOverFlow">
@@ -1948,36 +1793,31 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                        </asp:GridView> 
+                                        </asp:GridView>
                                     </div>
                                 </div>
                             </div>
-                            <table cellspacing="0" cellpadding="0" border="1" style="width: 100%; border-collapse: collapse;margin-left:0px;">
-                                    <tr >
-                                        <td style="background:none">
-                                            
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="background:none; padding-bottom:0px;">
-                                            Notes:<br />
-                                            <asp:TextBox ID="txtTouchPointLogNote" runat="server" TextMode="MultiLine" Width="100%" Height="50px" CssClass="textbox"></asp:TextBox>
-                                        </td>
-                                    </tr>
+                            <table cellspacing="0" cellpadding="0" border="1" style="width: 100%; border-collapse: collapse; margin-left: 0px;">
+                                <tr>
+                                    <td style="background: none"></td>
+                                </tr>
+                                <tr>
+                                    <td style="background: none; padding-bottom: 0px;">Notes:<br />
+                                        <asp:TextBox ID="txtTouchPointLogNote" runat="server" TextMode="MultiLine" Width="100%" Height="50px" CssClass="textbox"></asp:TextBox>
+                                    </td>
+                                </tr>
 
-                                    <tr>
-                                        <td colspan="2" style="background:none; padding-top:0px;">
-                                            <div class="btn_sec">
-                                                <asp:Button ID="btnAddNote" runat="server" Text="Add Note" CssClass="ui-button" OnClick="btnAddNote_Click" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <tr>
+                                    <td colspan="2" style="background: none; padding-top: 0px;">
+                                        <div class="btn_sec">
+                                            <asp:Button ID="btnAddNote" runat="server" Text="Add Note" CssClass="ui-button" OnClick="btnAddNote_Click" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+
                             
-                            
-                            <div style="float:right; font-size:large;margin-top: 15px;margin-right: 12px;">
-                                <asp:LinkButton ID="lbtnAptTestLink" OnClientClick="return false" runat="server"></asp:LinkButton>
-                            </div>
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
                                 <tr>
@@ -2019,7 +1859,10 @@
                                         <input type="button" id="btnSkillAssMinusNew" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-AdminAssess">Skill Assessment</div>
+                                        <div id="div-AdminAssess" style="float:left;">Skill Assessment</div>
+                                        <div style="float: right; margin-right: 25px;">
+                                            <asp:LinkButton ID="lbtnAptTestLink1" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -2462,7 +2305,10 @@
 
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-BasicAssessment"></div>
+                                        <div id="div-BasicAssessment" style="float:left;"></div>
+                                        <div style="float: right; margin-right: 25px;">
+                                            <asp:LinkButton ID="lbtnAptTestLink2" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -2495,12 +2341,12 @@
                                                 </label>
                                                 &nbsp;<asp:TextBox ID="txtEmpWhere" runat="server" Width="175px"></asp:TextBox>--%>
                                     </td>
-                                    
+
                                 </tr>
                                 <tr>
                                     <td rowspan="2">Reason for leaving your current employer/position if applicable :
                                         <br />
-                                        <asp:TextBox ID="txtREasonChange" runat="server" Width="330px" MaxLength="50"  Height="43px" onkeyDown="checkTextAreaMaxLength(this,event,'50');" TextMode="MultiLine"></asp:TextBox>
+                                        <asp:TextBox ID="txtREasonChange" runat="server" Width="330px" MaxLength="50" Height="43px" onkeyDown="checkTextAreaMaxLength(this,event,'50');" TextMode="MultiLine"></asp:TextBox>
                                         <div id="textarea_CharCount"></div>
                                     </td>
                                     <td class="tr-RadioButton">Will you be able to pass a drug test and background check ?&nbsp;&nbsp;&nbsp;&nbsp;
@@ -2514,7 +2360,7 @@
                                         <asp:RadioButton ID="rdoGuiltyYes" Width="45px" runat="server" Text="Yes" GroupName="Guilty" TabIndex="192" />
                                         <asp:RadioButton ID="rdoGuiltyNo" Width="45px" runat="server" Text="No" GroupName="Guilty" TabIndex="193" />
                                     </td>
-                                    
+
                                 </tr>
                             </table>
                         </li>
@@ -3075,7 +2921,7 @@
                                 </tr>
                             </table>
 
-                            <table width="98%" style="height: 50px; max-width:1000px;">
+                            <table width="98%" style="height: 50px; max-width: 1000px;">
                                 <tr>
                                     <td class="auto-style10" style="width: 60px;">
                                         <input id="btnGeneralPlus" class="formCtrl" type="button" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
@@ -3149,8 +2995,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>
-															Zip
+                                                            <td>Zip
                                                                     <br />
                                                                 <asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>
 
@@ -3185,21 +3030,19 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>
-															Country
-                                                                    <br />                                                                  
+                                                            <td>Country
+                                                                    <br />
                                                                 <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
-                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px; margin-top: 2px;" class="in"></div>
                                                                     <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
                                                                     <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
                                                                     </select>
                                                                 </div>
-                                                                
+
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>
-															Suite/Apt/Room(If applicable)
+                                                            <td>Suite/Apt/Room(If applicable)
                                                                     <br />
                                                                 <asp:TextBox ID="txtSuiteAptRoom" runat="server" MaxLength="5" TextMode="SingleLine" Width="240px"
                                                                     TabIndex="519"></asp:TextBox>
@@ -3564,7 +3407,7 @@
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ControlToValidate="txtReson" runat="server" ErrorMessage="Enter Reason" ForeColor="Red" Display="Dynamic" ValidationGroup="submit"></asp:RequiredFieldValidator>
                                         <br />
                                         <label></label>
-                                        
+
                                         &nbsp;<br />
                                         <%--</ContentTemplate>
                                 </asp:UpdatePanel>--%>
@@ -4845,12 +4688,10 @@
 
                     </div>
                     <div class="btn_sec">
-                        <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />
                         <%--<asp:Button ID="btncreate" Text="Create User" runat="server" OnClick="btncreate_Click" ValidationGroup="submit" />--%>
                         <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" />
                         <%--TabIndex="210"--%>
-                        <%--<asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />--%>
                         <asp:Button ID="btnUpdate" Text="Update" runat="server" OnClick="btnUpdate_Click" ValidationGroup="submit" CausesValidation="False" />
                     </div>
                 </div>
@@ -5091,12 +4932,102 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
-    <script src="../js/jquery.dd.min.js"></script>
+
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
     <script type="text/javascript">
-        $(document).ready(function () {
+
+        Dropzone.autoDiscover = false;
+
+        $(function () {
+            Initialize();
+            $.fn.hitch = function (scope, fn) {
+                //return function () {
+                //    return fn.apply(scope, arguments);
+                //}
+            }
+        });
+
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmTaskGenerator.add_endRequest(function () {
+            Initialize();
+        });
+
+        function Initialize() {
+            ApplyDropZone();
+        }
 
 
-            $("#<%=ddlstatus.ClientID%>").click(function () {
+        var objWorkFileDropzone;
+
+        //Dropzone.autoDiscover = false;
+        //Dropzone.options.dropzoneForm = false;
+
+        function ApplyDropZone() {
+            ////User's drag and drop file attachment related code
+
+            //remove already attached dropzone.
+            if (objWorkFileDropzone) {
+                objWorkFileDropzone.destroy();
+                objWorkFileDropzone = null;
+            }
+
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            //remove already attached dropzone.
+        }
+
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+            //;
+            return new Dropzone(strDropzoneSelector,
+                {
+                    maxFiles: 5,
+                    url: "UploadFile.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: strPreviewSelector,
+                    acceptedFiles: ".png, .jpg, .jpeg, .tif, .gif ",
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            //var res = eval('(' + data.xhr.responseText + ')');
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            //;
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnWorkFiles.ClientID %>');
+
+                            // saves attachment.
+                            //$('#%=btnAddAttachment.ClientID%>').click(); console.log('clicked');
+                            //this.removeFile(file);
+                            //$(".loading").hide();
+                        });
+                    }
+                });
+            }
+
+            function AddAttachmenttoViewState(serverfilename, hdnControlID) {
+                var attachments;
+
+                if ($(hdnControlID).val()) {
+                    attachments = $(hdnControlID).val() + serverfilename + "^";
+                }
+                else {
+                    attachments = serverfilename + "^";
+                }
+
+                $(hdnControlID).val(attachments);
+            }
+
+            $(document).ready(function () {
+
+
+                $("#<%=ddlstatus.ClientID%>").click(function () {
                 if ($('#<%=ddlstatus.ClientID%>').val() == "Active") {
                     $('#pnlcolaps').show(500);
                 } else {
@@ -5135,10 +5066,10 @@
             }
 
             //On UpdatePanel Refresh
-            //debugger;
+            //;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
             if (prm != null) {
-                // debugger;
+                // ;
                 prm.add_beginRequest(function (sender, e) {
                     if (sender._postBackSettings.panelsToUpdate != null) {
                         $(".loading").show();
@@ -5169,12 +5100,6 @@
         --%>
 
     </script>
-
-
-    <script src="../js/intTel/intlTelInput.js"></script>
-
-
-
 
     <%--
     <asp:Panel ID="Panel2" runat="server">

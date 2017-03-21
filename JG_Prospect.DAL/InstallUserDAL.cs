@@ -327,7 +327,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DefaultPassWord", DbType.String, DefaultPW);
                     
 
-                    dsResult = database.ExecuteDataSet(command);
+                    //dsResult = database.ExecuteDataSet(command);
 
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
@@ -613,7 +613,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        public DataSet ChangeSatatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -624,11 +624,12 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int32, StatusId);
                     database.AddInParameter(command, "@Status", DbType.String, Status);
-                    database.AddInParameter(command, "@RejectionDate", DbType.String, RejectionDate);
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
                     database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
                     database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, IsInstallUser);
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
 
                     if (!string.IsNullOrEmpty(UserIds))
                     {
@@ -1061,7 +1062,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public void DeleteSource(string Source)
+        public bool DeleteSource(string Source)
         {
             try
             {
@@ -1071,13 +1072,13 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Source", DbType.String, Source);
                     database.ExecuteScalar(command);
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-
+                return false;
             }
-
         }
 
         public void DeleteImage(string Source)
@@ -1711,31 +1712,59 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool DeleteInstallUser(int id)
+        public bool DeactivateInstallUsers(List<Int32> lstIDs)
         {
             try
             {
+                DataTable dtIDs = new DataTable();
+                dtIDs.Columns.Add(new DataColumn("ID", typeof(Int32)));
+
+                foreach (var item in lstIDs)
+                {
+                    dtIDs.Rows.Add(item);
+                }
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("UDP_deleteInstalluser");
+                    DbCommand command = database.GetStoredProcCommand("DeactivateInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@id", DbType.Int32, id);
-                    database.AddOutParameter(command, "@result", DbType.Int32, 1);
-                    database.ExecuteScalar(command);
-                    int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
-                    if (res == 1)
-                        return true;
-                    else
-                        return false;
+                    database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.AddInParameter(command, "@DeactiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString());
+                    database.ExecuteNonQuery(command);
                 }
+                return true;
             }
-
             catch (Exception ex)
             {
                 return false;
-
             }
+        }
 
+        public bool DeleteInstallUsers(List<Int32> lstIDs)
+        {
+            try
+            {
+                DataTable dtIDs = new DataTable();
+                dtIDs.Columns.Add(new DataColumn("ID", typeof(Int32)));
+
+                foreach (var item in lstIDs)
+                {
+                    dtIDs.Rows.Add(item);
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("DeleteInstallUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@IDs", SqlDbType.Structured, dtIDs);
+                    database.ExecuteNonQuery(command);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public DataSet getuserdetails(int id)
@@ -1833,6 +1862,10 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UDP_GetInstallerUserDetailsByLoginId");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@loginid", DbType.String, loginid);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@ApplicantStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -1946,6 +1979,10 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@userid", DbType.String, userid);
                     database.AddInParameter(command, "@password", DbType.String, password);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@ApplicantStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -2228,6 +2265,111 @@ namespace JG_Prospect.DAL
             }
         }
 
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for sales users.
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns> categorised search suggestions for sales users</returns>
+        public DataSet GetSalesUserAutoSuggestion(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetSalesUserAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //------------ start DP ------------
+        public DataSet GetTaskUsers(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        //------------- end DP -------------
+
+        public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
+        {
+            DataSet dsResult = null;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
+                    command.CommandType = CommandType.StoredProcedure;
+                    if (!string.IsNullOrEmpty(strSearchTerm))
+                    {
+                        database.AddInParameter(command, "@SearchTerm", DbType.String, strSearchTerm);
+                    }
+                    database.AddInParameter(command, "@Status", DbType.String, strStatus);
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, intDesignationId);
+                    database.AddInParameter(command, "@SourceId", DbType.Int32, intSourceId);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int16, userid);
+                    if (fromdate != null)
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
+
+                    database.AddInParameter(command, "@PageIndex", DbType.Int16, intPageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int16, intPageSize);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@RejectedStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString());
+
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+
+                    dsResult = database.ExecuteDataSet(command);
+                }
+                return dsResult;
+            }
+            catch (Exception ex)
+            {
+                return dsResult;
+            }
+        }
+
         public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             returndata = new DataSet();
@@ -2299,7 +2441,14 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@status", DbType.String, status);
                     database.AddInParameter(command, "@designation", DbType.String, designation);
-                    database.AddInParameter(command, "@fromdate", DbType.Date, fromDate);
+                    if (fromDate == DateTime.MinValue)
+                    {
+                        database.AddInParameter(command, "@fromdate", DbType.Date, DBNull.Value);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@fromdate", DbType.Date, fromDate);
+                    }
                     database.AddInParameter(command, "@todate", DbType.Date, toDate);
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
@@ -2322,6 +2471,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetActiveUserContractor");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@action", DbType.String, "1");
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }
@@ -2343,6 +2493,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetActiveUserContractor");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@action", DbType.String, "2");
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }

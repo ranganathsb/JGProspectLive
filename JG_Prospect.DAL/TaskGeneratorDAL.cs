@@ -563,7 +563,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -577,7 +577,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
 
                     database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
-
+                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch );
+                    
                     database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
                     database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
                     database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
@@ -587,6 +588,15 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -656,6 +666,9 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Key", DbType.Int16, Key);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
                     database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
                     result = database.ExecuteDataSet(command);
                 }
@@ -914,6 +927,37 @@ namespace JG_Prospect.DAL
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
             return returndata;
+        }
+
+        /// <summary>
+        /// Get one or all tasks with all sub tasks from all levels.
+        /// </summary>
+        /// <param name="intTaskID">optional taskid to get hierarchy. if it is null, all tasks will be returned in response.</param>
+        /// <returns></returns>
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskHierarchy");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (intTaskID.HasValue)
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskID);
+                    }
+
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -1481,6 +1525,53 @@ namespace JG_Prospect.DAL
                 return -1;
             }
         }
+
+        //------------ Start DP ------------
+
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
+        {
+            try
+            {
+                DataSet result = new DataSet();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetInProgressTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
+        {
+            try
+            {
+                DataSet result = new DataSet();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetClosedTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        //------------- End DP--------------
 
         #endregion
     }

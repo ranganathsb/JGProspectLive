@@ -153,17 +153,15 @@ namespace JG_Prospect.Sr_App
                 if (DesignationId == 0)
                     return;
 
-                DataSet ds = new DataSet();
-
-                ds = DesignationBLL.Instance.GetDesignationByID(DesignationId, 0);
+                List<Designation> ds = DesignationBLL.Instance.GetDesignationByID(DesignationId, 0);
                 if (ds != null)
                 {
-                    if (ds.Tables[0].Rows.Count > 0)
+                    if (ds.Count > 0)
                     {
-                        txtDesignationName.Text = ds.Tables[0].Rows[0]["DesignationName"].ToString();
-                        ddlDepartment.SelectedValue = ds.Tables[0].Rows[0]["DepartmentID"].ToString();
+                        txtDesignationName.Text = ds[0].DesignationName;
+                        ddlDepartment.SelectedValue = ds[0].DepartmentID.ToString();
                         ddlDepartment.Enabled = false;
-                        ddlStatus.SelectedValue = ds.Tables[0].Rows[0]["IsActive"].ToString() == "False" ? "0" : "1";
+                        ddlStatus.SelectedValue = ds[0].IsActive ? "1" : "0";
                     }
                 }
             }

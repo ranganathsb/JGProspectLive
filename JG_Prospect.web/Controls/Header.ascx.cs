@@ -14,7 +14,7 @@ namespace JG_Prospect.Controls
         {
             if (Session["loginid"] != null)
             {
-               
+
                 lbluser.Text = Session["Username"].ToString().Trim();
                 string AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
@@ -66,8 +66,23 @@ namespace JG_Prospect.Controls
         protected void btnlogout_Click(object sender, EventArgs e)
         {
             Session.Clear();
-            Response.Redirect("~/login.aspx");            
+            Response.Redirect("~/login.aspx");
         }
-       
+
+        public bool ShowTaskList
+        {
+            set
+            {
+                TaskGenerator.Visible = value;
+            }
+        }
+
+        public bool ShowMenu
+        {
+            set
+            {
+                divMenu.Visible = value;
+            }
+        }
     }
 }

@@ -297,6 +297,23 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Eventname", DbType.String, Event.EventName);                   
                     database.AddInParameter(command, "@EventDate", DbType.Date, Convert.ToDateTime(Event.Eventdate));
                     database.AddInParameter(command, "@EventAddedBy",DbType.Int32, Event.EventAddedBy);
+                    //-------- Start DP ----------
+                    database.AddInParameter(command, "@EventEndDate", DbType.Date, Convert.ToDateTime(Event.EventEndDate));
+                    database.AddInParameter(command, "@EventStartTime", DbType.String, Event.EventStartTime);
+                    database.AddInParameter(command, "@EventEndTime", DbType.String, Event.EventEndTime);
+                    database.AddInParameter(command, "@EventLoc", DbType.String, Event.EventLoc);
+                    database.AddInParameter(command, "@EventDesc", DbType.String, Event.EventDesc);
+                    database.AddInParameter(command, "@EventColor", DbType.String, Event.EventColor);
+                    database.AddInParameter(command, "@EventCal", DbType.Int32, Event.EventCal);
+                    database.AddInParameter(command, "@EventFile", DbType.String, Event.EventFile);
+                    database.AddInParameter(command, "@EventType", DbType.Int32, Event.EventType);
+                    database.AddInParameter(command, "@EventRepeat", DbType.Int32, Event.EventRepeat);
+                    database.AddInParameter(command, "@RecurrenceRule", DbType.String, Event.RecurrenceRule);
+                    database.AddInParameter(command, "@TimeZone", DbType.String, Event.TimeZone);
+                    database.AddInParameter(command, "@EventId", DbType.Int32, Event.EventId);
+                    database.AddInParameter(command, "@MaxOccurance", DbType.Int32, Event.MaxOccurance);
+                    database.AddInParameter(command, "@Interval", DbType.Int32, Event.Interval);
+                     //-------- End DP ----------
                     database.ExecuteNonQuery(command);
                    
                    // return res; 
@@ -311,6 +328,58 @@ namespace JG_Prospect.DAL
             }
 
         }
+
+
+        //------------ start DP -----------
+        public DataSet CheckDuplicateCalendarEvent(EventCalendar EventCal)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("CheckDuplicateCalendarEvent");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@CalendarName", DbType.String, EventCal.CalendarName);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+                return null;
+            }
+        }
+
+        public void AddEventCalendar(EventCalendar EventCal)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("AddEventCalendar");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@CalendarName", DbType.String, EventCal.CalendarName);
+                    database.AddInParameter(command, "@InsertionDate", DbType.Date, Convert.ToDateTime(EventCal.InsertionDate));
+                    database.AddInParameter(command, "@UserId", DbType.Int32, EventCal.UserId);
+
+                    database.ExecuteNonQuery(command);
+
+                    // return res; 
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
+        }
+
+        //----------- end DP -----------------
 
 
         public void AddForemanName(AddForemanName foreman)
@@ -351,6 +420,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("CheckDuplicateAnnualEvent");
                     command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@EventId", DbType.String, Event.EventId);
                     database.AddInParameter(command, "@Eventname", DbType.String, Event.EventName);
                     database.AddInParameter(command, "@EventDate", DbType.Date, Convert.ToDateTime(Event.Eventdate)); 
                     result = database.ExecuteDataSet(command);

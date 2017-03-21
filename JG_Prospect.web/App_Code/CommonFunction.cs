@@ -12,11 +12,20 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Linq;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
+
+        public static String PreConfiguredAdminUserId
+        {
+            get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }
+
+        }
+
         /// <summary>
         /// Call to show javascript alert message from page.
         /// </summary>
@@ -36,7 +45,7 @@ namespace JG_Prospect.App_Code
         {
             ScriptManager.RegisterStartupScript(page, page.GetType(), "alert", String.Concat("alert('", MessageString, "');"), true);
         }
-        
+
         public static string FormatToShortDateString(object dateobject)
         {
             string formateddatetime = string.Empty;
@@ -149,8 +158,9 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         /// <param name="lstAttachments">any files to be attached to email.</param>
-        public static void SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments)
+        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
+            bool retValue = false;
             try
             {
                 /* Sample HTML Template
@@ -178,72 +188,22 @@ namespace JG_Prospect.App_Code
 
                 //ds = AdminBLL.Instance.GetEmailTemplate('');
                 //// your remote SMTP server IP.
-                foreach (Attachment objAttachment in lstAttachments)
-                {
-                    Msg.Attachments.Add(objAttachment);
-                }
-                SmtpClient sc = new SmtpClient(
-                                                ConfigurationManager.AppSettings["smtpHost"].ToString(),
-                                                Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
-                                              );
-                NetworkCredential ntw = new NetworkCredential(userName, password);
-                sc.UseDefaultCredentials = false;
-                sc.Credentials = ntw;
-                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                try
-                {
-                    sc.Send(Msg);
-                }
-                catch (Exception ex)
-                {
-                    // throw will call application error event, which will log error details.
-                    throw ex;
-                }
-
-                Msg = null;
-                sc.Dispose();
-                sc = null;
-            }
-            catch (Exception ex)
-            {
-                // throw will call application error event, which will log error details.
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// Send email.
-        /// </summary>
-        /// <param name="smtpUserName"></param>
-        /// <param name="smtpPassword"></param>
-        /// <param name="strToAddress"></param>
-        /// <param name="strSubject"></param>
-        /// <param name="strBody"></param>
-        /// <param name="lstAttachments"></param>
-        public static void SendEmail(string smtpUserName, string smtpPassword, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments)
-        {
-            try
-            {
-                string userName = smtpUserName;
-                string password = smtpPassword;
-
-                MailMessage Msg = new MailMessage();
-                Msg.From = new MailAddress(userName, "JGrove Construction");
-                Msg.To.Add(strToAddress);
-                Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-                Msg.Subject = strSubject;// "JG Prospect Notification";
-                Msg.Body = strBody;
-                Msg.IsBodyHtml = true;
-
-                //// your remote SMTP server IP.
-                if (lstAttachments != null && lstAttachments.Count > 0)
+                if (lstAttachments != null)
                 {
                     foreach (Attachment objAttachment in lstAttachments)
                     {
                         Msg.Attachments.Add(objAttachment);
                     }
                 }
+
+                if (lstAlternateView != null)
+                {
+                    foreach (AlternateView objAlternateView in lstAlternateView)
+                    {
+                        Msg.AlternateViews.Add(objAlternateView);
+                    }
+                }
+
                 SmtpClient sc = new SmtpClient(
                                                 ConfigurationManager.AppSettings["smtpHost"].ToString(),
                                                 Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
@@ -256,6 +216,7 @@ namespace JG_Prospect.App_Code
                 try
                 {
                     sc.Send(Msg);
+                    retValue = true;
                 }
                 catch (Exception ex)
                 {
@@ -272,6 +233,7 @@ namespace JG_Prospect.App_Code
                 // throw will call application error event, which will log error details.
                 throw ex;
             }
+            return retValue;
         }
 
         /// <summary>
@@ -404,8 +366,6 @@ namespace JG_Prospect.App_Code
                         );
 
                 objDocument.Close();
-
-                return strFilePath;
             }
             catch
             { }
@@ -417,7 +377,8 @@ namespace JG_Prospect.App_Code
                 }
                 objDocument = null;
             }
-            return string.Empty;
+
+            return strFilePath;
         }
 
         /// <summary>
@@ -519,6 +480,27 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Enumeration description assiciated with it.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetEnumDescription(Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute[] attributes =
+                (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute),
+                false);
+
+            if (attributes != null &&
+                attributes.Length > 0)
+                return attributes[0].Description;
+            else
+                return value.ToString();
+        }
+
+        /// <summary>
         /// Gets next sequence value based on current value.
         /// </summary>
         /// <param name="strStartAt">First value of sequence. i.e. A, 1, I.</param>
@@ -615,15 +597,30 @@ namespace JG_Prospect.App_Code
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
 
-            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
-            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
-            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
-            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
-            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
-            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
-            objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
-            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
-            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
+            //----------- Start DP -----------------
+            //objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
+            //objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
+            //objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
+            //objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
+            //objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
+            //objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            //objListItemCollection.Add(new ListItem("Finished", Convert.ToByte(JGConstant.TaskStatus.Finished).ToString()));
+            //objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
+            //objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
+            //objListItemCollection.Add(new ListItem("Test", Convert.ToByte(JGConstant.TaskStatus.Test).ToString()));
+            //objListItemCollection.Add(new ListItem("Live", Convert.ToByte(JGConstant.TaskStatus.Live).ToString()));
+
+            int enumlen = Enum.GetNames(typeof(JGConstant.TaskStatus)).Length;
+
+            foreach (var item in Enum.GetNames(typeof(JGConstant.TaskStatus)))
+            {
+                int enumval = (int)Enum.Parse(typeof(JGConstant.TaskStatus), item);
+                if (item != "Deleted")
+                {
+                    objListItemCollection.Add(new ListItem(item, enumval.ToString()));
+                }
+            }
+            //----------- End DP -----------------
 
             if (CheckAdminAndItLeadMode())
             {
@@ -648,7 +645,7 @@ namespace JG_Prospect.App_Code
 
         public static string ReplaceEncodeWhiteSpace(string urlstring)
         {
-            return urlstring.Replace("+","%20");
+            return urlstring.Replace("+", "%20");
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskPriorityList()
@@ -660,6 +657,17 @@ namespace JG_Prospect.App_Code
             objListItemCollection.Add(new ListItem("High", Convert.ToInt16(JGConstant.TaskPriority.High).ToString()));
             objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(JGConstant.TaskPriority.Medium).ToString()));
             objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(JGConstant.TaskPriority.Low).ToString()));
+
+            return objListItemCollection;
+        }
+
+        public static System.Web.UI.WebControls.ListItemCollection GetHTMLTemplateCategoryList()
+        {
+            ListItemCollection objListItemCollection = new ListItemCollection();
+
+            objListItemCollection.Add(new ListItem("HR Auto Email", Convert.ToInt16(HTMLTemplateCategories.HRAutoEmail).ToString()));
+            objListItemCollection.Add(new ListItem("Vendor Auto Email", Convert.ToInt16(HTMLTemplateCategories.VendorAutoEmail).ToString()));
+            objListItemCollection.Add(new ListItem("Sales Auto Email", Convert.ToInt16(HTMLTemplateCategories.SalesAutoEmail).ToString()));
 
             return objListItemCollection;
         }
@@ -834,6 +842,38 @@ namespace JG_Prospect
             }
         }
 
+        public static string AdminUserId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["AdminUserId"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["AdminUserId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["AdminUserId"] = value;
+            }
+        }
+
+        public static string UserType
+        {
+            get
+            {
+                if (HttpContext.Current.Session["usertype"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["usertype"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["usertype"] = value;
+            }
+        }
+
         public static string Username
         {
             get
@@ -847,6 +887,22 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["Username"] = value;
+            }
+        }
+
+        public static string GuIdAtLogin
+        {
+            get
+            {
+                if (HttpContext.Current.Session["GuIdAtLogin"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["GuIdAtLogin"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["GuIdAtLogin"] = value;
             }
         }
 
@@ -911,6 +967,38 @@ namespace JG_Prospect
             }
         }
 
+        public static Int32 DesignationId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["DesignationId"] == null)
+                {
+                    return 0;
+                }
+                return Convert.ToInt32(HttpContext.Current.Session["DesignationId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["DesignationId"] = value;
+            }
+        }
+
+        public static JGConstant.InstallUserStatus? UserStatus
+        {
+            get
+            {
+                if (HttpContext.Current.Session["UserStatus"] == null)
+                {
+                    return null;
+                }
+                return (JGConstant.InstallUserStatus)Convert.ToInt32(HttpContext.Current.Session["UserStatus"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["UserStatus"] = value;
+            }
+        }
+
         public static string Designation
         {
             get
@@ -969,5 +1057,60 @@ namespace JG_Prospect
             }
         }
 
+        public static bool IsGooglePlus
+        {
+            get
+            {
+                if (HttpContext.Current.Session["GooglePlus"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["GooglePlus"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["GooglePlus"] = value;
+            }
+        }
+
+        public static bool IsFacebook
+        {
+            get
+            {
+                if (HttpContext.Current.Session["facebook"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["facebook"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["facebook"] = value;
+            }
+        }
+
+        public static bool IsYahoo
+        {
+            get
+            {
+                if (HttpContext.Current.Session["yahoo"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["yahoo"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["yahoo"] = value;
+            }
+        }
+
+        public static bool IsMicrosoft
+        {
+            get
+            {
+                if (HttpContext.Current.Session["microsoft"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["microsoft"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["microsoft"] = value;
+            }
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JG_Prospect.Common.RestServiceJSONParser;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +31,20 @@ namespace JG_Prospect.Utilits
             return "User Create";
         }
 
+        public static YandexEmailCountersResponse GetUnreadEmailCount(string strDomain, string strEmailId)
+        {
+            string AoutCode = "e5a3d8edd42d424e83b0cf9d62a09a0f";
+            string strURL = "https://pddimp.yandex.ru/api2/admin/email/counters?Authorization=" + AoutCode + "&domain=" + strDomain + "&login=" + strEmailId;
+            string response = "";
+            response = HttpGet(strURL);
 
+            if (response.IndexOf("new")> -1)
+            {
+                response = response.Replace("new", "newone");
+            }
+            YandexEmailCountersResponse EmailCounters = JsonConvert.DeserializeObject<YandexEmailCountersResponse>(response);
+            return EmailCounters;
+        }
 
         public static string HttpGet(string URI)
         {

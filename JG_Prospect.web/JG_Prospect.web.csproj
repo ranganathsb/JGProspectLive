@@ -141,6 +141,14 @@
     <Reference Include="itextsharp.xmlworker">
       <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
+    <Reference Include="MailApi, Version=6.0.2.220, Culture=neutral, PublicKeyToken=cd85b70fb26f9fc1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\MailApi.dll</HintPath>
+    </Reference>
+    <Reference Include="MailServerApi, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7795db04536a1a7a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\MailServerApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -229,6 +237,7 @@
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DataVisualization.Design" />
     <Reference Include="System.Web.Extensions" />
@@ -246,18 +255,28 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Telerik.Web.UI.DLL</HintPath>
     </Reference>
+    <Reference Include="WebMail">
+      <HintPath>External Dependencies\WebMail.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Activation.aspx" />
     <Content Include="AddResourcesJr.aspx" />
     <Content Include="AssignProspect.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
+    <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\aspsnippets.facebookapi.dll" />
     <Content Include="bin\ASPSnippets.GoogleAPI.dll" />
     <Content Include="bin\ASPSnippets.SmsAPI.dll" />
     <Content Include="bin\ASPSnippets.TwitterAPI.dll" />
     <Content Include="bin\BarcodeLib.dll" />
     <Content Include="bin\CKEditor.NET.dll" />
+    <Content Include="bin\DotNetOpenAuth.AspNet.dll" />
+    <Content Include="bin\DotNetOpenAuth.Core.dll" />
+    <Content Include="bin\DotNetOpenAuth.OAuth.Consumer.dll" />
+    <Content Include="bin\DotNetOpenAuth.OAuth.dll" />
+    <Content Include="bin\DotNetOpenAuth.OpenId.dll" />
+    <Content Include="bin\DotNetOpenAuth.OpenId.RelyingParty.dll" />
     <Content Include="bin\DropDownCheckBoxes.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EPPlus.dll" />
@@ -267,8 +286,14 @@
     <Content Include="bin\Google.GData.Extensions.dll" />
     <Content Include="bin\GoogleMaps.LocationServices.dll" />
     <Content Include="bin\Ionic.Zip.dll" />
+    <Content Include="bin\itextsharp.dll" />
+    <Content Include="bin\itextsharp.xmlworker.dll" />
+    <Content Include="bin\MailApi.dll" />
+    <Content Include="bin\MailServerApi.dll" />
     <Content Include="bin\Microsoft.Data.Edm.dll" />
     <Content Include="bin\Microsoft.Data.OData.dll" />
+    <Content Include="bin\Microsoft.Owin.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
@@ -281,14 +306,31 @@
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\Mono.Math.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
+    <Content Include="bin\Org.Mentalis.Security.Cryptography.dll" />
+    <Content Include="bin\Owin.dll" />
+    <Content Include="bin\System.Net.Http.dll" />
+    <Content Include="bin\System.Net.Http.Formatting.dll" />
+    <Content Include="bin\System.Net.Http.WebRequest.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Http.dll" />
     <Content Include="bin\System.Web.Http.OData.dll" />
+    <Content Include="bin\System.Web.Http.Tracing.dll" />
+    <Content Include="bin\System.Web.Http.WebHost.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Optimization.dll" />
     <Content Include="bin\System.Web.Providers.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
+    <Content Include="bin\WebGrease.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
@@ -1014,6 +1056,8 @@
     <Content Include="css\lightslider.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
+    <Content Include="css\msdropdown\dd_arrow.gif" />
+    <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
@@ -1044,7 +1088,14 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V2.sql" />
-    <Content Include="Database Scripts\yogesh\scripts dec v0.1.sql" />
+    <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2016_ITSN043_II_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
+    <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\script Feb v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1625,6 +1676,7 @@
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
     <Content Include="ShowResourcesJr.aspx" />
+    <Content Include="Sr_App\add-edit-aptitude-test.aspx" />
     <Content Include="Sr_App\AddEvents.aspx" />
     <Content Include="Sr_App\ajaxcalls.aspx" />
     <Content Include="Sr_App\AttachQuotes.aspx" />
@@ -1645,8 +1697,10 @@
     <Content Include="Sr_App\DepartmentList.aspx" />
     <Content Include="Sr_App\DesignationAddEdit.aspx" />
     <Content Include="Sr_App\DesignationList.aspx" />
+    <Content Include="Sr_App\edit-html-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
+    <Content Include="Sr_App\html-template-maintainance.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendors.aspx" />
     <Content Include="Sr_App\estimate.aspx" />
@@ -1684,8 +1738,11 @@
     <Content Include="Sr_App\InstallCreateUser.aspx" />
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
     <Content Include="Sr_App\Inventory.aspx" />
+    <Content Include="Sr_App\ITDashboard.aspx" />
+    <Content Include="Sr_App\JabbRChat.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
+    <Content Include="Sr_App\manage-aptitude-tests.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
     <Content Include="Sr_App\OverheadExp.aspx" />
     <Content Include="Sr_App\Price_control.aspx" />
@@ -1711,6 +1768,8 @@
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
+    <Content Include="Sr_App\userbulkupload.aspx" />
+    <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
     <Content Include="Sr_App\WebForm1.aspx" />
@@ -1873,6 +1932,7 @@
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucRenewSession.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
+    <Content Include="ViewApplicantUser.aspx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1883,8 +1943,8 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="WebForm1.aspx" />
     <Content Include="ProspectReport.aspx" />
+    <Content Include="Webmail\checkemail.aspx" />
     <Content Include="WebServices\JGWebService.asmx" />
   </ItemGroup>
   <ItemGroup>
@@ -1915,6 +1975,13 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JGApplicant.Master.cs">
+      <DependentUpon>JGApplicant.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JGApplicant.Master.designer.cs">
+      <DependentUpon>JGApplicant.Master</DependentUpon>
     </Compile>
     <Compile Include="MCQTest\ExamSummary.aspx.cs">
       <DependentUpon>ExamSummary.aspx</DependentUpon>
@@ -1950,6 +2017,13 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\add-edit-aptitude-test.aspx.designer.cs">
+      <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\Controls\ucSubTasks.ascx.cs">
       <DependentUpon>ucSubTasks.ascx</DependentUpon>
@@ -1993,6 +2067,41 @@
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\edit-html-template.aspx.cs">
+      <DependentUpon>edit-html-template.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\edit-html-template.aspx.designer.cs">
+      <DependentUpon>edit-html-template.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\html-template-maintainance.aspx.cs">
+      <DependentUpon>html-template-maintainance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\html-template-maintainance.aspx.designer.cs">
+      <DependentUpon>html-template-maintainance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
+      <DependentUpon>ITDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\JabbRChat.aspx.cs">
+      <DependentUpon>JabbRChat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\JabbRChat.aspx.designer.cs">
+      <DependentUpon>JabbRChat.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\manage-aptitude-tests.aspx.designer.cs">
+      <DependentUpon>manage-aptitude-tests.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\profilepictureupload.aspx.cs">
       <DependentUpon>profilepictureupload.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2013,6 +2122,20 @@
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\userbulkupload.aspx.cs">
+      <DependentUpon>userbulkupload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\userbulkupload.aspx.designer.cs">
+      <DependentUpon>userbulkupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\view-aptitude-test.aspx.designer.cs">
+      <DependentUpon>view-aptitude-test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\ViewSalesUser.aspx.cs">
       <DependentUpon>ViewSalesUser.aspx</DependentUpon>
@@ -2046,6 +2169,20 @@
     <Compile Include="Utilits\EmailCommonHelper.cs" />
     <Compile Include="Utilits\SessionsCommon.cs" />
     <Compile Include="Utilits\YandexManager.cs" />
+    <Compile Include="ViewApplicantUser.aspx.cs">
+      <DependentUpon>ViewApplicantUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewApplicantUser.aspx.designer.cs">
+      <DependentUpon>ViewApplicantUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Webmail\checkemail.aspx.cs">
+      <DependentUpon>checkemail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Webmail\checkemail.aspx.designer.cs">
+      <DependentUpon>checkemail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebServices\JGWebService.asmx.cs">
       <DependentUpon>JGWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -2842,13 +2979,6 @@
     <Compile Include="WeatherControl.ascx.designer.cs">
       <DependentUpon>WeatherControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-    </Compile>
     <Compile Include="ProspectReport.aspx.cs">
       <DependentUpon>ProspectReport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2873,6 +3003,7 @@
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
     <Folder Include="Database Scripts\Bhavik\Nov\" />
+    <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
@@ -2941,6 +3072,7 @@
     <Content Include="JGCalender\jquery\jquery-2.1.1.min.map" />
     <Content Include="JGCalender\JsonResponse.ashx" />
     <Content Include="js\JCarousel.js.rej" />
+    <Content Include="JGApplicant.Master" />
     <None Include="PDFS\Escrow_a.pdfEscrow_a.pdf" />
     <None Include="PDFS\Escrow_shyam.pdfEscrow_shyam.pdf" />
     <None Include="PDFS\FacePage_ennavation.pdfFacePage_ennavation.pdf" />
@@ -2966,7 +3098,6 @@
     <Content Include="UserFile\SalesSample.xlsx" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
-    <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">

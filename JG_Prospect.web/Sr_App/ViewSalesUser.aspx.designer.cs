@@ -571,15 +571,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnAddNote;
         
         /// <summary>
-        /// lbtnAptTestLink control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnAptTestLink;
-        
-        /// <summary>
         /// btnAddNotes control.
         /// </summary>
         /// <remarks>
@@ -605,6 +596,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAddNotes;
+        
+        /// <summary>
+        /// lbtnAptTestLink1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnAptTestLink1;
         
         /// <summary>
         /// rdoCompLitYes control.
@@ -884,6 +884,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox cTwo;
+        
+        /// <summary>
+        /// lbtnAptTestLink2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnAptTestLink2;
         
         /// <summary>
         /// rdoJMApplyYes control.

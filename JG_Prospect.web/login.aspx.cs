@@ -72,7 +72,8 @@ namespace JG_Prospect
             if (!IsPostBack)
             {
                 rdCustomer.Checked = true;
-                Session["DesigNew"] = "";
+                JGSession.Designation = "";
+                JGSession.DesignationId = 0;
                 btnSignUp.Visible = true;
                 if (Request.Cookies["UserName"] != null && Request.Cookies["Password"] != null)
                 {
@@ -115,7 +116,7 @@ namespace JG_Prospect
                         {
                             if (ds.Tables[0].Rows.Count > 0)
                             {
-                                Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
                                 JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
@@ -124,50 +125,50 @@ namespace JG_Prospect
 
                             if (isvaliduser > 0)
                             {
-                                Session["loginid"] = email;
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                JGSession.UserLoginId = email;
+                                JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 //JGSession.UserPassword = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
                                 {
-                                    Session["AdminUserId"] = AdminId;
-                                    Session["usertype"] = "Admin";
+                                    JGSession.AdminUserId = AdminId;
+                                    JGSession.UserType = "Admin";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
 
                                 if (isvaliduser == 1)
                                 {
-                                    Session["usertype"] = "Admin";
+                                    JGSession.UserType = "Admin";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 2)
                                 {
-                                    Session["usertype"] = "JSE";
+                                    JGSession.UserType = "JSE";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 3)
                                 {
-                                    Session["usertype"] = "SSE";
+                                    JGSession.UserType = "SSE";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 4)
                                 {
-                                    Session["usertype"] = "MM";
+                                    JGSession.UserType = "MM";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 5)
                                 {
-                                    Session["usertype"] = "SM";
+                                    JGSession.UserType = "SM";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 6)
                                 {
-                                    Session["usertype"] = "AdminSec";
+                                    JGSession.UserType = "AdminSec";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 7)
                                 {
-                                    Session["usertype"] = "Employee";
+                                    JGSession.UserType = "Employee";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                             }
@@ -175,28 +176,28 @@ namespace JG_Prospect
                             {
                                 ds = null;
                                 ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
-                                Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                                 if (IsValidInstallerUser > 0)
                                 {
-                                    Session["loginid"] = txtloginid.Text.Trim();
-                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                    JGSession.UserLoginId = txtloginid.Text.Trim();
+                                    JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
                                     //JGSession.UserPassword = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
-                                        Session["AdminUserId"] = AdminInstallerId;
+                                        JGSession.AdminUserId = AdminInstallerId;
                                     }
-                                    Session["usertype"] = "Installer";
+                                    JGSession.UserType = "Installer";
                                     RememberMe();
                                     Response.Redirect("~/Installer/InstallerHome.aspx", true);
                                 }
                                 //else
                                 //{
-                                //    Session["loginid"] = null;
+                                //    JGSession.UserLoginId = null;
                                 //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                                 //}
                             }
@@ -236,7 +237,7 @@ namespace JG_Prospect
 
                 #region google + login
 
-                if (!string.IsNullOrEmpty(Request.QueryString["code"]) && Session["GooglePlus"] != null && Convert.ToBoolean(Session["GooglePlus"]) == true)
+                if (!string.IsNullOrEmpty(Request.QueryString["code"]) && JGSession.IsGooglePlus == true)
                 {
                     string code = Request.QueryString["code"];
                     string json = GoogleConnect.Fetch("me", code);
@@ -255,7 +256,7 @@ namespace JG_Prospect
                         {
                             if (ds.Tables[0].Rows.Count > 0)
                             {
-                                Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
                                 JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
@@ -264,50 +265,50 @@ namespace JG_Prospect
 
                             if (isvaliduser > 0)
                             {
-                                Session["loginid"] = emailGPlus;
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                JGSession.UserLoginId = emailGPlus;
+                                JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 //JGSession.UserPassword = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
                                 {
-                                    Session["AdminUserId"] = AdminId;
-                                    Session["usertype"] = "Admin";
+                                    JGSession.AdminUserId = AdminId;
+                                    JGSession.UserType = "Admin";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
 
                                 if (isvaliduser == 1)
                                 {
-                                    Session["usertype"] = "Admin";
+                                    JGSession.UserType = "Admin";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 2)
                                 {
-                                    Session["usertype"] = "JSE";
+                                    JGSession.UserType = "JSE";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 3)
                                 {
-                                    Session["usertype"] = "SSE";
+                                    JGSession.UserType = "SSE";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 4)
                                 {
-                                    Session["usertype"] = "MM";
+                                    JGSession.UserType = "MM";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 5)
                                 {
-                                    Session["usertype"] = "SM";
+                                    JGSession.UserType = "SM";
                                     Response.Redirect("~/Sr_App/home.aspx", true);
                                 }
                                 else if (isvaliduser == 6)
                                 {
-                                    Session["usertype"] = "AdminSec";
+                                    JGSession.UserType = "AdminSec";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                                 else if (isvaliduser == 7)
                                 {
-                                    Session["usertype"] = "Employee";
+                                    JGSession.UserType = "Employee";
                                     Response.Redirect("~/home.aspx", true);
                                 }
                             }
@@ -315,28 +316,28 @@ namespace JG_Prospect
                             {
                                 ds = null;
                                 ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
-                                Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                 int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                                 if (IsValidInstallerUser > 0)
                                 {
-                                    Session["loginid"] = txtloginid.Text.Trim();
-                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                    JGSession.UserLoginId = txtloginid.Text.Trim();
+                                    JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
                                     //JGSession.UserPassword = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
-                                        Session["AdminUserId"] = AdminInstallerId;
+                                        JGSession.AdminUserId = AdminInstallerId;
                                     }
-                                    Session["usertype"] = "Installer";
+                                    JGSession.UserType = "Installer";
                                     RememberMe();
                                     Response.Redirect("~/Installer/InstallerHome.aspx", true);
                                 }
                                 //else
                                 //{
-                                //    Session["loginid"] = null;
+                                //    JGSession.UserLoginId = null;
                                 //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                                 //}
                             }
@@ -371,7 +372,7 @@ namespace JG_Prospect
 
                 #region Facebook login
 
-                if (Session["facebook"] != null && Convert.ToBoolean(Session["facebook"]) == true)
+                if (JGSession.IsFacebook == true)
                 {
 
                     if (Request.QueryString["error"] == "access_denied")
@@ -401,7 +402,7 @@ namespace JG_Prospect
                             {
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
-                                    Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
@@ -410,50 +411,50 @@ namespace JG_Prospect
 
                                 if (isvaliduser > 0)
                                 {
-                                    Session["loginid"] = email;
-                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                    JGSession.UserLoginId = email;
+                                    JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                     //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
-                                        Session["AdminUserId"] = AdminId;
-                                        Session["usertype"] = "Admin";
+                                        JGSession.AdminUserId = AdminId;
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
 
                                     if (isvaliduser == 1)
                                     {
-                                        Session["usertype"] = "Admin";
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 2)
                                     {
-                                        Session["usertype"] = "JSE";
+                                        JGSession.UserType = "JSE";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 3)
                                     {
-                                        Session["usertype"] = "SSE";
+                                        JGSession.UserType = "SSE";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 4)
                                     {
-                                        Session["usertype"] = "MM";
+                                        JGSession.UserType = "MM";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 5)
                                     {
-                                        Session["usertype"] = "SM";
+                                        JGSession.UserType = "SM";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 6)
                                     {
-                                        Session["usertype"] = "AdminSec";
+                                        JGSession.UserType = "AdminSec";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 7)
                                     {
-                                        Session["usertype"] = "Employee";
+                                        JGSession.UserType = "Employee";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                 }
@@ -461,28 +462,28 @@ namespace JG_Prospect
                                 {
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
-                                    Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                                     if (IsValidInstallerUser > 0)
                                     {
-                                        Session["loginid"] = txtloginid.Text.Trim();
-                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                        JGSession.UserLoginId = txtloginid.Text.Trim();
+                                        JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
                                         //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
-                                            Session["AdminUserId"] = AdminInstallerId;
+                                            JGSession.AdminUserId = AdminInstallerId;
                                         }
-                                        Session["usertype"] = "Installer";
+                                        JGSession.UserType = "Installer";
                                         RememberMe();
                                         Response.Redirect("~/Installer/InstallerHome.aspx", true);
                                     }
                                     //else
                                     //{
-                                    //    Session["loginid"] = null;
+                                    //    JGSession.UserLoginId = null;
                                     //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                                     //}
                                 }
@@ -517,7 +518,7 @@ namespace JG_Prospect
                 #endregion
 
                 #region Yahoo login
-                if (Session["yahoo"] != null && Convert.ToBoolean(Session["yahoo"]) == true)
+                if (JGSession.IsYahoo == true)
                 {
                     try
                     {
@@ -538,7 +539,7 @@ namespace JG_Prospect
                             {
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
-                                    Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
@@ -547,50 +548,50 @@ namespace JG_Prospect
 
                                 if (isvaliduser > 0)
                                 {
-                                    Session["loginid"] = emailyahoo;
-                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                    JGSession.UserLoginId = emailyahoo;
+                                    JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                     //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
-                                        Session["AdminUserId"] = AdminId;
-                                        Session["usertype"] = "Admin";
+                                        JGSession.AdminUserId = AdminId;
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
 
                                     if (isvaliduser == 1)
                                     {
-                                        Session["usertype"] = "Admin";
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 2)
                                     {
-                                        Session["usertype"] = "JSE";
+                                        JGSession.UserType = "JSE";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 3)
                                     {
-                                        Session["usertype"] = "SSE";
+                                        JGSession.UserType = "SSE";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 4)
                                     {
-                                        Session["usertype"] = "MM";
+                                        JGSession.UserType = "MM";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 5)
                                     {
-                                        Session["usertype"] = "SM";
+                                        JGSession.UserType = "SM";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 6)
                                     {
-                                        Session["usertype"] = "AdminSec";
+                                        JGSession.UserType = "AdminSec";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 7)
                                     {
-                                        Session["usertype"] = "Employee";
+                                        JGSession.UserType = "Employee";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                 }
@@ -598,28 +599,28 @@ namespace JG_Prospect
                                 {
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
-                                    Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                                     if (IsValidInstallerUser > 0)
                                     {
-                                        Session["loginid"] = txtloginid.Text.Trim();
-                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                        JGSession.UserLoginId = txtloginid.Text.Trim();
+                                        JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
                                         //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
-                                            Session["AdminUserId"] = AdminInstallerId;
+                                            JGSession.AdminUserId = AdminInstallerId;
                                         }
-                                        Session["usertype"] = "Installer";
+                                        JGSession.UserType = "Installer";
                                         RememberMe();
                                         Response.Redirect("~/Installer/InstallerHome.aspx", true);
                                     }
                                     //else
                                     //{
-                                    //    Session["loginid"] = null;
+                                    //    JGSession.UserLoginId = null;
                                     //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                                     //}
                                 }
@@ -643,20 +644,20 @@ namespace JG_Prospect
                                 }
                             }
                         }
-                        Session["yahoo"] = null;
+                        JGSession.IsYahoo = false;
                     }
                     catch (Exception ex)
                     {
                         //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                         //  Response.Redirect("ErrorPage.aspx");
-                        Session["yahoo"] = null;
+                        JGSession.IsYahoo = false;
                     }
                 }
                 #endregion
 
                 #region Microsoft login
-                if (Session["microsoft"] != null && Convert.ToBoolean(Session["microsoft"]) == true)
+                if (JGSession.IsMicrosoft == true)
                 {
                     try
                     {
@@ -693,7 +694,7 @@ namespace JG_Prospect
                             {
                                 if (ds.Tables[0].Rows.Count > 0)
                                 {
-                                    Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
@@ -702,50 +703,50 @@ namespace JG_Prospect
 
                                 if (isvaliduser > 0)
                                 {
-                                    Session["loginid"] = emailyahoo;
-                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                    JGSession.UserLoginId = emailyahoo;
+                                    JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                     //JGSession.UserPassword = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
                                     {
-                                        Session["AdminUserId"] = AdminId;
-                                        Session["usertype"] = "Admin";
+                                        JGSession.AdminUserId = AdminId;
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
 
                                     if (isvaliduser == 1)
                                     {
-                                        Session["usertype"] = "Admin";
+                                        JGSession.UserType = "Admin";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 2)
                                     {
-                                        Session["usertype"] = "JSE";
+                                        JGSession.UserType = "JSE";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 3)
                                     {
-                                        Session["usertype"] = "SSE";
+                                        JGSession.UserType = "SSE";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 4)
                                     {
-                                        Session["usertype"] = "MM";
+                                        JGSession.UserType = "MM";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 5)
                                     {
-                                        Session["usertype"] = "SM";
+                                        JGSession.UserType = "SM";
                                         Response.Redirect("~/Sr_App/home.aspx", true);
                                     }
                                     else if (isvaliduser == 6)
                                     {
-                                        Session["usertype"] = "AdminSec";
+                                        JGSession.UserType = "AdminSec";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                     else if (isvaliduser == 7)
                                     {
-                                        Session["usertype"] = "Employee";
+                                        JGSession.UserType = "Employee";
                                         Response.Redirect("~/home.aspx", true);
                                     }
                                 }
@@ -753,28 +754,28 @@ namespace JG_Prospect
                                 {
                                     ds = null;
                                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
-                                    Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                    JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                     JGSession.UserPassword = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
                                     Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                     string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                                     int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                                     if (IsValidInstallerUser > 0)
                                     {
-                                        Session["loginid"] = txtloginid.Text.Trim();
-                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                        JGSession.UserLoginId = txtloginid.Text.Trim();
+                                        JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
 
                                         //JGSession.UserPassword = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
-                                            Session["AdminUserId"] = AdminInstallerId;
+                                            JGSession.AdminUserId = AdminInstallerId;
                                         }
-                                        Session["usertype"] = "Installer";
+                                        JGSession.UserType = "Installer";
                                         RememberMe();
                                         Response.Redirect("~/Installer/InstallerHome.aspx", true);
                                     }
                                     //else
                                     //{
-                                    //    Session["loginid"] = null;
+                                    //    JGSession.UserLoginId = null;
                                     //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                                     //}
                                 }
@@ -798,14 +799,14 @@ namespace JG_Prospect
                                 }
                             }
                         }
-                        Session["microsoft"] = null;
+                        JGSession.IsMicrosoft = false;
                     }
                     catch (Exception ex)
                     {
                         //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                         //  Response.Redirect("ErrorPage.aspx");
-                        Session["microsoft"] = null;
+                        JGSession.IsMicrosoft = false;
                     }
                 }
                 #endregion
@@ -845,6 +846,7 @@ namespace JG_Prospect
         {
             try
             {
+                JGSession.DesignationId = 0;
                 string strRedirectUrl = string.Empty;
                 int isvaliduser = 0;
                 DataSet ds = new DataSet();
@@ -859,7 +861,11 @@ namespace JG_Prospect
                         //JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString().Trim();
                         Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                         AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
-                        Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                        JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                        if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                        {
+                            JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                        }
                         isvaliduser = UserBLL.Instance.chklogin(txtloginid.Text.Trim(), txtpassword.Text);
                     }
 
@@ -869,8 +875,8 @@ namespace JG_Prospect
 
                         #region 'Admin User'
 
-                        Session["loginid"] = txtloginid.Text.Trim();
-                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                        JGSession.UserLoginId = txtloginid.Text.Trim();
+                        JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                         JGSession.UserPassword = txtpassword.Text.Trim();
                         RememberMe();
 
@@ -878,45 +884,45 @@ namespace JG_Prospect
 
                         if (txtloginid.Text.Trim() == AdminId)
                         {
-                            Session["AdminUserId"] = AdminId;
-                            Session["usertype"] = "Admin";
+                            JGSession.AdminUserId = AdminId;
+                            JGSession.UserType = "Admin";
                             // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 1)
                         {
-                            Session["usertype"] = "Admin";
+                            JGSession.UserType = "Admin";
                             // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 2)
                         {
-                            Session["usertype"] = "JSE";
+                            JGSession.UserType = "JSE";
                             strRedirectUrl = "~/home.aspx";
                         }
                         else if (isvaliduser == 3)
                         {
-                            Session["usertype"] = "SSE";
+                            JGSession.UserType = "SSE";
                             strRedirectUrl = "~/Sr_App/home.aspx";
                         }
                         else if (isvaliduser == 4)
                         {
-                            Session["usertype"] = "MM";
+                            JGSession.UserType = "MM";
                             strRedirectUrl = "~/home.aspx";
                         }
                         else if (isvaliduser == 5)
                         {
-                            Session["usertype"] = "SM";
+                            JGSession.UserType = "SM";
                             strRedirectUrl = "~/Sr_App/home.aspx";
                         }
                         else if (isvaliduser == 6)
                         {
-                            Session["usertype"] = "AdminSec";
+                            JGSession.UserType = "AdminSec";
                             strRedirectUrl = "~/home.aspx";
                         }
                         else if (isvaliduser == 7)
                         {
-                            Session["usertype"] = "Employee";
+                            JGSession.UserType = "Employee";
                             strRedirectUrl = "~/home.aspx";
                         }
 
@@ -935,43 +941,44 @@ namespace JG_Prospect
                         {
                             if (ds.Tables[0].Rows.Count > 0)
                             {
-                                Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                                 // Session["UserTypeNew"] = ds.Tables[0].Rows[0]["usertype"].ToString().Trim();
-                                Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                                JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             }
                             string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                             int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
                             if (IsValidInstallerUser > 0)
                             {
-                                Session["loginid"] = txtloginid.Text.Trim();
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                JGSession.UserLoginId = txtloginid.Text.Trim();
+                                JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 JGSession.UserPassword = txtpassword.Text.Trim();
 
 
                                 if (txtloginid.Text.Trim() == AdminInstallerId)
                                 {
-                                    Session["AdminUserId"] = AdminInstallerId;
+                                    JGSession.AdminUserId = AdminInstallerId;
                                 }
 
-                                Session["usertype"] = "Installer";
+                                JGSession.UserType = "Installer";
+
                                 RememberMe();
 
-                                if (Convert.ToString(Session["DesigNew"]) != "")
+                                if (Convert.ToString(JGSession.Designation) != "")
                                 {
                                     #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
 
-                                    if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales" || Convert.ToString(Session["DesigNew"]) == "Jr Project Manager")
+                                    if (Convert.ToString(JGSession.Designation) == "Jr. Sales" || Convert.ToString(JGSession.Designation) == "Jr Project Manager")
                                     {
                                         strRedirectUrl = "~/home.aspx";
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "sales" || Convert.ToString(Session["DesigNew"]) == "SalesUser" || Convert.ToString(Session["DesigNew"]) == "SSE")
+                                    else if (Convert.ToString(JGSession.Designation) == "sales" || Convert.ToString(JGSession.Designation).Trim() == "Admin Recruiter" || Convert.ToString(JGSession.Designation) == "SalesUser" || Convert.ToString(JGSession.Designation) == "SSE")
                                     {
                                         strRedirectUrl = "~/Sr_App/home.aspx";
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
+                                    else if (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager" || Convert.ToString(JGSession.Designation).Contains("IT"))
                                     {
-                                        if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
+                                        if (Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Office Manager")
                                         {
                                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                                         }
@@ -981,19 +988,19 @@ namespace JG_Prospect
                                         }
 
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
+                                    else if (Convert.ToString(JGSession.Designation).StartsWith("Installer"))
                                     {
                                         Response.Redirect("~/Installer/InstallerHome.aspx", false);
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "SSE")
+                                    else if (Convert.ToString(JGSession.Designation) == "SSE")
                                     {
                                         strRedirectUrl = "~/Sr_App/home.aspx";
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "Forman" || Convert.ToString(Session["DesigNew"]) == "ForeMan")
+                                    else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
                                     {
                                         strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                     }
-                                    else if (Convert.ToString(Session["DesigNew"]) == "SubContractor")
+                                    else if (Convert.ToString(JGSession.Designation) == "SubContractor")
                                     {
                                         strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                     }
@@ -1004,19 +1011,19 @@ namespace JG_Prospect
 
                                     #endregion
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Installer")
+                                else if (Convert.ToString(JGSession.Designation) == "Installer")
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Jr. Sales")
+                                else if (Convert.ToString(JGSession.Designation) == "Jr. Sales")
                                 {
                                     strRedirectUrl = "~/home.aspx";
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "SSE")
+                                else if (Convert.ToString(JGSession.Designation) == "SSE")
                                 {
                                     strRedirectUrl = "~/Sr_App/home.aspx";
                                 }
-                                else if (Convert.ToString(Session["DesigNew"]) == "Forman" || Convert.ToString(Session["DesigNew"]) == "ForeMan")
+                                else if (Convert.ToString(JGSession.Designation) == "Forman" || Convert.ToString(JGSession.Designation) == "ForeMan")
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
@@ -1027,8 +1034,8 @@ namespace JG_Prospect
                             }
                             else
                             {
-                                Session["loginid"] = null;
-                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                                JGSession.UserLoginId = null;
+                                JGSession.GuIdAtLogin = null;
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
                             }
                         }
@@ -1053,8 +1060,8 @@ namespace JG_Prospect
                     }
                     else
                     {
-                        Session["loginid"] = null;
-                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                        JGSession.UserLoginId = null;
+                        JGSession.GuIdAtLogin = null;
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
                     }
                 }
@@ -1068,10 +1075,10 @@ namespace JG_Prospect
                     {
                         if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
                         {
-                            Session["loginid"] = txtloginid.Text.Trim();
-                            Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            JGSession.UserLoginId = txtloginid.Text.Trim();
+                            JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                             JGSession.UserPassword = txtpassword.Text.Trim();
-                            Session["Username"] = ds.Tables[0].Rows[0]["CustomerName"].ToString();
+                            JGSession.Username = ds.Tables[0].Rows[0]["CustomerName"].ToString();
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                             // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
@@ -1087,7 +1094,7 @@ namespace JG_Prospect
 
                             if (JGSession.IsFirstTime == true)
                             {
-                                Response.Redirect("changepassword.aspx", false);
+                                Response.Redirect("~/changepassword.aspx", false);
                             }
                             else
                             {
@@ -1098,8 +1105,8 @@ namespace JG_Prospect
                     }
                     else
                     {
-                        Session["loginid"] = null;
-                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                        JGSession.UserLoginId = null;
+                        JGSession.GuIdAtLogin = null;
                         //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                     }
@@ -1229,13 +1236,13 @@ namespace JG_Prospect
 
         protected void ImageButton1_Click(object sender, ImageClickEventArgs e)
         {
-            Session["facebook"] = true;
+            JGSession.IsFacebook = true;
             FaceBookConnect.Authorize("user_photos,email", Request.Url.AbsoluteUri.Split('?')[0]);
         }
 
         protected void ImageButton2_Click(object sender, ImageClickEventArgs e)
         {
-            Session["GooglePlus"] = true;
+            JGSession.IsGooglePlus = true;
             GoogleConnect.Authorize("profile", "email");
         }
 
@@ -1250,7 +1257,7 @@ namespace JG_Prospect
 
         protected void ImageButton5_Click(object sender, ImageClickEventArgs e)
         {
-            Session["microsoft"] = true;
+            JGSession.IsMicrosoft = true;
             string appId = "00000000481C1797";
             string appSecrets = "cec1ShT5FFjexbtm08qv0w8";
             string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
@@ -1263,7 +1270,7 @@ namespace JG_Prospect
 
         protected void ImageButton4_Click(object sender, ImageClickEventArgs e)
         {
-            Session["yahoo"] = true;
+            JGSession.IsYahoo = true;
             string consumerKey = ConfigurationManager.AppSettings["YahooConsumerKey"];
             string consumerSecret = ConfigurationManager.AppSettings["YahooConsumerSecret"];
             string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];

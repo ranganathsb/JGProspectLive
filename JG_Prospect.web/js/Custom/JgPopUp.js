@@ -15,7 +15,7 @@ function TheConfirm_Ok(dialogText, okFunc, dialogTitle) {
         modal: true,
         resizable: false,
         width: 'auto',
-        title: dialogTitle ,
+        title: dialogTitle,
         minHeight: 75,
         buttons: {
             OK: function () {
@@ -39,10 +39,17 @@ function TheConfirm_Ok_Cancel(dialogText, okFunc, cancelFunc, dialogTitle) {
         minHeight: 75,
         buttons: {
             OK: function () {
-                if (typeof (okFunc) == 'function') {
-                    setTimeout(okFunc, 50);
+                //Comment: Yogesh Keraliya
+                //if (typeof (okFunc) == 'function') {
+                //    setTimeout(okFunc, 50);
+                //}
+                //$(this).dialog('destroy');
+                if (okFunc) {
+                    var vals = okFunc.split("^");
+                    if (vals && vals.length > 0) {
+                        AutoLoginApplicant(vals[0], vals[1]);
+                    }
                 }
-                $(this).dialog('destroy');
             },
             Cancel: function () {
                 if (typeof (cancelFunc) == 'function') {
@@ -56,7 +63,7 @@ function TheConfirm_Ok_Cancel(dialogText, okFunc, cancelFunc, dialogTitle) {
 
 
 function showCustomPopUp(PageUrl, Pagetitle) {
-    
+
     var $dialog = $('<div></div>')
             .html('<div> <i> <h3>Soon we are coming up with new functionality.!!</h3> </i></div>')
                    //.html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
@@ -69,3 +76,4 @@ function showCustomPopUp(PageUrl, Pagetitle) {
                    });
     $dialog.dialog('open');
 }
+

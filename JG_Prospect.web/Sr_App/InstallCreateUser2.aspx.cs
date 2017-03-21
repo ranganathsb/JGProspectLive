@@ -4738,26 +4738,32 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    InstallUserBLL.Instance.DeleteSource(txtSource.Text);
-                    DataSet dsadd = InstallUserBLL.Instance.GetSource();
-                    if (dsadd.Tables[0].Rows.Count > 0)
+                    if (InstallUserBLL.Instance.DeleteSource(txtSource.Text))
                     {
-                        ddlSource.DataSource = dsadd.Tables[0];
-                        ddlSource.DataTextField = "Source";
-                        ddlSource.DataValueField = "Source";
-                        ddlSource.DataBind();
-                        ddlSource.Items.Insert(0, "Select Source");
-                        ddlSource.SelectedIndex = 0;
-                        txtSource.Text = "";
+                        DataSet dsadd = InstallUserBLL.Instance.GetSource();
+                        if (dsadd.Tables[0].Rows.Count > 0)
+                        {
+                            ddlSource.DataSource = dsadd.Tables[0];
+                            ddlSource.DataTextField = "Source";
+                            ddlSource.DataValueField = "Source";
+                            ddlSource.DataBind();
+                            ddlSource.Items.Insert(0, "Select Source");
+                            ddlSource.SelectedIndex = 0;
+                            txtSource.Text = "";
+                        }
+                        else
+                        {
+                            ddlSource.DataSource = dsadd;
+                            ddlSource.DataBind();
+                            ddlSource.Items.Add("Select Source");
+                            ddlSource.SelectedIndex = 0;
+                        }
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true); 
                     }
                     else
                     {
-                        ddlSource.DataSource = dsadd;
-                        ddlSource.DataBind();
-                        ddlSource.Items.Add("Select Source");
-                        ddlSource.SelectedIndex = 0;
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record can not be deleted.')", true);
                     }
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true);
                 }
             }
             else
@@ -9991,7 +9997,7 @@ namespace JG_Prospect.Sr_App
             isvaliduser = UserBLL.Instance.chklogin(Convert.ToString(Session["loginid"]), txtUserPassword.Text);
             if (isvaliduser > 0)
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReson.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReson.Text);
 
                 //Changes Status.....
                 string a = ddlstatus.SelectedValue;

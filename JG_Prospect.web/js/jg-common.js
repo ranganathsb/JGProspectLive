@@ -1,5 +1,4 @@
-﻿// test
-/********************************************* CK Editor (Html Editor) ******************************************************/
+﻿/********************************************* CK Editor (Html Editor) ******************************************************/
 var arrCKEditor = new Array();
 
 function SetCKEditor(Id, onBlurCallBack) {
@@ -16,7 +15,30 @@ function SetCKEditor(Id, onBlurCallBack) {
             // Show toolbar on startup (optional).
             //startupFocus: true,
             startupFocus: false,
-            enterMode: CKEDITOR.ENTER_BR
+            enterMode: CKEDITOR.ENTER_BR,
+            on: {
+                blur: function (event) {
+                    event.editor.updateElement();
+                },
+                fileUploadResponse:function (evt) {
+                        // Prevent the default response handler.
+                        evt.stop();
+
+                        // Ger XHR and response.
+                        var data = evt.data,
+                            xhr = data.fileLoader.xhr,
+                            response = xhr.responseText.split('|');
+
+                        var jsonarray = JSON.parse(response[0]);
+
+                        if (jsonarray && jsonarray.uploaded != "1") {
+                            // Error occurred during upload.                
+                            evt.cancel();
+                        } else {
+                            data.url = jsonarray.url;
+                        }
+                    }
+            }
         });
 
     var editor = CKEDITOR.instances[Id];
@@ -25,34 +47,36 @@ function SetCKEditor(Id, onBlurCallBack) {
 
     arrCKEditor.push(editor);
 
-    editor.on('blur', function (event) {
+    // Commented yogesh keraliya : 02152017 
+    // Editor blur event auto update of underlying element.
+    //editor.on('blur', function (event) {
 
-        event.editor.updateElement();
-        
-        if (typeof (onBlurCallBack) == 'function') {
-            console.log(event.editor.name + ' editor lost focus.');
-            onBlurCallBack(event.editor);
-        }
-    });
+    //    event.editor.updateElement();
 
-    editor.on('fileUploadResponse', function (evt) {
-        // Prevent the default response handler.
-        evt.stop();
+    //    if (typeof (onBlurCallBack) == 'function') {
+    //        console.log(event.editor.name + ' editor lost focus.');
+    //        onBlurCallBack(event.editor);
+    //    }
+    //});
 
-        // Ger XHR and response.
-        var data = evt.data,
-            xhr = data.fileLoader.xhr,
-            response = xhr.responseText.split('|');
+    //editor.on('fileUploadResponse', function (evt) {
+    //    // Prevent the default response handler.
+    //    evt.stop();
 
-        var jsonarray = JSON.parse(response[0]);
+    //    // Ger XHR and response.
+    //    var data = evt.data,
+    //        xhr = data.fileLoader.xhr,
+    //        response = xhr.responseText.split('|');
 
-        if (jsonarray && jsonarray.uploaded != "1") {
-            // Error occurred during upload.                
-            evt.cancel();
-        } else {
-            data.url = jsonarray.url;
-        }
-    });
+    //    var jsonarray = JSON.parse(response[0]);
+
+    //    if (jsonarray && jsonarray.uploaded != "1") {
+    //        // Error occurred during upload.                
+    //        evt.cancel();
+    //    } else {
+    //        data.url = jsonarray.url;
+    //    }
+    //});
 }
 
 function SetCKEditorForPageContent(Id, AutosavebuttonId) {
@@ -72,9 +96,7 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
-
                     event.editor.updateElement();
-                    // event.editor.destroy();
                     $(AutosavebuttonId).click();
                 },
                 fileUploadResponse: function (event) {
@@ -144,6 +166,10 @@ function ShowPopupWithTitle(varControlID, strTitle) {
 
     var dialogwidth = windowWidth + "px";
 
+    if ($(varControlID).attr('data-width')) {
+        dialogwidth = $(varControlID).attr('data-width');
+    }
+
     var objDialog = $(varControlID).dialog({ width: dialogwidth, height: "auto" });
 
     // this will update title of current dialog.
@@ -165,11 +191,21 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
     if ($(strDropzoneSelector).attr("data-accepted-files")) {
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
+    
+    var strUrl = 'taskattachmentupload.aspx';
+    switch ($(strDropzoneSelector).attr("data-upload-path-code")) {
+        case '1':
+            strUrl = 'userbulkupload.aspx';
+            break;
+        default:
+            strUrl = 'taskattachmentupload.aspx';
+            break;
+    }
 
     var objDropzone = new Dropzone(strDropzoneSelector,
         {
             maxFiles: 5,
-            url: "taskattachmentupload.aspx",
+            url: strUrl,
             thumbnailWidth: 90,
             thumbnailHeight: 90,
             acceptedFiles: strAcceptedFiles,
@@ -261,7 +297,7 @@ function DestroyGallery() {
         subtaskSliders.destroy();
     }
 }
-/********************************************* General Functions ******************************************************/
+/********************************************* Chosen Dropdown Functions ******************************************************/
 function ChosenDropDown(options) {
     var _options = options || {};
     $('.chosen-select').chosen(_options);
@@ -316,6 +352,17 @@ function copyToClipboard(strDataToCopy) {
     //clipboard.destroy();
 }
 
+// gets value of a parameter from query string.
+function GetQueryStringParameterValue(param) {
+    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for (var i = 0; i < url.length; i++) {
+        var urlparam = url[i].split('=');
+        if (urlparam[0] == param) {
+            return urlparam[1];
+        }
+    }
+}
+
 //common code check query string parameter, if already exists then replace value else add that parameter. 
 function updateQueryStringParameter(uri, key, value) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -326,4 +373,27 @@ function updateQueryStringParameter(uri, key, value) {
     else {
         return uri + separator + key + "=" + value;
     }
+}
+
+function IsNumeric(e, blWholeNumber) {
+    var keyCode = e.which ? e.which : e.keyCode;
+
+    if (keyCode >= 48 && keyCode <= 57) {
+        return true; // 0-9    
+    }
+    else if (keyCode == 9) {
+        return true; // tab 
+    }
+    else if (keyCode == 37 || keyCode == 38) {
+        return true; // left - right arrow
+    }
+    else if (keyCode == 8 || keyCode == 46) {
+        return true; // back space - delete
+    }
+    else if (!blWholeNumber && keyCode == 190) {
+        if (this.value.indexOf('.') == -1) {
+            return true; // period
+        }
+    }
+    return false;
 }

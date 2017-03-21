@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -88,6 +88,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
         }
+        
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
@@ -115,6 +116,11 @@ namespace JG_Prospect.BLL
         public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
+        }
+
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
         }
 
         public DataSet GetAllUsersNDesignationsForFilter()
@@ -254,6 +260,19 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.UpdateTaskApproval(objTaskApproval);
         }
+
+
+        //--------- Start DP -----------
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
+        {
+            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch);
+        }
+
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
+        {
+            return TaskGeneratorDAL.Instance.GetClosedTasks(userid, desigid, vSearch);
+        }
+        //------- End DP ----------
 
         #endregion
     }

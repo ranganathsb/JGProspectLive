@@ -31,17 +31,17 @@ namespace JG_Prospect.BLL
         }
 
 
-        public DataSet GetAllDesignation()
+        public List<Designation> GetAllDesignation()
         {
             return DesignationDAL.Instance.GetDesignationByFilter(0, 0);
         }
 
-        public DataSet GetAllDesignationByDepartmentID(int? DepartmentID)
+        public List<Designation> GetAllDesignationByDepartmentID(int? DepartmentID)
         {
             return DesignationDAL.Instance.GetDesignationByFilter(0, DepartmentID);
         }
 
-        public DataSet GetDesignationByID(int? DesignationID, int? DepartmentID)
+        public List<Designation> GetDesignationByID(int? DesignationID, int? DepartmentID)
         {
             return DesignationDAL.Instance.GetDesignationByFilter(DesignationID, DepartmentID);
         }

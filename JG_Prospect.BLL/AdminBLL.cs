@@ -311,6 +311,13 @@ namespace JG_Prospect.BLL
         {
             return AdminDAL.Instance.GetEventCalendar();
         }
+        //-------- start DP ---
+        public DataSet GetEventByCalendar(int calid)
+        {
+            return AdminDAL.Instance.GetEventByCalendar(calid);
+        }
+        //--------- End DP --------
+
         //For HR Calendar...
         public DataSet GetHRCalendar()
         {

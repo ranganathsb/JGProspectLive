@@ -105,8 +105,8 @@
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
-                    OnPageIndexChanging = "OnPagingGvSubTasks"  
-                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
+                    OnPageIndexChanging = "OnPagingGvSubTasks"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5" AllowCustomPaging="true"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
@@ -605,7 +605,7 @@
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <div class="btn_sec">
-                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                                         TabIndex="5" Text="Submit"   CssClass="ui-button" 
                                                         OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
                                                 </div>
@@ -895,7 +895,7 @@
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        //DestroyCKEditors();
+        DestroyCKEditors();
     });
 
 
@@ -903,9 +903,6 @@
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();
     });
-
-
-
 
     function SetUserAutoSuggestion() {
 
@@ -1013,7 +1010,13 @@
     }
 
     function OnSaveSubTaskClick() {
+        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
         return Page_ClientValidate('vgSubTask');
+    }
+
+    function OnAddMoreSubtaskClick() {
+        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+        return Page_ClientValidate('SubmitSubTask');
     }
 
     function copytoListID(sender) {
@@ -1146,12 +1149,18 @@
 
         $(divid).slideDown('slow');
 
-        $('html, body').animate({
-            scrollTop: $(divid).offset().top - 100
-        }, 2000);
-
-
+        ScrollTo(divid);
     }
+
+    function ScrollTo(selector) {
+        var offset = $(selector).offset();
+        if (typeof (offset) != 'undefined') {
+            $('html, body').animate({
+                scrollTop: offset.top
+            }, 1000);
+        }
+    }
+
     function hideSubTaskEditView(divid, rowindex) {
 
     //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');

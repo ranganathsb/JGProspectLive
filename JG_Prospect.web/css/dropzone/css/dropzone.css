@@ -148,6 +148,14 @@
     transition: opacity 0.3s ease-in-out 0s;
     width: 315px;
 }
+/* ----------- start DP -------- */
+.dropzonJgStyle .dz-default ,.dropzonJgStyle .dz-message{
+    background-image: url("../images/uploadJg.png")!important;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    width: 315px;
+}
+/* ----------- end DP -------- */
 #divUploadUserProfilPic .dz-default, #divUploadUserProfilPic .dz-message{
     background-image: url("../images/uploadJg.png")!important;
     background-position: 0 0;

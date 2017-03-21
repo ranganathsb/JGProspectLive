@@ -1519,7 +1519,10 @@ namespace JG_Prospect.Sr_App
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
             this.TaskCreatedBy = Convert.ToInt32(dtTaskMasterDetails.Rows[0]["CreatedBy"]);
-            chkTechTask.Checked = Convert.ToBoolean(dtTaskMasterDetails.Rows[0]["IsTechTask"]);
+            if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["IsTechTask"].ToString()))
+            {
+                chkTechTask.Checked = Convert.ToBoolean(dtTaskMasterDetails.Rows[0]["IsTechTask"]);
+            }
             if (this.IsAdminMode)
             {
                 txtTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());

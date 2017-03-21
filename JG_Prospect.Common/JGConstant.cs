@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace JG_Prospect.Common
 {
     public class JGConstant
     {
+        #region '--Constants--'
+        
         public static CultureInfo CULTURE = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
         public const string JUSTIN_LOGIN_ID = "jgrove@jmgroveconstruction.com";//"jgtest2@gmail.com"; //" jgrove@jmgroveconstruction.com"
@@ -71,7 +74,21 @@ namespace JG_Prospect.Common
 
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
         public const string ProfilPic_Upload_Folder = "~/UploadeProfile";
+
         public const string Default_PassWord = "jmgrove";
+        
+
+        //-------- start DP ---------
+        public const string EventCalendar_Upload_Folder = "~/EventCalendar";
+        //-------- End DP ------------
+
+
+
+        #endregion
+
+        #region '--Enums--'
+
+
         /// <summary>
         /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
         /// </summary>
@@ -96,6 +113,7 @@ namespace JG_Prospect.Common
             Modified = 3,
         }
 
+
         public enum TaskStatus
         {
             Open = 1,
@@ -107,7 +125,10 @@ namespace JG_Prospect.Common
             Closed = 7,
             SpecsInProgress = 8,
             Deleted = 9,
-            Finished = 10
+            Finished = 10,
+            Test = 11,
+            Live = 12,
+            Billed=14
         }
 
         public enum TaskPriority
@@ -137,10 +158,10 @@ namespace JG_Prospect.Common
         public enum TaskUserFileType
         {
             Notes = 1,
-            Audio = 2, 
-            Video = 3, 
-            Images = 4, 
-            Docu = 5, 
+            Audio = 2,
+            Video = 3,
+            Images = 4,
+            Docu = 5,
             Other = 6
         }
 
@@ -165,8 +186,74 @@ namespace JG_Prospect.Common
             Installer_Lead_Mechanic = 17,
             Installer_Foreman = 18,
             Commercial_Only = 19,
-            SubContractor = 20
+            SubContractor = 20,
+            IT_Lead = 21,
+            Admin_Sales = 22,
+            Admin_Recruiter = 23
         }
+
+        public enum InstallUserStatus
+        {
+            Active = 1
+            ,
+            Applicant = 2
+                ,
+            Deactive = 3
+                ,
+            InstallProspect = 4
+                ,
+            InterviewDate = 5
+                ,
+            OfferMade = 6
+                ,
+            PhoneScreened = 7
+                ,
+            Phone_VideoScreened = 8
+                ,
+            Rejected = 9
+                ,
+            ReferralApplicant = 10
+                , Deleted = 11
+        }
+
+        public enum UserRoles
+        { 
+            Admin = 1
+        }
+
+        /// <summary>
+        /// Gets key names to access ApplicationFeatures from database.
+        /// Keep updating this class to have all KEY values as per database.
+        /// </summary>
+        public enum ApplicationFeatures
+        {
+
+        }
+
+        
+        /// <summary>
+        /// Get employment statuses for system.
+        /// </summary>
+        public enum EmploymentType
+        {
+
+            [Description("Part Time - Remote")]
+            PartTimeRemote = 1,
+            [Description("Full Time - Remote")]
+            FullTimeRemote = 2,
+            [Description("Part Time - Onsite")]
+            PartTimeOnsite = 3,
+            [Description("Full Time - Onsite")]
+            FullTimeOnsite = 4, 
+            [Description("Internship")]
+            Internship = 5,
+            [Description("Temp")]
+            Temp = 6,
+            [Description("Sub")]
+            Sub = 7
+            
+        }
+        #endregion
 
         #region '-- Page Name --'
 
@@ -174,7 +261,6 @@ namespace JG_Prospect.Common
         /// Master Calendar Direct URL 
         /// </summary>
         public const string PG_PATH_MASTER_CALENDAR = "~/Sr_App/GoogleCalendarView.aspx";
-
 
         #endregion
 
