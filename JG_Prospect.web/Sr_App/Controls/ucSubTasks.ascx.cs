@@ -26,14 +26,8 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 namespace JG_Prospect.Sr_App.Controls
 {
-
-
-
-
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
-
-
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
@@ -154,6 +148,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
         public int vFirstLevelId = 0;
+        public bool isPaging = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -194,6 +189,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
+            isPaging = true;
             SetSubTaskDetails();
             gvSubTasks.PageIndex = e.NewPageIndex;
             gvSubTasks.DataBind();
@@ -1866,7 +1862,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             string strScript = string.Format(
-                                                "$('#{0}').slideDown('slow');",
+                                                "$('#{0}').slideDown('slow'); ScrollTo('#{0}');",
                                                 divSubTask.ClientID
                                             );
 
@@ -2050,7 +2046,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (dtSubTaskDetails.Rows.Count > 0)
             {
-                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]) && isPaging==false)
                 {
                     int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
 
@@ -2066,7 +2062,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                             if (resultTask.Tables[0].Rows.Count > 0)
                             {
-                                int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out vHSTid);
+                                int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out  vHSTid);
                             }
                         }
                     }
