@@ -148,6 +148,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
         public int vFirstLevelId = 0;
+        public bool isPaging = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -188,6 +189,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
+            isPaging = true;
             SetSubTaskDetails();
             gvSubTasks.PageIndex = e.NewPageIndex;
             gvSubTasks.DataBind();
@@ -2044,7 +2046,7 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (dtSubTaskDetails.Rows.Count > 0)
             {
-                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]) && isPaging==false)
                 {
                     int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
 
