@@ -16,13 +16,24 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Data;
+using System.Data.Common;
+using JG_Prospect.DAL.Database;
+using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 #endregion
 
 namespace JG_Prospect.Sr_App.Controls
 {
+
+
+     
+
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
+       
+
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
@@ -141,6 +152,10 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Page Events--'
 
+
+        public int vFirstLevelId = 0;
+        public bool isPaging = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -155,14 +170,164 @@ namespace JG_Prospect.Sr_App.Controls
 
         #region '--Control Events--'
 
-        #region '--gvSubTasks--'
+        #region '---- gvSubTasksLevels_RowDataBound ---'
 
+        protected void gvSubTasks_PreRender(object sender, EventArgs e)
+        {
+            GridView gv = (GridView)sender;
+
+            if (gv.Rows.Count > 0)
+            {
+                gv.UseAccessibleHeader = true;
+                gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gv.FooterRow.TableSection = TableRowSection.TableFooter;
+            }
+
+            if (gv.TopPagerRow != null)
+            {
+                gv.TopPagerRow.TableSection = TableRowSection.TableHeader;
+            }
+            if (gv.BottomPagerRow != null)
+            {
+                gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+            }
+        }
+
+        protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
+        {
+            isPaging = true;
+            SetSubTaskDetails();
+            gvSubTasks.PageIndex = e.NewPageIndex;
+            gvSubTasks.DataBind();
+        }
+        
+        protected void gvSubTasksLevels_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                HiddenField hdTaskLevel = e.Row.FindControl("hdTaskLevel") as HiddenField;
+                HiddenField hdTaskId = e.Row.FindControl("hdTaskId") as HiddenField;
+                LinkButton lnkAddMoreSubTask = e.Row.FindControl("lnkAddMoreSubTask") as LinkButton;
+                LinkButton lbtnInstallId = e.Row.FindControl("lbtnInstallId") as LinkButton;
+                LinkButton lbtnInstallIdRemove = e.Row.FindControl("lbtnInstallIdRemove") as LinkButton;
+                HiddenField hdURL = e.Row.FindControl("hdURL") as HiddenField;
+                HiddenField hdTitle = e.Row.FindControl("hdTitle") as HiddenField;
+                HtmlGenericControl dvDesc = e.Row.FindControl("dvDesc") as HtmlGenericControl;
+                GridViewRow gvMasterRow = (GridViewRow)e.Row.Parent.Parent.Parent.Parent;
+               
+                Repeater rptAttachment = gvMasterRow.FindControl("rptAttachment") as Repeater;
+                HiddenField hdnTaskApprovalId = gvMasterRow.FindControl("hdnTaskApprovalId") as HiddenField;
+                TextBox estHours = gvMasterRow.FindControl("txtEstimatedHours") as TextBox;
+                string vTaskApproveId =hdnTaskApprovalId.Value;
+                txtEstimatedHours.Text = estHours.Text;       //(gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
+                dvDesc.InnerHtml = "";
+                string lnkClasslvl = "";
+                lnkClasslvl = "";
+
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                {
+                    if (Convert.ToInt32(hdTaskId.Value) == Convert.ToInt32(Request.QueryString["hstid"]))
+                    {
+                        e.Row.CssClass = " yellowthickborder";
+                    }
+                }
+
+
+               // FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
+
+
+                if (hdTaskLevel.Value=="3" )
+                {
+                    lnkAddMoreSubTask.Visible = false;
+                    lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
+                    lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
+                    dvDesc.InnerHtml =Server.HtmlDecode( DataBinder.Eval(e.Row.DataItem, "Description").ToString());
+                }
+                else if (hdTaskLevel.Value == "1")
+                {
+                    vFirstLevelId = Convert.ToInt32( hdTaskId.Value);
+                    lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
+                    lbtnInstallIdRemove.CssClass = "context-menu installidleft" + lnkClasslvl;
+                    lnkAddMoreSubTask.CssClass = "installidleft";
+                    lbtnInstallId.CommandArgument = vTaskApproveId;
+                    lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
+                    string strhtml = "";
+                    strhtml = strhtml  +  "<strong>Title: " +(e.Row.DataItem as DataRowView)["Title"].ToString() + "</strong></br>";
+                    strhtml = strhtml + " <strong>URL: <a href='" + (e.Row.DataItem as DataRowView)["URL"].ToString() + "'>" + (e.Row.DataItem as DataRowView)["URL"].ToString() + "</a></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br>";
+                    strhtml = strhtml + (e.Row.DataItem as DataRowView)["Description"].ToString();
+                    
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml) ;  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                }
+                else if (hdTaskLevel.Value == "2")
+                {
+                    lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString(); 
+                    lnkAddMoreSubTask.Visible = true;
+                    lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
+                    lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
+                    lnkAddMoreSubTask.CssClass = "installidcenter";
+                    dvDesc.InnerHtml =Server.HtmlDecode( DataBinder.Eval(e.Row.DataItem, "Description").ToString());
+                }
+              
+                lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
+                lbtnInstallId.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
+                lbtnInstallIdRemove.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
+
+                
+                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                {
+                    
+                   // c.Click +=  EditSubTask_Click;
+                    lbtnInstallId.Visible = true;
+                    lbtnInstallIdRemove.Visible = false;
+                }
+                else
+                {
+                    lnkAddMoreSubTask.Visible = false;
+                    lbtnInstallId.Visible = false;
+                    lbtnInstallIdRemove.Visible = true;
+                }
+            }
+        }
+        #endregion
+
+        #region '--gvSubTasks--'
+        public void RemoveClick(object sender, EventArgs e)
+        {
+            // do something
+        }
         protected void gvSubTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
+
+                //---------- Start DP ----------
+                Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
+                GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
+                
+                DataSet resultTask = new DataSet();
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DbCommand command = database.GetStoredProcCommand("GetParentChildTasks");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskid", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
+                        resultTask = database.ExecuteDataSet(command);
+                    }
+                    grdTaskLevels.DataSource = resultTask;
+                    grdTaskLevels.DataBind();
+                }
+                catch (Exception ex)
+                {
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+                //--------- End DP -----------
+
 
                 if (this.IsAdminMode)
                 {
@@ -208,6 +373,8 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlTaskPriority.DataValueField = "Value";
                     ddlTaskPriority.DataBind();
 
+                    
+
                     if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()))
                     {
                         ddlTaskPriority.SelectedValue = DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString();
@@ -225,19 +392,26 @@ namespace JG_Prospect.Sr_App.Controls
 
                 SetStatusSelectedValue(ddlStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
-                if (this.IsAdminMode)
+                if (!this.IsAdminMode)
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = false;
-                }
-                else
-                {
-                    e.Row.FindControl("lbtnInstallId").Visible = false;
-
+                    //if (true)
+                    //{
+                    //    e.Row.FindControl("ltrlInstallId").Visible = false; 
+                    //}
                     if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
                     {
                         ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
                     }
                 }
+                //else
+                //{
+                //    e.Row.FindControl("lbtnInstallId").Visible = false;
+
+                //    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
+                //    {
+                //        ddlStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
+                //    }
+                //}
 
                 //if (controlMode == "0")
                 //{
@@ -248,20 +422,82 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                 }
 
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString()))
+                //------------- Start DP ----------------
+                //if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString()))
+                //{
+                //    string attachments = DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString();
+                //    string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                //    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
+                //    if (attachment != null && attachment.Length > 0)
+                //    {
+                //        this.lstSubTaskFiles.AddRange(attachment);
+                //        rptAttachments.DataSource = attachment;
+                //        rptAttachments.DataBind();
+                //    }
+                   
+                //}
+                //------ attachments -----
+                HtmlImage defaultimgIcon = e.Row.FindControl("defaultimgIcon") as HtmlImage;
+                Repeater rptAttachment = (Repeater)e.Row.FindControl("rptAttachment");
+                
+                defaultimgIcon.Visible = false;
+                DataTable dtSubtaskAttachments = new System.Data.DataTable();
+
+
+                if (Convert.ToInt32(lblTaskId.Text) > 0)
                 {
-                    string attachments = DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString();
-                    string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (attachment != null && attachment.Length > 0)
+                    string strfile = "";
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(lblTaskId.Text), JGConstant.TaskFileDestination.SubTask, null, null);
+                    if (dsTaskUserFiles != null)
                     {
-                        this.lstSubTaskFiles.AddRange(attachment);
+                        if (dsTaskUserFiles.Tables[0].Rows.Count > 0)
+                        {
+                            //dtSubtaskAttachments = dsTaskUserFiles.Tables[0];
+                            //rptAttachment.DataSource = dtSubtaskAttachments;
+                            //rptAttachment.DataBind();
+                            for (int k = 0; k < dsTaskUserFiles.Tables[0].Rows.Count; k++)
+                            {
+                                if (k == 0)
+                                {
+                                    strfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if(!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
+                                }
+                                else
+                                {
+                                    string vstrfile = "";
+                                    vstrfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if (!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
+                                    strfile = strfile + "," + vstrfile;
+                                }
+                            }
+                            if (strfile != "")
+                            {
+                                string[] attachment = strfile.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (attachment != null && attachment.Length > 0)
+                                {
+                                    rptAttachment.DataSource = attachment;
+                                    rptAttachment.DataBind();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            defaultimgIcon.Visible = true;
+                            defaultimgIcon.Src = Page.ResolveUrl(string.Concat("~/img/", CommonFunction.ReplaceEncodeWhiteSpace("JG-Logo-white.gif")));
+                        }
                     }
-
-                    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
-                    rptAttachments.DataSource = attachment;
-                    rptAttachments.DataBind();
                 }
+                upnlAttachments.Update();
+                //---------------------
+                //-------------------- End DP -------------
 
                 CheckBox chkAdmin = e.Row.FindControl("chkAdmin") as CheckBox;
                 CheckBox chkITLead = e.Row.FindControl("chkITLead") as CheckBox;
@@ -289,7 +525,9 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blAdminStatus)
                 {
-                    e.Row.FindControl("divAdmin").Visible = true;
+                    HtmlGenericControl divAdmin = (HtmlGenericControl)e.Row.FindControl("divAdmin");
+                    divAdmin.Visible = true;
+                    
                 }
                 if (chkITLead.Enabled)
                 {
@@ -297,7 +535,9 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blTechLeadStatus)
                 {
-                    e.Row.FindControl("divITLead").Visible = true;
+                    HtmlGenericControl divITLead = (HtmlGenericControl)e.Row.FindControl("divITLead");
+                    divITLead.Visible = true;
+                  
                 }
                 if (chkUser.Enabled)
                 {
@@ -305,13 +545,25 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 if (blOtherUserStatus)
                 {
-                    e.Row.FindControl("divUser").Visible = true;
+                    HtmlGenericControl divUser = (HtmlGenericControl)e.Row.FindControl("divUser");
+                    divUser.Visible = true;
                 }
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
-                    e.Row.FindControl("ltrlInstallId").Visible = true;
-                    e.Row.FindControl("lbtnInstallId").Visible = false;
+                   Literal ltrlInstallId = (Literal)e.Row.FindControl("ltrlInstallId");
+
+                    if (ltrlInstallId != null)
+                    {
+                        ltrlInstallId.Visible = false;
+                    }
+
+                  LinkButton lbtnInstallId = (LinkButton) e.Row.FindControl("lbtnInstallId");
+
+                    if (lbtnInstallId != null)
+                    {
+                        lbtnInstallId.Visible = false;
+                    }
                 }
 
                 string strRowCssClass = string.Empty;
@@ -356,8 +608,8 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 e.Row.CssClass = strRowCssClass;
-
             }
+
         }
 
         protected void gvSubTasks_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -365,7 +617,7 @@ namespace JG_Prospect.Sr_App.Controls
             if (e.CommandName.Equals("edit-sub-task"))
             {
                 ClearSubTaskData();
-
+                int intRowIndex = Convert.ToInt32(e.CommandArgument);
                 hdnTaskApprovalId.Value = "0";
                 hdnSubTaskId.Value = "0";
                 hdnSubTaskIndex.Value = "-1";
@@ -397,7 +649,7 @@ namespace JG_Prospect.Sr_App.Controls
                 //}
                 //else
                 {
-                    int intRowIndex = Convert.ToInt32(e.CommandArgument);
+
                     hdnSubTaskId.Value = gvSubTasks.DataKeys[intRowIndex]["TaskId"].ToString();
                     hdnTaskApprovalId.Value = (gvSubTasks.Rows[intRowIndex].FindControl("hdnTaskApprovalId") as HiddenField).Value;
                     txtEstimatedHours.Text = (gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
@@ -484,6 +736,343 @@ namespace JG_Prospect.Sr_App.Controls
                                               );
             }
         }
+        //-------- Start DP --------
+        
+        private string[] getSUBSubtaskSequencing(string sequence)
+        {
+            String[] ReturnSequence = new String[2];
+
+            String[] numbercomponents = sequence.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+           
+                //if no subtask sequence than start with roman number I.
+                if (numbercomponents.Length == 0) // like number of subtask without alphabet I,II
+                {
+                    int startSequence = 1;
+                    ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                    ReturnSequence[1] = String.Concat(ReturnSequence[0], " - a"); // concat existing roman number with alphabet.
+                    
+                }
+                else if (numbercomponents.Length == 1) // like number of subtask without alphabet I,II
+                {
+                    int startSequence = 1;
+                    ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                    ReturnSequence[1] = String.Concat(sequence, " - a"); // concat existing roman number with alphabet.
+
+                }
+                else  // if task sequence contains alphabet.
+                {
+                    int numbersequence;
+                    numbercomponents[0] = numbercomponents[0].Trim();
+                    numbercomponents[1] = numbercomponents[1].Trim();
+
+
+                    char[] alphabetsequence = numbercomponents[1].ToCharArray();// get aplphabet from sequence
+
+                    bool parsed = ExtensionMethods.TryRomanParse(numbercomponents[0], out numbersequence); // parse roman to integer
+
+                    if (parsed)
+                    {
+                        numbersequence++; // increase integer sequence
+
+                        ReturnSequence[0] = ExtensionMethods.ToRoman(numbersequence); // convert integer sequnce to roman
+                        ReturnSequence[1] = string.Concat(numbercomponents[0], " - ", ++alphabetsequence[0]); // advance alphabet to next alphabet.
+                    }
+                }
+          
+            return ReturnSequence;
+        }
+
+        protected void lnkAddMoreSubTask_Click(object sender, EventArgs e)
+        {
+
+            LinkButton lnkpop = (LinkButton)sender;
+            
+            hdMainParentId.Value = lnkpop.CommandArgument;
+            char[] delimiterChars = { '#' };
+            string[] TaskLvlandInstallId =  lnkpop.CommandName.Split(delimiterChars);
+
+            hdTaskLvl.Value = TaskLvlandInstallId[0];
+            hdParentTaskId.Value = TaskLvlandInstallId[2];
+
+            //int intRowIndex = Convert.ToInt32(e.CommandArgument);
+            hdnCurrentEditingRow.Value = TaskLvlandInstallId[3];
+
+            if (TaskLvlandInstallId[0] == "2")
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet result = new DataSet();
+                    string vInstallId = TaskLvlandInstallId[1];
+                    string str = "select  * from tbltask where parenttaskid=" + hdParentTaskId.Value + " and  ";
+                    str = str + " Taskid=( select max(taskid) from tbltask where parenttaskid=" + hdParentTaskId.Value + "  and tasklevel=2) order by taskid";
+                    DbCommand command = database.GetSqlStringCommand(str);
+                    command.CommandType = CommandType.Text;
+                    result = database.ExecuteDataSet(command);
+                    if (result.Tables[0].Rows.Count > 0)
+                    {
+                        vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+                    }
+                    string[] subtaskListIDSuggestion = getSUBSubtaskSequencing(vInstallId);
+                    if (subtaskListIDSuggestion.Length > 0)
+                    {
+                        if (subtaskListIDSuggestion.Length > 1)
+                        {
+                            if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
+                            {
+                                txtInstallId.Text  = subtaskListIDSuggestion[0];
+                            }
+                            else
+                            {
+                                txtInstallId.Text = subtaskListIDSuggestion[1];
+                                listIDOpt.Text = subtaskListIDSuggestion[0];
+                            }
+                        }
+                        else
+                        {
+                            txtInstallId.Text = subtaskListIDSuggestion[0];
+                            //listIDOpt.Text = subtaskListIDSuggestion[0];
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+                string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii" };
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet result = new DataSet();
+                    string str = "select  * from tbltask where parenttaskid=" + hdParentTaskId.Value + " and  ";
+                    str = str + " Taskid=( select max(taskid) from tbltask where parenttaskid=" + hdParentTaskId.Value + "  and tasklevel=3) order by taskid";
+                    DbCommand command = database.GetSqlStringCommand(str);
+                    command.CommandType = CommandType.Text;
+                    result = database.ExecuteDataSet(command);
+                    string vNextInstallId = "";
+                    if (result.Tables[0].Rows.Count > 0)
+                    {
+                        string vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+
+                        int cnt = -1;
+                        for (int i = 0; i < roman4.Length; i++)
+                        {
+                            if (vInstallId == roman4[i])
+                            {
+                                cnt = i + 1;
+                            }
+
+                            if (cnt == i)
+                            {
+                                vNextInstallId = roman4[i];
+                                break;
+                            }
+                        }
+                    }
+                    else { vNextInstallId = roman4[0]; }
+                    txtInstallId.Text = vNextInstallId;
+                    result.Dispose();
+                }
+            }
+
+            txtMode.Value = "add";
+            hdTaskId.Value = "0";
+            ////mpSubTask.Show();
+
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+
+        }
+        //protected void btnCalClose_Click(object sender, EventArgs e)
+        //{
+        //    //mpSubTask.Hide();
+        //    //mpcalendar.show();
+        //    ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+        //}
+        protected void btnAddMoreSubtask_Click(object sender, EventArgs e)
+        {
+            //LinkButton lnkpop = (LinkButton)sender;
+            //txtCalName.Text = lnkpop.Text;
+            //mpCalendar.Show();
+            //mpcalendar.show();
+
+            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("AddSubTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    string vTaskDesc = txtTaskDesc.Text;
+                    string vTaskDescEncode = Server.HtmlEncode(vTaskDesc);
+
+                    if (txtMode.Value == "add")
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@Title", DbType.String, txtSubSubTitle.Text );
+                        database.AddInParameter(command, "@Description", DbType.String, vTaskDescEncode);
+                        database.AddInParameter(command, "@Status", DbType.Int32, 1);
+                        database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
+                        database.AddInParameter(command, "@CreatedOn", DbType.DateTime, DateTime.Now.Date);
+                        database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
+                        database.AddInParameter(command, "@TaskLevel", DbType.Int32, Convert.ToInt32(hdTaskLvl.Value));
+                        database.AddInParameter(command, "@ParentTaskId", DbType.Int32, Convert.ToInt32(hdParentTaskId.Value));
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
+                        database.AddInParameter(command, "@MainParentId", DbType.Int32, Convert.ToInt32(hdMainParentId.Value));
+                        database.AddInParameter(command, "@TaskType", DbType.Int32,Convert.ToInt32(drpSubTaskType.SelectedValue.ToString()));
+                        database.AddInParameter(command, "@TaskPriority", DbType.Int32, Convert.ToInt32(drpSubTaskPriority.SelectedValue.ToString()));
+
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int32, Convert.ToInt32(hdTaskId.Value));
+                        database.AddInParameter(command, "@Title", DbType.String, txtSubSubTitle.Text);
+                        database.AddInParameter(command, "@Description", DbType.String, vTaskDescEncode);
+                        database.AddInParameter(command, "@InstallId", DbType.String, txtInstallId.Text);
+                        database.AddInParameter(command, "@Status", DbType.Int32, 1);
+                        database.AddInParameter(command, "@IsDeleted", DbType.Int32, 0);
+                        database.AddInParameter(command, "@CreatedOn", DbType.DateTime, DateTime.Now.Date);
+                        database.AddInParameter(command, "@CreatedBy", DbType.Int32, userId);
+                        database.AddInParameter(command, "@TaskLevel", DbType.Int32, 0);
+                        database.AddInParameter(command, "@ParentTaskId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@MainParentId", DbType.Int32, 0);
+                        database.AddInParameter(command, "@TaskType", DbType.Int32, Convert.ToInt32(drpSubTaskType.SelectedValue.ToString()));
+                        database.AddInParameter(command, "@TaskPriority", DbType.Int32, Convert.ToInt32(drpSubTaskPriority.SelectedValue.ToString()));
+                    }
+
+                    database.ExecuteNonQuery(command);
+                    txtTaskDesc.Text = "";
+                    //mpSubTask.Hide();
+                    ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+                   // Response.Redirect(Request.Url.ToString(), false);
+                    SetSubTaskDetails();
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                // return 0;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
+
+        }
+
+        protected void EditSubTask_Click(object sender, EventArgs e)
+        {
+            LinkButton lnkpop = (LinkButton)sender;
+            //txtCalName.Text = lnkpop.Text;
+            //mpCalendar.Show();
+            //mpcalendar.show();
+            txtMode.Value = "edit";
+           
+
+            char[] delimiterChars = { '#' };
+            string[] TaskLvlandInstallId = lnkpop.CommandName.Split(delimiterChars);
+             hdTaskId.Value = TaskLvlandInstallId[0];
+             hdnCurrentEditingRow.Value = TaskLvlandInstallId[1];
+
+            if (Convert.ToInt32(TaskLvlandInstallId[2].ToString())  !=1)
+            {
+                //------- Levels 2 and 3 ---------
+                try
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DataSet result = new DataSet();
+                        DbCommand command = database.GetSqlStringCommand("select * from tblTask where TaskId=" + Convert.ToInt32(hdTaskId.Value));
+                        command.CommandType = CommandType.Text;
+                        result = database.ExecuteDataSet(command);
+                        if (result.Tables[0].Rows.Count > 0)
+                        {
+                            //txtTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
+                            txtTaskDesc.Text =Server.HtmlDecode( result.Tables[0].Rows[0]["Description"].ToString());
+                            txtInstallId.Text = result.Tables[0].Rows[0]["InstallId"].ToString();
+                            txtSubSubTitle.Text = result.Tables[0].Rows[0]["Title"].ToString();
+                            ListItem item = drpSubTaskType.Items.FindByValue(result.Tables[0].Rows[0]["TaskType"].ToString());
+                            if (item != null)
+                            {
+                                drpSubTaskType.SelectedIndex = drpSubTaskType.Items.IndexOf(item);
+                            }
+                            ListItem itemPri = drpSubTaskPriority.Items.FindByValue(result.Tables[0].Rows[0]["TaskPriority"].ToString());
+                            if (itemPri != null)
+                            {
+                                drpSubTaskPriority.SelectedIndex = drpSubTaskPriority.Items.IndexOf(itemPri);
+                            }
+                        }
+                        result.Dispose();
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    // return 0;
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", "$('#" + divSubTask.ClientID + "').hide();", true);
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+            }
+            else
+            {
+                //------ Level 1 --------
+                hdnSubTaskId.Value = hdTaskId.Value;
+                hdnTaskApprovalId.Value = lnkpop.CommandArgument;
+                 DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(hdTaskId.Value));
+
+                    DataTable dtTaskMasterDetails = dsTaskDetails.Tables[0];
+                    DataTable dtTaskDesignationDetails = dsTaskDetails.Tables[1];
+
+                    txtTaskListID.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
+                    txtSubTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
+                    txtUrl.Text = dtTaskMasterDetails.Rows[0]["Url"].ToString();
+                    txtSubTaskDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
+
+                    ListItem item = ddlTaskType.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskType"].ToString());
+
+                    if (item != null)
+                    {
+                        ddlTaskType.SelectedIndex = ddlTaskType.Items.IndexOf(item);
+                    }
+
+                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
+                    txtSubTaskHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
+                    ddlSubTaskStatus.SelectedValue = dtTaskMasterDetails.Rows[0]["Status"].ToString();
+                    if (!this.IsAdminMode)
+                    {
+                        if (!ddlSubTaskStatus.SelectedValue.Equals(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()))
+                        {
+                            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = false;
+                        }
+                    }
+                    trSubTaskStatus.Visible = true;
+                    if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))
+                    {
+                        ddlSubTaskPriority.SelectedValue = dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString();
+                    }
+
+                    int numbersequence;
+                    if (ExtensionMethods.TryRomanParse(txtTaskListID.Text, out numbersequence))
+                    {
+                        rfvTitle.Enabled =
+                        rfvUrl.Enabled = true;
+                    }
+                    else
+                    {
+                        rfvTitle.Enabled =
+                        rfvUrl.Enabled = false;
+                    }
+
+                    SetTaskDesignationDetails(dtTaskDesignationDetails);
+
+                    FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
+                
+
+                upAddSubTask.Update();
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+                //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
+                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
+            }
+        }
+        // -------- End DP -------
 
         protected void gvSubTasks_Sorting(object sender, GridViewSortEventArgs e)
         {
@@ -708,7 +1297,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
             else if (e.CommandName == "delete-attachment")
             {
@@ -732,18 +1321,18 @@ namespace JG_Prospect.Sr_App.Controls
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                lbtnDelete.CommandArgument = files[0] + "|" + files[1];
+                lbtnDelete.CommandArgument = files[4] + "|" + files[1];
 
-                if (files[2].Length > 13)// sort name with ....
+                if (files[1].Length > 13)// sort name with ....
                 {
-                    lbtnAttchment.Text = files[2];// String.Concat(files[2].Substring(0, 12), "..");
-                    lbtnAttchment.Attributes.Add("title", files[2]);
+                    lbtnAttchment.Text = files[1];// String.Concat(files[2].Substring(0, 12), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
 
                     //ltlFileName.Text = lbtnAttchment.Text;
                 }
                 else
                 {
-                    lbtnAttchment.Text = files[2];
+                    lbtnAttchment.Text = files[1];
                     //ltlFileName.Text = lbtnAttchment.Text;
                 }
 
@@ -751,13 +1340,13 @@ namespace JG_Prospect.Sr_App.Controls
 
                 HtmlImage imgIcon = e.Item.FindControl("imgIcon") as HtmlImage;
 
-                if (CommonFunction.IsImageFile(files[1].Trim()))
+                if (CommonFunction.IsImageFile(files[0].Trim()))
                 {
-                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[1].Trim()))));
+                    imgIcon.Src = Page.ResolveUrl(string.Concat("~/TaskAttachments/", CommonFunction.ReplaceEncodeWhiteSpace(Server.UrlEncode(files[0].Trim()))));
                 }
                 else
                 {
-                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[1].Trim(), this.Page);
+                    imgIcon.Src = CommonFunction.GetFileTypeIcon(files[0].Trim(), this.Page);
                 }
 
                 ((HtmlGenericControl)e.Item.FindControl("liImage")).Attributes.Add("data-thumb", imgIcon.Src);
@@ -766,7 +1355,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (files.Length > 3)// if there are attachements available.
                 {
-                    ltlCreatedUser.Text = files[4]; // created user name
+                    ltlCreatedUser.Text = files[2]; // created user name
                     ltlUpdateTime.Text = string.Concat(
                                                         "<span>",
                                                         string.Format(
@@ -916,7 +1505,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 OnAddNewSubTask(sender, e);
             }
-
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", "$('#" + pnlCalendar.ClientID + "').hide();", true);
             ShowAddNewSubTaskSection(false);
         }
 
@@ -966,11 +1555,22 @@ namespace JG_Prospect.Sr_App.Controls
 
             ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
         }
+        protected void btnSaveGridAttachment_Click(object sender, EventArgs e)
+        {
+            Button lnkpop = (Button)sender;
+            int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
+            UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
+            hdnAttachments.Value = string.Empty;
+            SetSubTaskDetails();
+         }
+        
 
         protected void btnSaveSubTask_Click(object sender, EventArgs e)
         {
             SaveSubTask();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", "$('#" + pnlCalendar.ClientID + "').hide();", true);
+            //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", String.Concat("hideSubTaskEditView('#", divSubTask.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
         }
 
         #endregion
@@ -1243,11 +1843,10 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                     else
                     {
-                        txtTaskListID.Text = subtaskListIDSuggestion[1];
+                        txtTaskListID.Text = subtaskListIDSuggestion[0];
                         listIDOpt.Text = subtaskListIDSuggestion[0];
 
                     }
-
                 }
                 else
                 {
@@ -1383,7 +1982,19 @@ namespace JG_Prospect.Sr_App.Controls
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text).Tables[0];
+        }
+
+        protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gvSubTasks.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+            gvSubTasks.PageIndex = 0;
+            SetSubTaskDetails();
+        }
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            SetSubTaskDetails();
         }
 
         public void SetSubTaskDetails(List<Task> lstSubtasks)
@@ -1437,6 +2048,101 @@ namespace JG_Prospect.Sr_App.Controls
         public void SetSubTaskDetails()
         {
             DataTable dtSubTaskDetails = GetSubTasks();
+
+            if (dtSubTaskDetails.Rows.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]) && isPaging==false)
+                {
+                    int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
+
+                    DataSet resultTask = new DataSet();
+                    try
+                    {
+                        SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                        {
+                            DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
+                            command.CommandType = CommandType.StoredProcedure;
+                            database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
+                            resultTask = database.ExecuteDataSet(command);
+
+                            if(resultTask.Tables[0].Rows.Count>0)
+                            {
+                                int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString() , out  vHSTid);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //LogManager.Instance.WriteToFlatFile(ex);
+                    }
+
+
+
+
+
+                    //SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    //{
+                    //    DataSet result1 = new DataSet();
+                    //    DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where   TaskLevel=1 and TaskId= " + vHSTid + " ");
+                    //    command1.CommandType = CommandType.Text;
+                    //    result1 = database.ExecuteDataSet(command1);
+                    //    if (result1.Tables[0].Rows.Count > 0)
+                    //    {
+                    //        vHSTid = Convert.ToInt32( result1.Tables[0].Rows[0]["TaskId"].ToString());
+                    //    }
+                    //    else
+                    //    {
+                    //        DataSet result2 = new DataSet();
+                    //        DbCommand command2 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vHSTid + " ");
+                    //        command2.CommandType = CommandType.Text;
+                    //        result2 = database.ExecuteDataSet(command2);
+                    //        if (result2.Tables[0].Rows.Count > 0)
+                    //        {
+                    //            vHSTid = Convert.ToInt32(result2.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                    //        }
+                    //        else
+                    //        {
+                    //            DataSet result3 = new DataSet();
+                    //            DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and TaskId= " + vHSTid + " ");
+                    //            command3.CommandType = CommandType.Text;
+                    //            result3 = database.ExecuteDataSet(command3);
+                    //            if (result3.Tables[0].Rows.Count > 0)
+                    //            {
+                    //                int vparentid = Convert.ToInt32(result3.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                    //                DataSet result4 = new DataSet();
+                    //                DbCommand command4 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vparentid + " ");
+                    //                command4.CommandType = CommandType.Text;
+                    //                result4 = database.ExecuteDataSet(command4);
+                    //                if (result4.Tables[0].Rows.Count > 0)
+                    //                {
+                    //                    vHSTid = Convert.ToInt32(result4.Tables[0].Rows[0]["ParentTaskId"].ToString());
+                    //                }
+                    //                command4.Dispose();
+                    //                result4.Dispose();
+                    //            }
+                    //            command3.Dispose();
+                    //            result3.Dispose();
+                    //        }
+                    //        command2.Dispose();
+                    //        result2.Dispose();
+                    //    }
+                    //    command1.Dispose();
+                    //    result1.Dispose();
+                    //}
+
+                    var selectedIndexEle = dtSubTaskDetails.AsEnumerable()
+                    .Select((Row, Index) => new { Row, Index })
+                    .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid);
+
+                    if (selectedIndexEle != null)
+                    {
+                        int selectedIndex = selectedIndexEle.Index;
+                        int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
+                        gvSubTasks.PageIndex = pageIndexofSelectedRow;
+                        gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                    }
+                }
+            }
             gvSubTasks.DataSource = dtSubTaskDetails;
             gvSubTasks.DataBind();
             upSubTasks.Update();
@@ -1489,10 +2195,37 @@ namespace JG_Prospect.Sr_App.Controls
             ddlSubTaskPriority.DataValueField = "Value";
             ddlSubTaskPriority.DataBind();
 
+            ddlSubTaskPriority.Items.RemoveAt(0);
+            ddlSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
+            ddlSubTaskPriority.SelectedIndex = 0;
+
+
+            drpSubTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+            drpSubTaskPriority.DataTextField = "Text";
+            drpSubTaskPriority.DataValueField = "Value";
+            drpSubTaskPriority.DataBind();
+
+            drpSubTaskPriority.Items.RemoveAt(0);
+            drpSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
+            drpSubTaskPriority.SelectedIndex = 0;
+
             ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
             ddlTaskType.DataTextField = "Text";
             ddlTaskType.DataValueField = "Value";
             ddlTaskType.DataBind();
+
+            ddlTaskType.Items.RemoveAt(0);
+            ddlTaskType.Items.Insert(0, new ListItem("--None--", ""));
+            ddlTaskType.SelectedIndex = 0;
+
+            drpSubTaskType.DataSource = CommonFunction.GetTaskTypeList();
+            drpSubTaskType.DataTextField = "Text";
+            drpSubTaskType.DataValueField = "Value";
+            drpSubTaskType.DataBind();
+
+            drpSubTaskType.Items.RemoveAt(0);
+            drpSubTaskType.Items.Insert(0, new ListItem("--None--", ""));
+            drpSubTaskType.SelectedIndex = 0;
         }
 
         public void SetSubTaskView()
@@ -1675,7 +2408,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
             }
-            ddlSubTaskPriority.SelectedValue = "0";
+            ddlSubTaskPriority.SelectedIndex  = 0;
             btnSaveSubTaskAttachment.Visible = false;
             rptSubTaskAttachments.DataSource = null;
             rptSubTaskAttachments.DataBind();
@@ -1725,7 +2458,6 @@ namespace JG_Prospect.Sr_App.Controls
                     //Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
                 }
             }
-
             rptSubTaskAttachments.DataSource = dtSubtaskAttachments;
             rptSubTaskAttachments.DataBind();
 

@@ -1,33 +1,130 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ucSubTasks.ascx.cs" Inherits="JG_Prospect.Sr_App.Controls.ucSubTasks" %>
 
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
+
+<style type="text/css">
+
+    .subtasklevel {
+        border:0px;
+    }
+    .installidright{
+        text-align:right;
+        width:80px;
+        display: block;
+        padding-right:5px;
+    }
+    .installidcenter{
+        text-align:center;
+        width:80px;
+        display: block;
+        padding-right:5px;
+    }
+    .installidleft
+    {
+        text-align:left;
+        width:80px;
+        display: block;
+    }
+    .subtasklevelheader
+    {
+        border:none;
+    }
+    .taskdesc a{
+        text-decoration:underline;
+        color:blue;
+    }
+
+    .modalBackground { 
+            background-color:#333333; 
+            filter:alpha(opacity=70); 
+            opacity:0.7; 
+            z-index : 100 !important
+        } 
+        /*.modalPopup { 
+            background-color:#FFFFFF; 
+            border-width:1px; 
+            border-style:solid; 
+            border-color:#CCCCCC; 
+            padding:1px; 
+            width:100%; 
+            Height:450px; 
+            
+        }*/    
+
+   /*.lSGallery 
+   {
+       width:400px;
+       background-color:aqua;
+       overflow:hidden;
+   }
+    .lSGallery li
+   {
+       width:40px!important;
+   }*/
+    .form_panel_custom ul
+    {
+        margin:0px!important;
+    }
+    .dropzonetbl td
+    {
+        border:none!important;
+        border-right:none!important;
+    }
+    .sub-task-attachments-list 
+    {
+        height:270px!important;
+    }
+</style>
+
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>
+        <ContentTemplate> 
             <div id="divSubTaskGrid">
+                <div style="float: left;margin-top:15px;  ">
+                                <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
+                                <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
+
+                                Number of Records: 
+                                <asp:DropDownList ID="drpPageSize" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="drpPageSize_SelectedIndexChanged">
+                                    <asp:ListItem Text="5" Value="5" />
+                                    <asp:ListItem Text="10" Value="10" />
+                                    <asp:ListItem Text="15" Value="15" />
+                                    <asp:ListItem Text="20" Value="20" />
+                                    <asp:ListItem Text="25" Value="25" />
+                                </asp:DropDownList>
+                            </div>
+
                 <asp:GridView ID="gvSubTasks" runat="server" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                    HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                    EmptyDataText="No sub task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                    HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                    EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
-                    OnRowDataBound="gvSubTasks_RowDataBound"
-                    OnRowCommand="gvSubTasks_RowCommand"
+                    OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
+                    OnPageIndexChanging = "OnPagingGvSubTasks"  
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
+                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Left"  CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:TemplateField HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
+                        
+                        <%--<asp:TemplateField  HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
                             SortExpression="InstallId">
-                            <ItemTemplate>
+                            <ItemTemplate >
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <h5>
-                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu" data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
+                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu"
+                             data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
                                         CommandArgument='<%# Container.DataItemIndex  %>' /></h5>
+                                <span>+</span>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
@@ -54,7 +151,54 @@
                                     </div>
                                 </div>
                             </ItemTemplate>
+                        </asp:TemplateField>--%>
+
+                        <asp:TemplateField  HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
+                            SortExpression="InstallId">
+                            <ItemTemplate >
+                                <asp:Literal ID="ltrlInstallId" Visible="false" runat="server" Text='<%# Eval("InstallId") %>' />
+                                <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
+                               
+                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" 
+                                    ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false" 
+                                    CssClass="subtasklevel" BorderColor="Transparent"  Width="500px" BorderStyle="None">
+                                    <Columns>
+                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" 
+                                         HeaderStyle-Width="80"
+                                            SortExpression="InstallId">
+                                            <ItemTemplate>
+                                                <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ></asp:HiddenField>
+                                                <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ></asp:HiddenField>
+                                                <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ></asp:HiddenField>
+                                                <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
+                                                <h5>
+                                                    <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="EditSubTask_Click"  />
+                                                     <asp:LinkButton  ID="lbtnInstallIdRemove"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
+                                                        ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="RemoveClick"  />
+                                                </h5>
+                                                
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
+                                                      OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                                                           
+                                                 </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
+                                            SortExpression="Description">
+                                            <ItemTemplate>
+                                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
+                                                    <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px;width:98%;">
+                                                       
+                                                        <%# Server.HtmlDecode(Eval("Description").ToString())%>
+                                                    </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        </Columns>
+                                </asp:GridView>
+                            </ItemTemplate>
                         </asp:TemplateField>
+
                         <%--<asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
                             SortExpression="Status">
                             <ItemTemplate>
@@ -158,7 +302,8 @@
                             <ItemTemplate>
                             </ItemTemplate>
                         </asp:TemplateField>--%>
-                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
+                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" 
+                            ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                             <ItemTemplate>
                                 <table>
                                     <tr>
@@ -232,39 +377,89 @@
 
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="20%">
+                        <asp:TemplateField HeaderText="Attachments, IMGs, Docs, Videos & Recordings" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
+                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
                             <ItemTemplate>
-                                <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                    <HeaderTemplate>
-                                        <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
-                                            <div class="lSSlideWrapper usingCss">
-                                                <ul class="gallery list-unstyled cS-hidden sub-task-attachments-list">
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important;">
 
-                                            <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
-                                            <br />
-                                            <h5>
-                                                <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
-                                            <h5>
-                                                <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
-                                            <div>
-                                                <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
-                                                    CommandName="delete-attachment" />
+                                  <table border="0" class="dropzonetbl" style="width:100%;">
+                                    <tr>
+                                        <td>
+                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
+                                                <ContentTemplate>
+                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                            <div id="divSubTaskDropzone1" style="width: 250px;" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');" 
+                                                class="dropzone dropzonetask dropzonJgStyle">
+                                                <div class="fallback" >
+                                                    <input name="file" type="file" multiple />
+                                                   <%-- <input type="submit" value="Upload"     />--%>
+                                                </div>
                                             </div>
-                                        </li>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
                                             </div>
-                                        </div>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                                <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                        </td>
+                                     </tr>
+                                
+                                      <tr>
+                                          <td>
+
+                                              <table border="0" class="dropzonetbl" style="width:100%;">
+                                                  <tr>
+                                                      <td style="width:40%;">
+                                                           <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" 
+                                                               Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>' 
+                                                               AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                      </td>
+                                                      <td>
+                                                           <asp:Repeater  ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                <HeaderTemplate >
+                                                                    <div  class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                            
+                                                                        <div class="lSSlideWrapper usingCss">
+                                                                            <ul class="gallery list-unstyled sub-task-attachments-list">
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
+                                                                         <h5>
+                                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
+                                                                        <h5>
+                                                                            <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
+                                                                        <div>
+                                                                            <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
+                                                                                CommandName="delete-attachment" />
+                                                                        </div>
+                                                                        <br />
+                                                                        <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
+                                            
+                                          
+                                                                    </li>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    </ul>
+                                                                        </div>
+                                        
+                                                                    </div>
+                                                                </FooterTemplate>
+                                                            </asp:Repeater>
+
+                                                             <img id="defaultimgIcon" class="gallery-ele"  width="247" height="185" runat="server" src="javascript:void(0);" />
+                             
+                                                      </td>
+                                                      
+                                                  </tr>
+                                              </table>
+                                          </td>
+
+                                      </tr>
+                               
+                                      </table>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
@@ -336,7 +531,7 @@
                                                                     )
                                                     %>
                                                 </asp:HyperLink>
-                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -347,16 +542,88 @@
                                                 placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
                                             <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
                                                 AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                            
                                         </td>
                                     </tr>
                                 </table>
                             </ItemTemplate>
                         </asp:TemplateField>
-                    </Columns>
+                    </Columns> 
                 </asp:GridView>
+
+                 <asp:Button ID="btnSaveGridAttachment" runat="server"  
+                  OnClick="btnSaveGridAttachment_Click" Style="display: none;" Text="Save Attachement" />
+                <asp:HiddenField ID="hdDropZoneTaskId" runat="server"      />
             </div>
+            <asp:HiddenField ID="hdnCurrentEditingRow" runat="server" />
+            <asp:LinkButton ID="lnkFake" runat="server" ></asp:LinkButton>
+                 <%-- <cc1:ModalPopupExtender ID="mpSubTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
+                    BackgroundCssClass="modalBackground">
+                    </cc1:ModalPopupExtender>--%>
+                    
+                            <div id="pnlCalendar" runat="server"   align="center" class="tasklistfieldset" style="display: none;" >
+                                    <table border="1" cellspacing="5" cellpadding="5" width="90%">
+                                        <tr>
+                                            <td>
+                                                 ListID: <asp:TextBox   ID="txtInstallId"   runat="server"></asp:TextBox>
+                                            </td>
+                                            
+                                            <td>
+                                                 Sub Title <span style="color: red;">*</span>: <asp:TextBox   ID="txtSubSubTitle"   runat="server"></asp:TextBox>
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtSubSubTitle" ForeColor="Red" 
+                                                    ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                            
+                                            <td>
+                                                 Priority <span style="color: red;">*</span>: <asp:DropDownList ID="drpSubTaskPriority" runat="server"  />
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                                    ControlToValidate="drpSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                                            </td>
+                                            
+                                            <td>
+                                                 Type <span style="color: red;">*</span>:  <asp:DropDownList ID="drpSubTaskType" runat="server" />
+                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                                    ControlToValidate="drpSubTaskType" ErrorMessage="Please enter Task Type." />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td > 
+                                                Task Description <span style="color: red;">*</span>:
+                                                <br />
+                                               <asp:TextBox ID="txtTaskDesc" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
+                                                    runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red" 
+                                                    ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <asp:HiddenField ID="txtMode" runat="server" />
+                                                <asp:HiddenField ID="hdParentTaskId" runat="server" />
+                                                <asp:HiddenField ID="hdMainParentId" runat="server" />
+                                                <asp:HiddenField ID="hdTaskLvl" runat="server" />
+                                                <asp:HiddenField ID="hdTaskId" runat="server" />
+                                                <div class="btn_sec">
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                        TabIndex="5" Text="Submit"   CssClass="ui-button" 
+                                                        OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
+                                                </div>
+                                               <%-- <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
+                                                     OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />--%>
+                                            </td>
+                                        </tr>
+                                    </table>
+                           
+                            </div>
+ 
+
         </ContentTemplate>
     </asp:UpdatePanel>
+    
+   
+     <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
+
     <br />
     <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
@@ -379,20 +646,24 @@
                                     </a>
                                 </small>
                             </td>
-                            <td>Type:
+                            <td>Type <span style="color: red;">*</span>:
                                 <asp:DropDownList ID="ddlTaskType" AutoPostBack="true" OnSelectedIndexChanged="ddlTaskType_SelectedIndexChanged" runat="server" />
-                                &nbsp;&nbsp;Priority:
+                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
+                                    ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                                &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
                                 <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
+                                    ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
                             </td>
                         </tr>
                         <tr>
-                            <td>Title <span style="color: red;"></span>:
+                            <td>Title <span style="color: red;">*</span>:
                                 <br />
                                 <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
                                 <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
                                     ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                             </td>
-                            <td>Url <span style="color: red;"></span>:
+                            <td>Url <span style="color: red;">*</span>:
                                 <br />
                                 <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
                                 <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
@@ -507,6 +778,7 @@
                                 <div class="btn_sec">
                                     <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
                                         OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -601,9 +873,10 @@
 <%--Popup Ends--%>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
+
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
-
+   
     $(function () {
         ucSubTasks_Initialize();
     });
@@ -613,14 +886,85 @@
     prmTaskGenerator.add_endRequest(function () {
         console.log('end req.');
         ucSubTasks_Initialize();
+
+        SetUserAutoSuggestion();
+        SetUserAutoSuggestionUI();
     });
 
     prmTaskGenerator.add_beginRequest(function () {
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        DestroyCKEditors();
+        //DestroyCKEditors();
     });
+
+
+    $(document).ready(function () {
+        SetUserAutoSuggestion();
+        SetUserAutoSuggestionUI();
+    });
+
+
+
+
+    function SetUserAutoSuggestion() {
+
+        $("#<%=txtSearch.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsers",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=btnSearch.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearch.ClientID%>').click();
+                }
+            });
+        }
+
+    function SetUserAutoSuggestionUI() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+
 
     function ucSubTasks_Initialize() {
 
@@ -631,17 +975,35 @@
 
         LoadImageGallery('.sub-task-attachments-list');
 
-        var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+        //----------- start DP -----
+        GridDropZone();
+        //----------- end DP -----
 
-        // alert(controlmode);
+        var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
         if (controlmode == "true") {
             ucSubTasks_ApplyDropZone();
             SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+            UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>', '#<%=btnSaveSubTask.ClientID%>');
+
+
+            SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
+            UpdateTaskDescBeforeSubmit('<%=txtTaskDesc.ClientID%>', '#<%=btnAddMoreSubtask.ClientID%>');
+
+
+            $('#<%=txtInstallId.ClientID%>').bind('keypress', function (e) {
+                  return false;
+            });
+
+            $('#<%=txtInstallId.ClientID%>').bind('keydown', function (e) {
+                if (e.keyCode === 8 || e.which === 8) {
+                    return false;
+                }
+            });
+
         }
-
     }
-
+    
     function txtSubTaskDescription_Blur(editor) {
         if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
             if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
@@ -664,6 +1026,7 @@
     }
 
     var objSubTaskDropzone, objSubtaskNoteDropzone;
+   
 
     function ucSubTasks_ApplyDropZone() {
         //remove already attached dropzone.
@@ -671,7 +1034,6 @@
             objSubTaskDropzone.destroy();
             objSubTaskDropzone = null;
         }
-
         if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
             objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                 maxFiles: 5,
@@ -706,6 +1068,7 @@
             objSubtaskNoteDropzone.destroy();
             objSubTaskNoteDropzone = null;
         }
+
         objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
     }
 
@@ -742,5 +1105,109 @@
     function SubTasks_checkDesignations(oSrc, args) {
         args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
     }
+
+
+    //  Created By : Yogesh K
+    // To updat element underlying CKEditor before work submited to server.
+    function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+        $(ButtonId).bind('click', function () {
+            var editor = CKEDITOR.instances[CKEditorId];
+            console.log(editor);
+            if (editor) {
+                editor.updateElement();
+            }
+        });
+    }
+
+
+    //----------- Start DP ---------
+    
+    function SetHiddenTaskId(vId) {
+        $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
+      }
+
+
+    $('#<%=pnlCalendar.ClientID%>').hide();
+    $('#<%=divSubTask.ClientID%>').hide();
+
+    function txtTaskDesc_Blur(editor) {
+        //if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+        <%--if (confirm('Do you wish to save description?')) {
+            $('#<%=btnAddMoreSubtask.ClientID%>').click();
+        }--%>
+        // }
+    }
+
+    function showSubTaskEditView(divid, rowindex) {
+
+        var html = $('<tr>').append($('<td colspan="5">').append($(divid)));
+
+        $('.edit-subtask > tbody > tr').eq(rowindex + 1).after(html);
+
+        $(divid).slideDown('slow');
+
+        $('html, body').animate({
+            scrollTop: $(divid).offset().top - 100
+        }, 2000);
+
+
+    }
+    function hideSubTaskEditView(divid, rowindex) {
+
+    //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
+        // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
+        // $(divid).slideUp('slow');
+        $('#<%=pnlCalendar.ClientID%>').hide();
+        var row = $('.edit-subtask').find('tr').eq(rowindex + 2);
+
+        //alert(row);
+
+        if (row.length) {
+            $('html, body').animate({
+                scrollTop: row.offset().top - 100
+            }, 2000);
+        }
+    }
+    
+    function GridDropZone() {
+        Dropzone.autoDiscover = false;
+
+        $(".dropzonetask").each(function () {
+            // debugger;
+            var objSubTaskDropzone1;
+
+            $(this).dropzone({
+                maxFiles: 5,
+                url: "taskattachmentupload.aspx",
+                thumbnailWidth: 90,
+                thumbnailHeight: 90,
+                init: function () {
+                    dzClosure = this;
+
+                    this.on("maxfilesexceeded", function (data) {
+                        alert('you are reached maximum attachment upload limit.');
+                    });
+
+                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                    this.on("success", function (file, response) {
+                        // Success coding goes here
+
+                        var filename = response.split("^");
+                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                        if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveGridAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    //--------------- End DP ---------------
 
 </script>
