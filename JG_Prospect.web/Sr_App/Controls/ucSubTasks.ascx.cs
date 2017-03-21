@@ -26,14 +26,8 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 namespace JG_Prospect.Sr_App.Controls
 {
-
-
-
-
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
-
-
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
@@ -1866,7 +1860,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             string strScript = string.Format(
-                                                "$('#{0}').slideDown('slow');",
+                                                "$('#{0}').slideDown('slow'); ScrollTo('#{0}');",
                                                 divSubTask.ClientID
                                             );
 
@@ -2064,9 +2058,9 @@ namespace JG_Prospect.Sr_App.Controls
                             database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
                             resultTask = database.ExecuteDataSet(command);
 
-                            if(resultTask.Tables[0].Rows.Count>0)
+                            if (resultTask.Tables[0].Rows.Count > 0)
                             {
-                                int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString() , out  vHSTid);
+                                int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out  vHSTid);
                             }
                         }
                     }

@@ -895,7 +895,7 @@
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        //DestroyCKEditors();
+        DestroyCKEditors();
     });
 
 
@@ -903,9 +903,6 @@
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();
     });
-
-
-
 
     function SetUserAutoSuggestion() {
 
@@ -1152,12 +1149,18 @@
 
         $(divid).slideDown('slow');
 
-        $('html, body').animate({
-            scrollTop: $(divid).offset().top - 100
-        }, 2000);
-
-
+        ScrollTo(divid);
     }
+
+    function ScrollTo(selector) {
+        var offset = $(selector).offset();
+        if (typeof (offset) != 'undefined') {
+            $('html, body').animate({
+                scrollTop: offset.top
+            }, 1000);
+        }
+    }
+
     function hideSubTaskEditView(divid, rowindex) {
 
     //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
