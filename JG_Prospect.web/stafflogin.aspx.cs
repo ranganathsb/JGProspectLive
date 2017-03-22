@@ -914,7 +914,7 @@ namespace JG_Prospect
 
                             RememberMe();
 
-                            if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant) 
+                            if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant)
                             {
                                 strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
                             }
@@ -925,7 +925,7 @@ namespace JG_Prospect
                                     strRedirectUrl = "~/changepassword.aspx";
                                 }
 
-                                else if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false && (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager")|| Convert.ToString(JGSession.Designation) == "Admin Recruiter")
+                                else if (Convert.ToString(JGSession.Designation) != "" && JGSession.IsFirstTime == false && (Convert.ToString(JGSession.Designation) == "Sr. Sales" || Convert.ToString(JGSession.Designation) == "Admin" || Convert.ToString(JGSession.Designation) == "Office Manager" || Convert.ToString(JGSession.Designation) == "Recruiter" || Convert.ToString(JGSession.Designation) == "Sales Manager") || Convert.ToString(JGSession.Designation) == "Admin Recruiter")
                                 {
                                     #region Redirect to home Or Sr_App/home Or Installer/InstallerHome
 
@@ -994,11 +994,11 @@ namespace JG_Prospect
                                 {
                                     strRedirectUrl = "~/Installer/InstallerHome.aspx";
                                 }
-                               else
+                                else
                                 {
                                     // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                 }
-                                                
+
                             }
                         }
                         else
@@ -1247,57 +1247,57 @@ namespace JG_Prospect
 
             if (strReturnValue == "YES")
             {
-                string strPhoupText = SendWelcomeEmail(UserEmail, UserID);
+                DataSet ds = InstallUserBLL.Instance.getuserdetails(UserID);
+                DataRow drUser = null;
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    drUser = ds.Tables[0].Rows[0];
 
-                Page.ClientScript.RegisterStartupScript
-                        (
-                            Page.GetType(),
-                            "TheConfirm_Ok_Cancel",
-                            string.Format(
-                                            "TheConfirm_Ok_Cancel('{0}',{1},{2},'{3}');",
-                                            strPhoupText,
-                                            String.Concat("\"",UserEmail,"^", JG_Prospect.Common.JGConstant.Default_PassWord,"\""),
-                                            "function () {}",
-                                            "Login Guidance"
-                                         ),
-                            true
-                        );
+                    string strName = Convert.ToString(drUser["FristName"]) + " " + Convert.ToString(drUser["Lastname"]);
+                    string strUserDesignation = Convert.ToString(drUser["Designation"]);
+                    string strUserDesignationId = Convert.ToString(drUser["DesignationId"]);
+                    string strUserEmail = Convert.ToString(drUser["Email"]);
+                    string strUserPhone = Convert.ToString(drUser["Phone"]);
+
+                    string strDesignationCode = JG_Prospect.App_Code.CommonFunction.GetDesignationCode((JGConstant.DesignationType)Convert.ToByte(strUserDesignationId));
+
+                    InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationCode, "YES");
+
+                    SendWelcomeEmail(strUserEmail, UserID, strName, strUserDesignation, strUserDesignationId, strUserPhone);
+
+                    string strPopupText = "";
+                    strPopupText += "You have successfully been entered into JMGrove Human Resource Database and should have also received an email with login details. ";
+                    strPopupText += "Your username is the phone #: {0} or Email: {1} you have entered, your default password is \"jmgrove\". ";
+                    strPopupText += "Select continue to proceed with application process or cancel. Save your username and password for future use. ";
+                    strPopupText = string.Format(strPopupText, strUserPhone, strUserEmail);
+
+                    Page.ClientScript.RegisterStartupScript
+                            (
+                                Page.GetType(),
+                                "TheConfirm_Ok_Cancel",
+                                string.Format(
+                                                "TheConfirm_Ok_Cancel('{0}',{1},{2},'{3}');",
+                                                strPopupText,
+                                                String.Concat("\"", strUserEmail, "^", JG_Prospect.Common.JGConstant.Default_PassWord, "\""),
+                                                "function () {}",
+                                                "Login Guidance"
+                                             ),
+                                true
+                            );
+                }
             }
         }
 
-        public string SendWelcomeEmail(string UserEmail, int UserID)
+        public void SendWelcomeEmail(string strUserEmail, int UserID, string strName, string strUserDesignation, string strUserDesignationId, string strUserPhone)
         {
-            string strPopupText = "";
-            strPopupText += "You have successfully been entered into JMGrove Human Resource Database and should have also received an email with login details. ";
-            strPopupText += "Your username is the phone #: {0} or Email: {1} you have entered, your default password is \"jmgrove\". ";
-            strPopupText += "Select continue to proceed with application process or cancel. Save your username and password for future use. ";
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, strUserDesignationId);
 
-            string strUserEmail = "";
-            string strUserPhone = "";
+            string strHeader = objHTMLTemplate.Header;
+            string strSubject = objHTMLTemplate.Subject;
+            string strBody = objHTMLTemplate.Body.Replace("#name#", strName).Replace("#Designation#", strUserDesignation);
+            string strFooter = objHTMLTemplate.Footer;
 
-            DataSet ds = InstallUserBLL.Instance.getuserdetails(UserID);
-            DataRow drUser = null;
-            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                drUser = ds.Tables[0].Rows[0];
-
-                string strName = Convert.ToString(drUser["FristName"]) + " " + Convert.ToString(drUser["Lastname"]);
-                string strUserDesignation = Convert.ToString(drUser["Designation"]);
-                string strUserDesignationId = Convert.ToString(drUser["DesignationId"]);
-                strUserEmail = Convert.ToString(drUser["Email"]);
-                strUserPhone = Convert.ToString(drUser["Phone"]);
-
-                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, strUserDesignationId);
-
-                string strHeader = objHTMLTemplate.Header;
-                string strSubject = objHTMLTemplate.Subject;
-                string strBody = objHTMLTemplate.Body.Replace("#name#", strName).Replace("#Designation#", strUserDesignation);
-                string strFooter = objHTMLTemplate.Footer;
-
-                JG_Prospect.App_Code.CommonFunction.SendEmail(strUserDesignationId, strUserEmail, strSubject, strBody, objHTMLTemplate.Attachments);
-            }
-
-            return string.Format(strPopupText, strUserPhone, strUserEmail);
+            JG_Prospect.App_Code.CommonFunction.SendEmail(strUserDesignationId, strUserEmail, strSubject, strBody, objHTMLTemplate.Attachments);
         }
 
         #endregion

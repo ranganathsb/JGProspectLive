@@ -76,6 +76,7 @@ namespace JG_Prospect.Sr_App
                 Designation objdep = new Designation();
                 objdep.ID = Convert.ToInt32(Session["DesignationId"].ToString());
                 objdep.DesignationName = txtDesignationName.Text;
+                objdep.DesignationCode = txtDesignationCode.Text;
                 objdep.IsActive = ddlStatus.SelectedValue == "1" ? true : false;
                 objdep.DepartmentID = Convert.ToInt32(ddlDepartment.SelectedValue);
                 int res = DesignationBLL.Instance.DesignationInsertUpdate(objdep);
@@ -159,6 +160,7 @@ namespace JG_Prospect.Sr_App
                     if (ds.Count > 0)
                     {
                         txtDesignationName.Text = ds[0].DesignationName;
+                        txtDesignationCode.Text = ds[0].DesignationCode;
                         ddlDepartment.SelectedValue = ds[0].DepartmentID.ToString();
                         ddlDepartment.Enabled = false;
                         ddlStatus.SelectedValue = ds[0].IsActive ? "1" : "0";
@@ -177,6 +179,7 @@ namespace JG_Prospect.Sr_App
             try
             {
                 txtDesignationName.Text = "";
+                txtDesignationCode.Text = "";
                 ddlStatus.SelectedValue = "1";
                 ddlDepartment.Enabled = true;
             }

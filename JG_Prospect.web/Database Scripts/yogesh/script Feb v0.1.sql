@@ -3148,3 +3148,186 @@ BEGIN
 END
 GO
 
+ALTER TABLE tbl_Designation
+ADD DesignationCode Varchar(10) NULL
+GO
+
+UPDATE tbl_Designation
+SET
+	DesignationCode =
+			CASE ID
+				WHEN 1 THEN 'ADM'
+                WHEN 2 THEN  'JSL'
+                WHEN 3 THEN  'JPM'
+                WHEN 4 THEN  'OFM'
+                WHEN 5 THEN  'REC'
+                WHEN 6 THEN  'SLM'
+                WHEN 7 THEN  'SSL'
+                WHEN 8 THEN  'ITNA'
+                WHEN 9 THEN  'ITJN'
+                WHEN 10 THEN  'ITSN'
+                WHEN 11 THEN  'ITAD'
+                WHEN 12 THEN  'ITPH'
+                WHEN 13 THEN  'ITSB'
+                WHEN 14 THEN  'INH'
+                WHEN 15 THEN  'INJ'
+                WHEN 16 THEN  'INM'
+                WHEN 17 THEN  'INLM'
+                WHEN 18 THEN  'INF'
+                WHEN 19 THEN  'COM'
+                WHEN 20 THEN  'SBC'
+                WHEN 21 THEN  'ITL'
+                WHEN 22 THEN  'ASL'
+                WHEN 23 THEN  'AREC'
+                ELSE 'OUID'
+			END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_DesignationInsertUpdate]    Script Date: 22-Mar-17 11:14:12 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 26-Nov-2016
+-- Description:	Add/Edit Designation details.
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_DesignationInsertUpdate] 
+	@ID int,
+	@DesignationName varchar(50),
+	@DesignationCode varchar(10),
+	@IsActive bit,
+	@DepartmentID Int,
+	@result int output  
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SET @result=0;
+
+	IF (SELECT TOP 1 ID FROM tbl_Designation WHERE ID=@ID) Is Null
+	BEGIN
+		INSERT INTO tbl_Designation(DesignationName,IsActive,DepartmentID,DesignationCode)
+		VALUES (@DesignationName,@IsActive,@DepartmentID,@DesignationCode)
+		Set @result =@@IDENTITY;
+	END
+	ELSE
+	BEGIN
+		UPDATE tbl_Designation
+		SET DesignationName=@DesignationName
+		,DepartmentID=@DepartmentID
+		,IsActive = @IsActive
+		,DesignationCode=@DesignationCode
+		WHERE ID=@ID
+		Set @result =@ID;
+	END
+	return @result
+END
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetAllActiveDesignationByFilter]    Script Date: 22-Mar-17 11:20:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 13-Dec-2016
+-- Description:	Returns all/selected Active Designation 
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetAllActiveDesignationByFilter]
+	@DepartmentID As Int,
+	@DesignationID As Int
+AS
+BEGIN
+	SET NOCOUNT ON;	
+	
+	SELECT ds.ID
+	,ds.DesignationName
+	,ds.DesignationCode
+	,ds.IsActive
+	,ds.DepartmentID
+	,dt.DepartmentName
+	FROM tbl_Designation ds
+	INNER JOIN tbl_Department dt On dt.ID = ds.DepartmentID
+	WHERE ds.IsActive=1
+	AND ds.ID = (CASE WHEN @DesignationID=0 THEN ds.ID ELSE @DesignationID END)
+	AND ds.DepartmentID = (CASE WHEN @DepartmentID=0 THEN ds.DepartmentID ELSE @DepartmentID END)
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetAllDesignationsForHumanResource]    Script Date: 22-Mar-17 11:37:14 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Shekhar Pawar
+-- Create date: 15-Nov-2016
+-- Description:	Returns all Designation Names from database table
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetAllDesignationsForHumanResource]
+	-- Add the parameters for the stored procedure here
+	AS
+BEGIN
+	SET NOCOUNT ON;	
+  SELECT [ID]
+      ,[DesignationName]
+      ,[IsActive]
+	  ,DesignationCode
+  FROM [dbo].[tbl_Designation] WITH(NOLOCK)
+  WHERE [IsActive] = 1 AND DepartmentID = 1
+  ORDER BY [DesignationName]
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetDesignationByFilter]    Script Date: 22-Mar-17 11:38:38 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 26-Nov-2016
+-- Description:	Returns all/selected Designation 
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetDesignationByFilter]
+	@DepartmentID As Int,
+	@DesignationID As Int
+	AS
+BEGIN
+	SET NOCOUNT ON;	
+	
+	SELECT ds.ID
+	,ds.DesignationName
+	,ds.IsActive
+	,ds.DepartmentID
+	,dt.DepartmentName
+	,ds.DesignationCode
+	FROM tbl_Designation ds
+	INNER JOIN tbl_Department dt On dt.ID = ds.DepartmentID
+	WHERE ds.ID = (CASE WHEN @DesignationID=0 THEN ds.ID ELSE @DesignationID END)
+	AND ds.DepartmentID = (CASE WHEN @DepartmentID=0 THEN ds.DepartmentID ELSE @DepartmentID END)
+
+END
+GO
+
