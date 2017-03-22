@@ -10,6 +10,7 @@ namespace JG_Prospect.Common.modal
     {
         public int ID { get; set; }
         public string DesignationName { get; set; }
+        public string DesignationCode { get; set; }
         public bool IsActive { get; set; }
         public int DepartmentID { get; set; }
         public string DepartmentName { get; set; }

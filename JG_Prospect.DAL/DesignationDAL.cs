@@ -65,6 +65,7 @@ namespace JG_Prospect.DAL
                             { 
                                 ID = Convert.ToInt32(drDesignation["ID"]),
                                 DesignationName = Convert.ToString(drDesignation["DesignationName"]),
+                                DesignationCode = Convert.ToString(drDesignation["DesignationCode"]),
                                 DepartmentID = Convert.ToInt32(drDesignation["DepartmentID"]),
                                 DepartmentName = Convert.ToString(drDesignation["DepartmentName"]),
                                 IsActive = Convert.ToBoolean(drDesignation["IsActive"])
@@ -113,6 +114,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@ID", DbType.Int32, objDec.ID);
                     database.AddInParameter(command, "@DesignationName", DbType.String, objDec.DesignationName);
+                    database.AddInParameter(command, "@DesignationCode", DbType.String, objDec.DesignationCode);
                     database.AddInParameter(command, "@IsActive", DbType.Boolean, objDec.IsActive);
                     database.AddInParameter(command, "@DepartmentID", DbType.Int16, objDec.DepartmentID);
                     database.AddOutParameter(command, "@result", DbType.Int16, result);

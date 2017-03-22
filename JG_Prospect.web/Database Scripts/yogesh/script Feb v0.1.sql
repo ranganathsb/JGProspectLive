@@ -3148,3 +3148,84 @@ BEGIN
 END
 GO
 
+ALTER TABLE tbl_Designation
+ADD DesignationCode Varchar(10) NULL
+GO
+
+UPDATE tbl_Designation
+SET
+	DesignationCode =
+			CASE ID
+				WHEN 1 THEN 'ADM'
+                WHEN 2 THEN  'JSL'
+                WHEN 3 THEN  'JPM'
+                WHEN 4 THEN  'OFM'
+                WHEN 5 THEN  'REC'
+                WHEN 6 THEN  'SLM'
+                WHEN 7 THEN  'SSL'
+                WHEN 8 THEN  'ITNA'
+                WHEN 9 THEN  'ITJN'
+                WHEN 10 THEN  'ITSN'
+                WHEN 11 THEN  'ITAD'
+                WHEN 12 THEN  'ITPH'
+                WHEN 13 THEN  'ITSB'
+                WHEN 14 THEN  'INH'
+                WHEN 15 THEN  'INJ'
+                WHEN 16 THEN  'INM'
+                WHEN 17 THEN  'INLM'
+                WHEN 18 THEN  'INF'
+                WHEN 19 THEN  'COM'
+                WHEN 20 THEN  'SBC'
+                WHEN 21 THEN  'ITL'
+                WHEN 22 THEN  'ASL'
+                WHEN 23 THEN  'AREC'
+                ELSE 'OUID'
+			END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_DesignationInsertUpdate]    Script Date: 22-Mar-17 11:14:12 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 26-Nov-2016
+-- Description:	Add/Edit Designation details.
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_DesignationInsertUpdate] 
+	@ID int,
+	@DesignationName varchar(50),
+	@DesignationCode varchar(10),
+	@IsActive bit,
+	@DepartmentID Int,
+	@result int output  
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SET @result=0;
+
+	IF (SELECT TOP 1 ID FROM tbl_Designation WHERE ID=@ID) Is Null
+	BEGIN
+		INSERT INTO tbl_Designation(DesignationName,IsActive,DepartmentID,DesignationCode)
+		VALUES (@DesignationName,@IsActive,@DepartmentID,@DesignationCode)
+		Set @result =@@IDENTITY;
+	END
+	ELSE
+	BEGIN
+		UPDATE tbl_Designation
+		SET DesignationName=@DesignationName
+		,DepartmentID=@DepartmentID
+		,IsActive = @IsActive
+		,DesignationCode=@DesignationCode
+		WHERE ID=@ID
+		Set @result =@ID;
+	END
+	return @result
+END
+GO
+

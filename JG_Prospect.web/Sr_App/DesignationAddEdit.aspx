@@ -44,6 +44,15 @@
                         </tr>
                         <tr>
                             <td>
+                                <label>Designation Code<span style="color: red">*</span></label>
+                                <asp:TextBox ID="txtDesignationCode" TabIndex="1" runat="server" MaxLength="10" Width="250px"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvDesignationCode" runat="server" Display="Dynamic" ValidationGroup="Save"
+                                    ControlToValidate="txtDesignationCode" ErrorMessage="Please enter designation code."
+                                    ForeColor="Red"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <label>Status</label>
                                 <asp:DropDownList ID="ddlStatus" runat="server" TabIndex="2">
                                     <asp:ListItem Text="Active" Value="1" Selected="True"></asp:ListItem>
