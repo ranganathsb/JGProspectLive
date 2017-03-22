@@ -2129,7 +2129,7 @@ namespace JG_Prospect.Sr_App.Controls
                     {
                         SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                         {
-                            DbCommand command = database.GetStoredProcCommand("c");
+                            DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
                             command.CommandType = CommandType.StoredProcedure;
                             database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
                             resultTask = database.ExecuteDataSet(command);
