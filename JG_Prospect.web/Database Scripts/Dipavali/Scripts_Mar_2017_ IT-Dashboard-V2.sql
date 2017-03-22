@@ -127,6 +127,9 @@ BEGIN
 		
 		IF @hstid = 0 
 			begin
+
+				set @pagenumber = @StartIndex
+
 				SELECT * 
 				FROM #temp 
 				WHERE 
@@ -136,6 +139,8 @@ BEGIN
 						RowNo_Order < (@StartIndex + @PageSize)
 					)
 				ORDER BY RowNo_Order
+
+
 			end
 		else
 			begin

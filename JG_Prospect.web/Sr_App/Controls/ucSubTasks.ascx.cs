@@ -196,8 +196,9 @@ namespace JG_Prospect.Sr_App.Controls
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
             isPaging = true;
-            SetSubTaskDetails();
+           
             gvSubTasks.PageIndex = e.NewPageIndex;
+            SetSubTaskDetails();
             gvSubTasks.DataBind();
         }
         
