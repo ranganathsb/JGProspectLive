@@ -83,14 +83,19 @@ namespace JG_Prospect.Sr_App
                     SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
                         DataSet result = new DataSet();
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
+                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        //{
+                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                        //    strnew = strnew + " and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        //}
+                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        //{
+                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                        //    strnew = strnew + " and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        //}
+
+                        strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+
                         DbCommand command = database.GetSqlStringCommand(strnew);
                         command.CommandType = CommandType.Text;
                         result = database.ExecuteDataSet(command);
@@ -120,16 +125,19 @@ namespace JG_Prospect.Sr_App
                     {
                         DataSet result = new DataSet();
 
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
+                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        //{
+                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                        //    strfrozen = strfrozen + " and  (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        //}
+                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        //{
+                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                        //    strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        //}
+
+                        strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+
                         DbCommand command = database.GetSqlStringCommand(strfrozen);
                         command.CommandType = CommandType.Text;
                         result = database.ExecuteDataSet(command);
@@ -387,7 +395,7 @@ namespace JG_Prospect.Sr_App
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
-
+                    result = database.ExecuteDataSet(command);
                     /*
                      if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
                     {
@@ -518,7 +526,7 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
-
+                    result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdFrozenTask.DataSource = result;

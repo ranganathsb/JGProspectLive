@@ -105,14 +105,14 @@
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
-                    OnPageIndexChanging = "OnPagingGvSubTasks"
-                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5" AllowCustomPaging="true"
+                    OnPageIndexChanging = "OnPagingGvSubTasks"  AllowCustomPaging="true"
+                    OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
-                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
-                        <PagerStyle HorizontalAlign="Left"  CssClass="pagination-ys" />
+                    <PagerSettings Mode="NumericFirstLast"  Visible="true" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Left"   CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         
@@ -605,7 +605,7 @@
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <div class="btn_sec">
-                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  OnClientClick="javascript:return OnAddMoreSubtaskClick();"
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
                                                         TabIndex="5" Text="Submit"   CssClass="ui-button" 
                                                         OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
                                                 </div>
@@ -876,7 +876,7 @@
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
-
+   
     $(function () {
         ucSubTasks_Initialize();
     });
@@ -895,7 +895,7 @@
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        DestroyCKEditors();
+        //DestroyCKEditors();
     });
 
 
@@ -1013,13 +1013,7 @@
     }
 
     function OnSaveSubTaskClick() {
-        $('#<%=txtSubTaskDescription.ClientID%>').val(GetCKEditorContent('<%=txtSubTaskDescription.ClientID%>'));
         return Page_ClientValidate('vgSubTask');
-    }
-
-    function OnAddMoreSubtaskClick() {
-        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
-        return Page_ClientValidate('SubmitSubTask');
     }
 
     function copytoListID(sender) {
@@ -1152,21 +1146,15 @@
 
         $(divid).slideDown('slow');
 
-        ScrollTo(divid);
-    }
+        $('html, body').animate({
+            scrollTop: $(divid).offset().top - 100
+        }, 2000);
 
-    function ScrollTo(selector) {
-        var offset = $(selector).offset();
-        if (typeof (offset) != 'undefined') {
-            $('html, body').animate({
-                scrollTop: offset.top
-            }, 1000);
-        }
-    }
 
+    }
     function hideSubTaskEditView(divid, rowindex) {
 
-        //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
+    //$('#<%=hdnCurrentEditingRow.ClientID%>').val('');
         // $('.edit-subtask > tbody > tr').eq(rowindex + 2).remove();
         // $(divid).slideUp('slow');
         $('#<%=pnlCalendar.ClientID%>').hide();

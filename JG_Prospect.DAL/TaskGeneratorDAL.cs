@@ -563,7 +563,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
         {
             try
             {
@@ -588,7 +588,6 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
-
                     if (intPageIndex.HasValue)
                     {
                         database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
@@ -597,6 +596,8 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
                     }
+
+                    database.AddInParameter(command, "@hstid", DbType.Int32, vHSTid);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -927,37 +928,6 @@ namespace JG_Prospect.DAL
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
             return returndata;
-        }
-
-        /// <summary>
-        /// Get one or all tasks with all sub tasks from all levels.
-        /// </summary>
-        /// <param name="intTaskID">optional taskid to get hierarchy. if it is null, all tasks will be returned in response.</param>
-        /// <returns></returns>
-        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetTaskHierarchy");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    if (intTaskID.HasValue)
-                    {
-                        database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskID);
-                    }
-
-                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
-
-                    return database.ExecuteDataSet(command);
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
         /// <summary>

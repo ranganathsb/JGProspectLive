@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, vHSTid);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -116,11 +116,6 @@ namespace JG_Prospect.BLL
         public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
-        }
-
-        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
-        {
-            return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
         }
 
         public DataSet GetAllUsersNDesignationsForFilter()
