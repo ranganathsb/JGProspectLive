@@ -17,12 +17,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
-    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />    
-    
-    <script src="../ckeditor/ckeditor.js"></script>    
+    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
+
+    <script src="../ckeditor/ckeditor.js"></script>
     <script src="../js/clipboard.min.js"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
-   
+
 
     <div class="right_panel">
         <hr />
@@ -210,7 +210,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="display:none;">
+                        <tr style="display: none;">
                             <td colspan="2"><b>Task Description:</b>
                                 <asp:TextBox ID="txtTUDesc" TextMode="MultiLine" ReadOnly="true" Style="width: 100%;" Rows="10" runat="server"></asp:TextBox>
                             </td>
@@ -621,4 +621,4 @@
         }
 
     </script>
-</asp:Content>
+    </asp:Content>
