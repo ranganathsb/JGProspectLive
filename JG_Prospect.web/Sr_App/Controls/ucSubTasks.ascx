@@ -105,14 +105,14 @@
                     EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
                     OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender ="gvSubTasks_PreRender"
-                    OnPageIndexChanging = "OnPagingGvSubTasks"  
+                    OnPageIndexChanging = "OnPagingGvSubTasks"  AllowCustomPaging="true"
                     OnRowCommand="gvSubTasks_RowCommand" PageSize = "5"
                     OnSorting="gvSubTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" />
-                    <PagerSettings Mode="NumericFirstLast" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
-                        <PagerStyle HorizontalAlign="Left"  CssClass="pagination-ys" />
+                    <PagerSettings Mode="NumericFirstLast"  Visible="true" NextPageText="Next"  PreviousPageText="Previous" Position="Bottom" />
+                        <PagerStyle HorizontalAlign="Left"   CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
                         
