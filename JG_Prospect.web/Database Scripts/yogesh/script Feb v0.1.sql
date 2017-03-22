@@ -3229,3 +3229,105 @@ BEGIN
 END
 GO
 
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetAllActiveDesignationByFilter]    Script Date: 22-Mar-17 11:20:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 13-Dec-2016
+-- Description:	Returns all/selected Active Designation 
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetAllActiveDesignationByFilter]
+	@DepartmentID As Int,
+	@DesignationID As Int
+AS
+BEGIN
+	SET NOCOUNT ON;	
+	
+	SELECT ds.ID
+	,ds.DesignationName
+	,ds.DesignationCode
+	,ds.IsActive
+	,ds.DepartmentID
+	,dt.DepartmentName
+	FROM tbl_Designation ds
+	INNER JOIN tbl_Department dt On dt.ID = ds.DepartmentID
+	WHERE ds.IsActive=1
+	AND ds.ID = (CASE WHEN @DesignationID=0 THEN ds.ID ELSE @DesignationID END)
+	AND ds.DepartmentID = (CASE WHEN @DepartmentID=0 THEN ds.DepartmentID ELSE @DepartmentID END)
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetAllDesignationsForHumanResource]    Script Date: 22-Mar-17 11:37:14 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Shekhar Pawar
+-- Create date: 15-Nov-2016
+-- Description:	Returns all Designation Names from database table
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetAllDesignationsForHumanResource]
+	-- Add the parameters for the stored procedure here
+	AS
+BEGIN
+	SET NOCOUNT ON;	
+  SELECT [ID]
+      ,[DesignationName]
+      ,[IsActive]
+	  ,DesignationCode
+  FROM [dbo].[tbl_Designation] WITH(NOLOCK)
+  WHERE [IsActive] = 1 AND DepartmentID = 1
+  ORDER BY [DesignationName]
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetDesignationByFilter]    Script Date: 22-Mar-17 11:38:38 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Jaylem
+-- Create date: 26-Nov-2016
+-- Description:	Returns all/selected Designation 
+
+-- Updated : Added DesignationCode.
+--		date: 22 Mar 2017
+--		by : Yogesh
+-- =============================================
+ALTER PROCEDURE [dbo].[UDP_GetDesignationByFilter]
+	@DepartmentID As Int,
+	@DesignationID As Int
+	AS
+BEGIN
+	SET NOCOUNT ON;	
+	
+	SELECT ds.ID
+	,ds.DesignationName
+	,ds.IsActive
+	,ds.DepartmentID
+	,dt.DepartmentName
+	,ds.DesignationCode
+	FROM tbl_Designation ds
+	INNER JOIN tbl_Department dt On dt.ID = ds.DepartmentID
+	WHERE ds.ID = (CASE WHEN @DesignationID=0 THEN ds.ID ELSE @DesignationID END)
+	AND ds.DepartmentID = (CASE WHEN @DepartmentID=0 THEN ds.DepartmentID ELSE @DepartmentID END)
+
+END
+GO
+

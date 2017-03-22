@@ -2506,9 +2506,8 @@ namespace JG_Prospect.DAL
         }
 
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
+        public void SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
-            DataSet dsTemp = new DataSet();
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
@@ -2517,15 +2516,14 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@InstallUserID", DbType.String, UserId);
                     database.AddInParameter(command, "@DesignationsCode", DbType.String, strDesignationsCode);
-                    dsTemp = database.ExecuteDataSet(command);
-                    return dsTemp;
+                    database.AddInParameter(command, "@UpdateCurrentSequence", DbType.String, UpdateCurrentSequence);
+                    database.ExecuteNonQuery(command);
                 }
             }
             catch (Exception ex)
             {
 
             }
-            return dsTemp;
         }
 
         /// <summary>
