@@ -1862,7 +1862,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             string strScript = string.Format(
-                                                "$('#{0}').slideDown('slow');",
+                                                "$('#{0}').slideDown('slow'); ScrollTo('#{0}');",
                                                 divSubTask.ClientID
                                             );
 
@@ -2627,8 +2627,8 @@ namespace JG_Prospect.Sr_App.Controls
             for (int i = 0; i < gvSubTasks.Rows.Count; i++)
             {
                 ListBox ddcbAssigned = gvSubTasks.Rows[i].FindControl("ddcbAssigned") as ListBox;
-                
-                ddcbAssigned.AutoPostBack = 
+
+                ddcbAssigned.AutoPostBack =
                 ddcbAssigned.Enabled = blEnabled;
             }
             upSubTasks.Update();
