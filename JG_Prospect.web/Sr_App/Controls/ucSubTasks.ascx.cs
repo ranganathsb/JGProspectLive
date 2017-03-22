@@ -305,6 +305,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
+                HiddenField hdnActiveUserIds = e.Row.FindControl("hdnActiveUserIds") as HiddenField;
 
                 //---------- Start DP ----------
                 Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
@@ -332,16 +333,85 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (this.IsAdminMode)
                 {
-                    DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+                    //DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+
+                    //DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+                    DataSet dsUsers;
+
+                    //if (lblTaskId.Text != "" || lblTaskId.Text != "0")
+                    //{
+                        dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+
+                        // To get Order First Active User, Assigned User, Rejected User
+                        //if (dsUsers.Tables[1].Rows.Count > 0)
+                        //{
+                        //    dsUsers.Tables[0].Merge(dsUsers.Tables[1], false);
+                        //}
+                        //if (dsUsers.Tables[2].Rows.Count > 0)
+                        //{
+                        //    dsUsers.Tables[0].Merge(dsUsers.Tables[2], false);
+                        //}
+
+                        // TO get All the Active UserIds for Text Color
+                        if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
+                        {
+                            foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
+                            {
+                                hdnActiveUserIds.Value += "," + row["Id"];
+                            }
+                        }
+                        //DataTable dtRejectedUsers;
+                        //DataRow[] filteredRejectedRows = dsUsers.Tables[0].Select(" IsAccepted = '0'");
+
+                        //if (filteredRejectedRows.Count() > 0)
+                        //{
+                        //    dtRejectedUsers = filteredRejectedRows.CopyToDataTable();
+                        //    foreach (DataRow row in filteredRejectedRows)
+                        //    {
+                        //        dsUsers.Tables[0].Rows.Remove(row);
+                        //    }
+                        //    foreach (DataRow row in filteredRejectedRows)
+                        //    {
+                        //        dsUsers.Tables[0].Rows.Remove(row);
+                        //    }
+                        //}
+                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),lblTaskId.Text);
+                    //}
+                    //else
+                    //{
+                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, "Admin", "0");
+
+                        // TO get All the Active UserIds for Text Color
+                        //if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
+                        //{
+                        //    foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
+                        //    {
+                        //        hdnActiveUserIds.Value += "," + row["Id"];
+                        //    }
+                        //}
+                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),"0");
+                    //}
 
                     ddcbAssigned.Items.Clear();
-                    ddcbAssigned.DataSource = dsUsers;
+                    ddcbAssigned.DataSource = dsUsers.Tables[0];
                     ddcbAssigned.DataTextField = "FristName";
                     ddcbAssigned.DataValueField = "Id";
                     ddcbAssigned.DataBind();
 
                     ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
                     ddcbAssigned.Attributes.Add("TaskStatus", DataBinder.Eval(e.Row.DataItem, "Status").ToString());
+
+                    foreach (ListItem item in ddcbAssigned.Items)
+                    {
+                        if (hdnActiveUserIds.Value.Split(',').Contains(item.Value))
+                        {
+                            item.Attributes["style"] = "color:red";
+                        }
+                        else
+                        {
+                            item.Attributes["style"] = "color:blue";
+                        }
+                    }
 
                     SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
 
@@ -2597,5 +2667,6 @@ namespace JG_Prospect.Sr_App.Controls
         }
 
         #endregion
+
     }
 }
