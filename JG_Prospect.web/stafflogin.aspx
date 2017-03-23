@@ -146,7 +146,7 @@
                     <tr>
                         <td width="100%" align="center" >
                             <div class="login_right_panel" style="min-height:407px !important;margin: 0 0 0 0 !important;">
-                                <h1 style="text-align:left;"><b>Staff Login -  Test site</b></h1>
+                                <h1 style="text-align:left;"><b>Staff Login</b></h1>
                                 <div class="login_header" style="margin: -20px 0 0 0 !important;">
                                     <table cellpadding="0" cellspacing="0" style="float:right;">
                                         <tr>
