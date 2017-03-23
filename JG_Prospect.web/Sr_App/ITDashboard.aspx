@@ -314,7 +314,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdFrozenTask" runat="server"  OnPreRender ="grdFrozenTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                           HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                            CssClass="table dashboard"
+                            CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdFrozenTask"   OnRowDataBound ="grdFrozenTask_RowDataBound"  PageSize = "20" >
@@ -408,7 +408,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdNewTask" runat="server"  OnPreRender ="grdNewTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                          HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                           CssClass="table dashboard"
+                           CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdNewTask"   OnRowDataBound ="grdNewTask_RowDataBound"  PageSize = "20" >
@@ -522,7 +522,7 @@ border-top-right-radius: 4px;
                 <asp:GridView ID="grdTaskPending" runat="server"  OnPreRender ="grdTaskPending_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                         HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                          CssClass="table dashboard"
+                          CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Pending Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPagingTaskInProgress"   OnRowDataBound ="grdTaskPending_RowDataBound"  PageSize = "20" >
@@ -633,7 +633,7 @@ border-top-right-radius: 4px;
                     ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No Closed Tasks Found !!" CssClass="table dashboard" Width="100%" 
-                    CellSpacing="0" CellPadding="0" 
+                    CellSpacing="0" CellPadding="0"  AllowCustomPaging="true"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Both" OnPageIndexChanging = "OnPagingTaskClosed" 
                     OnRowDataBound ="grdTaskClosed_RowDataBound" PagerStyle-HorizontalAlign="Right"  PageSize = "20" >
                     <HeaderStyle CssClass="trHeader " />

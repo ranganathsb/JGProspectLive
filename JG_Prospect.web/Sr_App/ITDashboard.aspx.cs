@@ -391,10 +391,13 @@ namespace JG_Prospect.Sr_App
                         vStartDate = MiddleDate.ToString("dd-MMM-yyy");
                         vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
                     }
-                    DbCommand command = database.GetStoredProcCommand("GetPartialFrozenTasks");
+                    DbCommand command = database.GetStoredProcCommand("GetNonFrozenTasks");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdNewTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdNewTask.PageSize);
+                  
                     result = database.ExecuteDataSet(command);
                     /*
                      if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
@@ -418,6 +421,7 @@ namespace JG_Prospect.Sr_App
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdNewTask.DataSource = result;
+                        grdNewTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdNewTask.DataBind();
                     }
                     else
@@ -526,10 +530,14 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
+
                     result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdFrozenTask.DataSource = result;
+                        grdFrozenTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdFrozenTask.DataBind();
                     }
                     else
@@ -577,10 +585,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch);
+            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
             if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
+                grdTaskPending.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskPending.DataBind();
             }
             else
@@ -621,10 +630,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID,strSearch);
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID, strSearch, grdTaskClosed.PageIndex, grdTaskClosed.PageSize);
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
+                grdTaskClosed.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskClosed.DataBind();
             }
             else
@@ -638,27 +648,27 @@ namespace JG_Prospect.Sr_App
 
         protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
         {
-            BindTaskInProgressGrid();
             grdTaskPending.PageIndex = e.NewPageIndex;
+            BindTaskInProgressGrid();
             grdTaskPending.DataBind();
         }
         protected void OnPagingTaskClosed(object sender, GridViewPageEventArgs e)
         {
-            BindTaskClosedGrid();
             grdTaskClosed.PageIndex = e.NewPageIndex;
+            BindTaskClosedGrid();
             grdTaskClosed.DataBind();
         }
         protected void OnPaginggrdFrozenTask(object sender, GridViewPageEventArgs e)
         {
-            BindFrozenTasks();
             grdFrozenTask.PageIndex = e.NewPageIndex;
+            BindFrozenTasks();
             grdFrozenTask.DataBind();
         }
 
         protected void OnPaginggrdNewTask(object sender, GridViewPageEventArgs e)
         {
-            BindNewTasks();
             grdNewTask.PageIndex = e.NewPageIndex;
+            BindNewTasks();
             grdNewTask.DataBind();
         }
 
