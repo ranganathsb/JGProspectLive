@@ -115,55 +115,24 @@
                         <PagerStyle HorizontalAlign="Left"   CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        
-                        <%--<asp:TemplateField  HeaderText="List ID" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
-                            SortExpression="InstallId">
-                            <ItemTemplate >
-                                <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
-                                <h5>
-                                    <asp:LinkButton ID="lbtnInstallId" CssClass="context-menu"
-                             data-highlighter='<%# Eval("TaskId")%>' ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' CommandName="edit-sub-task"
-                                        CommandArgument='<%# Container.DataItemIndex  %>' /></h5>
-                                <span>+</span>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
-                            SortExpression="Description">
-                            <ItemTemplate>
-                                <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width:400px;">
-                                    <div style="padding-bottom: 5px;">
-                                        <h5>Title:&nbsp;<%# String.IsNullOrEmpty(Eval("Title").ToString())== true ? "N.A." : Eval("Title").ToString() %></h5>
-                                    </div>
-                                    <div style="padding-bottom: 5px;">
-                                        <h5>Url:&nbsp;<a target="_blank" class="bluetext"
-                                            href='<%# string.IsNullOrEmpty(Eval("Url").ToString()) == true ? 
-                                                                        "javascript:void(0);" : 
-                                                                        Eval("Url").ToString()%>'>
-                                            <%# String.IsNullOrEmpty(Eval("Url").ToString())== true ? 
-                                                                "N.A." : 
-                                                                Eval("Url").ToString()%> 
-                                        </a>
-                                        </h5>
-                                    </div>
-                                    <div style="padding-bottom: 5px;">
-                                        <h5>Description:&nbsp;</h5>
-                                        <%# Eval("Description")%>
-                                    </div>
-                                </div>
-                            </ItemTemplate>
-                        </asp:TemplateField>--%>
-
                         <asp:TemplateField  HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
                             SortExpression="InstallId">
+                            <HeaderTemplate>
+                                <span style="float: left;">Action-ID#</span>
+                                <a href="#" style="color:white;">Task Details</a>
+                            </HeaderTemplate>
                             <ItemTemplate >
                                 <asp:Literal ID="ltrlInstallId" Visible="false" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
-                               
+                                
+                                <!-- Sub-Sub Task Grid Starts -->
+
+                                <!-- Sub-Sub Task Grid Starts -->                         
                                 <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" 
                                     ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false" 
                                     CssClass="subtasklevel" BorderColor="Transparent"  Width="500px" BorderStyle="None">
                                     <Columns>
-                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" 
+                                    <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader"  HeaderText="List ID#" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" 
                                          HeaderStyle-Width="80"
                                             SortExpression="InstallId">
                                             <ItemTemplate>
@@ -172,14 +141,13 @@
                                                 <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ></asp:HiddenField>
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ></asp:HiddenField>
                                                 <h5>
-                                                    <asp:LinkButton  ID="lbtnInstallId"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
+                                                    <input type="checkbox" name="bulkaction" />
+                                                    <asp:LinkButton  ID="lbtnInstallId" style="display:inline;"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="EditSubTask_Click"  />
                                                      <asp:LinkButton  ID="lbtnInstallIdRemove"  data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"
                                                         ForeColor="Blue"  runat="server" Text='<%# Eval("InstallId") %>'  OnClick="RemoveClick"  />
                                                 </h5>
                                                 
-                                                <asp:LinkButton ID="lnkAddMoreSubTask" runat="server" 
-                                                      OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                                                            
                                                  </ItemTemplate>
                                         </asp:TemplateField>
@@ -191,117 +159,106 @@
                                                        
                                                         <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                     </div>
+                                                    
                                                 </div>
+                                                <asp:LinkButton ID="lnkAddMoreSubTask" style="display:inline;" runat="server" 
+                                                      OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                &nbsp;<a href="#">Comment</a>
                                             </ItemTemplate>
                                         </asp:TemplateField>
+                                        
+                                                
                                         </Columns>
                                 </asp:GridView>
+                                 <!-- Sub-Sub Task Grid Ends -->
+                                <!-- Freezingn Task Part Starts -->      
+                                
+                                <table style="float:left;margin-top: -80px;">
+                                    <tr>
+                                        <td colspan="3" class="noborder" align="center">
+                                            <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
+                                                CommandArgument='<%# Container.DataItemIndex  %>' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
+                                            <div id="divAdmin" runat="server" visible="false">
+                                                <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                    <%# 
+                                                        string.Concat(
+                                                                        string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
+                                                                            Eval("AdminUserId") : 
+                                                                            Eval("AdminUserInstallId"),
+                                                                        "<br/>",
+                                                                        string.IsNullOrEmpty(Eval("AdminUserFirstName").ToString())== true? 
+                                                                            Eval("AdminUserFirstName").ToString() : 
+                                                                            Eval("AdminUserFirstName").ToString(),
+                                                                        " ", 
+                                                                        Eval("AdminUserLastName").ToString()
+                                                                    )
+                                                    %>
+                                                </asp:HyperLink>
+                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                                            </div>
+                                        </td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
+                                            <div id="divITLead" runat="server" visible="false">
+                                                <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                    <%# 
+                                                        string.Concat(
+                                                                        string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
+                                                                            Eval("TechLeadUserId") : 
+                                                                            Eval("TechLeadUserInstallId"),
+                                                                        "<br/>",
+                                                                        string.IsNullOrEmpty(Eval("TechLeadUserFirstName").ToString())== true? 
+                                                                            Eval("TechLeadUserFirstName").ToString() : 
+                                                                            Eval("TechLeadUserFirstName").ToString(),
+                                                                        " ", 
+                                                                        Eval("TechLeadUserLastName").ToString()
+                                                                    )
+                                                    %>
+                                                </asp:HyperLink>
+                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                                            </div>
+                                        </td>
+                                        <td class="haligncenter noborder">
+                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
+                                            <div id="divUser" runat="server" visible="false">
+                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                    <%# 
+                                                        string.Concat(
+                                                                        string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
+                                                                            Eval("OtherUserId") : 
+                                                                            Eval("OtherUserInstallId"),
+                                                                        "<br/>",
+                                                                        string.IsNullOrEmpty(Eval("OtherUserFirstName").ToString())== true? 
+                                                                            Eval("OtherUserFirstName").ToString() : 
+                                                                            Eval("OtherUserFirstName").ToString(),
+                                                                        " ", 
+                                                                        Eval("OtherUserLastName").ToString()
+                                                                    )
+                                                    %>
+                                                </asp:HyperLink>
+                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="display: none;">
+                                        <td colspan="3">
+                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
+                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
+                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
+                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                            
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                <!-- Freezingn Task Part Starts -->  
                             </ItemTemplate>
                         </asp:TemplateField>
-
-                        <%--<asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="105"
-                            SortExpression="Status">
-                            <ItemTemplate>
-                                <div style="padding: 3px;">
-                                    <table>
-                                        <tr>
-                                            <td class="noborder">
-                                                <h5>Status</h5>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td class="noborder">
-                                                <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" /></td>
-                                        </tr>
-                                    </table>
-                                    <hr />
-                                    <table>
-                                        <tr>
-                                            <td class="noborder">
-                                                <h5>Priority</h5>
-                                            </td>
-                                            <td class="noborder">
-                                                <h5>Type</h5>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="noborder">
-                                                <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" /></td>
-                                            <td class="noborder">
-                                                <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
-                                        </tr>
-                                    </table>
-                                    <hr />
-                                    <table>
-                                        <tr>
-                                            <td class="noborder" colspan="2">
-                                                <h5>Estimated Hours</h5>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="noborder">ITLead
-                                            </td>
-                                            <td class="noborder">
-                                                <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="noborder">User</td>
-                                            <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
-                                        </tr>
-                                    </table>
-                                    <hr />
-                                    <table>
-                                        <tr>
-                                            <td colspan="3" class="noborder">
-                                                <h5>Freeze Task</h5>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="redtext haligncenter noborder">
-                                                <b>Admin</b>
-                                            </td>
-                                            <td class="noborder">
-                                                <b>Tech Lead</b>
-                                            </td>
-                                            <td class="bluetext haligncenter noborder">
-                                                <b>User</b>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="haligncenter noborder">
-                                                <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" /></td>
-                                            <td class="haligncenter noborder">
-                                                <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" /></td>
-                                            <td class="haligncenter noborder">
-                                                <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" /></td>
-                                        </tr>
-                                        <tr style="display: none;">
-                                            <td colspan="3">
-
-                                                <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                                <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                                    placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                    AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
-
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3" class="noborder" align="center">
-                                                <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
-                                                    CommandArgument='<%# Container.DataItemIndex  %>' /></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </ItemTemplate>
-                        </asp:TemplateField>--%>
-                        <%-- <asp:TemplateField HeaderText="Estimated hours" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
-                            </ItemTemplate>
-                        </asp:TemplateField>--%>
                         <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" 
                             ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
                             <ItemTemplate>
@@ -345,18 +302,18 @@
                                             <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="display:none;">
                                         <td class="noborder">
                                             <h5>Type</h5>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="display:none;">
                                         <td class="noborder">
                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
                                     </tr>
 
                                 </table>
-                                <table>
+                                <table style="display:none;">
                                     <tr>
                                         <td class="noborder" colspan="2">
                                             <h5>Estimated Hours</h5>
@@ -464,88 +421,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
-                                <table>
-                                    <tr>
-                                        <td colspan="3" class="noborder" align="center">
-                                            <asp:LinkButton ID="lbtlFeedback" runat="server" Text="Comment" CommandName="sub-task-feedback"
-                                                CommandArgument='<%# Container.DataItemIndex  %>' /></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" />
-                                            <div id="divAdmin" runat="server" visible="false">
-                                                <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                    <%# 
-                                                        string.Concat(
-                                                                        string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
-                                                                            Eval("AdminUserId") : 
-                                                                            Eval("AdminUserInstallId"),
-                                                                        "<br/>",
-                                                                        string.IsNullOrEmpty(Eval("AdminUserFirstName").ToString())== true? 
-                                                                            Eval("AdminUserFirstName").ToString() : 
-                                                                            Eval("AdminUserFirstName").ToString(),
-                                                                        " ", 
-                                                                        Eval("AdminUserLastName").ToString()
-                                                                    )
-                                                    %>
-                                                </asp:HyperLink>
-                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                            </div>
-                                        </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" />
-                                            <div id="divITLead" runat="server" visible="false">
-                                                <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                    <%# 
-                                                        string.Concat(
-                                                                        string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
-                                                                            Eval("TechLeadUserId") : 
-                                                                            Eval("TechLeadUserInstallId"),
-                                                                        "<br/>",
-                                                                        string.IsNullOrEmpty(Eval("TechLeadUserFirstName").ToString())== true? 
-                                                                            Eval("TechLeadUserFirstName").ToString() : 
-                                                                            Eval("TechLeadUserFirstName").ToString(),
-                                                                        " ", 
-                                                                        Eval("TechLeadUserLastName").ToString()
-                                                                    )
-                                                    %>
-                                                </asp:HyperLink>
-                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                            </div>
-                                        </td>
-                                        <td class="haligncenter noborder">
-                                            <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" />
-                                            <div id="divUser" runat="server" visible="false">
-                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                    <%# 
-                                                        string.Concat(
-                                                                        string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
-                                                                            Eval("OtherUserId") : 
-                                                                            Eval("OtherUserInstallId"),
-                                                                        "<br/>",
-                                                                        string.IsNullOrEmpty(Eval("OtherUserFirstName").ToString())== true? 
-                                                                            Eval("OtherUserFirstName").ToString() : 
-                                                                            Eval("OtherUserFirstName").ToString(),
-                                                                        " ", 
-                                                                        Eval("OtherUserLastName").ToString()
-                                                                    )
-                                                    %>
-                                                </asp:HyperLink>
-                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td colspan="3">
-                                            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
-                                            <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
-                                            
-                                        </td>
-                                    </tr>
-                                </table>
+                                
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns> 
