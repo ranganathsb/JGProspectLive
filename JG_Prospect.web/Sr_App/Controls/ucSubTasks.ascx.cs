@@ -1002,6 +1002,9 @@ namespace JG_Prospect.Sr_App.Controls
                     // return 0;
                     //LogManager.Instance.WriteToFlatFile(ex);
                 }
+
+                upEditSubTask.Update();
+
                 ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slidupsubtaskbelowrespectivetask", "$('#" + divSubTask.ClientID + "').hide();", true);
                 ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "sliddownsubtaskbelowrespectivetask", String.Concat("showSubTaskEditView('#", pnlCalendar.ClientID, "',", hdnCurrentEditingRow.Value, ");"), true);
             }
