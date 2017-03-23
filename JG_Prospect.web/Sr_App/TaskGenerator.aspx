@@ -176,6 +176,7 @@
                                 <div id="divAcceptRejectButtons" runat="server" visible="false">
                                     <asp:LinkButton ID="lbtnAcceptTask" runat="server" Text="Accept" OnClick="lbtnAcceptTask_Click" />&nbsp;
                                     <asp:LinkButton ID="lbtnRejectTask" runat="server" Text="Reject" OnClick="lbtnRejectTask_Click" />
+                                    <asp:HiddenField Id="hdnSubTaskIds" runat="server"/>
                                 </div>
                             </td>
                             <td><b>Status:</b>
@@ -621,4 +622,4 @@
         }
 
     </script>
-    </asp:Content>
+</asp:Content>

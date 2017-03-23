@@ -344,6 +344,9 @@ namespace JG_Prospect.Sr_App
                     divAcceptRejectButtons.Visible = false;
                 }
 
+                //// To Send Automail for Acceptance
+                SendEmailToUsers(true, int.Parse(hdnTaskId.Value), JGSession.UserId.ToString());
+
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
             }
             else
@@ -363,6 +366,9 @@ namespace JG_Prospect.Sr_App
             if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
             {
                 divAcceptRejectButtons.Visible = false;
+
+                // To Send Automail for Rejection
+                SendEmailToUsers(false, int.Parse(hdnTaskId.Value), JGSession.UserId.ToString());
 
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
             }
@@ -769,6 +775,87 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region "--Private Methods--"
+
+        // To Send Automail to the User about accepted or Rejected Task
+        private void SendEmailToUsers(bool IsAccepted, int intTaskId, string strInstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName;
+                DataSet dsEmailTemplate;
+
+                // To Send Mail to User about Acceptance of the task
+                if (IsAccepted == true)
+                {
+                    strHTMLTemplateName = "Accepted Task Automail";
+                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 111);
+                }
+                // To Send Mail to User about Rejection of the task
+                else
+                {
+                    strHTMLTemplateName = "Rejected Task Automail";
+                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 112);
+                }
+
+                //foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                //{
+                DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(strInstallUserIDs));
+
+                string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                string fullname = FName + " " + LName;
+
+                string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                strBody = strBody.Replace("#Fname#", fullname);
+                strBody = strBody.Replace("#ParentTaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                string strSubTaskLink;
+                string strSubTaskList = string.Empty;
+
+                //Adding Links for All SubTask
+                if (hdnSubTaskIds.Value != "")
+                {
+                    foreach (string subTaskId in hdnSubTaskIds.Value.Split(','))
+                    {
+                        if (subTaskId != "")
+                        {
+                            strSubTaskLink = string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), subTaskId);
+                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + strSubTaskLink + "</a><br/>";
+                        }
+                    }
+                    strBody = strBody.Replace("#SubTaskLink#", strSubTaskList);
+
+                    strBody = strBody.Replace("#QuickViewLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#ViewMoreLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    //List<Attachment> lstAttachments = new List<Attachment>();
+                    //// your remote SMTP server IP.
+                    //for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    //{
+                    //    string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                    //    if (File.Exists(sourceDir))
+                    //    {
+                    //        Attachment attachment = new Attachment(sourceDir);
+                    //        attachment.Name = Path.GetFileName(sourceDir);
+                    //        lstAttachments.Add(attachment);
+                    //    }
+                    //}
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, null);
+                }
+                //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
 
         private void RedirectToViewTasks(string strAction = "")
         {
@@ -1318,6 +1405,17 @@ namespace JG_Prospect.Sr_App
             DataTable dtTaskNotesDetails = dsTaskDetails.Tables[3];
 
             DataTable dtSubTaskDetails = dsTaskDetails.Tables[4];
+
+            hdnSubTaskIds.Value = "";
+
+            // To save all the SubTaskIds to Mail
+            if (dtSubTaskDetails.Rows.Count > 0)
+            {
+                foreach (DataRow row in dtSubTaskDetails.Rows)
+                {
+                    hdnSubTaskIds.Value += row["TaskId"].ToString() + ",";
+                }
+            }
 
             SetSubTaskSectionView(true);
 
