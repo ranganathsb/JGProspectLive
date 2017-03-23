@@ -55,12 +55,32 @@ namespace JG_Prospect.Sr_App
                     tblInProgress.Visible = true;
                     tblClosedTask.Visible = true;
                     lblalertpopup.Visible = true;
+
+                    txtSearchFrozen.Visible = true;
+                    btnSearchFrozen.Visible = true;
+
+                    txtSearchClosed.Visible = true;
+                    btnSearchClosed.Visible = true;
+
+                    txtSearchInPro.Visible = true;
+                    btnSearchInPro.Visible = true;
+
                 }
                 else
                 {
                     tblInProgress.Visible = false;
                     tblClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
+
+                    txtSearchFrozen.Visible = false;
+                    btnSearchFrozen.Visible = false;
+
+                    txtSearchClosed.Visible = false;
+                    btnSearchClosed.Visible = false;
+
+                    txtSearchInPro.Visible = false;
+                    btnSearchInPro.Visible = false;
+
                 }
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
                 LoadFilterUsersByDesgination("", drpUsersClosed);
