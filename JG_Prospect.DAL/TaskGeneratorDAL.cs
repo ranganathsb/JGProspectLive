@@ -931,6 +931,40 @@ namespace JG_Prospect.DAL
         }
 
         /// <summary>
+        /// Get one or all tasks with all sub tasks from all levels.
+        /// </summary>
+        /// <param name="intTaskID">optional taskid to get hierarchy. if it is null, all tasks will be returned in response.</param>
+        /// <returns></returns>
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskHierarchy");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (intTaskID.HasValue)
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskID);
+                    }
+
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+
+
+        /// <summary>
         /// Get all Users and their designtions in system for whom tasks are available in system.
         /// <returns></returns>
         public DataSet GetAllUsersNDesignationsForFilter()

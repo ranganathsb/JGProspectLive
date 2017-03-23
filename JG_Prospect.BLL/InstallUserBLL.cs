@@ -548,9 +548,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetAllUserPhoneType();
         }
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
+        public void SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
-            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode, UpdateCurrentSequence);
+            InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode, UpdateCurrentSequence);
         }
 
         public DataSet GetUsersNDesignationForSalesFilter()

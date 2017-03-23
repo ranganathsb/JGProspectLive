@@ -230,6 +230,14 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetPendingSubTaskCount(TaskId);
         }
 
+
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
+        }
+
+
+
         #region TaskAcceptance
 
         public DataSet GetTaskAcceptances(Int64 TaskId)

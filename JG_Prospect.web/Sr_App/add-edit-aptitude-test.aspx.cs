@@ -272,6 +272,7 @@ namespace JG_Prospect.Sr_App
             repQuestions.DataSource = Questions;
             repQuestions.DataBind();
 
+            upQuestions.Update();
         }
     }
 }

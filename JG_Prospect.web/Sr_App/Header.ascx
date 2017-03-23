@@ -95,13 +95,13 @@
         </div>--%>
         <ul>
             <!--Email with # of unread msgs and new font-->
-            <li id="test"><a id="hypEmail" runat="server" style="color:white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error hide"></label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
-             <li>|</li>
+            <li id="test"><a id="hypEmail" runat="server" style="color: white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error hide"></label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
+            <li>|</li>
             <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
             <li>|</li>
-            <li>Chat(1)</li>
+            <li><a id="hypChat" href="#" onclick="javascript:OpenChatWindow();">Chat </a></li>
         </ul>
-        <div class="ProfilImg" style="width:90px;">
+        <div class="ProfilImg" style="width: 90px;">
             <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
             <asp:HyperLink class="caption" runat="server" ID="hLnkEditProfil" Text="Edit"></asp:HyperLink>
             <%--<a href="#"><div class="caption">Edit</div></a>--%>
@@ -133,7 +133,7 @@
 </div>
 <script type="text/javascript">
     function SetEmailCounts() {
-       
+
         $.ajax({
             type: "POST",
             url: "ajaxcalls.aspx/GetEmailCounters",
@@ -147,7 +147,7 @@
                     if (counters) {
                         $('#lblNewCounter').html(counters.newone);
                         $('#lblNewCounter').show();
-                        $('#lblUnRead').html("Unread: "+counters.unread);
+                        $('#lblUnRead').html("Unread: " + counters.unread);
                     }
                     //response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
                 }
@@ -155,4 +155,39 @@
         });
     }
 
+    function OpenChatWindow() {
+        
+        $('<img />').attr({
+            src: '/img/ajax-loader.gif',
+            id: 'chatprogress'
+        }).appendTo($('#hypChat'));
+
+        $.ajax({
+            type: "POST",
+            url: "ajaxcalls.aspx/LogintoChat",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+                if (data.d) {
+                    var counters = JSON.parse(data.d);
+                    console.log(counters);
+                    if (counters == "1") {
+                        window.open('/Sr_App/JabbRChat.aspx', "JMG - Chat", "width=600,height=600,scrollbars=yes");
+                    }
+                    else {
+                        alert('Couldn\'t Login to Chat application right now, Please try again later.');
+                    }
+                }
+                else {
+                    alert('Couldn\'t Login to Chat application right now, Please try again later.');
+                }
+                $('#hypChat').html('Chat');
+            },
+            error: function () {
+                $('#hypChat').html('Chat');
+            }
+        });
+
+    }
 </script>

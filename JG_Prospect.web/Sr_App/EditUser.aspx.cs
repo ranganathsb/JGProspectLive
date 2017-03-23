@@ -659,7 +659,7 @@ namespace JG_Prospect
             else if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
             {
                 LoadUsersByRecruiterDesgination(ddlUsers);
-                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -897,15 +897,24 @@ namespace JG_Prospect
             return;
         }
 
+        protected void ddlDesignationForTask_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
+        }
+
         protected void ddlTechTask_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ddlTechSubTask.ClearSelection();
+            ddlTechSubTask.Items.Clear();
+
             if (ddlTechTask.SelectedIndex > 0)
             {
-                DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
-                ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
-                ddlTechSubTask.DataTextField = "Title";
-                ddlTechSubTask.DataValueField = "TaskId";
-                ddlTechSubTask.DataBind();
+                //DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
+                //ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                //ddlTechSubTask.DataTextField = "Title";
+                //ddlTechSubTask.DataValueField = "TaskId";
+                //ddlTechSubTask.DataBind();
+                FillSubTaskDropDown(Convert.ToInt64(ddlTechTask.SelectedValue), ddlTechSubTask);
             }
             else
             {
@@ -1203,8 +1212,7 @@ namespace JG_Prospect
                 ddlInterviewTime.DataBind();
                 ddlInsteviewtime.SelectedValue = DataBinder.Eval(e.Row.DataItem, "InterviewTime").ToString();
 
-                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask);
-
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "DesignationID")));
             }
         }
 
@@ -1215,13 +1223,17 @@ namespace JG_Prospect
             DropDownList ddlTechSubTask = objGridRow.FindControl("ddlTechSubTask") as DropDownList;
             if (ddlTechTask != null && ddlTechSubTask != null)
             {
+                ddlTechSubTask.ClearSelection();
+                ddlTechSubTask.Items.Clear();
+
                 if (ddlTechTask.SelectedIndex > 0)
                 {
-                    DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC","");
-                    ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
-                    ddlTechSubTask.DataTextField = "Title";
-                    ddlTechSubTask.DataValueField = "TaskId";
-                    ddlTechSubTask.DataBind();
+                    //DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(ddlTechTask.SelectedValue), CommonFunction.CheckAdminAndItLeadMode(), "Title ASC", "", null, null);
+                    //ddlTechSubTask.DataSource = dsSubTasks.Tables[0];
+                    //ddlTechSubTask.DataTextField = "Title";
+                    //ddlTechSubTask.DataValueField = "TaskId";
+                    //ddlTechSubTask.DataBind();
+                    FillSubTaskDropDown(Convert.ToInt64(ddlTechTask.SelectedValue), ddlTechSubTask);
                 }
                 else
                 {
@@ -2083,8 +2095,38 @@ namespace JG_Prospect
             {
                 var rows = dtUsers.AsEnumerable();
 
+                //get all users comma seperated ids with Active status
+                String ActivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group1") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in ActivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+                }
+
                 //get all users comma seperated ids with interviewdate status
-                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
+                String InterviewdateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InterviewdateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:blue;");
+                    }
+                }
+
+                //get all users comma seperated ids with deactive status
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -2098,35 +2140,35 @@ namespace JG_Prospect
                     }
                 }
 
-                //get all users comma seperated ids with interviewdate status
-                String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
+                ////get all users comma seperated ids with interviewdate status
+                //String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
 
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
+                //// for each userid find it into user dropdown list and apply red color to it.
+                //foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                //{
+                //    ListItem item;
 
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:green;");
-                    }
-                }
+                //    if (ddlUsers != null)
+                //    {
+                //        item = ddlUsers.Items.FindByValue(user);
+                //        item.Attributes.Add("style", "color:green;");
+                //    }
+                //}
 
-                //get all users comma seperated ids with interviewdate status
-                String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
+                ////get all users comma seperated ids with interviewdate status
+                //String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
 
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
+                //// for each userid find it into user dropdown list and apply red color to it.
+                //foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                //{
+                //    ListItem item;
 
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:red;");
-                    }
-                }
+                //    if (ddlUsers != null)
+                //    {
+                //        item = ddlUsers.Items.FindByValue(user);
+                //        item.Attributes.Add("style", "color:red;");
+                //    }
+                //}
             }
         }
 
@@ -3268,11 +3310,24 @@ namespace JG_Prospect
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
-        private void FillTechTaskDropDown(DropDownList ddlTechTask, DropDownList ddlTechSubTask)
+        private void FillTechTaskDropDown(DropDownList ddlTechTask, DropDownList ddlTechSubTask, int intDesignationId)
         {
+            ddlTechTask.ClearSelection();
+            ddlTechTask.Items.Clear();
+
+            ddlTechSubTask.ClearSelection();
+            ddlTechSubTask.Items.Clear();
+
             DataSet dsTechTask;
 
-            dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+            if (intDesignationId == 0)
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+            }
+            else
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(intDesignationId);
+            }
 
             if (dsTechTask != null & dsTechTask.Tables.Count > 0)
             {
@@ -3293,6 +3348,60 @@ namespace JG_Prospect
 
             ddlTechSubTask.Items.Insert(0, new ListItem("--select--", "0"));
             ddlTechSubTask.SelectedValue = "0";
+        }
+
+        private void FillSubTaskDropDown(long intTaskId, DropDownList ddlTechSubTask)
+        {
+            DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetTaskHierarchy(intTaskId, CommonFunction.CheckAdminAndItLeadMode());
+
+            DataTable dtLevel1SubTasks = null;
+            DataTable dtLevel2SubTasks = null;
+            DataTable dtLevel3SubTasks = null;
+
+            if (dsSubTasks != null && dsSubTasks.Tables.Count > 0 && dsSubTasks.Tables[0].Rows.Count > 0)
+            {
+                DataView dvSubTasks = dsSubTasks.Tables[0].DefaultView;
+
+                dvSubTasks.RowFilter = string.Format("TaskId <> {0} AND TaskLevel = 1", intTaskId);
+                dtLevel1SubTasks = dvSubTasks.ToTable();
+
+                foreach (DataRow drSubTask1 in dtLevel1SubTasks.Rows)
+                {
+                    string strTaskId = Convert.ToString(drSubTask1["TaskId"]);
+                    string strTitle = Convert.ToString(drSubTask1["Title"]);
+
+                    ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+
+                    dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 2", strTaskId);
+                    dtLevel2SubTasks = dvSubTasks.ToTable();
+
+                    foreach (DataRow drSubTask2 in dtLevel2SubTasks.Rows)
+                    {
+                        strTaskId = Convert.ToString(drSubTask2["TaskId"]);
+                        strTitle = "|--" + Convert.ToString(drSubTask2["Title"]);
+
+                        ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+
+                        dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 3", strTaskId);
+                        dtLevel3SubTasks = dvSubTasks.ToTable();
+
+                        foreach (DataRow drSubTask3 in dtLevel3SubTasks.Rows)
+                        {
+                            strTaskId = Convert.ToString(drSubTask3["TaskId"]);
+                            strTitle = "|----" + Convert.ToString(drSubTask3["Title"]);
+
+                            ddlTechSubTask.Items.Add(new ListItem(strTitle, strTaskId));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ddlTechSubTask.DataSource = null;
+                ddlTechSubTask.DataTextField = "Title";
+                ddlTechSubTask.DataValueField = "TaskId";
+                ddlTechSubTask.DataBind();
+            }
         }
 
         //private void BindGrid()
