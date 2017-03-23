@@ -154,6 +154,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
         public int vFirstLevelId = 0;
+        public bool isPaging = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -194,8 +195,10 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
-            SetSubTaskDetails();
+            isPaging = true;
+           
             gvSubTasks.PageIndex = e.NewPageIndex;
+            SetSubTaskDetails();
             gvSubTasks.DataBind();
         }
         
@@ -306,25 +309,19 @@ namespace JG_Prospect.Sr_App.Controls
                 //---------- Start DP ----------
                 Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
                 GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
+                
                 DataSet resultTask = new DataSet();
-                DataTable dtTask = new DataTable();
-                dtTask =GetTasksHeirarchy(Convert.ToInt32(lblTaskId.Text));
-                resultTask.Tables.Add(dtTask);
-                grdTaskLevels.DataSource = resultTask;
-                grdTaskLevels.DataBind();
-
                 try
                 {
-                //    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                //    {
-                //        DbCommand command = database.GetStoredProcCommand("usp_GetSubTasksLevel23");
-                //        command.CommandType = CommandType.StoredProcedure;
-                //        database.AddInParameter(command, "@taskId", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
-                //        resultTask = database.ExecuteDataSet(command);
-                //    }
-
-                //    grdTaskLevels.DataSource = resultTask;
-                //    grdTaskLevels.DataBind();
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    {
+                        DbCommand command = database.GetStoredProcCommand("GetParentChildTasks");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskid", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
+                        resultTask = database.ExecuteDataSet(command);
+                    }
+                    grdTaskLevels.DataSource = resultTask;
+                    grdTaskLevels.DataBind();
                 }
                 catch (Exception ex)
                 {
@@ -464,10 +461,22 @@ namespace JG_Prospect.Sr_App.Controls
                                 if (k == 0)
                                 {
                                     strfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if(!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    strfile = strfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
                                 }
                                 else
                                 {
-                                    strfile = strfile + "," + dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    string vstrfile = "";
+                                    vstrfile = dsTaskUserFiles.Tables[0].Rows[k]["attachment"].ToString();
+                                    if (!string.IsNullOrEmpty(dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString()))
+                                    {
+                                        vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Firstname"].ToString();
+                                    }
+                                    vstrfile = vstrfile + "@" + dsTaskUserFiles.Tables[0].Rows[k]["UpdatedOn"].ToString() + "@" + dsTaskUserFiles.Tables[0].Rows[k]["Id"].ToString();
+                                    strfile = strfile + "," + vstrfile;
                                 }
                             }
                             if (strfile != "")
@@ -600,9 +609,6 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 e.Row.CssClass = strRowCssClass;
-
-
-
             }
 
         }
@@ -732,115 +738,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
         //-------- Start DP --------
-
-        private DataTable GetTasksHeirarchy(int vParentId)
-        {
-            DataTable dt11 = new DataTable();
-
-            try
-            {
-                
-                DataColumn[] cls = {
-	                        new DataColumn("TaskId"),
-	                        new DataColumn("ParentTaskId"),
-	                        new DataColumn("InstallId"),
-                            new DataColumn("MainParentId"),
-                            new DataColumn("Description"),
-                            new DataColumn("Title"),
-                            new DataColumn("URL"),
-                            new DataColumn("TaskLevel")
-                        };
-                dt11.Columns.AddRange(cls);
-
-                DataRow dr = dt11.NewRow();
-                // ========= Level 1==============
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DataSet result1 = new DataSet();
-                    DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=1 and TaskId= " + vParentId + " ");
-                    command1.CommandType = CommandType.Text;
-                    result1 = database.ExecuteDataSet(command1);
-                    if (result1.Tables[0].Rows.Count > 0)
-                    {
-                        dr = dt11.NewRow();
-                        dr["TaskId"] = result1.Tables[0].Rows[0]["TaskId"].ToString();
-                        dr["ParentTaskId"] = result1.Tables[0].Rows[0]["ParentTaskId"].ToString();
-                        dr["InstallId"] = result1.Tables[0].Rows[0]["InstallId"].ToString();
-                        dr["MainParentId"] = result1.Tables[0].Rows[0]["MainParentId"].ToString();
-                        dr["Description"] = result1.Tables[0].Rows[0]["Description"].ToString();
-                        dr["Title"] = result1.Tables[0].Rows[0]["Title"].ToString();
-                        dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                        dr["TaskLevel"] = result1.Tables[0].Rows[0]["TaskLevel"].ToString();
-                        dt11.Rows.Add(dr);
-                    }
-                    command1.Dispose();
-                    result1.Dispose();
-
-                    // ========= Level 2 ==============
-
-                    DataSet result = new DataSet();
-                    DbCommand command = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and ParentTaskId= " + vParentId + " ");
-                    command.CommandType = CommandType.Text;
-                    result = database.ExecuteDataSet(command);
-                    if (result.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < result.Tables[0].Rows.Count; i++)
-                        {
-                            dr = dt11.NewRow();
-                            dr["TaskId"] = result.Tables[0].Rows[i]["TaskId"].ToString();
-                            dr["ParentTaskId"] = result.Tables[0].Rows[i]["ParentTaskId"].ToString();
-                            dr["InstallId"] = result.Tables[0].Rows[i]["InstallId"].ToString();
-                            dr["MainParentId"] = result.Tables[0].Rows[i]["MainParentId"].ToString();
-                            dr["Description"] = result.Tables[0].Rows[i]["Description"].ToString();
-                            dr["Title"] = result.Tables[0].Rows[i]["Title"].ToString();
-                            dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                            dr["TaskLevel"] = result.Tables[0].Rows[i]["TaskLevel"].ToString();
-
-                            dt11.Rows.Add(dr);
-                            // GetTasksHeirarchy(Convert.ToInt32(result.Tables[0].Rows[0]["TaskId"].ToString()));
-
-                            // ========= Level 3 ==============
-                            DataSet result3 = new DataSet();
-                            DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and ParentTaskId= " + Convert.ToInt32(result.Tables[0].Rows[i]["TaskId"].ToString()) + " ");
-                            command3.CommandType = CommandType.Text;
-                            result3 = database.ExecuteDataSet(command3);
-                            if (result3.Tables[0].Rows.Count > 0)
-                            {
-                                for (int j = 0; j < result3.Tables[0].Rows.Count; j++)
-                                {
-                                    dr = dt11.NewRow();
-                                    dr["TaskId"] = result3.Tables[0].Rows[j]["TaskId"].ToString();
-                                    dr["ParentTaskId"] = result3.Tables[0].Rows[j]["ParentTaskId"].ToString();
-                                    dr["InstallId"] = result3.Tables[0].Rows[j]["InstallId"].ToString();
-                                    dr["MainParentId"] = result3.Tables[0].Rows[j]["MainParentId"].ToString();
-                                    dr["Description"] = result3.Tables[0].Rows[j]["Description"].ToString();
-                                    dr["Title"] = result3.Tables[0].Rows[j]["Title"].ToString();
-                                    dr["URL"] = result1.Tables[0].Rows[0]["URL"].ToString();
-                                    dr["TaskLevel"] = result3.Tables[0].Rows[j]["TaskLevel"].ToString();
-
-                                    dt11.Rows.Add(dr);
-                                }
-                            }
-                            result3.Dispose();
-                        }
-                    }
-
-                    result.Dispose();
-                }
-            }
-
-            catch (Exception ex)
-            {
-                // return 0;
-                //LogManager.Instance.WriteToFlatFile(ex);
-            }
-
-
-            return dt11;
-
-        }
-
-
+        
         private string[] getSUBSubtaskSequencing(string sequence)
         {
             String[] ReturnSequence = new String[2];
@@ -1400,7 +1298,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
             else if (e.CommandName == "delete-attachment")
             {
@@ -1424,7 +1322,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Literal ltlUpdateTime = (Literal)e.Item.FindControl("ltlUpdateTime");
                 Literal ltlCreatedUser = (Literal)e.Item.FindControl("ltlCreatedUser");
 
-                lbtnDelete.CommandArgument = files[0] + "|" + files[1];
+                lbtnDelete.CommandArgument = files[4] + "|" + files[1];
 
                 if (files[1].Length > 13)// sort name with ....
                 {
@@ -1458,7 +1356,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (files.Length > 3)// if there are attachements available.
                 {
-                    ltlCreatedUser.Text = files[4]; // created user name
+                    ltlCreatedUser.Text = files[2]; // created user name
                     ltlUpdateTime.Text = string.Concat(
                                                         "<span>",
                                                         string.Format(
@@ -2081,11 +1979,11 @@ namespace JG_Prospect.Sr_App.Controls
             return strPlaceholder;
         }
 
-        private DataTable GetSubTasks()
+        private DataSet GetSubTasks(int vHSTid)
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression,txtSearch.Text).Tables[0];
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression, txtSearch.Text, gvSubTasks.PageIndex, gvSubTasks.PageSize, vHSTid);
         }
 
         protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -2150,98 +2048,79 @@ namespace JG_Prospect.Sr_App.Controls
 
         public void SetSubTaskDetails()
         {
-            DataTable dtSubTaskDetails = GetSubTasks();
-
-            if (dtSubTaskDetails.Rows.Count > 0)
+            int vHSTid = 0;
+            if (!string.IsNullOrEmpty(Request.QueryString["hstid"]) && isPaging == false)
             {
-                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
-                {
-                    int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
+                vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
 
+                DataSet resultTask = new DataSet();
+                try
+                {
                     SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
-                        DataSet result1 = new DataSet();
-                        DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where  ParentTaskId is null and TaskLevel=1 and TaskId= " + vHSTid + " ");
-                        command1.CommandType = CommandType.Text;
-                        result1 = database.ExecuteDataSet(command1);
-                        if (result1.Tables[0].Rows.Count > 0)
+                        DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
+                        resultTask = database.ExecuteDataSet(command);
+
+                        if (resultTask.Tables[0].Rows.Count > 0)
                         {
-                            vHSTid = Convert.ToInt32( result1.Tables[0].Rows[0]["TaskId"].ToString());
+                            int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out  vHSTid);
                         }
-                        else
-                        {
-                            DataSet result2 = new DataSet();
-                            DbCommand command2 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vHSTid + " ");
-                            command2.CommandType = CommandType.Text;
-                            result2 = database.ExecuteDataSet(command2);
-                            if (result2.Tables[0].Rows.Count > 0)
-                            {
-                                vHSTid = Convert.ToInt32(result2.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                            }
-                            else
-                            {
-                                DataSet result3 = new DataSet();
-                                DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and TaskId= " + vHSTid + " ");
-                                command3.CommandType = CommandType.Text;
-                                result3 = database.ExecuteDataSet(command3);
-                                if (result3.Tables[0].Rows.Count > 0)
-                                {
-                                    int vparentid = Convert.ToInt32(result3.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                                    DataSet result4 = new DataSet();
-                                    DbCommand command4 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vparentid + " ");
-                                    command4.CommandType = CommandType.Text;
-                                    result4 = database.ExecuteDataSet(command4);
-                                    if (result4.Tables[0].Rows.Count > 0)
-                                    {
-                                        vHSTid = Convert.ToInt32(result4.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                                    }
-                                    command4.Dispose();
-                                    result4.Dispose();
-                                }
-                                command3.Dispose();
-                                result3.Dispose();
-                            }
-                            command2.Dispose();
-                            result2.Dispose();
-                        }
-                        command1.Dispose();
-                        result1.Dispose();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+
+                //var selectedIndexEle = dtSubTaskDetails.AsEnumerable()
+                //.Select((Row, Index) => new { Row, Index })
+                //.FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid);
+
+                //if (selectedIndexEle != null)
+                //{
+                //    int selectedIndex = selectedIndexEle.Index;
+                //    int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
+                //    gvSubTasks.PageIndex = pageIndexofSelectedRow;
+                //    gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                //}
+            }
 
 
-                        
+            DataSet dsSubTaskDetails = GetSubTasks(vHSTid);
+            if (dsSubTaskDetails != null)
+            {
+                if (dsSubTaskDetails.Tables[0].Rows.Count > 0)
+                {
+                    DataTable dtSubTaskDetails = dsSubTaskDetails.Tables[0];
+
+                    if (dtSubTaskDetails.Rows.Count > 0)
+                    {
+                        gvSubTasks.DataSource = dtSubTaskDetails;
+                        gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
+                        gvSubTasks.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["pagenumber"]); ;
+                        gvSubTasks.DataBind();
+                        upSubTasks.Update();
                     }
 
 
-
-
-                    int selectedIndex = dtSubTaskDetails.AsEnumerable()
-                    .Select((Row, Index) => new { Row, Index })
-                    .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid).Index;
-                    int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
-                    gvSubTasks.PageIndex = pageIndexofSelectedRow;
-                    gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                    if (dtSubTaskDetails.Rows.Count > 0)
+                    {
+                        DataView dv = dtSubTaskDetails.AsDataView();
+                        dv.Sort = "TaskId ASC";
+                        this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+                    }
+                    else
+                    {
+                        this.LastSubTaskSequence = String.Empty;
+                    }
                 }
             }
-            gvSubTasks.DataSource = dtSubTaskDetails;
-            gvSubTasks.DataBind();
-            upSubTasks.Update();
-
-            if (dtSubTaskDetails.Rows.Count > 0)
-            {
-                DataView dv = dtSubTaskDetails.AsDataView();
-                dv.Sort = "TaskId ASC";
-                this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-            }
-            else
-            {
-                this.LastSubTaskSequence = String.Empty;
-            }
-
             //rptImageGallery.DataSource = this.lstSubTaskFiles;
             //rptImageGallery.DataBind();
             //upImageGallery.Update();
         }
-
         private void FillInitialData()
         {
             FillDropDrowns();

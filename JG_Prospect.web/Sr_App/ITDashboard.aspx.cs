@@ -55,12 +55,32 @@ namespace JG_Prospect.Sr_App
                     tblInProgress.Visible = true;
                     tblClosedTask.Visible = true;
                     lblalertpopup.Visible = true;
+
+                    txtSearchFrozen.Visible = true;
+                    btnSearchFrozen.Visible = true;
+
+                    txtSearchClosed.Visible = true;
+                    btnSearchClosed.Visible = true;
+
+                    txtSearchInPro.Visible = true;
+                    btnSearchInPro.Visible = true;
+
                 }
                 else
                 {
                     tblInProgress.Visible = false;
                     tblClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
+
+                    txtSearchFrozen.Visible = false;
+                    btnSearchFrozen.Visible = false;
+
+                    txtSearchClosed.Visible = false;
+                    btnSearchClosed.Visible = false;
+
+                    txtSearchInPro.Visible = false;
+                    btnSearchInPro.Visible = false;
+
                 }
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
                 LoadFilterUsersByDesgination("", drpUsersClosed);
@@ -83,14 +103,19 @@ namespace JG_Prospect.Sr_App
                     SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
                         DataSet result = new DataSet();
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
+                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        //{
+                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                        //    strnew = strnew + " and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        //}
+                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        //{
+                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                        //    strnew = strnew + " and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        //}
+
+                        strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+
                         DbCommand command = database.GetSqlStringCommand(strnew);
                         command.CommandType = CommandType.Text;
                         result = database.ExecuteDataSet(command);
@@ -120,16 +145,19 @@ namespace JG_Prospect.Sr_App
                     {
                         DataSet result = new DataSet();
 
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
+                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                        //{
+                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                        //    strfrozen = strfrozen + " and  (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        //}
+                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                        //{
+                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                        //    strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        //}
+
+                        strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+
                         DbCommand command = database.GetSqlStringCommand(strfrozen);
                         command.CommandType = CommandType.Text;
                         result = database.ExecuteDataSet(command);
@@ -370,23 +398,50 @@ namespace JG_Prospect.Sr_App
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DataSet result = new DataSet();
+                    string vStartDate = "";
+                    string vEndDate = "";
 
                     if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
                     {
-                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                        vStartDate = firstOfThisMonth.ToString("dd-MMM-yyy");
+                        vEndDate = MiddleDate.ToString("dd-MMM-yyy");
                     }
                     else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
                     {
-                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                        vStartDate = MiddleDate.ToString("dd-MMM-yyy");
+                        vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
+                    }
+                    DbCommand command = database.GetStoredProcCommand("GetNonFrozenTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
+                    database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdNewTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdNewTask.PageSize);
+                  
+                    result = database.ExecuteDataSet(command);
+                    /*
+                     if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                    {
+                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
+                        strnew = strnew + " and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                    }
+                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                    {
+                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
+                        strnew = strnew + " and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
                     }
                     DbCommand command = database.GetSqlStringCommand(strnew);
                     command.CommandType = CommandType.Text;
                     result = database.ExecuteDataSet(command);
+                     
+                     */
+                      
                     // if loggedin user is not manager then show tasks assigned to loggedin user only 
 
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdNewTask.DataSource = result;
+                        grdNewTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdNewTask.DataBind();
                     }
                     else
@@ -419,18 +474,19 @@ namespace JG_Prospect.Sr_App
                 {
                     DataSet result = new DataSet();
 
-                    if (txtSearchFrozen.Text != "")
+                   /* if (txtSearchFrozen.Text != "")
                     {
                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
                         {
                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b,tbltaskassignedusers as c,tblInstallUsers as t ";
                             strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
                             strfrozen = strfrozen + " AND  ( ";
-                            strfrozen = strfrozen + " t.FristName LIKE '%"+txtSearchFrozen.Text+"%'  or ";
+                            strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
                             strfrozen = strfrozen + " ) ";
-                            strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                            strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
+                            strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
                         }
                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
                         {
@@ -441,7 +497,8 @@ namespace JG_Prospect.Sr_App
                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
                             strfrozen = strfrozen + " ) ";
-                            strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                            strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
+                            strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
                         }
                     }
                     else
@@ -449,22 +506,58 @@ namespace JG_Prospect.Sr_App
                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
                         {
                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
+                            strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
                         }
                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
                         {
                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
+                            strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
                         }
                     }
                     DbCommand command = database.GetSqlStringCommand(strfrozen);
                     command.CommandType = CommandType.Text;
                     result = database.ExecuteDataSet(command);
                     // if loggedin user is not manager then show tasks assigned to loggedin user only 
+                    */
 
+                    //DataSet resultTask = new DataSet();
+
+
+                    string vSearch = "";
+                    string vStartDate = "";
+                    string vEndDate = "";
+
+                    if (txtSearchFrozen.Text != "")
+                    {
+                        vSearch = txtSearchFrozen.Text;
+                    }
+
+                    if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                    {
+                        vStartDate = firstOfThisMonth.ToString("dd-MMM-yyy");
+                        vEndDate = MiddleDate.ToString("dd-MMM-yyy");
+                    }
+                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                    {
+                        vStartDate = MiddleDate.ToString("dd-MMM-yyy");
+                        vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
+                    }
+
+                    DbCommand command = database.GetStoredProcCommand("GetFrozenTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
+                    database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
+
+                    result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdFrozenTask.DataSource = result;
+                        grdFrozenTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdFrozenTask.DataBind();
                     }
                     else
@@ -512,10 +605,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch);
+            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
             if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
+                grdTaskPending.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskPending.DataBind();
             }
             else
@@ -556,10 +650,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID,strSearch);
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID, strSearch, grdTaskClosed.PageIndex, grdTaskClosed.PageSize);
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
+                grdTaskClosed.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskClosed.DataBind();
             }
             else
@@ -573,27 +668,27 @@ namespace JG_Prospect.Sr_App
 
         protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
         {
-            BindTaskInProgressGrid();
             grdTaskPending.PageIndex = e.NewPageIndex;
+            BindTaskInProgressGrid();
             grdTaskPending.DataBind();
         }
         protected void OnPagingTaskClosed(object sender, GridViewPageEventArgs e)
         {
-            BindTaskClosedGrid();
             grdTaskClosed.PageIndex = e.NewPageIndex;
+            BindTaskClosedGrid();
             grdTaskClosed.DataBind();
         }
         protected void OnPaginggrdFrozenTask(object sender, GridViewPageEventArgs e)
         {
-            BindFrozenTasks();
             grdFrozenTask.PageIndex = e.NewPageIndex;
+            BindFrozenTasks();
             grdFrozenTask.DataBind();
         }
 
         protected void OnPaginggrdNewTask(object sender, GridViewPageEventArgs e)
         {
-            BindNewTasks();
             grdNewTask.PageIndex = e.NewPageIndex;
+            BindNewTasks();
             grdNewTask.DataBind();
         }
 

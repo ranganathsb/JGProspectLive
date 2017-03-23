@@ -563,7 +563,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression,string vsearch)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
         {
             try
             {
@@ -588,6 +588,16 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
+
+                    database.AddInParameter(command, "@hstid", DbType.Int32, vHSTid);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -1488,7 +1498,7 @@ namespace JG_Prospect.DAL
 
         //------------ Start DP ------------
 
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex = 0, int pagesize = 0)
         {
             try
             {
@@ -1500,6 +1510,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }
@@ -1510,7 +1522,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch,int pageindex=0,int pagesize =0)
         {
             try
             {
@@ -1522,6 +1534,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }

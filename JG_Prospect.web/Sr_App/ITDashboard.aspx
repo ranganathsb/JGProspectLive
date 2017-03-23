@@ -314,7 +314,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdFrozenTask" runat="server"  OnPreRender ="grdFrozenTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                           HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                            CssClass="table dashboard"
+                            CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdFrozenTask"   OnRowDataBound ="grdFrozenTask_RowDataBound"  PageSize = "20" >
@@ -335,7 +335,7 @@ border-top-right-radius: 4px;
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  
@@ -408,7 +408,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdNewTask" runat="server"  OnPreRender ="grdNewTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                          HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                           CssClass="table dashboard"
+                           CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdNewTask"   OnRowDataBound ="grdNewTask_RowDataBound"  PageSize = "20" >
@@ -429,7 +429,7 @@ border-top-right-radius: 4px;
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="10%" ItemStyle-Width = "10%"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
@@ -522,7 +522,7 @@ border-top-right-radius: 4px;
                 <asp:GridView ID="grdTaskPending" runat="server"  OnPreRender ="grdTaskPending_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                         HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                          CssClass="table dashboard"
+                          CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Pending Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPagingTaskInProgress"   OnRowDataBound ="grdTaskPending_RowDataBound"  PageSize = "20" >
@@ -542,7 +542,7 @@ border-top-right-radius: 4px;
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  HeaderStyle-Width="300px" ItemStyle-Width = "300px"  HeaderText = "Title">
@@ -633,7 +633,7 @@ border-top-right-radius: 4px;
                     ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No Closed Tasks Found !!" CssClass="table dashboard" Width="100%" 
-                    CellSpacing="0" CellPadding="0" 
+                    CellSpacing="0" CellPadding="0"  AllowCustomPaging="true"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Both" OnPageIndexChanging = "OnPagingTaskClosed" 
                     OnRowDataBound ="grdTaskClosed_RowDataBound" PagerStyle-HorizontalAlign="Right"  PageSize = "20" >
                     <HeaderStyle CssClass="trHeader " />
@@ -653,7 +653,7 @@ border-top-right-radius: 4px;
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" 
                      HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                     <ItemTemplate>
-                        <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>'></asp:LinkButton>
+                        <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify" 
@@ -732,6 +732,13 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             SetFrozenTaskAutoSuggestionUI();
 
         });
+
+        $(".context-menu").bind("contextmenu", function () {
+            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            copyToClipboard(urltoCopy);
+            return false;
+        });
+
 
 
         function SetFrozenTaskAutoSuggestion() {
