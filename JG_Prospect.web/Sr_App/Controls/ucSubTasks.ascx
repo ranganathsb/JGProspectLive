@@ -481,7 +481,7 @@
                                                 <asp:HiddenField ID="hdTaskLvl" runat="server" />
                                                 <asp:HiddenField ID="hdTaskId" runat="server" />
                                                 <div class="btn_sec">
-                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  
+                                                    <asp:Button ID="btnAddMoreSubtask"  runat="server"  OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                                         TabIndex="5" Text="Submit"   CssClass="ui-button" 
                                                         OnClick="btnAddMoreSubtask_Click"     ValidationGroup="SubmitSubTask" />
                                                 </div>
@@ -771,7 +771,7 @@
         console.log('begin req.');
         DestroyGallery();
         DestroyDropzones();
-        //DestroyCKEditors();
+        DestroyCKEditors();
     });
 
 
@@ -966,11 +966,7 @@
             return false;
         });
 
-        if ($(".yellowthickborder").length > 0) {
-            $('html, body').animate({
-                scrollTop: $(".yellowthickborder").offset().top
-            }, 2000);
-        }
+        ScrollTo($(".yellowthickborder"));
 
         $(".yellowthickborder").bind("click", function () {
             $(this).removeClass("yellowthickborder");
@@ -1022,11 +1018,7 @@
 
         $(divid).slideDown('slow');
 
-        $('html, body').animate({
-            scrollTop: $(divid).offset().top - 100
-        }, 2000);
-
-
+        ScrollTo($(divid));
     }
     function hideSubTaskEditView(divid, rowindex) {
 
@@ -1038,11 +1030,7 @@
 
         //alert(row);
 
-        if (row.length) {
-            $('html, body').animate({
-                scrollTop: row.offset().top - 100
-            }, 2000);
-        }
+        ScrollTo(row);
     }
     
     function GridDropZone() {

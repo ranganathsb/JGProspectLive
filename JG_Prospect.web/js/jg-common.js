@@ -397,3 +397,15 @@ function IsNumeric(e, blWholeNumber) {
     }
     return false;
 }
+
+function ScrollTo(target) {
+    if (target.length > 0) {
+        var offset = target.offset();
+        if (typeof (offset) != 'undefined' && offset != null) {
+            $('html, body').animate({
+                scrollTop: offset.top
+            }, 1000);
+        }
+    }
+}
+

@@ -26,14 +26,8 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 namespace JG_Prospect.Sr_App.Controls
 {
-
-
-     
-
     public partial class ucSubTasks : System.Web.UI.UserControl
     {
-       
-
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
@@ -196,12 +190,11 @@ namespace JG_Prospect.Sr_App.Controls
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
             isPaging = true;
-           
-            gvSubTasks.PageIndex = e.NewPageIndex;
             SetSubTaskDetails();
+            gvSubTasks.PageIndex = e.NewPageIndex;
             gvSubTasks.DataBind();
         }
-        
+
         protected void gvSubTasksLevels_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -1869,7 +1862,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             string strScript = string.Format(
-                                                "$('#{0}').slideDown('slow');",
+                                                "$('#{0}').slideDown('slow'); ScrollTo($('#{0}'));",
                                                 divSubTask.ClientID
                                             );
 
