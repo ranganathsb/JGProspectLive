@@ -2095,38 +2095,8 @@ namespace JG_Prospect
             {
                 var rows = dtUsers.AsEnumerable();
 
-                //get all users comma seperated ids with Active status
-                String ActivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group1") select r.Field<Int32>("Id").ToString()));
-
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in ActivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
-
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:red;");
-                    }
-                }
-
                 //get all users comma seperated ids with interviewdate status
-                String InterviewdateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
-
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in InterviewdateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
-
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:blue;");
-                    }
-                }
-
-                //get all users comma seperated ids with deactive status
-                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -2140,35 +2110,35 @@ namespace JG_Prospect
                     }
                 }
 
-                ////get all users comma seperated ids with interviewdate status
-                //String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with interviewdate status
+                String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
 
-                //// for each userid find it into user dropdown list and apply red color to it.
-                //foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                //{
-                //    ListItem item;
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
 
-                //    if (ddlUsers != null)
-                //    {
-                //        item = ddlUsers.Items.FindByValue(user);
-                //        item.Attributes.Add("style", "color:green;");
-                //    }
-                //}
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:green;");
+                    }
+                }
 
-                ////get all users comma seperated ids with interviewdate status
-                //String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with interviewdate status
+                String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
 
-                //// for each userid find it into user dropdown list and apply red color to it.
-                //foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                //{
-                //    ListItem item;
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
 
-                //    if (ddlUsers != null)
-                //    {
-                //        item = ddlUsers.Items.FindByValue(user);
-                //        item.Attributes.Add("style", "color:red;");
-                //    }
-                //}
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+                }
             }
         }
 
