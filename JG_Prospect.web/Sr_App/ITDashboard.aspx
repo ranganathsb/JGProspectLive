@@ -278,7 +278,7 @@ border-top-right-radius: 4px;
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigFrozen" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpDesigFrozen_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesigFrozen" runat="server" style="width:150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigFrozen_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
@@ -292,7 +292,7 @@ border-top-right-radius: 4px;
                             <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchFrozen" runat="server" CssClass="textbox" placeholder="search users"  />
                                 <asp:Button ID="btnSearchFrozen" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchFrozen_Click" />
-                                <br />
+                                
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeFrozen" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeFrozen_SelectedIndexChanged">
@@ -487,11 +487,11 @@ border-top-right-radius: 4px;
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigInProgress" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesigInProgress" runat="server" style="width:150px;"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
-                                            <asp:DropDownList ID="drpUsersInProgress" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
+                                            <asp:DropDownList ID="drpUsersInProgress" style="width:150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -502,7 +502,7 @@ border-top-right-radius: 4px;
                             <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchInPro" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearchInPro" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchInPro_Click" />
-                                  <br />
+                                   
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeInpro" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeInpro_SelectedIndexChanged">
@@ -597,11 +597,11 @@ border-top-right-radius: 4px;
                                 </tr>
                                  <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesigClosed" runat="server" style="width:150px;"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
-                                         <asp:DropDownList ID="drpUsersClosed" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
+                                         <asp:DropDownList ID="drpUsersClosed" style="width:150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -611,7 +611,7 @@ border-top-right-radius: 4px;
                              <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchClosed" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearchClosed" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchClosed_Click" />
-                                   <br />
+                                    
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeClosed" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeClosed_SelectedIndexChanged">
