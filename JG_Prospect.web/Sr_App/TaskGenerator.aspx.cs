@@ -246,7 +246,7 @@ namespace JG_Prospect.Sr_App
 
             LoadUsersByDesgination();
 
-            //ddlAssignedUsers_SelectedIndexChanged(sender, e);
+            ddlAssignedUsers_SelectedIndexChanged(sender, e);
 
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
 
@@ -260,19 +260,19 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        //protected void ddlAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+        protected void ddlAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
 
-        //    foreach (ListItem item in ddlAssignedUsers.Items)
-        //    {
-        //        if (item.Selected)
-        //        {
-        //            ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
-        //            break;
-        //        }
-        //    }
-        //}
+            foreach (ListItem item in ddlAssignedUsers.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
 
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -326,26 +326,26 @@ namespace JG_Prospect.Sr_App
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
 
-        protected void dlAssignedUsers_ItemDataBound(object sender, DataListItemEventArgs e)
-        {
-            // TO Change color of User Name Text according to the User Status (Active ->  Red, Interview Date and Offer Made -> Blue color)
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                DataRowView drv = (DataRowView)(e.Item.DataItem);
+        //protected void dlAssignedUsers_ItemDataBound(object sender, DataListItemEventArgs e)
+        //{
+        //    // TO Change color of User Name Text according to the User Status (Active ->  Red, Interview Date and Offer Made -> Blue color)
+        //    if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+        //    {
+        //        DataRowView drv = (DataRowView)(e.Item.DataItem);
 
-                Label lblStatus = (Label)e.Item.FindControl("lblStatus");
-                CheckBox chkId = (CheckBox)e.Item.FindControl("chkId");
+        //        Label lblStatus = (Label)e.Item.FindControl("lblStatus");
+        //        CheckBox chkId = (CheckBox)e.Item.FindControl("chkId");
 
-                if (lblStatus.Text == "1")
-                {
-                    chkId.Attributes.Add("style", "color:red;");
-                }
-                else if (lblStatus.Text == "5" || lblStatus.Text == "6")
-                {
-                    chkId.Attributes.Add("style", "color:blue;");
-                }
-            }
-        }
+        //        if (lblStatus.Text == "1")
+        //        {
+        //            chkId.Attributes.Add("style", "color:red;");
+        //        }
+        //        else if (lblStatus.Text == "5" || lblStatus.Text == "6")
+        //        {
+        //            chkId.Attributes.Add("style", "color:blue;");
+        //        }
+        //    }
+        //}
 
         #region '--Task Acceptance--'
 
@@ -1029,15 +1029,15 @@ namespace JG_Prospect.Sr_App
 
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designations);
 
-            //ddlAssignedUsers.Items.Clear();
-            //ddlAssignedUsers.DataSource = dsUsers;
-            //ddlAssignedUsers.DataTextField = "FristName";
-            //ddlAssignedUsers.DataValueField = "Id";
-            //ddlAssignedUsers.DataBind();
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.DataSource = dsUsers;
+            ddlAssignedUsers.DataTextField = "FristName";
+            ddlAssignedUsers.DataValueField = "Id";
+            ddlAssignedUsers.DataBind();
 
             // Load Assigned Users to the Data List
-            dlAssignedUsers.DataSource = dsUsers;
-            dlAssignedUsers.DataBind();
+            //dlAssignedUsers.DataSource = dsUsers;
+            //dlAssignedUsers.DataBind();
 
             FillAcceptanceLog();
 
@@ -1053,97 +1053,98 @@ namespace JG_Prospect.Sr_App
             //                                                    ),
             //                                        true
             //                                  );
-            dlAssignedUsers.Attributes.Add("onmouseover", "javascript:ShowPopup(" + divAcceptanceLog.ClientID + ");");
-            dlAssignedUsers.Attributes.Add("onmouseout", "javascript:ClosePopup(" + divAcceptanceLog.ClientID + ");");
+            
+            //dlAssignedUsers.Attributes.Add("onmouseover", "javascript:ShowPopup(" + divAcceptanceLog.ClientID + ");");
+            //dlAssignedUsers.Attributes.Add("onmouseout", "javascript:ClosePopup(" + divAcceptanceLog.ClientID + ");");
 
-            //HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
+            HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
         }
 
-        //private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
-        //{
-        //    HyperLink lnkUserId = new HyperLink();
-        //    ListItem lstUserId = new ListItem();
+        private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
+        {
+            HyperLink lnkUserId = new HyperLink();
+            ListItem lstUserId = new ListItem();
 
-        //    if (dtUsers.Rows.Count > 0)
-        //    {
-        //        var rows = dtUsers.AsEnumerable();
+            if (dtUsers.Rows.Count > 0)
+            {
+                var rows = dtUsers.AsEnumerable();
 
-        //        //get all users comma seperated ids with Active status
-        //        String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "1") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with Active status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "1") select r.Field<Int32>("Id").ToString()));
 
-        //        // for each userid find it into user dropdown list and apply red color to it.
-        //        foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-        //        {
-        //            ListItem item;
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
 
-        //            if (ddlUsers != null)
-        //            {
-        //                item = ddlUsers.Items.FindByValue(user);
-        //            }
-        //            else
-        //            {
-        //                item = ddlFilterUsers.Items.FindByValue(user);
-        //            }
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
 
-        //            if (item != null)
-        //            {
-        //                item.Attributes.Add("style", "color:red;");
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:red;");
 
-        //                // To Create Link with UserId
-        //                //lnkUserId.Text = user + "1";
-        //                //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
-        //                //ddlUsers.Controls.Add(lnkUserId);
+                        // To Create Link with UserId
+                        //lnkUserId.Text = user + "1";
+                        //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
+                        //ddlUsers.Controls.Add(lnkUserId);
 
-        //                //lstUserId.Text = user;
-        //                //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
-        //                //ddlUsers.Items.Add(lstUserId);
+                        //lstUserId.Text = user;
+                        //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
+                        //ddlUsers.Items.Add(lstUserId);
 
-        //                //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
+                        //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
 
-        //                //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
-        //            }
-        //        }
+                        //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
+                    }
+                }
 
-        //        InterviewDateUsers = string.Empty;
+                InterviewDateUsers = string.Empty;
 
-        //        //get all users comma seperated ids with interviewdate and Offer Made status
-        //        InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "5" || r.Field<string>("Status") == "6") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with interviewdate and Offer Made status
+                InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "5" || r.Field<string>("Status") == "6") select r.Field<Int32>("Id").ToString()));
 
-        //        // for each userid find it into user dropdown list and apply blue color to it.
-        //        foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-        //        {
-        //            ListItem item;
+                // for each userid find it into user dropdown list and apply blue color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
 
-        //            if (ddlUsers != null)
-        //            {
-        //                item = ddlUsers.Items.FindByValue(user);
-        //            }
-        //            else
-        //            {
-        //                item = ddlFilterUsers.Items.FindByValue(user);
-        //            }
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
 
-        //            if (item != null)
-        //            {
-        //                item.Attributes.Add("style", "color:blue;");
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:blue;");
 
-        //                // To Create Link with UserId
-        //                //lnkUserId.Text = user + "1";
-        //                //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
-        //                //ddlUsers.Controls.Add(lnkUserId);
+                        // To Create Link with UserId
+                        //lnkUserId.Text = user + "1";
+                        //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
+                        //ddlUsers.Controls.Add(lnkUserId);
 
-        //                //lstUserId.Text = user;
-        //                //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
-        //                //ddlUsers.Items.Add(lstUserId);
+                        //lstUserId.Text = user;
+                        //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
+                        //ddlUsers.Items.Add(lstUserId);
 
-        //                //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
+                        //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
 
-        //                //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
+                        //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
 
-        //            }
-        //        }
-        //    }
-        //}
+                    }
+                }
+            }
+        }
 
         private string GetSelectedDesignationsString()
         {
@@ -1194,27 +1195,27 @@ namespace JG_Prospect.Sr_App
                         blResult = false;
                         strMessage = "Task must be assigned to one or more users, to change status to assigned.";
 
-                        // To Check List of User whether any user is selected or not
-                        foreach (DataListItem item in dlAssignedUsers.Items)
-                        {
-                            if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-                            {
-                                if (((CheckBox)item.FindControl("chkId")).Checked == true)
-                                {
-                                    blResult = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        //foreach (ListItem objItem in ddlAssignedUsers.Items)
+                        //// To Check List of User whether any user is selected or not
+                        //foreach (DataListItem item in dlAssignedUsers.Items)
                         //{
-                        //    if (objItem.Selected)
+                        //    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                         //    {
-                        //        blResult = true;
-                        //        break;
+                        //        if (((CheckBox)item.FindControl("chkId")).Checked == true)
+                        //        {
+                        //            blResult = true;
+                        //            break;
+                        //        }
                         //    }
                         //}
+
+                        foreach (ListItem objItem in ddlAssignedUsers.Items)
+                        {
+                            if (objItem.Selected)
+                            {
+                                blResult = true;
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -1352,22 +1353,32 @@ namespace JG_Prospect.Sr_App
             if (hdnTaskId.Value != "0")
             {
                 string strUsersIds = string.Empty;
-                Label lblId = new Label();
 
-                // to get all the Ids for selected checkboxes
-                foreach (DataListItem item in dlAssignedUsers.Items)
+                foreach (ListItem item in ddlAssignedUsers.Items)
                 {
-                    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                    if (item.Selected)
                     {
-                        if (((CheckBox)item.FindControl("chkId")).Checked == true)
-                        {
-                            strUsersIds = strUsersIds + (((Label)item.FindControl("lblId")).Text + ",");
-                        }
+                        strUsersIds = strUsersIds + (item.Value + ",");
                     }
                 }
 
                 // removes any extra comma "," from the end of the string.
                 strUsersIds = strUsersIds.TrimEnd(',');
+
+                // to get all the Ids for selected checkboxes
+                //foreach (DataListItem item in dlAssignedUsers.Items)
+                //{
+                //    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                //    {
+                //        if (((CheckBox)item.FindControl("chkId")).Checked == true)
+                //        {
+                //            strUsersIds = strUsersIds + (((Label)item.FindControl("lblId")).Text + ",");
+                //        }
+                //    }
+                //}
+
+                // removes any extra comma "," from the end of the string.
+                //strUsersIds = strUsersIds.TrimEnd(',');
 
                 // save (insert / delete) assigned users.
                 bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), strUsersIds);
@@ -1656,38 +1667,38 @@ namespace JG_Prospect.Sr_App
         private bool SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
         {
             string firstAssignedUser = string.Empty;
-            bool isAssigned = false;
+            //bool isAssigned = false;
 
-            // To Checked chekboxes for the already assigned users
-            foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
+            //// To Checked chekboxes for the already assigned users
+            //foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
+            //{
+            //    foreach (DataListItem item in dlAssignedUsers.Items)
+            //    {
+            //        if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+            //        {
+            //            if (((Label)item.FindControl("lblId")).Text == row["UserId"].ToString())
+            //            {
+            //                ((CheckBox)item.FindControl("chkId")).Checked = true;
+
+            //                dlAssignedUsers.SelectedIndex = item.ItemIndex;
+            //                isAssigned = true;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return isAssigned;
+
+            if (!string.IsNullOrEmpty(firstAssignedUser))
             {
-                foreach (DataListItem item in dlAssignedUsers.Items)
-                {
-                    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-                    {
-                        if (((Label)item.FindControl("lblId")).Text == row["UserId"].ToString())
-                        {
-                            ((CheckBox)item.FindControl("chkId")).Checked = true;
-
-                            dlAssignedUsers.SelectedIndex = item.ItemIndex;
-                            isAssigned = true;
-                        }
-                    }
-                }
+                ddlAssignedUsers.Texts.SelectBoxCaption = firstAssignedUser;
+                return true;
             }
-
-            return isAssigned;
-
-            //if (!string.IsNullOrEmpty(firstAssignedUser))
-            //{
-            //    ddlAssignedUsers.Texts.SelectBoxCaption = firstAssignedUser;
-            //    return true;
-            //}
-            //else
-            //{
-            //    ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
-            //    return false;
-            //}
+            else
+            {
+                ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+                return false;
+            }
         }
 
         private void SetTaskDesignationDetails(DataTable dtTaskDesignationDetails)
