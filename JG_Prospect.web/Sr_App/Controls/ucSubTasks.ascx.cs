@@ -1830,6 +1830,13 @@ namespace JG_Prospect.Sr_App.Controls
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
+
+                    // To Format Task link with Task Id and Task Name
+                    DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
+                    DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
+
+                    // To Format Parent Task LinkName and Link
+                    strBody = strBody.Replace("#TaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;

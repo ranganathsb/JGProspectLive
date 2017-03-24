@@ -833,7 +833,16 @@ namespace JG_Prospect.Sr_App
                 string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                 strBody = strBody.Replace("#Fname#", fullname);
+
+                // To Format Task lInk with Task Id and Task Name
+                DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
+                DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
+                
+                // To Format Parent Task LinkName and Link
+                strBody = strBody.Replace("#ParentTaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString()) ;
                 strBody = strBody.Replace("#ParentTaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                string strParentTaskId = TaskName["InstallId"].ToString();
 
                 string strSubTaskLink;
                 string strSubTaskList = string.Empty;
@@ -845,14 +854,19 @@ namespace JG_Prospect.Sr_App
                     {
                         if (subTaskId != "")
                         {
+                            TaskName = dtTaskDetail.Select("TaskId = " + subTaskId).First();
+
                             strSubTaskLink = string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), subTaskId);
-                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + strSubTaskLink + "</a><br/>";
+                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + "TaskID#:"+ strParentTaskId + "(" + TaskName["InstallId"].ToString() + ")-" + TaskName["Title"].ToString() + "</a><br/>";
                         }
                     }
                     strBody = strBody.Replace("#SubTaskLink#", strSubTaskList);
 
                     strBody = strBody.Replace("#QuickViewLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#QuickViewLinkName#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
                     strBody = strBody.Replace("#ViewMoreLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#ViewMoreLinkName#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -1487,6 +1501,13 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
+
+                    // To Format Task link with Task Id and Task Name
+                    DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(int.Parse(hdnTaskId.Value));
+                    DataRow TaskName = dtTaskDetail.Select("TaskId = " + hdnTaskId.Value).First();
+
+                    // To Format Parent Task LinkName and Link
+                    strBody = strBody.Replace("#TaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
