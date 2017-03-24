@@ -22,7 +22,7 @@ namespace JG_Prospect.DAL
         public static TaskGeneratorDAL Instance
         {
             get { return m_TaskGeneratorDAL; }
-            private set { ; }
+            private set {; }
         }
 
         private DataSet returndata;
@@ -577,8 +577,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
 
                     database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
-                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch );
-                    
+                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch);
+
                     database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
                     database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
                     database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
@@ -832,6 +832,31 @@ namespace JG_Prospect.DAL
         }
 
         /// <summary>
+        /// to GetInstallUserDetails by Id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public DataTable GetTaskDetailsForMail(int TaskId)
+        {
+            DataTable result = new DataTable();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetTaskDetailsForMail");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int16, TaskId);
+                    result = (database.ExecuteDataSet(command)).Tables[0];
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Load auto search suggestion as user types in search box for task generator.
         /// </summary>
         /// <param name="searchTerm"></param>
@@ -949,7 +974,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
-                    
+
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
@@ -1054,7 +1079,7 @@ namespace JG_Prospect.DAL
             }
 
         }
-       
+
         public bool UpdateTaskUiRequested(Int64 intTaskId, bool blUiRequesed)
         {
             try
@@ -1509,7 +1534,7 @@ namespace JG_Prospect.DAL
         #endregion
 
         #region TaskApprovals
-        
+
         public int InsertTaskApproval(TaskApproval objTaskApproval)
         {
             try
@@ -1543,7 +1568,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UpdateTaskApproval");
 
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     database.AddInParameter(command, "@Id", DbType.Int64, objTaskApproval.Id);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
                     database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);

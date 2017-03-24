@@ -114,6 +114,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetInstallUserDetails(Id);
         }
 
+        public DataTable GetTaskDetailsForMail(Int32 Id)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskDetailsForMail(Id);
+        }
+
         public DataSet GetTaskSearchAutoSuggestion(String searchTerm)
         {
             return TaskGeneratorDAL.Instance.GetTaskSearchAutoSuggestion(searchTerm);
