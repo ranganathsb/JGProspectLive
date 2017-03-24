@@ -89,13 +89,13 @@
                             <td>Assigned:
                                 <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                     <ContentTemplate>
-                                        <%--<asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
+                                        <asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
                                             AutoPostBack="true" OnSelectedIndexChanged="ddlAssignedUsers_SelectedIndexChanged" style="top: 0px; left: 0px">
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                             <Texts SelectBoxCaption="--Open--" />
-                                        </asp:DropDownCheckBoxes>--%>
+                                        </asp:DropDownCheckBoxes>
 
-                                        <asp:Panel runat="server" ID="panel1" ScrollBars="Auto" Height="70px" Width="200px" BorderStyle="Solid" BorderWidth="1px">
+                                        <%--<asp:Panel runat="server" ID="panel1" ScrollBars="Auto" Height="70px" Width="200px" BorderStyle="Solid" BorderWidth="1px">
                                             <asp:DataList ID="dlAssignedUsers" runat="server" OnItemDataBound="dlAssignedUsers_ItemDataBound">
                                                 <ItemTemplate>
                                                     <asp:CheckBox ID='chkId'
@@ -108,13 +108,13 @@
                                                     <asp:Label runat="server" ID="lblStatus" Text='<%#DataBinder.Eval(Container.DataItem, "Status")%>' Visible="false"></asp:Label>
                                                 </ItemTemplate>
                                             </asp:DataList>
-                                        </asp:Panel>
+                                        </asp:Panel>--%>
 
                                         <span style="padding-left: 20px;">
                                             <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
                                         </span>
 
-<%--                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
+                                        <%--                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </td>
@@ -194,7 +194,7 @@
                                 <div id="divAcceptRejectButtons" runat="server" visible="false">
                                     <asp:LinkButton ID="lbtnAcceptTask" runat="server" Text="Accept" OnClick="lbtnAcceptTask_Click" />&nbsp;
                                     <asp:LinkButton ID="lbtnRejectTask" runat="server" Text="Reject" OnClick="lbtnRejectTask_Click" />
-                                    <asp:HiddenField Id="hdnSubTaskIds" runat="server"/>
+                                    <asp:HiddenField ID="hdnSubTaskIds" runat="server" />
                                 </div>
                             </td>
                             <td><b>Status:</b>
@@ -585,8 +585,7 @@
             }
         }
 
-        function ClosePopup(varControlID)
-        {
+        function ClosePopup(varControlID) {
             $(varControlID).dialog('close');
         }
 
