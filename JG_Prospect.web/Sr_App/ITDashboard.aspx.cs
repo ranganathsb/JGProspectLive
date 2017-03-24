@@ -85,7 +85,7 @@ namespace JG_Prospect.Sr_App
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
                 LoadFilterUsersByDesgination("", drpUsersClosed);
                 LoadFilterUsersByDesgination("", drpUserFrozen);
-                LoadFilterUsersByDesgination("", drpUserNew);
+                //LoadFilterUsersByDesgination("", drpUserNew);
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
                 BindFrozenTasks();
@@ -295,6 +295,23 @@ namespace JG_Prospect.Sr_App
             //SearchTasks(null);
             BindTaskInProgressGrid();
         }
+
+
+        //protected void drpDesigNew_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string designation = drpDesigNew.SelectedValue;
+        //    LoadFilterUsersByDesgination(designation, drpUserNew);
+        //    BindNewTasks();
+        //}
+        
+        protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designation = drpDesigFrozen.SelectedValue;
+            LoadFilterUsersByDesgination(designation, drpUserFrozen);
+            BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
+        }
         protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
         {
             string designation = drpDesigClosed.SelectedValue;
@@ -314,6 +331,8 @@ namespace JG_Prospect.Sr_App
         protected void drpUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
         }
         //protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         //{
@@ -330,6 +349,8 @@ namespace JG_Prospect.Sr_App
         protected void drpUserNew_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindNewTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
         }
 
         private void LoadFilterUsersByDesgination(string designation, DropDownList drp)
@@ -377,12 +398,12 @@ namespace JG_Prospect.Sr_App
             drpDesigFrozen.Items.Insert(0, new ListItem("--All--", "0"));
             drpDesigFrozen.SelectedIndex = 0;
 
-            drpDesigNew.DataValueField = "Id";
-            drpDesigNew.DataTextField = "DesignationName";
-            drpDesigNew.DataSource = dsDesignation.Tables[0];
-            drpDesigNew.DataBind();
-            drpDesigNew.Items.Insert(0, new ListItem("--All--", "0"));
-            drpDesigNew.SelectedIndex = 0;
+            //drpDesigNew.DataValueField = "Id";
+            //drpDesigNew.DataTextField = "DesignationName";
+            //drpDesigNew.DataSource = dsDesignation.Tables[0];
+            //drpDesigNew.DataBind();
+            //drpDesigNew.Items.Insert(0, new ListItem("--All--", "0"));
+            //drpDesigNew.SelectedIndex = 0;
         }
 
         private void BindNewTasks()
@@ -523,7 +544,26 @@ namespace JG_Prospect.Sr_App
                     */
 
                     //DataSet resultTask = new DataSet();
-
+                    int userId = 0;
+                    int desigID = 0;
+                    string strSearch = "";
+                    if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                    {
+                        userId = 0;
+                       
+                        if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
+                        {
+                            userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
+                        }
+                    }
+                    else
+                    {
+                        userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    }
+                    if (Convert.ToInt32(drpDesigFrozen.SelectedValue) > 0)
+                    {
+                        desigID = Convert.ToInt32(drpDesigFrozen.SelectedValue);
+                    }
 
                     string vSearch = "";
                     string vStartDate = "";
@@ -552,6 +592,9 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
+                    database.AddInParameter(command, "@userid", DbType.Int32, userId);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigID);
+                    
 
                     result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)

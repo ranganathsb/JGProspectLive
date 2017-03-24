@@ -258,6 +258,8 @@
                                 
                                 <!-- Freezingn Task Part Starts -->  
                             </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" Width="60px" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Top" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" 
                             ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
@@ -289,6 +291,7 @@
                                                 CssClass="chosen-select" data-placeholder="Select"
                                                 AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
                                             </asp:ListBox>
+                                            <asp:HiddenField id="hdnActiveUserIds" runat="server"/>
                                             <asp:Label ID="lblAssigned" runat="server" />
                                         </td>
                                     </tr>
@@ -333,6 +336,8 @@
                                 </table>
 
                             </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" Width="15%" />
+                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Attachments, IMGs, Docs, Videos & Recordings" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
                             ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
@@ -418,11 +423,15 @@
                                
                                       </table>
                             </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" Width="15%" />
+                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" Width="30%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
                             <ItemTemplate>
                                 
                             </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" Width="88px" />
+                            <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
                     </Columns> 
                 </asp:GridView>
@@ -751,8 +760,10 @@
 
 
 <script type="text/javascript">
+
+    
     Dropzone.autoDiscover = false;
-   
+
     $(function () {
         ucSubTasks_Initialize();
     });
@@ -839,9 +850,7 @@
                 }
             });
         }
-
-
-
+    
     function ucSubTasks_Initialize() {
 
         ChosenDropDown();
