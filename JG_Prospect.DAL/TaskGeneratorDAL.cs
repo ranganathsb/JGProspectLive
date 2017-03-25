@@ -563,14 +563,14 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("usp_GetSubTasks");
+                    DbCommand command = database.GetStoredProcCommand("usp_GetSubTasks_New");
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
@@ -597,7 +597,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
                     }
 
-                    database.AddInParameter(command, "@hstid", DbType.Int32, vHSTid);
+                    database.AddInParameter(command, "@HighlightTaskId", DbType.Int32, intHighlightTaskId);
 
                     returndata = database.ExecuteDataSet(command);
 

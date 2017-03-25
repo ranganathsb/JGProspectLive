@@ -18,6 +18,8 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Data.Common;
 using JG_Prospect.DAL.Database;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
@@ -31,6 +33,8 @@ namespace JG_Prospect.Sr_App.Controls
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
+
+        DataTable dtSubTasks = new DataTable();
 
         #endregion
 
@@ -209,7 +213,10 @@ namespace JG_Prospect.Sr_App.Controls
                 HtmlGenericControl dvDesc = e.Row.FindControl("dvDesc") as HtmlGenericControl;
                 GridViewRow gvMasterRow = (GridViewRow)e.Row.Parent.Parent.Parent.Parent;
 
-                Repeater rptAttachment = gvMasterRow.FindControl("rptAttachment") as Repeater;
+                ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
+                Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
+
+                Repeater rptAttachment = e.Row.FindControl("rptAttachment") as Repeater;
                 HiddenField hdnTaskApprovalId = gvMasterRow.FindControl("hdnTaskApprovalId") as HiddenField;
                 TextBox estHours = gvMasterRow.FindControl("txtEstimatedHours") as TextBox;
                 string vTaskApproveId = hdnTaskApprovalId.Value;
@@ -217,15 +224,6 @@ namespace JG_Prospect.Sr_App.Controls
                 dvDesc.InnerHtml = "";
                 string lnkClasslvl = "";
                 lnkClasslvl = "";
-
-                if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
-                {
-                    if (Convert.ToInt32(hdTaskId.Value) == Convert.ToInt32(Request.QueryString["hstid"]))
-                    {
-                        e.Row.CssClass = " yellowthickborder";
-                    }
-                }
-
 
                 // FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
 
@@ -283,45 +281,6 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.Visible = false;
                     lbtnInstallIdRemove.Visible = true;
                 }
-            }
-        }
-        #endregion
-
-        #region '--gvSubTasks--'
-        public void RemoveClick(object sender, EventArgs e)
-        {
-            // do something
-        }
-        protected void gvSubTasks_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                ListBox ddcbAssigned = e.Row.FindControl("ddcbAssigned") as ListBox;
-                Label lblAssigned = e.Row.FindControl("lblAssigned") as Label;
-
-                //---------- Start DP ----------
-                Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
-                GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
-
-                DataSet resultTask = new DataSet();
-                try
-                {
-                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                    {
-                        DbCommand command = database.GetStoredProcCommand("GetParentChildTasks");
-                        command.CommandType = CommandType.StoredProcedure;
-                        database.AddInParameter(command, "@taskid", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
-                        resultTask = database.ExecuteDataSet(command);
-                    }
-                    grdTaskLevels.DataSource = resultTask;
-                    grdTaskLevels.DataBind();
-                }
-                catch (Exception ex)
-                {
-                    //LogManager.Instance.WriteToFlatFile(ex);
-                }
-                //--------- End DP -----------
-
 
                 if (this.IsAdminMode)
                 {
@@ -366,8 +325,6 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlTaskPriority.DataTextField = "Text";
                     ddlTaskPriority.DataValueField = "Value";
                     ddlTaskPriority.DataBind();
-
-
 
                     if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()))
                     {
@@ -432,16 +389,16 @@ namespace JG_Prospect.Sr_App.Controls
                 //}
                 //------ attachments -----
                 HtmlImage defaultimgIcon = e.Row.FindControl("defaultimgIcon") as HtmlImage;
-                Repeater rptAttachment = (Repeater)e.Row.FindControl("rptAttachment");
+                //Repeater rptAttachment = (Repeater)e.Row.FindControl("rptAttachment");
 
                 defaultimgIcon.Visible = false;
                 DataTable dtSubtaskAttachments = new System.Data.DataTable();
 
 
-                if (Convert.ToInt32(lblTaskId.Text) > 0)
+                if (Convert.ToInt32(hdTaskId.Value) > 0)
                 {
                     string strfile = "";
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(lblTaskId.Text), JGConstant.TaskFileDestination.SubTask, null, null);
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdTaskId.Value), JGConstant.TaskFileDestination.SubTask, null, null);
                     if (dsTaskUserFiles != null)
                     {
                         if (dsTaskUserFiles.Tables[0].Rows.Count > 0)
@@ -490,6 +447,130 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                 }
                 upnlAttachments.Update();
+
+
+                string strRowCssClass = string.Empty;
+
+                if (e.Row.RowState == DataControlRowState.Alternate)
+                {
+                    strRowCssClass = "AlternateRow";
+                }
+                else
+                {
+                    strRowCssClass = "FirstRow";
+                }
+
+                JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status"));
+                JGConstant.TaskPriority? objTaskPriority = null;
+
+                if (
+                    !string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskPriority")))
+                   )
+                {
+                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "TaskPriority")));
+                }
+
+                strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
+
+                switch (objTaskStatus)
+                {
+                    case JGConstant.TaskStatus.Closed:
+                        ddcbAssigned.Enabled = false;
+                        ddlStatus.Enabled = false;
+                        break;
+                    case JGConstant.TaskStatus.Deleted:
+                        ddcbAssigned.Enabled = false;
+                        ddlStatus.Enabled = false;
+                        break;
+                }
+
+                if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId)
+                {
+                    strRowCssClass += " yellowthickborder";
+                }
+
+                e.Row.CssClass = strRowCssClass;
+            }
+        }
+
+        #endregion
+
+        #region '--gvSubTasks--'
+        public void RemoveClick(object sender, EventArgs e)
+        {
+            // do something
+        }
+        protected void gvSubTasks_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //---------- Start DP ----------
+                Label lblTaskId = e.Row.FindControl("lblTaskId") as Label;
+                GridView grdTaskLevels = e.Row.FindControl("gvSubTasksLevels") as GridView;
+
+                long intTaskId = Convert.ToInt64(lblTaskId.Text);
+
+                try
+                {
+                    if (dtSubTasks != null && dtSubTasks.Rows.Count > 0)
+                    {
+                        //DataView dvSubTasks = dtSubTasks.DefaultView;
+                        //dvSubTasks.RowFilter = string.Format("TaskId = {0} OR ParentTaskId = {0}", lblTaskId.Text);
+
+                        var lstRows1 = from r in dtSubTasks.AsEnumerable()
+                                       where r.Field<long>("TaskId") == intTaskId || r.Field<long?>("ParentTaskId") == intTaskId
+                                       select r;
+
+                        //DataTable dtSubTaskResult = dvSubTasks.ToTable();
+                        List<DataRow> lstDataRow = new List<System.Data.DataRow>();
+                        lstDataRow.AddRange(lstRows1);
+                        //for (var i = 0; i < lstRows1.Count(); i++)
+                        foreach (var row in lstRows1)
+                        {
+                            //DataView dvSubTasks1 =  dtSubTasks.DefaultView;;
+                            //dvSubTasks1.RowFilter = string.Format("ParentTaskId <> {0} AND ParentTaskId = {1}", lblTaskId.Text, dtSubTaskResult.Rows[i]["TaskId"]);
+                            //DataTable dtSubTaskResult1 = dvSubTasks1.ToTable();
+
+                            var lstRows2 = from r in dtSubTasks.AsEnumerable()
+                                           where r.Field<long>("TaskId") != intTaskId && 
+                                                r.Field<long?>("ParentTaskId") == row.Field<long>("TaskId")
+                                           select r;
+
+                            lstDataRow.AddRange(lstRows2);
+                            //for (var j = 0; j < dtSubTaskResult1.Rows.Count; j++)
+                            //foreach (var row1 in lstRows2)
+                            //{
+                            //    //lstDataRow.Add(dtSubTaskResult1.Rows[j]);
+                            //    lstDataRow.Add(row1);
+                            //}
+                        }
+
+                        DataTable dtSubTaskResult = lstDataRow.CopyToDataTable();
+                        //foreach (DataRow item in lstDataRow)
+                        //{
+                        //    dtSubTaskResult.Rows.Add();
+                        //}
+
+
+                        //DataSet resultTask = new DataSet();
+                        //SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                        //{
+                        //    DbCommand command = database.GetStoredProcCommand("GetParentChildTasks");
+                        //    command.CommandType = CommandType.StoredProcedure;
+                        //    database.AddInParameter(command, "@taskid", DbType.Int32, Convert.ToInt32(lblTaskId.Text));
+                        //    resultTask = database.ExecuteDataSet(command);
+                        //}
+                        //grdTaskLevels.DataSource = resultTask;
+                        grdTaskLevels.DataSource = dtSubTaskResult;
+                        grdTaskLevels.DataBind();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //LogManager.Instance.WriteToFlatFile(ex);
+                }
+
+
                 //---------------------
                 //-------------------- End DP -------------
 
@@ -575,31 +656,13 @@ namespace JG_Prospect.Sr_App.Controls
                 JGConstant.TaskPriority? objTaskPriority = null;
 
                 if (
-                    !string.IsNullOrEmpty(ddlTaskPriority.SelectedValue) &&
-                    ddlTaskPriority.SelectedValue != "0"
+                    !string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskPriority")))
                    )
                 {
-                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(ddlTaskPriority.SelectedValue);
+                    objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "TaskPriority")));
                 }
 
                 strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
-
-                switch (objTaskStatus)
-                {
-                    case JGConstant.TaskStatus.Closed:
-                        ddcbAssigned.Enabled = false;
-                        ddlStatus.Enabled = false;
-                        break;
-                    case JGConstant.TaskStatus.Deleted:
-                        ddcbAssigned.Enabled = false;
-                        ddlStatus.Enabled = false;
-                        break;
-                }
-
-                if (Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "TaskId")) == this.HighlightedTaskId)
-                {
-                    strRowCssClass += " yellowthickborder";
-                }
 
                 e.Row.CssClass = strRowCssClass;
             }
@@ -1981,11 +2044,11 @@ namespace JG_Prospect.Sr_App.Controls
 
             return TaskGeneratorBLL.Instance.GetSubTasks
                                                 (
-                                                    TaskId, 
-                                                    CommonFunction.CheckAdminAndItLeadMode(), 
-                                                    strSortExpression, 
-                                                    txtSearch.Text, 
-                                                    gvSubTasks.PageIndex, 
+                                                    TaskId,
+                                                    CommonFunction.CheckAdminAndItLeadMode(),
+                                                    strSortExpression,
+                                                    txtSearch.Text,
+                                                    gvSubTasks.PageIndex,
                                                     gvSubTasks.PageSize,
                                                     intHighlightedTaskId
                                                 );
@@ -2092,14 +2155,15 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 if (dsSubTaskDetails.Tables[0].Rows.Count > 0)
                 {
-                    DataTable dtSubTaskDetails = dsSubTaskDetails.Tables[0];
+                    DataTable dtSubTaskDetails =
+                    dtSubTasks = dsSubTaskDetails.Tables[0];
 
                     if (dtSubTaskDetails.Rows.Count > 0)
                     {
                         gvSubTasks.DataSource = dtSubTaskDetails;
                         gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
-                        gvSubTasks.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["pagenumber"]);
                         gvSubTasks.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+                        gvSubTasks.SetPageIndex(Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]));
                         gvSubTasks.DataBind();
                         upSubTasks.Update();
                     }

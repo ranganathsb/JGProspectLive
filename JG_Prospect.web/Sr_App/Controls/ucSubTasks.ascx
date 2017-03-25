@@ -116,26 +116,28 @@
                     <PagerStyle HorizontalAlign="Left" CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:TemplateField HeaderText="Task Details" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60"
-                            SortExpression="InstallId">
-                            <HeaderTemplate>
-                                <span style="float: left;">Action-ID#</span>
-                                <a href="#" style="color: white;">Task Details</a>
-                            </HeaderTemplate>
+                        <asp:TemplateField HeaderText="Action-ID#" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" HeaderStyle-Width="60">
                             <ItemTemplate>
                                 <asp:Literal ID="ltrlInstallId" Visible="false" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
-
+                                <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
+                                    ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center"
+                            SortExpression="InstallId">
+                            <HeaderTemplate>
+                                Task Details
+                            </HeaderTemplate>
+                            <ItemTemplate>
                                 <!-- Sub-Sub Task Grid Starts -->
-
-                                <!-- Sub-Sub Task Grid Starts -->
-                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound"
+                                <asp:GridView OnRowDataBound="gvSubTasksLevels_RowDataBound" ShowHeader="false"
                                     ID="gvSubTasksLevels" runat="server" AutoGenerateColumns="false"
-                                    CssClass="subtasklevel" BorderColor="Transparent" Width="500px" BorderStyle="None">
+                                    CssClass="subtasklevel" BorderColor="Transparent" Width="100%" BorderStyle="None">
                                     <Columns>
-                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="List ID#" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top"
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top"
                                             HeaderStyle-Width="80"
-                                            SortExpression="InstallId">
+                                            SortExpression="InstallId"><%--List ID#--%>
                                             <ItemTemplate>
                                                 <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>'></asp:HiddenField>
                                                 <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>'></asp:HiddenField>
@@ -148,12 +150,10 @@
                                                     <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                         ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="RemoveClick" />
                                                 </h5>
-
-
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="Task Description" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
-                                            SortExpression="Description">
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left"
+                                            SortExpression="Description"><%--Task Description--%>
                                             <ItemTemplate>
                                                 <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 400px;">
                                                     <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%;">
@@ -167,14 +167,176 @@
                                                 &nbsp;<a href="#">Comment</a>
                                             </ItemTemplate>
                                         </asp:TemplateField>
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center"
+                                            ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top"><%--Assigned--%>
+                                            <ItemTemplate>
+                                                <table>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <h5>Priority</h5>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <h5>Assigned</h5>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <%--<asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
+                                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
+                                                                <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
+                                                                <Texts SelectBoxCaption="--Open--" />
+                                                            </asp:DropDownCheckBoxes>--%>
+                                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" SelectionMode="Multiple"
+                                                                CssClass="chosen-select" data-placeholder="Select"
+                                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                            <asp:Label ID="lblAssigned" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <h5>Status</h5>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder">
+                                                            <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="display: none;">
+                                                        <td class="noborder">
+                                                            <h5>Type</h5>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="display: none;">
+                                                        <td class="noborder">
+                                                            <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
+                                                    </tr>
+
+                                                </table>
+                                                <table style="display: none;">
+                                                    <tr>
+                                                        <td class="noborder" colspan="2">
+                                                            <h5>Estimated Hours</h5>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder" width="30%"><b>ITLead</b>
+                                                        </td>
+                                                        <td class="noborder">
+                                                            <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="noborder"><b>User</b></td>
+                                                        <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
+                                                    </tr>
+                                                </table>
+
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
+                                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="250"><%--Attachments, IMGs, Docs, Videos & Recordings--%>
+                                            <ItemTemplate>
+                                                <table border="0" class="dropzonetbl" style="width: 100%;">
+                                                    <tr>
+                                                        <td>
+                                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
+                                                                <ContentTemplate>
+                                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
+                                                                </ContentTemplate>
+                                                            </asp:UpdatePanel>
+                                                            <div id="divSubTaskDropzone1" style="width: 250px;" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');"
+                                                                class="dropzone dropzonetask dropzonJgStyle">
+                                                                <div class="fallback">
+                                                                    <input name="file" type="file" multiple />
+                                                                    <%-- <input type="submit" value="Upload"     />--%>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>
+
+                                                            <table border="0" class="dropzonetbl" style="width: 100%;">
+                                                                <tr>
+                                                                    <td>
+                                                                        <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?"
+                                                                            Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
+                                                                            AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                                    </td>
+                                                                    </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
+                                                                            <HeaderTemplate>
+                                                                                <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+
+                                                                                    <div class="lSSlideWrapper usingCss">
+                                                                                        <ul class="gallery list-unstyled sub-task-attachments-list">
+                                                                            </HeaderTemplate>
+                                                                            <ItemTemplate>
+                                                                                <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
+                                                                                    <h5>
+                                                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
+                                                                                    <h5>
+                                                                                        <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
+                                                                                    <h5>
+                                                                                        <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
+                                                                                    <div>
+                                                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
+                                                                                            CommandName="delete-attachment" />
+                                                                                    </div>
+                                                                                    <br />
+                                                                                    <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
 
 
+                                                                                </li>
+                                                                            </ItemTemplate>
+                                                                            <FooterTemplate>
+                                                                                </ul>
+                                                                                        </div>
+                                        
+                                                                                    </div>
+                                                                            </FooterTemplate>
+                                                                        </asp:Repeater>
+
+                                                                        <img id="defaultimgIcon" class="gallery-ele" width="247" height="185" runat="server" src="javascript:void(0);" />
+
+                                                                    </td>
+
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
                                 <!-- Sub-Sub Task Grid Ends -->
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100"
+                             ItemStyle-VerticalAlign="Top">
+                            <ItemTemplate>
                                 <!-- Freezingn Task Part Starts -->
-
-                                <table style="float: left; margin-top: -80px;">
+                                <table width="100">
                                     <tr>
                                         <td colspan="3" class="noborder" align="center">
                                             <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
@@ -248,179 +410,15 @@
                                     <tr style="display: none;">
                                         <td colspan="3">
                                             <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' />
-                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="110"
-                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' />
+                                            <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="90"
+                                                placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' /> <br />
                                             <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                AutoPostBack="true" CssClass="textbox" Width="110" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
+                                                AutoPostBack="true" CssClass="textbox" Width="90" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" />
 
                                         </td>
                                     </tr>
                                 </table>
-
                                 <!-- Freezingn Task Part Starts -->
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Assigned" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center"
-                            ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
-                            <ItemTemplate>
-                                <table>
-                                    <tr>
-                                        <td class="noborder">
-                                            <h5>Priority</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder">
-                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder">
-                                            <h5>Assigned</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder">
-                                            <%--<asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
-                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged">
-                                                <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
-                                                <Texts SelectBoxCaption="--Open--" />
-                                            </asp:DropDownCheckBoxes>--%>
-                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" SelectionMode="Multiple"
-                                                CssClass="chosen-select" data-placeholder="Select"
-                                                AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
-                                            <asp:Label ID="lblAssigned" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder">
-                                            <h5>Status</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder">
-                                            <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td class="noborder">
-                                            <h5>Type</h5>
-                                        </td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td class="noborder">
-                                            <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." /></td>
-                                    </tr>
-
-                                </table>
-                                <table style="display: none;">
-                                    <tr>
-                                        <td class="noborder" colspan="2">
-                                            <h5>Estimated Hours</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder" width="30%"><b>ITLead</b>
-                                        </td>
-                                        <td class="noborder">
-                                            <%# this.IsAdminMode ? (String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())== true? "N.A." : Eval("AdminOrITLeadEstimatedHours").ToString() +" Hour(s)" ): "" %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="noborder"><b>User</b></td>
-                                        <td class="noborder"><%# (String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "N.A." : Eval("UserEstimatedHours").ToString() + " Hour(s)") %></td>
-                                    </tr>
-                                </table>
-
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Attachments, IMGs, Docs, Videos & Recordings" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left"
-                            ItemStyle-VerticalAlign="Top" ItemStyle-Width="30%">
-                            <ItemTemplate>
-
-                                <table border="0" class="dropzonetbl" style="width: 100%;">
-                                    <tr>
-                                        <td>
-                                            <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional">
-                                                <ContentTemplate>
-                                                    <input id="hdnAttachments1" runat="server" type="hidden" />
-                                                </ContentTemplate>
-                                            </asp:UpdatePanel>
-                                            <div id="divSubTaskDropzone1" style="width: 250px;" onclick="javascript:SetHiddenTaskId('<%# Eval("TaskId")%>');"
-                                                class="dropzone dropzonetask dropzonJgStyle">
-                                                <div class="fallback">
-                                                    <input name="file" type="file" multiple />
-                                                    <%-- <input type="submit" value="Upload"     />--%>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div id="divSubTaskDropzonePreview1" runat="server" class="dropzone-previews">
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-
-                                            <table border="0" class="dropzonetbl" style="width: 100%;">
-                                                <tr>
-                                                    <td style="width: 40%;">
-                                                        <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?"
-                                                            Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
-                                                            AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
-                                                    </td>
-                                                    <td>
-                                                        <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound" runat="server">
-                                                            <HeaderTemplate>
-                                                                <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
-
-                                                                    <div class="lSSlideWrapper usingCss">
-                                                                        <ul class="gallery list-unstyled sub-task-attachments-list">
-                                                            </HeaderTemplate>
-                                                            <ItemTemplate>
-                                                                <li id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
-                                                                    <h5>
-                                                                        <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="DownloadFile" /></h5>
-                                                                    <h5>
-                                                                        <asp:Literal ID="ltlUpdateTime" runat="server"></asp:Literal></h5>
-                                                                    <h5>
-                                                                        <asp:Literal ID="ltlCreatedUser" runat="server"></asp:Literal></h5>
-                                                                    <div>
-                                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete"
-                                                                            CommandName="delete-attachment" />
-                                                                    </div>
-                                                                    <br />
-                                                                    <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" runat="server" src="javascript:void(0);" />
-
-
-                                                                </li>
-                                                            </ItemTemplate>
-                                                            <FooterTemplate>
-                                                                </ul>
-                                                                        </div>
-                                        
-                                                                    </div>
-                                                            </FooterTemplate>
-                                                        </asp:Repeater>
-
-                                                        <img id="defaultimgIcon" class="gallery-ele" width="247" height="185" runat="server" src="javascript:void(0);" />
-
-                                                    </td>
-
-                                                </tr>
-                                            </table>
-                                        </td>
-
-                                    </tr>
-
-                                </table>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="88">
-                            <ItemTemplate>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
