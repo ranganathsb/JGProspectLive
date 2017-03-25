@@ -765,7 +765,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                 },
                 minLength: 2,
                 select: function (event, ui) {
-                    $("#<%=btnSearchFrozen.ClientID%>").val(ui.item.value);
+                    $("#<%=txtSearchFrozen.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
                     $('#<%=btnSearchFrozen.ClientID%>').click();
                 }
@@ -823,7 +823,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
          },
                 minLength: 2,
                 select: function (event, ui) {
-                    $("#<%=btnSearchClosed.ClientID%>").val(ui.item.value);
+                    $("#<%=txtSearchClosed.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
                     $('#<%=btnSearchClosed.ClientID%>').click();
                 }
