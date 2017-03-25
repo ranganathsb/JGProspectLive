@@ -746,6 +746,12 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchFrozen.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
+
+                    if (request.term == "") {
+                        $('#<%=btnSearchFrozen.ClientID%>').click();
+                         return false;
+                     }
+
                     $.ajax({
                         type: "POST",
                         url: "ajaxcalls.aspx/GetTaskUsers",
@@ -763,7 +769,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                         }
                     });
                 },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
                     $("#<%=txtSearchFrozen.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
@@ -804,6 +810,13 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchClosed.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
+
+                    if (request.term == "") {
+                        $('#<%=btnSearchClosed.ClientID%>').click();
+                        return false;
+                    }
+
+
                     $.ajax({
                         type: "POST",
                         url: "ajaxcalls.aspx/GetTaskUsers",
@@ -821,7 +834,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                  }
              });
          },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
                     $("#<%=txtSearchClosed.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
@@ -864,6 +877,12 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchInPro.ClientID%>").catcomplete({
          delay: 500,
          source: function (request, response) {
+
+             if (request.term == "") {
+                 $('#<%=btnSearchInPro.ClientID%>').click();
+                  return false;
+              }
+
              $.ajax({
                  type: "POST",
                  url: "ajaxcalls.aspx/GetTaskUsers",
@@ -881,7 +900,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                         }
                     });
                 },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
                     $("#<%=txtSearchInPro.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
