@@ -255,9 +255,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Telerik.Web.UI.DLL</HintPath>
     </Reference>
-    <Reference Include="WebMail">
-      <HintPath>External Dependencies\WebMail.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Activation.aspx" />
@@ -1063,8 +1060,6 @@
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
     <Content Include="Database Scripts\DataScripts\12212016-ImageRef#.txt" />
-    <Content Include="Database Scripts\executed\Dipavali\Scripts_Feb_2017_ITSN050_v0.1.sql" />
-    <Content Include="Database Scripts\executed\Dipavali\Scripts_Mar_2017_ ITJN029_II-c.sql" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
@@ -1431,7 +1426,6 @@
     <Content Include="img\22222.png" />
     <Content Include="img\33333.png" />
     <Content Include="img\4444.png" />
-    <Content Include="img\ajax-loader.gif" />
     <Content Include="img\audio-icon.png" />
     <Content Include="img\Bar.png" />
     <Content Include="img\Bar1.png" />
@@ -3101,9 +3095,7 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-    <None Include="Properties\PublishProfiles\LivePublish.pubxml">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
@@ -3118,10 +3110,6 @@
     <ProjectReference Include="..\JG_Prospect.DAL\JG_Prospect.DAL.csproj">
       <Project>{2c56d357-387f-4070-9dc0-70ab17d35668}</Project>
       <Name>JG_Prospect.DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JG_Prospect.WebAPI\JG_Prospect.WebAPI.csproj">
-      <Project>{a2e0432f-2ed7-45eb-81d8-d889f2f85c6b}</Project>
-      <Name>JG_Prospect.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
