@@ -2121,32 +2121,32 @@ namespace JG_Prospect.Sr_App.Controls
 
             #region '--Get Top Level Parent To Highlight--'
 
-            if (intHighlightedTaskId > 0 && isPaging == false)
-            {
-                DataSet resultTask = new DataSet();
-                try
-                {
-                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                    {
-                        DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
-                        command.CommandType = CommandType.StoredProcedure;
-                        database.AddInParameter(command, "@taskid", DbType.Int32, intHighlightedTaskId);
-                        resultTask = database.ExecuteDataSet(command);
+            //if (intHighlightedTaskId > 0 && isPaging == false)
+            //{
+            //    DataSet resultTask = new DataSet();
+            //    try
+            //    {
+            //        SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+            //        {
+            //            DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
+            //            command.CommandType = CommandType.StoredProcedure;
+            //            database.AddInParameter(command, "@taskid", DbType.Int32, intHighlightedTaskId);
+            //            resultTask = database.ExecuteDataSet(command);
 
-                        if (resultTask.Tables[0].Rows.Count > 0)
-                        {
-                            if (int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out intHighlightedTaskId))
-                            {
-                                intHighlightedTaskId = HighlightedTaskId;
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //LogManager.Instance.WriteToFlatFile(ex);
-                }
-            }
+            //            if (resultTask.Tables[0].Rows.Count > 0)
+            //            {
+            //                if (int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out intHighlightedTaskId))
+            //                {
+            //                    intHighlightedTaskId = HighlightedTaskId;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        //LogManager.Instance.WriteToFlatFile(ex);
+            //    }
+            //}
 
             #endregion
 
@@ -2163,7 +2163,8 @@ namespace JG_Prospect.Sr_App.Controls
                         gvSubTasks.DataSource = dtSubTaskDetails;
                         gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
                         gvSubTasks.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
-                        gvSubTasks.SetPageIndex(Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]));
+                        //gvSubTasks.SetPageIndex(Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]));
+                        gvSubTasks.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]);
                         gvSubTasks.DataBind();
                         upSubTasks.Update();
                     }
