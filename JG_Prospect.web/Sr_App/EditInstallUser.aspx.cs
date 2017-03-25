@@ -104,10 +104,10 @@ namespace JG_Prospect.Sr_App
             try
             {
                 string key = GridViewUser.DataKeys[e.RowIndex].Values[0].ToString();
-                
+
                 // below method can be changed to "DeleteInstallUsers", when we decide to delete record from database.
                 // please review "edituser.aspx" page for the same.
-                List<int> lstIds = new List<int>(){ Convert.ToInt32(key)};
+                List<int> lstIds = new List<int>() { Convert.ToInt32(key) };
                 bool result = InstallUserBLL.Instance.DeactivateInstallUsers(lstIds);
 
                 binddata();
@@ -236,7 +236,7 @@ namespace JG_Prospect.Sr_App
             {
                 // below method can be changed to "DeleteInstallUsers", when we decide to delete record from database.
                 // please review "edituser.aspx" page for the same.
-                List<int> lstIds = new List<int>(){ Convert.ToInt32(e.CommandArgument.ToString())};;
+                List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) }; ;
                 InstallUserBLL.Instance.DeactivateInstallUsers(lstIds);
             }
             else if (e.CommandName == "ShowPicture")
@@ -1769,10 +1769,25 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlUserStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindGrid(ddlPrimaryTrade.SelectedItem.Text, ddlUserStatus.SelectedItem.Text, ddlDesignation.SelectedItem.Text);
+            BindGrid();
         }
-        private void BindGrid(string PTrade, string UStatus, string Designation)
+        private void BindGrid()
         {
+            string PTrade = string.Empty;
+            string UStatus = string.Empty;
+            string Designation = string.Empty;
+            if (ddlPrimaryTrade.SelectedItem != null)
+            {
+               PTrade = ddlPrimaryTrade.SelectedItem.Text;
+            }
+            if (ddlUserStatus.SelectedItem != null)
+            {
+                UStatus = ddlUserStatus.SelectedItem.Text;
+            }
+            if (ddlDesignation.SelectedItem != null)
+            {
+                Designation = ddlDesignation.SelectedItem.Text;
+            }
             DataTable dt = (DataTable)(Session["GridData"]);
             EnumerableRowCollection<DataRow> query = null;
             if (ddlUserStatus.SelectedIndex != 0 || ddlUserStatus.SelectedIndex != 0 || ddlPrimaryTrade.SelectedIndex != 0)
