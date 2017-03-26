@@ -116,7 +116,8 @@
                     <PagerStyle HorizontalAlign="Left" CssClass="pagination-ys" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:TemplateField HeaderText="Action-ID#" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" HeaderStyle-Width="60">
+                        <asp:TemplateField HeaderText="ID#" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" 
+                            HeaderStyle-Width="30"><%--Action-ID#--%>
                             <ItemTemplate>
                                 <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
                                 <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
@@ -136,7 +137,7 @@
                                     CssClass="subtasklevel" BorderColor="Transparent" Width="100%" BorderStyle="None">
                                     <Columns>
                                         <asp:TemplateField HeaderStyle-CssClass="subtasklevelheader" HeaderText="" HeaderStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top"
-                                            HeaderStyle-Width="80"
+                                            HeaderStyle-Width="60" ItemStyle-Width="60"
                                             SortExpression="InstallId"><%--List ID#--%>
                                             <ItemTemplate>
                                                 <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>'></asp:HiddenField>
