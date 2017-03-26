@@ -580,9 +580,20 @@ namespace JG_Prospect.Sr_App.Controls
 
                 TextBox txtPasswordToFreezeSubTask = e.Row.FindControl("txtPasswordToFreezeSubTask") as TextBox;
 
-                bool blAdminStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "AdminStatus"));
-                bool blTechLeadStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus"));
-                bool blOtherUserStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus"));
+                bool blAdminStatus = false, blTechLeadStatus = false, blOtherUserStatus = false;
+
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "AdminStatus").ToString())) 
+                {
+                    blAdminStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "AdminStatus"));
+                }
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus").ToString()))
+                {
+                    blTechLeadStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus"));
+                }
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus").ToString()))
+                {
+                    blOtherUserStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus"));
+                }
 
                 chkAdmin.Checked = blAdminStatus;
                 chkITLead.Checked = blTechLeadStatus;
