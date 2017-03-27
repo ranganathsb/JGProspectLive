@@ -32,7 +32,7 @@ BEGIN
 	ELSE IF @Key = 2
 	BEGIN
 			SELECT 
-			DISTINCT FristName + ' ' + LastName  AS FristName, tblinstallUsers.Id , [Status]
+			DISTINCT FristName + ' ' + LastName + '  ' + UserInstallId  AS FristName, tblinstallUsers.Id , [Status]
 			FROM tblinstallUsers 
 			WHERE  
 			(FristName IS NOT NULL AND FristName <> '' )  AND 
@@ -44,6 +44,6 @@ BEGIN
 			OR
 			Convert(Nvarchar(max),DesignationID)  IN (SELECT Item FROM dbo.SplitString(@Designations,','))
 			)
-			ORDER BY Status, FristName + ' ' + LastName
+			ORDER BY Status, FristName
 	END	
 END

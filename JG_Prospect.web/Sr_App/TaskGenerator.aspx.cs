@@ -802,20 +802,20 @@ namespace JG_Prospect.Sr_App
         {
             try
             {
-                string strHTMLTemplateName;
+                //string strHTMLTemplateName;
                 DataSet dsEmailTemplate;
 
                 // To Send Mail to User about Acceptance of the task
                 if (IsAccepted == true)
                 {
-                    strHTMLTemplateName = "Accepted Task Automail";
-                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 111);
+                    //strHTMLTemplateName = HTMLTemplates.Task_Accepted_Auto_Email
+                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Accepted_Auto_Email);
                 }
                 // To Send Mail to User about Rejection of the task
                 else
                 {
-                    strHTMLTemplateName = "Rejected Task Automail";
-                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 112);
+                    //strHTMLTemplateName = "Rejected Task Automail";
+                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Rejected_Auto_Email);
                 }
 
                 //foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -827,19 +827,19 @@ namespace JG_Prospect.Sr_App
                 string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
                 string fullname = FName + " " + LName;
 
-                string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                string strHeader = dsEmailTemplate.Tables[0].Rows[0]["Header"].ToString();
+                string strBody = dsEmailTemplate.Tables[0].Rows[0]["Body"].ToString();
+                string strFooter = dsEmailTemplate.Tables[0].Rows[0]["Footer"].ToString();
+                string strsubject = dsEmailTemplate.Tables[0].Rows[0]["Subject"].ToString();
 
                 strBody = strBody.Replace("#Fname#", fullname);
 
-                // To Format Task lInk with Task Id and Task Name
+                // To Format Task link with Task Id and Task Name
                 DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
                 DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
-                
+
                 // To Format Parent Task LinkName and Link
-                strBody = strBody.Replace("#ParentTaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString()) ;
+                strBody = strBody.Replace("#ParentTaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
                 strBody = strBody.Replace("#ParentTaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                 string strParentTaskId = TaskName["InstallId"].ToString();
@@ -857,16 +857,16 @@ namespace JG_Prospect.Sr_App
                             TaskName = dtTaskDetail.Select("TaskId = " + subTaskId).First();
 
                             strSubTaskLink = string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), subTaskId);
-                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + "TaskID#:"+ strParentTaskId + "(" + TaskName["InstallId"].ToString() + ")-" + TaskName["Title"].ToString() + "</a><br/>";
+                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + "TaskID#:" + strParentTaskId + "(" + TaskName["InstallId"].ToString() + ")-" + TaskName["Title"].ToString() + "</a><br/>";
                         }
                     }
                     strBody = strBody.Replace("#SubTaskLink#", strSubTaskList);
 
                     strBody = strBody.Replace("#QuickViewLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
-                    strBody = strBody.Replace("#QuickViewLinkName#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#QuickViewLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
 
                     strBody = strBody.Replace("#ViewMoreLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
-                    strBody = strBody.Replace("#ViewMoreLinkName#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#ViewMoreLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -882,7 +882,7 @@ namespace JG_Prospect.Sr_App
                     //        lstAttachments.Add(attachment);
                     //    }
                     //}
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, null);
+                    CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, null);
                 }
                 //}
             }
@@ -1067,7 +1067,7 @@ namespace JG_Prospect.Sr_App
             //                                                    ),
             //                                        true
             //                                  );
-            
+
             //dlAssignedUsers.Attributes.Add("onmouseover", "javascript:ShowPopup(" + divAcceptanceLog.ClientID + ");");
             //dlAssignedUsers.Attributes.Add("onmouseout", "javascript:ClosePopup(" + divAcceptanceLog.ClientID + ");");
 
