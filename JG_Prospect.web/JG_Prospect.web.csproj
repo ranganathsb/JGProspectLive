@@ -1060,8 +1060,6 @@
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
     <Content Include="Database Scripts\DataScripts\12212016-ImageRef#.txt" />
-    <Content Include="Database Scripts\executed\Dipavali\Scripts_Feb_2017_ITSN050_v0.1.sql" />
-    <Content Include="Database Scripts\executed\Dipavali\Scripts_Mar_2017_ ITJN029_II-c.sql" />
     <Content Include="Database Scripts\executed\bhavik\UDP_AddInstallUser_RollBack Ramya Changes.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="Database Scripts\executed\bhavik\ITSN042_NovP2_V1.sql" />
@@ -1094,6 +1092,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
+    <Content Include="Database Scripts\KetankumarGodhani\KetankumarGodhani_03232017_db.sql" />
     <Content Include="Database Scripts\yogesh\script Feb v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1427,7 +1426,6 @@
     <Content Include="img\22222.png" />
     <Content Include="img\33333.png" />
     <Content Include="img\4444.png" />
-    <Content Include="img\ajax-loader.gif" />
     <Content Include="img\audio-icon.png" />
     <Content Include="img\Bar.png" />
     <Content Include="img\Bar1.png" />
@@ -2718,6 +2716,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
