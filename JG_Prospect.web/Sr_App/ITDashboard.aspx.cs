@@ -55,17 +55,37 @@ namespace JG_Prospect.Sr_App
                     tblInProgress.Visible = true;
                     tblClosedTask.Visible = true;
                     lblalertpopup.Visible = true;
+
+                    txtSearchFrozen.Visible = true;
+                    btnSearchFrozen.Visible = true;
+
+                    txtSearchClosed.Visible = true;
+                    btnSearchClosed.Visible = true;
+
+                    txtSearchInPro.Visible = true;
+                    btnSearchInPro.Visible = true;
+
                 }
                 else
                 {
                     tblInProgress.Visible = false;
                     tblClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
+
+                    txtSearchFrozen.Visible = false;
+                    btnSearchFrozen.Visible = false;
+
+                    txtSearchClosed.Visible = false;
+                    btnSearchClosed.Visible = false;
+
+                    txtSearchInPro.Visible = false;
+                    btnSearchInPro.Visible = false;
+
                 }
                 LoadFilterUsersByDesgination("", drpUsersInProgress);
                 LoadFilterUsersByDesgination("", drpUsersClosed);
                 LoadFilterUsersByDesgination("", drpUserFrozen);
-                LoadFilterUsersByDesgination("", drpUserNew);
+                //LoadFilterUsersByDesgination("", drpUserNew);
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
                 BindFrozenTasks();
@@ -78,87 +98,114 @@ namespace JG_Prospect.Sr_App
                 //DateTime MiddleDate = Convert.ToDateTime("15-" + DateTime.Now.Month + "-" + DateTime.Now.Year);
                 DateTime MiddleDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(14);
                 string strnew = "";
-                try
+                //try
+                //{
+                //    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                //    {
+                //        DataSet result = new DataSet();
+                //        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                //        //{
+                //        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                //        //    strnew = strnew + " and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                //        //}
+                //        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                //        //{
+                //        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+                //        //    strnew = strnew + " and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                //        //}
+
+                //        strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
+
+                //        DbCommand command = database.GetSqlStringCommand(strnew);
+                //        command.CommandType = CommandType.Text;
+                //        result = database.ExecuteDataSet(command);
+                //        lblNewCounter.Visible = false;
+                //        lblNewCounter0.Visible = true;
+                //        lblNewCounter0.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
+                //        if (result.Tables[0].Rows.Count > 0)
+                //        {
+                //            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
+                //            {
+                //                lblNewCounter.Visible = true;
+                //                lblNewCounter0.Visible = false;
+                //                lblNewCounter.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
+                //            }
+                //        }
+                //        result.Dispose();
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //}
+
+                //string strfrozen = "";
+                //try
+                //{
+                //    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                //    {
+                //        DataSet result = new DataSet();
+
+                //        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                //        //{
+                //        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                //        //    strfrozen = strfrozen + " and  (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                //        //}
+                //        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                //        //{
+                //        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+                //        //    strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                //        //}
+
+                //        strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
+
+                //        DbCommand command = database.GetSqlStringCommand(strfrozen);
+                //        command.CommandType = CommandType.Text;
+                //        result = database.ExecuteDataSet(command);
+
+                //        lblFrozenCounter.Visible = false;
+                //        lblFrozenCounter0.Visible = true;
+                //        lblFrozenCounter0.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
+                //        if (result.Tables[0].Rows.Count > 0)
+                //        {
+                //            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
+                //            {
+                //                lblFrozenCounter.Visible = true;
+                //                lblFrozenCounter0.Visible = false;
+                //                lblFrozenCounter.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
+                //            }
+                //        }
+                //        result.Dispose();
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //}
+                //Non Frozen Count
+                lblNewCounter.Visible = false;
+                lblNewCounter0.Visible = true;
+                lblNewCounter0.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
+                if (grdNewTask != null)
                 {
-                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    if (grdNewTask.DataSource != null)
                     {
-                        DataSet result = new DataSet();
-                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        //{
-                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
-                        //    strnew = strnew + " and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        //}
-                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        //{
-                        //    strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
-                        //    strnew = strnew + " and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        //}
-
-                        strnew = "select count(TaskId) as cntnew from tbltask where [Status]=1 ";
-
-                        DbCommand command = database.GetSqlStringCommand(strnew);
-                        command.CommandType = CommandType.Text;
-                        result = database.ExecuteDataSet(command);
-                        lblNewCounter.Visible = false;
-                        lblNewCounter0.Visible = true;
-                        lblNewCounter0.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
-                        if (result.Tables[0].Rows.Count > 0)
-                        {
-                            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
-                            {
-                                lblNewCounter.Visible = true;
-                                lblNewCounter0.Visible = false;
-                                lblNewCounter.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
-                            }
-                        }
-                        result.Dispose();
+                        lblNewCounter.Visible = true;
+                        lblNewCounter0.Visible = false;
+                        lblNewCounter.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdNewTask.VirtualItemCount + "</div>";
                     }
                 }
-                catch (Exception ex)
-                {
-                }
 
-                string strfrozen = "";
-                try
+                //Partial Frozen Count
+                lblFrozenCounter.Visible = false;
+                lblFrozenCounter0.Visible = true;
+                lblFrozenCounter0.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
+                if (grdFrozenTask != null)
                 {
-                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    if (grdFrozenTask.DataSource != null)
                     {
-                        DataSet result = new DataSet();
-
-                        //if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        //{
-                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
-                        //    strfrozen = strfrozen + " and  (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        //}
-                        //else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        //{
-                        //    strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
-                        //    strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        //}
-
-                        strfrozen = "select count(a.TaskId) as cntnew from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId  ";
-
-                        DbCommand command = database.GetSqlStringCommand(strfrozen);
-                        command.CommandType = CommandType.Text;
-                        result = database.ExecuteDataSet(command);
-
-                        lblFrozenCounter.Visible = false;
-                        lblFrozenCounter0.Visible = true;
-                        lblFrozenCounter0.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
-                        if (result.Tables[0].Rows.Count > 0)
-                        {
-                            if (result.Tables[0].Rows[0]["cntnew"].ToString() != "0")
-                            {
-                                lblFrozenCounter.Visible = true;
-                                lblFrozenCounter0.Visible = false;
-                                lblFrozenCounter.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + result.Tables[0].Rows[0]["cntnew"].ToString() + "</div>";
-                            }
-                        }
-                        result.Dispose();
+                        lblFrozenCounter.Visible = true;
+                        lblFrozenCounter0.Visible = false;
+                        lblFrozenCounter.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdFrozenTask.VirtualItemCount + "</div>";
                     }
-                }
-                catch (Exception ex)
-                {
                 }
 
                 //----------------- End DP ------------
@@ -275,6 +322,23 @@ namespace JG_Prospect.Sr_App
             //SearchTasks(null);
             BindTaskInProgressGrid();
         }
+
+
+        //protected void drpDesigNew_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string designation = drpDesigNew.SelectedValue;
+        //    LoadFilterUsersByDesgination(designation, drpUserNew);
+        //    BindNewTasks();
+        //}
+        
+        protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designation = drpDesigFrozen.SelectedValue;
+            LoadFilterUsersByDesgination(designation, drpUserFrozen);
+            BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
+        }
         protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
         {
             string designation = drpDesigClosed.SelectedValue;
@@ -294,6 +358,8 @@ namespace JG_Prospect.Sr_App
         protected void drpUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFrozenTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
         }
         //protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         //{
@@ -310,6 +376,8 @@ namespace JG_Prospect.Sr_App
         protected void drpUserNew_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindNewTasks();
+            upAlerts.Update();
+            mpNewFrozenTask.Show();
         }
 
         private void LoadFilterUsersByDesgination(string designation, DropDownList drp)
@@ -357,12 +425,12 @@ namespace JG_Prospect.Sr_App
             drpDesigFrozen.Items.Insert(0, new ListItem("--All--", "0"));
             drpDesigFrozen.SelectedIndex = 0;
 
-            drpDesigNew.DataValueField = "Id";
-            drpDesigNew.DataTextField = "DesignationName";
-            drpDesigNew.DataSource = dsDesignation.Tables[0];
-            drpDesigNew.DataBind();
-            drpDesigNew.Items.Insert(0, new ListItem("--All--", "0"));
-            drpDesigNew.SelectedIndex = 0;
+            //drpDesigNew.DataValueField = "Id";
+            //drpDesigNew.DataTextField = "DesignationName";
+            //drpDesigNew.DataSource = dsDesignation.Tables[0];
+            //drpDesigNew.DataBind();
+            //drpDesigNew.Items.Insert(0, new ListItem("--All--", "0"));
+            //drpDesigNew.SelectedIndex = 0;
         }
 
         private void BindNewTasks()
@@ -391,10 +459,13 @@ namespace JG_Prospect.Sr_App
                         vStartDate = MiddleDate.ToString("dd-MMM-yyy");
                         vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
                     }
-                    DbCommand command = database.GetStoredProcCommand("GetPartialFrozenTasks");
+                    DbCommand command = database.GetStoredProcCommand("GetNonFrozenTasks");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdNewTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdNewTask.PageSize);
+                  
                     result = database.ExecuteDataSet(command);
                     /*
                      if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
@@ -418,6 +489,7 @@ namespace JG_Prospect.Sr_App
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdNewTask.DataSource = result;
+                        grdNewTask.VirtualItemCount = result.Tables[0].Rows.Count;//Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdNewTask.DataBind();
                     }
                     else
@@ -499,7 +571,26 @@ namespace JG_Prospect.Sr_App
                     */
 
                     //DataSet resultTask = new DataSet();
-
+                    int userId = 0;
+                    int desigID = 0;
+                    string strSearch = "";
+                    if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                    {
+                        userId = 0;
+                       
+                        if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
+                        {
+                            userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
+                        }
+                    }
+                    else
+                    {
+                        userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    }
+                    if (Convert.ToInt32(drpDesigFrozen.SelectedValue) > 0)
+                    {
+                        desigID = Convert.ToInt32(drpDesigFrozen.SelectedValue);
+                    }
 
                     string vSearch = "";
                     string vStartDate = "";
@@ -526,10 +617,17 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
                     database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
+                    database.AddInParameter(command, "@userid", DbType.Int32, userId);
+                    database.AddInParameter(command, "@desigid", DbType.Int32, desigID);
+                    
+
                     result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdFrozenTask.DataSource = result;
+                        grdFrozenTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdFrozenTask.DataBind();
                     }
                     else
@@ -577,10 +675,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch);
+            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
             if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
+                grdTaskPending.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskPending.DataBind();
             }
             else
@@ -621,10 +720,11 @@ namespace JG_Prospect.Sr_App
             }
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID,strSearch);
+            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID, strSearch, grdTaskClosed.PageIndex, grdTaskClosed.PageSize);
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskClosed.DataSource = ds;
+                grdTaskClosed.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
                 grdTaskClosed.DataBind();
             }
             else
@@ -638,27 +738,27 @@ namespace JG_Prospect.Sr_App
 
         protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
         {
-            BindTaskInProgressGrid();
             grdTaskPending.PageIndex = e.NewPageIndex;
+            BindTaskInProgressGrid();
             grdTaskPending.DataBind();
         }
         protected void OnPagingTaskClosed(object sender, GridViewPageEventArgs e)
         {
-            BindTaskClosedGrid();
             grdTaskClosed.PageIndex = e.NewPageIndex;
+            BindTaskClosedGrid();
             grdTaskClosed.DataBind();
         }
         protected void OnPaginggrdFrozenTask(object sender, GridViewPageEventArgs e)
         {
-            BindFrozenTasks();
             grdFrozenTask.PageIndex = e.NewPageIndex;
+            BindFrozenTasks();
             grdFrozenTask.DataBind();
         }
 
         protected void OnPaginggrdNewTask(object sender, GridViewPageEventArgs e)
         {
-            BindNewTasks();
             grdNewTask.PageIndex = e.NewPageIndex;
+            BindNewTasks();
             grdNewTask.DataBind();
         }
 
