@@ -1843,19 +1843,19 @@ namespace JG_Prospect.Sr_App.Controls
 
                     strBody = strHeader + strBody + strFooter;
 
-                    List<Attachment> lstAttachments = new List<Attachment>();
-                    // your remote SMTP server IP.
-                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
-                    {
-                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                        if (File.Exists(sourceDir))
-                        {
-                            Attachment attachment = new Attachment(sourceDir);
-                            attachment.Name = Path.GetFileName(sourceDir);
-                            lstAttachments.Add(attachment);
-                        }
-                    }
-                    CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, lstAttachments);
+                    //List<Attachment> lstAttachments = new List<Attachment>();
+                    //// your remote SMTP server IP.
+                    //for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    //{
+                    //    string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                    //    if (File.Exists(sourceDir))
+                    //    {
+                    //        Attachment attachment = new Attachment(sourceDir);
+                    //        attachment.Name = Path.GetFileName(sourceDir);
+                    //        lstAttachments.Add(attachment);
+                    //    }
+                    //}
+                    CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, null);
                 }
             }
             catch (Exception ex)
