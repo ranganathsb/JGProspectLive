@@ -154,6 +154,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
         public int vFirstLevelId = 0;
+        public bool isPaging = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -194,8 +195,10 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void OnPagingGvSubTasks(object sender, GridViewPageEventArgs e)
         {
-            SetSubTaskDetails();
+            isPaging = true;
+
             gvSubTasks.PageIndex = e.NewPageIndex;
+            SetSubTaskDetails();
             gvSubTasks.DataBind();
         }
 
@@ -337,56 +340,56 @@ namespace JG_Prospect.Sr_App.Controls
 
                     //if (lblTaskId.Text != "" || lblTaskId.Text != "0")
                     //{
-                        dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
+                    dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
-                        // To get Order First Active User, Assigned User, Rejected User
-                        //if (dsUsers.Tables[1].Rows.Count > 0)
-                        //{
-                        //    dsUsers.Tables[0].Merge(dsUsers.Tables[1], false);
-                        //}
-                        //if (dsUsers.Tables[2].Rows.Count > 0)
-                        //{
-                        //    dsUsers.Tables[0].Merge(dsUsers.Tables[2], false);
-                        //}
+                    // To get Order First Active User, Assigned User, Rejected User
+                    //if (dsUsers.Tables[1].Rows.Count > 0)
+                    //{
+                    //    dsUsers.Tables[0].Merge(dsUsers.Tables[1], false);
+                    //}
+                    //if (dsUsers.Tables[2].Rows.Count > 0)
+                    //{
+                    //    dsUsers.Tables[0].Merge(dsUsers.Tables[2], false);
+                    //}
 
-                        // TO get All the Active UserIds for Text Color
-                        if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
+                    // TO get All the Active UserIds for Text Color
+                    if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
+                    {
+                        foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
                         {
-                            foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
-                            {
-                                hdnActiveUserIds.Value += "," + row["Id"];
-                            }
+                            hdnActiveUserIds.Value += "," + row["Id"];
                         }
-                        //DataTable dtRejectedUsers;
-                        //DataRow[] filteredRejectedRows = dsUsers.Tables[0].Select(" IsAccepted = '0'");
+                    }
+                    //DataTable dtRejectedUsers;
+                    //DataRow[] filteredRejectedRows = dsUsers.Tables[0].Select(" IsAccepted = '0'");
 
-                        //if (filteredRejectedRows.Count() > 0)
-                        //{
-                        //    dtRejectedUsers = filteredRejectedRows.CopyToDataTable();
-                        //    foreach (DataRow row in filteredRejectedRows)
-                        //    {
-                        //        dsUsers.Tables[0].Rows.Remove(row);
-                        //    }
-                        //    foreach (DataRow row in filteredRejectedRows)
-                        //    {
-                        //        dsUsers.Tables[0].Rows.Remove(row);
-                        //    }
-                        //}
-                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),lblTaskId.Text);
+                    //if (filteredRejectedRows.Count() > 0)
+                    //{
+                    //    dtRejectedUsers = filteredRejectedRows.CopyToDataTable();
+                    //    foreach (DataRow row in filteredRejectedRows)
+                    //    {
+                    //        dsUsers.Tables[0].Rows.Remove(row);
+                    //    }
+                    //    foreach (DataRow row in filteredRejectedRows)
+                    //    {
+                    //        dsUsers.Tables[0].Rows.Remove(row);
+                    //    }
+                    //}
+                    //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),lblTaskId.Text);
                     //}
                     //else
                     //{
-                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, "Admin", "0");
+                    //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, "Admin", "0");
 
-                        // TO get All the Active UserIds for Text Color
-                        //if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
-                        //{
-                        //    foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
-                        //    {
-                        //        hdnActiveUserIds.Value += "," + row["Id"];
-                        //    }
-                        //}
-                        //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),"0");
+                    // TO get All the Active UserIds for Text Color
+                    //if (dsUsers.Tables[0].Select("Status = '1'").Count() > 0)
+                    //{
+                    //    foreach (DataRow row in dsUsers.Tables[0].Select("Status = '1'"))
+                    //    {
+                    //        hdnActiveUserIds.Value += "," + row["Id"];
+                    //    }
+                    //}
+                    //dsUsers = TaskGeneratorBLL.Instance.GetInstallUserswithIds(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim(),"0");
                     //}
 
                     ddcbAssigned.Items.Clear();
@@ -1365,7 +1368,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
-                DownloadUserAttachment(files[1].Trim(), files[2].Trim());
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
             else if (e.CommandName == "delete-attachment")
             {
@@ -2060,11 +2063,11 @@ namespace JG_Prospect.Sr_App.Controls
             return strPlaceholder;
         }
 
-        private DataSet GetSubTasks()
+        private DataSet GetSubTasks(int vHSTid)
         {
             string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression, txtSearch.Text, gvSubTasks.PageIndex, gvSubTasks.PageSize);
+            return TaskGeneratorBLL.Instance.GetSubTasks(TaskId, CommonFunction.CheckAdminAndItLeadMode(), strSortExpression, txtSearch.Text, gvSubTasks.PageIndex, gvSubTasks.PageSize, vHSTid);
         }
 
         protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -2129,122 +2132,79 @@ namespace JG_Prospect.Sr_App.Controls
 
         public void SetSubTaskDetails()
         {
-            DataSet dsSubTaskDetails = GetSubTasks();
-            if (dsSubTaskDetails.Tables.Count > 0)
+            int vHSTid = 0;
+            if (!string.IsNullOrEmpty(Request.QueryString["hstid"]) && isPaging == false)
             {
-                DataTable dtSubTaskDetails = dsSubTaskDetails.Tables[0];
+                vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
 
-                if (dtSubTaskDetails.Rows.Count > 0)
+                DataSet resultTask = new DataSet();
+                try
                 {
-                    if (!string.IsNullOrEmpty(Request.QueryString["hstid"]))
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                     {
-                        int vHSTid = Convert.ToInt32(Request.QueryString["hstid"]);
+                        DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
+                        command.CommandType = CommandType.StoredProcedure;
+                        database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
+                        resultTask = database.ExecuteDataSet(command);
 
-                        DataSet resultTask = new DataSet();
-                        try
+                        if (resultTask.Tables[0].Rows.Count > 0)
                         {
-                            SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                            {
-                                DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
-                                command.CommandType = CommandType.StoredProcedure;
-                                database.AddInParameter(command, "@taskid", DbType.Int32, vHSTid);
-                                resultTask = database.ExecuteDataSet(command);
-
-                                if (resultTask.Tables[0].Rows.Count > 0)
-                                {
-                                    int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out vHSTid);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            //LogManager.Instance.WriteToFlatFile(ex);
-                        }
-
-                        //SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                        //{
-                        //    DataSet result1 = new DataSet();
-                        //    DbCommand command1 = database.GetSqlStringCommand("select * from tblTask where   TaskLevel=1 and TaskId= " + vHSTid + " ");
-                        //    command1.CommandType = CommandType.Text;
-                        //    result1 = database.ExecuteDataSet(command1);
-                        //    if (result1.Tables[0].Rows.Count > 0)
-                        //    {
-                        //        vHSTid = Convert.ToInt32( result1.Tables[0].Rows[0]["TaskId"].ToString());
-                        //    }
-                        //    else
-                        //    {
-                        //        DataSet result2 = new DataSet();
-                        //        DbCommand command2 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vHSTid + " ");
-                        //        command2.CommandType = CommandType.Text;
-                        //        result2 = database.ExecuteDataSet(command2);
-                        //        if (result2.Tables[0].Rows.Count > 0)
-                        //        {
-                        //            vHSTid = Convert.ToInt32(result2.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                        //        }
-                        //        else
-                        //        {
-                        //            DataSet result3 = new DataSet();
-                        //            DbCommand command3 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=3 and TaskId= " + vHSTid + " ");
-                        //            command3.CommandType = CommandType.Text;
-                        //            result3 = database.ExecuteDataSet(command3);
-                        //            if (result3.Tables[0].Rows.Count > 0)
-                        //            {
-                        //                int vparentid = Convert.ToInt32(result3.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                        //                DataSet result4 = new DataSet();
-                        //                DbCommand command4 = database.GetSqlStringCommand("select * from tblTask where TaskLevel=2 and TaskId= " + vparentid + " ");
-                        //                command4.CommandType = CommandType.Text;
-                        //                result4 = database.ExecuteDataSet(command4);
-                        //                if (result4.Tables[0].Rows.Count > 0)
-                        //                {
-                        //                    vHSTid = Convert.ToInt32(result4.Tables[0].Rows[0]["ParentTaskId"].ToString());
-                        //                }
-                        //                command4.Dispose();
-                        //                result4.Dispose();
-                        //            }
-                        //            command3.Dispose();
-                        //            result3.Dispose();
-                        //        }
-                        //        command2.Dispose();
-                        //        result2.Dispose();
-                        //    }
-                        //    command1.Dispose();
-                        //    result1.Dispose();
-                        //}
-
-                        var selectedIndexEle = dtSubTaskDetails.AsEnumerable()
-                        .Select((Row, Index) => new { Row, Index })
-                        .FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid);
-
-                        if (selectedIndexEle != null)
-                        {
-                            int selectedIndex = selectedIndexEle.Index;
-                            int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
-                            gvSubTasks.PageIndex = pageIndexofSelectedRow;
-                            gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                            int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out vHSTid);
                         }
                     }
                 }
-                gvSubTasks.DataSource = dtSubTaskDetails;
-                gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
-                gvSubTasks.DataBind();
-                upSubTasks.Update();
-
-                if (dtSubTaskDetails.Rows.Count > 0)
+                catch (Exception ex)
                 {
-                    DataView dv = dtSubTaskDetails.AsDataView();
-                    dv.Sort = "TaskId ASC";
-                    this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+                    //LogManager.Instance.WriteToFlatFile(ex);
                 }
-                else
+
+                //var selectedIndexEle = dtSubTaskDetails.AsEnumerable()
+                //.Select((Row, Index) => new { Row, Index })
+                //.FirstOrDefault(x => Convert.ToInt32(x.Row[0]) == vHSTid);
+
+                //if (selectedIndexEle != null)
+                //{
+                //    int selectedIndex = selectedIndexEle.Index;
+                //    int pageIndexofSelectedRow = (int)(Math.Floor(1.0 * selectedIndex / gvSubTasks.PageSize));
+                //    gvSubTasks.PageIndex = pageIndexofSelectedRow;
+                //    gvSubTasks.SelectedIndex = (int)(gvSubTasks.PageIndex == pageIndexofSelectedRow ? selectedIndex % gvSubTasks.PageSize : -1);
+                //}
+            }
+
+
+            DataSet dsSubTaskDetails = GetSubTasks(vHSTid);
+            if (dsSubTaskDetails != null)
+            {
+                if (dsSubTaskDetails.Tables[0].Rows.Count > 0)
                 {
-                    this.LastSubTaskSequence = String.Empty;
+                    DataTable dtSubTaskDetails = dsSubTaskDetails.Tables[0];
+
+                    if (dtSubTaskDetails.Rows.Count > 0)
+                    {
+                        gvSubTasks.DataSource = dtSubTaskDetails;
+                        gvSubTasks.VirtualItemCount = Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]);
+                        gvSubTasks.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["pagenumber"]); ;
+                        gvSubTasks.DataBind();
+                        upSubTasks.Update();
+                    }
+
+
+                    if (dtSubTaskDetails.Rows.Count > 0)
+                    {
+                        DataView dv = dtSubTaskDetails.AsDataView();
+                        dv.Sort = "TaskId ASC";
+                        this.LastSubTaskSequence = dv.ToTable().Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+                    }
+                    else
+                    {
+                        this.LastSubTaskSequence = String.Empty;
+                    }
                 }
             }
             //rptImageGallery.DataSource = this.lstSubTaskFiles;
             //rptImageGallery.DataBind();
             //upImageGallery.Update();
         }
-
         private void FillInitialData()
         {
             FillDropDrowns();

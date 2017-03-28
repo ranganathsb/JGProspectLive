@@ -25,7 +25,7 @@ namespace JG_Prospect.BLL
         public static TaskGeneratorBLL Instance
         {
             get { return m_TaskGeneratorBLL; }
-            set { ; }
+            set {; }
         }
         public Int64 SaveOrDeleteTask(Task objTask)
         {
@@ -74,9 +74,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch, Int32? intPageIndex, Int32? intPageSize)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int vHSTid = 0)
+
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, vHSTid);
+
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -88,13 +90,13 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
         }
-        
+
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
 
-        public DataSet GetInstallUserswithIds(int key, string Designation,string TaskId)
+        public DataSet GetInstallUserswithIds(int key, string Designation, string TaskId)
         {
             return TaskGeneratorDAL.Instance.GetInstallUserswithIds(key, Designation, TaskId);
         }
