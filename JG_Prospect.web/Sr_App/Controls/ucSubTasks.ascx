@@ -245,7 +245,7 @@
                                                 </td>
                                                 <td valign="top">
                                                     <div style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 400px;">
-                                                        <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%;">
+                                                        <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                             <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                         </div>
                                                     </div>
