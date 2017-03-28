@@ -1809,6 +1809,11 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="intTaskId"></param>
+        /// <param name="strInstallUserIDs"></param>
         private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
         {
             try
