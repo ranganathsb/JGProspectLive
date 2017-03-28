@@ -119,6 +119,22 @@ WHERE Id='71'
 	
 
 ----------------------------------------------------------------
+----------------------------------------------------------------
+-- =============================================
+-- Author:		Pratixa Shah
+-- Update date: 27 March 2017
+-- Description:	To Update Task Link Format along with Task Name
+-- =============================================
+
+UPDATE tblHTMLTemplatesMaster SET 
+Body='<div>Hi #Fname#,<br/><br/>You have requested task assignment..
+<br/><br/>Please click or copy below link to view task:<br/><br/>
+<a href="#TaskLink#">#TaskLinkName#</a>
+<br/><br/>Thanks!</div>'
+WHERE Id='72'
+	
+
+----------------------------------------------------------------
 -- =============================================  
 -- Author:  Yogesh  
 -- Create date: 27 Jan 2017  
