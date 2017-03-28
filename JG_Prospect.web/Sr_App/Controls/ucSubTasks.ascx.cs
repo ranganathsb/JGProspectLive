@@ -470,7 +470,7 @@ namespace JG_Prospect.Sr_App.Controls
                     objTaskPriority = (JGConstant.TaskPriority)Convert.ToByte(Convert.ToByte(DataBinder.Eval(e.Item.DataItem, "TaskPriority")));
                 }
 
-                strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
+                //strRowCssClass += " " + CommonFunction.GetTaskRowCssClass(objTaskStatus, objTaskPriority);
 
                 switch (objTaskStatus)
                 {
