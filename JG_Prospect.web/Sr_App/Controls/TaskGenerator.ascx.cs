@@ -602,7 +602,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdnTaskId.Value = ((HiddenField)objGridViewRow.FindControl("hdnTaskId")).Value;
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
 
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
             {
                 SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
             }
@@ -617,7 +617,7 @@ namespace JG_Prospect.Sr_App.Controls
             HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
             DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssigned") as DropDownCheckBoxes;
 
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
             {
                 Task objTask = new Task();
                 objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
@@ -1517,7 +1517,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
                 hdnSubTaskId.Value = ItaskId.ToString();
                 UploadUserAttachements(null, ItaskId, task.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty,"", null, null).Tables[0]);
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty, "", null, null).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();
@@ -1921,8 +1921,9 @@ namespace JG_Prospect.Sr_App.Controls
         {
             try
             {
-                string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Accepted_Auto_Email);
+                //AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -1932,29 +1933,61 @@ namespace JG_Prospect.Sr_App.Controls
                     string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
                     string fullname = FName + " " + LName;
 
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["Header"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["Body"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["Footer"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["Subject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
-                    strBody = strHeader + strBody + strFooter;
+                    // To Format Task link with Task Id and Task Name
+                    DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
+                    DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
 
-                    List<Attachment> lstAttachments = new List<Attachment>();
-                    // your remote SMTP server IP.
-                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    string strParentTaskId = TaskName["InstallId"].ToString();
+                    string strParentTaskTitle = TaskName["Title"].ToString();
+
+                    // To Format Parent Task LinkName and Link
+                    strBody = strBody.Replace("#ParentTaskLinkName#", "TaskID#:" + strParentTaskId + "-Title:" + strParentTaskTitle);
+                    strBody = strBody.Replace("#ParentTaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+
+                    string strSubTaskLink;
+                    string strSubTaskList = string.Empty;
+
+                    dtTaskDetail.Rows.Remove(TaskName);
+
+                    //Adding Links for All SubTask
+                    if (dtTaskDetail.Rows.Count > 0)
                     {
-                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                        if (File.Exists(sourceDir))
+                        foreach (DataRow row in dtTaskDetail.Rows)
                         {
-                            Attachment attachment = new Attachment(sourceDir);
-                            attachment.Name = Path.GetFileName(sourceDir);
-                            lstAttachments.Add(attachment);
+                            strSubTaskLink = string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), row["TaskId"].ToString());
+                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + "TaskID#:" + strParentTaskId + "(" + row["InstallId"].ToString() + ")-" + row["Title"].ToString() + "</a><br/>";
                         }
+                        strBody = strBody.Replace("#SubTaskLink#", strSubTaskList);
+
+                        strBody = strBody.Replace("#QuickViewLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                        strBody = strBody.Replace("#QuickViewLinkName#", "TaskID#:" + strParentTaskId + "-Title:" + strParentTaskTitle);
+
+                        strBody = strBody.Replace("#ViewMoreLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                        strBody = strBody.Replace("#ViewMoreLinkName#", "TaskID#:" + strParentTaskId + "-Title:" + strParentTaskTitle);
+
+                        strBody = strHeader + strBody + strFooter;
+
+                        //List<Attachment> lstAttachments = new List<Attachment>();
+                        //// your remote SMTP server IP.
+                        //for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                        //{
+                        //    string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        //    if (File.Exists(sourceDir))
+                        //    {
+                        //        Attachment attachment = new Attachment(sourceDir);
+                        //        attachment.Name = Path.GetFileName(sourceDir);
+                        //        lstAttachments.Add(attachment);
+                        //    }
+                        //}
+                        CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, null);
                     }
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
                 }
             }
             catch (Exception ex)
@@ -1969,8 +2002,10 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 if (intTaskCreatedBy > 0)
                 {
-                    string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 109);
+                    //string strHTMLTemplateName = "Task Assignment Requested";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Assignment_Requested);
+                    //AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 109);
+
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
                     if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
                     {
@@ -1982,29 +2017,36 @@ namespace JG_Prospect.Sr_App.Controls
                     string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
                     string fullname = FName + " " + LName;
 
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["Header"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["Body"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["Footer"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["Subject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
+
+                    // To Format Task link with Task Id and Task Name
+                    DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
+                    DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
+
+                    // To Format Parent Task LinkName and Link
+                    strBody = strBody.Replace("#TaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
-                    List<Attachment> lstAttachments = new List<Attachment>();
-                    // your remote SMTP server IP.
-                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
-                    {
-                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                        if (File.Exists(sourceDir))
-                        {
-                            Attachment attachment = new Attachment(sourceDir);
-                            attachment.Name = Path.GetFileName(sourceDir);
-                            lstAttachments.Add(attachment);
-                        }
-                    }
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                    //List<Attachment> lstAttachments = new List<Attachment>();
+                    //// your remote SMTP server IP.
+                    //for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    //{
+                    //    string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                    //    if (File.Exists(sourceDir))
+                    //    {
+                    //        Attachment attachment = new Attachment(sourceDir);
+                    //        attachment.Name = Path.GetFileName(sourceDir);
+                    //        lstAttachments.Add(attachment);
+                    //    }
+                    //}
+                    CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, null);
                 }
             }
             catch (Exception ex)
