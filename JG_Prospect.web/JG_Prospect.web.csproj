@@ -1092,7 +1092,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
-    <Content Include="Database Scripts\KetankumarGodhani\KetankumarGodhani_03232017_db.sql" />
+    <Content Include="Database Scripts\KetankumarGodhani\Ketankumar_03262017_db_FrozenTaskSP.sql" />
     <Content Include="Database Scripts\yogesh\script Feb v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
