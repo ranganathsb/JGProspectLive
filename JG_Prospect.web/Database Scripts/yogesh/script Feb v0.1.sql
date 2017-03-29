@@ -3759,3 +3759,47 @@ BEGIN
 
 END
 GO
+
+
+/*
+   28 March 201711:59:41
+   User: devloperuser
+   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
+   Database: JGBS_Dev_New
+   Application: 
+*/
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblInstallUsers
+	DROP CONSTRAINT FK_tblInstallUsers_AddedByUserID_tblUsers_ID
+GO
+ALTER TABLE dbo.tblUsers SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblInstallUsers ADD CONSTRAINT
+	FK_tblInstallUsers_AddedByUserID_tblInstallUsers_Id FOREIGN KEY
+	(
+	AddedByUserID
+	) REFERENCES dbo.tblInstallUsers
+	(
+	Id
+	) ON UPDATE  NO ACTION 
+	 ON DELETE  NO ACTION 
+	
+GO
+ALTER TABLE dbo.tblInstallUsers SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
