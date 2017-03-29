@@ -645,7 +645,13 @@ namespace JG_Prospect.Sr_App.Controls
                     //    resultTask = database.ExecuteDataSet(command);
                     //}
                     //grdTaskLevels.DataSource = resultTask;
-                    gvSubTasksLevels.DataSource = dtSubTaskResult;
+                    
+                    // sort by task id to list data in proper numbering.
+                    // for example, I-a, I-b, I-c etc
+                    DataView dvSubTaskResult = dtSubTaskResult.AsDataView();
+                    dvSubTaskResult.Sort = "TaskId ASC";
+
+                    gvSubTasksLevels.DataSource = dvSubTaskResult.ToTable();
                     gvSubTasksLevels.DataBind();
                 }
                 //}
@@ -2143,6 +2149,12 @@ namespace JG_Prospect.Sr_App.Controls
         {
             int intHighlightedTaskId = HighlightedTaskId;
 
+            if (IsPostBack)
+            {
+                // do not fecth page data based on highlighted task id.
+                intHighlightedTaskId = 0;
+            }
+
             #region '--Get Top Level Parent To Highlight--'
 
             //if (intHighlightedTaskId > 0 && isPaging == false)
@@ -2183,8 +2195,10 @@ namespace JG_Prospect.Sr_App.Controls
 
                     DataTable dtSubTaskDetails = null;
 
+                    // bind first level tasks order by created date.
                     DataView dvSubTaskDetails = dtSubTasks.AsDataView();
                     dvSubTaskDetails.RowFilter = "ParentTaskId = " + TaskId.ToString();
+                    dvSubTaskDetails.Sort = "CreatedOn DESC";
 
                     dtSubTaskDetails = dvSubTaskDetails.ToTable();
 
