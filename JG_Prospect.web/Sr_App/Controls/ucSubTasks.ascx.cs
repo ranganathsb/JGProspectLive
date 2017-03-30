@@ -156,12 +156,13 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (!IsPostBack)
             {
                 FillInitialData();
                 hdnAdminMode.Value = this.IsAdminMode.ToString();
             }
+
+            repSubTasks_CustomPager.OnPageIndexChanged += repSubTasks_CustomPager_OnPageIndexChanged;
         }
 
         #endregion
@@ -1920,10 +1921,9 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            repSubTasks_CustomPager.PagerSize = Convert.ToInt32(drpPageSize.SelectedValue);
-            
+            repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
             repSubTasks_CustomPager.PageIndex = 0;
-            
+
             SetSubTaskDetails();
         }
 
@@ -2022,6 +2022,8 @@ namespace JG_Prospect.Sr_App.Controls
 
             #endregion
 
+            repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+
             DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);
             if (dsSubTaskDetails != null)
             {
@@ -2043,8 +2045,6 @@ namespace JG_Prospect.Sr_App.Controls
                         repSubTasks.DataSource = dtSubTaskDetails;
                         repSubTasks.DataBind();
 
-                        repSubTasks_CustomPager.OnPageIndexChanged += (sender, e) => { SetSubTaskDetails(); };
-                        repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
                         repSubTasks_CustomPager.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]);
                         repSubTasks_CustomPager.FillPager(Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]));
 
@@ -2087,12 +2087,6 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 repSubTasks.DataSource = this.lstSubTasks;
                 repSubTasks.DataBind();
-            }
-            else
-            {
-                repSubTasks_CustomPager.PagerSize = Convert.ToInt32(drpPageSize.SelectedValue);
-
-                repSubTasks_CustomPager.PageIndex = 0;
             }
         }
 
@@ -3016,5 +3010,9 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        protected void repSubTasks_CustomPager_OnPageIndexChanged(object sender, EventArgs e)
+        {
+            SetSubTaskDetails();
+        }
     }
 }
