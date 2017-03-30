@@ -2576,9 +2576,17 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     List<DataRow> lstDataRow = new List<DataRow>();
 
+                    // level 0 sub task.
+                    var lstRows0 = from r in dtSubTasks.AsEnumerable()
+                                   where r.Field<long>("TaskId") == intTaskId
+                                   select r;
+
+                    lstDataRow.AddRange(lstRows0);
+
                     // level 1 sub tasks.
                     var lstRows1 = from r in dtSubTasks.AsEnumerable()
-                                   where r.Field<long>("TaskId") == intTaskId || r.Field<long?>("ParentTaskId") == intTaskId
+                                   where r.Field<long?>("ParentTaskId") == intTaskId
+                                   orderby r.Field<string>("InstallId")
                                    select r;
 
                     lstDataRow.AddRange(lstRows1);
@@ -2595,6 +2603,7 @@ namespace JG_Prospect.Sr_App.Controls
                         var lstRows2 = from r in dtSubTasks.AsEnumerable()
                                        where
                                             r.Field<long?>("ParentTaskId") == row.Field<long>("TaskId")
+                                       orderby r.Field<string>("InstallId")
                                        select r;
 
                         lstDataRow.AddRange(lstRows2);
@@ -2604,10 +2613,10 @@ namespace JG_Prospect.Sr_App.Controls
 
                     // sort by task id to list data in proper numbering.
                     // for example, I-a, I-b, I-c etc
-                    DataView dvSubTaskResult = dtSubTaskResult.AsDataView();
-                    dvSubTaskResult.Sort = "TaskId ASC";
+                    //DataView dvSubTaskResult = dtSubTaskResult.AsDataView();
+                    //dvSubTaskResult.Sort = "InstallId ASC";
 
-                    repSubTasksNested.DataSource = dvSubTaskResult.ToTable();
+                    repSubTasksNested.DataSource = dtSubTaskResult;// dvSubTaskResult.ToTable();
                     repSubTasksNested.DataBind();
                 }
 
