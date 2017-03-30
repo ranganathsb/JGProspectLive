@@ -3096,10 +3096,7 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-<<<<<<< HEAD
-=======
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
->>>>>>> dfafb74b9e1efe96881624a4c5828d1f9ab052c5
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
