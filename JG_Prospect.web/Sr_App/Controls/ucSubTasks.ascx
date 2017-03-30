@@ -141,8 +141,8 @@
                                                 </HeaderTemplate>
                                                 <ItemTemplate>
                                                     <tr id="trSubTask" runat="server">
-                                                        <td valign="top">
-                                                            <div style='<%# "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
+                                                        <td valign="top" style='<%# Eval("NestLevel").ToString() == "0"? "border-left:1px solid black;" : "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
+                                                            <div>
                                                                 <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                 <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
                                                                 <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
