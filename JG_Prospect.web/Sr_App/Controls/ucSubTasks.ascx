@@ -41,6 +41,10 @@
         color: blue;
     }
 
+    .taskdesc * {
+        max-width: 100%;
+    }
+
     .modalBackground {
         background-color: #333333;
         filter: alpha(opacity=70);
@@ -108,7 +112,7 @@
                         <asp:Repeater ID="repSubTasks" runat="server" OnItemDataBound="repSubTasks_ItemDataBound">
                             <HeaderTemplate>
                                 <thead>
-                                    <tr class="trHeader">
+                                    <tr class="trHeader hide">
                                         <th>Task Details
                                         </th>
                                     </tr>
@@ -122,10 +126,10 @@
                                         <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
                                         <%-- Sub Task Nested Grid STARTS --%>
-                                        <table class="subtasklevel" width="100%">
+                                        <table class="subtasklevel" width="100%" cellpadding="0" cellspacing="0" border="0">
                                             <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
                                                 <HeaderTemplate>
-                                                    <tr>
+                                                    <tr class="trHeader">
                                                         <th class="subtasklevelheader" width="60">List ID#</th>
                                                         <th class="subtasklevelheader" width="250">Task Description</th>
                                                         <th class="subtasklevelheader">Assigned</th>
@@ -227,7 +231,7 @@
                                                                             placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
                                                                         <br />
                                                                         <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                                            AutoPostBack="true" CssClass="textbox" Width="80" OnTextChanged="gvSubTasks_txtPasswordToFreezeSubTask_TextChanged" ClientIDMode="AutoID" />
+                                                                            AutoPostBack="true" CssClass="textbox" Width="80" OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged" ClientIDMode="AutoID" />
 
                                                                     </td>
                                                                 </tr>
@@ -252,7 +256,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="noborder">
-                                                                        <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlTaskPriority_SelectedIndexChanged" />
+                                                                        <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -264,7 +268,7 @@
                                                                     <td class="noborder">
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
                                                                             CssClass="chosen-select" data-placeholder="Select"
-                                                                            AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                            AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
                                                                         <asp:Label ID="lblAssigned" runat="server" />
                                                                     </td>
                                                                 </tr>
@@ -275,7 +279,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="noborder">
-                                                                        <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="gvSubTasks_ddlStatus_SelectedIndexChanged" />
+                                                                        <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr style="display: none;">
@@ -340,7 +344,7 @@
                                                                                 <td>
                                                                                     <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" ClientIDMode="AutoID"
                                                                                         Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
-                                                                                        AutoPostBack="true" OnCheckedChanged="gvSubTasks_chkUiRequested_CheckedChanged" />
+                                                                                        AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -420,41 +424,6 @@
                         </tr>
                     </table>
                 </div>
-
-                <asp:GridView ID="gvSubTasks" runat="server" Visible="false" ShowHeaderWhenEmpty="true" AllowSorting="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                    HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                    EmptyDataText="No sub task available!" CssClass="table edit-subtask" Width="100%" CellSpacing="0" CellPadding="0"
-                    AutoGenerateColumns="False" EnableSorting="true" GridLines="Vertical" DataKeyNames="TaskId,InstallId"
-                    OnRowDataBound="gvSubTasks_RowDataBound" AllowPaging="true" OnPreRender="gvSubTasks_PreRender"
-                    OnPageIndexChanging="OnPagingGvSubTasks" AllowCustomPaging="true"
-                    OnRowCommand="gvSubTasks_RowCommand" PageSize="5"
-                    OnSorting="gvSubTasks_Sorting">
-                    <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                    <HeaderStyle CssClass="trHeader " />
-                    <RowStyle CssClass="FirstRow" />
-                    <PagerSettings Mode="NumericFirstLast" Visible="true" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
-                    <PagerStyle HorizontalAlign="Left" CssClass="pagination-ys" />
-                    <AlternatingRowStyle CssClass="AlternateRow " />
-                    <Columns>
-                        <asp:TemplateField HeaderText="ID#" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top"
-                            HeaderStyle-Width="30" Visible="false"><%--Action-ID#--%>
-                            <ItemTemplate>
-                                <asp:Literal ID="ltrlInstallId" runat="server" Text='<%# Eval("InstallId") %>' />
-                                <asp:Label ID="lblTaskId" Visible="false" runat="server" Text='<%# Eval("TaskId")%>'></asp:Label>
-                                <asp:LinkButton ID="lbtnInstallId" Visible="false" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
-                                    ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center"
-                            SortExpression="InstallId">
-                            <HeaderTemplate>
-                                Task Details
-                            </HeaderTemplate>
-                            <ItemTemplate>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
 
                 <asp:Button ID="btnSaveGridAttachment" runat="server"
                     OnClick="btnSaveGridAttachment_Click" Style="display: none;" Text="Save Attachement" />
@@ -938,6 +907,11 @@
 
     function OnSaveSubTaskClick() {
         return Page_ClientValidate('vgSubTask');
+    }
+
+    function OnAddMoreSubtaskClick() {
+        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+        return Page_ClientValidate('SubmitSubTask');
     }
 
     function copytoListID(sender) {

@@ -1499,7 +1499,7 @@ input.fz-user, .fz-user > input {
     background-color: gray !important;
 }
 
-.closed-task-bg, .closed-task-bg a {
+.closed-task-bg, .closed-task-bg * {
     background: black !important;
     background-color: black !important;
     color: white !important;
