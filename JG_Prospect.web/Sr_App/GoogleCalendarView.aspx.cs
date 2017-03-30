@@ -1264,7 +1264,7 @@ namespace JG_Prospect.Sr_App
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
 
-            if (result.Tables[0].Rows.Count > 0)
+            if (result.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
             {
                 drpMyCalendar.Items.Clear();
                 drpEventCalender.Items.Clear();

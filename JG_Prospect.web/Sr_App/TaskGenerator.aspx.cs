@@ -1326,8 +1326,14 @@ namespace JG_Prospect.Sr_App
             bool blUserAssigned = SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
             objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
-            objucSubTasks_Admin.SetSubTaskDetails();
-            objucSubTasks_User.SetSubTaskDetails();
+            if (this.IsAdminMode)
+            {
+                objucSubTasks_Admin.SetSubTaskDetails();
+            }
+            else
+            {
+                objucSubTasks_User.SetSubTaskDetails();
+            }
             if (blShowAddSubTaskOnLoad)
             {
                 objucSubTasks_Admin.ShowAddNewSubTaskSection(true);
