@@ -832,87 +832,97 @@
     });
 
 
-    var control;
     $(document).ready(function () {
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();
-        var isadded = false;
+    });
 
-         //For Title
-        $( ".TitleEdit" ).each(function(index) {
-            $(this).bind("click", function(){
-                if(!isadded)
-                {
+
+    var control;
+    var isadded = false;
+
+    function pageLoad(sender, args) {
+
+        //For Title
+        $(".TitleEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
                     var tid = $(this).attr("data-taskid");
                     var titledetail = $(this).html();
-                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");                
+                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
                     $(this).html(fName);
                     $('#txtedittitle').focus();
-                    isadded=true;
+
+                    console.log('going to be true in title');
+                    isadded = true;
                 }
-            }).bind('focusout', function() {
+            }).bind('focusout', function () {
                 var tid = $(this).attr("data-taskid");
                 var tdetail = $('#txtedittitle').val();
                 $(this).html(tdetail);
                 EditTask(tid, tdetail)
-                isadded=false;                
+                isadded = false;
             });
-         });
-        
+        });
+
         //For Url
-        $( ".UrlEdit" ).each(function(index) {
-            $(this).bind("click", function() {
-                if(!isadded)
-                {
+        $(".UrlEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
                     var tid = $(this).attr("data-taskid");
                     var titledetail = $(this).html();
-                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");                
+                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
                     $(this).html(fName);
                     $('#txtedittitle').focus();
-                    isadded=true;
+
+                    console.log('going to be true in url');
+                    isadded = true;
                 }
                 return false;
-            }).bind('focusout', function() {
+            }).bind('focusout', function () {
                 var tid = $(this).attr("data-taskid");
                 var tdetail = $('#txtedittitle').val();
-                
+
                 $(this).html(tdetail);
                 EditUrl(tid, tdetail);
-                isadded=false;
+                isadded = false;
                 return false;
             });
-         });
+        });
 
         //For Description
-        $( ".DescEdit" ).each(function(index) {
-            $(this).bind("click", function() {
-                if(!isadded)
-                {
+        $(".DescEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
                     var tid = $(this).attr("data-taskid");
                     var titledetail = $(this).html();
-                    var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >"+ titledetail+"</textarea>");                
+                    var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
                     $(this).html(fName);
                     SetCKEditorForSubTask('txtedittitle');
                     $('#txtedittitle').focus();
                     control = $(this);
-                    isadded=true;
+
+                    console.log('going to be true in desc');
+                    isadded = true;
 
                     var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
                     $(otherInput).css({ 'display': "block" });
-                    $(otherInput).bind("click",function(){
-                        updateDesc(GetCKEditorContent('txtedittitle'));
-                        $(this).css({ 'display': "none" });
-                    });                   
+                    $(otherInput).bind("click", function () {
+                            updateDesc(GetCKEditorContent('txtedittitle'));
+                            $(this).css({ 'display': "none" });
+                    });
                 }
                 return false;
             });
-         });
-    });
+        });
+    }
 
-function updateDesc(htmldata){
-    control.html(htmldata);
-    EditDesc(control.attr("data-taskid"), htmldata);
-    isadded=false;
+    function updateDesc(htmldata){
+        if (isadded) {
+            control.html(htmldata);
+            EditDesc(control.attr("data-taskid"), htmldata);
+            isadded = false;
+        }
 }
 
  function ShowAjaxLoader(){
