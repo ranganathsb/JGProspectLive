@@ -49,13 +49,40 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.DropDownList drpPageSize;
         
         /// <summary>
-        /// gvSubTasks control.
+        /// divSubTasks_List control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSubTasks;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTasks_List;
+        
+        /// <summary>
+        /// repSubTasks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repSubTasks;
+        
+        /// <summary>
+        /// repSubTasks_CustomPager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.Controls.CustomPager repSubTasks_CustomPager;
+        
+        /// <summary>
+        /// divSubTasks_Empty control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTasks_Empty;
         
         /// <summary>
         /// btnSaveGridAttachment control.
@@ -92,6 +119,15 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkFake;
+        
+        /// <summary>
+        /// upEditSubTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upEditSubTask;
         
         /// <summary>
         /// pnlCalendar control.

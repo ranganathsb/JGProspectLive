@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, vHSTid);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, intHighlightTaskId);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -175,6 +175,21 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
 
+        public int UpdateTaskTitleById(string tid, string title)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskTitleById(tid, title);
+        }
+
+        public int UpdateTaskURLById(string tid, string URL)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskURLById(tid, URL);
+        }
+
+        public int UpdateTaskDescriptionById(string tid, string Description)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskDescriptionById(tid, Description);
+        }
+
         public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
         {
             return TaskGeneratorDAL.Instance.DeleteTaskWorkSpecification(intTaskWorkSpecification);
@@ -229,6 +244,14 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetPendingSubTaskCount(TaskId);
         }
+
+
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
+        }
+
+
 
         #region TaskAcceptance
 

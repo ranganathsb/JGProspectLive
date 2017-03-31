@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using JG_Prospect.Common;
 
 namespace JG_Prospect.WebServices
 {
@@ -247,5 +248,193 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskTitleById(string tid, string title)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskTitleById(tid, title);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskURLById(string tid, string URL)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskURLById(tid, URL);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskDescriptionById(string tid, string Description)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskDescriptionById(tid, Description);
+            return true;
+        }
+
+
+        #region "Task Generator Add Methods"
+
+        [WebMethod(EnableSession = true)]
+        public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
+        {
+            return SaveSubTask(ParentTaskId, Title, URL, Desc,Status,Priority,DueDate,TaskHours,InstallID,Attachments, TaskType, TaskDesignations);
+        }
+
+        #region "Private Methods"
+
+        private bool SaveSubTask(int ParentTaskId, String Title, String URL,String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
+        {
+            bool blnReturnVal = false;
+            Task objTask = null;
+
+            objTask = new Task();
+            objTask.Mode = 0;
+
+            objTask.Title = Title;
+            objTask.Url = URL;
+            objTask.Description = Desc;
+
+            // Convert Task Status string to int, if invalid value passed, set it to default "Open" status
+            int inttaskStatus = ParseTaskStatus(Status);
+
+            objTask.Status = inttaskStatus;
+
+            if (Priority.Equals("0"))
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = ParseTaskPriority(Priority);
+            }
+
+            objTask.DueDate = DueDate;
+            objTask.Hours = TaskHours;
+            objTask.CreatedBy = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            objTask.InstallId = InstallID.Trim();
+            objTask.ParentTaskId = ParentTaskId;
+            objTask.Attachment = Attachments;
+
+            if (!String.IsNullOrEmpty(TaskType))
+            {
+                objTask.TaskType = ParseTaskType(TaskType);
+            }
+
+            // save task master details to database.
+           long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+
+            // If Task is saved successfully and its level 1 & 2 task then proceed further to save its related data like attachments and designations.
+            if (TaskId > 0 && !String.IsNullOrEmpty(TaskDesignations) && !String.IsNullOrEmpty(TaskDesignations))
+            {
+                // save assgined designation.
+                SaveTaskDesignations(TaskId, InstallID.Trim(), TaskDesignations);
+
+                // save attached file by user to database.
+                UploadUserAttachements(Convert.ToInt64(TaskId), Attachments, JGConstant.TaskFileDestination.SubTask);
+
+                blnReturnVal = true;
+            }
+
+            return blnReturnVal;
+        }
+
+        /// <summary>
+        /// Convert task status string to int constant to save in database.
+        /// if no proper string sent for respective status constant it will default set as OPEN.
+        /// </summary>
+        /// <param name="TaskStatus"></param>
+        /// <returns></returns>
+        private static int ParseTaskStatus(string TaskStatus)
+        {
+            int inttaskStatus = 0;
+
+            int.TryParse(TaskStatus, out inttaskStatus);
+
+            inttaskStatus = (inttaskStatus > 0) == true ? inttaskStatus : Convert.ToInt32(JGConstant.TaskStatus.Open);
+            return inttaskStatus;
+        }
+
+        /// <summary>
+        ///  Convert task priority string to int constant to save in database.
+        /// if no proper string sent for respective priority constant it will default set as LOW.
+        /// </summary>
+        /// <param name="TaskPriority"></param>
+        /// <returns></returns>
+        private static byte ParseTaskPriority(string TaskPriority)
+        {
+            byte inttaskPriority = 0;
+
+            byte.TryParse(TaskPriority, out inttaskPriority);
+
+            inttaskPriority = (inttaskPriority > 0) == true ? inttaskPriority : Convert.ToByte(JGConstant.TaskPriority.Low);
+
+            return inttaskPriority;
+        }
+
+        /// <summary>
+        ///  Convert task type string to int constant to save in database.
+        /// if no proper string sent for respective task type constant it will default set as ENHANCEMENT.
+        /// </summary>
+        /// <param name="TaskType"></param>
+        /// <returns></returns>
+        private static Int16 ParseTaskType(string TaskType)
+        {
+            Int16 inttaskType = 0;
+
+            Int16.TryParse(TaskType, out inttaskType);
+
+            inttaskType = (inttaskType > 0) == true ? inttaskType : Convert.ToByte(JGConstant.TaskType.Enhancement);
+
+            return inttaskType;
+        }
+
+        private void SaveTaskDesignations(long TaskId, String InstallID, String SubTaskDesignations)
+        {
+            //if task id is available to save its note and attachement.
+            if ( !string.IsNullOrEmpty(SubTaskDesignations))
+            {
+               
+                    int indexofComma = SubTaskDesignations.IndexOf(',');
+                    int copyTill = indexofComma > 0 ? indexofComma : SubTaskDesignations.Length;
+
+                    //string designationcode = GetInstallIdFromDesignation(designations.Substring(0, copyTill));
+                    string designationcode = InstallID;
+
+                    TaskGeneratorBLL.Instance.SaveTaskDesignations(Convert.ToUInt64(TaskId), SubTaskDesignations, designationcode);
+                
+            }
+        }
+
+        private static void UploadUserAttachements(long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
+        {
+            //User has attached file than save it to database.
+            if (!String.IsNullOrEmpty(attachments))
+            {
+                TaskUser taskUserFiles = new TaskUser();
+
+                if (!string.IsNullOrEmpty(attachments))
+                {
+                    String[] files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (String attachment in files)
+                    {
+                        String[] attachements = attachment.Split('@');
+
+                        taskUserFiles.Attachment = attachements[0];
+                        taskUserFiles.OriginalFileName = attachements[1];
+                        taskUserFiles.Mode = 0; // insert data.
+                        taskUserFiles.TaskId = TaskId;
+                        taskUserFiles.UserId = Convert.ToInt32(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        taskUserFiles.TaskUpdateId = null;
+                        taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
+                        taskUserFiles.TaskFileDestination = objTaskFileDestination;
+                        TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+
+        #endregion
     }
 }

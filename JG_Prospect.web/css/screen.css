@@ -1499,11 +1499,14 @@ input.fz-user, .fz-user > input {
     background-color: gray !important;
 }
 
-.closed-task-bg, .closed-task-bg a {
+.closed-task-bg {
     background: black !important;
     background-color: black !important;
     color: white !important;
 }
+    .closed-task-bg * {
+        color: white !important;
+    }
 
 .RadScheduler .rsHeader {
     z-index: 6 !important;
@@ -1888,4 +1891,36 @@ display: block;
 }
 .badge-inverse:hover {
   background-color: #1a1a1a;
+}
+
+.aptitude-test {
+}
+
+.aptitude-test .question-list .question {
+    background-color: white;
+    line-height: 20px;
+}
+
+.aptitude-test .question-list .question p {
+    margin:0;
+    padding:0;
+}
+
+.aptitude-test .option-list {
+    margin-left: 25px;
+    list-style-type: upper-alpha;
+}
+
+.aptitude-test .option-list li {
+    margin-bottom: 5px;
+}
+
+.aptitude-test .option-list li.answer {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.updateProgress {
+background-image: url("/img/ajax-loader.gif");
+align-content:flex-end;
 }

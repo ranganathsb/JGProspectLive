@@ -563,14 +563,14 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("usp_GetSubTasks");
+                    DbCommand command = database.GetStoredProcCommand("usp_GetSubTasks_New");
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
@@ -597,7 +597,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
                     }
 
-                    database.AddInParameter(command, "@hstid", DbType.Int32, vHSTid);
+                    database.AddInParameter(command, "@HighlightTaskId", DbType.Int32, intHighlightTaskId);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -931,6 +931,40 @@ namespace JG_Prospect.DAL
         }
 
         /// <summary>
+        /// Get one or all tasks with all sub tasks from all levels.
+        /// </summary>
+        /// <param name="intTaskID">optional taskid to get hierarchy. if it is null, all tasks will be returned in response.</param>
+        /// <returns></returns>
+        public DataSet GetTaskHierarchy(long? intTaskID, bool isAdmin)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskHierarchy");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (intTaskID.HasValue)
+                    {
+                        database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskID);
+                    }
+
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+
+
+        /// <summary>
         /// Get all Users and their designtions in system for whom tasks are available in system.
         /// <returns></returns>
         public DataSet GetAllUsersNDesignationsForFilter()
@@ -1089,6 +1123,71 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public int UpdateTaskTitleById(string tid, string title)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskTitleById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Title", DbType.String, title);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskURLById(string tid, string URL)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskURLById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@URL", DbType.String, URL);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskDescriptionById(string tid, string Description)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskDescriptionById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Description", DbType.String, Description);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
         public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
         {
             try
