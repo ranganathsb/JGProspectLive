@@ -422,7 +422,7 @@ namespace JG_Prospect.WebServices
                         taskUserFiles.OriginalFileName = attachements[1];
                         taskUserFiles.Mode = 0; // insert data.
                         taskUserFiles.TaskId = TaskId;
-                        taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        taskUserFiles.UserId = Convert.ToInt32(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                         taskUserFiles.TaskUpdateId = null;
                         taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
                         taskUserFiles.TaskFileDestination = objTaskFileDestination;
