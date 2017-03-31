@@ -247,5 +247,26 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskTitleById(string tid, string title)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskTitleById(tid, title);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskURLById(string tid, string URL)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskURLById(tid, URL);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskDescriptionById(string tid, string Description)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskDescriptionById(tid, Description);
+            return true;
+        }
+
     }
 }

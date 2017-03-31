@@ -268,7 +268,7 @@ border-top-right-radius: 4px;
                       
                 <table id="Table2" runat="server" width="100%">
                     <tr>
-                        <td align="left" width="30%">
+                        <td align="left" width="25%">
                             <h2 class="itdashtitle">Partial Frozen Tasks</h2>
                         </td>
                         <td  align="center" width="30%">
@@ -278,11 +278,11 @@ border-top-right-radius: 4px;
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigFrozen" runat="server" >
+                                        <asp:DropDownList ID="drpDesigFrozen" runat="server" style="width:150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigFrozen_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
-                                            <asp:DropDownList ID="drpUserFrozen" runat="server" >
+                                            <asp:DropDownList ID="drpUserFrozen" style="width:150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUserFrozen_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -292,7 +292,7 @@ border-top-right-radius: 4px;
                             <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchFrozen" runat="server" CssClass="textbox" placeholder="search users"  />
                                 <asp:Button ID="btnSearchFrozen" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchFrozen_Click" />
-
+                                
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeFrozen" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeFrozen_SelectedIndexChanged">
@@ -314,7 +314,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdFrozenTask" runat="server"  OnPreRender ="grdFrozenTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                           HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                            CssClass="table dashboard"
+                            CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdFrozenTask"   OnRowDataBound ="grdFrozenTask_RowDataBound"  PageSize = "20" >
@@ -369,13 +369,13 @@ border-top-right-radius: 4px;
                             <h2 class="itdashtitle">Non Frozen Tasks</h2>
                         </td>
                         <td  align="center" width="30%">
-                                <table id="Table6" runat="server"  >
+                           <%-- <table id="Table6" runat="server"  >
                                 <tr>
                                     <td>Designation</td><td>Users</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigNew" runat="server"   >
+                                        <asp:DropDownList ID="drpDesigNew" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigNew_SelectedIndexChanged" >
                                         </asp:DropDownList>
                                     </td>
                                     <td>
@@ -383,7 +383,7 @@ border-top-right-radius: 4px;
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-                            </table>
+                            </table>--%>
                         </td>
                         <td  align="right">
                              <div style="float: left;margin-top:15px;  ">
@@ -408,7 +408,7 @@ border-top-right-radius: 4px;
                     <asp:GridView ID="grdNewTask" runat="server"  OnPreRender ="grdNewTask_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                          HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                           CssClass="table dashboard"
+                           CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Frozen Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPaginggrdNewTask"   OnRowDataBound ="grdNewTask_RowDataBound"  PageSize = "20" >
@@ -487,11 +487,11 @@ border-top-right-radius: 4px;
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigInProgress" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesigInProgress" runat="server" style="width:150px;"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
-                                            <asp:DropDownList ID="drpUsersInProgress" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
+                                            <asp:DropDownList ID="drpUsersInProgress" style="width:150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -502,7 +502,7 @@ border-top-right-radius: 4px;
                             <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchInPro" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearchInPro" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchInPro_Click" />
-
+                                   
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeInpro" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeInpro_SelectedIndexChanged">
@@ -522,7 +522,7 @@ border-top-right-radius: 4px;
                 <asp:GridView ID="grdTaskPending" runat="server"  OnPreRender ="grdTaskPending_PreRender"
                           AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                         HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                          CssClass="table dashboard"
+                          CssClass="table dashboard" AllowCustomPaging="true"
                         EmptyDataText="No Pending Tasks Found !!" Width="100%" CellSpacing="0" CellPadding="0"
                         AutoGenerateColumns="False" EnableSorting="true" GridLines="Both"   
                         OnPageIndexChanging = "OnPagingTaskInProgress"   OnRowDataBound ="grdTaskPending_RowDataBound"  PageSize = "20" >
@@ -597,11 +597,11 @@ border-top-right-radius: 4px;
                                 </tr>
                                  <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigClosed" runat="server"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesigClosed" runat="server" style="width:150px;"  AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                     <td>
-                                         <asp:DropDownList ID="drpUsersClosed" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
+                                         <asp:DropDownList ID="drpUsersClosed" style="width:150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -611,7 +611,7 @@ border-top-right-radius: 4px;
                              <div style="float: left;margin-top:15px;  ">
                                 <asp:TextBox ID="txtSearchClosed" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                                 <asp:Button ID="btnSearchClosed" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchClosed_Click" />
-
+                                    
                                 Number of Records: 
                                 <asp:DropDownList ID="drpPageSizeClosed" runat="server" AutoPostBack="true"
                                     OnSelectedIndexChanged="drpPageSizeClosed_SelectedIndexChanged">
@@ -633,7 +633,7 @@ border-top-right-radius: 4px;
                     ShowHeaderWhenEmpty="true" AllowPaging ="true" EmptyDataRowStyle-HorizontalAlign="Center"
                     HeaderStyle-ForeColor="White" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
                     EmptyDataText="No Closed Tasks Found !!" CssClass="table dashboard" Width="100%" 
-                    CellSpacing="0" CellPadding="0" 
+                    CellSpacing="0" CellPadding="0"  AllowCustomPaging="true"
                     AutoGenerateColumns="False" EnableSorting="true" GridLines="Both" OnPageIndexChanging = "OnPagingTaskClosed" 
                     OnRowDataBound ="grdTaskClosed_RowDataBound" PagerStyle-HorizontalAlign="Right"  PageSize = "20" >
                     <HeaderStyle CssClass="trHeader " />
@@ -746,6 +746,12 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchFrozen.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
+
+                    if (request.term == "") {
+                        $('#<%=btnSearchFrozen.ClientID%>').click();
+                         return false;
+                     }
+
                     $.ajax({
                         type: "POST",
                         url: "ajaxcalls.aspx/GetTaskUsers",
@@ -763,9 +769,9 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                         }
                     });
                 },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
-                    $("#<%=btnSearchFrozen.ClientID%>").val(ui.item.value);
+                    $("#<%=txtSearchFrozen.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
                     $('#<%=btnSearchFrozen.ClientID%>').click();
                 }
@@ -804,6 +810,13 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchClosed.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
+
+                    if (request.term == "") {
+                        $('#<%=btnSearchClosed.ClientID%>').click();
+                        return false;
+                    }
+
+
                     $.ajax({
                         type: "POST",
                         url: "ajaxcalls.aspx/GetTaskUsers",
@@ -821,9 +834,9 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                  }
              });
          },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
-                    $("#<%=btnSearchClosed.ClientID%>").val(ui.item.value);
+                    $("#<%=txtSearchClosed.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
                     $('#<%=btnSearchClosed.ClientID%>').click();
                 }
@@ -864,6 +877,12 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $("#<%=txtSearchInPro.ClientID%>").catcomplete({
          delay: 500,
          source: function (request, response) {
+
+             if (request.term == "") {
+                 $('#<%=btnSearchInPro.ClientID%>').click();
+                  return false;
+              }
+
              $.ajax({
                  type: "POST",
                  url: "ajaxcalls.aspx/GetTaskUsers",
@@ -881,7 +900,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                         }
                     });
                 },
-                minLength: 2,
+                minLength: 0,
                 select: function (event, ui) {
                     $("#<%=txtSearchInPro.ClientID%>").val(ui.item.value);
                     //TriggerSearch();

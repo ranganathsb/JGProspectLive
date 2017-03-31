@@ -1123,6 +1123,71 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public int UpdateTaskTitleById(string tid, string title)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskTitleById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Title", DbType.String, title);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskURLById(string tid, string URL)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskURLById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@URL", DbType.String, URL);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskDescriptionById(string tid, string Description)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskDescriptionById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Description", DbType.String, Description);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
         public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
         {
             try
@@ -1532,7 +1597,7 @@ namespace JG_Prospect.DAL
 
         //------------ Start DP ------------
 
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex = 0, int pagesize = 0)
         {
             try
             {
@@ -1544,6 +1609,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }
@@ -1554,7 +1621,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid, string vSearch)
+        public DataSet GetClosedTasks(int userid, int desigid, string vSearch,int pageindex=0,int pagesize =0)
         {
             try
             {
@@ -1566,6 +1633,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userid", DbType.Int32, userid);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
                     result = database.ExecuteDataSet(command);
                     return result;
                 }
