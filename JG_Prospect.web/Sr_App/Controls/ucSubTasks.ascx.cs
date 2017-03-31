@@ -2694,10 +2694,10 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
                     string strhtml = "";
-                    strhtml = strhtml + "<strong>Title: " + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</strong></br>";
-                    strhtml = strhtml + " <strong>URL: <a href='" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</a></strong></br>";
-                    strhtml = strhtml + "<strong>Description: </strong></br>";
-                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString();
+                    strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
+                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
 
                     dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }

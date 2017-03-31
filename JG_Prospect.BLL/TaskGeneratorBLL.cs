@@ -175,6 +175,21 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
 
+        public int UpdateTaskTitleById(string tid, string title)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskTitleById(tid, title);
+        }
+
+        public int UpdateTaskURLById(string tid, string URL)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskURLById(tid, URL);
+        }
+
+        public int UpdateTaskDescriptionById(string tid, string Description)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskDescriptionById(tid, Description);
+        }
+
         public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
         {
             return TaskGeneratorDAL.Instance.DeleteTaskWorkSpecification(intTaskWorkSpecification);
