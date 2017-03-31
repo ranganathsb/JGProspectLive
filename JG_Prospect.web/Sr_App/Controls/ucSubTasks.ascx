@@ -987,6 +987,7 @@
             sender.closest('tr').next('tr').hide();
         }
     }
+
     var CopyLink = "";
 
     function ApplySubtaskLinkContextMenu() {
@@ -1000,7 +1001,7 @@
             ShowMenu('contextMenu', event);
 
             var linkText = $(this).attr('data-highlighter').split("?");
-
+            
             CopyLink = linkText[0] + " : " + window.location.href.split("=")[0] + "=" + linkText[1];
 
             //alert(CopyLink);
@@ -1028,11 +1029,30 @@
 
     /////////////////////
 
+    //window.addEventListener('copy', function (evt) {
+    //    alert("hello");
+    //    console.log(evt.clipboardData.getData('text/plain'));
+    //    alert(evt.clipboardData.getData('text/plain'));
+    //});
+
     //var isclicked = 0;
     // To copy Text Ctrl + C
     function ClipBoard() {
 
-        window.clipboardData.setData("Text", CopyLink);
+        // For Chrome
+        var input = document.createElement('textarea');
+        document.body.appendChild(input);
+        input.value = CopyLink;
+        //input.focus();
+        input.select();
+        document.execCommand('Copy');
+        input.remove();
+
+        // For IE
+        clipboardData.setData("Text", CopyLink);
+
+
+        //alert(clipboardData.getData("text"));
 
         //alert(isclicked);
 
