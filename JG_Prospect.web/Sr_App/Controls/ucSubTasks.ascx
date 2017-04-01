@@ -447,7 +447,7 @@
 
             <asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none;">
+                    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
                         <table border="1" cellspacing="5" cellpadding="5" width="90%">
                             <tr>
                                 <td>ListID:
@@ -508,7 +508,7 @@
                                         <asp:Button ID="btnAddMoreSubtask" runat="server" OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                             TabIndex="5" Text="Submit" CssClass="ui-button"
                                             OnClick="btnAddMoreSubtask_Click" ValidationGroup="SubmitSubTask" Visible="false" />
-                                        <a id="hypSaveSubTask" href="javascript:void(0);" onclick="javascript:OnSaveSubTaskClick1(this);" >Submit</a>
+                                        <input type="submit" id="hypSaveSubTask" value="Submit" onclick="javascript: OnSaveSubTaskClick1(this); return false;" />
                                     </div>
                                     <%-- <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
                                                      OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />--%>
