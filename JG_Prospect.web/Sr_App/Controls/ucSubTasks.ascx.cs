@@ -2024,6 +2024,8 @@ namespace JG_Prospect.Sr_App.Controls
 
             repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
 
+            hypAddSubTask.Attributes.Add("data-taskid", this.TaskId.ToString());
+
             DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);
             if (dsSubTaskDetails != null)
             {
@@ -2051,15 +2053,13 @@ namespace JG_Prospect.Sr_App.Controls
                         upSubTasks.Update();
                     }
 
-                    if (dtSubTaskDetails.Rows.Count > 0)
+                    if (dsSubTaskDetails.Tables[3].Rows.Count > 0)
                     {
                         dvSubTaskDetails.Sort = "TaskId ASC";
                         dtSubTaskDetails = dvSubTaskDetails.ToTable();
-                        this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-                    }
-                    else
-                    {
-                        this.LastSubTaskSequence = String.Empty;
+                        hypAddSubTask.Attributes.Add("data-installid", GetInstallId(0, string.Empty, Convert.ToString(dsSubTaskDetails.Tables[3].Rows[0]["LastSubTaskInstallId"])));
+
+                        this.LastSubTaskSequence = Convert.ToString(dsSubTaskDetails.Tables[3].Rows[0]["LastSubTaskInstallId"]);
                     }
                 }
             }
@@ -2085,8 +2085,16 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (controlMode == "0")
             {
+                // do not allow, add sub task in add mode for parent task.
+                hypAddSubTask.Visible = false;
+
                 repSubTasks.DataSource = this.lstSubTasks;
                 repSubTasks.DataBind();
+            }
+            else
+            {
+                // sub task can be added only while editing / viewing main task.
+                hypAddSubTask.Visible = true;
             }
         }
 
@@ -3034,7 +3042,7 @@ namespace JG_Prospect.Sr_App.Controls
             int intNestLevel = Convert.ToInt32(objNestLevel);
             string strInstallId = Convert.ToString(objInstallId);
             string strLastSubTaskInstallId = Convert.ToString(objLastSubTaskInstallId);
-            
+
             string strStartAt = string.Empty;
             bool blRoman = false;
 
@@ -3043,7 +3051,12 @@ namespace JG_Prospect.Sr_App.Controls
             // level 2 tasks are lower case roman numbers. (i, ii, iii etc.)
             if (intNestLevel == 0)
             {
-                strStartAt = strInstallId + "-a";
+                strStartAt = "I";
+                blRoman = true;
+            }
+            else if (intNestLevel == 1)
+            {
+                strStartAt = strInstallId + " - a";
                 blRoman = false;
             }
             else if (intNestLevel == 1)
