@@ -1046,11 +1046,12 @@
         //input.focus();
         input.select();
         document.execCommand('Copy');
-        input.remove();
-
+        input.style.display = 'none';
+        input.parentNode.removeChild(input);
+        //input.remove();
+        //document.removeChild(input);
         // For IE
         clipboardData.setData("Text", CopyLink);
-
 
         //alert(clipboardData.getData("text"));
 
