@@ -2588,7 +2588,7 @@ namespace JG_Prospect.Sr_App.Controls
                                    where r.Field<long?>("ParentTaskId") == intTaskId
                                    orderby r.Field<string>("InstallId")
                                    select r;
-                    
+
                     lstDataRow.AddRange(lstRows1);
 
                     foreach (var row in lstRows1)
@@ -3027,6 +3027,32 @@ namespace JG_Prospect.Sr_App.Controls
         protected void btnRefreshSubTasks_Click(object sender, EventArgs e)
         {
             SetSubTaskDetails();
+        }
+
+        public string GetInstallId(object objNestLevel, object objInstallId, object objLastSubTaskInstallId)
+        {
+            int intNestLevel = Convert.ToInt32(objNestLevel);
+            string strInstallId = Convert.ToString(objInstallId);
+            string strLastSubTaskInstallId = Convert.ToString(objLastSubTaskInstallId);
+            
+            string strStartAt = string.Empty;
+            bool blRoman = false;
+
+            // level 0 tasks are upper case roman numbers. (I, II, III etc.)
+            // level 1 tasks are combination of roman number and alphabet. (I-a, I-b, II-a, II-b, III-a etc.)
+            // level 2 tasks are lower case roman numbers. (i, ii, iii etc.)
+            if (intNestLevel == 0)
+            {
+                strStartAt = strInstallId + "-a";
+                blRoman = false;
+            }
+            else if (intNestLevel == 1)
+            {
+                strStartAt = "i";
+                blRoman = true;
+            }
+
+            return CommonFunction.GetNextSequenceValue(strStartAt, strLastSubTaskInstallId, blRoman);
         }
     }
 }

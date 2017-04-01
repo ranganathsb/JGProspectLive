@@ -519,7 +519,7 @@ namespace JG_Prospect.App_Code
         ///    A-  :   A-0
         ///    Z-  :   Z-0
         /// </returns>
-        public static string GetTaskWorkSpecificationSequence(string strStartAt, string strCurrentSequence = "", bool blIsRoman = false)
+        public static string GetNextSequenceValue(string strStartAt, string strCurrentSequence = "", bool blIsRoman = false)
         {
             string strReturnValue = strStartAt.ToString();
 
