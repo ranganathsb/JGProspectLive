@@ -143,7 +143,8 @@
                                                 <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>'></asp:HiddenField>
                                                 <h5>
                                                     <input type="checkbox" name="bulkaction" />
-                                                    <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
+                                                    <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# string.Format( Eval("ParentTaskInstallId") + " - " + Eval("InstallId") + " - " + Eval("Title") + "?" + Eval("TaskId"))%>'
+                                                         CssClass="context-menu"
                                                         ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click" />
                                                     <%--  <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"onmousedown="ClipBoard('Hi');"OnClientClick="ClipBoard('Hi');"
                                                       '<%# string.Concat(Eval("InstallId"), " ", Eval("Title"))%>'oncontextmenu="ShowMenu('contextMenu',event);""javascript:return ClipBoard('Hi');"
