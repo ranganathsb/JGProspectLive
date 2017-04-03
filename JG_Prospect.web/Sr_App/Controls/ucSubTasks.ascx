@@ -438,15 +438,6 @@
                             <td align="center" valign="middle" style="color: black;">No sub task available!
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <table width="100%">
-                                    <tr data-nest-level='0' data-taskid='0' data-parent-taskid='<%= this.TaskId %>'>
-                                        <td colspan="4"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
                     </table>
                 </div>
 

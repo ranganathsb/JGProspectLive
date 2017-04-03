@@ -547,7 +547,7 @@
                     of: $('#<%=divWorkSpecificationSection.ClientID%>')
                 });
 
-                $(varControlID).bind("dialogclose", function (event, ui) { location.reload(); });
+                $(varControlID).on("dialogclose", function (event, ui) { location.reload(); });
             }
             else if (varControlID == '#<%=divWorkSpecificationSection.ClientID%>') {
                 $(varControlID).dialog("option", "position", {
