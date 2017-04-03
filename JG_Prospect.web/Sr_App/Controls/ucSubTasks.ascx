@@ -252,7 +252,7 @@
                                                                 <button type="button" id="btnsubtasksave" class="btnsubtask" style="display:none;">Save</button>
                                                             </div>
                                                             <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: none;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
-                                                            <a href="javascript:void(0);" class='<%# Convert.ToInt32(Eval("NestLevel")) >= 2? "hide" : "" %>' data-taskid='<%# Eval("TaskId") %>' data-installid='<%# GetInstallId(Eval("NestLevel"), Eval("InstallId"), Eval("LastSubTaskInstallId")) %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
+                                                            <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId") %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
@@ -1021,9 +1021,8 @@
         var $hypSaveSubTask = $('#hypSaveSubTask');
 
         var intTaskId = $sender.attr('data-taskid');
-        var strInstallId = $sender.attr('data-installid');
 
-        $txtInstallId.val(strInstallId);
+        $txtInstallId.val('-');
         $txtSubSubTitle.val('');
         $drpSubTaskPriority.val('');
         $drpSubTaskType.val('');
