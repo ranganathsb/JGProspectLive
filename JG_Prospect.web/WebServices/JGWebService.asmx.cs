@@ -274,9 +274,9 @@ namespace JG_Prospect.WebServices
         #region "Task Generator Add Methods"
 
         [WebMethod(EnableSession = true)]
-        public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
+        public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl);
         }
 
         [WebMethod(EnableSession = true)]
@@ -410,7 +410,7 @@ namespace JG_Prospect.WebServices
 
         #region "Private Methods"
 
-        private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
+        private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -448,8 +448,10 @@ namespace JG_Prospect.WebServices
                 objTask.TaskType = ParseTaskType(TaskType);
             }
 
+            int TaskLevel = Convert.ToInt32(TaskLvl);
+
             // save task master details to database.
-            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
 
             // If Task is saved successfully and its level 1 & 2 task then proceed further to save its related data like attachments and designations.
             if (TaskId > 0 && !String.IsNullOrEmpty(TaskDesignations) && !String.IsNullOrEmpty(TaskDesignations))

@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
 
         private DataSet returndata;
 
-        public Int64 SaveOrDeleteTask(Task objTask)
+        public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel)
         {
             try
             {
@@ -68,6 +68,7 @@ namespace JG_Prospect.DAL
                     }
                     database.AddInParameter(command, "@IsTechTask", DbType.Int16, objTask.IsTechTask);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+                    database.AddInParameter(command, "@TaskLevel", DbType.Int32, TaskLevel);
 
                     database.AddOutParameter(command, "@Result", DbType.Int32, 0);
 

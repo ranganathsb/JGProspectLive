@@ -1121,7 +1121,7 @@ namespace JG_Prospect.Sr_App
             objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedValue);
             objTask.IsTechTask = chkTechTask.Checked;
 
-            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);    // save task master details
+            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0);    // save task master details
 
             if (controlMode.Value == "0")
             {

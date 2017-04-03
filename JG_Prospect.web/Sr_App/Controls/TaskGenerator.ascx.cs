@@ -602,7 +602,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdnTaskId.Value = ((HiddenField)objGridViewRow.FindControl("hdnTaskId")).Value;
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
 
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
             {
                 SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
             }
@@ -617,7 +617,7 @@ namespace JG_Prospect.Sr_App.Controls
             HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
             DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssigned") as DropDownCheckBoxes;
 
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, Convert.ToInt32(hdnTaskId.Value)))
             {
                 Task objTask = new Task();
                 objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
@@ -786,7 +786,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     objSubTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
                     // save task master details to database.
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask, 0).ToString();
 
                     UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment);
                 }
@@ -1446,7 +1446,7 @@ namespace JG_Prospect.Sr_App.Controls
             task.Mode = Convert.ToInt32(controlMode.Value);
             task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedValue);
 
-            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
+            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task, 0);    // save task master details
 
             if (controlMode.Value == "0")
             {
@@ -1514,10 +1514,10 @@ namespace JG_Prospect.Sr_App.Controls
             else
             {
                 // save task master details to database.
-                Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
+                Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task, 0);
                 hdnSubTaskId.Value = ItaskId.ToString();
                 UploadUserAttachements(null, ItaskId, task.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty,"", null, null).Tables[0]);
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty, "", null, null).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();

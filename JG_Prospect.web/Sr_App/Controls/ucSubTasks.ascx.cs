@@ -2175,7 +2175,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     objSubTask.ParentTaskId = intTaskId;
                     // save task master details to database.
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask, 0).ToString();
 
                     UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment, JGConstant.TaskFileDestination.SubTask);
                 }
@@ -2252,11 +2252,11 @@ namespace JG_Prospect.Sr_App.Controls
                 // save task master details to database.
                 if (hdnSubTaskId.Value == "0")
                 {
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0).ToString();
                 }
                 else
                 {
-                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0);
                 }
 
                 // save assgined designation.
@@ -2701,6 +2701,8 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
                     dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+
+                    btnshowdivsub.Visible = false;
                 }
                 else if (hdTaskLevel.Value == "1")
                 {
@@ -2734,6 +2736,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
                 btnshowdivsub.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
+                btnshowdivsub.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
 
 
                 lbtnInstallId.CommandName = hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString() + "#" + hdTaskLevel.Value;
