@@ -403,7 +403,7 @@ namespace JG_Prospect.WebServices
             }
         }
 
-        private void UploadUserAttachements(long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
+        private static void UploadUserAttachements(long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
