@@ -1074,8 +1074,6 @@
 
     function OnSaveSubTaskClick1(sender) {
         
-        $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
-
         if (!Page_ClientValidate('SubmitSubTask')) {
             return;
         }
