@@ -12,6 +12,10 @@
         border: 0px;
     }
 
+        .subtasklevel td {
+            padding: 0px;
+        }
+
     .installidright {
         text-align: right;
         width: 80px;
@@ -127,7 +131,6 @@
                                     <td>
                                         <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                         <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
-
                                         <%-- Sub Task Nested Grid STARTS --%>
                                         <table class="subtasklevel" width="100%" cellpadding="0" cellspacing="0" border="0">
                                             <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
@@ -249,7 +252,7 @@
                                                                 <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                                     <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                                 </div>
-                                                                <button type="button" id="btnsubtasksave" class="btnsubtask" style="display:none;">Save</button>
+                                                                <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                             </div>
                                                             <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: none;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                             <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId") %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
@@ -838,16 +841,11 @@
     });
 
 
+    var control;
     $(document).ready(function () {
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();
-    });
-
-
-    var control;
-    var isadded = false;
-
-    function pageLoad(sender, args) {
+        var isadded = false;
 
         //For Title
         $(".TitleEdit").each(function (index) {
@@ -858,8 +856,6 @@
                     var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
                     $(this).html(fName);
                     $('#txtedittitle').focus();
-
-                    console.log('going to be true in title');
                     isadded = true;
                 }
             }).bind('focusout', function () {
@@ -880,8 +876,6 @@
                     var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
                     $(this).html(fName);
                     $('#txtedittitle').focus();
-
-                    console.log('going to be true in url');
                     isadded = true;
                 }
                 return false;
@@ -907,34 +901,31 @@
                     SetCKEditorForSubTask('txtedittitle');
                     $('#txtedittitle').focus();
                     control = $(this);
-
-                    console.log('going to be true in desc');
                     isadded = true;
 
                     var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
                     $(otherInput).css({ 'display': "block" });
                     $(otherInput).bind("click", function () {
-                            updateDesc(GetCKEditorContent('txtedittitle'));
-                            $(this).css({ 'display': "none" });
+                        updateDesc(GetCKEditorContent('txtedittitle'));
+                        $(this).css({ 'display': "none" });
                     });
                 }
                 return false;
             });
         });
-    }
-    function updateDesc(htmldata){
-        if (isadded) {
-            control.html(htmldata);
-            EditDesc(control.attr("data-taskid"), htmldata);
-            isadded = false;
-        }
+    });
+
+    function updateDesc(htmldata) {
+        control.html(htmldata);
+        EditDesc(control.attr("data-taskid"), htmldata);
+        isadded = false;
     }
 
-    function EditTask(tid, tdetail){
+    function EditTask(tid, tdetail) {
         ShowAjaxLoader();
         var postData = {
-        tid:tid,
-        title:tdetail
+            tid: tid,
+            title: tdetail
         };
 
         $.ajax
@@ -956,11 +947,11 @@
             }
         );
     }
-    function EditUrl(tid, tdetail){
+    function EditUrl(tid, tdetail) {
         ShowAjaxLoader();
         var postData = {
-        tid:tid,
-        URL:tdetail
+            tid: tid,
+            URL: tdetail
         };
 
         $.ajax
@@ -982,11 +973,11 @@
             }
         );
     }
-  function EditDesc(tid, tdetail){
+    function EditDesc(tid, tdetail) {
         ShowAjaxLoader();
         var postData = {
-        tid:tid,
-        Description:tdetail
+            tid: tid,
+            Description: tdetail
         };
 
         $.ajax
@@ -1221,27 +1212,27 @@
         var strListID = $.trim($(sender).text());
         if (strListID.length > 0) {
             $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
-                ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
-            }
+            ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
+            ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
         }
+    }
 
-        var objSubTaskDropzone, objSubtaskNoteDropzone;
+    var objSubTaskDropzone, objSubtaskNoteDropzone;
 
 
-        function ucSubTasks_ApplyDropZone() {
-            //remove already attached dropzone.
-            if (objSubTaskDropzone) {
-                objSubTaskDropzone.destroy();
-                objSubTaskDropzone = null;
-            }
-            if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-            objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                maxFiles: 5,
-                url: "taskattachmentupload.aspx",
-                thumbnailWidth: 90,
-                thumbnailHeight: 90,
-                previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+    function ucSubTasks_ApplyDropZone() {
+        //remove already attached dropzone.
+        if (objSubTaskDropzone) {
+            objSubTaskDropzone.destroy();
+            objSubTaskDropzone = null;
+        }
+        if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                 init: function () {
                     this.on("maxfilesexceeded", function (data) {
                         alert('you are reached maximum attachment upload limit.');
@@ -1264,7 +1255,7 @@
             });
         }
 
-        //Apply dropzone for comment section.
+            //Apply dropzone for comment section.
         if (objSubtaskNoteDropzone) {
             objSubtaskNoteDropzone.destroy();
             objSubTaskNoteDropzone = null;

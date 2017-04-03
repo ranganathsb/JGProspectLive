@@ -144,6 +144,7 @@ function SetCKEditorForSubTask(Id) {
             on: {
                 blur: function (event) {
                     event.editor.updateElement();
+                    //updateDesc(GetCKEditorContent(Id));
                 },
                 fileUploadResponse: function (event) {
                     // Prevent the default response handler.
