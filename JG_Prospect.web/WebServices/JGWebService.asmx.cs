@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using JG_Prospect.Common;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.WebServices
 {
@@ -127,7 +128,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, string strTitle,string strURL, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword = "")
+        public bool SaveTaskWorkSpecification(Int64 intId, string strCustomId, string strDescription, string strTitle, string strURL, Int64 intTaskId, Int64 intParentTaskWorkSpecificationId, string strPassword = "")
         {
             bool blSuccess = true;
 
@@ -275,12 +276,141 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc,Status,Priority,DueDate,TaskHours,InstallID,Attachments, TaskType, TaskDesignations);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public object GetSubTaskId(string CommandArgument, string CommandName)
+        {
+            char[] delimiterChars = { '#' };
+            string[] TaskLvlandInstallId = CommandName.Split(delimiterChars);
+
+            string listIDOpt = string.Empty;
+            string txtInstallId = string.Empty;
+            string hdTaskLvl = TaskLvlandInstallId[0];
+            string hdParentTaskId = TaskLvlandInstallId[2];
+            string hdnCurrentEditingRow = TaskLvlandInstallId[3];
+
+            if (TaskLvlandInstallId[0] == "2")
+            {
+                Task objTask = new Task();
+                DataSet result = new DataSet();
+                string vInstallId = TaskLvlandInstallId[1];
+                result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], 2);
+                if (result.Tables[0].Rows.Count > 0)
+                {
+                    vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+                }
+                string[] subtaskListIDSuggestion = getSUBSubtaskSequencing(vInstallId);
+                if (subtaskListIDSuggestion.Length > 0)
+                {
+                    if (subtaskListIDSuggestion.Length > 1)
+                    {
+                        if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
+                        {
+                            txtInstallId = subtaskListIDSuggestion[0];
+                        }
+                        else
+                        {
+                            txtInstallId = subtaskListIDSuggestion[1];
+                        }
+                    }
+                    else
+                    {
+                        txtInstallId = subtaskListIDSuggestion[0];
+                    }
+                }
+            }
+            else
+            {
+
+                string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii" };
+                DataSet result = new DataSet();
+                result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], 3);
+                string vNextInstallId = "";
+                if (result.Tables[0].Rows.Count > 0)
+                {
+                    string vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+
+                    int cnt = -1;
+                    for (int i = 0; i < roman4.Length; i++)
+                    {
+                        if (vInstallId == roman4[i])
+                        {
+                            cnt = i + 1;
+                        }
+
+                        if (cnt == i)
+                        {
+                            vNextInstallId = roman4[i];
+                            break;
+                        }
+                    }
+                }
+                else { vNextInstallId = roman4[0]; }
+                txtInstallId = vNextInstallId;
+                result.Dispose();
+            }
+
+
+            var obj = new
+            {
+                hdTaskLvl = hdTaskLvl,
+                hdParentTaskId = hdParentTaskId,
+                txtInstallId = txtInstallId
+            };
+
+            return obj;
+        }
+
+        private string[] getSUBSubtaskSequencing(string sequence)
+        {
+            String[] ReturnSequence = new String[2];
+
+            String[] numbercomponents = sequence.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            //if no subtask sequence than start with roman number I.
+            if (numbercomponents.Length == 0) // like number of subtask without alphabet I,II
+            {
+                int startSequence = 1;
+                ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                ReturnSequence[1] = String.Concat(ReturnSequence[0], " - a"); // concat existing roman number with alphabet.
+
+            }
+            else if (numbercomponents.Length == 1) // like number of subtask without alphabet I,II
+            {
+                int startSequence = 1;
+                ReturnSequence[0] = ExtensionMethods.ToRoman(startSequence);
+                ReturnSequence[1] = String.Concat(sequence, " - a"); // concat existing roman number with alphabet.
+
+            }
+            else  // if task sequence contains alphabet.
+            {
+                int numbersequence;
+                numbercomponents[0] = numbercomponents[0].Trim();
+                numbercomponents[1] = numbercomponents[1].Trim();
+
+
+                char[] alphabetsequence = numbercomponents[1].ToCharArray();// get aplphabet from sequence
+
+                bool parsed = ExtensionMethods.TryRomanParse(numbercomponents[0], out numbersequence); // parse roman to integer
+
+                if (parsed)
+                {
+                    numbersequence++; // increase integer sequence
+
+                    ReturnSequence[0] = ExtensionMethods.ToRoman(numbersequence); // convert integer sequnce to roman
+                    ReturnSequence[1] = string.Concat(numbercomponents[0], " - ", ++alphabetsequence[0]); // advance alphabet to next alphabet.
+                }
+            }
+
+            return ReturnSequence;
         }
 
         #region "Private Methods"
 
-        private bool SaveSubTask(int ParentTaskId, String Title, String URL,String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
+        private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -319,7 +449,7 @@ namespace JG_Prospect.WebServices
             }
 
             // save task master details to database.
-           long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
+            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
 
             // If Task is saved successfully and its level 1 & 2 task then proceed further to save its related data like attachments and designations.
             if (TaskId > 0 && !String.IsNullOrEmpty(TaskDesignations) && !String.IsNullOrEmpty(TaskDesignations))
@@ -389,17 +519,17 @@ namespace JG_Prospect.WebServices
         private void SaveTaskDesignations(long TaskId, String InstallID, String SubTaskDesignations)
         {
             //if task id is available to save its note and attachement.
-            if ( !string.IsNullOrEmpty(SubTaskDesignations))
+            if (!string.IsNullOrEmpty(SubTaskDesignations))
             {
-               
-                    int indexofComma = SubTaskDesignations.IndexOf(',');
-                    int copyTill = indexofComma > 0 ? indexofComma : SubTaskDesignations.Length;
 
-                    //string designationcode = GetInstallIdFromDesignation(designations.Substring(0, copyTill));
-                    string designationcode = InstallID;
+                int indexofComma = SubTaskDesignations.IndexOf(',');
+                int copyTill = indexofComma > 0 ? indexofComma : SubTaskDesignations.Length;
 
-                    TaskGeneratorBLL.Instance.SaveTaskDesignations(Convert.ToUInt64(TaskId), SubTaskDesignations, designationcode);
-                
+                //string designationcode = GetInstallIdFromDesignation(designations.Substring(0, copyTill));
+                string designationcode = InstallID;
+
+                TaskGeneratorBLL.Instance.SaveTaskDesignations(Convert.ToUInt64(TaskId), SubTaskDesignations, designationcode);
+
             }
         }
 

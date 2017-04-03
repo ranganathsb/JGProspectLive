@@ -121,13 +121,13 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.LinkButton lnkFake;
         
         /// <summary>
-        /// upEditSubTask control.
+        /// btnUpdateRepeater control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upEditSubTask;
+        protected global::System.Web.UI.WebControls.Button btnUpdateRepeater;
         
         /// <summary>
         /// pnlCalendar control.
@@ -283,15 +283,6 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary2;
         
         /// <summary>
-        /// upAddSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upAddSubTask;
-        
-        /// <summary>
         /// divAddSubTask control.
         /// </summary>
         /// <remarks>
@@ -301,13 +292,22 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAddSubTask;
         
         /// <summary>
-        /// lbtnAddNewSubTask control.
+        /// hdndesignations control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnAddNewSubTask;
+        protected global::System.Web.UI.WebControls.HiddenField hdndesignations;
+        
+        /// <summary>
+        /// hdnLastSubTaskSequence control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnLastSubTaskSequence;
         
         /// <summary>
         /// vsSubTask control.
@@ -319,13 +319,13 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.ValidationSummary vsSubTask;
         
         /// <summary>
-        /// divSubTask control.
+        /// divNEWSubTask control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTask;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNEWSubTask;
         
         /// <summary>
         /// hdnTaskApprovalId control.
@@ -445,51 +445,6 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUrl;
         
         /// <summary>
-        /// upnlDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlDesignation;
-        
-        /// <summary>
-        /// ddlUserDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlUserDesignation;
-        
-        /// <summary>
-        /// cvDesignations control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator cvDesignations;
-        
-        /// <summary>
-        /// upnlAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlAttachments;
-        
-        /// <summary>
-        /// rptSubTaskAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptSubTaskAttachments;
-        
-        /// <summary>
         /// txtSubTaskDescription control.
         /// </summary>
         /// <remarks>
@@ -506,15 +461,6 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSubTaskDescription;
-        
-        /// <summary>
-        /// upAttachmentsData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upAttachmentsData;
         
         /// <summary>
         /// hdnAttachments control.
