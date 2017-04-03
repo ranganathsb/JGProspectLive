@@ -27,9 +27,9 @@ namespace JG_Prospect.BLL
             get { return m_TaskGeneratorBLL; }
             set { ; }
         }
-        public Int64 SaveOrDeleteTask(Task objTask)
+        public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel)
         {
-            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask);
+            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
         }
 
         public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)
@@ -79,7 +79,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, intHighlightTaskId);
         }
@@ -93,7 +93,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
         }
-        
+
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
@@ -286,9 +286,9 @@ namespace JG_Prospect.BLL
 
 
         //--------- Start DP -----------
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch,int pageindex , int pagesize)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)
         {
-            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex,pagesize);
+            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex, pagesize);
         }
 
         public DataSet GetClosedTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)
