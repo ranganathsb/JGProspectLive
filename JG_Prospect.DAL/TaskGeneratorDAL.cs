@@ -562,6 +562,31 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetTaskByMaxId(string parentTaskid,short taskLVL)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetTaskByaxId");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@parentTaskId", DbType.Int64, parentTaskid);
+                    database.AddInParameter(command, "@taskLVL", DbType.Int16, taskLVL);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         //Get details for sub tasks with user and attachments
         public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
         {
