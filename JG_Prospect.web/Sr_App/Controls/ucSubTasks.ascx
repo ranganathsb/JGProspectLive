@@ -1045,8 +1045,8 @@
     }
 
     function OnSaveSubTaskClick1(sender) {
-        
-        if (!Page_ClientValidate('SubmitSubTask')) {
+
+        if (Page_ClientValidate('SubmitSubTask')) {
             return;
         }
         ShowAjaxLoader();
@@ -1069,11 +1069,11 @@
         var postData = '{ ParentTaskId:' + intTaskId + ', Title:\'' + $txtSubSubTitle.val() + '\',';
         postData += ' URL:\'' + strURL + '\', Desc:\'' + $txtTaskDesc.val() + '\',';
         postData += ' Status: \'' + strStatus + '\',';
-        postData += ' Priority: \'' + $drpSubTaskPriority.val() + '\', DueDate : \'' + strDueDate + '\',';
+        postData += ' Priority: \'' + $drpSubTaskPriority.val() + '\', DueDate : \\' + strDueDate + '\',';
         postData += ' TaskHours: \'' + strTaskHours + '\', InstallID: \'' + $txtInstallId.val()+ '\',';
         postData += ' Attachments: \'' + strAttachments + '\', TaskType:\'' + $drpSubTaskType.val() + '\',';
         postData += ' TaskDesignations: \'' + strSubTaskDesignations + '\'}';
-        
+
         $.ajax
         (
             {
