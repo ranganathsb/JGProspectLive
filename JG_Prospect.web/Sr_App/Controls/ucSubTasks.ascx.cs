@@ -2584,35 +2584,36 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     List<DataRow> lstDataRow = new List<DataRow>();
 
-                    // level 1 sub task.
+                    // level 0 sub task.
                     var lstRows0 = from r in dtSubTasks.AsEnumerable()
                                    where r.Field<long>("TaskId") == intTaskId
                                    select r;
 
                     lstDataRow.AddRange(lstRows0);
 
-                    // level 2 sub tasks.
+                    // level 1 sub tasks.
                     var lstRows1 = from r in dtSubTasks.AsEnumerable()
                                    where r.Field<long?>("ParentTaskId") == intTaskId
                                    orderby r.Field<string>("InstallId")
                                    select r;
 
+                    lstDataRow.AddRange(lstRows1);
+
                     foreach (var row in lstRows1)
                     {
-                        // alreay added in level 2 sub tasks..
+                        // alreay added in level 1 sub tasks..
                         if (row.Field<long>("TaskId") == intTaskId)
                         {
                             continue;
                         }
 
-                        // level 3 sub tasks.
+                        // level 2 sub tasks.
                         var lstRows2 = from r in dtSubTasks.AsEnumerable()
                                        where
                                             r.Field<long?>("ParentTaskId") == row.Field<long>("TaskId")
                                        orderby r.Field<string>("InstallId")
                                        select r;
 
-                        lstDataRow.Add(row);
                         lstDataRow.AddRange(lstRows2);
                     }
 
