@@ -1492,6 +1492,17 @@ namespace JG_Prospect.Sr_App.Controls
             SetSubTaskDetails();
         }
 
+        protected void btnUpdateRepeater_Click(object sender, EventArgs e)
+        {
+            hdnAttachments.Value = string.Empty;
+            hdParentTaskId.Value = string.Empty;
+            hdMainParentId.Value = string.Empty;
+            hdTaskLvl.Value = string.Empty;
+            hdTaskId.Value = string.Empty;
+
+            SetSubTaskDetails();
+        }
+
 
         protected void btnSaveSubTask_Click(object sender, EventArgs e)
         {

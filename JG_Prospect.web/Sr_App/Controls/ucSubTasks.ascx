@@ -151,15 +151,14 @@
                                                                 <input type="checkbox" name="bulkaction" />
                                                                 <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                     ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
-                                                                    ClientIDMode="AutoID" />
+                                                                    ClientIDMode="AutoID" /><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" style="color: Blue;text-decoration:underline;cursor:pointer;background:none;" Text="+" />
 
 
                                                                 <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                     ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="RemoveClick" Visible="false"
                                                                     ClientIDMode="AutoID" />
                                                             </h5>
-                                                            <br />
-                                                            <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Text="+" />
+                                                            
                                                             <%--<button type="button" id="zfdfdsf" class="showsubtaskDIV" runat="server">+</button>--%>
                                                             <!-- Freezingn Task Part Starts -->
                                                             <table width="100" style="margin-top: 10px;">
@@ -444,6 +443,7 @@
             </div>
             <asp:HiddenField ID="hdnCurrentEditingRow" runat="server" />
             <asp:LinkButton ID="lnkFake" runat="server"></asp:LinkButton>
+            <asp:Button ID="btnUpdateRepeater" runat="server"  OnClick="btnUpdateRepeater_Click" Style="display: none;" Text="Button" />
             <%-- <cc1:ModalPopupExtender ID="mpSubTask" runat="server" PopupControlID="pnlCalendar" TargetControlID="lnkFake"
                     BackgroundCssClass="modalBackground">
                     </cc1:ModalPopupExtender>--%>
@@ -532,7 +532,7 @@
         <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()">Add New Task</button>
+        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue;text-decoration:underline;cursor:pointer;background:none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
         <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
@@ -879,7 +879,6 @@
                     $(this).html(fName);
                     $('#txtedittitle').focus();
 
-                    console.log('going to be true in title');
                     isadded = true;
                 }
             }).bind('focusout', function () {
@@ -901,7 +900,6 @@
                     $(this).html(fName);
                     $('#txtedittitle').focus();
 
-                    console.log('going to be true in url');
                     isadded = true;
                 }
                 return false;
@@ -928,7 +926,6 @@
                     $('#txtedittitle').focus();
                     control = $(this);
 
-                    console.log('going to be true in desc');
                     isadded = true;
 
                     var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
@@ -958,6 +955,7 @@
 
     function updateDesc(htmldata) {
         if (isadded) {
+            control.html(htmldata);
             EditDesc(control.attr("data-taskid"), htmldata);
             isadded = false;
         }
@@ -1084,10 +1082,9 @@
 
 
     function OnAddMoreSubtaskClick() {
-        ShowAjaxLoader();
         $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
         if (Page_ClientValidate('SubmitSubTask')) {
-
+            ShowAjaxLoader();
             var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
             var listID = $('#<%=txtInstallId.ClientID%>').val();
             var txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>').val();
@@ -1121,11 +1118,10 @@
                     data: JSON.stringify(postData),
                     asynch: false,
                     success: function (data) {
-                        console.log(data);
                         HideAjaxLoader();
                         if (data.d) {
                             alert('Task saved successfully.');
-                            location.reload();
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
                         }
                         else {
                             alert('Can not save Task,');
@@ -1246,6 +1242,7 @@
 
     function OnSaveSubTaskClick() {
         if (Page_ClientValidate('vgSubTask')) {
+            ShowAjaxLoader();
             var taskid = GetParameterValues('TaskId');
             var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
             var url = $('#<%= txtUrl.ClientID %>').val();
@@ -1284,11 +1281,10 @@
                     data: JSON.stringify(postData),
                     asynch: false,
                     success: function (data) {
-                        console.log(data);
                         HideAjaxLoader();
                         if (data.d) {
                             alert('Task saved successfully.');
-                            location.reload();
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
                         }
                         else {
                             alert('Problem Occured');
