@@ -124,7 +124,7 @@
                             </HeaderTemplate>
                             <ItemTemplate>
                                 <tr id="trItem" runat="server">
-                                    <td style="padding: 0px;">
+                                    <td>
                                         <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                         <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
@@ -142,7 +142,7 @@
                                                 <ItemTemplate>
                                                     <tr id="trSubTask" runat="server" data-nest-level='<%# Eval("NestLevel") %>' 
                                                         data-taskid='<%# Eval("TaskId") %>' data-parent-taskid='<%# Eval("ParentTaskId") %>'>
-                                                        <td valign="top" style='<%# "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
+                                                        <td valign="top" style='<%# Eval("NestLevel").ToString() == "0"? "border-left:1px solid black;": "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
                                                             <div>
                                                                 <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                 <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
@@ -252,7 +252,7 @@
                                                                 <button type="button" id="btnsubtasksave" class="btnsubtask" style="display:none;">Save</button>
                                                             </div>
                                                             <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: none;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
-                                                            <a href="javascript:void(0);" class='<%# Convert.ToInt32(Eval("NestLevel")) >= 3? "hide" : "" %>' data-taskid='<%# Eval("TaskId") %>' data-installid='<%# GetInstallId(Eval("NestLevel"), Eval("InstallId"), Eval("LastSubTaskInstallId")) %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
+                                                            <a href="javascript:void(0);" class='<%# Convert.ToInt32(Eval("NestLevel")) >= 2? "hide" : "" %>' data-taskid='<%# Eval("TaskId") %>' data-installid='<%# GetInstallId(Eval("NestLevel"), Eval("InstallId"), Eval("LastSubTaskInstallId")) %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
@@ -264,7 +264,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="noborder">
-                                                                        <asp:DropDownList ID="ddlTaskPriority" runat="server" CssClass="textbox" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
+                                                                        <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -287,7 +287,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="noborder">
-                                                                        <asp:DropDownList ID="ddlStatus" runat="server" CssClass="textbox" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
+                                                                        <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr style="display: none;">
@@ -407,9 +407,6 @@
                                                 <FooterTemplate>
                                                 </FooterTemplate>
                                             </asp:Repeater>
-                                            <tr data-nest-level='0' data-taskid='0' data-parent-taskid='<%= this.TaskId %>'>
-                                                <td colspan="4"></td>
-                                            </tr>
                                         </table>
                                         <%-- Sub Task Nested Grid ENDS --%>
                                     </td>
@@ -451,49 +448,53 @@
             <asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
-                        <table border="1" cellspacing="5" cellpadding="5" width="95%">
+                        <table border="1" cellspacing="5" cellpadding="5" width="90%">
                             <tr>
-                                <td width="300px">ListID:
-                                    <asp:TextBox ID="txtInstallId" runat="server" Width="100px" CssClass="textbox"></asp:TextBox>
+                                <td>ListID:
+                                   
+                                   
+
+                                    <asp:TextBox ID="txtInstallId" runat="server"></asp:TextBox>
                                 </td>
-                                <td>Type <span style="color: red;">*</span>: 
-                                    <asp:DropDownList ID="drpSubTaskType" runat="server" CssClass="textbox" />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" Display="None" ValidationGroup="SubmitSubTask"
-                                        ControlToValidate="drpSubTaskType" ErrorMessage="Please enter Task Type." />
-                                    &nbsp;&nbsp;
-                                    Priority <span style="color: red;">*</span>:
-                                    <asp:DropDownList ID="drpSubTaskPriority" runat="server" CssClass="textbox" />
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="None" ValidationGroup="SubmitSubTask"
-                                        ControlToValidate="drpSubTaskPriority" ErrorMessage="Please enter Task Priority." />
-                                    &nbsp;&nbsp;
-                                    Estimated Hours:
-                                    <asp:TextBox ID="txtSubTaskEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
-                                    <asp:RegularExpressionValidator ID="revSubTaskEstimatedHours" runat="server" ControlToValidate="txtSubTaskEstimatedHours" Display="None"
-                                        ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="SubmitSubTask"
-                                        ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                                </td>
-                            </tr>
-                            <tr>
+
                                 <td>Sub Title <span style="color: red;">*</span>:
-                                    <asp:TextBox ID="txtSubSubTitle" runat="server" Width="250px" CssClass="textbox"></asp:TextBox>
+                                   
+                                   
+
+                                    <asp:TextBox ID="txtSubSubTitle" runat="server"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ValidationGroup="SubmitSubTask"
                                         runat="server" ControlToValidate="txtSubSubTitle" ForeColor="Red"
                                         ErrorMessage="Please Enter Task Title" Display="None"> </asp:RequiredFieldValidator>
                                 </td>
-                                <td>
-                                    Url <span style="color: red;">*</span>:
-                                    <asp:TextBox ID="txtSubTaskUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
-                                    <asp:RequiredFieldValidator ID="rfvSubTaskUrl" runat="server" Display="None" ValidationGroup="SubmitSubTask"
-                                        ControlToValidate="txtSubTaskUrl" ErrorMessage="Please enter Task Url." />
+
+                                <td>Priority <span style="color: red;">*</span>:
+                                   
+                                   
+
+                                    <asp:DropDownList ID="drpSubTaskPriority" runat="server" />
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                        ControlToValidate="drpSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                                </td>
+
+                                <td>Type <span style="color: red;">*</span>: 
+                                   
+                                   
+
+                                    <asp:DropDownList ID="drpSubTaskType" runat="server" />
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" Display="None" ValidationGroup="SubmitSubTask"
+                                        ControlToValidate="drpSubTaskType" ErrorMessage="Please enter Task Type." />
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">Task Description <span style="color: red;">*</span>:
+                                <td>Task Description <span style="color: red;">*</span>:
+                                               
+                                   
+
                                     <br />
                                     <asp:TextBox ID="txtTaskDesc" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SubmitSubTask"
                                         runat="server" ControlToValidate="txtTaskDesc" ForeColor="Red"
-                                        ErrorMessage="Please Enter Task Description" Display="None" />
+                                        ErrorMessage="Please Enter Task Description" Display="None"> </asp:RequiredFieldValidator>
                                 </td>
                             </tr>
                             <tr>
@@ -529,8 +530,6 @@
         <ContentTemplate>
             <div id="divAddSubTask" runat="server">
                 <asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />
-                <a id="hypAddSubTask" runat="server" href="javascript:void(0);" onclick="javascript:OnAddSubTaskClick(this)"
-                    data-taskid="0" data-installid="I">+</a>
                 <br />
                 <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
                 <div id="divSubTask" runat="server" class="tasklistfieldset" style="display: none;">
@@ -1010,32 +1009,26 @@
         );
     }
 
-  function OnAddSubTaskClick(sender) {
-      
+    function OnAddSubTaskClick(sender) {
         var $sender = $(sender);
         var $divAddSubTask = $('#<%=pnlCalendar.ClientID%>');
 
         var $txtInstallId = $('#<%=txtInstallId.ClientID%>');
         var $txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>');
-        var $txtSubTaskUrl = $('#<%=txtSubTaskUrl.ClientID%>');
         var $drpSubTaskPriority = $('#<%=drpSubTaskPriority.ClientID%>');
         var $drpSubTaskType = $('#<%=drpSubTaskType.ClientID%>');
         var $txtTaskDesc = $('#<%=txtTaskDesc.ClientID%>');
         var $hypSaveSubTask = $('#hypSaveSubTask');
-        var $txtSubTaskEstimatedHours = $('#<%=txtSubTaskEstimatedHours.ClientID%>');
 
         var intTaskId = $sender.attr('data-taskid');
         var strInstallId = $sender.attr('data-installid');
 
         $txtInstallId.val(strInstallId);
         $txtSubSubTitle.val('');
-        $txtSubTaskUrl.val('');
         $drpSubTaskPriority.val('');
         $drpSubTaskType.val('');
         $txtTaskDesc.val('');
-        CKEDITOR.instances['<%=txtTaskDesc.ClientID%>'].setData('')
         $hypSaveSubTask.attr('data-taskid', intTaskId);
-        $txtSubTaskEstimatedHours.val('');
 
         var $appendAfter = $('tr[data-parent-taskid="' + intTaskId + '"]:last');
         if ($appendAfter.length == 0) {
@@ -1062,17 +1055,15 @@
         var $divAddSubTask = $('#<%=pnlCalendar.ClientID%>');
         var $txtInstallId = $('#<%=txtInstallId.ClientID%>');
         var $txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>');
-        var $txtSubTaskUrl = $('#<%=txtSubTaskUrl.ClientID%>');
         var $drpSubTaskPriority = $('#<%=drpSubTaskPriority.ClientID%>');
         var $drpSubTaskType = $('#<%=drpSubTaskType.ClientID%>');
         var $txtTaskDesc = $('#<%=txtTaskDesc.ClientID%>');
-        var $txtSubTaskEstimatedHours = $('#<%=txtSubTaskEstimatedHours.ClientID%>');
         
         var intTaskId = $(sender).attr('data-taskid');
-        var strURL = $txtSubTaskUrl.val();
+        var strURL = '';
         var strStatus = '<%=(byte)JG_Prospect.Common.JGConstant.TaskStatus.Open%>';
         var strDueDate = '';
-        var strTaskHours = $txtSubTaskEstimatedHours.val();
+        var strTaskHours = '';
         var strAttachments = '';
         var strSubTaskDesignations = '<%=this.SubTaskDesignations%>';
 
