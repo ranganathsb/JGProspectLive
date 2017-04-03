@@ -638,6 +638,14 @@
         return false;
     }
 
+    function ShowAjaxLoader(){
+        $('.loading').show();
+    }
+
+    function HideAjaxLoader(){
+        $('.loading').hide();
+    }
+
 </script>
 
 <%--Task Work Specifications Feedback Script--%>

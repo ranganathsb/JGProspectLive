@@ -98,7 +98,6 @@
                 <div style="float: left; margin-top: 15px;">
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
-                    <asp:Button ID="btnRefreshSubTasks" runat="server" Text="Refresh" Style="display: none;" class="btnSearc" OnClick="btnRefreshSubTasks_Click" />
 
                     Number of Records: 
                                
@@ -143,8 +142,7 @@
                                                     </tr>
                                                 </HeaderTemplate>
                                                 <ItemTemplate>
-                                                    <tr id="trSubTask" runat="server" data-nest-level='<%# Eval("NestLevel") %>' 
-                                                        data-taskid='<%# Eval("TaskId") %>' data-parent-taskid='<%# Eval("ParentTaskId") %>'>
+                                                    <tr id="trSubTask" runat="server">
                                                         <td valign="top" style='<%# Eval("NestLevel").ToString() == "0"? "border-left:1px solid black;": "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
                                                             <div>
                                                                 <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
@@ -254,8 +252,7 @@
                                                                 </div>
                                                                 <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                             </div>
-                                                            <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: none;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
-                                                            <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId") %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
+                                                            <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
@@ -510,8 +507,7 @@
                                     <div class="btn_sec">
                                         <asp:Button ID="btnAddMoreSubtask" runat="server" OnClientClick="javascript:return OnAddMoreSubtaskClick();"
                                             TabIndex="5" Text="Submit" CssClass="ui-button"
-                                            OnClick="btnAddMoreSubtask_Click" ValidationGroup="SubmitSubTask" Visible="false" />
-                                        <a id="hypSaveSubTask" href="javascript:void(0);" onclick="javascript:OnSaveSubTaskClick1(this);" >Submit</a>
+                                            OnClick="btnAddMoreSubtask_Click" ValidationGroup="SubmitSubTask" />
                                     </div>
                                     <%-- <asp:Button ID="btnCalClose" runat="server" Height="30px" Width="70px" TabIndex="6"
                                                      OnClick="btnCalClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />--%>
@@ -921,6 +917,14 @@
         isadded = false;
     }
 
+    function ShowAjaxLoader() {
+        $('.loading').show();
+    }
+
+    function HideAjaxLoader() {
+        $('.loading').hide();
+    }
+
     function EditTask(tid, tdetail) {
         ShowAjaxLoader();
         var postData = {
@@ -1000,99 +1004,7 @@
         );
     }
 
-    function OnAddSubTaskClick(sender) {
-        var $sender = $(sender);
-        var $divAddSubTask = $('#<%=pnlCalendar.ClientID%>');
 
-        var $txtInstallId = $('#<%=txtInstallId.ClientID%>');
-        var $txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>');
-        var $drpSubTaskPriority = $('#<%=drpSubTaskPriority.ClientID%>');
-        var $drpSubTaskType = $('#<%=drpSubTaskType.ClientID%>');
-        var $txtTaskDesc = $('#<%=txtTaskDesc.ClientID%>');
-        var $hypSaveSubTask = $('#hypSaveSubTask');
-
-        var intTaskId = $sender.attr('data-taskid');
-
-        $txtInstallId.val('-');
-        $txtSubSubTitle.val('');
-        $drpSubTaskPriority.val('');
-        $drpSubTaskType.val('');
-        $txtTaskDesc.val('');
-        $hypSaveSubTask.attr('data-taskid', intTaskId);
-
-        var $appendAfter = $('tr[data-parent-taskid="' + intTaskId + '"]:last');
-        if ($appendAfter.length == 0) {
-            $appendAfter = $('tr[data-taskid="' + intTaskId + '"]');
-        }
-
-        var $tr = $('<tr><td colspan="4"></td></tr>');
-        $tr.find('td').append($divAddSubTask);
-
-        $appendAfter.after($tr)
-
-        $divAddSubTask.show();
-
-        ScrollTo($divAddSubTask);
-    }
-
-    function OnSaveSubTaskClick1(sender) {
-
-        if (Page_ClientValidate('SubmitSubTask')) {
-            return;
-        }
-        ShowAjaxLoader();
-
-        var $divAddSubTask = $('#<%=pnlCalendar.ClientID%>');
-        var $txtInstallId = $('#<%=txtInstallId.ClientID%>');
-        var $txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>');
-        var $drpSubTaskPriority = $('#<%=drpSubTaskPriority.ClientID%>');
-        var $drpSubTaskType = $('#<%=drpSubTaskType.ClientID%>');
-        var $txtTaskDesc = $('#<%=txtTaskDesc.ClientID%>');
-        
-        var intTaskId = $(sender).attr('data-taskid');
-        var strURL = '';
-        var strStatus = '<%=(byte)JG_Prospect.Common.JGConstant.TaskStatus.Open%>';
-        var strDueDate = '';
-        var strTaskHours = '';
-        var strAttachments = '';
-        var strSubTaskDesignations = '<%=this.SubTaskDesignations%>';
-
-        var postData = '{ ParentTaskId:' + intTaskId + ', Title:\'' + $txtSubSubTitle.val() + '\',';
-        postData += ' URL:\'' + strURL + '\', Desc:\'' + $txtTaskDesc.val() + '\',';
-        postData += ' Status: \'' + strStatus + '\',';
-        postData += ' Priority: \'' + $drpSubTaskPriority.val() + '\', DueDate : \\' + strDueDate + '\',';
-        postData += ' TaskHours: \'' + strTaskHours + '\', InstallID: \'' + $txtInstallId.val()+ '\',';
-        postData += ' Attachments: \'' + strAttachments + '\', TaskType:\'' + $drpSubTaskType.val() + '\',';
-        postData += ' TaskDesignations: \'' + strSubTaskDesignations + '\'}';
-
-        $.ajax
-        (
-            {
-                url: '../WebServices/JGWebService.asmx/AddNewSubTask',
-                contentType: 'application/json; charset=utf-8;',
-                type: 'POST',
-                dataType: 'json',
-                data: postData,
-                asynch: false,
-                success: function (data) {
-                    HideAjaxLoader();
-                    if (data.d > 0) {
-                        // this will refresh task list.
-                        $('#<%=btnRefreshSubTasks.ClientID%>').click();
-                    }
-                    else {
-                        alert('Sub task cannot saved, Please try again later.');
-                    }
-                },
-                error: function (a, b, c) {
-                    console.log(a);
-                    HideAjaxLoader();
-                }
-            }
-        );
-
-        return false;
-    }
 
     function SetUserAutoSuggestion() {
 

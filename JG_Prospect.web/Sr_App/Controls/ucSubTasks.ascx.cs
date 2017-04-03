@@ -3023,10 +3023,5 @@ namespace JG_Prospect.Sr_App.Controls
         {
             SetSubTaskDetails();
         }
-
-        protected void btnRefreshSubTasks_Click(object sender, EventArgs e)
-        {
-            SetSubTaskDetails();
-        }
     }
 }
