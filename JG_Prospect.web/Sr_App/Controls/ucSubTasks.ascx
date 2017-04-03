@@ -252,10 +252,7 @@
                                                                 <button type="button" id="btnsubtasksave" class="btnsubtask" style="display:none;">Save</button>
                                                             </div>
                                                             <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: none;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
-                                                            <a href="javascript:void(0);" class='<%# Convert.ToInt32(Eval("NestLevel")) >= 3? "hide" : "" %>' 
-                                                                data-taskid='<%# Eval("TaskId") %>' data-nest-level='<%#Eval("NestLevel")%>'
-                                                                data-installid='<%# GetInstallId(Eval("NestLevel"), Eval("InstallId"), Eval("LastSubTaskInstallId")) %>' 
-                                                                onclick="javascript:OnAddSubTaskClick(this)">+</a>
+                                                            <a href="javascript:void(0);" class='<%# Convert.ToInt32(Eval("NestLevel")) >= 3? "hide" : "" %>' data-taskid='<%# Eval("TaskId") %>' data-installid='<%# GetInstallId(Eval("NestLevel"), Eval("InstallId"), Eval("LastSubTaskInstallId")) %>' onclick="javascript:OnAddSubTaskClick(this)">+</a>
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
@@ -533,7 +530,7 @@
             <div id="divAddSubTask" runat="server">
                 <asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />
                 <a id="hypAddSubTask" runat="server" href="javascript:void(0);" onclick="javascript:OnAddSubTaskClick(this)"
-                    data-taskid="0" data-installid="I" data-nest-level="0">+</a>
+                    data-taskid="0" data-installid="I">+</a>
                 <br />
                 <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
                 <div id="divSubTask" runat="server" class="tasklistfieldset" style="display: none;">
@@ -1029,7 +1026,6 @@
 
         var intTaskId = $sender.attr('data-taskid');
         var strInstallId = $sender.attr('data-installid');
-        var strNestLevel = $sender.attr('data-nest-level');
 
         $txtInstallId.val(strInstallId);
         $txtSubSubTitle.val('');
@@ -1052,13 +1048,6 @@
         $appendAfter.after($tr)
 
         $divAddSubTask.show();
-
-        if (strNestLevel == '0') {
-            ValidatorEnable(document.getElementById('<%=rfvSubTaskUrl.ClientID%>'), true);
-        }
-        else {
-            ValidatorEnable(document.getElementById('<%=rfvSubTaskUrl.ClientID%>'), false);
-        }
 
         ScrollTo($divAddSubTask);
     }
