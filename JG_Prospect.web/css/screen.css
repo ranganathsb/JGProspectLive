@@ -1936,21 +1936,34 @@ input.fz-user, .fz-user > input {
 }
 
 th.subtask-actionid {
-        
-    padding:0px !important;
+    padding: 3px !important;
 }
 
 th.subtask-taskdetails {
-    
-    padding:0px !important;
+    padding: 3px !important;
 }
 
 th.subtask-assign {
-   
-    padding:0px !important;
+    padding: 3px !important;
 }
 
 th.subtask-attchments {
-    padding:0px !important;
+    padding: 3px !important;
 }
 
+.subtasklevel tr > td {
+    vertical-align: top;
+}
+
+.sbtlevel1 {
+    text-align: left;
+}
+
+.sbtlevel2 {
+    text-align: right;
+}
+
+.subtasklevel {
+    margin: 0px;
+    border: 0px;
+}

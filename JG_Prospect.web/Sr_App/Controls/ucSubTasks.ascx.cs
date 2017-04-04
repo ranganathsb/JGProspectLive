@@ -1488,7 +1488,7 @@ namespace JG_Prospect.Sr_App.Controls
             Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
             UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
-            hdnAttachments.Value = string.Empty;
+            hdnAttachments.Value = hdDropZoneTaskId.Value = string.Empty;
             SetSubTaskDetails();
         }
 
