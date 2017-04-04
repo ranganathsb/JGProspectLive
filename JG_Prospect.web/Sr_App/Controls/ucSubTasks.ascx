@@ -491,6 +491,7 @@
         <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
+            <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
         <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
@@ -821,9 +822,11 @@
     function shownewsubtask() {
         maintask = true;
         $('#<%=hdTaskLvl.ClientID%>').val("1");
-            $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
-            return false;
-        }
+        $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
+
+        $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
+        return false;
+    }
 
         var control;
         var isadded = false;
