@@ -144,6 +144,7 @@ function SetCKEditorForSubTask(Id) {
             on: {
                 blur: function (event) {
                     event.editor.updateElement();
+                    //updateDesc(GetCKEditorContent(Id));
                 },
                 fileUploadResponse: function (event) {
                     // Prevent the default response handler.
@@ -357,6 +358,14 @@ function htmlEncode(value) {
 
 function htmlDecode(value) {
     return $('<div/>').html(value).text();
+}
+
+function ShowAjaxLoader() {
+    $('.loading').show();
+}
+
+function HideAjaxLoader() {
+    $('.loading').hide();
 }
 
 function AddAttachmenttoViewState(serverfilename, hdnControlID) {
