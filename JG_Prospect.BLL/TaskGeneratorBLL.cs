@@ -27,9 +27,14 @@ namespace JG_Prospect.BLL
             get { return m_TaskGeneratorBLL; }
             set { ; }
         }
-        public Int64 SaveOrDeleteTask(Task objTask)
+        public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel)
         {
-            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask);
+            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
+        }
+
+        public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskByMaxId(parentTaskid, taskLVL);
         }
 
         public bool SaveTaskDesignations(UInt64 TaskId, String strDesignations, String TaskIDCode)
@@ -74,9 +79,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int vHSTid=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
-            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, vHSTid);
+            return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, intHighlightTaskId);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -88,7 +93,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
         }
-        
+
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
@@ -186,6 +191,21 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
         }
 
+        public int UpdateTaskTitleById(string tid, string title)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskTitleById(tid, title);
+        }
+
+        public int UpdateTaskURLById(string tid, string URL)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskURLById(tid, URL);
+        }
+
+        public int UpdateTaskDescriptionById(string tid, string Description)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskDescriptionById(tid, Description);
+        }
+
         public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
         {
             return TaskGeneratorDAL.Instance.DeleteTaskWorkSpecification(intTaskWorkSpecification);
@@ -277,9 +297,9 @@ namespace JG_Prospect.BLL
 
 
         //--------- Start DP -----------
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch,int pageindex , int pagesize)
+        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)
         {
-            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex,pagesize);
+            return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex, pagesize);
         }
 
         public DataSet GetClosedTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)

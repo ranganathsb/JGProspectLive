@@ -126,6 +126,53 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
     arrCKEditor.push(editor);
 }
 
+function SetCKEditorForSubTask(Id) {
+
+    var $target = $('#' + Id);
+
+    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+    // Otherwise CKEditor will start in read-only mode.
+
+    $target.attr('contenteditable', true);
+
+    CKEDITOR.inline(Id,
+        {
+            // Show toolbar on startup (optional).
+            //startupFocus: true,
+            startupFocus: false,
+            enterMode: CKEDITOR.ENTER_BR,
+            on: {
+                blur: function (event) {
+                    event.editor.updateElement();
+                    //updateDesc(GetCKEditorContent(Id));
+                },
+                fileUploadResponse: function (event) {
+                    // Prevent the default response handler.
+                    event.stop();
+
+                    // Ger XHR and response.
+                    var data = event.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split('|');
+
+                    var jsonarray = JSON.parse(response[0]);
+
+                    if (jsonarray && jsonarray.uploaded != "1") {
+                        // Error occurred during upload.                
+                        event.cancel();
+                    } else {
+                        data.url = jsonarray.url;
+                    }
+                }
+
+            }
+        });
+
+    var editor = CKEDITOR.instances[Id];
+
+    arrCKEditor.push(editor);
+}
+
 function GetCKEditorContent(Id) {
 
     var editor = CKEDITOR.instances[Id];
@@ -313,6 +360,14 @@ function htmlDecode(value) {
     return $('<div/>').html(value).text();
 }
 
+function ShowAjaxLoader() {
+    $('.loading').show();
+}
+
+function HideAjaxLoader() {
+    $('.loading').hide();
+}
+
 function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
     var attachments;
@@ -397,3 +452,15 @@ function IsNumeric(e, blWholeNumber) {
     }
     return false;
 }
+
+function ScrollTo(target) {
+    if (target.length > 0) {
+        var offset = target.offset();
+        if (typeof (offset) != 'undefined' && offset != null) {
+            $('html, body').animate({
+                scrollTop: offset.top
+            }, 1000);
+        }
+    }
+}
+
