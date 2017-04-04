@@ -2699,7 +2699,13 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+
+                    string strhtml = "";
+                    strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
+                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
+
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
 
                     btnshowdivsub.Visible = false;
                 }
@@ -2714,12 +2720,12 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.CssClass = "installidleft";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
+
                     string strhtml = "";
                     strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
-
                     dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
                 else if (hdTaskLevel.Value == "2")
@@ -2730,7 +2736,13 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidcenter";
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+
+                    string strhtml = "";
+                    strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
+                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
 
                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();

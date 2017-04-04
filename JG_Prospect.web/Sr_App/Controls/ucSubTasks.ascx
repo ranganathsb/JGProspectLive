@@ -161,7 +161,7 @@
 
                                                             <%--<button type="button" id="zfdfdsf" class="showsubtaskDIV" runat="server">+</button>--%>
                                                             <!-- Freezingn Task Part Starts -->
-                                                            <table width="100" style="margin-top: 10px;">
+                                                            <table width="100" style="margin-top: 10px;" class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                 <tr>
                                                                     <td colspan="3" class="noborder" align="center">
                                                                         <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
@@ -258,7 +258,7 @@
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
-                                                            <table>
+                                                            <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                 <tr>
                                                                     <td class="noborder">
                                                                         <h5>Priority</h5>
@@ -322,7 +322,7 @@
                                                             </table>
                                                         </td>
                                                         <td valign="top">
-                                                            <table border="0" class="dropzonetbl" style="width: 100%;">
+                                                            <table border="0" class='<%#Eval("NestLevel").ToString() == "3"? "hide":"dropzonetbl" %>' style="width: 100%;">
                                                                 <tr>
                                                                     <td>
                                                                         <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional" ClientIDMode="AutoID">
