@@ -1792,6 +1792,7 @@ namespace JG_Prospect.Sr_App.Controls
                     txtTaskListID.Text = subtaskListIDSuggestion[0];
                     //listIDOpt.Text = subtaskListIDSuggestion[0];
                 }
+                hdnTaskListId.Value = txtTaskListID.Text;
             }
 
             int numbersequence;
