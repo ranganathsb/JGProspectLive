@@ -107,8 +107,8 @@
                         <thead>
                             <tr class="trHeader">
                                 <th width="10%" class="subtask-actionid">Action-ID#</th>
-                                <th width="50%" class="subtask-taskdetails">Task Details</th>
-                                <th width="10%" class="subtask-assign">Assigned</th>
+                                <th width="45%" class="subtask-taskdetails">Task Details</th>
+                                <th width="15%" class="subtask-assign">Assigned</th>
                                 <th width="30%" class="subtask-attchments">Attachments, IMGs, Docs, Videos & Recordings</th>
                             </tr>
                         </thead>
@@ -235,7 +235,7 @@
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
                                                                 <td width="50%">
-                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 400px;">
+                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 497px;">
                                                                         <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                                             <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                                         </div>
@@ -246,7 +246,7 @@
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
-                                                                    <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
+                                                                    <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
@@ -265,9 +265,9 @@
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
-                                                                        <li>Type
+                                                                        <li style="display:none;">Type
                                                                         </li>
-                                                                        <li>
+                                                                        <li style="display:none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
                                                                     </ul>

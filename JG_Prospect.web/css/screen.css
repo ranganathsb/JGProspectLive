@@ -1935,20 +1935,8 @@ input.fz-user, .fz-user > input {
     align-content: flex-end;
 }
 
-th.subtask-actionid {
-    padding: 3px !important;
-}
-
-th.subtask-taskdetails {
-    padding: 3px !important;
-}
-
-th.subtask-assign {
-    padding: 3px !important;
-}
-
-th.subtask-attchments {
-    padding: 3px !important;
+th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attchments {
+    padding: 4px !important;
 }
 
 .subtasklevel tr > td {
@@ -1966,4 +1954,17 @@ th.subtask-attchments {
 .subtasklevel {
     margin: 0px;
     border: 0px;
+}
+.form_panel_custom ul.stulli {
+overflow:hidden;
+}
+
+.divtdetails img {
+max-width:100%;
+height:inherit;
+}
+
+.form_panel_custom ul.stulli li {
+width: 100%;
+display:block;
 }
