@@ -252,26 +252,28 @@
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
                                                                         </li>
-                                                                        
+
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
-                                                                        <li style="display:none;">Type
+                                                                        <li style="display: none;">Type
                                                                         </li>
-                                                                        <li style="display:none;">
+                                                                        <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
-                                                                        <li>Assigned
-                                                                        </li>
-                                                                        <li>
-                                                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
-                                                                                CssClass="chosen-select" data-placeholder="Select"
-                                                                                AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
-                                                                            <asp:Label ID="lblAssigned" runat="server" />
-                                                                        </li>
+
                                                                     </ul>
+                                                                    <div>
+                                                                        <span>Assigned
+                                                                        </span>
+                                                                        <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
+                                                                            CssClass="chosen-select" data-placeholder="Select"
+                                                                            AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                        <asp:Label ID="lblAssigned" runat="server" />
+
+                                                                    </div>
                                                                     <table style="display: none;">
                                                                         <tr>
                                                                             <td class="noborder" colspan="2">
@@ -387,7 +389,7 @@
                         <tfoot>
                             <tr class="pagination-ys">
                                 <td>
-                                    <uc:CustomPager ID="repSubTasks_CustomPager" runat="server" PagerSize="5" />
+                                    <uc:custompager id="repSubTasks_CustomPager" runat="server" pagersize="5" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -492,7 +494,7 @@
         <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-            <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
+        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
         <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
@@ -829,102 +831,102 @@
         return false;
     }
 
-        var control;
-        var isadded = false;
+    var control;
+    var isadded = false;
 
-        function pageLoad(sender, args) {
+    function pageLoad(sender, args) {
 
-            //For Title
-            $(".TitleEdit").each(function (index) {
-                $(this).bind("click", function () {
-                    if (!isadded) {
-                        var tid = $(this).attr("data-taskid");
-                        var titledetail = $(this).html();
-                        var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
-                        $(this).html(fName);
-                        $('#txtedittitle').focus();
-
-                        isadded = true;
-                    }
-                }).bind('focusout', function () {
+        //For Title
+        $(".TitleEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
                     var tid = $(this).attr("data-taskid");
-                    var tdetail = $('#txtedittitle').val();
-                    $(this).html(tdetail);
-                    EditTask(tid, tdetail)
-                    isadded = false;
-                });
+                    var titledetail = $(this).html();
+                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
+                    $(this).html(fName);
+                    $('#txtedittitle').focus();
+
+                    isadded = true;
+                }
+            }).bind('focusout', function () {
+                var tid = $(this).attr("data-taskid");
+                var tdetail = $('#txtedittitle').val();
+                $(this).html(tdetail);
+                EditTask(tid, tdetail)
+                isadded = false;
             });
+        });
 
-            //For Url
-            $(".UrlEdit").each(function (index) {
-                $(this).bind("click", function () {
-                    if (!isadded) {
-                        var tid = $(this).attr("data-taskid");
-                        var titledetail = $(this).html();
-                        var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
-                        $(this).html(fName);
-                        $('#txtedittitle').focus();
-
-                        isadded = true;
-                    }
-                    return false;
-                }).bind('focusout', function () {
+        //For Url
+        $(".UrlEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
                     var tid = $(this).attr("data-taskid");
-                    var tdetail = $('#txtedittitle').val();
+                    var titledetail = $(this).html();
+                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
+                    $(this).html(fName);
+                    $('#txtedittitle').focus();
 
-                    $(this).html(tdetail);
-                    EditUrl(tid, tdetail);
-                    isadded = false;
-                    return false;
-                });
-            });
-
-            //For Description
-            $(".DescEdit").each(function (index) {
-                $(this).bind("click", function () {
-                    if (!isadded) {
-                        var tid = $(this).attr("data-taskid");
-                        var titledetail = $(this).html();
-                        var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
-                        $(this).html(fName);
-                        SetCKEditorForSubTask('txtedittitle');
-                        $('#txtedittitle').focus();
-                        control = $(this);
-
-                        isadded = true;
-
-                        var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
-                        $(otherInput).css({ 'display': "block" });
-                        $(otherInput).bind("click", function () {
-                            updateDesc(GetCKEditorContent('txtedittitle'));
-                            $(this).css({ 'display': "none" });
-                        });
-                    }
-                    return false;
-                });
-            });
-
-            //For Add Task Button
-            $(".showsubtaskDIV").each(function (index) {
-                $(this).bind("click", function () {
-                    var commandName = $(this).attr("data-val-commandName");
-                    var CommandArgument = $(this).attr("data-val-CommandArgument");
-                    var TaskLevel = $(this).attr("data-val-taskLVL");
-                    var strInstallId = $(this).attr('data-installid');
-
-                    if (TaskLevel == "2") {
-                        $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
-                    $("html, body").animate({ scrollTop: $("#<%=pnlCalendar.ClientID%>").offset().top }, 1500);
+                    isadded = true;
                 }
-                else {
-                    shownewsubtask();
-                    maintask = false;
-                    $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
-                }
-                SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
+                return false;
+            }).bind('focusout', function () {
+                var tid = $(this).attr("data-taskid");
+                var tdetail = $('#txtedittitle').val();
+
+                $(this).html(tdetail);
+                EditUrl(tid, tdetail);
+                isadded = false;
                 return false;
             });
         });
+
+        //For Description
+        $(".DescEdit").each(function (index) {
+            $(this).bind("click", function () {
+                if (!isadded) {
+                    var tid = $(this).attr("data-taskid");
+                    var titledetail = $(this).html();
+                    var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
+                    $(this).html(fName);
+                    SetCKEditorForSubTask('txtedittitle');
+                    $('#txtedittitle').focus();
+                    control = $(this);
+
+                    isadded = true;
+
+                    var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
+                    $(otherInput).css({ 'display': "block" });
+                    $(otherInput).bind("click", function () {
+                        updateDesc(GetCKEditorContent('txtedittitle'));
+                        $(this).css({ 'display': "none" });
+                    });
+                }
+                return false;
+            });
+        });
+
+        //For Add Task Button
+        $(".showsubtaskDIV").each(function (index) {
+            $(this).bind("click", function () {
+                var commandName = $(this).attr("data-val-commandName");
+                var CommandArgument = $(this).attr("data-val-CommandArgument");
+                var TaskLevel = $(this).attr("data-val-taskLVL");
+                var strInstallId = $(this).attr('data-installid');
+
+                if (TaskLevel == "2") {
+                    $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
+                        $("html, body").animate({ scrollTop: $("#<%=pnlCalendar.ClientID%>").offset().top }, 1500);
+                    }
+                    else {
+                        shownewsubtask();
+                        maintask = false;
+                        $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
+                }
+                    SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
+                    return false;
+                });
+            });
     }
 
     function updateDesc(htmldata) {
@@ -1468,13 +1470,13 @@
 
                     this.on("drop", function (data) {
                         //alert(taskId);
-                          $('#<%=hdDropZoneTaskId.ClientID%>').val(taskId);
+                        $('#<%=hdDropZoneTaskId.ClientID%>').val(taskId);
                     });
 
                     // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                     this.on("success", function (file, response) {
                         // Success coding goes here
-                                             
+
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
@@ -1483,14 +1485,14 @@
                         if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
                             // saves attachment.
                             $('#<%=btnSaveGridAttachment.ClientID%>').click();
-                                //this.removeFile(file);
-                            }
+                            //this.removeFile(file);
+                        }
                     });
                 }
             });
         });
-        }
+    }
 
-        //--------------- End DP ---------------
+    //--------------- End DP ---------------
 
 </script>
