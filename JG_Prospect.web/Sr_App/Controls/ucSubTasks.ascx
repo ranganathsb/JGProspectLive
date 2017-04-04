@@ -252,14 +252,7 @@
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
                                                                         </li>
-                                                                        <li>Assigned
-                                                                        </li>
-                                                                        <li>
-                                                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
-                                                                                CssClass="chosen-select" data-placeholder="Select"
-                                                                                AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
-                                                                            <asp:Label ID="lblAssigned" runat="server" />
-                                                                        </li>
+                                                                        
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
@@ -269,6 +262,14 @@
                                                                         </li>
                                                                         <li style="display:none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
+                                                                        </li>
+                                                                        <li>Assigned
+                                                                        </li>
+                                                                        <li>
+                                                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
+                                                                                CssClass="chosen-select" data-placeholder="Select"
+                                                                                AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                            <asp:Label ID="lblAssigned" runat="server" />
                                                                         </li>
                                                                     </ul>
                                                                     <table style="display: none;">
