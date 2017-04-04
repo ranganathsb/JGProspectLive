@@ -2252,11 +2252,11 @@ namespace JG_Prospect.Sr_App.Controls
                 // save task master details to database.
                 if (hdnSubTaskId.Value == "0")
                 {
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0).ToString();
                 }
                 else
                 {
-                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0);
+                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0);
                 }
 
                 // save assgined designation.
@@ -2593,36 +2593,35 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     List<DataRow> lstDataRow = new List<DataRow>();
 
-                    // level 0 sub task.
+                    // level 1 sub task.
                     var lstRows0 = from r in dtSubTasks.AsEnumerable()
                                    where r.Field<long>("TaskId") == intTaskId
                                    select r;
 
                     lstDataRow.AddRange(lstRows0);
 
-                    // level 1 sub tasks.
+                    // level 2 sub tasks.
                     var lstRows1 = from r in dtSubTasks.AsEnumerable()
                                    where r.Field<long?>("ParentTaskId") == intTaskId
                                    orderby r.Field<string>("InstallId")
                                    select r;
 
-                    lstDataRow.AddRange(lstRows1);
-
                     foreach (var row in lstRows1)
                     {
-                        // alreay added in level 1 sub tasks..
+                        // alreay added in level 2 sub tasks..
                         if (row.Field<long>("TaskId") == intTaskId)
                         {
                             continue;
                         }
 
-                        // level 2 sub tasks.
+                        // level 3 sub tasks.
                         var lstRows2 = from r in dtSubTasks.AsEnumerable()
                                        where
                                             r.Field<long?>("ParentTaskId") == row.Field<long>("TaskId")
                                        orderby r.Field<string>("InstallId")
                                        select r;
 
+                        lstDataRow.Add(row);
                         lstDataRow.AddRange(lstRows2);
                     }
 
@@ -2700,7 +2699,13 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+
+                    string strhtml = "";
+                    strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
+                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
+
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
 
                     btnshowdivsub.Visible = false;
                 }
@@ -2715,12 +2720,12 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.CssClass = "installidleft";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
+
                     string strhtml = "";
                     strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
-
                     dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
                 else if (hdTaskLevel.Value == "2")
@@ -2731,12 +2736,20 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lnkAddMoreSubTask.CssClass = "installidcenter";
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+
+                    string strhtml = "";
+                    strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
+                    strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
+                    strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
+                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
 
                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
                 btnshowdivsub.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
                 btnshowdivsub.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
+
+                btnshowdivsub.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
 
 
                 lbtnInstallId.CommandName = hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString() + "#" + hdTaskLevel.Value;
@@ -3049,6 +3062,36 @@ namespace JG_Prospect.Sr_App.Controls
         protected void repSubTasks_CustomPager_OnPageIndexChanged(object sender, EventArgs e)
         {
             SetSubTaskDetails();
+        }
+        public string GetInstallId(object objNestLevel, object objInstallId, object objLastSubTaskInstallId)
+        {
+            int intNestLevel = Convert.ToInt32(objNestLevel);
+            string strInstallId = Convert.ToString(objInstallId);
+            string strLastSubTaskInstallId = Convert.ToString(objLastSubTaskInstallId);
+
+            string strStartAt = string.Empty;
+            bool blRoman = false;
+
+            // level 0 tasks are upper case roman numbers. (I, II, III etc.)
+            // level 1 tasks are combination of roman number and alphabet. (I-a, I-b, II-a, II-b, III-a etc.)
+            // level 2 tasks are lower case roman numbers. (i, ii, iii etc.)
+            if (intNestLevel == 0)
+            {
+                strStartAt = "I";
+                blRoman = true;
+            }
+            else if (intNestLevel == 1)
+            {
+                strStartAt = strInstallId + " - a";
+                blRoman = false;
+            }
+            else if (intNestLevel == 2)
+            {
+                strStartAt = "i";
+                blRoman = true;
+            }
+
+            return CommonFunction.GetNextSequenceValue(strStartAt, strLastSubTaskInstallId, blRoman);
         }
     }
 }

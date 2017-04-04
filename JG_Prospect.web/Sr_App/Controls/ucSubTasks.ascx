@@ -112,17 +112,17 @@
                             <HeaderTemplate>
                                 <thead>
                                     <tr class="trHeader">
-                                        <th width = "10%" class="subtask-actionid">Action-ID#</th>
-                                        <th width = "50%" class="subtask-taskdetails">Task Details</th>
-                                        <th width = "10%" class="subtask-assign">Assigned</th>
-                                        <th width = "30%" class="subtask-attchments">Attachments, IMGs, Docs, Videos & Recordings</th>
+                                        <th width="10%" class="subtask-actionid">Action-ID#</th>
+                                        <th width="50%" class="subtask-taskdetails">Task Details</th>
+                                        <th width="10%" class="subtask-assign">Assigned</th>
+                                        <th width="30%" class="subtask-attchments">Attachments, IMGs, Docs, Videos & Recordings</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                             </HeaderTemplate>
                             <ItemTemplate>
                                 <tr id="trItem" runat="server">
-                                    <td>
+                                    <td style="padding: 0px;">
                                         <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                         <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
@@ -132,7 +132,8 @@
 
                                                 <ItemTemplate>
                                                     <tr id="trSubTask" runat="server">
-                                                        <td class="searchid">
+
+                                                        <td valign="top" class="searchid" style='<%# "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
                                                             <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                             <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
                                                             <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
@@ -143,15 +144,14 @@
                                                                 <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                     ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
                                                                     ClientIDMode="AutoID" /><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" Text="+" />
-
-
+                                                                
                                                                 <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                     ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="RemoveClick" Visible="false"
                                                                     ClientIDMode="AutoID" />
                                                             </h5>
 
                                                             <!-- Freezingn Task Part Starts -->
-                                                            <table style="width: 100%;">
+                                                            <table width="100" style="margin-top: 10px;" class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                 <tr>
                                                                     <td colspan="3" class="noborder" align="center">
                                                                         <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
@@ -248,7 +248,7 @@
                                                             &nbsp;<a href="#">Comment</a>
                                                         </td>
                                                         <td valign="top">
-                                                            <table>
+                                                            <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                 <tr>
                                                                     <td class="noborder">
                                                                         <h5>Priority</h5>
@@ -312,7 +312,7 @@
                                                             </table>
                                                         </td>
                                                         <td valign="top">
-                                                            <table border="0" class="dropzonetbl" style="width: 100%;">
+                                                            <table border="0" class='<%#Eval("NestLevel").ToString() == "3"? "hide":"dropzonetbl" %>' style="width: 100%;">
                                                                 <tr>
                                                                     <td>
                                                                         <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional" ClientIDMode="AutoID">
@@ -938,6 +938,7 @@
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
+                var strInstallId = $(this).attr('data-installid');
 
                 if (TaskLevel == "2") {
                     $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
@@ -948,7 +949,7 @@
                     maintask = false;
                     $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
                 }
-                SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel);
+                SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
                 return false;
             });
         });
@@ -1049,7 +1050,7 @@
         );
     }
 
-    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel) {
+    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
         ShowAjaxLoader();
         var postData = {
             CommandArgument: cmdArg,
@@ -1070,14 +1071,16 @@
 
                     if (TaskLevel == "2") {
                         var taskid = GetParameterValues('TaskId');
-                        $('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        $('#<%=txtInstallId.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdMainParentId.ClientID%>').val(taskid);
                         $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                         $('#<%=hdTaskId.ClientID%>').val(cmdArg);
                     }
                     else {
-                        $('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                        //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                        $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                         $('#<%=hdTaskId.ClientID%>').val(cmdArg);
@@ -1248,19 +1251,19 @@
                if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
                    if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
                        $('#<%=btnSaveSubTask.ClientID%>').click();
+                   }
                }
            }
-       }
 
-       function OnSaveSubTaskClick() {
-           if (Page_ClientValidate('vgSubTask')) {
-               ShowAjaxLoader();
-               var taskid = '';
-               if (maintask) {
-                   taskid = GetParameterValues('TaskId');
-               }
-               else {
-                   taskid = $('#<%=hdParentTaskId.ClientID%>').val();
+           function OnSaveSubTaskClick() {
+               if (Page_ClientValidate('vgSubTask')) {
+                   ShowAjaxLoader();
+                   var taskid = '';
+                   if (maintask) {
+                       taskid = GetParameterValues('TaskId');
+                   }
+                   else {
+                       taskid = $('#<%=hdParentTaskId.ClientID%>').val();
                }
 
                var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
@@ -1268,7 +1271,7 @@
                var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
                var status = "1";
                var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
-                var DueDate = $('#<%= txtSubTaskDueDate.ClientID %>').val();
+               var DueDate = $('#<%= txtSubTaskDueDate.ClientID %>').val();
                var tHours = $('#<%= txtSubTaskHours.ClientID %>').val();
                var installID = $('#<%= txtTaskListID.ClientID %>').val();
                var Attachments = $('#<%= hdnAttachments.ClientID %>').val();
@@ -1306,50 +1309,50 @@
                            if (data.d) {
                                alert('Task saved successfully.');
                                $('#<%=btnUpdateRepeater.ClientID%>').click();
-                                maintask = true;
-                            }
-                            else {
-                                alert('Problem Occured');
-                            }
-                        },
-                        error: function (a, b, c) {
-                            HideAjaxLoader();
-                        }
-                    }
+                               maintask = true;
+                           }
+                           else {
+                               alert('Problem Occured');
+                           }
+                       },
+                       error: function (a, b, c) {
+                           HideAjaxLoader();
+                       }
+                   }
             );
 
-                    return false;
+                   return false;
+               }
+           }
+           function GetParameterValues(param) {
+               var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+               for (var i = 0; i < url.length; i++) {
+                   var urlparam = url[i].split('=');
+                   if (urlparam[0] == param) {
+                       return urlparam[1];
+                   }
+               }
+           }
+
+           function copytoListID(sender) {
+               var strListID = $.trim($(sender).text());
+               if (strListID.length > 0) {
+                   $('#<%= txtTaskListID.ClientID %>').val(strListID);
+                    ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
+                    ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
                 }
             }
-            function GetParameterValues(param) {
-                var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-                for (var i = 0; i < url.length; i++) {
-                    var urlparam = url[i].split('=');
-                    if (urlparam[0] == param) {
-                        return urlparam[1];
-                    }
+
+            var objSubTaskDropzone, objSubtaskNoteDropzone;
+
+
+            function ucSubTasks_ApplyDropZone() {
+                //remove already attached dropzone.
+                if (objSubTaskDropzone) {
+                    objSubTaskDropzone.destroy();
+                    objSubTaskDropzone = null;
                 }
-            }
-
-            function copytoListID(sender) {
-                var strListID = $.trim($(sender).text());
-                if (strListID.length > 0) {
-                    $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
-                ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
-            }
-        }
-
-        var objSubTaskDropzone, objSubtaskNoteDropzone;
-
-
-        function ucSubTasks_ApplyDropZone() {
-            //remove already attached dropzone.
-            if (objSubTaskDropzone) {
-                objSubTaskDropzone.destroy();
-                objSubTaskDropzone = null;
-            }
-            if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
                 objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",

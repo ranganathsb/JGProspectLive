@@ -360,6 +360,14 @@ function htmlDecode(value) {
     return $('<div/>').html(value).text();
 }
 
+function ShowAjaxLoader() {
+    $('.loading').show();
+}
+
+function HideAjaxLoader() {
+    $('.loading').hide();
+}
+
 function AddAttachmenttoViewState(serverfilename, hdnControlID) {
 
     var attachments;
