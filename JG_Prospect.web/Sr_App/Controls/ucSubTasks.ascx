@@ -123,7 +123,7 @@
                             </HeaderTemplate>
                             <ItemTemplate>
                                 <tr id="trItem" runat="server">
-                                    <td>
+                                    <td style="padding: 0px;">
                                         <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                         <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
@@ -141,7 +141,7 @@
                                                 </HeaderTemplate>
                                                 <ItemTemplate>
                                                     <tr id="trSubTask" runat="server">
-                                                        <td valign="top" class="searchid">
+                                                        <td valign="top" class="searchid" style='<%# "border-left:"+Eval("NestLevel").ToString()+"0px solid black;"%>'>
                                                             <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                             <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
                                                             <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
@@ -949,6 +949,7 @@
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
+                var strInstallId = $(this).attr('data-installid');
 
                 if (TaskLevel == "2") {
                     $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
@@ -959,7 +960,7 @@
                     maintask = false;
                     $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
                 }
-                SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel);
+                SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
                 return false;
             });
         });
@@ -1060,7 +1061,7 @@
         );
     }
 
-    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel) {
+    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
         ShowAjaxLoader();
         var postData = {
             CommandArgument: cmdArg,
@@ -1081,14 +1082,16 @@
 
                     if (TaskLevel == "2") {
                         var taskid = GetParameterValues('TaskId');
-                        $('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        $('#<%=txtInstallId.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdMainParentId.ClientID%>').val(taskid);
                         $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                         $('#<%=hdTaskId.ClientID%>').val(cmdArg);
                     }
                     else {
-                        $('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                        //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                        $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                         $('#<%=hdTaskId.ClientID%>').val(cmdArg);
