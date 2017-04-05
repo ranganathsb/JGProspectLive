@@ -88,6 +88,22 @@ namespace JG_Prospect.Sr_App
             return SearchSuggestions;
         }
 
+        [WebMethod]
+        public static string StarBookMarkUsers(int bookmarkedUser,   int isdelete)
+        {
+            string strReturn = "true";
+            try
+            {
+                int userId = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                strReturn = InstallUserBLL.Instance.GetStarBookMarkUsers(userId, bookmarkedUser, isdelete);
+            }
+            catch(Exception ex)
+            {
+                strReturn = "false";
+            }
+            return strReturn;
+        }
+
         //---------- End DP ---------
 
 

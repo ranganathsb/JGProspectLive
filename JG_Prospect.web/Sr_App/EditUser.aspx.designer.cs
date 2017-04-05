@@ -490,6 +490,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlPageSize_grdUsers;
         
         /// <summary>
+        /// PageRowCountLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label PageRowCountLabel;
+        
+        /// <summary>
+        /// PageTotalLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label PageTotalLabel;
+        
+        /// <summary>
         /// grdUsers control.
         /// </summary>
         /// <remarks>
