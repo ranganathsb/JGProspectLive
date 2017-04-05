@@ -107,8 +107,8 @@
                         <thead>
                             <tr class="trHeader">
                                 <th width="10%" class="subtask-actionid">Action-ID#</th>
-                                <th width="50%" class="subtask-taskdetails">Task Details</th>
-                                <th width="10%" class="subtask-assign">Assigned</th>
+                                <th width="45%" class="subtask-taskdetails">Task Details</th>
+                                <th width="15%" class="subtask-assign">Assigned</th>
                                 <th width="30%" class="subtask-attchments">Attachments, IMGs, Docs, Videos & Recordings</th>
                             </tr>
                         </thead>
@@ -235,7 +235,7 @@
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
                                                                 <td width="50%">
-                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 400px;">
+                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 497px;">
                                                                         <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                                             <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                                         </div>
@@ -246,31 +246,34 @@
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
-                                                                    <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
+                                                                    <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
                                                                         </li>
-                                                                        <li>Assigned
-                                                                        </li>
-                                                                        <li>
-                                                                            <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
-                                                                                CssClass="chosen-select" data-placeholder="Select"
-                                                                                AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
-                                                                            <asp:Label ID="lblAssigned" runat="server" />
-                                                                        </li>
+
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
                                                                             <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
-                                                                        <li>Type
+                                                                        <li style="display: none;">Type
                                                                         </li>
-                                                                        <li>
+                                                                        <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
+
                                                                     </ul>
+                                                                    <div>
+                                                                        <span>Assigned
+                                                                        </span>
+                                                                        <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
+                                                                            CssClass="chosen-select" data-placeholder="Select"
+                                                                            AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                        <asp:Label ID="lblAssigned" runat="server" />
+
+                                                                    </div>
                                                                     <table style="display: none;">
                                                                         <tr>
                                                                             <td class="noborder" colspan="2">
@@ -386,7 +389,7 @@
                         <tfoot>
                             <tr class="pagination-ys">
                                 <td>
-                                    <uc:CustomPager ID="repSubTasks_CustomPager" runat="server" PagerSize="5" />
+                                    <uc:custompager id="repSubTasks_CustomPager" runat="server" pagersize="5" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -835,6 +838,10 @@
 
         //For Title
         $(".TitleEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -852,10 +859,15 @@
                 EditTask(tid, tdetail)
                 isadded = false;
             });
+            <% } %>
         });
 
         //For Url
         $(".UrlEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -876,10 +888,15 @@
                 isadded = false;
                 return false;
             });
+            <% } %>
         });
 
         //For Description
         $(".DescEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -901,10 +918,15 @@
                 }
                 return false;
             });
+            <% } %>
         });
 
         //For Add Task Button
         $(".showsubtaskDIV").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
@@ -922,8 +944,10 @@
                 }
                     SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
                     return false;
-                });
             });
+            
+            <% } %>
+        });
     }
 
     function updateDesc(htmldata) {

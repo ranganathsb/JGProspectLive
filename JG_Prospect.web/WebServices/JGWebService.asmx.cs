@@ -21,6 +21,8 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        #region '--TaskWorkSpecification--'
+
         [WebMethod(EnableSession = true)]
         public object GetTaskWorkSpecifications(Int32 TaskId, Int64 intParentTaskWorkSpecificationId)
         {
@@ -249,6 +251,10 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        #endregion
+
+        #region '--Task--'
+
         [WebMethod(EnableSession = true)]
         public bool UpdateTaskTitleById(string tid, string title)
         {
@@ -269,9 +275,6 @@ namespace JG_Prospect.WebServices
             TaskGeneratorBLL.Instance.UpdateTaskDescriptionById(tid, Description);
             return true;
         }
-
-
-        #region "Task Generator Add Methods"
 
         [WebMethod(EnableSession = true)]
         public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
@@ -363,6 +366,10 @@ namespace JG_Prospect.WebServices
             return obj;
         }
 
+        #endregion
+
+        #region '--Private Methods--'
+
         private string[] getSUBSubtaskSequencing(string sequence)
         {
             String[] ReturnSequence = new String[2];
@@ -407,8 +414,6 @@ namespace JG_Prospect.WebServices
 
             return ReturnSequence;
         }
-
-        #region "Private Methods"
 
         private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
@@ -563,9 +568,6 @@ namespace JG_Prospect.WebServices
                 }
             }
         }
-
-        #endregion
-
 
         #endregion
     }

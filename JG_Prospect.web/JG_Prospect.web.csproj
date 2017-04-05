@@ -1074,6 +1074,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN014_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
+    <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
@@ -1092,8 +1093,10 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
-    <Content Include="Database Scripts\KetankumarGodhani\KetankumarGodhani_03232017_db.sql" />
-    <Content Include="Database Scripts\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Task-DataCorrection-Live.sql" />
+    <Content Include="Database Scripts\KetankumarGodhani\03-04-2017.sql" />
+    <Content Include="Database Scripts\KetankumarGodhani\Ketankumar_03262017_db_FrozenTaskSP.sql" />
+    <Content Include="Database Scripts\yogesh\script April v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
