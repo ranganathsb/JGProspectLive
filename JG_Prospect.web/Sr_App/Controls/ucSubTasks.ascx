@@ -838,6 +838,10 @@
 
         //For Title
         $(".TitleEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -855,10 +859,15 @@
                 EditTask(tid, tdetail)
                 isadded = false;
             });
+            <% } %>
         });
 
         //For Url
         $(".UrlEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -879,10 +888,15 @@
                 isadded = false;
                 return false;
             });
+            <% } %>
         });
 
         //For Description
         $(".DescEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -904,10 +918,15 @@
                 }
                 return false;
             });
+            <% } %>
         });
 
         //For Add Task Button
         $(".showsubtaskDIV").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
@@ -925,8 +944,10 @@
                 }
                     SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
                     return false;
-                });
             });
+            
+            <% } %>
+        });
     }
 
     function updateDesc(htmldata) {

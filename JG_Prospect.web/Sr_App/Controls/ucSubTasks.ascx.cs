@@ -181,6 +181,7 @@ namespace JG_Prospect.Sr_App.Controls
                 HiddenField hdTaskLevel = e.Item.FindControl("hdTaskLevel") as HiddenField;
                 HiddenField hdTaskId = e.Item.FindControl("hdTaskId") as HiddenField;
                 LinkButton lnkAddMoreSubTask = e.Item.FindControl("lnkAddMoreSubTask") as LinkButton;
+                Button btnshowdivsub = e.Item.FindControl("btnshowdivsub") as Button;
                 LinkButton lbtnInstallId = e.Item.FindControl("lbtnInstallId") as LinkButton;
                 LinkButton lbtnInstallIdRemove = e.Item.FindControl("lbtnInstallIdRemove") as LinkButton;
                 HiddenField hdURL = e.Item.FindControl("hdURL") as HiddenField;
@@ -243,16 +244,20 @@ namespace JG_Prospect.Sr_App.Controls
                 lbtnInstallIdRemove.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
 
 
-                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                if (
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.IT_Lead) ||
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.Admin) ||
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.Office_Manager)
+                   )
                 {
-
-                    // c.Click +=  EditSubTask_Click;
+                    btnshowdivsub.Visible = 
                     lbtnInstallId.Visible = true;
                     lbtnInstallIdRemove.Visible = false;
                 }
                 else
                 {
-                    lnkAddMoreSubTask.Visible = false;
+                    btnshowdivsub.Visible = 
+                    lnkAddMoreSubTask.Visible = 
                     lbtnInstallId.Visible = false;
                     lbtnInstallIdRemove.Visible = true;
                 }
@@ -2757,15 +2762,18 @@ namespace JG_Prospect.Sr_App.Controls
                 lbtnInstallIdRemove.CommandName = hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString() + "#" + hdTaskLevel.Value;
 
 
-                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                if (
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.IT_Lead) ||
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.Admin) ||
+                    JGSession.DesignationId == Convert.ToInt32(JG_Prospect.Common.JGConstant.DesignationType.Office_Manager) 
+                   )
                 {
-
-                    // c.Click +=  EditSubTask_Click;
                     lbtnInstallId.Visible = true;
                     lbtnInstallIdRemove.Visible = false;
                 }
                 else
                 {
+                    btnshowdivsub.Visible = 
                     lnkAddMoreSubTask.Visible = false;
                     lbtnInstallId.Visible = false;
                     lbtnInstallIdRemove.Visible = true;
