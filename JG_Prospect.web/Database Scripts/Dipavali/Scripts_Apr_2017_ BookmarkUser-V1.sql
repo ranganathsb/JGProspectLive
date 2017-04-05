@@ -81,9 +81,6 @@ END
 
 
 
-
-
-
 -- =============================================    
 -- Author:  Yogesh    
 -- Create date: 16 Jan 2017    
@@ -270,8 +267,7 @@ BEGIN
     LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id       
     LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id      
     LEFT JOIN tblSource s ON t.SourceId = s.Id    
-	 left outer join InstallUserBMLog as bm on t.id  =bm.bookmarkedUser  and bm.isDeleted=0
-
+	 left outer join InstallUserBMLog as bm on t.id  =bm.bookmarkedUser and bm.isDeleted=0
 	OUTER APPLY
 	(
 		SELECT TOP 1 tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo
@@ -306,7 +302,36 @@ BEGIN
    AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)    
  )    
     
- SELECT *    
+ SELECT Id,    
+   FristName,    
+   LastName,    
+   Phone,    
+   Zip,    
+    Designation,    
+   Status,    
+   HireDate,    
+   InstallId,    
+   picture,     
+   CreatedDateTime,     
+   Source,    
+   SourceUser,     
+   AddedBy ,    
+    UserInstallId ,     
+   InterviewDetail,    
+   RejectDetail,    
+   Email,     
+   DesignationID,     
+     AddedByUserInstallId,     
+   AddedById ,     
+   EmpType  ,  
+    [Aggregate] ,    
+    PrimaryPhone ,     
+   CountryCode,     
+   Resumepath  ,  
+   TechTaskId ,
+   ParentTechTaskId ,
+   TechTaskInstallId   , 
+   bookmarkedUser    
  FROM SalesUsers    
  WHERE     
   RowNumber >= @StartIndex AND     
@@ -314,6 +339,56 @@ BEGIN
    @PageSize = 0 OR     
    RowNumber < (@StartIndex + @PageSize)    
   )    
+    group by 
+   Id,    
+   FristName,    
+   LastName,    
+   Phone,    
+   Zip,    
+    Designation,    
+   Status,    
+   HireDate,    
+   InstallId,    
+   picture,     
+   CreatedDateTime,     
+   Source,    
+   SourceUser,     
+   AddedBy ,    
+    UserInstallId ,     
+   InterviewDetail,    
+   RejectDetail,    
+   Email,     
+   DesignationID,     
+     AddedByUserInstallId,     
+   AddedById ,     
+   EmpType  ,  
+    [Aggregate] ,    
+    PrimaryPhone ,     
+   CountryCode,     
+   Resumepath  ,  
+   TechTaskId ,
+   ParentTechTaskId ,
+   TechTaskInstallId   , 
+   bookmarkedUser
+    
+   ORDER BY    
+         CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,    
+         CASE WHEN @SortExpression = 'Id DESC' THEN Id END DESC,    
+         CASE WHEN @SortExpression = 'Status ASC' THEN Status END ASC,    
+         CASE WHEN @SortExpression = 'Status DESC' THEN Status END DESC,    
+         CASE WHEN @SortExpression = 'FristName ASC' THEN FristName END ASC,    
+         CASE WHEN @SortExpression = 'FristName DESC' THEN FristName END DESC,    
+         CASE WHEN @SortExpression = 'Designation ASC' THEN Designation END ASC,    
+         CASE WHEN @SortExpression = 'Designation DESC' THEN Designation END DESC,    
+         CASE WHEN @SortExpression = 'Source ASC' THEN Source END ASC,    
+         CASE WHEN @SortExpression = 'Source DESC' THEN Source END DESC,    
+         CASE WHEN @SortExpression = 'Phone ASC' THEN Phone END ASC,    
+         CASE WHEN @SortExpression = 'Phone DESC' THEN Phone END DESC,    
+         CASE WHEN @SortExpression = 'Zip ASC' THEN Phone END ASC,    
+         CASE WHEN @SortExpression = 'Zip DESC' THEN Phone END DESC,    
+         CASE WHEN @SortExpression = 'CreatedDateTime ASC' THEN CreatedDateTime END ASC,    
+         CASE WHEN @SortExpression = 'CreatedDateTime DESC' THEN CreatedDateTime END DESC    
+
     
  -- get record count    
  SELECT COUNT(*) AS TotalRecordCount    
@@ -324,6 +399,7 @@ BEGIN
    LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id        
    LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id        
    LEFT JOIN tblSource s ON t.SourceId = s.Id    
+ 
  WHERE      
   (t.UserType = 'SalesUser' OR t.UserType = 'sales')    
   AND     
@@ -348,4 +424,5 @@ BEGIN
   AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)     
   AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)    
 END
+
 
