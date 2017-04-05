@@ -286,6 +286,7 @@ namespace JG_Prospect
                         //starredimg.Visible = false;
                         starblankimg.CssClass = "starimg";
                         starblankimg.ImageUrl = "~/img/star.png";
+                        starblankimg.AlternateText = hdId.Value;
                         starblankimg.Attributes.Add("onclick", "GotoStarUser('" + hdId.Value + "','0','" + starblankimg.ClientID + "')");
                     }
                     else
@@ -294,6 +295,7 @@ namespace JG_Prospect
                         //starblankimg.Visible = false;
                         starblankimg.CssClass = "starimgred";
                         starblankimg.ImageUrl = "~/img/starred.png";
+                        starblankimg.AlternateText = hdId.Value;
                         starblankimg.Attributes.Add("onclick", "GotoStarUser('" + hdId.Value + "','1','" + starblankimg.ClientID + "')");
                     }
 

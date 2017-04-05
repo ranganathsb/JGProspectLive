@@ -16,6 +16,20 @@ GO
 
 
 
+create PROCEDURE [dbo].[GetBookMarkingUserDetails]    
+(
+@Id int  
+)
+AS    
+BEGIN    
+
+
+SELECT       t.Id, FristName, LastName, Email,Designation,ISNULL (t.UserInstallId ,t.id) As UserInstallId ,    b.createdDateTime
+FROM         InstallUserBMLog as b,   tblInstallUsers AS t
+WHERE			b.bookmarkedUser  = @Id  and b.bookmarkingUser=t.Id
+				and b.isDeleted=0
+
+END
 
 
 
@@ -256,7 +270,8 @@ BEGIN
     LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id       
     LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id      
     LEFT JOIN tblSource s ON t.SourceId = s.Id    
-	 left outer join InstallUserBMLog as bm on t.id  =bm.bookmarkedUser 
+	 left outer join InstallUserBMLog as bm on t.id  =bm.bookmarkedUser  and bm.isDeleted=0
+
 	OUTER APPLY
 	(
 		SELECT TOP 1 tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo
