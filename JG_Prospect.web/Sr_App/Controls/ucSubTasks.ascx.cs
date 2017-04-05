@@ -261,6 +261,15 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        protected void repSubTasks_CustomPager_OnPageIndexChanged(object sender, EventArgs e)
+        {
+            SetSubTaskDetails();
+        }
+
+        #endregion
+
+        #region '--repSubTasks--'
+
         protected void repSubTasksNested_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -659,8 +668,196 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        protected void repSubTasks_CustomPager_OnPageIndexChanged(object sender, EventArgs e)
+        protected void repSubTasksNested_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ListBox ddcbAssigned = (ListBox)sender;
+            GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
+            int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
+            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
+
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, intTaskId))
+            {
+                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]), intTaskId);
+            }
+
+            SetSubTaskDetails();
+        }
+
+        protected void repSubTasksNested_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlStatus = sender as DropDownList;
+            //if (controlMode == "0")
+            //{
+            //    this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
+
+            //    SetSubTaskDetails(this.lstSubTasks);
+            //}
+            //else
+            {
+                TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString()),
+                                                    Status = Convert.ToInt32(ddlStatus.SelectedValue)
+                                                }
+                                            );
+
+                SetSubTaskDetails();
+            }
+        }
+
+        protected void repSubTasksNested_ddlTaskPriority_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlTaskPriority = sender as DropDownList;
+            //if (controlMode == "0")
+            //{
+            //    if (ddlTaskPriority.SelectedValue == "0")
+            //    {
+            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = null;
+            //    }
+            //    else
+            //    {
+            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedValue);
+            //    }
+
+            //    SetSubTaskDetails(this.lstSubTasks);
+            //}
+            //else
+            {
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(ddlTaskPriority.Attributes["TaskId"].ToString());
+                if (ddlTaskPriority.SelectedValue == "0")
+                {
+                    objTask.TaskPriority = null;
+                }
+                else
+                {
+                    objTask.TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedItem.Value);
+                }
+                TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
+
+                SetSubTaskDetails();
+            }
+        }
+
+        protected void repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged(object sender, EventArgs e)
+        {
+            TextBox txtPassword = sender as TextBox;
+            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent as RepeaterItem;
+
+            if (objRepeaterItem != null)
+            {
+                decimal decEstimatedHours = 0;
+                TextBox txtEstimatedHours = objRepeaterItem.FindControl("txtEstimatedHours") as TextBox;
+                HiddenField hdnTaskApprovalId = objRepeaterItem.FindControl("hdnTaskApprovalId") as HiddenField;
+                HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
+
+                if (txtPassword == null || string.IsNullOrEmpty(txtPassword.Text))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not provided.");
+                }
+                else if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not valid.");
+                }
+                else if (txtEstimatedHours == null || string.IsNullOrEmpty(txtEstimatedHours.Text))
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not provided.");
+                }
+                else if (!decimal.TryParse(txtEstimatedHours.Text.Trim(), out decEstimatedHours) || decEstimatedHours <= 0)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not valid.");
+                }
+                else
+                {
+                    #region Update Estimated Hours
+
+                    TaskApproval objTaskApproval = new TaskApproval();
+                    if (string.IsNullOrEmpty(hdnTaskApprovalId.Value))
+                    {
+                        objTaskApproval.Id = 0;
+                    }
+                    else
+                    {
+                        objTaskApproval.Id = Convert.ToInt64(hdnTaskApprovalId.Value);
+                    }
+                    objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
+                    objTaskApproval.Description = string.Empty;
+                    objTaskApproval.TaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+                    objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
+
+                    if (objTaskApproval.Id > 0)
+                    {
+                        TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
+                    }
+                    else
+                    {
+                        TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
+                    }
+
+                    #endregion
+
+                    #region Update Task (Freeze, Status)
+
+                    Task objTask = new Task();
+
+                    objTask.TaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+
+                    bool blIsAdmin, blIsTechLead, blIsUser;
+
+                    blIsAdmin = blIsTechLead = blIsUser = false;
+                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                    {
+                        objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.AdminStatus = true;
+                        blIsAdmin = true;
+                    }
+                    else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                    {
+                        objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.TechLeadStatus = true;
+                        blIsTechLead = true;
+                    }
+                    else
+                    {
+                        objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                        objTask.OtherUserStatus = true;
+                        blIsUser = true;
+                    }
+
+                    TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                                (
+                                                    objTask,
+                                                    blIsAdmin,
+                                                    blIsTechLead,
+                                                    blIsUser
+                                                );
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task freezed successfully.");
+
+                    #endregion
+                }
+
+                SetSubTaskDetails();
+            }
+        }
+
+        protected void repSubTasksNested_chkUiRequested_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chkUiRequested = sender as CheckBox;
+            RepeaterItem objRepeaterItem = chkUiRequested.Parent.Parent as RepeaterItem;
+
+            if (objRepeaterItem != null)
+            {
+                HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
+                Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+                TaskGeneratorBLL.Instance.UpdateTaskUiRequested(intTaskId, chkUiRequested.Checked);
+            }
             SetSubTaskDetails();
         }
 
@@ -1520,199 +1717,6 @@ namespace JG_Prospect.Sr_App.Controls
         }
         // -------- End DP -------
 
-
-        protected void repSubTasksNested_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ListBox ddcbAssigned = (ListBox)sender;
-            GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
-            int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
-            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
-
-            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, intTaskId))
-            {
-                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]), intTaskId);
-            }
-
-            SetSubTaskDetails();
-        }
-
-        protected void repSubTasksNested_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddlStatus = sender as DropDownList;
-            //if (controlMode == "0")
-            //{
-            //    this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
-
-            //    SetSubTaskDetails(this.lstSubTasks);
-            //}
-            //else
-            {
-                TaskGeneratorBLL.Instance.UpdateTaskStatus
-                                            (
-                                                new Task()
-                                                {
-                                                    TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString()),
-                                                    Status = Convert.ToInt32(ddlStatus.SelectedValue)
-                                                }
-                                            );
-
-                SetSubTaskDetails();
-            }
-        }
-
-        protected void repSubTasksNested_ddlTaskPriority_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddlTaskPriority = sender as DropDownList;
-            //if (controlMode == "0")
-            //{
-            //    if (ddlTaskPriority.SelectedValue == "0")
-            //    {
-            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = null;
-            //    }
-            //    else
-            //    {
-            //        this.lstSubTasks[Convert.ToInt32(ddlTaskPriority.Attributes["SubTaskIndex"].ToString())].TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedValue);
-            //    }
-
-            //    SetSubTaskDetails(this.lstSubTasks);
-            //}
-            //else
-            {
-                Task objTask = new Task();
-                objTask.TaskId = Convert.ToInt32(ddlTaskPriority.Attributes["TaskId"].ToString());
-                if (ddlTaskPriority.SelectedValue == "0")
-                {
-                    objTask.TaskPriority = null;
-                }
-                else
-                {
-                    objTask.TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedItem.Value);
-                }
-                TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
-
-                SetSubTaskDetails();
-            }
-        }
-
-        protected void repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged(object sender, EventArgs e)
-        {
-            TextBox txtPassword = sender as TextBox;
-            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent as RepeaterItem;
-
-            if (objRepeaterItem != null)
-            {
-                decimal decEstimatedHours = 0;
-                TextBox txtEstimatedHours = objRepeaterItem.FindControl("txtEstimatedHours") as TextBox;
-                HiddenField hdnTaskApprovalId = objRepeaterItem.FindControl("hdnTaskApprovalId") as HiddenField;
-                HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
-
-                if (txtPassword == null || string.IsNullOrEmpty(txtPassword.Text))
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not provided.");
-                }
-                else if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as password is not valid.");
-                }
-                else if (txtEstimatedHours == null || string.IsNullOrEmpty(txtEstimatedHours.Text))
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not provided.");
-                }
-                else if (!decimal.TryParse(txtEstimatedHours.Text.Trim(), out decEstimatedHours) || decEstimatedHours <= 0)
-                {
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task cannot be freezed as estimated hours is not valid.");
-                }
-                else
-                {
-                    #region Update Estimated Hours
-
-                    TaskApproval objTaskApproval = new TaskApproval();
-                    if (string.IsNullOrEmpty(hdnTaskApprovalId.Value))
-                    {
-                        objTaskApproval.Id = 0;
-                    }
-                    else
-                    {
-                        objTaskApproval.Id = Convert.ToInt64(hdnTaskApprovalId.Value);
-                    }
-                    objTaskApproval.EstimatedHours = txtEstimatedHours.Text.Trim();
-                    objTaskApproval.Description = string.Empty;
-                    objTaskApproval.TaskId = Convert.ToInt32(hdTaskId.Value.ToString());
-                    objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                    objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
-
-                    if (objTaskApproval.Id > 0)
-                    {
-                        TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
-                    }
-                    else
-                    {
-                        TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
-                    }
-
-                    #endregion
-
-                    #region Update Task (Freeze, Status)
-
-                    Task objTask = new Task();
-
-                    objTask.TaskId = Convert.ToInt32(hdTaskId.Value.ToString());
-
-                    bool blIsAdmin, blIsTechLead, blIsUser;
-
-                    blIsAdmin = blIsTechLead = blIsUser = false;
-                    if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
-                    {
-                        objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                        objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
-                        objTask.AdminStatus = true;
-                        blIsAdmin = true;
-                    }
-                    else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
-                    {
-                        objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                        objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
-                        objTask.TechLeadStatus = true;
-                        blIsTechLead = true;
-                    }
-                    else
-                    {
-                        objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                        objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
-                        objTask.OtherUserStatus = true;
-                        blIsUser = true;
-                    }
-
-                    TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
-                                                (
-                                                    objTask,
-                                                    blIsAdmin,
-                                                    blIsTechLead,
-                                                    blIsUser
-                                                );
-
-                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Sub Task freezed successfully.");
-
-                    #endregion
-                }
-
-                SetSubTaskDetails();
-            }
-        }
-
-        protected void repSubTasksNested_chkUiRequested_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox chkUiRequested = sender as CheckBox;
-            RepeaterItem objRepeaterItem = chkUiRequested.Parent.Parent as RepeaterItem;
-
-            if (objRepeaterItem != null)
-            {
-                HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
-                Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
-                TaskGeneratorBLL.Instance.UpdateTaskUiRequested(intTaskId, chkUiRequested.Checked);
-            }
-            SetSubTaskDetails();
-        }
 
         #endregion
 
