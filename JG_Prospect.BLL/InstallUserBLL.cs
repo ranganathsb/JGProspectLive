@@ -501,6 +501,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetTaskUsers(searchTerm);
         }
+
+        public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);
+        }
+
         //--------- end DP ----------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)

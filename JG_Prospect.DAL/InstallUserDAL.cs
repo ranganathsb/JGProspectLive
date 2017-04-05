@@ -2314,6 +2314,27 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+        public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetStarBookMarkUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@bookmarkedUser", DbType.String, bookmarkedUser);
+                    database.AddInParameter(command, "@bookmarkingUser", DbType.String, bookmarkingUser);
+                    database.AddInParameter(command, "@isdelete", DbType.String, isdelete);
+                    database.ExecuteDataSet(command);
+                }
+
+                return "true";
+            }
+            catch (Exception ex)
+            {
+                return "false";
+            }
+        }
         //------------- end DP -------------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)

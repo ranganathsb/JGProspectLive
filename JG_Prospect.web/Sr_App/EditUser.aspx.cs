@@ -94,6 +94,8 @@ namespace JG_Prospect
 
         #endregion
 
+       
+
         #region '--Page Events--'
 
         protected void Page_Load(object sender, EventArgs e)
@@ -150,6 +152,7 @@ namespace JG_Prospect
                 BindDesignations();
 
                 GetSalesUsersStaticticsAndData(true);
+
             }
             else
             {
@@ -248,10 +251,56 @@ namespace JG_Prospect
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
-
+                   
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
-                    ddlContactType = BindContactDllForGrid(ddlContactType);
+
+                    //----------- start DP -----------
+                    DropDownList drpDesig = e.Row.FindControl("drpDesig") as DropDownList;
+                    HiddenField lblDesignation = e.Row.FindControl("lblDesignation") as HiddenField;
+                    HiddenField bmId = e.Row.FindControl("bmId") as HiddenField;
+                    //ImageButton starredimg = e.Row.FindControl("starredimg") as ImageButton;
+                    Image starblankimg = e.Row.FindControl("starblankimg") as Image;
+                    HiddenField hdId = e.Row.FindControl("hdId") as HiddenField;
+
+                    DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+                    drpDesig.Items.Clear();
+                    drpDesig.DataValueField = "Id";
+                    drpDesig.DataTextField = "DesignationName";
+                    drpDesig.DataSource = dsDesignation.Tables[0];
+                    drpDesig.DataBind();
+                    drpDesig.Items.Insert(0, new ListItem("--All--", "0"));
+                    drpDesig.SelectedIndex = 0;
+
+                    for (int i = 0; i < drpDesig.Items.Count;i++ )
+                    {
+                        if(drpDesig.Items[i].ToString() == lblDesignation.Value )
+                        {
+                            drpDesig.SelectedIndex = i;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(bmId.Value))
+                    {
+                        //starblankimg.Visible = true;
+                        //starredimg.Visible = false;
+                        starblankimg.CssClass = "starimg";
+                        starblankimg.ImageUrl = "~/img/star.png";
+                        starblankimg.Attributes.Add("onclick", "GotoStarUser('" + hdId.Value + "','0','" + starblankimg.ClientID + "')");
+                    }
+                    else
+                    {
+                        //starredimg.Visible = true;
+                        //starblankimg.Visible = false;
+                        starblankimg.CssClass = "starimgred";
+                        starblankimg.ImageUrl = "~/img/starred.png";
+                        starblankimg.Attributes.Add("onclick", "GotoStarUser('" + hdId.Value + "','1','" + starblankimg.ClientID + "')");
+                    }
+
+                        //------------ end DP --------------
+
+
+                        ddlContactType = BindContactDllForGrid(ddlContactType);
 
                     System.Web.UI.HtmlControls.HtmlAnchor aReasumePath = (e.Row.FindControl("aReasumePath") as System.Web.UI.HtmlControls.HtmlAnchor);
 
@@ -840,6 +889,16 @@ namespace JG_Prospect
         #endregion
 
         #region grdUsers - Popups
+
+
+
+        protected void drpDesig_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //string designation = drpDesig.SelectedValue;
+           // update query 
+           
+         
+        }
 
         protected void btnChangeStatus_Click(object sender, EventArgs e)
         {
@@ -3672,6 +3731,8 @@ namespace JG_Prospect
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
+                        PageRowCountLabel.Text = grdUsers.PageIndex.ToString();
+                        PageTotalLabel.Text = grdUsers.PageSize.ToString();
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);

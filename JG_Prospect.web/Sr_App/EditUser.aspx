@@ -378,6 +378,23 @@
             height: 300px;
             overflow-y: scroll;
         }*/
+
+       .form_panel table tr td .starimg
+        {
+            width:15px;
+            height:15px;
+            border:none!important;
+            /*background-image:url(../img/star.png);*/
+        }
+
+         .form_panel table tr td .starimgred
+        {
+            width:15px;
+            height:15px;
+            border:none!important;
+            /*background-image:url(../img/starred.png);*/
+        }
+
     </style>
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
@@ -651,8 +668,11 @@
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
-                        </div>
-
+                        
+                              Showing :  
+                                <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" /> of
+                                <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />
+                         </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
@@ -664,8 +684,11 @@
 
                                 <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
                                     <ItemTemplate>
-                                        <asp:CheckBox ID="chkSelected" runat="server" />
-                                        <br />
+                                        <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
+                                        <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
+                                        <asp:CheckBox ID="chkSelected" runat="server" /> <asp:Image CssClass="starimg"  ID="starblankimg" runat="server" ImageUrl= "../img/star.png"    ></asp:Image>
+                                       <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
+                                        <br />  
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
@@ -674,9 +697,11 @@
                                         <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        
+
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField ShowHeader="True" HeaderText="Id# <br /> Designation" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
                                     Visible="true" SortExpression="Designation">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
@@ -686,7 +711,11 @@
                                         <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
+                                         <asp:DropDownList ID="drpDesig" runat="server" style="width:150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                         <br />
+                                          <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>&nbsp;<asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -712,7 +741,7 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
+                                <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtFirstName" runat="server" MaxLength="30" Text='<%#Eval("FristName")%>'></asp:TextBox>
                                     </EditItemTemplate>
@@ -724,7 +753,7 @@
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
 
                                 <asp:TemplateField HeaderText="Last name" Visible="false" SortExpression="Lastname" ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
@@ -1134,14 +1163,14 @@
 
         <asp:Panel ID="pnlUploadBulk" runat="server">
             <style>
-                kTab {
+                /*kTab {
                     :;
                 }
 
                 {
                     x;
                 }
-                /* END EXT
+                /* END EXT*/
             </style>
             <div id="lightUploadBulk" class="white_content" style="text-align: center">
                 <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
@@ -1525,6 +1554,51 @@
             SetCKEditor('<%=txtEmailFooter.ClientID%>');--%>
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
+
+
+        //============= Start DP =============
+        function GotoStarUser(bookmarkedUser,isdel,obj)
+        {
+            alert(isdel);
+            //alert(obj);
+            //alert(bookmarkedUser);
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/StarBookMarkUsers",
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:'+ isdel +' }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                     //alert("Hello: " + response + " ");
+                     
+                    var d = new Date();
+                    if (isdel == "0") {
+                        // alert("if");
+                        //alert($("#" + obj));
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                    }
+                    else {
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
+                    }
+                    
+                },
+                complete: function () {
+                    // Schedule the next request when the current one has been completed
+                   // setTimeout(ajaxInterval, 4000);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+          
+        }
+
+        //============== End DP ==============
 
     </script>
 </asp:Content>
