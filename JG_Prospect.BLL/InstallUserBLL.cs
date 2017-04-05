@@ -507,6 +507,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);
         }
 
+        public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
+        {
+            return InstallUserDAL.Instance.GetBookMarkingUserDetails( bookmarkedUser);
+        }
+
         //--------- end DP ----------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)

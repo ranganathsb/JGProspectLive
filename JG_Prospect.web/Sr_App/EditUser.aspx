@@ -192,6 +192,19 @@
             cursor: pointer;
         }
     </style>
+    <style type="text/css">
+	#hint{
+		cursor:pointer;
+	}
+	.startooltip{
+		margin:8px;
+		padding:8px;
+		border:1px solid blue;
+		background-color:#ddd;
+		position: absolute;
+		z-index: 2;
+	}
+</style>
     <script type="text/javascript">
 
 
@@ -686,7 +699,7 @@
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-                                        <asp:CheckBox ID="chkSelected" runat="server" /> <asp:Image CssClass="starimg"  ID="starblankimg" runat="server" ImageUrl= "../img/star.png"    ></asp:Image>
+                                        <asp:CheckBox ID="chkSelected" runat="server" /> <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image>
                                        <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
                                         <br />  
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
@@ -1440,7 +1453,7 @@
         </div>
     </div>
     <%--Popup Ends--%>
-
+    
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript">
 
@@ -1577,10 +1590,14 @@
                         // alert("if");
                         //alert($("#" + obj));
                         $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
                     }
                     else {
                         $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
                     }
                     $(".loading").show();
@@ -1602,7 +1619,78 @@
           
         }
 
+
+
+        $(document).ready(function () {
+
+            var changeTooltipPosition = function (event) {
+                var tooltipX = event.pageX - 8;
+                var tooltipY = event.pageY + 8;
+                $('div.startooltip').css({ top: tooltipY, left: tooltipX });
+            };
+
+            var showTooltip = function (event) {
+                //$(".loading").show();
+                var bookmarkedUser = $(this).attr('alt');
+                
+                $.ajax({
+                    type: "POST",
+                    url: "ajaxcalls.aspx/GetBookMarkingUserDetails",
+                    data: '{bookmarkedUser: ' + bookmarkedUser + ' }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.d) {
+                            var str = "";
+                            var parsed = $.parseJSON(data.d);
+                           
+                            $.each(parsed, function (i, item) {
+                                var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
+                                str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
+                            });
+
+                            $('div.startooltip').remove();
+                            $('<div class="startooltip">' + str + '</div>')
+                                  .appendTo('body');
+                            changeTooltipPosition(event);
+                        }
+                        // $(".loading").show();
+                    },
+                    complete: function () {
+                        // Schedule the next request when the current one has been completed
+                        // setTimeout(ajaxInterval, 4000);
+                        //$(".loading").hide();
+                    },
+                    failure: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    },
+                    error: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    }
+                });
+
+            };
+
+            var hideTooltip = function () {
+                $('div.startooltip').remove();
+                //$(".loading").hide();
+            };
+
+            $(".starimgred").bind({
+                mousemove: changeTooltipPosition,
+                mouseenter: showTooltip,
+                mouseleave: hideTooltip
+              
+            });
+
+          
+            
+        });
+
         //============== End DP ==============
 
     </script>
+
 </asp:Content>
