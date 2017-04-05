@@ -349,6 +349,35 @@ function ChosenDropDown(options) {
     var _options = options || {};
     $('.chosen-select').chosen(_options);
 }
+
+/********************************************* jQuery Ajax Functions ******************************************************/
+function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnErrorCallBack) {
+    $.ajax
+    (
+        {
+            url: '../WebServices/JGWebService.asmx/' + strWebMethod,
+            contentType: 'application/json; charset=utf-8;',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(objPostDataJSON),
+            asynch: false,
+            success: function (data) {
+                HideAjaxLoader();
+                if (typeof (OnSuccessCallBack) === 'function') {
+                    OnSuccessCallBack(data);
+                }
+            },
+            error: function (a, b, c) {
+                HideAjaxLoader();
+                console.log('jQuery ajax error.');
+                if (typeof (OnErrorCallBack) === 'function') {
+                    OnErrorCallBack(a, b, c);
+                }
+            }
+        }
+    );
+}
+
 /********************************************* General Functions ******************************************************/
 function htmlEncode(value) {
     //create a in-memory div, set it's inner text(which jQuery automatically encodes)

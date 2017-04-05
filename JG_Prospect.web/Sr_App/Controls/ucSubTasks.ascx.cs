@@ -268,7 +268,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         #endregion
 
-        #region '--repSubTasks--'
+        #region '--repSubTasksNested--'
 
         protected void repSubTasksNested_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -392,8 +392,9 @@ namespace JG_Prospect.Sr_App.Controls
                     ddcbAssigned.DataValueField = "Id";
                     ddcbAssigned.DataBind();
 
-                    ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
-                    ddcbAssigned.Attributes.Add("TaskStatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
+                    ddcbAssigned.Attributes.Add("data-taskid", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
+                    ddcbAssigned.Attributes.Add("data-taskstatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
+                    ddcbAssigned.Attributes.Add("onchange", "javascript:EditAssignedTaskUsers(this);");
 
                     SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")), ddcbAssigned);
 
@@ -401,7 +402,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 else
                 {
-                    lblAssigned.Text = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")));
+                    lblAssigned.Text = "<br/>" + getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")));
                     lblAssigned.ToolTip = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers"));
                     ddcbAssigned.Visible = false;
                 }
@@ -675,12 +676,12 @@ namespace JG_Prospect.Sr_App.Controls
         {
             ListBox ddcbAssigned = (ListBox)sender;
             GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
-            int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["TaskId"].ToString());
+            int intTaskId = Convert.ToInt32(ddcbAssigned.Attributes["data-taskid"].ToString());
             DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlStatus") as DropDownList;
 
             if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned, intTaskId))
             {
-                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]), intTaskId);
+                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["data-taskstatus"]), intTaskId);
             }
 
             SetSubTaskDetails();
@@ -966,8 +967,8 @@ namespace JG_Prospect.Sr_App.Controls
                     ddcbAssigned.DataValueField = "Id";
                     ddcbAssigned.DataBind();
 
-                    ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
-                    ddcbAssigned.Attributes.Add("TaskStatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
+                    ddcbAssigned.Attributes.Add("data-taskid", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
+                    ddcbAssigned.Attributes.Add("data-taskstatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
 
                     SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")), ddcbAssigned);
 

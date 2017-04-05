@@ -270,7 +270,7 @@
                                                                         </span>
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
                                                                             CssClass="chosen-select" data-placeholder="Select"
-                                                                            AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                            AutoPostBack="false" /> <%--OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"--%>
                                                                         <asp:Label ID="lblAssigned" runat="server" />
 
                                                                     </div>
@@ -1080,6 +1080,78 @@
                 }
             }
         );
+    }
+    function EditAssignedTaskUsers(sender) {
+        ShowAjaxLoader();
+
+        var $sender = $(sender);
+        var intTaskID = parseInt($sender.attr('data-taskid'));
+        var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
+        var arrAssignedUsers = [];
+        var arrDesignationUsers = [];
+
+        $sender.find('option').each(function (index, item) {
+            var intUserId = parseInt($(item).attr('value'));
+            if(intUserId > 0) {
+                arrDesignationUsers.push(intUserId);
+
+                if ($sender.val() == intUserId.toString()) {
+                    arrAssignedUsers.push(intUserId);
+                }
+            }
+        });
+
+        var postData = {
+            intTaskId: intTaskID,
+            intTaskStatus: intTaskStatus,
+            arrAssignedUsers: arrAssignedUsers
+        };
+
+        CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
+
+        function OnValidateTaskStatusSuccess(response) {
+            if (!response.d.IsValid) {
+                alert(response.d.Message);
+            }
+            else {
+                SaveAssignedTaskUsers();
+            }
+        }
+
+        function OnValidateTaskStatusError() {
+            alert('Task status cannot be validated. Please try again.');
+        }
+
+        // private function (so, it is defined in a function) to save task assigned users only after validating task status.
+        function SaveAssignedTaskUsers() {
+            ShowAjaxLoader();
+
+            var postData = {
+                intTaskId: intTaskID,
+                intTaskStatus: intTaskStatus,
+                arrAssignedUsers: arrAssignedUsers,
+                arrDesignationUsers: arrDesignationUsers
+            };
+            console.log(postData);
+            CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
+            
+            function OnSaveAssignedTaskUsersSuccess(response) {
+                console.log(response);
+                if (response) {
+                    //response.d.IsSuccess
+                    alert('Task assignment saved successfully.');
+                    $('#<%=btnUpdateRepeater.ClientID%>').click();
+                }
+                else {
+                    OnSaveAssignedTaskUsersError();
+                }
+            }
+
+            function OnSaveAssignedTaskUsersError(err) {
+                //alert(JSON.stringify(err));
+                alert('Task assignment cannot be updated. Please try again.');
+            }
+        }
     }
 
     function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
