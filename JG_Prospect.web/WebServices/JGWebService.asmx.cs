@@ -366,6 +366,24 @@ namespace JG_Prospect.WebServices
             return obj;
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool SetTaskPriority(string taskid, string priority)
+        {
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(taskid);
+            if (taskid == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(priority);
+            }
+            TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
+
+            return true;
+        }
+
         #endregion
 
         #region '--Private Methods--'

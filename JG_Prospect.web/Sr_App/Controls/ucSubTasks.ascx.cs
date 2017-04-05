@@ -284,6 +284,9 @@ namespace JG_Prospect.Sr_App.Controls
                 HtmlGenericControl dvDesc = e.Item.FindControl("dvDesc") as HtmlGenericControl;
                 RepeaterItem riParentTaskItem = (RepeaterItem)e.Item.Parent.Parent.Parent.Parent;
                 Button btnshowdivsub = e.Item.FindControl("btnshowdivsub") as Button;
+                DropDownList ddlPrioriy = e.Item.FindControl("ddlTaskPriority") as DropDownList;
+                //data-val-taskid
+                ddlPrioriy.Attributes.Add("data-val-taskid", hdTaskId.Value);
 
                 ListBox ddcbAssigned = e.Item.FindControl("ddcbAssigned") as ListBox;
                 Label lblAssigned = e.Item.FindControl("lblAssigned") as Label;

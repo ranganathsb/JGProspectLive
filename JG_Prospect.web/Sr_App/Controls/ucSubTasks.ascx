@@ -250,7 +250,7 @@
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
+                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
 
                                                                         <li>Status
@@ -948,6 +948,43 @@
             
             <% } %>
         });
+
+        // For Drodown Task Priority
+        $(".clsTaskPriority").each(function (index) {
+            $(this).bind("change", function (e) {
+                var datavaltaskid = $(this).attr("data-val-taskid");
+                var ddlValue = $(this).val();
+                updatePriority(datavaltaskid, ddlValue);
+            });
+        });
+
+    }
+
+    function updatePriority(id,value) {
+        ShowAjaxLoader();
+        var postData = {
+            taskid: id,
+            priority: value
+        };
+
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/SetTaskPriority',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(postData),
+                asynch: false,
+                success: function (data) {
+                    HideAjaxLoader();
+                    alert('Priority Updated successfully.');
+                },
+                error: function (a, b, c) {
+                    HideAjaxLoader();
+                }
+            }
+        );
     }
 
     function updateDesc(htmldata) {
