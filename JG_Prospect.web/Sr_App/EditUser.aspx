@@ -1265,47 +1265,47 @@
                     <Columns>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("FirstName")) %>
+                                <%#Eval("FirstName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("LastName")) %>
+                                <%#Eval("LastName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Email")) %>
+                                <%#Eval("Email")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Designation")) %>
+                                <%#Eval("Designation")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Status")) %>
+                                <%#Eval("Status")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Source*"  HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Source")) %>
+                                <%#Eval("Source")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1")) %>
+                                <%#Eval("Phone1")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1Type")) %>
+                                <%#Eval("Phone1Type")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Zip")) %>
+                                <%#Eval("Zip")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -1559,9 +1559,10 @@
         //============= Start DP =============
         function GotoStarUser(bookmarkedUser,isdel,obj)
         {
-            alert(isdel);
+            //alert(isdel);
             //alert(obj);
             //alert(bookmarkedUser);
+            $(".loading").show();
             $.ajax({
                 type: "POST",
                 url: "ajaxcalls.aspx/StarBookMarkUsers",
@@ -1570,7 +1571,7 @@
                 dataType: "json",
                 success: function (response) {
                      //alert("Hello: " + response + " ");
-                     
+                   
                     var d = new Date();
                     if (isdel == "0") {
                         // alert("if");
@@ -1582,17 +1583,20 @@
                         $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
                     }
-                    
+                    $(".loading").show();
                 },
                 complete: function () {
                     // Schedule the next request when the current one has been completed
-                   // setTimeout(ajaxInterval, 4000);
+                    // setTimeout(ajaxInterval, 4000);
+                    $(".loading").hide();
                 },
                 failure: function (response) {
-                    alert(response.responseText);
+                    // alert(response.responseText);
+                    $(".loading").hide();
                 },
                 error: function (response) {
-                    alert(response.responseText);
+                    // alert(response.responseText);
+                    $(".loading").hide();
                 }
             });
           
