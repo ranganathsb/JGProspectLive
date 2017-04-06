@@ -339,7 +339,7 @@
                                                                     <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ClientIDMode="AutoID" />
 
-                                                                    <h5>
+                                                                    <h5 class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;"
@@ -438,13 +438,17 @@
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
                                                                 <td width="50%">
-                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 497px;">
+                                                                    <div class='<%#Eval("NestLevel").ToString() == "3"? "left":"hide" %>' style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
+                                                                        <input type="checkbox" name="bulkaction" />
+                                                                        <a href="javascript:void(0);" data-highlighter='<%# Eval("TaskId")%>' class="context-menu" style="color: blue;"><%# Eval("InstallId")%></a>
+                                                                    </div>
+                                                                    <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 380px;width: 380px; overflow:auto;">
                                                                         <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                                             <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                                         </div>
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
-
+                                                                    <div class="clr" style="height:1px;"></div>
                                                                     <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
                                                                         >+</asp:LinkButton><%--OnClick="lnkAddMoreSubTask_Click"--%>
                                                                     &nbsp;<a href="#">Comment</a>
