@@ -332,7 +332,7 @@
                                                     <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
 
                                                         <ItemTemplate>
-                                                            <tr id="trSubTask" style="border-bottom: solid 1px white;" runat="server">
+                                                            <tr id="trSubTask" style="border-bottom: solid 1px white;" runat="server" data-taskid='<%# Eval("TaskId")%>' data-parent-taskid='<%# Eval("ParentTaskId")%>'>
                                                                 <td width="10%" class='<%# "sbtlevel"+Eval("NestLevel").ToString()%>'>
                                                                     <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
@@ -343,11 +343,12 @@
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;"
-                                                                            ClientIDMode="AutoID" /><%--OnClick="EditSubTask_Click"--%><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" Text="+" />
-
+                                                                            ClientIDMode="AutoID" /><%--OnClick="EditSubTask_Click"--%>
                                                                         <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
                                                                             ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
+                                                                        <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" />
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
@@ -444,7 +445,8 @@
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
 
-                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
+                                                                        >+</asp:LinkButton><%--OnClick="lnkAddMoreSubTask_Click"--%>
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
@@ -620,8 +622,8 @@
     </asp:UpdatePanel>
     <%--<asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>--%>
-    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none;">
-        <table border="1" cellspacing="5" cellpadding="5" width="90%">
+    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
+        <table border="1" cellspacing="5" cellpadding="5" width="100%">
             <tr>
                 <td>ListID:
                 
@@ -927,18 +929,37 @@
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
                 var strInstallId = $(this).attr('data-installid');
+                var parentTaskId = $(this).attr('data-parent-taskid');
 
-                if (TaskLevel == "2") {
-                    $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
-                        $("html, body").animate({ scrollTop: $("#<%=pnlCalendar.ClientID%>").offset().top }, 1500);
-                    }
-                    else {
-                        shownewsubtask();
-                        maintask = false;
-                        $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
+                $("#<%=divAddSubTask.ClientID%>").hide();
+                $("#<%=pnlCalendar.ClientID%>").hide();
+
+                var objAddSubTask = null;
+                if (TaskLevel == "1") {
+                    objAddSubTask = $("#<%=divAddSubTask.ClientID%>");
+                    shownewsubtask();
+                    maintask = false;
                 }
+                else if (TaskLevel == "2") {
+                    objAddSubTask = $("#<%=pnlCalendar.ClientID%>");
+
+                    var $tr = $('<tr><td colspan="4"></td></tr>');
+                    $tr.find('td').append(objAddSubTask);
+
+                    var $appendAfter = $('tr[data-parent-taskid="' + parentTaskId + '"]:last');
+                    if ($appendAfter.length == 0) {
+                        $appendAfter = $('tr[data-taskid="' + parentTaskId + '"]:last');
+                    }
+                    $appendAfter.after($tr);
+                }
+
+                if (objAddSubTask != null) {
+                    objAddSubTask.show();
+                    ScrollTo(objAddSubTask);
                     SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
-                    return false;
+                }
+
+                return false;
             });
             
             <% } %>
@@ -1135,6 +1156,7 @@
                 if (response) {
                     //response.d.IsSuccess
                     alert('Task assignment saved successfully.');
+                    $('#<%=hdTaskId.ClientID%>').val(intTaskID.toString());
                     $('#<%=btnUpdateRepeater.ClientID%>').click();
                 }
                 else {
@@ -1224,20 +1246,18 @@
                 CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
                 function OnAddNewSubTaskSuccess(data) {
-                    console.log(data);
-                    HideAjaxLoader();
-                    if (data.d) {
+                    if (data.d.Success) {
                         alert('Task saved successfully.');
+                        $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
                         $('#<%=btnUpdateRepeater.ClientID%>').click();
                     }
                     else {
-                        alert('Can not save Task,');
+                        alert('Task cannot be saved. Please try again.');
                     }
                 }
 
                 function OnAddNewSubTaskError(err) {
-                    console.log(err);
-                    HideAjaxLoader();
+                    alert('Task cannot be saved. Please try again.');
                 }
 
                 return false;
@@ -1391,19 +1411,18 @@
                    CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
                    function OnAddNewSubTaskSuccess(data) {
-                       if (data.d) {
+                       if (data.d.Success) {
                            alert('Task saved successfully.');
-                           $('#<%=btnUpdateRepeater.ClientID%>').click();
-                           maintask = true;
+                           $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
                         }
                         else {
-                            alert('Can not save Task,');
+                            alert('Task cannot be saved. Please try again.');
                         }
                     }
 
                     function OnAddNewSubTaskError(err) {
-                        console.log(err);
-                        HideAjaxLoader();
+                        alert('Task cannot be saved. Please try again.');
                     }
                     return false;
                 }

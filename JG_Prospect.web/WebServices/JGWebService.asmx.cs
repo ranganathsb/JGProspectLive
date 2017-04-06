@@ -279,7 +279,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
             return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl);
         }
@@ -515,7 +515,7 @@ namespace JG_Prospect.WebServices
             return ReturnSequence;
         }
 
-        private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
+        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -569,8 +569,13 @@ namespace JG_Prospect.WebServices
 
                 blnReturnVal = true;
             }
+            var result = new 
+            { 
+                Success = blnReturnVal,
+                TaskId = TaskId
+            };
 
-            return blnReturnVal;
+            return result;
         }
 
         /// <summary>
