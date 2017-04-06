@@ -1221,33 +1221,28 @@
                     TaskLvl: TaskLvl,
                 };
 
-                $.ajax
-               (
-                   {
-                       url: '../WebServices/JGWebService.asmx/AddNewSubTask',
-                       contentType: 'application/json; charset=utf-8;',
-                       type: 'POST',
-                       dataType: 'json',
-                       data: JSON.stringify(postData),
-                       asynch: false,
-                       success: function (data) {
-                           HideAjaxLoader();
-                           if (data.d) {
-                               alert('Task saved successfully.');
-                               $('#<%=btnUpdateRepeater.ClientID%>').click();
-                           }
-                           else {
-                               alert('Can not save Task,');
-                           }
-                       },
-                       error: function (a, b, c) {
-                           HideAjaxLoader();
-                       }
-                   }
-            );
-                   return false;
-               }
-           }
+                CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+                function OnAddNewSubTaskSuccess(data) {
+                    console.log(data);
+                    HideAjaxLoader();
+                    if (data.d) {
+                        alert('Task saved successfully.');
+                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                    }
+                    else {
+                        alert('Can not save Task,');
+                    }
+                }
+
+                function OnAddNewSubTaskError(err) {
+                    console.log(err);
+                    HideAjaxLoader();
+                }
+
+                return false;
+            }
+        }
 
            function SetUserAutoSuggestion() {
                $("#<%=txtSearch.ClientID%>").catcomplete({
@@ -1369,10 +1364,10 @@
                    var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
                    var status = "1";
                    var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
-                   var DueDate = $('#<%= txtSubTaskDueDate.ClientID %>').val();
-                   var tHours = $('#<%= txtSubTaskHours.ClientID %>').val();
+                   var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
+                   var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
                    var installID = $('#<%= txtTaskListID.ClientID %>').val();
-                   var Attachments = $('#<%= hdnAttachments.ClientID %>').val();
+                   var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
                    var type = $('#<%= ddlTaskType.ClientID %>').val();
                    var designaions = $('#<%= hdndesignations.ClientID %>').val();
                    var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
@@ -1393,35 +1388,28 @@
                        TaskLvl: TaskLvl,
                    };
 
-                   $.ajax
-                   (
-                       {
-                           url: '../WebServices/JGWebService.asmx/AddNewSubTask',
-                           contentType: 'application/json; charset=utf-8;',
-                           type: 'POST',
-                           dataType: 'json',
-                           data: JSON.stringify(postData),
-                           asynch: false,
-                           success: function (data) {
-                               HideAjaxLoader();
-                               if (data.d) {
-                                   alert('Task saved successfully.');
-                                   $('#<%=btnUpdateRepeater.ClientID%>').click();
-                                   maintask = true;
-                               }
-                               else {
-                                   alert('Problem Occured');
-                               }
-                           },
-                           error: function (a, b, c) {
-                               HideAjaxLoader();
-                           }
-                       }
-            );
+                   CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
-                       return false;
-                   }
-               }
+                   function OnAddNewSubTaskSuccess(data) {
+                       console.log(data);
+                       HideAjaxLoader();
+                       if (data.d) {
+                           alert('Task saved successfully.');
+                           $('#<%=btnUpdateRepeater.ClientID%>').click();
+                           maintask = true;
+                        }
+                        else {
+                            alert('Can not save Task,');
+                        }
+                    }
+
+                    function OnAddNewSubTaskError(err) {
+                        console.log(err);
+                        HideAjaxLoader();
+                    }
+                    return false;
+                }
+            }
                function GetParameterValues(param) {
                    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
                    for (var i = 0; i < url.length; i++) {
