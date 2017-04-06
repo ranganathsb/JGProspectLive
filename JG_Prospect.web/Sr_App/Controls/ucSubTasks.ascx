@@ -342,12 +342,12 @@
                                                                     <h5>
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
-                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
-                                                                            ClientIDMode="AutoID" /><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" Text="+" />
+                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;"
+                                                                            ClientIDMode="AutoID" /><%--OnClick="EditSubTask_Click"--%><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" Text="+" />
 
                                                                         <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
-                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="RemoveClick" Visible="false"
-                                                                            ClientIDMode="AutoID" />
+                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
+                                                                            ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
@@ -1391,8 +1391,6 @@
                    CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
                    function OnAddNewSubTaskSuccess(data) {
-                       console.log(data);
-                       HideAjaxLoader();
                        if (data.d) {
                            alert('Task saved successfully.');
                            $('#<%=btnUpdateRepeater.ClientID%>').click();
