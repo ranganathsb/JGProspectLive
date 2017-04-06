@@ -81,6 +81,208 @@
 
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
+    
+    <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>--%>
+    <div id="divAddSubTask" runat="server">
+        <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
+        <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
+        <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
+        <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
+        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
+        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
+        <br />
+        <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
+        <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
+            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
+            <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
+            <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
+            <table class="tablealign fullwidth">
+                <tr>
+                    <td>ListID:
+                               
+                               
+
+                                <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
+                        &nbsp;
+                               
+                               
+
+                                <small>
+                                    <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
+                                        <asp:Literal ID="listIDOpt" runat="server" />
+                                    </a>
+                                </small>
+                    </td>
+                    <td>Type <span style="color: red;">*</span>:
+                               
+                               
+
+                                <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
+                               
+                               
+
+                                <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Title <span style="color: red;">*</span>:
+                               
+                               
+
+                                <br />
+                        <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
+                        <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
+                    </td>
+                    <td>Url <span style="color: red;">*</span>:
+                               
+                               
+
+                                <br />
+                        <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
+                        <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
+                    </td>
+                </tr>
+                <tr runat="server" visible="false">
+                    <td>
+                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
+                            <ContentTemplate>
+                                Designation <span style="color: red;">*</span>:
+                                       
+                                       
+
+                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
+                                            AutoPostBack="false">
+                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                        </asp:DropDownCheckBoxes>
+                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
+                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>--%>
+                    </td>
+                </tr>
+                <%--as per discussion attachemnt field should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td colspan="2">Attachment(s):
+                               
+                               
+                                <%--remove this--%>
+                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
+                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
+                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
+                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
+                                                <HeaderTemplate>
+                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
+                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                        <br />
+                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                        <br />
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
+                                                            <br />
+                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
+                                                        </small>
+                                                    </li>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </ul>
+                                                                       
+                                               
+                                               
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>--%>
+                        <%--remove end--%>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">Description <span style="color: red;">*</span>:
+                
+                                <br />
+                        <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
+                        <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
+                            runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
+                    </td>
+                </tr>
+                <%--as per discussion attachemnt field should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td>Attachment(s):<br>
+                        <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>--%>
+                        <input id="hdnAttachments" runat="server" type="hidden" />
+                        <%--                                    </ContentTemplate>
+                                </asp:UpdatePanel>--%>
+                        <div id="divSubTaskDropzone" runat="server" class="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple />
+                                <input type="submit" value="Upload" />
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
+                        </div>
+                        <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
+                    </td>
+                </tr>
+                <%--as per discussion, estimated hours and task hour fields should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td colspan="2">Estimated Hours:
+                        <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
+                        <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
+                            ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
+                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                    </td>
+                </tr>
+                <%--as per discussion, estimated hours and task hour fields should be removed.--%>
+                <tr id="trDateHours" runat="server" visible="false" style="display: none;">
+                    <td>Due Date:<asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
+                    </td>
+                    <td>Hrs of Task:
+                        <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
+                        <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
+                            ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
+                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                    </td>
+                </tr>
+                <tr id="trSubTaskStatus" runat="server" visible="false">
+                    <td>Status:
+                        <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="btn_sec">
+                            <%--<asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
+                                        OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />--%>
+                            <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
+                                OnClientClick="javascript:return OnSaveSubTaskClick();" />
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <%--</ContentTemplate>
+    </asp:UpdatePanel>--%>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
@@ -130,22 +332,23 @@
                                                     <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
 
                                                         <ItemTemplate>
-                                                            <tr id="trSubTask" style="border-bottom: solid 1px white;" runat="server">
+                                                            <tr id="trSubTask" style="border-bottom: solid 1px white;" runat="server" data-taskid='<%# Eval("TaskId")%>' data-parent-taskid='<%# Eval("ParentTaskId")%>'>
                                                                 <td width="10%" class='<%# "sbtlevel"+Eval("NestLevel").ToString()%>'>
                                                                     <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdTaskId" runat="server" Value='<%# Eval("TaskId")%>' ClientIDMode="AutoID" />
 
-                                                                    <h5>
+                                                                    <h5 class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <asp:LinkButton ID="lbtnInstallId" Style="display: inline;" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
-                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="EditSubTask_Click"
-                                                                            ClientIDMode="AutoID" /><asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV" runat="server" Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" Text="+" />
-
+                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;"
+                                                                            ClientIDMode="AutoID" /><%--OnClick="EditSubTask_Click"--%>
                                                                         <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
-                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClick="RemoveClick" Visible="false"
-                                                                            ClientIDMode="AutoID" />
+                                                                            ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
+                                                                            ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
+                                                                        <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" />
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
@@ -235,14 +438,19 @@
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
                                                                 <td width="50%">
-                                                                    <div class="divtdetails" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 497px;">
+                                                                    <div class='<%#Eval("NestLevel").ToString() == "3"? "left":"hide" %>' style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
+                                                                        <input type="checkbox" name="bulkaction" />
+                                                                        <a href="javascript:void(0);" data-highlighter='<%# Eval("TaskId")%>' class="context-menu" style="color: blue;"><%# Eval("InstallId")%></a>
+                                                                    </div>
+                                                                    <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 380px;width: 380px; overflow:auto;">
                                                                         <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                                             <%# Server.HtmlDecode(Eval("Description").ToString())%>
                                                                         </div>
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
-
-                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" OnClick="lnkAddMoreSubTask_Click">+</asp:LinkButton>
+                                                                    <div class="clr" style="height:1px;"></div>
+                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
+                                                                        >+</asp:LinkButton><%--OnClick="lnkAddMoreSubTask_Click"--%>
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
@@ -250,7 +458,7 @@
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlTaskPriority_SelectedIndexChanged" />
+                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
 
                                                                         <li>Status
@@ -270,7 +478,7 @@
                                                                         </span>
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
                                                                             CssClass="chosen-select" data-placeholder="Select"
-                                                                            AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"></asp:ListBox>
+                                                                            AutoPostBack="false" /> <%--OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"--%>
                                                                         <asp:Label ID="lblAssigned" runat="server" />
 
                                                                     </div>
@@ -418,8 +626,8 @@
     </asp:UpdatePanel>
     <%--<asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>--%>
-    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none;">
-        <table border="1" cellspacing="5" cellpadding="5" width="90%">
+    <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
+        <table border="1" cellspacing="5" cellpadding="5" width="100%">
             <tr>
                 <td>ListID:
                 
@@ -484,215 +692,6 @@
     <%--    </ContentTemplate>
     </asp:UpdatePanel>--%>
 
-
-    <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
-
-    <br />
-    <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>--%>
-    <div id="divAddSubTask" runat="server">
-        <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
-        <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
-        <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
-        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
-        <br />
-        <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
-        <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
-            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
-            <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
-            <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
-            <table class="tablealign fullwidth">
-                <tr>
-                    <td>ListID:
-                               
-                               
-
-                                <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
-                        &nbsp;
-                               
-                               
-
-                                <small>
-                                    <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
-                                        <asp:Literal ID="listIDOpt" runat="server" />
-                                    </a>
-                                </small>
-                    </td>
-                    <td>Type <span style="color: red;">*</span>:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
-                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Title <span style="color: red;">*</span>:
-                               
-                               
-
-                                <br />
-                        <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
-                        <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
-                    </td>
-                    <td>Url <span style="color: red;">*</span>:
-                               
-                               
-
-                                <br />
-                        <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
-                        <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
-                    </td>
-                </tr>
-                <tr runat="server" visible="false">
-                    <td>
-                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
-                            <ContentTemplate>
-                                Designation <span style="color: red;">*</span>:
-                                       
-                                       
-
-                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="false">
-                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                        </asp:DropDownCheckBoxes>
-                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
-                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>--%>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">Attachment(s):
-                               
-                               
-                                <%--remove this--%>
-                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
-                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
-                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
-                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
-                                                <HeaderTemplate>
-                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                                </HeaderTemplate>
-                                                <ItemTemplate>
-                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
-                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
-                                                        <br />
-                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
-                                                        <br />
-                                                        <small>
-                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
-                                                            <br />
-                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
-                                                        </small>
-                                                    </li>
-                                                </ItemTemplate>
-                                                <FooterTemplate>
-                                                    </ul>
-                                                                       
-                                               
-                                               
-                                                </FooterTemplate>
-                                            </asp:Repeater>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                </div>--%>
-                        <%--remove end--%>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2">Description <span style="color: red;">*</span>:
-                
-                                <br />
-                        <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
-                        <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
-                            runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Attachment(s):<br>
-                        <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
-                                    <ContentTemplate>--%>
-                        <input id="hdnAttachments" runat="server" type="hidden" />
-                        <%--                                    </ContentTemplate>
-                                </asp:UpdatePanel>--%>
-                        <div id="divSubTaskDropzone" runat="server" class="dropzone">
-                            <div class="fallback">
-                                <input name="file" type="file" multiple />
-                                <input type="submit" value="Upload" />
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
-                        </div>
-                        <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">Estimated Hours:
-                               
-                               
-
-                                <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
-                        <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
-                            ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
-                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                    </td>
-                </tr>
-                <tr id="trDateHours" runat="server" style="display: none;">
-                    <td>Due Date:<asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
-                    </td>
-                    <td>Hrs of Task:                   
-                               
-                               
-
-                                <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
-                        <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
-                            ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
-                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                    </td>
-                </tr>
-                <tr id="trSubTaskStatus" runat="server" visible="false">
-                    <td>Status:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
-                    </td>
-                    <td>&nbsp;
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div class="btn_sec">
-                            <%--<asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                        OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />--%>
-                            <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                OnClientClick="javascript:return OnSaveSubTaskClick();" />
-
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <%--</ContentTemplate>
-    </asp:UpdatePanel>--%>
     <asp:HiddenField ID="hdnAdminMode" runat="server" />
 </fieldset>
 
@@ -811,10 +810,12 @@
 
         $('#<%=ddlTaskType.ClientID%>').change(function () {
             if ($("#<%=ddlTaskType.ClientID%>").val() == 3) {
-                $("#<%=trDateHours.ClientID%>").css({ 'display': "block" });
+                // as per discussion, estimated hours and task hour fields should be removed.
+                //$("#<%=trDateHours.ClientID%>").css({ 'display': "block" });
             }
             else {
-                $("#<%=trDateHours.ClientID%>").css({ 'display': "none" });
+                // as per discussion, estimated hours and task hour fields should be removed.
+                //$("#<%=trDateHours.ClientID%>").css({ 'display': "none" });
             }
             return false;
         })
@@ -838,6 +839,10 @@
 
         //For Title
         $(".TitleEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -855,10 +860,15 @@
                 EditTask(tid, tdetail)
                 isadded = false;
             });
+            <% } %>
         });
 
         //For Url
         $(".UrlEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -879,10 +889,15 @@
                 isadded = false;
                 return false;
             });
+            <% } %>
         });
 
         //For Description
         $(".DescEdit").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 if (!isadded) {
                     var tid = $(this).attr("data-taskid");
@@ -904,29 +919,92 @@
                 }
                 return false;
             });
+            <% } %>
         });
 
         //For Add Task Button
         $(".showsubtaskDIV").each(function (index) {
+            // This section is available to admin only.
+            <% if (this.IsAdminMode) 
+           {
+               %>
             $(this).bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
                 var strInstallId = $(this).attr('data-installid');
+                var parentTaskId = $(this).attr('data-parent-taskid');
 
-                if (TaskLevel == "2") {
-                    $("#<%=pnlCalendar.ClientID%>").css({ 'display': "block" });
-                        $("html, body").animate({ scrollTop: $("#<%=pnlCalendar.ClientID%>").offset().top }, 1500);
-                    }
-                    else {
-                        shownewsubtask();
-                        maintask = false;
-                        $("html, body").animate({ scrollTop: $("#<%=divAddSubTask.ClientID%>").offset().top }, 1500);
+                $("#<%=divAddSubTask.ClientID%>").hide();
+                $("#<%=pnlCalendar.ClientID%>").hide();
+
+                var objAddSubTask = null;
+                if (TaskLevel == "1") {
+                    objAddSubTask = $("#<%=divAddSubTask.ClientID%>");
+                    shownewsubtask();
+                    maintask = false;
                 }
+                else if (TaskLevel == "2") {
+                    objAddSubTask = $("#<%=pnlCalendar.ClientID%>");
+
+                    var $tr = $('<tr><td colspan="4"></td></tr>');
+                    $tr.find('td').append(objAddSubTask);
+
+                    var $appendAfter = $('tr[data-parent-taskid="' + parentTaskId + '"]:last');
+                    if ($appendAfter.length == 0) {
+                        $appendAfter = $('tr[data-taskid="' + parentTaskId + '"]:last');
+                    }
+                    $appendAfter.after($tr);
+                }
+
+                if (objAddSubTask != null) {
+                    objAddSubTask.show();
+                    ScrollTo(objAddSubTask);
                     SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
-                    return false;
-                });
+                }
+
+                return false;
             });
+            
+            <% } %>
+        });
+
+        // For Drodown Task Priority
+        $(".clsTaskPriority").each(function (index) {
+            $(this).bind("change", function (e) {
+                var datavaltaskid = $(this).attr("data-val-taskid");
+                var ddlValue = $(this).val();
+                updatePriority(datavaltaskid, ddlValue);
+            });
+        });
+
+    }
+
+    function updatePriority(id,value) {
+        ShowAjaxLoader();
+        var postData = {
+            taskid: id,
+            priority: value
+        };
+
+        $.ajax
+        (
+            {
+                url: '../WebServices/JGWebService.asmx/SetTaskPriority',
+                contentType: 'application/json; charset=utf-8;',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(postData),
+                asynch: false,
+                success: function (data) {
+                    HideAjaxLoader();
+                    alert('Priority Updated successfully.');
+                },
+                error: function (a, b, c) {
+                    HideAjaxLoader();
+                }
+            }
+        );
     }
 
     function updateDesc(htmldata) {
@@ -1023,6 +1101,77 @@
             }
         );
     }
+    function EditAssignedTaskUsers(sender) {
+        ShowAjaxLoader();
+
+        var $sender = $(sender);
+        var intTaskID = parseInt($sender.attr('data-taskid'));
+        var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
+        var arrAssignedUsers = [];
+        var arrDesignationUsers = [];
+
+        $sender.find('option').each(function (index, item) {
+            var intUserId = parseInt($(item).attr('value'));
+            if(intUserId > 0) {
+                arrDesignationUsers.push(intUserId);
+
+                if ($sender.val() == intUserId.toString()) {
+                    arrAssignedUsers.push(intUserId);
+                }
+            }
+        });
+
+        var postData = {
+            intTaskId: intTaskID,
+            intTaskStatus: intTaskStatus,
+            arrAssignedUsers: arrAssignedUsers
+        };
+
+        CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
+
+        function OnValidateTaskStatusSuccess(response) {
+            if (!response.d.IsValid) {
+                alert(response.d.Message);
+            }
+            else {
+                SaveAssignedTaskUsers();
+            }
+        }
+
+        function OnValidateTaskStatusError() {
+            alert('Task status cannot be validated. Please try again.');
+        }
+
+        // private function (so, it is defined in a function) to save task assigned users only after validating task status.
+        function SaveAssignedTaskUsers() {
+            ShowAjaxLoader();
+
+            var postData = {
+                intTaskId: intTaskID,
+                intTaskStatus: intTaskStatus,
+                arrAssignedUsers: arrAssignedUsers,
+                arrDesignationUsers: arrDesignationUsers
+            };
+            CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
+            
+            function OnSaveAssignedTaskUsersSuccess(response) {
+                console.log(response);
+                if (response) {
+                    alert('Task assignment saved successfully.');
+                    $('#<%=hdTaskId.ClientID%>').val(intTaskID.toString());
+                    $('#<%=btnUpdateRepeater.ClientID%>').click();
+                }
+                else {
+                    OnSaveAssignedTaskUsersError();
+                }
+            }
+
+            function OnSaveAssignedTaskUsersError(err) {
+                //alert(JSON.stringify(err));
+                alert('Task assignment cannot be updated. Please try again.');
+            }
+        }
+    }
 
     function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
         ShowAjaxLoader();
@@ -1096,33 +1245,26 @@
                     TaskLvl: TaskLvl,
                 };
 
-                $.ajax
-               (
-                   {
-                       url: '../WebServices/JGWebService.asmx/AddNewSubTask',
-                       contentType: 'application/json; charset=utf-8;',
-                       type: 'POST',
-                       dataType: 'json',
-                       data: JSON.stringify(postData),
-                       asynch: false,
-                       success: function (data) {
-                           HideAjaxLoader();
-                           if (data.d) {
-                               alert('Task saved successfully.');
-                               $('#<%=btnUpdateRepeater.ClientID%>').click();
-                           }
-                           else {
-                               alert('Can not save Task,');
-                           }
-                       },
-                       error: function (a, b, c) {
-                           HideAjaxLoader();
-                       }
-                   }
-            );
-                   return false;
-               }
-           }
+                CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+                function OnAddNewSubTaskSuccess(data) {
+                    if (data.d.Success) {
+                        alert('Task saved successfully.');
+                        $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                    }
+                    else {
+                        alert('Task cannot be saved. Please try again.');
+                    }
+                }
+
+                function OnAddNewSubTaskError(err) {
+                    alert('Task cannot be saved. Please try again.');
+                }
+
+                return false;
+            }
+        }
 
            function SetUserAutoSuggestion() {
                $("#<%=txtSearch.ClientID%>").catcomplete({
@@ -1242,12 +1384,12 @@
                    var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
                    var url = $('#<%= txtUrl.ClientID %>').val();
                    var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
-                   var status = "1";
+                   var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
                    var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
-                   var DueDate = $('#<%= txtSubTaskDueDate.ClientID %>').val();
-                   var tHours = $('#<%= txtSubTaskHours.ClientID %>').val();
+                   var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
+                   var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
                    var installID = $('#<%= txtTaskListID.ClientID %>').val();
-                   var Attachments = $('#<%= hdnAttachments.ClientID %>').val();
+                   var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
                    var type = $('#<%= ddlTaskType.ClientID %>').val();
                    var designaions = $('#<%= hdndesignations.ClientID %>').val();
                    var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
@@ -1268,35 +1410,25 @@
                        TaskLvl: TaskLvl,
                    };
 
-                   $.ajax
-                   (
-                       {
-                           url: '../WebServices/JGWebService.asmx/AddNewSubTask',
-                           contentType: 'application/json; charset=utf-8;',
-                           type: 'POST',
-                           dataType: 'json',
-                           data: JSON.stringify(postData),
-                           asynch: false,
-                           success: function (data) {
-                               HideAjaxLoader();
-                               if (data.d) {
-                                   alert('Task saved successfully.');
-                                   $('#<%=btnUpdateRepeater.ClientID%>').click();
-                                   maintask = true;
-                               }
-                               else {
-                                   alert('Problem Occured');
-                               }
-                           },
-                           error: function (a, b, c) {
-                               HideAjaxLoader();
-                           }
-                       }
-            );
+                   CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
-                       return false;
-                   }
-               }
+                   function OnAddNewSubTaskSuccess(data) {
+                       if (data.d.Success) {
+                           alert('Task saved successfully.');
+                           $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
+                        }
+                        else {
+                            alert('Task cannot be saved. Please try again.');
+                        }
+                    }
+
+                    function OnAddNewSubTaskError(err) {
+                        alert('Task cannot be saved. Please try again.');
+                    }
+                    return false;
+                }
+            }
                function GetParameterValues(param) {
                    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
                    for (var i = 0; i < url.length; i++) {

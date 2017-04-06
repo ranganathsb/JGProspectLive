@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Services;
 using JG_Prospect.Common;
 using JG_Prospect.App_Code;
+using System.Net.Mail;
+using System.IO;
 
 namespace JG_Prospect.WebServices
 {
@@ -21,6 +23,8 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        #region '--TaskWorkSpecification--'
+
         [WebMethod(EnableSession = true)]
         public object GetTaskWorkSpecifications(Int32 TaskId, Int64 intParentTaskWorkSpecificationId)
         {
@@ -249,6 +253,10 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        #endregion
+
+        #region '--Task--'
+
         [WebMethod(EnableSession = true)]
         public bool UpdateTaskTitleById(string tid, string title)
         {
@@ -270,11 +278,8 @@ namespace JG_Prospect.WebServices
             return true;
         }
 
-
-        #region "Task Generator Add Methods"
-
         [WebMethod(EnableSession = true)]
-        public bool AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
             return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl);
         }
@@ -363,6 +368,108 @@ namespace JG_Prospect.WebServices
             return obj;
         }
 
+        [WebMethod(EnableSession = true)]
+
+        public bool SetTaskPriority(string taskid, string priority)
+        {
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(taskid);
+            if (taskid == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(priority);
+            }
+            TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
+
+            return true;
+        }
+
+         [WebMethod(EnableSession = true)]
+        public object ValidateTaskStatus(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers)
+        {
+            bool blResult = true;
+
+            string strMessage = string.Empty;
+
+            //if (
+            //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+            //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
+            //   )
+            //{
+            //    blResult = false;
+            //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+            //}
+            //else
+            // if task is in assigned status. it should have assigned user selected there in dropdown. 
+            if (intTaskStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned))
+            {
+                blResult = false;
+                strMessage = "Task must be assigned to one or more users, to change status to assigned.";
+
+                blResult = arrAssignedUsers.Length > 0;
+            }
+
+            var result = new
+            {
+                IsValid = blResult,
+                Message = strMessage
+            };
+
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
+        {
+            JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)intTaskStatus;
+
+            //if task id is available to save its note and attachement.
+            if (intTaskId != 0)
+            {
+                string strUsersIds = string.Join(",", arrAssignedUsers);
+
+                // save (insert / delete) assigned users.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(intTaskId), strUsersIds);
+
+                // send email to selected users.
+                if (strUsersIds.Length > 0)
+                {
+                    if (isSuccessful)
+                    {
+                        // Change task status to assigned = 3.
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
+                        {
+                            TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = intTaskId,
+                                                    Status = Convert.ToUInt16(JGConstant.TaskStatus.Assigned)
+                                                }
+                                            );
+                        }
+
+                        SendEmailToAssignedUsers(intTaskId, strUsersIds);
+                    }
+                }
+                // send email to all users of the department as task is assigned to designation, but not to any specific user.
+                else
+                {
+                    string strUserIDs = string.Join(",", arrDesignationUsers);
+
+                    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                }
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region '--Private Methods--'
+
         private string[] getSUBSubtaskSequencing(string sequence)
         {
             String[] ReturnSequence = new String[2];
@@ -408,9 +515,7 @@ namespace JG_Prospect.WebServices
             return ReturnSequence;
         }
 
-        #region "Private Methods"
-
-        private bool SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
+        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -464,8 +569,13 @@ namespace JG_Prospect.WebServices
 
                 blnReturnVal = true;
             }
+            var result = new 
+            { 
+                Success = blnReturnVal,
+                TaskId = TaskId
+            };
 
-            return blnReturnVal;
+            return result;
         }
 
         /// <summary>
@@ -564,8 +674,51 @@ namespace JG_Prospect.WebServices
             }
         }
 
-        #endregion
+        private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
 
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host.ToString(), intTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
         #endregion
     }

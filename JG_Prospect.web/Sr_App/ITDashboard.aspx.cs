@@ -489,7 +489,7 @@ namespace JG_Prospect.Sr_App
                     if (result.Tables[0].Rows.Count > 0)
                     {
                         grdNewTask.DataSource = result;
-                        grdNewTask.VirtualItemCount = result.Tables[0].Rows.Count;//Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
+                        grdNewTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
                         grdNewTask.DataBind();
                     }
                     else
