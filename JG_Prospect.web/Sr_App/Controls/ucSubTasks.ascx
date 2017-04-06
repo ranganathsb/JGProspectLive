@@ -1362,7 +1362,7 @@
                    var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
                    var url = $('#<%= txtUrl.ClientID %>').val();
                    var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
-                   var status = "1";
+                   var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
                    var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
                    var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
                    var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
