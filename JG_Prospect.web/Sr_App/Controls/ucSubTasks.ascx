@@ -81,6 +81,208 @@
 
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
+    
+    <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>--%>
+    <div id="divAddSubTask" runat="server">
+        <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
+        <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
+        <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
+        <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
+        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
+        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
+        <br />
+        <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
+        <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
+            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
+            <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
+            <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
+            <table class="tablealign fullwidth">
+                <tr>
+                    <td>ListID:
+                               
+                               
+
+                                <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
+                        &nbsp;
+                               
+                               
+
+                                <small>
+                                    <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
+                                        <asp:Literal ID="listIDOpt" runat="server" />
+                                    </a>
+                                </small>
+                    </td>
+                    <td>Type <span style="color: red;">*</span>:
+                               
+                               
+
+                                <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
+                               
+                               
+
+                                <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Title <span style="color: red;">*</span>:
+                               
+                               
+
+                                <br />
+                        <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
+                        <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
+                    </td>
+                    <td>Url <span style="color: red;">*</span>:
+                               
+                               
+
+                                <br />
+                        <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
+                        <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
+                            ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
+                    </td>
+                </tr>
+                <tr runat="server" visible="false">
+                    <td>
+                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
+                            <ContentTemplate>
+                                Designation <span style="color: red;">*</span>:
+                                       
+                                       
+
+                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
+                                            AutoPostBack="false">
+                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                        </asp:DropDownCheckBoxes>
+                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
+                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>--%>
+                    </td>
+                </tr>
+                <%--as per discussion attachemnt field should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td colspan="2">Attachment(s):
+                               
+                               
+                                <%--remove this--%>
+                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
+                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
+                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
+                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
+                                                <HeaderTemplate>
+                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
+                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                        <br />
+                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                        <br />
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
+                                                            <br />
+                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
+                                                        </small>
+                                                    </li>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </ul>
+                                                                       
+                                               
+                                               
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>--%>
+                        <%--remove end--%>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">Description <span style="color: red;">*</span>:
+                
+                                <br />
+                        <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
+                        <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
+                            runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
+                    </td>
+                </tr>
+                <%--as per discussion attachemnt field should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td>Attachment(s):<br>
+                        <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>--%>
+                        <input id="hdnAttachments" runat="server" type="hidden" />
+                        <%--                                    </ContentTemplate>
+                                </asp:UpdatePanel>--%>
+                        <div id="divSubTaskDropzone" runat="server" class="dropzone">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple />
+                                <input type="submit" value="Upload" />
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
+                        </div>
+                        <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
+                    </td>
+                </tr>
+                <%--as per discussion, estimated hours and task hour fields should be removed.--%>
+                <tr runat="server" visible="false">
+                    <td colspan="2">Estimated Hours:
+                        <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
+                        <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
+                            ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
+                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                    </td>
+                </tr>
+                <%--as per discussion, estimated hours and task hour fields should be removed.--%>
+                <tr id="trDateHours" runat="server" visible="false" style="display: none;">
+                    <td>Due Date:<asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
+                    </td>
+                    <td>Hrs of Task:
+                        <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
+                        <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
+                            ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
+                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
+                    </td>
+                </tr>
+                <tr id="trSubTaskStatus" runat="server" visible="false">
+                    <td>Status:
+                        <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="btn_sec">
+                            <%--<asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
+                                        OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />--%>
+                            <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
+                                OnClientClick="javascript:return OnSaveSubTaskClick();" />
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <%--</ContentTemplate>
+    </asp:UpdatePanel>--%>
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
@@ -484,215 +686,6 @@
     <%--    </ContentTemplate>
     </asp:UpdatePanel>--%>
 
-
-    <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
-
-    <br />
-    <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>--%>
-    <div id="divAddSubTask" runat="server">
-        <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
-        <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
-        <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
-        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
-        <br />
-        <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
-        <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
-            <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
-            <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
-            <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
-            <table class="tablealign fullwidth">
-                <tr>
-                    <td>ListID:
-                               
-                               
-
-                                <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
-                        &nbsp;
-                               
-                               
-
-                                <small>
-                                    <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
-                                        <asp:Literal ID="listIDOpt" runat="server" />
-                                    </a>
-                                </small>
-                    </td>
-                    <td>Type <span style="color: red;">*</span>:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
-                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Title <span style="color: red;">*</span>:
-                               
-                               
-
-                                <br />
-                        <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
-                        <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
-                    </td>
-                    <td>Url <span style="color: red;">*</span>:
-                               
-                               
-
-                                <br />
-                        <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
-                        <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
-                    </td>
-                </tr>
-                <tr runat="server" visible="false">
-                    <td>
-                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
-                            <ContentTemplate>
-                                Designation <span style="color: red;">*</span>:
-                                       
-                                       
-
-                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="false">
-                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                        </asp:DropDownCheckBoxes>
-                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
-                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>--%>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">Attachment(s):
-                               
-                               
-                                <%--remove this--%>
-                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
-                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
-                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
-                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
-                                                <HeaderTemplate>
-                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                                </HeaderTemplate>
-                                                <ItemTemplate>
-                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
-                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
-                                                        <br />
-                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
-                                                        <br />
-                                                        <small>
-                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
-                                                            <br />
-                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
-                                                        </small>
-                                                    </li>
-                                                </ItemTemplate>
-                                                <FooterTemplate>
-                                                    </ul>
-                                                                       
-                                               
-                                               
-                                                </FooterTemplate>
-                                            </asp:Repeater>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                </div>--%>
-                        <%--remove end--%>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="2">Description <span style="color: red;">*</span>:
-                
-                                <br />
-                        <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
-                        <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
-                            runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Attachment(s):<br>
-                        <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
-                                    <ContentTemplate>--%>
-                        <input id="hdnAttachments" runat="server" type="hidden" />
-                        <%--                                    </ContentTemplate>
-                                </asp:UpdatePanel>--%>
-                        <div id="divSubTaskDropzone" runat="server" class="dropzone">
-                            <div class="fallback">
-                                <input name="file" type="file" multiple />
-                                <input type="submit" value="Upload" />
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div id="divSubTaskDropzonePreview" runat="server" class="dropzone-previews">
-                        </div>
-                        <asp:Button ID="btnSaveSubTaskAttachment" runat="server" OnClick="btnSaveSubTaskAttachment_Click" Style="display: none;" Text="Save Attachement" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">Estimated Hours:
-                               
-                               
-
-                                <asp:TextBox ID="txtEstimatedHours" runat="server" CssClass="textbox" Width="110" placeholder="Estimate" />
-                        <asp:RegularExpressionValidator ID="revEstimatedHours" runat="server" ControlToValidate="txtEstimatedHours" Display="None"
-                            ErrorMessage="Please enter decimal numbers for estimated hours of task." ValidationGroup="vgSubTask"
-                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                    </td>
-                </tr>
-                <tr id="trDateHours" runat="server" style="display: none;">
-                    <td>Due Date:<asp:TextBox ID="txtSubTaskDueDate" runat="server" CssClass="textbox datepicker" />
-                    </td>
-                    <td>Hrs of Task:                   
-                               
-                               
-
-                                <asp:TextBox ID="txtSubTaskHours" runat="server" CssClass="textbox" />
-                        <asp:RegularExpressionValidator ID="revSubTaskHours" runat="server" ControlToValidate="txtSubTaskHours" Display="None"
-                            ErrorMessage="Please enter decimal numbers for hours of task." ValidationGroup="vgSubTask"
-                            ValidationExpression="(\d+\.\d{1,2})?\d*" />
-                    </td>
-                </tr>
-                <tr id="trSubTaskStatus" runat="server" visible="false">
-                    <td>Status:
-                               
-                               
-
-                                <asp:DropDownList ID="ddlSubTaskStatus" runat="server" />
-                    </td>
-                    <td>&nbsp;
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div class="btn_sec">
-                            <%--<asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                        OnClientClick="javascript:return OnSaveSubTaskClick();" OnClick="btnSaveSubTask_Click" />--%>
-                            <asp:Button ID="btnSaveSubTask" runat="server" Text="Save Sub Task" CssClass="ui-button" ValidationGroup="vgSubTask"
-                                OnClientClick="javascript:return OnSaveSubTaskClick();" />
-
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <%--</ContentTemplate>
-    </asp:UpdatePanel>--%>
     <asp:HiddenField ID="hdnAdminMode" runat="server" />
 </fieldset>
 
@@ -811,10 +804,12 @@
 
         $('#<%=ddlTaskType.ClientID%>').change(function () {
             if ($("#<%=ddlTaskType.ClientID%>").val() == 3) {
-                $("#<%=trDateHours.ClientID%>").css({ 'display': "block" });
+                // as per discussion, estimated hours and task hour fields should be removed.
+                //$("#<%=trDateHours.ClientID%>").css({ 'display': "block" });
             }
             else {
-                $("#<%=trDateHours.ClientID%>").css({ 'display': "none" });
+                // as per discussion, estimated hours and task hour fields should be removed.
+                //$("#<%=trDateHours.ClientID%>").css({ 'display': "none" });
             }
             return false;
         })
