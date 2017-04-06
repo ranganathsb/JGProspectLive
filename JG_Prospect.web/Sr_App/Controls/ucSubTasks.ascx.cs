@@ -324,9 +324,10 @@ namespace JG_Prospect.Sr_App.Controls
                     lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
                     lnkAddMoreSubTask.Visible = true;
                     btnshowdivsub.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
+                    lnkAddMoreSubTask.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
                     lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidleft" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidleft";
+                    lnkAddMoreSubTask.CssClass = "installidleft showsubtaskDIV";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
 
@@ -341,10 +342,11 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
                     lnkAddMoreSubTask.Visible = true;
+                    lnkAddMoreSubTask.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
                     btnshowdivsub.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidcenter";
+                    lnkAddMoreSubTask.CssClass = "installidcenter showsubtaskDIV";
 
                     string strhtml = "";
                     strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
@@ -357,7 +359,10 @@ namespace JG_Prospect.Sr_App.Controls
                 lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
                 btnshowdivsub.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
                 btnshowdivsub.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
+                lnkAddMoreSubTask.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
+                lnkAddMoreSubTask.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
 
+                lnkAddMoreSubTask.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
                 btnshowdivsub.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
 
 
@@ -2001,6 +2006,24 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
         {
+            string strScript = string.Empty;
+            if (!string.IsNullOrEmpty(hdTaskId.Value)) 
+            {
+                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\""+hdTaskId.Value+"\"]')); });";
+            }
+            else
+            {
+                strScript += "$(document).ready(function(){ ScrollTo($('#divSubTaskGrid]')); });";
+            }
+
+            ScriptManager.RegisterStartupScript(
+                                                    this, 
+                                                    this.GetType(), 
+                                                    "ScrollToSection", 
+                                                    strScript,
+                                                    true
+                                                );
+
             hdnAttachments.Value = string.Empty;
             hdParentTaskId.Value = string.Empty;
             hdMainParentId.Value = string.Empty;
