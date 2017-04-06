@@ -1132,13 +1132,11 @@
                 arrAssignedUsers: arrAssignedUsers,
                 arrDesignationUsers: arrDesignationUsers
             };
-            console.log(postData);
             CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
             
             function OnSaveAssignedTaskUsersSuccess(response) {
                 console.log(response);
                 if (response) {
-                    //response.d.IsSuccess
                     alert('Task assignment saved successfully.');
                     $('#<%=btnUpdateRepeater.ClientID%>').click();
                 }
