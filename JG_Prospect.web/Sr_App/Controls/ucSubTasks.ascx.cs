@@ -753,7 +753,7 @@ namespace JG_Prospect.Sr_App.Controls
         protected void repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged(object sender, EventArgs e)
         {
             TextBox txtPassword = sender as TextBox;
-            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent as RepeaterItem;
+            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent.Parent as RepeaterItem;
 
             if (objRepeaterItem != null)
             {
