@@ -38,6 +38,12 @@
         max-width: 100%;
     }
 
+    .taskdesc .TitleEdit, .taskdesc .UrlEdit, .taskdesc .DescEdit {
+        min-width:200px;
+        display: inline-block;
+        height: 15px;
+    }
+
     .modalBackground {
         background-color: #333333;
         filter: alpha(opacity=70);
