@@ -354,7 +354,7 @@
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
                                                                             ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
                                                                         <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
-                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" />
+                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
@@ -455,8 +455,10 @@
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
                                                                     <div class="clr" style="height:1px;"></div>
-                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
-                                                                        >+</asp:LinkButton><%--OnClick="lnkAddMoreSubTask_Click"--%>
+                                                                    <%--<asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
+                                                                         >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
+                                                                    <asp:Button ID="btnshowdivsub1" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                            Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
@@ -934,7 +936,7 @@
             <% if (this.IsAdminMode) 
            {
                %>
-            $(this).bind("click", function () {
+            $(this).unbind('click').bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
@@ -1366,6 +1368,8 @@
                    });
 
                }
+
+               pageLoad(null, null);
            }
 
            function txtSubTaskDescription_Blur(editor) {
