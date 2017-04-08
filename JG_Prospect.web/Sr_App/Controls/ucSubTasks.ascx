@@ -353,12 +353,12 @@
                                                                         <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
                                                                             ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
-                                                                        <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                        <asp:Button ID="btnshowdivsub" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "hide" : "showsubtaskDIV" %>' runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
                                                                             Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
-                                                                    <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
+                                                                    <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>' align='<%#Eval("NestLevel").ToString() == "1"? "left":"right" %>'>
                                                                         <tr>
                                                                             <td colspan="3" class="noborder" align="center">
                                                                                 <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
@@ -457,7 +457,7 @@
                                                                     <div class="clr" style="height:1px;"></div>
                                                                     <%--<asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
                                                                          >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
-                                                                    <asp:Button ID="btnshowdivsub1" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                    <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>'  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
                                                                             Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
