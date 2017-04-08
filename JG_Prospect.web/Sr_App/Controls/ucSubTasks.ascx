@@ -466,13 +466,15 @@
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="false" />
+                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority textbox" runat="server" 
+                                                                                ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
 
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
+                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" 
+                                                                                CssClass="textbox" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
                                                                         <li style="display: none;">Type
                                                                         </li>
