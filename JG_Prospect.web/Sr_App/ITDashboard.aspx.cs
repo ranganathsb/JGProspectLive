@@ -24,6 +24,7 @@ using System.Data;
 using System.Data.Common;
 using JG_Prospect.DAL.Database;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using System.Web.UI.HtmlControls;
 
 namespace JG_Prospect.Sr_App
 {
@@ -1015,6 +1016,9 @@ namespace JG_Prospect.Sr_App
                 Label lblHoursDev = e.Row.FindControl("lblHoursDevInPro") as Label;
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdInPro = e.Row.FindControl("lblParentTaskIdInPro") as HiddenField;
+                HtmlGenericControl divAdmin = (HtmlGenericControl)e.Row.FindControl("divAdmin");
+                HtmlGenericControl divITLead = (HtmlGenericControl)e.Row.FindControl("divITLead");
+                HtmlGenericControl divUser = (HtmlGenericControl)e.Row.FindControl("divUser");
 
                 lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
 
@@ -1024,11 +1028,9 @@ namespace JG_Prospect.Sr_App
                     dtDue = Convert.ToDateTime(lblDueDate.Text);
                     lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
                 }
-
                 if (lblStatus.Text == "4")
                 {
                     lblStatus.Text = "In Progress";
-
                 }
                 else if (lblStatus.Text == "3")
                 {
@@ -1065,6 +1067,19 @@ namespace JG_Prospect.Sr_App
                 if (blOtherUserStatus)
                 {
                     lblHoursDev.Text = "Dev: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "UserEstimatedHours"));
+                }
+
+                if (blAdminStatus)
+                {
+                    divAdmin.Visible = true;
+                }
+                if (blTechLeadStatus)
+                {
+                    divITLead.Visible = true;
+                }
+                if (blOtherUserStatus)
+                {
+                    divUser.Visible = true;
                 }
             }
         }

@@ -102,7 +102,8 @@ if @search<>''
 			(SELECT TOP 1 EstimatedHours 
 				FROM [TaskApprovalsView] TaskApprovals
 				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours
-		FROM #temp AS Tasks
+		FROM #temp AS t
+			INNER JOIN [TaskListView] Tasks ON t.TaskId = Tasks.TaskId
 			LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId --AND TaskApprovals.IsAdminOrITLead = @Admin
 		WHERE 
 			RowNo_Order >= @StartIndex AND 
@@ -187,7 +188,8 @@ else if @userid=0 and @desigid=0
 			(SELECT TOP 1 EstimatedHours 
 				FROM [TaskApprovalsView] TaskApprovals
 				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours
-		FROM #temp1 AS Tasks
+		FROM #temp1 AS t
+			INNER JOIN [TaskListView] Tasks ON t.TaskId = Tasks.TaskId
 			LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId --AND TaskApprovals.IsAdminOrITLead = @Admin
 		WHERE 
 			RowNo_Order >= @StartIndex AND 
@@ -270,7 +272,8 @@ else if @userid>0
 			(SELECT TOP 1 EstimatedHours 
 				FROM [TaskApprovalsView] TaskApprovals
 				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours
-		FROM #temp2 AS Tasks
+		FROM #temp2 AS t
+			INNER JOIN [TaskListView] Tasks ON t.TaskId = Tasks.TaskId
 			LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId --AND TaskApprovals.IsAdminOrITLead = @Admin
 		WHERE 
 			RowNo_Order >= @StartIndex AND 
@@ -362,7 +365,8 @@ else if @userid=0 and @desigid>0
 			(SELECT TOP 1 EstimatedHours 
 				FROM [TaskApprovalsView] TaskApprovals
 				WHERE Tasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = 0) AS UserEstimatedHours
-		FROM #temp3 AS Tasks
+		FROM #temp3 AS t
+			INNER JOIN [TaskListView] Tasks ON t.TaskId = Tasks.TaskId
 			LEFT JOIN [TaskApprovalsView] TaskApprovals ON Tasks.TaskId = TaskApprovals.TaskId --AND TaskApprovals.IsAdminOrITLead = @Admin
 		WHERE 
 			RowNo_Order >= @StartIndex AND 
@@ -667,5 +671,4 @@ else if @userid=0 and @desigid>0
 --	end
 END
 GO
-
 
