@@ -1939,6 +1939,13 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     padding: 4px !important;
 }
 
+.FirstRow .subtasklevel tr[data-task-level="1"] td, .FirstRow .subtasklevel tr[data-task-level="2"] td {
+    border-top: 2px solid #f6f1f3;
+}
+.AlternateRow .subtasklevel tr[data-task-level="1"] td, .AlternateRow .subtasklevel tr[data-task-level="2"] td {
+    border-top: 2px solid #f57575;
+}
+
 .subtasklevel tr > td {
     vertical-align: top;
 }

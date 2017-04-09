@@ -335,7 +335,62 @@ border-top-right-radius: 4px;
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"  
                         HeaderStyle-Width="100px" ItemStyle-Width = "100px"  HeaderText = "Task ID#">
                         <ItemTemplate>
-                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
+                            <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server"   Text='<%# Eval("InstallId")%>' 
+                                data-highlighter='<%# Eval("TaskId")%>'  CssClass="context-menu"></asp:LinkButton>
+                            <div id="divAdmin" runat="server" visible="false">
+                                <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                <%# 
+                                    string.Concat(
+                                                    string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
+                                                        Eval("AdminUserId") : 
+                                                        Eval("AdminUserInstallId"),
+                                                    "<br/>",
+                                                    string.IsNullOrEmpty(Eval("AdminUserFirstName").ToString())== true? 
+                                                        Eval("AdminUserFirstName").ToString() : 
+                                                        Eval("AdminUserFirstName").ToString(),
+                                                    " ", 
+                                                    Eval("AdminUserLastName").ToString()
+                                                )
+                                %>
+                                </asp:HyperLink>
+                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                            </div>
+                            <div id="divITLead" runat="server" visible="false">
+                                <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                    <%# 
+                                        string.Concat(
+                                                        string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
+                                                            Eval("TechLeadUserId") : 
+                                                            Eval("TechLeadUserInstallId"),
+                                                        "<br/>",
+                                                        string.IsNullOrEmpty(Eval("TechLeadUserFirstName").ToString())== true? 
+                                                            Eval("TechLeadUserFirstName").ToString() : 
+                                                            Eval("TechLeadUserFirstName").ToString(),
+                                                        " ", 
+                                                        Eval("TechLeadUserLastName").ToString()
+                                                    )
+                                    %>
+                                </asp:HyperLink>
+                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                            </div>
+                            <div id="divUser" runat="server" visible="false">
+                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                <%# 
+                                    string.Concat(
+                                                    string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
+                                                        Eval("OtherUserId") : 
+                                                        Eval("OtherUserInstallId"),
+                                                    "<br/>",
+                                                    string.IsNullOrEmpty(Eval("OtherUserFirstName").ToString())== true? 
+                                                        Eval("OtherUserFirstName").ToString() : 
+                                                        Eval("OtherUserFirstName").ToString(),
+                                                    " ", 
+                                                    Eval("OtherUserLastName").ToString()
+                                                )
+                                %>
+                                </asp:HyperLink>
+                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
+                            </div>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"   ItemStyle-HorizontalAlign="Justify"  

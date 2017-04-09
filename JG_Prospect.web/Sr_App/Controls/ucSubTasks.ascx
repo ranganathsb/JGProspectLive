@@ -38,6 +38,12 @@
         max-width: 100%;
     }
 
+    .taskdesc .TitleEdit, .taskdesc .UrlEdit, .taskdesc .DescEdit {
+        min-width:200px;
+        display: inline-block;
+        height: 15px;
+    }
+
     .modalBackground {
         background-color: #333333;
         filter: alpha(opacity=70);
@@ -332,7 +338,7 @@
                                                     <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
 
                                                         <ItemTemplate>
-                                                            <tr id="trSubTask" style="border-bottom: solid 1px white;" runat="server" data-taskid='<%# Eval("TaskId")%>' data-parent-taskid='<%# Eval("ParentTaskId")%>'>
+                                                            <tr id="trSubTask" data-task-level='<%#Eval("NestLevel")%>' runat="server" data-taskid='<%# Eval("TaskId")%>' data-parent-taskid='<%# Eval("ParentTaskId")%>'>
                                                                 <td width="10%" class='<%# "sbtlevel"+Eval("NestLevel").ToString()%>'>
                                                                     <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
@@ -347,12 +353,12 @@
                                                                         <asp:LinkButton ID="lbtnInstallIdRemove" data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"
                                                                             ForeColor="Blue" runat="server" Text='<%# Eval("InstallId") %>' OnClientClick="javascript:return false;" Visible="false"
                                                                             ClientIDMode="AutoID" /><%--OnClick="RemoveClick"--%>
-                                                                        <asp:Button ID="btnshowdivsub" CssClass="showsubtaskDIV"  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
-                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" />
+                                                                        <asp:Button ID="btnshowdivsub" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "hide" : "showsubtaskDIV" %>' runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                            Style="color: Blue; text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
-                                                                    <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
+                                                                    <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>' align='<%#Eval("NestLevel").ToString() == "1"? "left":"right" %>'>
                                                                         <tr>
                                                                             <td colspan="3" class="noborder" align="center">
                                                                                 <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
@@ -449,8 +455,10 @@
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
                                                                     <div class="clr" style="height:1px;"></div>
-                                                                    <asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
-                                                                        >+</asp:LinkButton><%--OnClick="lnkAddMoreSubTask_Click"--%>
+                                                                    <%--<asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
+                                                                         >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
+                                                                    <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>'  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                            Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
                                                                 <td width="10%">
@@ -458,13 +466,15 @@
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority" runat="server" ClientIDMode="AutoID" AutoPostBack="false" />
+                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority textbox" runat="server" 
+                                                                                ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
 
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
+                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" 
+                                                                                CssClass="textbox" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
                                                                         <li style="display: none;">Type
                                                                         </li>
@@ -928,7 +938,7 @@
             <% if (this.IsAdminMode) 
            {
                %>
-            $(this).bind("click", function () {
+            $(this).unbind('click').bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
                 var CommandArgument = $(this).attr("data-val-CommandArgument");
                 var TaskLevel = $(this).attr("data-val-taskLVL");
@@ -1360,6 +1370,8 @@
                    });
 
                }
+
+               pageLoad(null, null);
            }
 
            function txtSubTaskDescription_Blur(editor) {

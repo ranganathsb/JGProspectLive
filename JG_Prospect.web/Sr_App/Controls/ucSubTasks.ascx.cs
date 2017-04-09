@@ -276,7 +276,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 HiddenField hdTaskLevel = e.Item.FindControl("hdTaskLevel") as HiddenField;
                 HiddenField hdTaskId = e.Item.FindControl("hdTaskId") as HiddenField;
-                LinkButton lnkAddMoreSubTask = e.Item.FindControl("lnkAddMoreSubTask") as LinkButton;
+                Button btnshowdivsub1 = e.Item.FindControl("btnshowdivsub1") as Button;
                 LinkButton lbtnInstallId = e.Item.FindControl("lbtnInstallId") as LinkButton;
                 LinkButton lbtnInstallIdRemove = e.Item.FindControl("lbtnInstallIdRemove") as LinkButton;
                 HiddenField hdURL = e.Item.FindControl("hdURL") as HiddenField;
@@ -305,7 +305,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (hdTaskLevel.Value == "3")
                 {
-                    lnkAddMoreSubTask.Visible = false;
+                    btnshowdivsub1.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
 
@@ -321,13 +321,13 @@ namespace JG_Prospect.Sr_App.Controls
                 else if (hdTaskLevel.Value == "1")
                 {
                     vFirstLevelId = Convert.ToInt32(hdTaskId.Value);
-                    lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
-                    lnkAddMoreSubTask.Visible = true;
-                    btnshowdivsub.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
-                    lnkAddMoreSubTask.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
+                    btnshowdivsub1.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
+                    btnshowdivsub1.Visible = true;
+                    btnshowdivsub.Attributes.Add("data-val-commandName", btnshowdivsub1.CommandName);
+                    btnshowdivsub1.Attributes.Add("data-val-commandName", btnshowdivsub1.CommandName);
                     lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidleft" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidleft showsubtaskDIV";
+                    btnshowdivsub1.CssClass = "showsubtaskDIV";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
 
@@ -340,13 +340,13 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
-                    lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
-                    lnkAddMoreSubTask.Visible = true;
-                    lnkAddMoreSubTask.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
-                    btnshowdivsub.Attributes.Add("data-val-commandName", lnkAddMoreSubTask.CommandName);
+                    btnshowdivsub1.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + riParentTaskItem.ItemIndex.ToString();
+                    btnshowdivsub1.Visible = true;
+                    btnshowdivsub1.Attributes.Add("data-val-commandName", btnshowdivsub1.CommandName);
+                    btnshowdivsub.Attributes.Add("data-val-commandName", btnshowdivsub1.CommandName);
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidcenter showsubtaskDIV";
+                    btnshowdivsub1.CssClass = "showsubtaskDIV";
 
                     string strhtml = "";
                     strhtml = strhtml + "<strong>Title: <span data-taskid='" + hdTaskId.Value + "' class='TitleEdit'>" + (e.Item.DataItem as DataRowView)["Title"].ToString() + "</span></strong></br>";
@@ -356,13 +356,13 @@ namespace JG_Prospect.Sr_App.Controls
                     dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
 
-                lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
-                btnshowdivsub.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
+                btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
+                btnshowdivsub.Attributes.Add("data-val-CommandArgument", btnshowdivsub1.CommandArgument);
                 btnshowdivsub.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
-                lnkAddMoreSubTask.Attributes.Add("data-val-CommandArgument", lnkAddMoreSubTask.CommandArgument);
-                lnkAddMoreSubTask.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
+                btnshowdivsub1.Attributes.Add("data-val-CommandArgument", btnshowdivsub1.CommandArgument);
+                btnshowdivsub1.Attributes.Add("data-val-taskLVL", hdTaskLevel.Value);
 
-                lnkAddMoreSubTask.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
+                btnshowdivsub1.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
                 btnshowdivsub.Attributes.Add("data-installid", GetInstallId(DataBinder.Eval(e.Item.DataItem, "NestLevel"), DataBinder.Eval(e.Item.DataItem, "InstallId"), DataBinder.Eval(e.Item.DataItem, "LastSubTaskInstallId")));
 
 
@@ -382,7 +382,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     btnshowdivsub.Visible =
-                    lnkAddMoreSubTask.Visible = false;
+                    btnshowdivsub1.Visible = false;
                     lbtnInstallId.Visible = false;
                     lbtnInstallIdRemove.Visible = true;
                 }
@@ -753,7 +753,7 @@ namespace JG_Prospect.Sr_App.Controls
         protected void repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged(object sender, EventArgs e)
         {
             TextBox txtPassword = sender as TextBox;
-            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent as RepeaterItem;
+            RepeaterItem objRepeaterItem = txtPassword.Parent.Parent.Parent as RepeaterItem;
 
             if (objRepeaterItem != null)
             {
@@ -880,7 +880,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 HiddenField hdTaskLevel = e.Item.FindControl("hdTaskLevel") as HiddenField;
                 HiddenField hdTaskId = e.Item.FindControl("hdTaskId") as HiddenField;
-                LinkButton lnkAddMoreSubTask = e.Item.FindControl("lnkAddMoreSubTask") as LinkButton;
+                Button btnshowdivsub1 = e.Item.FindControl("btnshowdivsub1") as Button;
                 Button btnshowdivsub = e.Item.FindControl("btnshowdivsub") as Button;
                 LinkButton lbtnInstallId = e.Item.FindControl("lbtnInstallId") as LinkButton;
                 LinkButton lbtnInstallIdRemove = e.Item.FindControl("lbtnInstallIdRemove") as LinkButton;
@@ -906,7 +906,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (hdTaskLevel.Value == "3")
                 {
-                    lnkAddMoreSubTask.Visible = false;
+                    btnshowdivsub1.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
                     dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
@@ -914,11 +914,11 @@ namespace JG_Prospect.Sr_App.Controls
                 else if (hdTaskLevel.Value == "1")
                 {
                     vFirstLevelId = Convert.ToInt32(hdTaskId.Value);
-                    lnkAddMoreSubTask.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
-                    lnkAddMoreSubTask.Visible = true;
+                    btnshowdivsub1.CommandName = "2#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
+                    btnshowdivsub1.Visible = true;
                     lbtnInstallId.CssClass = "context-menu installidleft" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidleft" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidleft";
+                    btnshowdivsub1.CssClass = "installidleft";
                     lbtnInstallId.CommandArgument = vTaskApproveId;
                     lbtnInstallIdRemove.CommandArgument = vTaskApproveId;
                     string strhtml = "";
@@ -931,15 +931,15 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
-                    lnkAddMoreSubTask.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
-                    lnkAddMoreSubTask.Visible = true;
+                    btnshowdivsub1.CommandName = "3#" + lbtnInstallId.Text + "#" + hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString();
+                    btnshowdivsub1.Visible = true;
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
-                    lnkAddMoreSubTask.CssClass = "installidcenter";
+                    btnshowdivsub1.CssClass = "installidcenter";
                     dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
                 }
 
-                lnkAddMoreSubTask.CommandArgument = vFirstLevelId.ToString();
+                btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
                 lbtnInstallId.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
                 lbtnInstallIdRemove.CommandName = hdTaskId.Value + "#" + gvMasterRow.RowIndex.ToString() + "#" + hdTaskLevel.Value;
 
@@ -957,7 +957,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     btnshowdivsub.Visible =
-                    lnkAddMoreSubTask.Visible =
+                    btnshowdivsub1.Visible =
                     lbtnInstallId.Visible = false;
                     lbtnInstallIdRemove.Visible = true;
                 }

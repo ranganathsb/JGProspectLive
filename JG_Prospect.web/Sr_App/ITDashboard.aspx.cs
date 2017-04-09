@@ -24,6 +24,7 @@ using System.Data;
 using System.Data.Common;
 using JG_Prospect.DAL.Database;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using System.Web.UI.HtmlControls;
 
 namespace JG_Prospect.Sr_App
 {
@@ -330,7 +331,7 @@ namespace JG_Prospect.Sr_App
         //    LoadFilterUsersByDesgination(designation, drpUserNew);
         //    BindNewTasks();
         //}
-        
+
         protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             string designation = drpDesigFrozen.SelectedValue;
@@ -465,7 +466,7 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, grdNewTask.PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, grdNewTask.PageSize);
-                  
+
                     result = database.ExecuteDataSet(command);
                     /*
                      if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
@@ -483,7 +484,7 @@ namespace JG_Prospect.Sr_App
                     result = database.ExecuteDataSet(command);
                      
                      */
-                      
+
                     // if loggedin user is not manager then show tasks assigned to loggedin user only 
 
                     if (result.Tables[0].Rows.Count > 0)
@@ -522,53 +523,53 @@ namespace JG_Prospect.Sr_App
                 {
                     DataSet result = new DataSet();
 
-                   /* if (txtSearchFrozen.Text != "")
-                    {
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b,tbltaskassignedusers as c,tblInstallUsers as t ";
-                            strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
-                            strfrozen = strfrozen + " AND  ( ";
-                            strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                            strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                            strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
-                            strfrozen = strfrozen + " ) ";
-                            strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
-                            strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b ,tbltaskassignedusers as c,tblInstallUsers as t ";
-                            strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
-                            strfrozen = strfrozen + " AND  ( ";
-                            strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                            strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                            strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
-                            strfrozen = strfrozen + " ) ";
-                            strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
-                            strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
-                    }
-                    else
-                    {
-                        if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                        {
-                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
-                            strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                        }
-                        else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                        {
-                            strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                            strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
-                            strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                        }
-                    }
-                    DbCommand command = database.GetSqlStringCommand(strfrozen);
-                    command.CommandType = CommandType.Text;
-                    result = database.ExecuteDataSet(command);
-                    // if loggedin user is not manager then show tasks assigned to loggedin user only 
-                    */
+                    /* if (txtSearchFrozen.Text != "")
+                     {
+                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                         {
+                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b,tbltaskassignedusers as c,tblInstallUsers as t ";
+                             strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
+                             strfrozen = strfrozen + " AND  ( ";
+                             strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
+                             strfrozen = strfrozen + " ) ";
+                             strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
+                             strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                         }
+                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                         {
+                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b ,tbltaskassignedusers as c,tblInstallUsers as t ";
+                             strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
+                             strfrozen = strfrozen + " AND  ( ";
+                             strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
+                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
+                             strfrozen = strfrozen + " ) ";
+                             strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
+                             strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                         }
+                     }
+                     else
+                     {
+                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
+                         {
+                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                             strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
+                             strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
+                         }
+                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
+                         {
+                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
+                             strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
+                             strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
+                         }
+                     }
+                     DbCommand command = database.GetSqlStringCommand(strfrozen);
+                     command.CommandType = CommandType.Text;
+                     result = database.ExecuteDataSet(command);
+                     // if loggedin user is not manager then show tasks assigned to loggedin user only 
+                     */
 
                     //DataSet resultTask = new DataSet();
                     int userId = 0;
@@ -577,7 +578,7 @@ namespace JG_Prospect.Sr_App
                     if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                     {
                         userId = 0;
-                       
+
                         if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
                         {
                             userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
@@ -621,7 +622,7 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
                     database.AddInParameter(command, "@userid", DbType.Int32, userId);
                     database.AddInParameter(command, "@desigid", DbType.Int32, desigID);
-                    
+
 
                     result = database.ExecuteDataSet(command);
                     if (result.Tables[0].Rows.Count > 0)
@@ -656,7 +657,7 @@ namespace JG_Prospect.Sr_App
             if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
             {
                 userId = 0;
-                if (txtSearchInPro.Text!="")
+                if (txtSearchInPro.Text != "")
                 {
                     strSearch = txtSearchInPro.Text;
                 }
@@ -676,7 +677,7 @@ namespace JG_Prospect.Sr_App
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
             ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
-            if ( ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 grdTaskPending.DataSource = ds;
                 grdTaskPending.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
@@ -1015,6 +1016,9 @@ namespace JG_Prospect.Sr_App
                 Label lblHoursDev = e.Row.FindControl("lblHoursDevInPro") as Label;
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdInPro = e.Row.FindControl("lblParentTaskIdInPro") as HiddenField;
+                HtmlGenericControl divAdmin = (HtmlGenericControl)e.Row.FindControl("divAdmin");
+                HtmlGenericControl divITLead = (HtmlGenericControl)e.Row.FindControl("divITLead");
+                HtmlGenericControl divUser = (HtmlGenericControl)e.Row.FindControl("divUser");
 
                 lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
 
@@ -1024,11 +1028,9 @@ namespace JG_Prospect.Sr_App
                     dtDue = Convert.ToDateTime(lblDueDate.Text);
                     lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
                 }
-
                 if (lblStatus.Text == "4")
                 {
                     lblStatus.Text = "In Progress";
-
                 }
                 else if (lblStatus.Text == "3")
                 {
@@ -1041,6 +1043,43 @@ namespace JG_Prospect.Sr_App
                 else
                 {
                     lblStatus.Text = "Open";
+                }
+
+                bool blAdminStatus = false, blTechLeadStatus = false, blOtherUserStatus = false;
+
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "AdminStatus").ToString()))
+                {
+                    blAdminStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "AdminStatus"));
+                }
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus").ToString()))
+                {
+                    blTechLeadStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "TechLeadStatus"));
+                }
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus").ToString()))
+                {
+                    blOtherUserStatus = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "OtherUserStatus"));
+                }
+
+                if (blAdminStatus || blTechLeadStatus)
+                {
+                    lblHoursLead.Text = "Admin: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "AdminOrITLeadEstimatedHours"));
+                }
+                if (blOtherUserStatus)
+                {
+                    lblHoursDev.Text = "Dev: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "UserEstimatedHours"));
+                }
+
+                if (blAdminStatus)
+                {
+                    divAdmin.Visible = true;
+                }
+                if (blTechLeadStatus)
+                {
+                    divITLead.Visible = true;
+                }
+                if (blOtherUserStatus)
+                {
+                    divUser.Visible = true;
                 }
             }
         }
@@ -1175,7 +1214,7 @@ namespace JG_Prospect.Sr_App
             mpNewFrozenTask.Show();
         }
 
-            protected void drpPageSizeFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        protected void drpPageSizeFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             grdFrozenTask.PageSize = Convert.ToInt32(drpPageSizeFrozen.SelectedValue);
             grdFrozenTask.PageIndex = 0;
@@ -1214,5 +1253,5 @@ namespace JG_Prospect.Sr_App
             return objListItemCollection;
         }
     }
-     
+
 }
