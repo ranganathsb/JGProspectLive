@@ -370,6 +370,9 @@ function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnEr
             error: function (a, b, c) {
                 HideAjaxLoader();
                 console.log('jQuery ajax error.');
+                console.log(a);
+                console.log(b);
+                console.log(c);
                 if (typeof (OnErrorCallBack) === 'function') {
                     OnErrorCallBack(a, b, c);
                 }

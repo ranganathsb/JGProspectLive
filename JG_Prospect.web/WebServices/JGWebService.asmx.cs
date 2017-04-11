@@ -23,6 +23,119 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        #region '--TaskApproval--'
+
+        [WebMethod(EnableSession = true)]
+        public object FreezeTask(string strEstimatedHours, string strTaskApprovalId, string strTaskId, string strPassword)
+        {
+            string strMessage;
+            bool blSuccess = false;
+
+            decimal decEstimatedHours = 0;
+
+            if (string.IsNullOrEmpty(strPassword))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not provided.";
+            }
+            else if (!strPassword.Equals(Convert.ToString(Session["loginpassword"])))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not valid.";
+            }
+            else if (string.IsNullOrEmpty(strEstimatedHours))
+            {
+                strMessage = "Sub Task cannot be freezed as estimated hours is not provided.";
+            }
+            else if (!decimal.TryParse(strEstimatedHours.Trim(), out decEstimatedHours) || decEstimatedHours <= 0)
+            {
+                strMessage = "Sub Task cannot be freezed as estimated hours is not valid.";
+            }
+            else
+            {
+                #region Update Estimated Hours
+
+                TaskApproval objTaskApproval = new TaskApproval();
+                if (string.IsNullOrEmpty(strTaskApprovalId))
+                {
+                    objTaskApproval.Id = 0;
+                }
+                else
+                {
+                    objTaskApproval.Id = Convert.ToInt64(strTaskApprovalId);
+                }
+                objTaskApproval.EstimatedHours = strEstimatedHours.Trim();
+                objTaskApproval.Description = string.Empty;
+                objTaskApproval.TaskId = Convert.ToInt32(strTaskId);
+                objTaskApproval.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                objTaskApproval.IsInstallUser = JGSession.IsInstallUser.Value;
+
+                if (objTaskApproval.Id > 0)
+                {
+                    TaskGeneratorBLL.Instance.UpdateTaskApproval(objTaskApproval);
+                }
+                else
+                {
+                    TaskGeneratorBLL.Instance.InsertTaskApproval(objTaskApproval);
+                }
+
+                #endregion
+
+                #region Update Task (Freeze, Status)
+
+                Task objTask = new Task();
+
+                objTask.TaskId = Convert.ToInt32(strTaskId);
+
+                bool blIsAdmin, blIsTechLead, blIsUser;
+
+                blIsAdmin = blIsTechLead = blIsUser = false;
+                if (JGSession.DesignationId == (byte)JG_Prospect.Common.JGConstant.DesignationType.Admin)
+                {
+                    objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                    objTask.AdminStatus = true;
+                    blIsAdmin = true;
+                }
+                else if (JGSession.DesignationId == (byte)JG_Prospect.Common.JGConstant.DesignationType.IT_Lead)
+                {
+                    objTask.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTask.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                    objTask.TechLeadStatus = true;
+                    blIsTechLead = true;
+                }
+                else
+                {
+                    objTask.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                    objTask.OtherUserStatus = true;
+                    blIsUser = true;
+                }
+
+                TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                            (
+                                                objTask,
+                                                blIsAdmin,
+                                                blIsTechLead,
+                                                blIsUser
+                                            );
+
+                blSuccess = true;
+                strMessage = "Sub Task freezed successfully.";
+
+                #endregion
+            }
+
+            var result = new
+            {
+                Success = blSuccess,
+                Message = strMessage,
+                TaskId = strTaskId
+            };
+
+            return result;
+        }
+
+        #endregion
+
         #region '--TaskWorkSpecification--'
 
         [WebMethod(EnableSession = true)]
@@ -387,7 +500,7 @@ namespace JG_Prospect.WebServices
             return true;
         }
 
-         [WebMethod(EnableSession = true)]
+        [WebMethod(EnableSession = true)]
         public object ValidateTaskStatus(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers)
         {
             bool blResult = true;
@@ -422,7 +535,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
+        public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
         {
             JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)intTaskStatus;
 
@@ -569,8 +682,8 @@ namespace JG_Prospect.WebServices
 
                 blnReturnVal = true;
             }
-            var result = new 
-            { 
+            var result = new
+            {
                 Success = blnReturnVal,
                 TaskId = TaskId
             };
