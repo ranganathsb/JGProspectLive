@@ -265,7 +265,7 @@
                 <%-- <cc1:ModalPopupExtender ID="mpNewFrozenTask" runat="server" PopupControlID="pnlNewFrozenTask" TargetControlID="btnFake"
                     CancelControlID="btnFake" BackgroundCssClass="modalBackground">
                 </cc1:ModalPopupExtender>--%>
-                <div id="pnlNewFrozenTask"  class="dialog" >
+                <div id="pnlNewFrozenTask" class="dialog">
 
                     <table id="Table2" runat="server" width="100%">
                         <tr>
@@ -363,9 +363,15 @@
                                         <asp:CheckBox ID="chkITLead" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
                                         <asp:CheckBox ID="chkUser" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
                                     </div>
-                                    <div class="approvepopup hide">
-                                        <div id="divAdmin" runat="server">
-                                            <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                    <div runat="server" visible="false" class="approvepopup hide">
+                                        <table>
+                                            <!-- Admin Approval Section -->
+                                            <tr id="divAdmin" runat="server">
+                                                <td width="10%">Admin: </td>
+                                                <td width="30%"></td>
+                                                <td>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())==true? "hide":"" %>'>
+                                                        <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                 <%# 
                                     string.Concat(
                                                     string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
@@ -379,12 +385,33 @@
                                                     Eval("AdminUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink>
-                                            <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                        </asp:HyperLink>
+                                                        <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                    </div>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())==true?"" :"hide" %>'>
 
-                                        </div>
-                                        <div id="divITLead" runat="server">
-                                            <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                        <input type="text" placeholder="Admin password" />
+
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                            <!-- ITLead Approval Section -->
+                                            <tr id="divITLead" runat="server">
+                                                <td>IT Lead: </td>
+                                                <td>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())==true? "hide":"" %>'>
+                                                        <span>
+                                                            <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("AdminOrITLeadEstimatedHours").ToString())==true? "":"hide" %>'>
+                                                        <input type="text" placeholder="ITLead hours" />
+                                                    </div>
+                                                </td>                                               
+                                                <td>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())==true? "hide":"" %>'>
+                                                        <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                     <%# 
                                         string.Concat(
                                                         string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
@@ -398,14 +425,32 @@
                                                         Eval("TechLeadUserLastName").ToString()
                                                     )
                                     %>
-                                            </asp:HyperLink>
-                                            <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
-                                            <span>
-                                                <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
-                                            </span>
-                                        </div>
-                                        <div id="divUser" runat="server">
-                                            <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                        </asp:HyperLink>
+                                                        <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                    </div>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())==true? "":"hide" %>'>
+                                                        <input type="text" placeholder="ITLead password" />
+                                                    </div>
+
+                                                </td>
+
+                                            </tr>
+                                            <!-- User Approval Section -->
+                                            <tr id="divUser" runat="server">
+                                                <td>User: </td>
+                                                <td>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "hide":"" %>'>
+                                                        <span>
+                                                            <asp:Label ID="lblHoursDevInPro" runat="server"></asp:Label></span>
+                                                    </div>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("UserEstimatedHours").ToString())==true? "":"hide" %>'>
+                                                        <input type="text" placeholder="User Hours" />
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())==true? "hide":"" %>'>
+                                                        <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
                                 <%# 
                                     string.Concat(
                                                     string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
@@ -419,11 +464,16 @@
                                                     Eval("OtherUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink>
-                                            <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
-                                            <span>
-                                                <asp:Label ID="lblHoursDevInPro" runat="server"></asp:Label></span>
-                                        </div>
+                                                        </asp:HyperLink>
+                                                        <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                    </div>
+                                                    <div class='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())==true? "":"hide" %>'>
+                                                        <input type="text" placeholder="User password" />
+                                                    </div>  
+                                                </td>
+                                            </tr>
+                                        </table>
+
                                     </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -819,17 +869,18 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
 
 
         function SetApprovalUI() {
-          
+
             $('.approvalBoxes').each(function () {
                 var approvaldialog = $($(this).next('.approvepopup'));
                 approvaldialog.dialog({
+                    width: 400,
                     show: 'slide',
                     hide: 'slide',
                     autoOpen: false
                 });
 
-                $(this).click(function () {                    
-                  approvaldialog.dialog('open');
+                $(this).click(function () {
+                    approvaldialog.dialog('open');
                 });
             });
         }
@@ -1037,7 +1088,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
                 autoOpen: false,
                 modal: true
             });
-            $('#<%= lblNewCounter.ClientID %>').click(function () {  $('#pnlNewFrozenTask').dialog('open'); });
+            $('#<%= lblNewCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
             $('#<%= lblFrozenCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
         }
     </script>

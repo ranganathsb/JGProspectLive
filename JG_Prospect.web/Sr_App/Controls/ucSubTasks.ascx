@@ -435,8 +435,8 @@
                                                                                 <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
                                                                                     placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
                                                                                 <br />
-                                                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                                                    AutoPostBack="true" CssClass="textbox" Width="80" OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged" ClientIDMode="AutoID" />
+                                                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask" data-taskid='<%# Eval("TaskId")%>'
+                                                                                    AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
 
                                                                             </td>
                                                                         </tr>
@@ -1049,6 +1049,32 @@
 
     function HideAjaxLoader() {
         $('.loading').hide();
+    }
+
+    function FreezeTask(sender) {
+        var $sender = $(sender);
+        var strTaskId = $sender.attr('data-taskid');
+        var $tr = $('tr[data-taskid="'+strTaskId+'"]');
+
+        var postData = {
+            strEstimatedHours: $tr.find('input[data-id="txtEstimatedHours"]').val(),
+            strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+            strTaskId: strTaskId,
+            strPassword: $tr.find('input[data-id="txtPasswordToFreezeSubTask"]').val()
+        };
+        
+        CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
+
+        function OnFreezeTaskSuccess(data) {
+            if(data.d.Success){
+                alert(data.d.Message);
+                $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                $('#<%=btnUpdateRepeater.ClientID%>').click();
+            }
+            else {
+                alert(data.d.Message);
+            }
+        }
     }
 
     function EditTask(tid, tdetail) {

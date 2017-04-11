@@ -1069,18 +1069,18 @@ namespace JG_Prospect.Sr_App
                     lblHoursDev.Text = "Dev: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "UserEstimatedHours"));
                 }
 
-                if (blAdminStatus)
-                {
-                    divAdmin.Visible = true;
-                }
-                if (blTechLeadStatus)
-                {
-                    divITLead.Visible = true;
-                }
-                if (blOtherUserStatus)
-                {
-                    divUser.Visible = true;
-                }
+                //if (blAdminStatus)
+                //{
+                //    divAdmin.Visible = true;
+                //}
+                //if (blTechLeadStatus)
+                //{
+                //    divITLead.Visible = true;
+                //}
+                //if (blOtherUserStatus)
+                //{
+                //    divUser.Visible = true;
+                //}
             }
         }
 
