@@ -819,16 +819,18 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
 
 
         function SetApprovalUI() {
-            $('.approvepopup').each(function () {
-                $(this).dialog({
+          
+            $('.approvalBoxes').each(function () {
+                var approvaldialog = $($(this).next('.approvepopup'));
+                approvaldialog.dialog({
                     show: 'slide',
                     hide: 'slide',
                     autoOpen: false
                 });
-            });
 
-            $('.approvalBoxes').each(function () {
-                $(this).click(function () { var approvaldialog = $($(this).next('.approvepopup')); console.log(approvaldialog); approvaldialog.dialog('movetoTop'); });
+                $(this).click(function () {                    
+                  approvaldialog.dialog('open');
+                });
             });
         }
 
