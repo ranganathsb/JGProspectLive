@@ -1509,6 +1509,10 @@ input.fz-user, .fz-user > input {
         color: white !important;
     }
 
+    .closed-task-bg .taskdesc *,.closed-task-bg .textbox,.closed-task-bg .chosen-container *, .closed-task-bg .chosen-drop *{
+        color: black !important;
+    }
+
 .RadScheduler .rsHeader {
     z-index: 6 !important;
 }

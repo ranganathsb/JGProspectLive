@@ -449,8 +449,26 @@
                                                                         <a href="javascript:void(0);" data-highlighter='<%# Eval("TaskId")%>' class="context-menu" style="color: blue;"><%# Eval("InstallId")%></a>
                                                                     </div>
                                                                     <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 380px;width: 380px; overflow:auto;">
-                                                                        <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
-                                                                            <%# Server.HtmlDecode(Eval("Description").ToString())%>
+                                                                        <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
+                                                                            <div class="right">
+                                                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TaskCreatorId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                                                    <%# 
+                                                                                        string.Concat(
+                                                                                                        string.IsNullOrEmpty(Eval("TaskCreatorInstallId").ToString())?
+                                                                                                            Eval("TaskCreatorId") : 
+                                                                                                            Eval("TaskCreatorInstallId"),
+                                                                                                        "# ",
+                                                                                                        string.IsNullOrEmpty(Eval("TaskCreatorFirstName").ToString())== true? 
+                                                                                                            Eval("TaskCreatorFirstName").ToString() : 
+                                                                                                            Eval("TaskCreatorFirstName").ToString(),
+                                                                                                        " ", 
+                                                                                                        Eval("TaskCreatorLastName").ToString()
+                                                                                                    )
+                                                                                    %>
+                                                                                </asp:HyperLink><br />
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedOn"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedOn"))%></span>&nbsp<span>(EST)</span>
+                                                                            </div>
+                                                                            <asp:Literal ID="ltrlDescription" runat="server" Text='<%# Server.HtmlDecode(Eval("Description").ToString())%>' />
                                                                         </div>
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
@@ -483,7 +501,7 @@
                                                                         </li>
 
                                                                     </ul>
-                                                                    <div>
+                                                                    <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
                                                                         </span>
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
