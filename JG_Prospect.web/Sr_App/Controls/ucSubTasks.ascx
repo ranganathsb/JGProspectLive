@@ -483,7 +483,7 @@
                                                                         </li>
 
                                                                     </ul>
-                                                                    <div>
+                                                                    <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
                                                                         </span>
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
