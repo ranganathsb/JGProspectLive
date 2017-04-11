@@ -1979,3 +1979,7 @@ height:inherit;
 width: 100%;
 display:block;
 }
+
+.display_inline {
+display:inline;
+}
