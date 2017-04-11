@@ -46,7 +46,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lblNewCounter;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblNewCounter;
         
         /// <summary>
         /// lblNewCounter0 control.
@@ -64,7 +64,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lblFrozenCounter;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblFrozenCounter;
         
         /// <summary>
         /// lblFrozenCounter0 control.
@@ -83,24 +83,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlButton btnFake;
-        
-        /// <summary>
-        /// mpNewFrozenTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpNewFrozenTask;
-        
-        /// <summary>
-        /// pnlNewFrozenTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNewFrozenTask;
         
         /// <summary>
         /// Table2 control.
