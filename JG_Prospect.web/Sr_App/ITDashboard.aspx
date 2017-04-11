@@ -873,7 +873,6 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
             $('.approvalBoxes').each(function () {
                 var approvaldialog = $($(this).next('.approvepopup'));
                 approvaldialog.dialog({
-                    width:400,
                     show: 'slide',
                     hide: 'slide',
                     autoOpen: false
