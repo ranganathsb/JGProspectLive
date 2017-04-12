@@ -302,7 +302,8 @@ namespace JG_Prospect.Sr_App.Controls
 
                 // FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
 
-
+                #region '--Task Details - Html [Title, Url, Description]--'
+                
                 if (hdTaskLevel.Value == "3")
                 {
                     btnshowdivsub1.Visible = false;
@@ -355,6 +356,8 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
                     ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
+                
+                #endregion
 
                 btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
                 btnshowdivsub.Attributes.Add("data-val-CommandArgument", btnshowdivsub1.CommandArgument);
@@ -387,6 +390,8 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallIdRemove.Visible = true;
                 }
 
+                #region '--Fill Asigned, Status, Priority Dropdowns--'
+                
                 if (this.IsAdminMode)
                 {
                     DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
@@ -479,6 +484,8 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
                 }
 
+                #endregion
+
                 //------------- Start DP ----------------
                 //if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString()))
                 //{
@@ -494,12 +501,14 @@ namespace JG_Prospect.Sr_App.Controls
 
                 //}
                 //------ attachments -----
+                
+                #region '--Task Attachments--'
+
                 HtmlImage defaultimgIcon = e.Item.FindControl("defaultimgIcon") as HtmlImage;
                 //Repeater rptAttachment = (Repeater)e.Row.FindControl("rptAttachment");
 
                 defaultimgIcon.Visible = false;
                 DataTable dtSubtaskAttachments = new System.Data.DataTable();
-
 
                 if (Convert.ToInt32(hdTaskId.Value) > 0)
                 {
@@ -551,7 +560,9 @@ namespace JG_Prospect.Sr_App.Controls
                             defaultimgIcon.Src = Page.ResolveUrl(string.Concat("~/img/", CommonFunction.ReplaceEncodeWhiteSpace("JG-Logo-white.gif")));
                         }
                     }
-                }
+                } 
+
+                #endregion
                 //upnlAttachments.Update();
 
 
@@ -566,6 +577,8 @@ namespace JG_Prospect.Sr_App.Controls
                 //    strRowCssClass = "FirstRow";
                 //}
 
+                #region '--Task Priority & Status--'
+                
                 JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Item.DataItem, "Status"));
                 JGConstant.TaskPriority? objTaskPriority = null;
 
@@ -588,17 +601,20 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.Enabled = false;
                         ddlStatus.Enabled = false;
                         break;
-                }
+                } 
+
+                #endregion
 
                 if (Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "TaskId")) == this.HighlightedTaskId)
                 {
                     strRowCssClass += " yellowthickborder";
                 }
 
-
                 (e.Item.FindControl("trSubTask") as HtmlTableRow).Attributes.Add("class", strRowCssClass);
 
 
+                #region '--Task Freezing--'
+                
                 CheckBox chkAdmin = e.Item.FindControl("chkAdmin") as CheckBox;
                 CheckBox chkITLead = e.Item.FindControl("chkITLead") as CheckBox;
                 CheckBox chkUser = e.Item.FindControl("chkUser") as CheckBox;
@@ -658,7 +674,9 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     HtmlGenericControl divUser = (HtmlGenericControl)e.Item.FindControl("divUser");
                     divUser.Visible = true;
-                }
+                } 
+
+                #endregion
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
