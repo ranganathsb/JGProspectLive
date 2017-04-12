@@ -1104,6 +1104,7 @@
         function OnFreezeTaskSuccess(data) {
             if (data.d.Success) {
                 alert(data.d.Message);
+                HidePopup('.approvepopup')
                 $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
                 $('#<%=btnUpdateRepeater.ClientID%>').click();
             }
