@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JG_Prospect.Common.modal;
+using JG_Prospect.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,21 @@ namespace JG_Prospect.BLL
         {
             get { return m_TaskCommentBLL; }
             set {; }
+        }
+
+        public bool InsertTaskComment(TaskComment objTaskComment)
+        {
+            return TaskCommentDAL.Instance.InsertTaskComment(objTaskComment);
+        }
+
+        public bool UpdateTaskComment(TaskComment objTaskComment)
+        {
+            return TaskCommentDAL.Instance.UpdateTaskComment(objTaskComment);
+        }
+
+        public bool DeleteTaskComment(TaskComment objTaskComment)
+        {
+            return TaskCommentDAL.Instance.DeleteTaskComment(objTaskComment);
         }
     }
 }
