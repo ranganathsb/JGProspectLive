@@ -363,7 +363,7 @@
                                                                         <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
                                                                         <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
                                                                     </div>
-                                                                    <div class="approvepopup">
+                                                                    <div data-taskid='<%# Eval("TaskId")%>' class="approvepopup">
 
                                                                         <div id="divAdmin" runat="server" style="margin-bottom: 15px; font-size: x-small;">
                                                                             <div style="width: 10%;" class="display_inline">Admin: </div>
@@ -387,9 +387,9 @@
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
-                                                                                <input type="text" style="width: 100px;" placeholder="Admin password" />
+                                                                                <input type="text" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtAdminPassword" data-hours-id="txtAdminEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
                                                                             </div>
-
                                                                         </div>
                                                                         <div id="divITLead" runat="server" style="margin-bottom: 15px; font-size: x-small;">
                                                                             <div style="width: 10%;" class="display_inline">ITLead: </div>
@@ -401,7 +401,7 @@
                                                                                 </span>
                                                                             </div>
                                                                             <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" />
+                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtITLeadEstimatedHours" />
                                                                             </div>
                                                                             <!-- ITLead password section -->
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "hide" : "display_inline"  %>'>
@@ -423,7 +423,8 @@
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                                                <input type="text" style="width: 100px;" placeholder="ITLead Password" />
+                                                                                <input type="text" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtITLeadPassword" data-hours-id="txtITLeadEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
                                                                             </div>
                                                                         </div>
                                                                         <div id="divUser" runat="server" style="margin-bottom: 15px; font-size: x-small;">
@@ -435,7 +436,7 @@
                                                                                     Hour(s)</span>
                                                                             </div>
                                                                             <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" />
+                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtUserEstimatedHours" />
                                                                             </div>
                                                                             <!-- User password section -->
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "hide" : "display_inline"  %>'>
@@ -457,20 +458,20 @@
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                                                <input type="text" style="width: 100px;" placeholder="User Password" />
+                                                                                <input type="text" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtUserPassword" data-hours-id="txtUserEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
                                                                             </div>
 
                                                                         </div>
-
+                                                                        <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
                                                                     </div>
                                                                     <div style="display:none;">
-                                                                        <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
-                                                                                <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
-                                                                                    placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
-                                                                                <br />
-                                                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask" data-taskid='<%# Eval("TaskId")%>'
-                                                                                    AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
-
+                                                                        <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
+                                                                            placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
+                                                                        <br />
+                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" 
+                                                                            data-id="txtPasswordToFreezeSubTask" data-hours-id="txtEstimatedHours" data-taskid='<%# Eval("TaskId")%>'
+                                                                            AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
                                                                     </div>
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
@@ -1086,13 +1087,16 @@
     function FreezeTask(sender) {
         var $sender = $(sender);
         var strTaskId = $sender.attr('data-taskid');
-        var $tr = $('tr[data-taskid="' + strTaskId + '"]');
+        var strHoursId = $sender.attr('data-hours-id');
+        var strPasswordId = $sender.attr('data-id');
 
+        var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
+        
         var postData = {
-            strEstimatedHours: $tr.find('input[data-id="txtEstimatedHours"]').val(),
+            strEstimatedHours: $tr.find('input[data-id="'+strHoursId+'"]').val(),
             strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
             strTaskId: strTaskId,
-            strPassword: $tr.find('input[data-id="txtPasswordToFreezeSubTask"]').val()
+            strPassword: $tr.find('input[data-id="'+strPasswordId+'"]').val()
         };
 
         CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
