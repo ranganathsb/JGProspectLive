@@ -230,7 +230,8 @@
                     <td>Attachment(s):<br>
                         <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>--%>
-                        <input id="hdnAttachments" runat="server" type="hidden" />
+                        <asp:HiddenField ID="hdnAttachments" runat="server" />
+
                         <%--                                    </ContentTemplate>
                                 </asp:UpdatePanel>--%>
                         <div id="divSubTaskDropzone" runat="server" class="dropzone">
@@ -292,6 +293,7 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
+                <asp:HiddenField ID="hdnGridAttachment" runat="server" />
                 <div style="float: left; margin-top: 15px;">
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
@@ -328,18 +330,18 @@
                             <asp:Repeater ID="repSubTasks" runat="server" OnItemDataBound="repSubTasks_ItemDataBound">
                                 <ItemTemplate>
                                     <tr id="trItem" runat="server">
-                                        <td>
+                                        <td style="padding:0px;">
                                             <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                             <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
                                             <!-- Sub Task Nested Grid STARTS -->
-                                            <table class="subtasklevel">
+                                            <table border="0" cellspacing="0" cellpadding="0" width="100%" class="subtasklevel">
                                                 <tbody>
                                                     <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
 
                                                         <ItemTemplate>
                                                             <tr id="trSubTask" data-task-level='<%#Eval("NestLevel")%>' runat="server" data-taskid='<%# Eval("TaskId")%>' data-parent-taskid='<%# Eval("ParentTaskId")%>'>
-                                                                <td width="100%" class='<%# "sbtlevel"+Eval("NestLevel").ToString()%>'>
+                                                                <td width="10%" class='<%# "sbtlevel"+Eval("NestLevel").ToString()%>'>
                                                                     <asp:HiddenField ID="hdTitle" runat="server" Value='<%# Eval("Title")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdURL" runat="server" Value='<%# Eval("URL")%>' ClientIDMode="AutoID" />
                                                                     <asp:HiddenField ID="hdTaskLevel" runat="server" Value='<%# Eval("TaskLevel")%>' ClientIDMode="AutoID" />
@@ -383,7 +385,7 @@
                                                     Eval("AdminUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
@@ -419,7 +421,7 @@
                                                         Eval("TechLeadUserLastName").ToString()
                                                     )
                                     %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
@@ -454,7 +456,7 @@
                                                     Eval("OtherUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
@@ -465,17 +467,17 @@
                                                                         </div>
                                                                         <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
                                                                     </div>
-                                                                    <div style="display:none;">
+                                                                    <div style="display: none;">
                                                                         <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
                                                                             placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
                                                                         <br />
-                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" 
+                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password"
                                                                             data-id="txtPasswordToFreezeSubTask" data-hours-id="txtEstimatedHours" data-taskid='<%# Eval("TaskId")%>'
                                                                             AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
                                                                     </div>
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
-                                                                <td width="50%">
+                                                                <td width="45%">
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "left":"hide" %>' style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <a href="javascript:void(0);" data-highlighter='<%# Eval("TaskId")%>' class="context-menu" style="color: blue;"><%# Eval("InstallId")%></a>
@@ -511,7 +513,7 @@
                                                                         Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
-                                                                <td width="10%">
+                                                                <td width="15%">
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
                                                                         <li>Priority
                                                                         </li>
@@ -1091,12 +1093,12 @@
         var strPasswordId = $sender.attr('data-id');
 
         var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
-        
+
         var postData = {
-            strEstimatedHours: $tr.find('input[data-id="'+strHoursId+'"]').val(),
+            strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
             strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
             strTaskId: strTaskId,
-            strPassword: $tr.find('input[data-id="'+strPasswordId+'"]').val()
+            strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
         };
 
         CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
@@ -1375,77 +1377,77 @@
                             }
                             // remove loading spinner image.                                
                             $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
-                           }
-                       });
-                   },
+                        }
+                    });
+                },
                 minLength: 2,
                 select: function (event, ui) {
                     $("#<%=btnSearch.ClientID%>").val(ui.item.value);
-                       //TriggerSearch();
-                       $('#<%=btnSearch.ClientID%>').click();
-                   }
+                    //TriggerSearch();
+                    $('#<%=btnSearch.ClientID%>').click();
+                }
             });
-           }
+        }
 
-           function SetUserAutoSuggestionUI() {
+        function SetUserAutoSuggestionUI() {
 
-               $.widget("custom.catcomplete", $.ui.autocomplete, {
-                   _create: function () {
-                       this._super();
-                       this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                   },
-                   _renderMenu: function (ul, items) {
-                       var that = this,
-                         currentCategory = "";
-                       $.each(items, function (index, item) {
-                           var li;
-                           if (item.Category != currentCategory) {
-                               ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                               currentCategory = item.Category;
-                           }
-                           li = that._renderItemData(ul, item);
-                           if (item.Category) {
-                               li.attr("aria-label", item.Category + " : " + item.label);
-                           }
-                       });
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
 
-                   }
-               });
-           }
+                }
+            });
+        }
 
-           function SetApprovalUI() {
+        function SetApprovalUI() {
 
-               $('.approvalBoxes').each(function () {
-                   var approvaldialog = $($(this).next('.approvepopup'));
-                   approvaldialog.dialog({
-                       width: 400,
-                       show: 'slide',
-                       hide: 'slide',
-                       autoOpen: false
-                   });
+            $('.approvalBoxes').each(function () {
+                var approvaldialog = $($(this).next('.approvepopup'));
+                approvaldialog.dialog({
+                    width: 400,
+                    show: 'slide',
+                    hide: 'slide',
+                    autoOpen: false
+                });
 
-                   $(this).click(function () {
-                       approvaldialog.dialog('open');
-                   });
-               });
-           }
+                $(this).click(function () {
+                    approvaldialog.dialog('open');
+                });
+            });
+        }
 
-           function ucSubTasks_Initialize() {
+        function ucSubTasks_Initialize() {
 
-               ChosenDropDown();
+            ChosenDropDown();
 
-               ApplySubtaskLinkContextMenu();
-               //ApplyImageGallery();
+            ApplySubtaskLinkContextMenu();
+            //ApplyImageGallery();
 
-               LoadImageGallery('.sub-task-attachments-list');
+            LoadImageGallery('.sub-task-attachments-list');
 
-               //----------- start DP -----
-               GridDropZone();
-               //----------- end DP -----
+            //----------- start DP -----
+            GridDropZone();
+            //----------- end DP -----
 
-               SetApprovalUI();
+            SetApprovalUI();
 
-               var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+            var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
                if (controlmode == "true") {
                    ucSubTasks_ApplyDropZone();
@@ -1568,12 +1570,12 @@
                    objSubTaskDropzone = null;
                }
                if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-                       objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                           maxFiles: 5,
-                           url: "taskattachmentupload.aspx",
-                           thumbnailWidth: 90,
-                           thumbnailHeight: 90,
-                           previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+                   objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                       maxFiles: 5,
+                       url: "taskattachmentupload.aspx",
+                       thumbnailWidth: 90,
+                       thumbnailHeight: 90,
+                       previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                            init: function () {
                                this.on("maxfilesexceeded", function (data) {
                                    alert('you are reached maximum attachment upload limit.');
@@ -1596,7 +1598,7 @@
                        });
                    }
 
-                   //Apply dropzone for comment section.
+               //Apply dropzone for comment section.
                    if (objSubtaskNoteDropzone) {
                        objSubtaskNoteDropzone.destroy();
                        objSubTaskNoteDropzone = null;
@@ -1721,8 +1723,8 @@
 
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                        debugger;
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnGridAttachment.ClientID %>');
 
                         if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
                             // saves attachment.

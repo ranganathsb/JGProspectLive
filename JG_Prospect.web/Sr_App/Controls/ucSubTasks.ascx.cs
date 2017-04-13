@@ -2017,8 +2017,8 @@ namespace JG_Prospect.Sr_App.Controls
         {
             Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
-            UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
-            hdnAttachments.Value = hdDropZoneTaskId.Value = string.Empty;
+            UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnGridAttachment.Value, JGConstant.TaskFileDestination.SubTask);
+            hdnGridAttachment.Value = hdDropZoneTaskId.Value = string.Empty;
             SetSubTaskDetails();
         }
 
@@ -2948,6 +2948,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
+
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
             {
