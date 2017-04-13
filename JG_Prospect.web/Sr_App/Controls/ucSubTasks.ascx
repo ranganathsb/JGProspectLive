@@ -550,7 +550,7 @@
                                                                     &nbsp;<a href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">Comment</a>
                                                                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="" data-startindex="0" data-pagesize="2"
-                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments();">View More Comments</a>
+                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View More Comments</a>
                                                                     <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">
                                                                     </div>
                                                                 </td>
@@ -940,34 +940,40 @@
     var SubTaskCommentScript = {};
 
     SubTaskCommentScript.Initialize = function () {
-        $('a[data-id="hypViewComments"]').click();
+        //$('a[data-id="hypViewComments"]').each(function () {
+        //    $(this).click(function () { SubTaskCommentScript.GetTaskComments(this); });
+        //    $(this).click();
+        //});
     }
 
     SubTaskCommentScript.GetTaskComments = function (sender) {
-        var $sender = $(sender);
-        var strTaskId = $sender.attr('data-taskid');
-        var strParentCommentId = $sender.attr('data-parent-commentid');
-        var strStartIndex = $sender.attr('data-startindex');
-        var strPageSize = $sender.attr('data-pagesize');
+        
+        var viewlink = $(sender);
+        var strTaskId = viewlink.attr('data-taskid');
+
+        var strParentCommentId = viewlink.attr('data-parent-commentid');
+        var strStartIndex = viewlink.attr('data-startindex');
+        var strPageSize = viewlink.attr('data-pagesize');
 
         var postData = {
-            strTaskId: strTaskId,
-            strParentCommentId: strParentCommentId,
-            strStartIndex: strStartIndex,
-            strPageSize: strPageSize
+            "intTaskId": strTaskId,
+            "intParentCommentId": strParentCommentId,
+            "intStartIndex": strStartIndex,
+            "intPageSize": strPageSize
         };
+        console.log(postData);
 
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            if (data.d.Success) {
+            console.log(data);
+            if (data.d.Success && data.d.TaskComments) {
                 console.log(data.d.TaskComments);
-
-                var $sender = $(sender);
-                var strTaskId = $sender.attr('data-taskid');
-                var strParentCommentId = $sender.attr('data-parent-commentid');
-                var strStartIndex = $sender.attr('data-startindex');
-                var strPageSize = $sender.attr('data-pagesize');
+                var viewlink = $(sender);
+                var strTaskId = viewlink.attr('data-taskid');
+                var strParentCommentId = viewlink.attr('data-parent-commentid');
+                var strStartIndex = viewlink.attr('data-startindex');
+                var strPageSize = viewlink.attr('data-pagesize');
 
                 var strSubTaskCommentTemplate = $('script[data-id="divSubTaskCommentTemplate"]').html();
                 strSubTaskCommentTemplate = strSubTaskCommentTemplate.replace(/{ParentCommentId}/gi, strParentCommentId);
