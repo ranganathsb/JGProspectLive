@@ -20,6 +20,56 @@ namespace JG_Prospect.DAL
             private set { ; }
         }
 
+        public List<TaskComment> GetTaskComments(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskComments");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskId);
+                    if (intParentCommentId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentCommentId", DbType.Int64, intParentCommentId.Value);
+                    }
+                    if (intStartIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@StartIndex", DbType.Int32, intStartIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize.Value);
+                    }
+
+                    DataSet dsTaskComments = database.ExecuteDataSet(command);
+
+                    List<TaskComment> lstTaskComments = new List<TaskComment>();
+                    
+                    if (dsTaskComments != null && dsTaskComments.Tables.Count > 0) 
+                    {
+                        foreach (DataRow drTaskComment in dsTaskComments.Tables[0].Rows)
+                        {
+                            TaskComment objTaskComment = new TaskComment();
+                            objTaskComment.Id = Convert.ToInt64(drTaskComment["Id"]);
+                            objTaskComment.Comment = Convert.ToString(drTaskComment["Comment"]);
+                            objTaskComment.ParentCommentId = Convert.ToInt64(drTaskComment["ParentCommentId"]);
+                            objTaskComment.TaskId = Convert.ToInt64(drTaskComment["TaskId"]);
+                            objTaskComment.UserId = Convert.ToInt32(drTaskComment["UserId"]);
+                            objTaskComment.DateCreated = Convert.ToDateTime(drTaskComment["DateCreated"]);
+
+                            lstTaskComments.Add(objTaskComment);
+                        }
+                    }
+
+                    return lstTaskComments;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public bool InsertTaskComment(TaskComment objTaskComment)
         {
@@ -33,11 +83,11 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskComment.TaskId);
                     database.AddInParameter(command, "@ParentCommentId", DbType.Int64, objTaskComment.ParentCommentId);
                     database.AddInParameter(command, "@UserId", DbType.Int32, objTaskComment.UserId);
-                    
+
                     return (database.ExecuteNonQuery(command) > 0);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -84,8 +134,5 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
-
-
-
     }
 }

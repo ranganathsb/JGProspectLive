@@ -23,6 +23,49 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        #region '--TaskComments--'
+
+        [WebMethod]
+        public object GetTaskComments(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        {
+            List<TaskComment> lstTaskComments = TaskCommentBLL.Instance.GetTaskComments(intTaskId, intParentCommentId, intStartIndex, intPageSize);
+
+            var result = new
+            {
+                Success = true,
+                TaskComments = lstTaskComments
+            };
+
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public object InsertTaskComment(string strComment, string strParentCommentId, string strTaskId)
+        {
+            TaskComment objTaskComment = new TaskComment();
+            objTaskComment.Id = 0;
+            objTaskComment.Comment = strComment;
+            if (string.IsNullOrEmpty(strParentCommentId))
+            {
+                objTaskComment.ParentCommentId = null;
+            }
+            else
+            {
+                objTaskComment.ParentCommentId = Convert.ToInt64(strParentCommentId);
+            }
+            objTaskComment.TaskId = Convert.ToInt64(strTaskId);
+            objTaskComment.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+
+            var result = new
+            {
+                Success = TaskCommentBLL.Instance.InsertTaskComment(objTaskComment)
+            };
+
+            return result;
+        }
+
+        #endregion
+
         #region '--TaskApproval--'
 
         [WebMethod(EnableSession = true)]

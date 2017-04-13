@@ -2,6 +2,7 @@
 using JG_Prospect.DAL;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,12 @@ namespace JG_Prospect.BLL
         public static TaskCommentBLL Instance
         {
             get { return m_TaskCommentBLL; }
-            set {; }
+            set { ; }
+        }
+
+        public List<TaskComment> GetTaskComments(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        {
+            return TaskCommentDAL.Instance.GetTaskComments(intTaskId, intParentCommentId, intStartIndex, intPageSize);
         }
 
         public bool InsertTaskComment(TaskComment objTaskComment)
