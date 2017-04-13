@@ -550,7 +550,7 @@
                                                                     &nbsp;<a href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">Comment</a>
                                                                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="" data-startindex="0" data-pagesize="2"
-                                                                        onclick="javascript:SubTaskCommentScript.Initialize();">View More Comments</a>
+                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments();">View More Comments</a>
                                                                     <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">
                                                                     </div>
                                                                 </td>
