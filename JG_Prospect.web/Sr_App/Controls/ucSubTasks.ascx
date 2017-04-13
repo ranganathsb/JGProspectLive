@@ -39,7 +39,7 @@
     }
 
     .taskdesc .TitleEdit, .taskdesc .UrlEdit, .taskdesc .DescEdit {
-        min-width:200px;
+        min-width: 200px;
         display: inline-block;
         height: 15px;
     }
@@ -87,7 +87,7 @@
 
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
-    
+
     <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
         <ContentTemplate>--%>
     <div id="divAddSubTask" runat="server">
@@ -230,7 +230,8 @@
                     <td>Attachment(s):<br>
                         <%--<asp:UpdatePanel ID="upAttachmentsData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>--%>
-                        <input id="hdnAttachments" runat="server" type="hidden" />
+                        <asp:HiddenField ID="hdnAttachments" runat="server" />
+
                         <%--                                    </ContentTemplate>
                                 </asp:UpdatePanel>--%>
                         <div id="divSubTaskDropzone" runat="server" class="dropzone">
@@ -292,6 +293,7 @@
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
+                <asp:HiddenField ID="hdnGridAttachment" runat="server" />
                 <div style="float: left; margin-top: 15px;">
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
@@ -328,12 +330,12 @@
                             <asp:Repeater ID="repSubTasks" runat="server" OnItemDataBound="repSubTasks_ItemDataBound">
                                 <ItemTemplate>
                                     <tr id="trItem" runat="server">
-                                        <td>
+                                        <td style="padding:0px;">
                                             <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' ClientIDMode="AutoID" />
                                             <asp:HiddenField ID="hdnInstallId" runat="server" Value='<%# Eval("InstallId") %>' ClientIDMode="AutoID" />
 
                                             <!-- Sub Task Nested Grid STARTS -->
-                                            <table class="subtasklevel">
+                                            <table border="0" cellspacing="0" cellpadding="0" width="100%" class="subtasklevel">
                                                 <tbody>
                                                     <asp:Repeater ID="repSubTasksNested" runat="server" ClientIDMode="AutoID" OnItemDataBound="repSubTasksNested_ItemDataBound">
 
@@ -358,122 +360,172 @@
                                                                     </h5>
 
                                                                     <!-- Freezingn Task Part Starts -->
-                                                                    <table class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>' align='<%#Eval("NestLevel").ToString() == "1"? "left":"right" %>'>
-                                                                        <tr>
-                                                                            <td colspan="3" class="noborder" align="center">
-                                                                                <asp:LinkButton ID="lbtlFeedback" runat="server" Visible="false" Text="Comment" CommandName="sub-task-feedback"
-                                                                                    CommandArgument='<%# Container.ItemIndex %>' ClientIDMode="AutoID" /></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="haligncenter noborder">
-                                                                                <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
-                                                                                <div id="divAdmin" runat="server" visible="false">
-                                                                                    <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                                            <%# 
-                                                                                string.Concat(
-                                                                                                string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
-                                                                                                    Eval("AdminUserId") : 
-                                                                                                    Eval("AdminUserInstallId"),
-                                                                                                "<br/>",
-                                                                                                string.IsNullOrEmpty(Eval("AdminUserFirstName").ToString())== true? 
-                                                                                                    Eval("AdminUserFirstName").ToString() : 
-                                                                                                    Eval("AdminUserFirstName").ToString(),
-                                                                                                " ", 
-                                                                                                Eval("AdminUserLastName").ToString()
-                                                                                            )
-                                                                            %>
-                                                                                    </asp:HyperLink>
-                                                                                    <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td class="haligncenter noborder">
-                                                                                <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
-                                                                                <div id="divITLead" runat="server" visible="false">
-                                                                                    <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                                            <%# 
-                                                                                string.Concat(
-                                                                                                string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
-                                                                                                    Eval("TechLeadUserId") : 
-                                                                                                    Eval("TechLeadUserInstallId"),
-                                                                                                "<br/>",
-                                                                                                string.IsNullOrEmpty(Eval("TechLeadUserFirstName").ToString())== true? 
-                                                                                                    Eval("TechLeadUserFirstName").ToString() : 
-                                                                                                    Eval("TechLeadUserFirstName").ToString(),
-                                                                                                " ", 
-                                                                                                Eval("TechLeadUserLastName").ToString()
-                                                                                            )
-                                                                            %>
-                                                                                    </asp:HyperLink>
-                                                                                    <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td class="haligncenter noborder">
-                                                                                <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
-                                                                                <div id="divUser" runat="server" visible="false">
-                                                                                    <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
-                                                                            <%# 
-                                                                                string.Concat(
-                                                                                                string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
-                                                                                                    Eval("OtherUserId") : 
-                                                                                                    Eval("OtherUserInstallId"),
-                                                                                                "<br/>",
-                                                                                                string.IsNullOrEmpty(Eval("OtherUserFirstName").ToString())== true? 
-                                                                                                    Eval("OtherUserFirstName").ToString() : 
-                                                                                                    Eval("OtherUserFirstName").ToString(),
-                                                                                                " ", 
-                                                                                                Eval("OtherUserLastName").ToString()
-                                                                                            )
-                                                                            %>
-                                                                                    </asp:HyperLink>
-                                                                                    <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span>(EST)</span>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr style="display: none;">
-                                                                            <td colspan="3">
-                                                                                <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
-                                                                                <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
-                                                                                    placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
-                                                                                <br />
-                                                                                <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" data-id="txtPasswordToFreezeSubTask"
-                                                                                    AutoPostBack="true" CssClass="textbox" Width="80" OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged" ClientIDMode="AutoID" />
+                                                                    <div class="approvalBoxes">
+                                                                        <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
+                                                                        <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+                                                                        <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                                                    </div>
+                                                                    <div data-taskid='<%# Eval("TaskId")%>' class="approvepopup">
 
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
+                                                                        <div id="divAdmin" runat="server" style="margin-bottom: 15px; font-size: x-small;">
+                                                                            <div style="width: 10%;" class="display_inline">Admin: </div>
+                                                                            <div style="width: 30%;" class="display_inline"></div>
+                                                                            <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "hide" : "display_inline"  %>'>
+                                                                                <asp:HyperLink ForeColor="Red" runat="server" NavigateUrl='<%# Eval("AdminUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                <%# 
+                                    string.Concat(
+                                                    string.IsNullOrEmpty(Eval("AdminUserInstallId").ToString())?
+                                                        Eval("AdminUserId") : 
+                                                        Eval("AdminUserInstallId"),
+                                                    " - ",
+                                                    string.IsNullOrEmpty(Eval("AdminUserFirstName").ToString())== true? 
+                                                        Eval("AdminUserFirstName").ToString() : 
+                                                        Eval("AdminUserFirstName").ToString(),
+                                                    " ", 
+                                                    Eval("AdminUserLastName").ToString()
+                                                )
+                                %>
+                                                                                </asp:HyperLink><br />
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
+                                                                            <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
+                                                                                <input type="text" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtAdminPassword" data-hours-id="txtAdminEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div id="divITLead" runat="server" style="margin-bottom: 15px; font-size: x-small;">
+                                                                            <div style="width: 10%;" class="display_inline">ITLead: </div>
+                                                                            <!-- ITLead Hours section -->
+                                                                            <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "hide": "display_inline" %>'>
+                                                                                <span>
+                                                                                    <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
+                                                                                    Hour(s)
+                                                                                </span>
+                                                                            </div>
+                                                                            <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
+                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtITLeadEstimatedHours" />
+                                                                            </div>
+                                                                            <!-- ITLead password section -->
+                                                                            <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "hide" : "display_inline"  %>'>
+                                                                                <asp:HyperLink ForeColor="Black" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                    <%# 
+                                        string.Concat(
+                                                        string.IsNullOrEmpty(Eval("TechLeadUserInstallId").ToString())?
+                                                            Eval("TechLeadUserId") : 
+                                                            Eval("TechLeadUserInstallId"),
+                                                        " - ",
+                                                        string.IsNullOrEmpty(Eval("TechLeadUserFirstName").ToString())== true? 
+                                                            Eval("TechLeadUserFirstName").ToString() : 
+                                                            Eval("TechLeadUserFirstName").ToString(),
+                                                        "", 
+                                                        Eval("TechLeadUserLastName").ToString()
+                                                    )
+                                    %>
+                                                                                </asp:HyperLink><br />
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
+                                                                            <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
+                                                                                <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtITLeadPassword" data-hours-id="txtITLeadEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div id="divUser" runat="server" style="margin-bottom: 15px; font-size: x-small;">
+                                                                            <div style="width: 10%;" class="display_inline">User: </div>
+                                                                            <!-- UserHours section -->
+                                                                            <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "hide": "display_inline" %>'>
+                                                                                <span>
+                                                                                    <asp:Label ID="lblHoursDevInPro" runat="server"></asp:Label>
+                                                                                    Hour(s)</span>
+                                                                            </div>
+                                                                            <div style="width: 30%;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
+                                                                                <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtUserEstimatedHours" />
+                                                                            </div>
+                                                                            <!-- User password section -->
+                                                                            <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "hide" : "display_inline"  %>'>
+                                                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TechLeadUserId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                <%# 
+                                    string.Concat(
+                                                    string.IsNullOrEmpty(Eval("OtherUserInstallId").ToString())?
+                                                        Eval("OtherUserId") : 
+                                                        Eval("OtherUserInstallId"),
+                                                    " - ",
+                                                    string.IsNullOrEmpty(Eval("OtherUserFirstName").ToString())== true? 
+                                                        Eval("OtherUserFirstName").ToString() : 
+                                                        Eval("OtherUserFirstName").ToString(),
+                                                    " ", 
+                                                    Eval("OtherUserLastName").ToString()
+                                                )
+                                %>
+                                                                                </asp:HyperLink><br />
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
+                                                                            <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
+                                                                                <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeTask(this);"
+                                                                                    data-id="txtUserPassword" data-hours-id="txtUserEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
+                                                                    </div>
+                                                                    <div style="display: none;">
+                                                                        <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
+                                                                            placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
+                                                                        <br />
+                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password"
+                                                                            data-id="txtPasswordToFreezeSubTask" data-hours-id="txtEstimatedHours" data-taskid='<%# Eval("TaskId")%>'
+                                                                            AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
+                                                                    </div>
                                                                     <!-- Freezingn Task Part Ends -->
                                                                 </td>
-                                                                <td width="50%">
+                                                                <td width="45%">
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "left":"hide" %>' style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
                                                                         <input type="checkbox" name="bulkaction" />
                                                                         <a href="javascript:void(0);" data-highlighter='<%# Eval("TaskId")%>' class="context-menu" style="color: blue;"><%# Eval("InstallId")%></a>
                                                                     </div>
-                                                                    <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 380px;width: 380px; overflow:auto;">
-                                                                        <div id="dvDesc" class="taskdesc" runat="server" style="padding-bottom: 5px; width: 98%; color: black!important;">
-                                                                            <%# Server.HtmlDecode(Eval("Description").ToString())%>
+                                                                    <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 380px; width: 380px; overflow: auto;">
+                                                                        <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
+                                                                            <div class="right">
+                                                                                <asp:HyperLink ForeColor="Blue" runat="server" NavigateUrl='<%# Eval("TaskCreatorId", Page.ResolveUrl("CreateSalesUser.aspx?id={0}")) %>'>
+                                                                                    <%# 
+                                                                                        string.Concat(
+                                                                                                        string.IsNullOrEmpty(Eval("TaskCreatorInstallId").ToString())?
+                                                                                                            Eval("TaskCreatorId") : 
+                                                                                                            Eval("TaskCreatorInstallId"),
+                                                                                                        "# ",
+                                                                                                        string.IsNullOrEmpty(Eval("TaskCreatorFirstName").ToString())== true? 
+                                                                                                            Eval("TaskCreatorFirstName").ToString() : 
+                                                                                                            Eval("TaskCreatorFirstName").ToString(),
+                                                                                                        " ", 
+                                                                                                        Eval("TaskCreatorLastName").ToString()
+                                                                                                    )
+                                                                                    %>
+                                                                                </asp:HyperLink><br />
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedOn"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedOn"))%></span>&nbsp<span>(EST)</span>
+                                                                            </div>
+                                                                            <asp:Literal ID="ltrlDescription" runat="server" Text='<%# Server.HtmlDecode(Eval("Description").ToString())%>' />
                                                                         </div>
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
-                                                                    <div class="clr" style="height:1px;"></div>
+                                                                    <div class="clr" style="height: 1px;"></div>
                                                                     <%--<asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
                                                                          >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
-                                                                    <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>'  runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
-                                                                            Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
+                                                                    <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>' runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
+                                                                        Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;<a href="#">Comment</a>
                                                                 </td>
-                                                                <td width="10%">
+                                                                <td width="15%">
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority textbox" runat="server" 
+                                                                            <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority textbox" runat="server"
                                                                                 ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
 
                                                                         <li>Status
                                                                         </li>
                                                                         <li>
-                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true" 
+                                                                            <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" AutoPostBack="true"
                                                                                 CssClass="textbox" OnSelectedIndexChanged="repSubTasksNested_ddlStatus_SelectedIndexChanged" />
                                                                         </li>
                                                                         <li style="display: none;">Type
@@ -483,12 +535,13 @@
                                                                         </li>
 
                                                                     </ul>
-                                                                    <div>
+                                                                    <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
                                                                         </span>
                                                                         <asp:ListBox ID="ddcbAssigned" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
                                                                             CssClass="chosen-select" data-placeholder="Select"
-                                                                            AutoPostBack="false" /> <%--OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"--%>
+                                                                            AutoPostBack="false" />
+                                                                        <%--OnSelectedIndexChanged="repSubTasksNested_ddcbAssigned_SelectedIndexChanged"--%>
                                                                         <asp:Label ID="lblAssigned" runat="server" />
 
                                                                     </div>
@@ -607,7 +660,7 @@
                         <tfoot>
                             <tr class="pagination-ys">
                                 <td>
-                                    <uc:custompager id="repSubTasks_CustomPager" runat="server" pagersize="5" />
+                                    <uc:CustomPager ID="repSubTasks_CustomPager" runat="server" PagerSize="5" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -850,8 +903,8 @@
         //For Title
         $(".TitleEdit").each(function (index) {
             // This section is available to admin only.
-            <% if (this.IsAdminMode) 
-           {
+            <% if (this.IsAdminMode)
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -876,8 +929,8 @@
         //For Url
         $(".UrlEdit").each(function (index) {
             // This section is available to admin only.
-            <% if (this.IsAdminMode) 
-           {
+            <% if (this.IsAdminMode)
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -905,8 +958,8 @@
         //For Description
         $(".DescEdit").each(function (index) {
             // This section is available to admin only.
-            <% if (this.IsAdminMode) 
-           {
+            <% if (this.IsAdminMode)
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -935,8 +988,8 @@
         //For Add Task Button
         $(".showsubtaskDIV").each(function (index) {
             // This section is available to admin only.
-            <% if (this.IsAdminMode) 
-           {
+            <% if (this.IsAdminMode)
+    {
                %>
             $(this).unbind('click').bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
@@ -957,15 +1010,15 @@
                 else if (TaskLevel == "2") {
                     objAddSubTask = $("#<%=pnlCalendar.ClientID%>");
 
-                    var $tr = $('<tr><td colspan="4"></td></tr>');
-                    $tr.find('td').append(objAddSubTask);
+                        var $tr = $('<tr><td colspan="4"></td></tr>');
+                        $tr.find('td').append(objAddSubTask);
 
-                    var $appendAfter = $('tr[data-parent-taskid="' + parentTaskId + '"]:last');
-                    if ($appendAfter.length == 0) {
-                        $appendAfter = $('tr[data-taskid="' + parentTaskId + '"]:last');
+                        var $appendAfter = $('tr[data-parent-taskid="' + parentTaskId + '"]:last');
+                        if ($appendAfter.length == 0) {
+                            $appendAfter = $('tr[data-taskid="' + parentTaskId + '"]:last');
+                        }
+                        $appendAfter.after($tr);
                     }
-                    $appendAfter.after($tr);
-                }
 
                 if (objAddSubTask != null) {
                     objAddSubTask.show();
@@ -975,7 +1028,7 @@
 
                 return false;
             });
-            
+
             <% } %>
         });
 
@@ -990,7 +1043,7 @@
 
     }
 
-    function updatePriority(id,value) {
+    function updatePriority(id, value) {
         ShowAjaxLoader();
         var postData = {
             taskid: id,
@@ -1031,6 +1084,36 @@
 
     function HideAjaxLoader() {
         $('.loading').hide();
+    }
+
+    function FreezeTask(sender) {
+        var $sender = $(sender);
+        var strTaskId = $sender.attr('data-taskid');
+        var strHoursId = $sender.attr('data-hours-id');
+        var strPasswordId = $sender.attr('data-id');
+
+        var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
+
+        var postData = {
+            strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
+            strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+            strTaskId: strTaskId,
+            strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+        };
+
+        CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
+
+        function OnFreezeTaskSuccess(data) {
+            if (data.d.Success) {
+                alert(data.d.Message);
+                HidePopup('.approvepopup')
+                $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                $('#<%=btnUpdateRepeater.ClientID%>').click();
+            }
+            else {
+                alert(data.d.Message);
+            }
+        }
     }
 
     function EditTask(tid, tdetail) {
@@ -1122,7 +1205,7 @@
 
         $sender.find('option').each(function (index, item) {
             var intUserId = parseInt($(item).attr('value'));
-            if(intUserId > 0) {
+            if (intUserId > 0) {
                 arrDesignationUsers.push(intUserId);
 
                 if ($sender.val() == intUserId.toString()) {
@@ -1163,7 +1246,7 @@
                 arrDesignationUsers: arrDesignationUsers
             };
             CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
-            
+
             function OnSaveAssignedTaskUsersSuccess(response) {
                 console.log(response);
                 if (response) {
@@ -1276,78 +1359,95 @@
             }
         }
 
-           function SetUserAutoSuggestion() {
-               $("#<%=txtSearch.ClientID%>").catcomplete({
-                   delay: 500,
-                   source: function (request, response) {
-                       $.ajax({
-                           type: "POST",
-                           url: "ajaxcalls.aspx/GetTaskUsers",
-                           dataType: "json",
-                           contentType: "application/json; charset=utf-8",
-                           data: JSON.stringify({ searchterm: request.term }),
-                           success: function (data) {
-                               // Handle 'no match' indicated by [ "" ] response
-                               if (data.d) {
+        function SetUserAutoSuggestion() {
+            $("#<%=txtSearch.ClientID%>").catcomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsers",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
 
-                                   response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                               }
-                               // remove loading spinner image.                                
-                               $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
-                           }
-                       });
-                   },
-                   minLength: 2,
-                   select: function (event, ui) {
-                       $("#<%=btnSearch.ClientID%>").val(ui.item.value);
-                       //TriggerSearch();
-                       $('#<%=btnSearch.ClientID%>').click();
-                   }
-               });
-           }
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=btnSearch.ClientID%>").val(ui.item.value);
+                    //TriggerSearch();
+                    $('#<%=btnSearch.ClientID%>').click();
+                }
+            });
+        }
 
-           function SetUserAutoSuggestionUI() {
+        function SetUserAutoSuggestionUI() {
 
-               $.widget("custom.catcomplete", $.ui.autocomplete, {
-                   _create: function () {
-                       this._super();
-                       this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                   },
-                   _renderMenu: function (ul, items) {
-                       var that = this,
-                         currentCategory = "";
-                       $.each(items, function (index, item) {
-                           var li;
-                           if (item.Category != currentCategory) {
-                               ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                               currentCategory = item.Category;
-                           }
-                           li = that._renderItemData(ul, item);
-                           if (item.Category) {
-                               li.attr("aria-label", item.Category + " : " + item.label);
-                           }
-                       });
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
 
-                   }
-               });
-           }
+                }
+            });
+        }
 
+        function SetApprovalUI() {
 
+            $('.approvalBoxes').each(function () {
+                var approvaldialog = $($(this).next('.approvepopup'));
+                approvaldialog.dialog({
+                    width: 400,
+                    show: 'slide',
+                    hide: 'slide',
+                    autoOpen: false
+                });
 
-           function ucSubTasks_Initialize() {
+                $(this).click(function () {
+                    approvaldialog.dialog('open');
+                });
+            });
+        }
 
-               ChosenDropDown();
+        function ucSubTasks_Initialize() {
 
-               ApplySubtaskLinkContextMenu();
-               //ApplyImageGallery();
+            ChosenDropDown();
 
-               LoadImageGallery('.sub-task-attachments-list');
+            ApplySubtaskLinkContextMenu();
+            //ApplyImageGallery();
 
-               //----------- start DP -----
-               GridDropZone();
-               //----------- end DP -----
+            LoadImageGallery('.sub-task-attachments-list');
 
-               var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+            //----------- start DP -----
+            GridDropZone();
+            //----------- end DP -----
+
+            SetApprovalUI();
+
+            var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
                if (controlmode == "true") {
                    ucSubTasks_ApplyDropZone();
@@ -1428,54 +1528,54 @@
                        if (data.d.Success) {
                            alert('Task saved successfully.');
                            $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                            $('#<%=btnUpdateRepeater.ClientID%>').click();
-                        }
-                        else {
-                            alert('Task cannot be saved. Please try again.');
-                        }
-                    }
-
-                    function OnAddNewSubTaskError(err) {
-                        alert('Task cannot be saved. Please try again.');
-                    }
-                    return false;
-                }
-            }
-               function GetParameterValues(param) {
-                   var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-                   for (var i = 0; i < url.length; i++) {
-                       var urlparam = url[i].split('=');
-                       if (urlparam[0] == param) {
-                           return urlparam[1];
+                           $('#<%=btnUpdateRepeater.ClientID%>').click();
+                       }
+                       else {
+                           alert('Task cannot be saved. Please try again.');
                        }
                    }
-               }
 
-               function copytoListID(sender) {
-                   var strListID = $.trim($(sender).text());
-                   if (strListID.length > 0) {
-                       $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                       ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
-                       ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
+                   function OnAddNewSubTaskError(err) {
+                       alert('Task cannot be saved. Please try again.');
+                   }
+                   return false;
+               }
+           }
+           function GetParameterValues(param) {
+               var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+               for (var i = 0; i < url.length; i++) {
+                   var urlparam = url[i].split('=');
+                   if (urlparam[0] == param) {
+                       return urlparam[1];
                    }
                }
+           }
 
-               var objSubTaskDropzone, objSubtaskNoteDropzone;
+           function copytoListID(sender) {
+               var strListID = $.trim($(sender).text());
+               if (strListID.length > 0) {
+                   $('#<%= txtTaskListID.ClientID %>').val(strListID);
+                   ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
+                   ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
+               }
+           }
+
+           var objSubTaskDropzone, objSubtaskNoteDropzone;
 
 
-               function ucSubTasks_ApplyDropZone() {
-                   //remove already attached dropzone.
-                   if (objSubTaskDropzone) {
-                       objSubTaskDropzone.destroy();
-                       objSubTaskDropzone = null;
-                   }
-                   if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-                       objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                           maxFiles: 5,
-                           url: "taskattachmentupload.aspx",
-                           thumbnailWidth: 90,
-                           thumbnailHeight: 90,
-                           previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+           function ucSubTasks_ApplyDropZone() {
+               //remove already attached dropzone.
+               if (objSubTaskDropzone) {
+                   objSubTaskDropzone.destroy();
+                   objSubTaskDropzone = null;
+               }
+               if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                   objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                       maxFiles: 5,
+                       url: "taskattachmentupload.aspx",
+                       thumbnailWidth: 90,
+                       thumbnailHeight: 90,
+                       previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                            init: function () {
                                this.on("maxfilesexceeded", function (data) {
                                    alert('you are reached maximum attachment upload limit.');
@@ -1498,7 +1598,7 @@
                        });
                    }
 
-                   //Apply dropzone for comment section.
+               //Apply dropzone for comment section.
                    if (objSubtaskNoteDropzone) {
                        objSubtaskNoteDropzone.destroy();
                        objSubTaskNoteDropzone = null;
@@ -1623,8 +1723,8 @@
 
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                        debugger;
+                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnGridAttachment.ClientID %>');
 
                         if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
                             // saves attachment.

@@ -1509,6 +1509,10 @@ input.fz-user, .fz-user > input {
         color: white !important;
     }
 
+    .closed-task-bg .taskdesc *, .closed-task-bg .textbox, .closed-task-bg .chosen-container *, .closed-task-bg .chosen-drop * {
+        color: black !important;
+    }
+
 .RadScheduler .rsHeader {
     z-index: 6 !important;
 }
@@ -1941,9 +1945,12 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 
 .FirstRow .subtasklevel tr[data-task-level="1"] td, .FirstRow .subtasklevel tr[data-task-level="2"] td {
     border-top: 2px solid #f6f1f3;
+    padding: 0;
 }
+
 .AlternateRow .subtasklevel tr[data-task-level="1"] td, .AlternateRow .subtasklevel tr[data-task-level="2"] td {
     border-top: 2px solid #f57575;
+    padding: 0;
 }
 
 .subtasklevel tr > td {
@@ -1962,16 +1969,21 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     margin: 0px;
     border: 0px;
 }
+
 .form_panel_custom ul.stulli {
-overflow:hidden;
+    overflow: hidden;
 }
 
 .divtdetails img {
-max-width:100%;
-height:inherit;
+    max-width: 100%;
+    height: inherit;
 }
 
 .form_panel_custom ul.stulli li {
-width: 100%;
-display:block;
+    width: 100%;
+    display: block;
+}
+
+.display_inline {
+    display: inline;
 }

@@ -281,7 +281,7 @@ namespace JG_Prospect.Sr_App.Controls
                 LinkButton lbtnInstallIdRemove = e.Item.FindControl("lbtnInstallIdRemove") as LinkButton;
                 HiddenField hdURL = e.Item.FindControl("hdURL") as HiddenField;
                 HiddenField hdTitle = e.Item.FindControl("hdTitle") as HiddenField;
-                HtmlGenericControl dvDesc = e.Item.FindControl("dvDesc") as HtmlGenericControl;
+                Literal ltrlDescription = e.Item.FindControl("ltrlDescription") as Literal;
                 RepeaterItem riParentTaskItem = (RepeaterItem)e.Item.Parent.Parent.Parent.Parent;
                 Button btnshowdivsub = e.Item.FindControl("btnshowdivsub") as Button;
                 DropDownList ddlPrioriy = e.Item.FindControl("ddlTaskPriority") as DropDownList;
@@ -296,13 +296,14 @@ namespace JG_Prospect.Sr_App.Controls
                 TextBox estHours = e.Item.FindControl("txtEstimatedHours") as TextBox;
                 string vTaskApproveId = hdnTaskApprovalId.Value;
                 txtEstimatedHours.Text = estHours.Text;       //(gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
-                dvDesc.InnerHtml = "";
+                ltrlDescription.Text = "";
                 string lnkClasslvl = "";
                 lnkClasslvl = "";
 
                 // FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
 
-
+                #region '--Task Details - Html [Title, Url, Description]--'
+                
                 if (hdTaskLevel.Value == "3")
                 {
                     btnshowdivsub1.Visible = false;
@@ -314,7 +315,7 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
 
-                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                    ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
 
                     btnshowdivsub.Visible = false;
                 }
@@ -336,7 +337,7 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
-                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                    ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
@@ -353,8 +354,10 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + " <strong>URL: <span data-taskid='" + hdTaskId.Value + "' style='color: blue; cursor: pointer;' class='UrlEdit'>" + (e.Item.DataItem as DataRowView)["URL"].ToString() + "</span></strong></br>";
                     strhtml = strhtml + "<strong>Description: </strong></br><span data-taskid='" + hdTaskId.Value + "' class='DescEdit'>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
-                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                    ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
+                
+                #endregion
 
                 btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
                 btnshowdivsub.Attributes.Add("data-val-CommandArgument", btnshowdivsub1.CommandArgument);
@@ -387,6 +390,8 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallIdRemove.Visible = true;
                 }
 
+                #region '--Fill Asigned, Status, Priority Dropdowns--'
+                
                 if (this.IsAdminMode)
                 {
                     DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
@@ -479,6 +484,8 @@ namespace JG_Prospect.Sr_App.Controls
                     ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
                 }
 
+                #endregion
+
                 //------------- Start DP ----------------
                 //if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskUserFiles").ToString()))
                 //{
@@ -494,12 +501,14 @@ namespace JG_Prospect.Sr_App.Controls
 
                 //}
                 //------ attachments -----
+                
+                #region '--Task Attachments--'
+
                 HtmlImage defaultimgIcon = e.Item.FindControl("defaultimgIcon") as HtmlImage;
                 //Repeater rptAttachment = (Repeater)e.Row.FindControl("rptAttachment");
 
                 defaultimgIcon.Visible = false;
                 DataTable dtSubtaskAttachments = new System.Data.DataTable();
-
 
                 if (Convert.ToInt32(hdTaskId.Value) > 0)
                 {
@@ -551,7 +560,9 @@ namespace JG_Prospect.Sr_App.Controls
                             defaultimgIcon.Src = Page.ResolveUrl(string.Concat("~/img/", CommonFunction.ReplaceEncodeWhiteSpace("JG-Logo-white.gif")));
                         }
                     }
-                }
+                } 
+
+                #endregion
                 //upnlAttachments.Update();
 
 
@@ -566,6 +577,8 @@ namespace JG_Prospect.Sr_App.Controls
                 //    strRowCssClass = "FirstRow";
                 //}
 
+                #region '--Task Priority & Status--'
+                
                 JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Item.DataItem, "Status"));
                 JGConstant.TaskPriority? objTaskPriority = null;
 
@@ -588,17 +601,20 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.Enabled = false;
                         ddlStatus.Enabled = false;
                         break;
-                }
+                } 
+
+                #endregion
 
                 if (Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "TaskId")) == this.HighlightedTaskId)
                 {
                     strRowCssClass += " yellowthickborder";
                 }
 
-
                 (e.Item.FindControl("trSubTask") as HtmlTableRow).Attributes.Add("class", strRowCssClass);
 
 
+                #region '--Task Freezing--'
+                
                 CheckBox chkAdmin = e.Item.FindControl("chkAdmin") as CheckBox;
                 CheckBox chkITLead = e.Item.FindControl("chkITLead") as CheckBox;
                 CheckBox chkUser = e.Item.FindControl("chkUser") as CheckBox;
@@ -658,7 +674,9 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     HtmlGenericControl divUser = (HtmlGenericControl)e.Item.FindControl("divUser");
                     divUser.Visible = true;
-                }
+                } 
+
+                #endregion
 
                 if (blAdminStatus && blTechLeadStatus && blOtherUserStatus && !this.IsAdminMode)// Added condition for allowing admin to edit task even after freezing task.
                 {
@@ -886,7 +904,7 @@ namespace JG_Prospect.Sr_App.Controls
                 LinkButton lbtnInstallIdRemove = e.Item.FindControl("lbtnInstallIdRemove") as LinkButton;
                 HiddenField hdURL = e.Item.FindControl("hdURL") as HiddenField;
                 HiddenField hdTitle = e.Item.FindControl("hdTitle") as HiddenField;
-                HtmlGenericControl dvDesc = e.Item.FindControl("dvDesc") as HtmlGenericControl;
+                Literal ltrlDescription = e.Item.FindControl("ltrlDescription") as Literal;
                 GridViewRow gvMasterRow = (GridViewRow)e.Item.Parent.Parent.Parent;
 
                 ListBox ddcbAssigned = e.Item.FindControl("ddcbAssigned") as ListBox;
@@ -897,7 +915,7 @@ namespace JG_Prospect.Sr_App.Controls
                 TextBox estHours = e.Item.FindControl("txtEstimatedHours") as TextBox;
                 string vTaskApproveId = hdnTaskApprovalId.Value;
                 txtEstimatedHours.Text = estHours.Text;       //(gvSubTasks.Rows[intRowIndex].FindControl("txtEstimatedHours") as TextBox).Text;
-                dvDesc.InnerHtml = "";
+                ltrlDescription.Text = "";
                 string lnkClasslvl = "";
                 lnkClasslvl = "";
 
@@ -909,7 +927,7 @@ namespace JG_Prospect.Sr_App.Controls
                     btnshowdivsub1.Visible = false;
                     lbtnInstallId.CssClass = "context-menu  installidright" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu  installidright" + lnkClasslvl;
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+                    ltrlDescription.Text = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
                 }
                 else if (hdTaskLevel.Value == "1")
                 {
@@ -927,7 +945,7 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + "<strong>Description: </strong></br>";
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString();
 
-                    dvDesc.InnerHtml = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
+                    ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
                 else if (hdTaskLevel.Value == "2")
                 {
@@ -936,7 +954,7 @@ namespace JG_Prospect.Sr_App.Controls
                     lbtnInstallId.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     lbtnInstallIdRemove.CssClass = "context-menu installidcenter" + lnkClasslvl;
                     btnshowdivsub1.CssClass = "installidcenter";
-                    dvDesc.InnerHtml = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
+                    ltrlDescription.Text = Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, "Description").ToString());
                 }
 
                 btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
@@ -1999,8 +2017,8 @@ namespace JG_Prospect.Sr_App.Controls
         {
             Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
-            UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnAttachments.Value, JGConstant.TaskFileDestination.SubTask);
-            hdnAttachments.Value = hdDropZoneTaskId.Value = string.Empty;
+            UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnGridAttachment.Value, JGConstant.TaskFileDestination.SubTask);
+            hdnGridAttachment.Value = hdDropZoneTaskId.Value = string.Empty;
             SetSubTaskDetails();
         }
 
@@ -2930,6 +2948,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
+
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
             {

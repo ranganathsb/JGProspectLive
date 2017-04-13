@@ -672,3 +672,320 @@ else if @userid=0 and @desigid>0
 END
 GO
 
+
+
+
+/****** Object:  View [dbo].[TaskListView]    Script Date: 11-Apr-17 10:42:55 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[TaskListView] 
+AS
+SELECT 
+	Tasks.*,
+
+	TaskCreator.Id AS TaskCreatorId,
+	TaskCreator.InstallId AS TaskCreatorInstallId,
+	TaskCreator.FristName AS TaskCreatorUsername, 
+	TaskCreator.FristName AS TaskCreatorFirstName, 
+	TaskCreator.LastName AS TaskCreatorLastName, 
+	TaskCreator.Email AS TaskCreatorEmail,
+
+	--AdminUser.Id AS AdminUserId,
+	AdminUser.InstallId AS AdminUserInstallId,
+	AdminUser.Username AS AdminUsername,
+	AdminUser.FirstName AS AdminUserFirstName,
+	AdminUser.LastName AS AdminUserLastName,
+	AdminUser.Email AS AdminUserEmail,
+			
+	--TechLeadUser.Id AS TechLeadUserId,
+	TechLeadUser.InstallId AS TechLeadUserInstallId,
+	TechLeadUser.Username AS TechLeadUsername,
+	TechLeadUser.FirstName AS TechLeadUserFirstName,
+	TechLeadUser.LastName AS TechLeadUserLastName,
+	TechLeadUser.Email AS TechLeadUserEmail,
+
+	--OtherUser.Id AS OtherUserId,
+	OtherUser.InstallId AS OtherUserInstallId,
+	OtherUser.Username AS OtherUsername,
+	OtherUser.FirstName AS OtherUserFirstName,
+	OtherUser.LastName AS OtherUserLastName,
+	OtherUser.Email AS OtherUserEmail,
+	STUFF
+	(
+		(SELECT  CAST(', ' + td.Designation as VARCHAR) AS Designation
+		FROM tblTaskDesignations td
+		WHERE td.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskDesignations,
+	STUFF
+	(
+		(SELECT  CAST(', ' + u.FristName + ' ' + u.LastName as VARCHAR) AS Name
+		FROM tblTaskAssignedUsers tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignedUsers,
+	STUFF
+	(
+		(SELECT  ',' + CAST(tu.UserId as VARCHAR) AS Id
+		FROM tblTaskAssignedUsers tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,1
+		,''
+	) AS TaskAssignedUserIds,
+	STUFF
+	(
+		(SELECT  CAST(', ' + CAST(tu.UserId AS VARCHAR) + ':' + u.FristName as VARCHAR) AS Name
+		FROM tblTaskAssignmentRequests tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignmentRequestUsers,
+	STUFF
+	(
+		(SELECT  ', ' + CAST(tu.UserId AS VARCHAR) AS UserId
+		FROM tblTaskAcceptance tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAcceptanceUsers,
+	STUFF
+	(
+		(SELECT  CAST(
+						', ' + CAST(tuf.[Id] AS VARCHAR) + 
+						'@' + tuf.[Attachment] + 
+						'@' + tuf.[AttachmentOriginal]  + 
+						'@' + CAST( tuf.[AttachedFileDate] AS VARCHAR(100)) + 
+						'@' + (
+								CASE 
+									WHEN ctuser.Id IS NULL THEN 'N.A.' 
+									ELSE ISNULL(ctuser.FirstName,'') + ' ' + ISNULL(ctuser.LastName ,'')
+								END
+							) as VARCHAR(max)) AS attachment
+		FROM dbo.tblTaskUserFiles tuf  
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id, iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = tuf.UserId
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = tuf.UserId
+			) AS ctuser
+		WHERE tuf.TaskId = Tasks.TaskId AND tuf.IsDeleted <> 1
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskUserFiles
+FROM          
+	tblTask AS Tasks
+		LEFT JOIN tblInstallUsers TaskCreator ON TaskCreator.Id = Tasks.CreatedBy
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.AdminUserId AND Tasks.IsAdminInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.AdminUserId AND Tasks.IsAdminInstallUser = 0
+		) AS AdminUser
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.TechLeadUserId AND Tasks.IsTechLeadInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.TechLeadUserId AND Tasks.IsTechLeadInstallUser = 0
+		) AS TechLeadUser
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 0
+		) AS OtherUser
+
+GO
+
+
+CREATE TABLE tblTaskComments
+(
+Id	BIGINT PRIMARY KEY IDENTITY(1,1),
+Comment	VARCHAR(MAX) NOT NULL,
+TaskId BIGINT NOT NULL REFERENCES tblTask,
+ParentCommentId	BIGINT NULL REFERENCES tblTaskComments,
+UserId	INT NOT NULL REFERENCES tblInstallUsers,
+DateCreated	DATETIME DEFAULT GETDATE()
+)
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to insert a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE InsertTaskComment
+	@Comment VARCHAR(MAX),
+	@TaskId BIGINT,
+	@ParentCommentId BIGINT,
+	@UserId INT
+AS
+BEGIN
+	
+	INSERT INTO [dbo].[tblTaskComments]
+           ([Comment]
+           ,[TaskId]
+           ,[ParentCommentId]
+           ,[UserId])
+     VALUES
+           (@Comment
+           ,@TaskId
+           ,@ParentCommentId
+           ,@UserId)
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to update a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE UpdateTaskComment
+	@Id	BIGINT,
+	@Comment VARCHAR(MAX),
+	@TaskId BIGINT,
+	@ParentCommentId BIGINT,
+	@UserId INT
+AS
+BEGIN
+	
+	 UPDATE [dbo].[tblTaskComments]
+	   SET [Comment] = @Comment
+		  ,[TaskId] = @TaskId
+		  ,[ParentCommentId] = @ParentCommentId
+		  ,[UserId] = @UserId
+	 WHERE Id = @Id
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to delete a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE DeleteTaskComment
+	@Id	BIGINT
+AS
+BEGIN
+	
+	-- do not delete a comment, if child comment exists.
+	IF NOT EXISTS(SELECT TOP 1 1 
+				FROM [tblTaskComments] 
+				WHERE ParentCommentId = @Id)
+	BEGIN
+		DELETE 
+		FROM [dbo].[tblTaskComments]
+		WHERE Id = @Id
+	END
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to get comments for task or sub task.
+-- =============================================
+CREATE PROCEDURE GetTaskComments
+	@TaskId	BIGINT,
+	@ParentCommentId BIGINT = NULL,
+	@StartIndex INT = NULL,
+	@PageSize	INT = NULL
+AS
+BEGIN
+	
+	IF @StartIndex IS NULL
+	BEGIN
+		SET @StartIndex = 0
+	END
+
+	DECLARE @EndIndex INT = NULL
+	IF @PageSize IS NOT NULL
+	BEGIN
+		SET @EndIndex = (@StartIndex + @PageSize) - 1
+	END
+
+	;WITH cte_TaskComments AS
+	(
+		SELECT 
+			tc.*,
+			iu.InstallId ,
+			iu.FristName AS Username, 
+			iu.FristName AS FirstName, 
+			iu.LastName, 
+			iu.Email,
+			ROW_NUMBER() OVER (ORDER BY tc.DateCreated DESC) AS RowNO
+		FROM [tblTaskComments] tc
+				INNER JOIN [tblInstallUsers] iu ON tc.UserId = iu.Id
+		WHERE tc.TaskId = @TaskId 
+			AND tc.ParentCommentId = ISNULL(@ParentCommentId, ParentCommentId)
+	)
+
+	SELECT *
+	FROM cte_TaskComments
+	WHERE RowNo >= @StartIndex AND RowNo <= ISNULL(@EndIndex, RowNo)
+
+END
+GO
+

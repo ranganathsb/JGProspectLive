@@ -191,7 +191,7 @@ namespace JG_Prospect.Sr_App
                     {
                         lblNewCounter.Visible = true;
                         lblNewCounter0.Visible = false;
-                        lblNewCounter.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdNewTask.VirtualItemCount + "</div>";
+                        lblNewCounter.InnerHtml = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdNewTask.VirtualItemCount + "</div>";
                     }
                 }
 
@@ -205,7 +205,7 @@ namespace JG_Prospect.Sr_App
                     {
                         lblFrozenCounter.Visible = true;
                         lblFrozenCounter0.Visible = false;
-                        lblFrozenCounter.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdFrozenTask.VirtualItemCount + "</div>";
+                        lblFrozenCounter.InnerHtml = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdFrozenTask.VirtualItemCount + "</div>";
                     }
                 }
 
@@ -301,18 +301,18 @@ namespace JG_Prospect.Sr_App
         protected void lnkNewCounter_Click(object sender, EventArgs e)
         {
             txtSearchFrozen.Text = "";
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
 
         protected void lnkFrozenCounter_Click(object sender, EventArgs e)
         {
             txtSearchFrozen.Text = "";
-            mpNewFrozenTask.Show();
+           // mpNewFrozenTask.Show();
         }
 
         protected void btnCalClose_Click(object sender, EventArgs e)
         {
-            mpNewFrozenTask.Hide();
+            //mpNewFrozenTask.Hide();
             //ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#lnkNNewCounter').click(function () {callpopupscript();   });", true);
 
         }
@@ -338,7 +338,7 @@ namespace JG_Prospect.Sr_App
             LoadFilterUsersByDesgination(designation, drpUserFrozen);
             BindFrozenTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
         protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -360,7 +360,7 @@ namespace JG_Prospect.Sr_App
         {
             BindFrozenTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
         //protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         //{
@@ -378,7 +378,7 @@ namespace JG_Prospect.Sr_App
         {
             BindNewTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
 
         private void LoadFilterUsersByDesgination(string designation, DropDownList drp)
@@ -1069,18 +1069,18 @@ namespace JG_Prospect.Sr_App
                     lblHoursDev.Text = "Dev: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "UserEstimatedHours"));
                 }
 
-                if (blAdminStatus)
-                {
-                    divAdmin.Visible = true;
-                }
-                if (blTechLeadStatus)
-                {
-                    divITLead.Visible = true;
-                }
-                if (blOtherUserStatus)
-                {
-                    divUser.Visible = true;
-                }
+                //if (blAdminStatus)
+                //{
+                //    divAdmin.Visible = true;
+                //}
+                //if (blTechLeadStatus)
+                //{
+                //    divITLead.Visible = true;
+                //}
+                //if (blOtherUserStatus)
+                //{
+                //    divUser.Visible = true;
+                //}
             }
         }
 
@@ -1211,7 +1211,7 @@ namespace JG_Prospect.Sr_App
             grdNewTask.PageIndex = 0;
             BindNewTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
 
         protected void drpPageSizeFrozen_SelectedIndexChanged(object sender, EventArgs e)
@@ -1220,14 +1220,14 @@ namespace JG_Prospect.Sr_App
             grdFrozenTask.PageIndex = 0;
             BindFrozenTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
 
         protected void btnSearchFrozen_Click(object sender, EventArgs e)
         {
             BindFrozenTasks();
             upAlerts.Update();
-            mpNewFrozenTask.Show();
+            //mpNewFrozenTask.Show();
         }
 
 
