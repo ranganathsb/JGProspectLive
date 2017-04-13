@@ -226,14 +226,14 @@ namespace JG_Prospect.DAL
 
                     int result = database.ExecuteNonQuery(command);
 
-                    if (result > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    //if (result > 0)
+                    //{
+                    return true;
+                    //}
+                    //else
+                    //{
+                    //    return false;
+                    //}
                 }
             }
 

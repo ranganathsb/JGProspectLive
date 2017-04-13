@@ -303,7 +303,7 @@ namespace JG_Prospect.Sr_App.Controls
                 // FillSubtaskAttachments(Convert.ToInt32(hdTaskId.Value));
 
                 #region '--Task Details - Html [Title, Url, Description]--'
-                
+
                 if (hdTaskLevel.Value == "3")
                 {
                     btnshowdivsub1.Visible = false;
@@ -356,7 +356,7 @@ namespace JG_Prospect.Sr_App.Controls
                     strhtml = strhtml + (e.Item.DataItem as DataRowView)["Description"].ToString() + "</span>";
                     ltrlDescription.Text = Server.HtmlDecode(strhtml);  // DataBinder.Eval(e.Row.DataItem, "Title").ToString();
                 }
-                
+
                 #endregion
 
                 btnshowdivsub1.CommandArgument = vFirstLevelId.ToString();
@@ -391,7 +391,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
 
                 #region '--Fill Asigned, Status, Priority Dropdowns--'
-                
+
                 if (this.IsAdminMode)
                 {
                     DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
@@ -501,7 +501,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                 //}
                 //------ attachments -----
-                
+
                 #region '--Task Attachments--'
 
                 HtmlImage defaultimgIcon = e.Item.FindControl("defaultimgIcon") as HtmlImage;
@@ -560,7 +560,7 @@ namespace JG_Prospect.Sr_App.Controls
                             defaultimgIcon.Src = Page.ResolveUrl(string.Concat("~/img/", CommonFunction.ReplaceEncodeWhiteSpace("JG-Logo-white.gif")));
                         }
                     }
-                } 
+                }
 
                 #endregion
                 //upnlAttachments.Update();
@@ -578,7 +578,7 @@ namespace JG_Prospect.Sr_App.Controls
                 //}
 
                 #region '--Task Priority & Status--'
-                
+
                 JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Item.DataItem, "Status"));
                 JGConstant.TaskPriority? objTaskPriority = null;
 
@@ -601,7 +601,7 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.Enabled = false;
                         ddlStatus.Enabled = false;
                         break;
-                } 
+                }
 
                 #endregion
 
@@ -614,7 +614,7 @@ namespace JG_Prospect.Sr_App.Controls
 
 
                 #region '--Task Freezing--'
-                
+
                 CheckBox chkAdmin = e.Item.FindControl("chkAdmin") as CheckBox;
                 CheckBox chkITLead = e.Item.FindControl("chkITLead") as CheckBox;
                 CheckBox chkUser = e.Item.FindControl("chkUser") as CheckBox;
@@ -674,7 +674,7 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     HtmlGenericControl divUser = (HtmlGenericControl)e.Item.FindControl("divUser");
                     divUser.Visible = true;
-                } 
+                }
 
                 #endregion
 
@@ -2025,9 +2025,9 @@ namespace JG_Prospect.Sr_App.Controls
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
         {
             string strScript = string.Empty;
-            if (!string.IsNullOrEmpty(hdTaskId.Value)) 
+            if (!string.IsNullOrEmpty(hdTaskId.Value))
             {
-                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\""+hdTaskId.Value+"\"]')); });";
+                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\"" + hdTaskId.Value + "\"]')); });";
             }
             else
             {
@@ -2035,9 +2035,9 @@ namespace JG_Prospect.Sr_App.Controls
             }
 
             ScriptManager.RegisterStartupScript(
-                                                    this, 
-                                                    this.GetType(), 
-                                                    "ScrollToSection", 
+                                                    this,
+                                                    this.GetType(),
+                                                    "ScrollToSection",
                                                     strScript,
                                                     true
                                                 );
@@ -2294,8 +2294,9 @@ namespace JG_Prospect.Sr_App.Controls
 
             foreach (string user in users)
             {
-
-                ListItem item = taskUsers.Items.FindByText(user.Trim());
+                //ListItem item = taskUsers.Items.FindByText(user.Trim());
+                
+                ListItem item = FindIndexOfItem(taskUsers, user.Trim());
 
                 if (item != null)
                 {
@@ -2313,6 +2314,20 @@ namespace JG_Prospect.Sr_App.Controls
                 //taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
             }
 
+        }
+
+        private ListItem FindIndexOfItem(ListBox taskUsers, string user)
+        {
+            ListItem item = null;
+            for (int i = 0; i < taskUsers.Items.Count; i++)
+            {
+                if (taskUsers.Items[i].Text.Contains(user))
+                {
+                    item = taskUsers.Items[i];
+                    break;
+                }
+            }
+            return item;
         }
 
         public void ShowAddNewSubTaskSection(bool IsOnPageLoad)

@@ -1208,9 +1208,13 @@
             if (intUserId > 0) {
                 arrDesignationUsers.push(intUserId);
 
-                if ($sender.val() == intUserId.toString()) {
+                if ($.inArray(intUserId.toString(), $sender.val()) != -1)
+                {
                     arrAssignedUsers.push(intUserId);
                 }
+                //if ($sender.val() == intUserId.toString()) {
+                //    arrAssignedUsers.push(intUserId);
+                //}
             }
         });
 
