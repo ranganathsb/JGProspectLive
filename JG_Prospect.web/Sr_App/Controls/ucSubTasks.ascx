@@ -933,7 +933,7 @@
             </div>
             <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-parent-commentid="{Id}"
                 data-startindex="0" data-pagesize="0"
-                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);SubTaskCommentScript.AddTaskComment(this);">Add Reply</a>&nbsp;
+                onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Add Reply</a>&nbsp;
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" 
                 data-startindex="0" data-pagesize="0"
                 onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Replies</a>
@@ -1027,7 +1027,9 @@
                     $SubTaskCommentTemplate.append($SubTaskCommentRowTemplate);
                 }
                 $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').html('');
-                $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="'+strTaskId+'"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
+                $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
+
+                $SubTaskCommentTemplate.find('a[data-id="hypViewReplies"]').click();
             }
         }
     };
