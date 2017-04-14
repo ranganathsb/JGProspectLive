@@ -775,8 +775,9 @@ namespace JG_Prospect.Sr_App
                 Label lblHoursDev = e.Row.FindControl("lblHoursDevInPro") as Label;
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdInPro = e.Row.FindControl("lblParentTaskIdInPro") as HiddenField;
+                HiddenField hdMainParentId = e.Row.FindControl("hdMainParentId") as HiddenField;
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
+                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value;
 
                 if (lblDueDate.Text != "")
                 {
@@ -923,11 +924,12 @@ namespace JG_Prospect.Sr_App
                 Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusClosed = e.Row.FindControl("drpStatusClosed") as DropDownList;
                 HiddenField lblTaskIdClosed = e.Row.FindControl("lblTaskIdClosed") as HiddenField;
+                HiddenField hdnMainParentId = e.Row.FindControl("hdnMainParentId") as HiddenField;
 
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdClosed = e.Row.FindControl("lblParentTaskIdClosed") as HiddenField;
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdClosed.Value + "&hstid=" + lblTaskIdClosed.Value;
+                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value;
 
                 if (lblDueDate.Text != "")
                 {

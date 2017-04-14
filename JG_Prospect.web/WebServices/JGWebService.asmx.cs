@@ -660,6 +660,7 @@ namespace JG_Prospect.WebServices
             objTask.InstallId = InstallID.Trim();
             objTask.ParentTaskId = ParentTaskId;
             objTask.Attachment = Attachments;
+            int maintaskid = Convert.ToInt32(Context.Request.QueryString["TaskId"]);
 
             if (!String.IsNullOrEmpty(TaskType))
             {
@@ -669,7 +670,7 @@ namespace JG_Prospect.WebServices
             int TaskLevel = Convert.ToInt32(TaskLvl);
 
             // save task master details to database.
-            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
+            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);
 
             // If Task is saved successfully and its level 1 & 2 task then proceed further to save its related data like attachments and designations.
             if (TaskId > 0 && !String.IsNullOrEmpty(TaskDesignations) && !String.IsNullOrEmpty(TaskDesignations))
