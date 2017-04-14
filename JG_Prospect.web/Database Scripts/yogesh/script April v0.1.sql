@@ -998,3 +998,63 @@ GO
 -- Live publish 04132016
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to get comments for task or sub task.
+-- =============================================
+-- GetTaskComments 530, NULL, 0, 1
+ALTER PROCEDURE GetTaskComments
+	@TaskId	BIGINT,
+	@ParentCommentId BIGINT = NULL,
+	@StartIndex INT = NULL,
+	@PageSize	INT = NULL
+AS
+BEGIN
+	
+	IF @StartIndex IS NULL
+	BEGIN
+		SET @StartIndex = 0
+	END
+
+	DECLARE @EndIndex INT = NULL
+	IF @PageSize IS NOT NULL
+	BEGIN
+		SET @EndIndex = (@StartIndex + @PageSize)
+	END
+
+	;WITH cte_TaskComments AS
+	(
+		SELECT 
+			tc.*,
+			iu.InstallId ,
+			iu.FristName AS Username, 
+			iu.FristName AS FirstName, 
+			iu.LastName, 
+			iu.Email,
+			ROW_NUMBER() OVER (ORDER BY tc.DateCreated DESC) AS RowNO,
+			(SELECT COUNT(Id) FROM [tblTaskComments] WHERE ParentCommentId = tc.Id) AS TotalChildRecords
+		FROM [tblTaskComments] tc
+				INNER JOIN [tblInstallUsers] iu ON tc.UserId = iu.Id
+		WHERE tc.TaskId = @TaskId 
+			AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+	)
+
+	-- get records
+	SELECT *
+	FROM cte_TaskComments
+	WHERE RowNo >= @StartIndex AND RowNo <= ISNULL(@EndIndex, RowNo)
+
+	-- get record count
+	SELECT COUNT(Id) AS TotalRecords
+	FROM [tblTaskComments] tc
+	WHERE tc.TaskId = @TaskId 
+		AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+END
+GO
+

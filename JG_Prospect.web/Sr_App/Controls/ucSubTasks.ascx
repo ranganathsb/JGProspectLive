@@ -547,11 +547,11 @@
                                                                          >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
                                                                     <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>' runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
                                                                         Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
-                                                                    &nbsp;<a href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">Comment</a>
-                                                                    <a href="javascript:void(0);" data-id="hypViewComments" data-taskid='<%# Eval("TaskId")%>'
-                                                                        data-parent-commentid="" data-startindex="0" data-pagesize="2"
+                                                                    &nbsp;
+                                                                    <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
+                                                                        data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
                                                                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View More Comments</a>
-                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="">
+                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc">
                                                                     </div>
                                                                 </td>
                                                                 <td width="15%">
@@ -897,25 +897,28 @@
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
 <script type="text/template" class="hide" data-id="divSubTaskCommentTemplate">
-    <table>
+    <table width="100%">
         <tbody data-parent-commentid="{ParentCommentId}">
         </tbody>
         <tfoot data-parent-commentid="{ParentCommentId}">
             <tr>
                 <td>
+                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid="{TaskId}"
-                        data-parent-commentid="" data-startindex="0" data-pagesize="2"
-                        onclick="javascript:SubTaskCommentScript.Initialize();">View More Comments</a>
+                        data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
+                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} Comments</a>
                 </td>
             </tr>
-            <tr>
+            <tr data-id="trAddComment" style="display: none;">
                 <td>
                     <div>
-                        <textarea data-id="txtComment"></textarea>
+                        <textarea data-id="txtComment" class="textbox" style="width: 90%;height:50px;"></textarea>
                     </div>
-                    <a href="javascript:void(0);" data-id="hypSaveComment" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
-                        onclick="javascript:SubTaskCommentScript.InsertTaskComment(this);">Save</a>
-                    <a href="javascript:void(0);" data-id="hypCancelComment" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}">Cancel</a>
+                    <a href="javascript:void(0);" data-id="hypSaveComment" data-comment-id="0" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                        onclick="javascript:SubTaskCommentScript.SaveTaskComment(this);">Save</a>
+                    <a href="javascript:void(0);" data-id="hypCancelComment" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                        onclick="javascript:SubTaskCommentScript.CancelTaskComment(this);">Cancel</a>
                 </td>
             </tr>
         </tfoot>
@@ -925,12 +928,16 @@
 <script type="text/template" class="hide" data-id="divSubTaskCommentRowTemplate">
     <tr data-commentid="{Id}">
         <td>
-            <div>
+            <div style="padding:3px; background-color: white; color: black;">
                 {Comment}
             </div>
-            <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-commentid="{Id}">Add Reply</a>
-            <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-commentid="{Id}">View {CommentCount} Replies</a>
-            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}">
+            <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-parent-commentid="{Id}"
+                data-startindex="0" data-pagesize="0"
+                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);SubTaskCommentScript.AddTaskComment(this);">Add Reply</a>&nbsp;
+            <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" 
+                data-startindex="0" data-pagesize="0"
+                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Replies</a>
+            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="taskdesc">
             </div>
         </td>
     </tr>
@@ -940,11 +947,8 @@
     var SubTaskCommentScript = {};
 
     SubTaskCommentScript.Initialize = function () {
-        //$('a[data-id="hypViewComments"]').each(function () {
-        //    $(this).click(function () { SubTaskCommentScript.GetTaskComments(this); });
-        //    $(this).click();
-        //});
-    }
+        $('a[data-id="hypViewInitialComments"]').click();
+    };
 
     SubTaskCommentScript.GetTaskComments = function (sender) {
         
@@ -955,20 +959,22 @@
         var strStartIndex = viewlink.attr('data-startindex');
         var strPageSize = viewlink.attr('data-pagesize');
 
+        if (strPageSize == "0") {
+            strPageSize = null;
+        }
+
         var postData = {
             "intTaskId": strTaskId,
             "intParentCommentId": strParentCommentId,
             "intStartIndex": strStartIndex,
             "intPageSize": strPageSize
         };
-        console.log(postData);
-
+        
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
             console.log(data);
-            if (data.d.Success && data.d.TaskComments) {
-                console.log(data.d.TaskComments);
+            if (data.d.Success) {
                 var viewlink = $(sender);
                 var strTaskId = viewlink.attr('data-taskid');
                 var strParentCommentId = viewlink.attr('data-parent-commentid');
@@ -978,55 +984,108 @@
                 var strSubTaskCommentTemplate = $('script[data-id="divSubTaskCommentTemplate"]').html();
                 strSubTaskCommentTemplate = strSubTaskCommentTemplate.replace(/{ParentCommentId}/gi, strParentCommentId);
                 strSubTaskCommentTemplate = strSubTaskCommentTemplate.replace(/{TaskId}/gi, strTaskId);
+                strSubTaskCommentTemplate = strSubTaskCommentTemplate.replace(/{RemainingRecords}/gi, data.d.RemainingRecords.toString());
+                strSubTaskCommentTemplate = strSubTaskCommentTemplate.replace(/{TotalRecords}/gi, data.d.TotalRecords.toString());
 
                 var $SubTaskCommentTemplate = $(strSubTaskCommentTemplate);
 
+                if(data.d.RemainingRecords <= 0) {
+                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').hide();
+                }
+                else {
+                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').show();
+                }
+
                 for (var i = 0; i < data.d.TaskComments.length; i++) {
 
-                    var objTaskComment = data.d.TaskComments[0];
+                    var objTaskComment = data.d.TaskComments[i];
 
                     var strSubTaskCommentRowTemplate = $('script[data-id="divSubTaskCommentRowTemplate"]').html();
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{Id}/gi, objTaskComment.Id.toString());
-                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{Comment}/gi, objTaskComment.Comment.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{Comment}/gi, objTaskComment.Comment);
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{ParentCommentId}/gi, objTaskComment.ParentCommentId.toString());
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TaskId}/gi, objTaskComment.TaskId.toString());
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{DateCreated}/gi, objTaskComment.DateCreated.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TotalChildRecords}/gi, objTaskComment.TotalChildRecords.toString());
 
-                    $SubTaskCommentTemplate.append($(strSubTaskCommentRowTemplate));
+                    $SubTaskCommentRowTemplate = $(strSubTaskCommentRowTemplate);
+                    
+                    if (objTaskComment.ParentCommentId != 0) {
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').hide();
+                    }
+                    else {
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
+                    }
+
+                    if (objTaskComment.TotalChildRecords == 0) {
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').hide();
+                    }
+                    else {
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').show();
+                    }
+
+                    $SubTaskCommentTemplate.append($SubTaskCommentRowTemplate);
                 }
-
-                $('div[data-id="divSubTaskCommentPlaceHolder"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
+                $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').html('');
+                $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="'+strTaskId+'"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
             }
         }
     };
 
-    SubTaskCommentScript.InsertTaskComment = function (sender) {
+    SubTaskCommentScript.SaveTaskComment = function (sender) {
         var $sender = $(sender);
+        var strId = $sender.attr('data-comment-id');
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
-        var $tfoot = $('tfoot[data-parent-commentid="'+strParentCommentId+'"]');
+        var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
         var strComment = $tfoot.find('textarea[data-id="txtComment"]').val();
 
         var postData = {
+            strId: strId,
             strComment: strComment,
             strParentCommentId: strParentCommentId,
             strTaskId: strTaskId
         };
 
-        CallJGWebService('InsertTaskComment', postData, function (data) { OnInsertTaskCommentSuccess(data, sender) });
+        CallJGWebService('SaveTaskComment', postData, function (data) { OnSaveTaskCommentSuccess(data, sender) });
 
-        function OnInsertTaskCommentSuccess(data, sender) {
+        function OnSaveTaskCommentSuccess(data, sender) {
             if (data.d.Success) {
                 console.log(data.d);
 
                 var $sender = $(sender);
                 var strTaskId = $sender.attr('data-taskid');
                 var strParentCommentId = $sender.attr('data-parent-commentid');
-                var $tfoot = $('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+                var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+                var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
 
                 $tfoot.find('a[data-id="hypViewComments"]').click();
+                $tfoot.find('tr[data-id="trAddComment"]').hide();
             }
         }
+    };
+
+    SubTaskCommentScript.CancelTaskComment = function (sender) {
+        var $sender = $(sender);
+        var strTaskId = $sender.attr('data-taskid');
+        var strParentCommentId = $sender.attr('data-parent-commentid');
+        var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+
+        $tfoot.find('textarea[data-id="txtComment"]').val('');
+        $tfoot.find('tr[data-id="trAddComment"]').hide();
+    };
+
+    SubTaskCommentScript.AddTaskComment = function (sender) {
+        var $sender = $(sender);
+        var strTaskId = $sender.attr('data-taskid');
+        var strParentCommentId = $sender.attr('data-parent-commentid');
+        var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+
+        $tfoot.find('textarea[data-id="txtComment"]').val('');
+        $tfoot.find('tr[data-id="trAddComment"]').show();
     };
 </script>
 

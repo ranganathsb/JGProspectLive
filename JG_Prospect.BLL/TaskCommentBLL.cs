@@ -19,9 +19,14 @@ namespace JG_Prospect.BLL
             set { ; }
         }
 
-        public List<TaskComment> GetTaskComments(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        public List<TaskComment> GetTaskCommentsList(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
         {
-            return TaskCommentDAL.Instance.GetTaskComments(intTaskId, intParentCommentId, intStartIndex, intPageSize);
+            return TaskCommentDAL.Instance.GetTaskCommentsList(intTaskId, intParentCommentId, intStartIndex, intPageSize);
+        }
+
+        public DataSet GetTaskCommentsDataSet(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        {
+            return TaskCommentDAL.Instance.GetTaskCommentsDataSet(intTaskId, intParentCommentId, intStartIndex, intPageSize);
         }
 
         public bool InsertTaskComment(TaskComment objTaskComment)

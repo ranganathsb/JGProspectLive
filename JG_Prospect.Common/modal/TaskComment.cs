@@ -15,5 +15,7 @@ namespace JG_Prospect.Common.modal
         public long? ParentCommentId { get; set; }
         public int UserId { get; set; }
         public DateTime DateCreated { get; set; }
+
+        public int TotalChildRecords { get; set; }
     }
 }
