@@ -526,7 +526,7 @@
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                         <Columns>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Due Date">
+                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Assigned To">
                                 <ItemTemplate>
                                     <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                     <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
@@ -553,7 +553,7 @@
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="20%" ItemStyle-Width="20%" HeaderText="Hours">
+                                HeaderStyle-Width="20%" ItemStyle-Width="20%" HeaderText="Approval">
                                 <ItemTemplate>
                                     <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
                                     <br />
@@ -642,14 +642,15 @@
                     <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px"
-                            ItemStyle-Width="100px" HeaderText="Due Date">
+                            ItemStyle-Width="100px" HeaderText="Assigned To">
                             <ItemTemplate>
+                                <asp:HiddenField ID="hdMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
                                 <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                 <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                 <asp:Label ID="lblDueDate" runat="server" Text='<%# Eval("DueDate")%>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Task ID#">
+                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                             <ItemTemplate>
                                 <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
                             </ItemTemplate>
@@ -660,16 +661,16 @@
                                     Text='<%# Eval("Title")%>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="150px" ItemStyle-Width="150px" HeaderText="Parent Task">
+                            <ItemTemplate>
+                             <%#Eval("Assigneduser") %>  
+                            </ItemTemplate>
+                        </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120px" ItemStyle-Width="120px" HeaderText="Status">
                             <ItemTemplate>
                                 <asp:HiddenField ID="lblStatus" runat="server" Value='<%# Eval("Status")%>'></asp:HiddenField>
                                 <asp:DropDownList ID="drpStatusInPro" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpStatusInPro_SelectedIndexChanged">
                                 </asp:DropDownList>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="150px" ItemStyle-Width="150px" HeaderText="Assigned">
-                            <ItemTemplate>
-                             <%#Eval("Assigneduser") %>  
                             </ItemTemplate>
                         </asp:TemplateField>
 
@@ -688,9 +689,7 @@
 
                 </asp:GridView>
             </ContentTemplate>
-            <Triggers>
-                <asp:AsyncPostBackTrigger ControlID="grdTaskPending" />
-            </Triggers>
+           
         </asp:UpdatePanel>
         <h2></h2>
         <asp:UpdatePanel ID="upClosedTask" runat="server">
@@ -755,15 +754,16 @@
                     <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                     <Columns>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                            HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Due Date">
+                            HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Assigned To">
                             <ItemTemplate>
+                                <asp:HiddenField ID="hdnMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
                                 <asp:HiddenField ID="lblTaskIdClosed" runat="server" Value='<%# Eval("TaskId")%>' />
                                 <asp:HiddenField ID="lblParentTaskIdClosed" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                 <asp:Label ID="lblDueDate" runat="server" Text='<%# Eval("DueDate")%>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                            HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Task ID#">
+                            HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                             <ItemTemplate>
                                 <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
                             </ItemTemplate>

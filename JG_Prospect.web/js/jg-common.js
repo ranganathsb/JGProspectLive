@@ -157,6 +157,8 @@ function SetCKEditorForSubTask(Id) {
 
                     var jsonarray = JSON.parse(response[0]);
 
+                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
+
                     if (jsonarray && jsonarray.uploaded != "1") {
                         // Error occurred during upload.                
                         event.cancel();

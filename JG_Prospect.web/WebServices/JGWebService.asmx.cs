@@ -23,6 +23,103 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        #region '--TaskComments--'
+
+        [WebMethod]
+        public object GetTaskComments(long intTaskId, long? intParentCommentId, int? intStartIndex, int? intPageSize)
+        {
+            DataSet dsTaskComments = TaskCommentBLL.Instance.GetTaskCommentsDataSet(intTaskId, intParentCommentId, intStartIndex, intPageSize);
+
+            bool blSuccess = false;
+            int intTotalRecords = 0, intRemainingRecords = 0;
+            List<TaskComment> lstTaskComments = new List<TaskComment>();
+
+            if (dsTaskComments != null && dsTaskComments.Tables.Count == 2)
+            {
+                blSuccess = true;
+
+                intTotalRecords = Convert.ToInt32(dsTaskComments.Tables[1].Rows[0]["TotalRecords"]);
+
+                foreach (DataRow drTaskComment in dsTaskComments.Tables[0].Rows)
+                {
+                    TaskComment objTaskComment = new TaskComment();
+                    objTaskComment.Id = Convert.ToInt64(drTaskComment["Id"]);
+                    objTaskComment.Comment = Convert.ToString(drTaskComment["Comment"]);
+                    if (!string.IsNullOrEmpty(Convert.ToString(drTaskComment["ParentCommentId"])))
+                    {
+                        objTaskComment.ParentCommentId = Convert.ToInt64(drTaskComment["ParentCommentId"]);
+                    }
+                    else
+                    {
+                        objTaskComment.ParentCommentId = 0;
+                    }
+                    objTaskComment.TaskId = Convert.ToInt64(drTaskComment["TaskId"]);
+                    objTaskComment.UserId = Convert.ToInt32(drTaskComment["UserId"]);
+                    objTaskComment.DateCreated = Convert.ToDateTime(drTaskComment["DateCreated"]);
+
+                    objTaskComment.TotalChildRecords = Convert.ToInt32(drTaskComment["TotalChildRecords"]);
+
+                    lstTaskComments.Add(objTaskComment);
+                }
+
+                if (intPageSize.HasValue)
+                {
+                    intRemainingRecords = intTotalRecords - intPageSize.Value;
+                }
+            }
+
+            return new
+            {
+                Success = blSuccess,
+                TotalRecords = intTotalRecords,
+                RemainingRecords = intRemainingRecords,
+                TaskComments = lstTaskComments
+            };
+        }
+
+        [WebMethod(EnableSession = true)]
+        public object SaveTaskComment(string strId, string strComment, string strParentCommentId, string strTaskId)
+        {
+            TaskComment objTaskComment = new TaskComment();
+            objTaskComment.Id = 0;
+            objTaskComment.Comment = strComment;
+            if (string.IsNullOrEmpty(strParentCommentId) || strParentCommentId == "0")
+            {
+                objTaskComment.ParentCommentId = null;
+            }
+            else
+            {
+                objTaskComment.ParentCommentId = Convert.ToInt64(strParentCommentId);
+            }
+            objTaskComment.TaskId = Convert.ToInt64(strTaskId);
+            objTaskComment.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+
+            bool blSuccess = false;
+
+            if (!string.IsNullOrEmpty(strId))
+            {
+                objTaskComment.Id = Convert.ToInt64(strId);
+            }
+
+            if (objTaskComment.Id > 0)
+            {
+                blSuccess = TaskCommentBLL.Instance.UpdateTaskComment(objTaskComment);
+            }
+            else
+            {
+                blSuccess = TaskCommentBLL.Instance.InsertTaskComment(objTaskComment);
+            }
+
+            var result = new
+            {
+                Success = blSuccess
+            };
+
+            return result;
+        }
+
+        #endregion
+
         #region '--TaskApproval--'
 
         [WebMethod(EnableSession = true)]
@@ -660,6 +757,7 @@ namespace JG_Prospect.WebServices
             objTask.InstallId = InstallID.Trim();
             objTask.ParentTaskId = ParentTaskId;
             objTask.Attachment = Attachments;
+            int maintaskid = Convert.ToInt32(Context.Request.QueryString["TaskId"]);
 
             if (!String.IsNullOrEmpty(TaskType))
             {
@@ -669,7 +767,7 @@ namespace JG_Prospect.WebServices
             int TaskLevel = Convert.ToInt32(TaskLvl);
 
             // save task master details to database.
-            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
+            long TaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);
 
             // If Task is saved successfully and its level 1 & 2 task then proceed further to save its related data like attachments and designations.
             if (TaskId > 0 && !String.IsNullOrEmpty(TaskDesignations) && !String.IsNullOrEmpty(TaskDesignations))

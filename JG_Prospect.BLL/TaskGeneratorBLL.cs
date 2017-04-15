@@ -27,9 +27,9 @@ namespace JG_Prospect.BLL
             get { return m_TaskGeneratorBLL; }
             set { ; }
         }
-        public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel)
+        public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
-            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel);
+            return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);
         }
 
         public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)

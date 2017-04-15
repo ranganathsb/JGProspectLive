@@ -2295,7 +2295,7 @@ namespace JG_Prospect.Sr_App.Controls
             foreach (string user in users)
             {
                 //ListItem item = taskUsers.Items.FindByText(user.Trim());
-                
+
                 ListItem item = FindIndexOfItem(taskUsers, user.Trim());
 
                 if (item != null)
@@ -2738,8 +2738,9 @@ namespace JG_Prospect.Sr_App.Controls
                 foreach (Task objSubTask in this.lstSubTasks)
                 {
                     objSubTask.ParentTaskId = intTaskId;
+                    int maintaskid = Convert.ToInt32(Request.QueryString["TaskId"]);
                     // save task master details to database.
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask, 0).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask, 0, maintaskid).ToString();
 
                     UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment, JGConstant.TaskFileDestination.SubTask);
                 }
@@ -2813,14 +2814,15 @@ namespace JG_Prospect.Sr_App.Controls
             //}
             //else
             {
+                int maintaskid = Convert.ToInt32(Request.QueryString["TaskId"]);
                 // save task master details to database.
                 if (hdnSubTaskId.Value == "0")
                 {
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0).ToString();
+                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0, maintaskid).ToString();
                 }
                 else
                 {
-                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0);
+                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask, 0, maintaskid);
                 }
 
                 // save assgined designation.
