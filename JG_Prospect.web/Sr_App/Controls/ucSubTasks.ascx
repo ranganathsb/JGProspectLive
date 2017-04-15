@@ -50,6 +50,70 @@
         opacity: 0.7;
         z-index: 100 !important;
     }
+
+    /*poup css starts*/
+    .Descoverlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        transition: opacity 500ms;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+        .Descoverlay:target {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    .Descpopup {
+        margin: 70px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 5px;
+        width: 30%;
+        position: relative;
+        transition: all 5s ease-in-out;
+    }
+
+        .Descpopup h2 {
+            margin-top: 0;
+            color: #333;
+            font-family: Tahoma, Arial, sans-serif;
+        }
+
+        .Descpopup .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            transition: all 200ms;
+            font-size: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+        }
+
+            .Descpopup .close:hover {
+                color: #06D85F;
+            }
+
+        .Descpopup .content {
+            max-height: 30%;
+            overflow: auto;
+        }
+
+    @media screen and (max-width: 700px) {
+        .Descpopup {
+            width: 70%;
+        }
+    }
+    /*poup css ends*/
+
+
+
     /*.modalPopup { 
             background-color:#FFFFFF; 
             border-width:1px; 
@@ -383,7 +447,7 @@
                                                     Eval("AdminUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
@@ -419,7 +483,7 @@
                                                         Eval("TechLeadUserLastName").ToString()
                                                     )
                                     %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
@@ -454,7 +518,7 @@
                                                     Eval("OtherUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                                                </asp:HyperLink><br />
                                                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                                                             </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
@@ -465,11 +529,11 @@
                                                                         </div>
                                                                         <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value='<%# Eval("TaskApprovalId") %>' ClientIDMode="AutoID" />
                                                                     </div>
-                                                                    <div style="display:none;">
+                                                                    <div style="display: none;">
                                                                         <asp:TextBox ID="txtEstimatedHours" runat="server" data-id="txtEstimatedHours" CssClass="textbox" Width="80"
                                                                             placeholder="Estimate" Text='<%# Eval("TaskApprovalEstimatedHours") %>' ClientIDMode="AutoID" />
                                                                         <br />
-                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password" 
+                                                                        <asp:TextBox ID="txtPasswordToFreezeSubTask" runat="server" TextMode="Password"
                                                                             data-id="txtPasswordToFreezeSubTask" data-hours-id="txtEstimatedHours" data-taskid='<%# Eval("TaskId")%>'
                                                                             AutoPostBack="false" CssClass="textbox" Width="80" onchange="javascript:FreezeTask(this)" ClientIDMode="AutoID" /><%--OnTextChanged="repSubTasksNested_txtPasswordToFreezeSubTask_TextChanged"--%>
                                                                     </div>
@@ -834,8 +898,14 @@
 
 
 </div>
-
-
+<div id="descimgpopup1" class="Descoverlay">
+    <div class="Descpopup">
+        <a class="close" href="#" id="closebtn">&times;</a>
+        <div class="content">
+            <img src="" id="imgDesc" />
+        </div>
+    </div>
+</div>
 <%--Popup Ends--%>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
@@ -897,12 +967,28 @@
     var isadded = false;
 
     function pageLoad(sender, args) {
+        $('#closebtn').bind("click", function () {
+            $('#descimgpopup1').css({ 'visibility': "hidden" });
+            $('#descimgpopup1').css({ 'opacity': "0" });
+            return false;
+        });
+        $(".DescEdit img").each(function (index) {
+            $(this).unbind('click').click(function () {
+            });
+            $(this).bind("click", function () {
+                var imgPath = $(this).attr("src");
+                $('#imgDesc').attr("src", imgPath);
+                $('#descimgpopup1').css({ 'visibility': "visible" });
+                $('#descimgpopup1').css({ 'opacity': "1" });
+                return false;
+            });
+        });
 
         //For Title
         $(".TitleEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-    {
+               {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -928,7 +1014,7 @@
         $(".UrlEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-    {
+               {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -957,7 +1043,7 @@
         $(".DescEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-    {
+               {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -987,7 +1073,7 @@
         $(".showsubtaskDIV").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-    {
+               {
                %>
             $(this).unbind('click').bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
@@ -1091,12 +1177,12 @@
         var strPasswordId = $sender.attr('data-id');
 
         var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
-        
+
         var postData = {
-            strEstimatedHours: $tr.find('input[data-id="'+strHoursId+'"]').val(),
+            strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
             strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
             strTaskId: strTaskId,
-            strPassword: $tr.find('input[data-id="'+strPasswordId+'"]').val()
+            strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
         };
 
         CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
@@ -1206,8 +1292,7 @@
             if (intUserId > 0) {
                 arrDesignationUsers.push(intUserId);
 
-                if ($.inArray(intUserId.toString(), $sender.val()) != -1)
-                {
+                if ($.inArray(intUserId.toString(), $sender.val()) != -1) {
                     arrAssignedUsers.push(intUserId);
                 }
                 //if ($sender.val() == intUserId.toString()) {
@@ -1379,81 +1464,81 @@
                             }
                             // remove loading spinner image.                                
                             $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
-                           }
-                       });
-                   },
+                        }
+                    });
+                },
                 minLength: 2,
                 select: function (event, ui) {
                     $("#<%=btnSearch.ClientID%>").val(ui.item.value);
-                       //TriggerSearch();
-                       $('#<%=btnSearch.ClientID%>').click();
-                   }
+                    //TriggerSearch();
+                    $('#<%=btnSearch.ClientID%>').click();
+                }
             });
-           }
+        }
 
-           function SetUserAutoSuggestionUI() {
+        function SetUserAutoSuggestionUI() {
 
-               $.widget("custom.catcomplete", $.ui.autocomplete, {
-                   _create: function () {
-                       this._super();
-                       this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                   },
-                   _renderMenu: function (ul, items) {
-                       var that = this,
-                         currentCategory = "";
-                       $.each(items, function (index, item) {
-                           var li;
-                           if (item.Category != currentCategory) {
-                               ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                               currentCategory = item.Category;
-                           }
-                           li = that._renderItemData(ul, item);
-                           if (item.Category) {
-                               li.attr("aria-label", item.Category + " : " + item.label);
-                           }
-                       });
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
 
-                   }
-               });
-           }
+                }
+            });
+        }
 
-           function SetApprovalUI() {
+        function SetApprovalUI() {
 
-               $('.approvalBoxes').each(function () {
-                   var approvaldialog = $($(this).next('.approvepopup'));
-                   approvaldialog.dialog({
-                       width: 400,
-                       show: 'slide',
-                       hide: 'slide',
-                       autoOpen: false
-                   });
+            $('.approvalBoxes').each(function () {
+                var approvaldialog = $($(this).next('.approvepopup'));
+                approvaldialog.dialog({
+                    width: 400,
+                    show: 'slide',
+                    hide: 'slide',
+                    autoOpen: false
+                });
 
-                   $(this).click(function () {
-                       approvaldialog.dialog('open');
-                   });
-               });
-           }
+                $(this).click(function () {
+                    approvaldialog.dialog('open');
+                });
+            });
+        }
 
-           function ucSubTasks_Initialize() {
+        function ucSubTasks_Initialize() {
 
-               ChosenDropDown();
+            ChosenDropDown();
 
-               ApplySubtaskLinkContextMenu();
-               //ApplyImageGallery();
+            ApplySubtaskLinkContextMenu();
+            //ApplyImageGallery();
 
-               LoadImageGallery('.sub-task-attachments-list');
+            LoadImageGallery('.sub-task-attachments-list');
 
-               //----------- start DP -----
-               GridDropZone();
-               //----------- end DP -----
+            //----------- start DP -----
+            GridDropZone();
+            //----------- end DP -----
 
-               SetApprovalUI();
+            SetApprovalUI();
 
-               var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+            var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
 
-               if (controlmode == "true") {
-                   ucSubTasks_ApplyDropZone();
-                   SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+            if (controlmode == "true") {
+                ucSubTasks_ApplyDropZone();
+                SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
                    UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>', '#<%=btnSaveSubTask.ClientID%>');
 
 
@@ -1572,23 +1657,23 @@
                    objSubTaskDropzone = null;
                }
                if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-                       objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                           maxFiles: 5,
-                           url: "taskattachmentupload.aspx",
-                           thumbnailWidth: 90,
-                           thumbnailHeight: 90,
-                           previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                           init: function () {
-                               this.on("maxfilesexceeded", function (data) {
-                                   alert('you are reached maximum attachment upload limit.');
-                               });
+                   objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                       maxFiles: 5,
+                       url: "taskattachmentupload.aspx",
+                       thumbnailWidth: 90,
+                       thumbnailHeight: 90,
+                       previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+                       init: function () {
+                           this.on("maxfilesexceeded", function (data) {
+                               alert('you are reached maximum attachment upload limit.');
+                           });
 
-                               // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                               this.on("success", function (file, response) {
-                                   var filename = response.split("^");
-                                   $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                           // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                           this.on("success", function (file, response) {
+                               var filename = response.split("^");
+                               $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
-                                   AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                               AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
 
                                    if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
                                        // saves attachment.
@@ -1597,10 +1682,10 @@
                                    }
                                });
                            }
-                       });
+                   });
                    }
 
-                   //Apply dropzone for comment section.
+               //Apply dropzone for comment section.
                    if (objSubtaskNoteDropzone) {
                        objSubtaskNoteDropzone.destroy();
                        objSubTaskNoteDropzone = null;
