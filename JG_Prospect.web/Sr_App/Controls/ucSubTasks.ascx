@@ -1216,6 +1216,7 @@
 
     var control;
     var isadded = false;
+    var idAttachments = false;
 
     function pageLoad(sender, args) {
         $('#closebtn').bind("click", function () {
@@ -1521,7 +1522,13 @@
                 data: JSON.stringify(postData),
                 asynch: false,
                 success: function (data) {
-                    HideAjaxLoader();
+                    if (idAttachments)
+                    {
+                        $('#<%=btnSaveGridAttachment.ClientID%>').click();
+                    }
+                    else {
+                        HideAjaxLoader();
+                    }
                     alert('Description saved successfully.');
                 },
                 error: function (a, b, c) {
@@ -2035,8 +2042,7 @@
 
     function attachImagesByCKEditor(filename, name) {
         AddAttachmenttoViewState(name + '@' + name, '#<%= hdnGridAttachment.ClientID %>');
-        console.log($('#<%= hdnGridAttachment.ClientID %>').val());
-        $('#<%=btnSaveGridAttachment.ClientID%>').click();
+        idAttachments = true;
     }
 
     function GridDropZone() {
