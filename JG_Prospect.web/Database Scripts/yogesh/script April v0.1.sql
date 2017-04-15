@@ -839,5 +839,222 @@ FROM
 		) AS OtherUser
 
 GO
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+ -- Live Publish 04112017
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE tblTaskComments
+(
+Id	BIGINT PRIMARY KEY IDENTITY(1,1),
+Comment	VARCHAR(MAX) NOT NULL,
+TaskId BIGINT NOT NULL REFERENCES tblTask,
+ParentCommentId	BIGINT NULL REFERENCES tblTaskComments,
+UserId	INT NOT NULL REFERENCES tblInstallUsers,
+DateCreated	DATETIME DEFAULT GETDATE()
+)
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to insert a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE InsertTaskComment
+	@Comment VARCHAR(MAX),
+	@TaskId BIGINT,
+	@ParentCommentId BIGINT,
+	@UserId INT
+AS
+BEGIN
+	
+	INSERT INTO [dbo].[tblTaskComments]
+           ([Comment]
+           ,[TaskId]
+           ,[ParentCommentId]
+           ,[UserId])
+     VALUES
+           (@Comment
+           ,@TaskId
+           ,@ParentCommentId
+           ,@UserId)
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to update a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE UpdateTaskComment
+	@Id	BIGINT,
+	@Comment VARCHAR(MAX),
+	@TaskId BIGINT,
+	@ParentCommentId BIGINT,
+	@UserId INT
+AS
+BEGIN
+	
+	 UPDATE [dbo].[tblTaskComments]
+	   SET [Comment] = @Comment
+		  ,[TaskId] = @TaskId
+		  ,[ParentCommentId] = @ParentCommentId
+		  ,[UserId] = @UserId
+	 WHERE Id = @Id
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to delete a comment for task or sub task.
+-- =============================================
+CREATE PROCEDURE DeleteTaskComment
+	@Id	BIGINT
+AS
+BEGIN
+	
+	-- do not delete a comment, if child comment exists.
+	IF NOT EXISTS(SELECT TOP 1 1 
+				FROM [tblTaskComments] 
+				WHERE ParentCommentId = @Id)
+	BEGIN
+		DELETE 
+		FROM [dbo].[tblTaskComments]
+		WHERE Id = @Id
+	END
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to get comments for task or sub task.
+-- =============================================
+CREATE PROCEDURE GetTaskComments
+	@TaskId	BIGINT,
+	@ParentCommentId BIGINT = NULL,
+	@StartIndex INT = NULL,
+	@PageSize	INT = NULL
+AS
+BEGIN
+	
+	IF @StartIndex IS NULL
+	BEGIN
+		SET @StartIndex = 0
+	END
+
+	DECLARE @EndIndex INT = NULL
+	IF @PageSize IS NOT NULL
+	BEGIN
+		SET @EndIndex = (@StartIndex + @PageSize) - 1
+	END
+
+	;WITH cte_TaskComments AS
+	(
+		SELECT 
+			tc.*,
+			iu.InstallId ,
+			iu.FristName AS Username, 
+			iu.FristName AS FirstName, 
+			iu.LastName, 
+			iu.Email,
+			ROW_NUMBER() OVER (ORDER BY tc.DateCreated DESC) AS RowNO
+		FROM [tblTaskComments] tc
+				INNER JOIN [tblInstallUsers] iu ON tc.UserId = iu.Id
+		WHERE tc.TaskId = @TaskId 
+			AND tc.ParentCommentId = ISNULL(@ParentCommentId, ParentCommentId)
+	)
+
+	SELECT *
+	FROM cte_TaskComments
+	WHERE RowNo >= @StartIndex AND RowNo <= ISNULL(@EndIndex, RowNo)
+
+END
+GO
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 04132016
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to get comments for task or sub task.
+-- =============================================
+-- GetTaskComments 530, NULL, 0, 1
+ALTER PROCEDURE GetTaskComments
+	@TaskId	BIGINT,
+	@ParentCommentId BIGINT = NULL,
+	@StartIndex INT = NULL,
+	@PageSize	INT = NULL
+AS
+BEGIN
+	
+	IF @StartIndex IS NULL
+	BEGIN
+		SET @StartIndex = 0
+	END
+
+	DECLARE @EndIndex INT = NULL
+	IF @PageSize IS NOT NULL
+	BEGIN
+		SET @EndIndex = (@StartIndex + @PageSize)
+	END
+
+	;WITH cte_TaskComments AS
+	(
+		SELECT 
+			tc.*,
+			iu.InstallId ,
+			iu.FristName AS Username, 
+			iu.FristName AS FirstName, 
+			iu.LastName, 
+			iu.Email,
+			ROW_NUMBER() OVER (ORDER BY tc.DateCreated DESC) AS RowNO,
+			(SELECT COUNT(Id) FROM [tblTaskComments] WHERE ParentCommentId = tc.Id) AS TotalChildRecords
+		FROM [tblTaskComments] tc
+				INNER JOIN [tblInstallUsers] iu ON tc.UserId = iu.Id
+		WHERE tc.TaskId = @TaskId 
+			AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+	)
+
+	-- get records
+	SELECT *
+	FROM cte_TaskComments
+	WHERE RowNo >= @StartIndex AND RowNo <= ISNULL(@EndIndex, RowNo)
+
+	-- get record count
+	SELECT COUNT(Id) AS TotalRecords
+	FROM [tblTaskComments] tc
+	WHERE tc.TaskId = @TaskId 
+		AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+END
+GO
 

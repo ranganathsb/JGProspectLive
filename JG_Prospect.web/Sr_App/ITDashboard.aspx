@@ -689,9 +689,7 @@
 
                 </asp:GridView>
             </ContentTemplate>
-            <Triggers>
-                <asp:AsyncPostBackTrigger ControlID="grdTaskPending" />
-            </Triggers>
+           
         </asp:UpdatePanel>
         <h2></h2>
         <asp:UpdatePanel ID="upClosedTask" runat="server">
