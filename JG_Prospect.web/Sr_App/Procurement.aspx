@@ -343,6 +343,18 @@
                 $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
             }
+            if ($('#<%=txtAddNotes.ClientID%>').val().match(/\ /)) {
+                var strNotesTxt = $('#<%=txtAddNotes.ClientID%>').val();
+                if ($.trim(strNotesTxt) == "") {
+                    return false;
+                }
+            }
+              //MR Start
+              if (checkAddress() == false)
+              {
+                  return false;
+              }
+              //MR End
             //$("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
@@ -460,7 +472,7 @@
                 data: JSON.stringify({ vendorid: vid, Address: AddressData, VendorEmails: VendorEmailData }),
                 success: function (data) {
                     console.log(data);
-                    checkAddress();
+                    //checkAddress(); Moved to top of function MR
                     //AddOldEmailContent(datalength);
                 }
             });
@@ -604,10 +616,20 @@
         }
 
         function checkAddress() {
-            if ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "") {
+            //MR Start
+            /*if ($(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "") {
                 alert("select address from Address Dropdown or Add new address");
                 return false;
+            }*/ 
+
+            if  (($('#<%=txtPrimaryZip.ClientID%>').val()=='') || ($('#<%=txtPrimaryCity.ClientID%>').val()=='') ||
+	        ($('#<%=txtPrimaryState.ClientID%>').val()=='') || ($('#<%=txtPrimaryAddress.ClientID%>').val()=='') ||
+	        ($('#<%=txtPrimaryState.ClientID%>').val() == '') || ($('#<%=ddlCountry.ClientID%> :selected').val()== ''))
+            {
+                alert("Select address from Address Dropdown or Add new address.  All Address fields are mandatory");
+                return false;
             }
+            //MR End
             else {
                 return true;
             }
@@ -2788,7 +2810,7 @@
                                                         <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Rows="7" Width="100%" CssClass="textbox"></asp:TextBox>
                                                         <br />
                                                         <asp:RequiredFieldValidator ID="rfvAddNotes" runat="server" ControlToValidate="txtAddNotes" Display="Dynamic"
-                                                            ValidationGroup="addAddNotes" ErrorMessage="Please Enter Notes." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            ValidationGroup="addAddNotes" ErrorMessage="Please Enter Notes or remove entered space." ForeColor="Red"></asp:RequiredFieldValidator>
                                                     </div>
                                                 </td>
                                             </tr>

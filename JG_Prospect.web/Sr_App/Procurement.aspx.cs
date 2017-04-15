@@ -911,7 +911,7 @@ namespace JG_Prospect.Sr_App
             objvendor.contract_number = contactNo;
             objvendor.ContactExten = contactExten;
             objvendor.address = txtPrimaryAddress.Text;
-            objvendor.notes = txtAddNotes.Text;
+            objvendor.notes = txtAddNotes.Text.Trim();
             objvendor.ManufacturerType = GetManufacturerType();
             objvendor.BillingAddress = BillingAddress;
             objvendor.TaxId = txtTaxId.Text;
@@ -3635,8 +3635,12 @@ namespace JG_Prospect.Sr_App
             {
                 AddressID = hdnVendorAddressId;
             }
-
-            DrpVendorAddress.Items.Clear();
+            //MR Start
+            if (! (AddressID.Equals("0")))
+            {
+                DrpVendorAddress.Items.Clear();
+            }
+            //MR End
             //DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Select", "Select"));
             if (dsAddress != null && dsAddress.Tables.Count > 0 && dsAddress.Tables[0].Rows.Count > 0)
             {
@@ -3874,9 +3878,12 @@ namespace JG_Prospect.Sr_App
 
             foreach (DataRow dr in tblVendorAddress.Rows)
             {
-                var addressId = "";
-                addressId = dr["AddressID"].ToString();
-                if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && Convert.ToInt32(dr["AddressID"].ToString()) <= 0)
+                var dbAddressId = "";
+                int intAddressId;
+                intAddressId = Int32.TryParse(dr["AddressID"].ToString(), out intAddressId) ? Convert.ToInt32(dr["AddressID"].ToString()) : 0;
+                dbAddressId = dr["AddressID"].ToString();
+                //if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && Convert.ToInt32(dr["AddressID"].ToString()) <= 0)
+                if (dr["AddressID"] != null && dr["AddressID"].ToString() != "0" && intAddressId <= 0)
                 {
                     dr["AddressID"] = 0;
                 }
@@ -3891,10 +3898,14 @@ namespace JG_Prospect.Sr_App
                 foreach (DataRow drEmail in tblVendorEmail.Rows)
                 {
                     drEmail["VendorId"] = VendorID;
-                    if (drEmail["AddressID"] != null && addressId == drEmail["AddressID"].ToString())
+                    if (drEmail["AddressID"] != null && dbAddressId == drEmail["AddressID"].ToString())
                     {
                         dtEmail.ImportRow(drEmail);
                     }
+                    else if(dbAddressId.Equals(""))//Fix start
+                    {
+                        dtEmail.ImportRow(drEmail);
+                    }//Fix End
                 }
 
                 bool emailres = VendorBLL.Instance.InsertVendorEmail(dtEmail, addressID);
@@ -4055,8 +4066,7 @@ namespace JG_Prospect.Sr_App
             var addr = txtPrimaryAddress.Text;
             addr += ", " + txtPrimaryCity.Text;
             addr += ", " + ddlCountry.SelectedValue;
-            DrpVendorAddress.SelectedItem.Text = addr;
-
+             DrpVendorAddress.SelectedItem.Text = addr; 
             DrpVendorAddress.ClearSelection();
             txtPrimaryCity.Text = "";
             txtPrimaryState.Text = "";
@@ -4294,7 +4304,7 @@ namespace JG_Prospect.Sr_App
             {
                 UserId = Session["loginid"].ToString();
             }
-            string Notes = txtAddNotes.Text;
+            string Notes = txtAddNotes.Text.Trim();
             string TempId = "";
             if (VendorID > 0)
             {
