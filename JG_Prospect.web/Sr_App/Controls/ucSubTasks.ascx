@@ -75,7 +75,7 @@
         padding: 20px;
         background: #fff;
         border-radius: 5px;
-        width: 30%;
+        width: 70%;
         position: relative;
         transition: all 5s ease-in-out;
     }
@@ -104,6 +104,11 @@
         .Descpopup .content {
             max-height: 30%;
             overflow: auto;
+            overflow-x: hidden;
+        }
+
+        .Descpopup .content img {
+            width: 100%;
         }
 
     @media screen and (max-width: 700px) {
