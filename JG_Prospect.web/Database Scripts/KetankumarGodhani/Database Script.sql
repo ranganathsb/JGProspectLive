@@ -1,3 +1,36 @@
+----------------------------------------------------------------------------------------------------
+          --17 APR 2017
+----------------------------------------------------------------------------------------------------
+--1
+
+CREATE FUNCTION [dbo].[GetParent]
+(    
+      @pid int
+)
+RETURNS @Output TABLE (
+      parenttaskid int
+)
+AS
+BEGIN
+		;with name_tree as 
+		(
+		   select taskid, parenttaskid
+		   from tblTask
+		   where taskid = @pid
+		   union all
+		   select C.taskid, C.parenttaskid
+		   from tblTask c
+		   join name_tree p on C.taskid = P.parenttaskid
+			AND C.taskid<>C.parenttaskid 
+		)
+		
+		insert INTO @Output(parenttaskid) select top 1 parenttaskid from name_tree order by parenttaskid OPTION (MAXRECURSION 0)
+		 
+      RETURN
+END
+GO
+
+--2
 ALTER PROCEDURE [dbo].[GetInProgressTasks] 
 	-- Add the parameters for the stored procedure here
 	@userid int,
@@ -259,8 +292,9 @@ SET @StartIndex = (@PageIndex * @PageSize) + 1
 
 		end
 END
-go
+GO
 
+--3
 ALTER PROCEDURE [dbo].[GetClosedTasks] 
 	-- Add the parameters for the stored procedure here
 	@userid int,
@@ -517,3 +551,108 @@ SET @StartIndex = (@PageIndex * @PageSize) + 1
 END
 go
 
+--4
+
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTask]  
+	 @Mode tinyint, -- 0:Insert, 1: Update, 2: Delete  
+	 @TaskId bigint,  
+	 @Title varchar(250),  
+	 @Url varchar(250),
+	 @Description varchar(MAX),  
+	 @Status tinyint,  
+	 @DueDate datetime = NULL,  
+	 @Hours varchar(25),
+	 @CreatedBy int,	
+	 @InstallId varchar(50) = NULL,
+	 @ParentTaskId bigint = NULL,
+	 @TaskType tinyint = NULL,
+	 @TaskLevel int,
+	 @MainTaskId int,
+	 @TaskPriority tinyint = null,
+	 @IsTechTask bit = NULL,
+	 @DeletedStatus	TINYINT = 9,
+	 @Result int output
+AS  
+BEGIN  
+  
+	IF @Mode=0  
+	  BEGIN  
+		INSERT INTO tblTask 
+				(
+					Title,
+					Url,
+					[Description],
+					[Status],
+					DueDate,
+					[Hours],
+					CreatedBy,
+					CreatedOn,
+					IsDeleted,
+					InstallId,
+					ParentTaskId,
+					TaskType,
+					TaskPriority,
+					IsTechTask,
+					AdminStatus,
+					TechLeadStatus,
+					OtherUserStatus,
+					TaskLevel,
+					MainParentId
+				)
+		VALUES
+				(
+					@Title,
+					@Url,
+					@Description,
+					@Status,
+					@DueDate,
+					@Hours,
+					@CreatedBy,
+					GETDATE(),
+					0,
+					@InstallId,
+					@ParentTaskId,
+					@TaskType,
+					@TaskPriority,
+					@IsTechTask,
+					0,
+					0,
+					0,
+					@TaskLevel,
+					@MainTaskId
+				)  
+  
+		SET @Result=SCOPE_IDENTITY ()  
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=1 -- Update  
+	BEGIN    
+		UPDATE tblTask  
+		SET  
+			Title=@Title,  
+			Url = @Url,
+			[Description]=@Description,  
+			[Status]=@Status,  
+			DueDate=@DueDate,  
+			[Hours]=@Hours,
+			[TaskType] = @TaskType,
+			[TaskPriority] = @TaskPriority,
+			[IsTechTask] = @IsTechTask
+		WHERE TaskId=@TaskId  
+
+		SET @Result= @TaskId
+  
+		RETURN @Result  
+	END  
+	ELSE IF @Mode=2 --Delete  
+	BEGIN  
+		UPDATE tblTask  
+		SET  
+			IsDeleted=1,
+			[Status] = @DeletedStatus
+		WHERE TaskId=@TaskId OR ParentTaskId=@TaskId  
+	END  
+  
+END
+GO
