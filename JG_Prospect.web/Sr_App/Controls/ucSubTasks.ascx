@@ -612,9 +612,10 @@
                                                                         Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
-                                                                        data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
-                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View More Comments</a>
-                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc">
+                                                                        data-parent-commentid="0" data-startindex="0" data-pagesize="2"
+                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
+                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc"
+                                                                        style="margin-left: 10px;">
                                                                     </div>
                                                                 </td>
                                                                 <td width="15%">
@@ -972,16 +973,16 @@
         </tbody>
         <tfoot data-parent-commentid="{ParentCommentId}">
             <tr>
-                <td>
-                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
-                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
+                <td class="noborder">
                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid="{TaskId}"
                         data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
-                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} Comments</a>
+                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} Replies</a>
+                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
                 </td>
             </tr>
-            <tr data-id="trAddComment" style="display: none;">
-                <td>
+            <tr data-id="trAddComment" style="display: table-row;">
+                <td class="noborder">
                     <div>
                         <textarea data-id="txtComment" class="textbox" style="width: 90%; height: 50px;"></textarea>
                     </div>
@@ -997,17 +998,18 @@
 
 <script type="text/template" class="hide" data-id="divSubTaskCommentRowTemplate">
     <tr data-commentid="{Id}">
-        <td>
+        <td class="noborder">
             <div style="padding: 3px; background-color: white; color: black;">
                 {Comment}
             </div>
-            <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-parent-commentid="{Id}"
-                data-startindex="0" data-pagesize="0"
-                onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Add Reply</a>&nbsp;
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}"
-                data-startindex="0" data-pagesize="0"
-                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Replies</a>
-            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="taskdesc">
+                data-startindex="0" data-pagesize="0" style="margin-left: 10px;"
+                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Comments&nbsp;</a>
+            <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-parent-commentid="{Id}"
+                data-startindex="0" data-pagesize="0" class="hide"
+                onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Add Comment</a>
+            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="taskdesc"
+                style="margin-left: 10px;">
             </div>
         </td>
     </tr>
@@ -1017,7 +1019,7 @@
     var SubTaskCommentScript = {};
 
     SubTaskCommentScript.Initialize = function () {
-        $('a[data-id="hypViewInitialComments"]').click();
+        //$('a[data-id="hypViewInitialComments"]').click();
     };
 
     SubTaskCommentScript.GetTaskComments = function (sender) {
@@ -1099,7 +1101,7 @@
                 $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').html('');
                 $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
 
-                $SubTaskCommentTemplate.find('a[data-id="hypViewReplies"]').click();
+                //$SubTaskCommentTemplate.find('a[data-id="hypViewReplies"]').click();
             }
         }
     };
