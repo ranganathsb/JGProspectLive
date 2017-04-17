@@ -1062,10 +1062,7 @@
                 var $SubTaskCommentTemplate = $(strSubTaskCommentTemplate);
 
                 if (data.d.RemainingRecords <= 0) {
-                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').hide();
-                }
-                else {
-                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').show();
+                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').html('View More Replies');
                 }
 
                 for (var i = 0; i < data.d.TaskComments.length; i++) {
@@ -1083,14 +1080,15 @@
                     $SubTaskCommentRowTemplate = $(strSubTaskCommentRowTemplate);
 
                     if (objTaskComment.ParentCommentId != 0) {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').hide();
+                        //$SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').hide();
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').hide();
                     }
                     else {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
+                        //$SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
                     }
 
                     if (objTaskComment.TotalChildRecords == 0) {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').hide();
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').html('View More Comments');
                     }
                     else {
                         $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').show();
@@ -1135,7 +1133,7 @@
                 var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
 
                 $tfoot.find('a[data-id="hypViewComments"]').click();
-                $tfoot.find('tr[data-id="trAddComment"]').hide();
+                //$tfoot.find('tr[data-id="trAddComment"]').hide();
             }
         }
     };
@@ -1148,7 +1146,7 @@
         var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
 
         $tfoot.find('textarea[data-id="txtComment"]').val('');
-        $tfoot.find('tr[data-id="trAddComment"]').hide();
+        //$tfoot.find('tr[data-id="trAddComment"]').hide();
     };
 
     SubTaskCommentScript.AddTaskComment = function (sender) {
@@ -1159,7 +1157,7 @@
         var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
 
         $tfoot.find('textarea[data-id="txtComment"]').val('');
-        $tfoot.find('tr[data-id="trAddComment"]').show();
+        //$tfoot.find('tr[data-id="trAddComment"]').show();
     };
 </script>
 
