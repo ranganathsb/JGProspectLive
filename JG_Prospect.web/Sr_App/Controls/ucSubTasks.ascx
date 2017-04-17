@@ -617,8 +617,9 @@
                                                                         Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
-                                                                        data-parent-commentid="0" data-startindex="0" data-pagesize="2"
+                                                                        data-parent-commentid="0" data-startindex="0" data-pagesize="2" style="display:none;"
                                                                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
+                                                                    <h5>Comments/Feedback</h5>
                                                                     <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc"
                                                                         style="margin-left: 10px;">
                                                                     </div>
@@ -986,7 +987,7 @@
                         onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
                 </td>
             </tr>
-            <tr data-id="trAddComment" style="display: table-row;">
+            <tr data-id="trAddComment" style="display: none;">
                 <td class="noborder">
                     <div>
                         <textarea data-id="txtComment" class="textbox" style="width: 90%; height: 50px;"></textarea>
@@ -1024,7 +1025,7 @@
     var SubTaskCommentScript = {};
 
     SubTaskCommentScript.Initialize = function () {
-        //$('a[data-id="hypViewInitialComments"]').click();
+        $('a[data-id="hypViewInitialComments"]').click();
     };
 
     SubTaskCommentScript.GetTaskComments = function (sender) {
@@ -1050,7 +1051,8 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            console.log(data);
+           // console.log(data);
+            
             if (data.d.Success) {
                 var viewlink = $(sender);
                 var strTaskId = viewlink.attr('data-taskid');
@@ -1067,7 +1069,10 @@
                 var $SubTaskCommentTemplate = $(strSubTaskCommentTemplate);
 
                 if (data.d.RemainingRecords <= 0) {
-                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').html('View More Replies');
+                    // hide view more reply link.
+                    //$SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').html('View More Replies');
+
+                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').hide();
                 }
 
                 for (var i = 0; i < data.d.TaskComments.length; i++) {
@@ -1093,7 +1098,9 @@
                     }
 
                     if (objTaskComment.TotalChildRecords == 0) {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').html('View More Comments');
+                        // if not child records, then hide view more link.
+                        //$SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').html('View More Comments');
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').hide();
                     }
                     else {
                         $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').show();
