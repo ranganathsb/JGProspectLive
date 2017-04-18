@@ -619,9 +619,10 @@
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
                                                                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
-                                                                    <h5>Comments/Feedback</h5>
+                                                                    <h5 class="taskCommentTitle">Comments/Feedback</h5>
                                                                     <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskComments">
                                                                     </div>
+                                                                    <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                                                                 </td>
                                                                 <td width="15%">
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
@@ -982,7 +983,7 @@
                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid="{TaskId}"
                         data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} more comments</a>
-                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}" class="hide"
                         onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                 </td>
             </tr>
@@ -1005,17 +1006,16 @@
     <tr data-commentid="{Id}">
         <td class="noborder">
             <div class="taskComment">
-                {Comment}
-                <br />
-                <div>
-                    <div class="right">
-                        <a href='<%=Page.ResolveUrl("CreateSalesUser.aspx?id={UserId}")%>' target="_blank">
-                            {UserInstallId} - {UserFirstName} {UserLastName}
-                        </a><br />
+                {Comment}               
+              
+                    <div class="ctimestmap">
+                        <a href='<%=Page.ResolveUrl("CreateSalesUser.aspx?id={UserId}")%>' target="_blank">{UserInstallId} - {UserFirstName} {UserLastName}
+                        </a>
+                        <br />
                         <span>{DateCreated_MDYYYY}</span>&nbsp<span style="color: red">{TimeCreated_HHMMSSTT}</span>&nbsp;<span>(EST)</span>
                     </div>
-                    <div style="clear:both; float:none;"></div>
-                </div>
+
+
             </div>
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="hide"
                 data-startindex="0" data-pagesize="0" style="margin-left: 10px;"
@@ -1068,7 +1068,7 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            
+
             //debugger;
             if (data.d.Success) {
                 var viewlink = $(sender);
@@ -1146,7 +1146,7 @@
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
         var $tfoot;
-        
+
         if ($sender.parent().attr('id') == "replyComment") {
             $tfoot = $sender.parent();
         }
@@ -1185,8 +1185,8 @@
                         $tfoot.find('tr[data-id="trAddComment"]').hide();
                     }
 
-                    $tfoot.find('a[data-id="hypViewComments"]').click();
-
+                    //$tfoot.find('a[data-id="hypViewComments"]').click();
+                    $('a[data-id="hypViewInitialComments"]').click();
                 }
             }
         }
@@ -1733,29 +1733,29 @@
                         if (TaskLevel == "2") {
                             var taskid = GetParameterValues('TaskId');
                             //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
-                        $('#<%=txtInstallId.ClientID%>').val(strInstallId);
-                        $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
-                        $('#<%=hdMainParentId.ClientID%>').val(taskid);
-                        $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
-                        $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                            $('#<%=txtInstallId.ClientID%>').val(strInstallId);
+                            $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+                            $('#<%=hdMainParentId.ClientID%>').val(taskid);
+                            $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
+                            $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                        }
+                        else {
+                            //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                            $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
+                            $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+                            $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
+                            $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                        }
+                    },
+                    error: function (a, b, c) {
+                        HideAjaxLoader();
                     }
-                    else {
-                        //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
-                        $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
-                        $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
-                        $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
-                        $('#<%=hdTaskId.ClientID%>').val(cmdArg);
-                    }
-                },
-                error: function (a, b, c) {
-                    HideAjaxLoader();
                 }
-            }
         );
-        }
+            }
 
-        function OnAddMoreSubtaskClick() {
-            $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+            function OnAddMoreSubtaskClick() {
+                $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
             if (Page_ClientValidate('SubmitSubTask')) {
                 ShowAjaxLoader();
                 var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
@@ -2022,35 +2022,35 @@
                     thumbnailWidth: 90,
                     thumbnailHeight: 90,
                     previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                       init: function () {
-                           this.on("maxfilesexceeded", function (data) {
-                               alert('you are reached maximum attachment upload limit.');
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                               if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                                   // saves attachment.
+                                   $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
                            });
-
-                           // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                           this.on("success", function (file, response) {
-                               var filename = response.split("^");
-                               $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                               AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-
-                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                            // saves attachment.
-                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                                   //this.removeFile(file);
-                               }
-                    });
-                }
-                   });
-               }
+                       }
+                });
+        }
 
             //Apply dropzone for comment section.
-               if (objSubtaskNoteDropzone) {
-                   objSubtaskNoteDropzone.destroy();
-                   objSubTaskNoteDropzone = null;
-               }
+        if (objSubtaskNoteDropzone) {
+            objSubtaskNoteDropzone.destroy();
+            objSubTaskNoteDropzone = null;
+        }
 
-               objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+        objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
            }
 
            function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
