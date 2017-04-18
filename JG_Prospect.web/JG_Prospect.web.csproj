@@ -1092,8 +1092,6 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
-    <Content Include="Database Scripts\KetankumarGodhani\03-04-2017.sql" />
-    <Content Include="Database Scripts\KetankumarGodhani\Ketankumar_03262017_db_FrozenTaskSP.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
     <Content Include="Database Scripts\yogesh\script April v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
@@ -3007,6 +3005,7 @@
     <Folder Include="Database Scripts\Bhavik\Nov\" />
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
+    <Folder Include="Database Scripts\KetankumarGodhani\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
