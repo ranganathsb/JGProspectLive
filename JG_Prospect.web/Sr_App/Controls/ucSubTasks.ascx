@@ -1006,6 +1006,16 @@
         <td class="noborder">
             <div class="taskComment">
                 {Comment}
+                <br />
+                <div>
+                    <div class="right">
+                        <a href='<%=Page.ResolveUrl("CreateSalesUser.aspx?id={UserId}")%>' target="_blank">
+                            {UserInstallId} - {UserFirstName} {UserLastName}
+                        </a><br />
+                        <span>{DateCreated_MDYYYY}</span>&nbsp<span style="color: red">{TimeCreated_HHMMSSTT}</span>&nbsp;<span>(EST)</span>
+                    </div>
+                    <div style="clear:both; float:none;"></div>
+                </div>
             </div>
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="hide"
                 data-startindex="0" data-pagesize="0" style="margin-left: 10px;"
@@ -1089,8 +1099,18 @@
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{Comment}/gi, objTaskComment.Comment);
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{ParentCommentId}/gi, objTaskComment.ParentCommentId.toString());
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TaskId}/gi, objTaskComment.TaskId.toString());
-                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{DateCreated}/gi, objTaskComment.DateCreated.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserId}/gi, objTaskComment.UserId.toString());
+
+                    var intDateCreated = parseInt(objTaskComment.DateCreated.replace(/\//gi, '').replace('Date', '').replace(/[(]/gi, '').replace(/[)]/gi, ''));
+
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{DateCreated_MDYYYY}/gi, SubTaskCommentScript.GetDate_MDYYYY(intDateCreated));
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TimeCreated_HHMMSSTT}/gi, SubTaskCommentScript.GetTime_HHMMSSTT(intDateCreated));
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TotalChildRecords}/gi, objTaskComment.TotalChildRecords.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserName}/gi, objTaskComment.UserName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserFirstName}/gi, objTaskComment.UserFirstName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserLastName}/gi, objTaskComment.UserLastName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserInstallId}/gi, objTaskComment.UserInstallId);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserEmail}/gi, objTaskComment.UserEmail);
 
                     $SubTaskCommentRowTemplate = $(strSubTaskCommentRowTemplate);
 
@@ -1214,6 +1234,31 @@
         $tfoot.find('textarea[data-id="txtComment"]').val('');
         $tfoot.find('tr[data-id="trAddComment"]').show();
     };
+
+    SubTaskCommentScript.GetDate_MDYYYY = function (date) {
+        console.log(date);
+        var objDate = new Date(date);
+
+        var dd = objDate.getDate();
+        var mm = objDate.getMonth() + 1; //January is 0! 
+        var yyyy = objDate.getFullYear();
+
+        //if (dd < 10) { dd = '0' + dd; } if (mm < 10) { mm = '0' + mm; }
+
+        return (dd + '/' + mm + '/' + yyyy);
+    }
+
+    SubTaskCommentScript.GetTime_HHMMSSTT = function (date) {
+        var objDate = new Date(date);
+
+        var hh = objDate.getHours();
+        var mm = objDate.getMinutes();
+        var ss = objDate.getSeconds();
+
+        //if (dd < 10) { dd = '0' + dd; } if (mm < 10) { mm = '0' + mm; }
+
+        return (hh + ':' + mm + ':' + ss);
+    }
 </script>
 
 <script type="text/javascript">
