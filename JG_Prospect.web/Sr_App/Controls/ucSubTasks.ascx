@@ -619,9 +619,8 @@
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
                                                                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
-                                                                    <h5>Comment(s)/Feedback</h5>
-                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc"
-                                                                        style="margin-left: 10px;">
+                                                                    <h5>Comments/Feedback</h5>
+                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskComments">
                                                                     </div>
                                                                 </td>
                                                                 <td width="15%">
@@ -984,7 +983,7 @@
                         data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} more comments</a>
                     <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
-                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
+                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                 </td>
             </tr>
             <tr data-id="trAddComment" style="display: none;">
@@ -1005,7 +1004,7 @@
 <script type="text/template" class="hide" data-id="divSubTaskCommentRowTemplate">
     <tr data-commentid="{Id}">
         <td class="noborder">
-            <div style="padding: 3px; background-color: white; color: black;">
+            <div class="taskComment">
                 {Comment}
             </div>
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="hide"
@@ -1020,7 +1019,7 @@
                 <div>
                     <textarea data-id="txtComment" class="textbox" style="width: 90%; height: 50px;"></textarea>
                 </div>
-                <a href="javascript:void(0);" data-id="hypSaveComment" data-comment-id="0" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                <a href="javascript:void(0);" data-id="hypSaveComment" data-comment-id="0" data-taskid="{TaskId}" data-parent-commentid="{Id}"
                     onclick="javascript:SubTaskCommentScript.SaveTaskComment(this);">Save</a>
                 <a href="javascript:void(0);" data-id="hypCancelComment" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
                     onclick="javascript:SubTaskCommentScript.CancelTaskComment(this);">Cancel</a>
@@ -1059,7 +1058,7 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            console.log(data);
+            
             //debugger;
             if (data.d.Success) {
                 var viewlink = $(sender);
@@ -1103,7 +1102,7 @@
                         //$SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
                     }
 
-                    console.log(objTaskComment.TotalChildRecords);
+                    //console.log(objTaskComment.TotalChildRecords);
 
                     if (objTaskComment.TotalChildRecords != 0) {
 
@@ -1126,30 +1125,49 @@
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot;
+        
+        if ($sender.parent().attr('id') == "replyComment") {
+            $tfoot = $sender.parent();
+        }
+        else {
+            $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        }
+
         var strComment = $tfoot.find('textarea[data-id="txtComment"]').val();
 
-        var postData = {
-            strId: strId,
-            strComment: strComment,
-            strParentCommentId: strParentCommentId,
-            strTaskId: strTaskId
-        };
+        if (strComment != '') {
+            var postData = {
+                strId: strId,
+                strComment: strComment,
+                strParentCommentId: strParentCommentId,
+                strTaskId: strTaskId
+            };
 
-        CallJGWebService('SaveTaskComment', postData, function (data) { OnSaveTaskCommentSuccess(data, sender) });
+            CallJGWebService('SaveTaskComment', postData, function (data) { OnSaveTaskCommentSuccess(data, sender) });
 
-        function OnSaveTaskCommentSuccess(data, sender) {
-            if (data.d.Success) {
-                console.log(data.d);
+            function OnSaveTaskCommentSuccess(data, sender) {
+                if (data.d.Success) {
+                    console.log(data.d);
 
-                var $sender = $(sender);
-                var strTaskId = $sender.attr('data-taskid');
-                var strParentCommentId = $sender.attr('data-parent-commentid');
-                var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-                var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+                    var $sender = $(sender);
+                    var strTaskId = $sender.attr('data-taskid');
+                    var strParentCommentId = $sender.attr('data-parent-commentid');
+                    var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+                    var $tfoot;
 
-                $tfoot.find('a[data-id="hypViewComments"]').click();
-                $tfoot.find('tr[data-id="trAddComment"]').hide();
+                    if ($sender.parent().attr('id') == "replyComment") {
+                        $tfoot = $sender.parent();
+                        $tfoot.addClass('hide');
+                    }
+                    else {
+                        $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+                        $tfoot.find('tr[data-id="trAddComment"]').hide();
+                    }
+
+                    $tfoot.find('a[data-id="hypViewComments"]').click();
+
+                }
             }
         }
     };
@@ -1159,28 +1177,39 @@
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot;
 
-        $tfoot.find('textarea[data-id="txtComment"]').val('');
-        $tfoot.find('tr[data-id="trAddComment"]').hide();
+        if ($sender.parent().attr('id') == "replyComment") {
+            $tfoot = $sender.parent();
+            $tfoot.find('textarea[data-id="txtComment"]').val('');
+            $tfoot.addClass('hide');
+        }
+        else {
+            $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+            $tfoot.find('textarea[data-id="txtComment"]').val('');
+            $tfoot.find('tr[data-id="trAddComment"]').hide();
+        }
+
+
     };
 
     SubTaskCommentScript.AddTaskComment = function (sender) {
         var $sender = $(sender);
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
+
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
         var $tfoot;
-        console.log($sender.html());
+
         if ($sender.html() == "Reply") {
-            $tfoot = $sender.find('div');
+            $tfoot = $sender.siblings('div[id="replyComment"]');
             console.log($tfoot.html());
             $tfoot.removeClass('hide');
         }
         else {
             $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
         }
-       
+
 
         $tfoot.find('textarea[data-id="txtComment"]').val('');
         $tfoot.find('tr[data-id="trAddComment"]').show();
@@ -1623,42 +1652,42 @@
                     if (response) {
                         alert('Task assignment saved successfully.');
                         $('#<%=hdTaskId.ClientID%>').val(intTaskID.toString());
-                    $('#<%=btnUpdateRepeater.ClientID%>').click();
+                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                    }
+                    else {
+                        OnSaveAssignedTaskUsersError();
+                    }
                 }
-                else {
-                    OnSaveAssignedTaskUsersError();
-                }
-            }
 
-            function OnSaveAssignedTaskUsersError(err) {
-                //alert(JSON.stringify(err));
-                alert('Task assignment cannot be updated. Please try again.');
+                function OnSaveAssignedTaskUsersError(err) {
+                    //alert(JSON.stringify(err));
+                    alert('Task assignment cannot be updated. Please try again.');
+                }
             }
         }
-    }
 
-    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
-        ShowAjaxLoader();
-        var postData = {
-            CommandArgument: cmdArg,
-            CommandName: cName
-        };
+        function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
+            ShowAjaxLoader();
+            var postData = {
+                CommandArgument: cmdArg,
+                CommandName: cName
+            };
 
-        $.ajax
-        (
-            {
-                url: '../WebServices/JGWebService.asmx/GetSubTaskId',
-                contentType: 'application/json; charset=utf-8;',
-                type: 'POST',
-                dataType: 'json',
-                data: JSON.stringify(postData),
-                asynch: false,
-                success: function (data) {
-                    HideAjaxLoader();
+            $.ajax
+            (
+                {
+                    url: '../WebServices/JGWebService.asmx/GetSubTaskId',
+                    contentType: 'application/json; charset=utf-8;',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: JSON.stringify(postData),
+                    asynch: false,
+                    success: function (data) {
+                        HideAjaxLoader();
 
-                    if (TaskLevel == "2") {
-                        var taskid = GetParameterValues('TaskId');
-                        //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        if (TaskLevel == "2") {
+                            var taskid = GetParameterValues('TaskId');
+                            //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
                         $('#<%=txtInstallId.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdMainParentId.ClientID%>').val(taskid);
@@ -1942,35 +1971,35 @@
                 objSubTaskDropzone = null;
             }
             if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-                   objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                       maxFiles: 5,
-                       url: "taskattachmentupload.aspx",
-                       thumbnailWidth: 90,
-                       thumbnailHeight: 90,
-                       previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                init: function () {
-                    this.on("maxfilesexceeded", function (data) {
-                        alert('you are reached maximum attachment upload limit.');
-                    });
+                objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+                       init: function () {
+                           this.on("maxfilesexceeded", function (data) {
+                               alert('you are reached maximum attachment upload limit.');
+                           });
 
-                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                    this.on("success", function (file, response) {
-                        var filename = response.split("^");
-                        $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                           // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                           this.on("success", function (file, response) {
+                               var filename = response.split("^");
+                               $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
-                        AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+                               AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
 
-                               if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                                   // saves attachment.
-                                   $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
                                    //this.removeFile(file);
                                }
-                           });
-                       }
-            });
+                    });
+                }
+                   });
                }
 
-               //Apply dropzone for comment section.
+            //Apply dropzone for comment section.
                if (objSubtaskNoteDropzone) {
                    objSubtaskNoteDropzone.destroy();
                    objSubTaskNoteDropzone = null;
