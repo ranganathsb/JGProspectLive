@@ -877,7 +877,7 @@ namespace JG_Prospect.Sr_App.Controls
         protected void repSubTasksNested_chkUiRequested_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox chkUiRequested = sender as CheckBox;
-            RepeaterItem objRepeaterItem = chkUiRequested.Parent.Parent as RepeaterItem;
+            RepeaterItem objRepeaterItem = chkUiRequested.NamingContainer as RepeaterItem;
 
             if (objRepeaterItem != null)
             {
@@ -885,6 +885,21 @@ namespace JG_Prospect.Sr_App.Controls
                 Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
                 TaskGeneratorBLL.Instance.UpdateTaskUiRequested(intTaskId, chkUiRequested.Checked);
             }
+            SetSubTaskDetails();
+        }
+
+        protected void repSubTasksNested_chkTechTask_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chkTechTask = sender as CheckBox;
+            RepeaterItem objRepeaterItem = chkTechTask.NamingContainer as RepeaterItem;
+
+            if (objRepeaterItem != null)
+            {
+                HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
+                Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+                TaskGeneratorBLL.Instance.UpdateTaskTechTask(intTaskId, chkTechTask.Checked);
+            }
+
             SetSubTaskDetails();
         }
 

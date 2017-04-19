@@ -1131,3 +1131,30 @@ GO
 -- Live publish 04182016
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 19 Apr 17
+-- Description:	Updates tech task flag of a Task by Id.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateTaskTechTaskById]
+	@TaskId		BIGINT,
+	@IsTechTask BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE tblTask
+	SET
+		IsTechTask = @IsTechTask
+	WHERE TaskId = @TaskId
+END
+GO
+

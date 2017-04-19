@@ -1076,6 +1076,30 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public bool UpdateTaskTechTask(Int64 intTaskId, bool blTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskTechTaskById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskId);
+                    database.AddInParameter(command, "@IsTechTask", DbType.Boolean, blTechTask);
+
+                    database.ExecuteNonQuery(command);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #region TaskWorkSpecification
 
         public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)

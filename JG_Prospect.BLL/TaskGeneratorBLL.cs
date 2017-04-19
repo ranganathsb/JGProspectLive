@@ -168,6 +168,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskUiRequested(intTaskId, blUiRequesed);
         }
 
+        public bool UpdateTaskTechTask(Int64 intTaskId, bool blTechTask)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskTechTask(intTaskId, blTechTask);
+        }
+
         #region TaskWorkSpecification
 
         public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)

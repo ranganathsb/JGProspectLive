@@ -195,6 +195,7 @@
                                 <asp:Literal ID="listIDOpt" runat="server" />
                             </a>
                         </small>
+                        <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" Checked="false" />
                     </td>
                     <td>Type <span style="color: red;">*</span>:
                                
@@ -707,6 +708,9 @@
                                                                                             <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" ClientIDMode="AutoID"
                                                                                                 Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
                                                                                                 AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />
+                                                                                            <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" ClientIDMode="AutoID"
+                                                                                                Checked='<%# Convert.ToBoolean(Eval("IsTechTask")) %>'  
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged"/>
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
@@ -1781,6 +1785,7 @@
                     TaskType: type,
                     TaskDesignations: designations,
                     TaskLvl: TaskLvl,
+                    blTechTask: false
                 };
 
                 CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
@@ -1952,6 +1957,7 @@
                 var type = $('#<%= ddlTaskType.ClientID %>').val();
                 var designaions = $('#<%= hdndesignations.ClientID %>').val();
                 var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
+                var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
 
                 var postData = {
                     ParentTaskId: taskid,
@@ -1967,6 +1973,7 @@
                     TaskType: type,
                     TaskDesignations: designaions,
                     TaskLvl: TaskLvl,
+                    blTechTask: blTechTask
                 };
 
                 CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
