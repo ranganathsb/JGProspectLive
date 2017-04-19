@@ -1624,7 +1624,7 @@ namespace JG_Prospect.DAL
 
         //------------ Start DP ------------
 
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex = 0, int pagesize = 0)
+        public DataSet GetInProgressTasks(string userid, string desigid, string vSearch, int pageindex = 0, int pagesize = 0)
         {
             try
             {
@@ -1633,8 +1633,8 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetInProgressTasks");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
-                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@userid", DbType.String, userid);
+                    database.AddInParameter(command, "@desigid", DbType.String, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
@@ -1648,7 +1648,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid, string vSearch,int pageindex=0,int pagesize =0)
+        public DataSet GetClosedTasks(string userid, string desigid, string vSearch,int pageindex=0,int pagesize =0)
         {
             try
             {
@@ -1657,8 +1657,8 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetClosedTasks");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@userid", DbType.Int32, userid);
-                    database.AddInParameter(command, "@desigid", DbType.Int32, desigid);
+                    database.AddInParameter(command, "@userid", DbType.String, userid);
+                    database.AddInParameter(command, "@desigid", DbType.String, desigid);
                     database.AddInParameter(command, "@search", DbType.String, vSearch);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, pageindex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, pagesize);
