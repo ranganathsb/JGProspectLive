@@ -627,6 +627,14 @@
                                                                 </td>
                                                                 <td width="15%">
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
+                                                                        <li>
+                                                                            <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" ClientIDMode="AutoID"
+                                                                                                Checked='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>'  
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged"/>
+                                                                        </li>
+                                                                        <li>
+                                                                                
+                                                                        </li>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
@@ -645,7 +653,7 @@
                                                                         <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
-
+                                                                        
                                                                     </ul>
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
@@ -707,10 +715,7 @@
                                                                                         <td>
                                                                                             <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" ClientIDMode="AutoID"
                                                                                                 Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
-                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />
-                                                                                            <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" ClientIDMode="AutoID"
-                                                                                                Checked='<%# Convert.ToBoolean(Eval("IsTechTask")) %>'  
-                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged"/>
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />                                                                                            
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
