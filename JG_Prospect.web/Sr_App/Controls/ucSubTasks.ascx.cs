@@ -707,7 +707,7 @@ namespace JG_Prospect.Sr_App.Controls
                 SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["data-taskstatus"]), intTaskId);
             }
 
-            SetSubTaskDetails();
+            SetSubTaskDetails(intTaskId);
         }
 
         protected void repSubTasksNested_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
@@ -730,7 +730,7 @@ namespace JG_Prospect.Sr_App.Controls
                                                 }
                                             );
 
-                SetSubTaskDetails();
+                SetSubTaskDetails(Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString()));
             }
         }
 
@@ -764,7 +764,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
                 TaskGeneratorBLL.Instance.UpdateTaskPriority(objTask);
 
-                SetSubTaskDetails();
+                SetSubTaskDetails(objTask.TaskId);
             }
         }
 
@@ -870,7 +870,7 @@ namespace JG_Prospect.Sr_App.Controls
                     #endregion
                 }
 
-                SetSubTaskDetails();
+                SetSubTaskDetails(Convert.ToInt32(hdTaskId.Value));
             }
         }
 
@@ -878,14 +878,18 @@ namespace JG_Prospect.Sr_App.Controls
         {
             CheckBox chkUiRequested = sender as CheckBox;
             RepeaterItem objRepeaterItem = chkUiRequested.NamingContainer as RepeaterItem;
-
+            
             if (objRepeaterItem != null)
             {
                 HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
-                Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+                Int32 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
                 TaskGeneratorBLL.Instance.UpdateTaskUiRequested(intTaskId, chkUiRequested.Checked);
+                SetSubTaskDetails(intTaskId);
             }
-            SetSubTaskDetails();
+            else
+            {
+                SetSubTaskDetails();
+            }
         }
 
         protected void repSubTasksNested_chkTechTask_CheckedChanged(object sender, EventArgs e)
@@ -896,11 +900,14 @@ namespace JG_Prospect.Sr_App.Controls
             if (objRepeaterItem != null)
             {
                 HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
-                Int64 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
+                Int32 intTaskId = Convert.ToInt32(hdTaskId.Value.ToString());
                 TaskGeneratorBLL.Instance.UpdateTaskTechTask(intTaskId, chkTechTask.Checked);
+                SetSubTaskDetails(intTaskId);
             }
-
-            SetSubTaskDetails();
+            else
+            {
+                SetSubTaskDetails();
+            }
         }
 
         #endregion
@@ -2039,31 +2046,20 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
         {
-            string strScript = string.Empty;
             if (!string.IsNullOrEmpty(hdTaskId.Value))
             {
-                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\"" + hdTaskId.Value + "\"]')); });";
+                SetSubTaskDetails(Convert.ToInt32(hdTaskId.Value));
             }
             else
             {
-                strScript += "$(document).ready(function(){ ScrollTo($('#divSubTaskGrid]')); });";
+                SetSubTaskDetails();
             }
-
-            ScriptManager.RegisterStartupScript(
-                                                    this,
-                                                    this.GetType(),
-                                                    "ScrollToSection",
-                                                    strScript,
-                                                    true
-                                                );
 
             hdnAttachments.Value = string.Empty;
             hdParentTaskId.Value = string.Empty;
             hdMainParentId.Value = string.Empty;
             hdTaskLvl.Value = string.Empty;
-            hdTaskId.Value = string.Empty;
-
-            SetSubTaskDetails();
+            hdTaskId.Value = string.Empty;            
         }
 
 
@@ -2574,8 +2570,27 @@ namespace JG_Prospect.Sr_App.Controls
             upSubTasks.Update();
         }
 
-        public void SetSubTaskDetails()
+        public void SetSubTaskDetails(int intTaskId = 0)
         {
+            string strScript = string.Empty;
+            if (intTaskId > 0)
+            {
+                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\"" + intTaskId.ToString() + "\"]')); });";
+            }
+            else
+            {
+                strScript += "$(document).ready(function(){ ScrollTo($('#divSubTaskGrid')); });";
+            }
+
+            ScriptManager.RegisterStartupScript(
+                                                    this,
+                                                    this.GetType(),
+                                                    "ScrollToSection",
+                                                    strScript,
+                                                    true
+                                                );
+
+
             int intHighlightedTaskId = HighlightedTaskId;
 
             if (IsPostBack)

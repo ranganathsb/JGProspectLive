@@ -1313,7 +1313,7 @@
         maintask = true;
         $('#<%=hdTaskLvl.ClientID%>').val("1");
         $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
-
+        $('#<%=chkTechTask.ClientID%>').prop('checked', false)
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
         return false;
     }
