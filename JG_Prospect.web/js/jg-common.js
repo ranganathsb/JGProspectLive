@@ -453,14 +453,16 @@ function GetQueryStringParameterValue(param) {
 }
 
 //common code check query string parameter, if already exists then replace value else add that parameter. 
-function updateQueryStringParameter(uri, key, value) {
+function updateQueryStringParameter(uri, key, value, Mainkey, MainValue) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
     var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    
     if (uri.match(re)) {
         return uri.replace(re, '$1' + key + "=" + value + '$2');
     }
     else {
-        return uri + separator + key + "=" + value;
+        uri = uri.replace("ITDashboard", "TaskGenerator");
+        return uri + separator + Mainkey + MainValue + '&' + key + "=" + value;
     }
 }
 

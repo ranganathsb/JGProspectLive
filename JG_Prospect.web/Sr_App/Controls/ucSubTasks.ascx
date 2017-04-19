@@ -51,7 +51,7 @@
         z-index: 100 !important;
     }
 
-    
+
     /*poup css starts*/
     .Descoverlay {
         position: fixed;
@@ -107,9 +107,9 @@
             overflow-x: hidden;
         }
 
-        .Descpopup .content img {
-            width: 100%;
-        }
+            .Descpopup .content img {
+                width: 100%;
+            }
 
     @media screen and (max-width: 700px) {
         .Descpopup {
@@ -618,8 +618,9 @@
                                                                     &nbsp;
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
-                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View More Comments</a>
-                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskdesc">
+                                                                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
+                                                                    <h5>Comments/Feedback</h5>
+                                                                    <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskComments">
                                                                     </div>
                                                                 </td>
                                                                 <td width="15%">
@@ -977,16 +978,16 @@
         </tbody>
         <tfoot data-parent-commentid="{ParentCommentId}">
             <tr>
-                <td>
-                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
-                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment</a>
+                <td class="noborder">
                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid="{TaskId}"
                         data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
-                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} Comments</a>
+                        onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} more comments</a>
+                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                        onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                 </td>
             </tr>
             <tr data-id="trAddComment" style="display: none;">
-                <td>
+                <td class="noborder">
                     <div>
                         <textarea data-id="txtComment" class="textbox" style="width: 90%; height: 50px;"></textarea>
                     </div>
@@ -1002,17 +1003,26 @@
 
 <script type="text/template" class="hide" data-id="divSubTaskCommentRowTemplate">
     <tr data-commentid="{Id}">
-        <td>
-            <div style="padding: 3px; background-color: white; color: black;">
+        <td class="noborder">
+            <div class="taskComment">
                 {Comment}
             </div>
+            <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="hide"
+                data-startindex="0" data-pagesize="0" style="margin-left: 10px;"
+                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Replies&nbsp;</a>
             <a href="javascript:void(0);" data-id="hypAddReply" data-taskid="{TaskId}" data-parent-commentid="{Id}"
-                data-startindex="0" data-pagesize="0"
-                onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Add Reply</a>&nbsp;
-            <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}"
-                data-startindex="0" data-pagesize="0"
-                onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {TotalChildRecords} Replies</a>
-            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="taskdesc">
+                data-startindex="0" data-pagesize="0" onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Reply</a>
+            <div data-id="divSubTaskCommentPlaceHolder" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="taskdesc"
+                style="margin-left: 10px;">
+            </div>
+            <div id="replyComment" class="hide replycomment" data-parent-commentid="{ParentCommentId}">
+                <div>
+                    <textarea data-id="txtComment" class="textbox" style="width: 90%; height: 50px;"></textarea>
+                </div>
+                <a href="javascript:void(0);" data-id="hypSaveComment" data-comment-id="0" data-taskid="{TaskId}" data-parent-commentid="{Id}"
+                    onclick="javascript:SubTaskCommentScript.SaveTaskComment(this);">Save</a>
+                <a href="javascript:void(0);" data-id="hypCancelComment" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                    onclick="javascript:SubTaskCommentScript.CancelTaskComment(this);">Cancel</a>
             </div>
         </td>
     </tr>
@@ -1048,7 +1058,8 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            console.log(data);
+            
+            //debugger;
             if (data.d.Success) {
                 var viewlink = $(sender);
                 var strTaskId = viewlink.attr('data-taskid');
@@ -1065,10 +1076,8 @@
                 var $SubTaskCommentTemplate = $(strSubTaskCommentTemplate);
 
                 if (data.d.RemainingRecords <= 0) {
+                    //$SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').html('View More Replies');
                     $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').hide();
-                }
-                else {
-                    $SubTaskCommentTemplate.find('a[data-id="hypViewComments"]').show();
                 }
 
                 for (var i = 0; i < data.d.TaskComments.length; i++) {
@@ -1086,17 +1095,18 @@
                     $SubTaskCommentRowTemplate = $(strSubTaskCommentRowTemplate);
 
                     if (objTaskComment.ParentCommentId != 0) {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').hide();
-                    }
-                    else {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
-                    }
-
-                    if (objTaskComment.TotalChildRecords == 0) {
+                        //$SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').hide();
                         $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').hide();
                     }
                     else {
-                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').show();
+                        //$SubTaskCommentRowTemplate.find('a[data-id="hypAddReply"]').show();
+                    }
+
+                    //console.log(objTaskComment.TotalChildRecords);
+
+                    if (objTaskComment.TotalChildRecords != 0) {
+
+                        $SubTaskCommentRowTemplate.find('a[data-id="hypViewReplies"]').removeClass('hide');
                     }
 
                     $SubTaskCommentTemplate.append($SubTaskCommentRowTemplate);
@@ -1104,7 +1114,7 @@
                 $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').html('');
                 $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]').append($SubTaskCommentTemplate);
 
-                $SubTaskCommentTemplate.find('a[data-id="hypViewReplies"]').click();
+                //$SubTaskCommentTemplate.find('a[data-id="hypViewReplies"]').click();
             }
         }
     };
@@ -1115,30 +1125,49 @@
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot;
+        
+        if ($sender.parent().attr('id') == "replyComment") {
+            $tfoot = $sender.parent();
+        }
+        else {
+            $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        }
+
         var strComment = $tfoot.find('textarea[data-id="txtComment"]').val();
 
-        var postData = {
-            strId: strId,
-            strComment: strComment,
-            strParentCommentId: strParentCommentId,
-            strTaskId: strTaskId
-        };
+        if (strComment != '') {
+            var postData = {
+                strId: strId,
+                strComment: strComment,
+                strParentCommentId: strParentCommentId,
+                strTaskId: strTaskId
+            };
 
-        CallJGWebService('SaveTaskComment', postData, function (data) { OnSaveTaskCommentSuccess(data, sender) });
+            CallJGWebService('SaveTaskComment', postData, function (data) { OnSaveTaskCommentSuccess(data, sender) });
 
-        function OnSaveTaskCommentSuccess(data, sender) {
-            if (data.d.Success) {
-                console.log(data.d);
+            function OnSaveTaskCommentSuccess(data, sender) {
+                if (data.d.Success) {
+                    console.log(data.d);
 
-                var $sender = $(sender);
-                var strTaskId = $sender.attr('data-taskid');
-                var strParentCommentId = $sender.attr('data-parent-commentid');
-                var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-                var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+                    var $sender = $(sender);
+                    var strTaskId = $sender.attr('data-taskid');
+                    var strParentCommentId = $sender.attr('data-parent-commentid');
+                    var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
+                    var $tfoot;
 
-                $tfoot.find('a[data-id="hypViewComments"]').click();
-                $tfoot.find('tr[data-id="trAddComment"]').hide();
+                    if ($sender.parent().attr('id') == "replyComment") {
+                        $tfoot = $sender.parent();
+                        $tfoot.addClass('hide');
+                    }
+                    else {
+                        $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+                        $tfoot.find('tr[data-id="trAddComment"]').hide();
+                    }
+
+                    $tfoot.find('a[data-id="hypViewComments"]').click();
+
+                }
             }
         }
     };
@@ -1148,18 +1177,39 @@
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot;
 
-        $tfoot.find('textarea[data-id="txtComment"]').val('');
-        $tfoot.find('tr[data-id="trAddComment"]').hide();
+        if ($sender.parent().attr('id') == "replyComment") {
+            $tfoot = $sender.parent();
+            $tfoot.find('textarea[data-id="txtComment"]').val('');
+            $tfoot.addClass('hide');
+        }
+        else {
+            $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+            $tfoot.find('textarea[data-id="txtComment"]').val('');
+            $tfoot.find('tr[data-id="trAddComment"]').hide();
+        }
+
+
     };
 
     SubTaskCommentScript.AddTaskComment = function (sender) {
         var $sender = $(sender);
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
+
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
-        var $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        var $tfoot;
+
+        if ($sender.html() == "Reply") {
+            $tfoot = $sender.siblings('div[id="replyComment"]');
+            console.log($tfoot.html());
+            $tfoot.removeClass('hide');
+        }
+        else {
+            $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
+        }
+
 
         $tfoot.find('textarea[data-id="txtComment"]').val('');
         $tfoot.find('tr[data-id="trAddComment"]').show();
@@ -1245,7 +1295,7 @@
         $(".TitleEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-               {
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -1271,7 +1321,7 @@
         $(".UrlEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-               {
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -1300,7 +1350,7 @@
         $(".DescEdit").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-               {
+    {
                %>
             $(this).bind("click", function () {
                 if (!isadded) {
@@ -1331,7 +1381,7 @@
         $(".showsubtaskDIV").each(function (index) {
             // This section is available to admin only.
             <% if (this.IsAdminMode)
-               {
+    {
                %>
             $(this).unbind('click').bind("click", function () {
                 var commandName = $(this).attr("data-val-commandName");
@@ -1527,8 +1577,7 @@
                 data: JSON.stringify(postData),
                 asynch: false,
                 success: function (data) {
-                    if (idAttachments)
-                    {
+                    if (idAttachments) {
                         $('#<%=btnSaveGridAttachment.ClientID%>').click();
                     }
                     else {
@@ -1541,104 +1590,104 @@
                 }
             }
         );
-    }
-    function EditAssignedTaskUsers(sender) {
-        ShowAjaxLoader();
-
-        var $sender = $(sender);
-        var intTaskID = parseInt($sender.attr('data-taskid'));
-        var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
-        var arrAssignedUsers = [];
-        var arrDesignationUsers = [];
-
-        $sender.find('option').each(function (index, item) {
-            var intUserId = parseInt($(item).attr('value'));
-            if (intUserId > 0) {
-                arrDesignationUsers.push(intUserId);
-
-                if ($.inArray(intUserId.toString(), $sender.val()) != -1) {
-                    arrAssignedUsers.push(intUserId);
-                }
-                //if ($sender.val() == intUserId.toString()) {
-                //    arrAssignedUsers.push(intUserId);
-                //}
-            }
-        });
-
-        var postData = {
-            intTaskId: intTaskID,
-            intTaskStatus: intTaskStatus,
-            arrAssignedUsers: arrAssignedUsers
-        };
-
-        CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
-
-        function OnValidateTaskStatusSuccess(response) {
-            if (!response.d.IsValid) {
-                alert(response.d.Message);
-            }
-            else {
-                SaveAssignedTaskUsers();
-            }
         }
-
-        function OnValidateTaskStatusError() {
-            alert('Task status cannot be validated. Please try again.');
-        }
-
-        // private function (so, it is defined in a function) to save task assigned users only after validating task status.
-        function SaveAssignedTaskUsers() {
+        function EditAssignedTaskUsers(sender) {
             ShowAjaxLoader();
+
+            var $sender = $(sender);
+            var intTaskID = parseInt($sender.attr('data-taskid'));
+            var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
+            var arrAssignedUsers = [];
+            var arrDesignationUsers = [];
+
+            $sender.find('option').each(function (index, item) {
+                var intUserId = parseInt($(item).attr('value'));
+                if (intUserId > 0) {
+                    arrDesignationUsers.push(intUserId);
+
+                    if ($.inArray(intUserId.toString(), $sender.val()) != -1) {
+                        arrAssignedUsers.push(intUserId);
+                    }
+                    //if ($sender.val() == intUserId.toString()) {
+                    //    arrAssignedUsers.push(intUserId);
+                    //}
+                }
+            });
 
             var postData = {
                 intTaskId: intTaskID,
                 intTaskStatus: intTaskStatus,
-                arrAssignedUsers: arrAssignedUsers,
-                arrDesignationUsers: arrDesignationUsers
+                arrAssignedUsers: arrAssignedUsers
             };
-            CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
 
-            function OnSaveAssignedTaskUsersSuccess(response) {
-                console.log(response);
-                if (response) {
-                    alert('Task assignment saved successfully.');
-                    $('#<%=hdTaskId.ClientID%>').val(intTaskID.toString());
-                    $('#<%=btnUpdateRepeater.ClientID%>').click();
+            CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
+
+            function OnValidateTaskStatusSuccess(response) {
+                if (!response.d.IsValid) {
+                    alert(response.d.Message);
                 }
                 else {
-                    OnSaveAssignedTaskUsersError();
+                    SaveAssignedTaskUsers();
                 }
             }
 
-            function OnSaveAssignedTaskUsersError(err) {
-                //alert(JSON.stringify(err));
-                alert('Task assignment cannot be updated. Please try again.');
+            function OnValidateTaskStatusError() {
+                alert('Task status cannot be validated. Please try again.');
+            }
+
+            // private function (so, it is defined in a function) to save task assigned users only after validating task status.
+            function SaveAssignedTaskUsers() {
+                ShowAjaxLoader();
+
+                var postData = {
+                    intTaskId: intTaskID,
+                    intTaskStatus: intTaskStatus,
+                    arrAssignedUsers: arrAssignedUsers,
+                    arrDesignationUsers: arrDesignationUsers
+                };
+                CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
+
+                function OnSaveAssignedTaskUsersSuccess(response) {
+                    console.log(response);
+                    if (response) {
+                        alert('Task assignment saved successfully.');
+                        $('#<%=hdTaskId.ClientID%>').val(intTaskID.toString());
+                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                    }
+                    else {
+                        OnSaveAssignedTaskUsersError();
+                    }
+                }
+
+                function OnSaveAssignedTaskUsersError(err) {
+                    //alert(JSON.stringify(err));
+                    alert('Task assignment cannot be updated. Please try again.');
+                }
             }
         }
-    }
 
-    function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
-        ShowAjaxLoader();
-        var postData = {
-            CommandArgument: cmdArg,
-            CommandName: cName
-        };
+        function SetTaskDetailsForNew(cmdArg, cName, TaskLevel, strInstallId) {
+            ShowAjaxLoader();
+            var postData = {
+                CommandArgument: cmdArg,
+                CommandName: cName
+            };
 
-        $.ajax
-        (
-            {
-                url: '../WebServices/JGWebService.asmx/GetSubTaskId',
-                contentType: 'application/json; charset=utf-8;',
-                type: 'POST',
-                dataType: 'json',
-                data: JSON.stringify(postData),
-                asynch: false,
-                success: function (data) {
-                    HideAjaxLoader();
+            $.ajax
+            (
+                {
+                    url: '../WebServices/JGWebService.asmx/GetSubTaskId',
+                    contentType: 'application/json; charset=utf-8;',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: JSON.stringify(postData),
+                    asynch: false,
+                    success: function (data) {
+                        HideAjaxLoader();
 
-                    if (TaskLevel == "2") {
-                        var taskid = GetParameterValues('TaskId');
-                        //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
+                        if (TaskLevel == "2") {
+                            var taskid = GetParameterValues('TaskId');
+                            //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
                         $('#<%=txtInstallId.ClientID%>').val(strInstallId);
                         $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                         $('#<%=hdMainParentId.ClientID%>').val(taskid);
@@ -1913,21 +1962,21 @@
             }
         }
 
-           var objSubTaskDropzone, objSubtaskNoteDropzone;
+        var objSubTaskDropzone, objSubtaskNoteDropzone;
 
-           function ucSubTasks_ApplyDropZone() {
-               //remove already attached dropzone.
-               if (objSubTaskDropzone) {
-                   objSubTaskDropzone.destroy();
-                   objSubTaskDropzone = null;
-               }
-               if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-            objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                maxFiles: 5,
-                url: "taskattachmentupload.aspx",
-                thumbnailWidth: 90,
-                thumbnailHeight: 90,
-                previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+        function ucSubTasks_ApplyDropZone() {
+            //remove already attached dropzone.
+            if (objSubTaskDropzone) {
+                objSubTaskDropzone.destroy();
+                objSubTaskDropzone = null;
+            }
+            if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
                        init: function () {
                            this.on("maxfilesexceeded", function (data) {
                                alert('you are reached maximum attachment upload limit.');
@@ -1940,17 +1989,17 @@
 
                                AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
 
-                               if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                                   // saves attachment.
-                                   $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                            // saves attachment.
+                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
                                    //this.removeFile(file);
                                }
-                           });
-                       }
+                    });
+                }
                    });
                }
 
-        //Apply dropzone for comment section.
+            //Apply dropzone for comment section.
                if (objSubtaskNoteDropzone) {
                    objSubtaskNoteDropzone.destroy();
                    objSubTaskNoteDropzone = null;
@@ -2081,7 +2130,7 @@
 
                         var filename = response.split("^");
                         $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        
+
                         AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnGridAttachment.ClientID %>');
 
                         if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {

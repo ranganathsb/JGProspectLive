@@ -327,23 +327,24 @@
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                         <Columns>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Due Date">
+                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Parent Task">
                                 <ItemTemplate>
+                                    <asp:HiddenField ID="frozenMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
                                     <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                     <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                     <asp:Label ID="lblDueDate" runat="server" Text='<%# Eval("DueDate")%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Task ID#">
+                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                                 <ItemTemplate>
                                     <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>'
-                                        data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
+                                        data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
 
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
-                                HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Title">
+                                HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Sub Task">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesc" runat="server"
                                         Text='<%# Eval("Title")%>'></asp:Label>
@@ -528,19 +529,20 @@
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                                 HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Assigned To">
                                 <ItemTemplate>
+                                    <asp:HiddenField ID="nonfrozenMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
                                     <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                     <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                     <asp:Label ID="lblDueDate" runat="server" Text='<%# Eval("DueDate")%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Task ID#">
+                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Sub Task ID#">
                                 <ItemTemplate>
-                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
-                                HeaderStyle-Width="30%" ItemStyle-Width="30%" HeaderText="Title">
+                                HeaderStyle-Width="30%" ItemStyle-Width="30%" HeaderText="Sub Task">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesc" runat="server"
                                         Text='<%# Eval("Title")%>'></asp:Label>
@@ -652,10 +654,10 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                             <ItemTemplate>
-                                <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
+                                <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify" HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Title">
+                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify" HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Sub Task">
                             <ItemTemplate>
                                 <asp:Label ID="lblDesc" runat="server"
                                     Text='<%# Eval("Title")%>'></asp:Label>
@@ -674,7 +676,7 @@
                             </ItemTemplate>
                         </asp:TemplateField>
 
-                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Approve">
+                        <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Approval">
                             <ItemTemplate>
                                 <asp:CheckBox ID="chkAdmin" Enabled="false" runat="server" />
                                 <asp:CheckBox ID="chkITLead" Enabled="false" runat="server" />
@@ -765,11 +767,11 @@
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                             HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                             <ItemTemplate>
-                                <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' CssClass="context-menu"></asp:LinkButton>
+                                <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
-                            HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Title">
+                            HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Sub Task">
                             <ItemTemplate>
                                 <asp:Label ID="lblDesc" runat="server"
                                     Text='<%# Eval("Title")%>'></asp:Label>
@@ -851,7 +853,7 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
         });
 
         $(".context-menu").bind("contextmenu", function () {
-            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
             copyToClipboard(urltoCopy);
             return false;
         });

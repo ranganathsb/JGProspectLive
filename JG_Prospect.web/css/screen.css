@@ -1987,3 +1987,19 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 .display_inline {
     display: inline;
 }
+
+.taskComments {
+    margin-left: 10px;
+    max-height: 170px;
+    overflow-y: auto;
+}
+
+.taskComment {
+    padding: 3px;
+    color: black;
+    background-color: #fafafa;
+    margin-top:5px;
+}
+.replycomment {
+
+}

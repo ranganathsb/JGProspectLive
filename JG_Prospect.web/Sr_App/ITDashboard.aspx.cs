@@ -777,7 +777,8 @@ namespace JG_Prospect.Sr_App
                 HiddenField lblParentTaskIdInPro = e.Row.FindControl("lblParentTaskIdInPro") as HiddenField;
                 HiddenField hdMainParentId = e.Row.FindControl("hdMainParentId") as HiddenField;
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value;
+                //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value;
+                lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
 
                 if (lblDueDate.Text != "")
                 {
@@ -929,8 +930,8 @@ namespace JG_Prospect.Sr_App
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdClosed = e.Row.FindControl("lblParentTaskIdClosed") as HiddenField;
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value;
-
+                //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value;
+                lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
                 if (lblDueDate.Text != "")
                 {
                     DateTime dtDue = new DateTime();
@@ -1014,6 +1015,7 @@ namespace JG_Prospect.Sr_App
                 Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusInPro = e.Row.FindControl("drpStatusInPro") as DropDownList;
                 HiddenField lblTaskIdInPro = e.Row.FindControl("lblTaskIdInPro") as HiddenField;
+                HiddenField frozenMainParentId = e.Row.FindControl("frozenMainParentId") as HiddenField;
                 Label lblHoursLead = e.Row.FindControl("lblHoursLeadInPro") as Label;
                 Label lblHoursDev = e.Row.FindControl("lblHoursDevInPro") as Label;
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
@@ -1022,7 +1024,9 @@ namespace JG_Prospect.Sr_App
                 HtmlGenericControl divITLead = (HtmlGenericControl)e.Row.FindControl("divITLead");
                 HtmlGenericControl divUser = (HtmlGenericControl)e.Row.FindControl("divUser");
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
+                //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
+                lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + frozenMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
+
 
                 if (lblDueDate.Text != "")
                 {
@@ -1094,12 +1098,14 @@ namespace JG_Prospect.Sr_App
                 Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusInPro = e.Row.FindControl("drpStatusInPro") as DropDownList;
                 HiddenField lblTaskIdInPro = e.Row.FindControl("lblTaskIdInPro") as HiddenField;
+                HiddenField nonfrozenMainParentId = e.Row.FindControl("nonfrozenMainParentId") as HiddenField;
                 Label lblHoursLead = e.Row.FindControl("lblHoursLeadInPro") as Label;
                 Label lblHoursDev = e.Row.FindControl("lblHoursDevInPro") as Label;
                 LinkButton lnkInstallId = e.Row.FindControl("lnkInstallId") as LinkButton;
                 HiddenField lblParentTaskIdInPro = e.Row.FindControl("lblParentTaskIdInPro") as HiddenField;
 
-                lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
+                //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
+                lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + nonfrozenMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
 
                 if (lblDueDate.Text != "")
                 {
