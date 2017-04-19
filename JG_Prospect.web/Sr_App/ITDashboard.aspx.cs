@@ -83,9 +83,9 @@ namespace JG_Prospect.Sr_App
                     btnSearchInPro.Visible = false;
 
                 }
-                LoadFilterUsersByDesgination("", drpUsersInProgress);
-                LoadFilterUsersByDesgination("", drpUsersClosed);
-                LoadFilterUsersByDesgination("", drpUserFrozen);
+                LoadFilterUsersByDesgination("", ddlInProgressAssignedUsers);
+                LoadFilterUsersByDesgination("", ddlClosedAssignedUsers);
+                LoadFilterUsersByDesginationFrozen("", drpUserFrozen);
                 //LoadFilterUsersByDesgination("", drpUserNew);
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
@@ -316,13 +316,13 @@ namespace JG_Prospect.Sr_App
             //ScriptManager.RegisterStartupScript(this.Page, GetType(), "al1", "$('#lnkNNewCounter').click(function () {callpopupscript();   });", true);
 
         }
-        protected void drpDesigInProgress_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string designation = drpDesigInProgress.SelectedValue;
-            LoadFilterUsersByDesgination(designation, drpUsersInProgress);
-            //SearchTasks(null);
-            BindTaskInProgressGrid();
-        }
+        //protected void drpDesigInProgress_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string designation = drpDesigInProgress.SelectedValue;
+        //    LoadFilterUsersByDesgination(designation, drpUsersInProgress);
+        //    //SearchTasks(null);
+        //    BindTaskInProgressGrid();
+        //}
 
 
         //protected void drpDesigNew_SelectedIndexChanged(object sender, EventArgs e)
@@ -335,18 +335,18 @@ namespace JG_Prospect.Sr_App
         protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             string designation = drpDesigFrozen.SelectedValue;
-            LoadFilterUsersByDesgination(designation, drpUserFrozen);
+            LoadFilterUsersByDesginationFrozen(designation, drpUserFrozen);
             BindFrozenTasks();
             upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
-        protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string designation = drpDesigClosed.SelectedValue;
-            LoadFilterUsersByDesgination(designation, drpUsersClosed);
-            //SearchTasks(null);
-            BindTaskClosedGrid();
-        }
+        //protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string designation = drpDesigClosed.SelectedValue;
+        //    LoadFilterUsersByDesgination(designation, drpUsersClosed);
+        //    //SearchTasks(null);
+        //    BindTaskClosedGrid();
+        //}
         protected void drpUsersInProgress_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindTaskInProgressGrid();
@@ -381,7 +381,7 @@ namespace JG_Prospect.Sr_App
             //mpNewFrozenTask.Show();
         }
 
-        private void LoadFilterUsersByDesgination(string designation, DropDownList drp)
+        private void LoadFilterUsersByDesgination(string designation, Saplin.Controls.DropDownCheckBoxes drp)
         {
             DataSet dsUsers;
             // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
@@ -389,6 +389,7 @@ namespace JG_Prospect.Sr_App
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designation);
             //drpUsersInProgress.Items.Clear();
 
+            drp.Items.Clear();
             drp.DataSource = dsUsers;
             drp.DataTextField = "FristName";
             drp.DataValueField = "Id";
@@ -396,7 +397,52 @@ namespace JG_Prospect.Sr_App
             drp.Items.Insert(0, new ListItem("--All--", "0"));
             drp.SelectedIndex = 0;
 
+            HighlightInterviewUsers(dsUsers.Tables[0], drp, null);
+        }
 
+        private void HighlightInterviewUsers(DataTable dtUsers, Saplin.Controls.DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
+        {
+            if (dtUsers.Rows.Count > 0)
+            {
+                var rows = dtUsers.AsEnumerable();
+
+                //get all users comma seperated ids with interviewdate status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
+
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:red;");
+                    }
+                }
+
+            }
+        }
+
+        private void LoadFilterUsersByDesginationFrozen(string designation, DropDownList drp)
+        {
+            DataSet dsUsers;
+            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designation);
+
+            drp.DataSource = dsUsers;
+            drp.DataTextField = "FristName";
+            drp.DataValueField = "Id";
+            drp.DataBind();
+            drp.Items.Insert(0, new ListItem("--All--", "0"));
+            drp.SelectedIndex = 0;
         }
 
         private void FillDesignation()
@@ -404,20 +450,32 @@ namespace JG_Prospect.Sr_App
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
             //drpDesigInProgress .Items.Clear();
 
-            drpDesigInProgress.DataValueField = "Id";
-            drpDesigInProgress.DataTextField = "DesignationName";
-            drpDesigInProgress.DataSource = dsDesignation.Tables[0];
-            drpDesigInProgress.DataBind();
-            drpDesigInProgress.Items.Insert(0, new ListItem("--All--", "0"));
-            drpDesigInProgress.SelectedIndex = 0;
+            //drpDesigInProgress.DataValueField = "Id";
+            //drpDesigInProgress.DataTextField = "DesignationName";
+            //drpDesigInProgress.DataSource = dsDesignation.Tables[0];
+            //drpDesigInProgress.DataBind();
+            //drpDesigInProgress.Items.Insert(0, new ListItem("--All--", "0"));
+            //drpDesigInProgress.SelectedIndex = 0;
 
+            //DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            ddlInprogressUserDesignation.Items.Clear();
+            ddlInprogressUserDesignation.DataSource = dsDesignation.Tables[0];
+            ddlInprogressUserDesignation.DataTextField = "DesignationName";
+            ddlInprogressUserDesignation.DataValueField = "ID";
+            ddlInprogressUserDesignation.DataBind();
 
-            drpDesigClosed.DataValueField = "Id";
-            drpDesigClosed.DataTextField = "DesignationName";
-            drpDesigClosed.DataSource = dsDesignation.Tables[0];
-            drpDesigClosed.DataBind();
-            drpDesigClosed.Items.Insert(0, new ListItem("--All--", "0"));
-            drpDesigClosed.SelectedIndex = 0;
+            ddlClosedUserDesignation.Items.Clear();
+            ddlClosedUserDesignation.DataSource = dsDesignation.Tables[0];
+            ddlClosedUserDesignation.DataTextField = "DesignationName";
+            ddlClosedUserDesignation.DataValueField = "ID";
+            ddlClosedUserDesignation.DataBind();
+
+            //drpDesigClosed.DataValueField = "Id";
+            //drpDesigClosed.DataTextField = "DesignationName";
+            //drpDesigClosed.DataSource = dsDesignation.Tables[0];
+            //drpDesigClosed.DataBind();
+            //drpDesigClosed.Items.Insert(0, new ListItem("--All--", "0"));
+            //drpDesigClosed.SelectedIndex = 0;
 
             drpDesigFrozen.DataValueField = "Id";
             drpDesigFrozen.DataTextField = "DesignationName";
@@ -425,6 +483,12 @@ namespace JG_Prospect.Sr_App
             drpDesigFrozen.DataBind();
             drpDesigFrozen.Items.Insert(0, new ListItem("--All--", "0"));
             drpDesigFrozen.SelectedIndex = 0;
+
+            //ddlFrozenUserDesignation.Items.Clear();
+            //ddlFrozenUserDesignation.DataSource = dsDesignation.Tables[0];
+            //ddlFrozenUserDesignation.DataTextField = "DesignationName";
+            //ddlFrozenUserDesignation.DataValueField = "ID";
+            //ddlFrozenUserDesignation.DataBind();
 
             //drpDesigNew.DataValueField = "Id";
             //drpDesigNew.DataTextField = "DesignationName";
@@ -651,29 +715,33 @@ namespace JG_Prospect.Sr_App
         {
             DataSet ds = new DataSet();
 
-            int userId = 0;
-            int desigID = 0;
+            string userId = "0";
+            string desigID = "";
             string strSearch = "";
             if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
             {
-                userId = 0;
+                userId = GetSelectedDesignationsString(ddlInProgressAssignedUsers);
                 if (txtSearchInPro.Text != "")
                 {
                     strSearch = txtSearchInPro.Text;
                 }
-                else if (Convert.ToInt32(drpUsersInProgress.SelectedValue) > 0)
-                {
-                    userId = Convert.ToInt32(drpUsersInProgress.SelectedValue);
-                }
+                //else if (Convert.ToInt32(drpUsersInProgress.SelectedValue) > 0)
+                //{
+                //    userId = Convert.ToInt32(drpUsersInProgress.SelectedValue);
+                //}
             }
             else
             {
-                userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                //userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
             }
-            if (Convert.ToInt32(drpDesigInProgress.SelectedValue) > 0)
-            {
-                desigID = Convert.ToInt32(drpDesigInProgress.SelectedValue);
-            }
+
+            //if (Convert.ToInt32(drpDesigInProgress.SelectedValue) > 0)
+            //{
+            //    desigID = Convert.ToInt32(drpDesigInProgress.SelectedValue);
+            //}
+
+            desigID = GetSelectedDesignationsString(ddlInprogressUserDesignation);
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
             ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
@@ -696,29 +764,33 @@ namespace JG_Prospect.Sr_App
         {
             DataSet ds = new DataSet();
 
-            int userId = 0;
-            int desigID = 0;
+            string userId = "0";
+            string desigID = "";
             string strSearch = "";
             if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
             {
-                userId = 0;
+                userId = GetSelectedDesignationsString(ddlClosedAssignedUsers);
                 if (txtSearchInPro.Text != "")
                 {
                     strSearch = txtSearchInPro.Text;
                 }
-                else if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
-                {
-                    userId = Convert.ToInt32(drpUsersClosed.SelectedValue);
-                }
+                //else if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
+                //{
+                //    userId = Convert.ToInt32(drpUsersClosed.SelectedValue);
+                //}
             }
             else
             {
-                userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                //userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
             }
-            if (Convert.ToInt32(drpDesigClosed.SelectedValue) > 0)
-            {
-                desigID = Convert.ToInt32(drpDesigClosed.SelectedValue);
-            }
+
+            //if (Convert.ToInt32(drpDesigClosed.SelectedValue) > 0)
+            //{
+            //    desigID = Convert.ToInt32(drpDesigClosed.SelectedValue);
+            //}
+
+            desigID = GetSelectedDesignationsString(ddlClosedUserDesignation);
 
             // if loggedin user is not manager then show tasks assigned to loggedin user only 
             ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID, strSearch, grdTaskClosed.PageIndex, grdTaskClosed.PageSize);
@@ -1238,7 +1310,117 @@ namespace JG_Prospect.Sr_App
             //mpNewFrozenTask.Show();
         }
 
+        protected void ddlInprogressUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designations = GetSelectedDesignationsString(ddlInprogressUserDesignation);
 
+            LoadFilterUsersByDesgination(designations, ddlInProgressAssignedUsers);
+            
+            BindTaskInProgressGrid();
+
+            ddlInProgressAssignedUsers_SelectedIndexChanged(sender, e);
+
+            ddlInprogressUserDesignation.Texts.SelectBoxCaption = "Select";
+            foreach (ListItem item in ddlInprogressUserDesignation.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlInprogressUserDesignation.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        protected void ddlClosedUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designations = GetSelectedDesignationsString(ddlClosedUserDesignation);
+
+            LoadFilterUsersByDesgination(designations, ddlClosedAssignedUsers);
+            
+            BindTaskClosedGrid();
+
+            ddlClosedUserDesignation.Texts.SelectBoxCaption = "Select";
+            foreach (ListItem item in ddlClosedUserDesignation.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlClosedUserDesignation.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        protected void ddlInProgressAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindTaskInProgressGrid();
+
+            ddlInProgressAssignedUsers.Texts.SelectBoxCaption = "--All--";
+
+            foreach (ListItem item in ddlInProgressAssignedUsers.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlInProgressAssignedUsers.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        protected void ddlClosedAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindTaskClosedGrid();
+
+            ddlClosedAssignedUsers.Texts.SelectBoxCaption = "--All--";
+
+            foreach (ListItem item in ddlClosedAssignedUsers.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlClosedAssignedUsers.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        //protected void ddlFrozenUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string designations = GetSelectedDesignationsString(ddlFrozenUserDesignation);
+
+        //    LoadFilterUsersByDesgination(designations, drpUserFrozen);
+
+        //    BindTaskClosedGrid();
+
+        //    ddlFrozenUserDesignation.Texts.SelectBoxCaption = "Select";
+        //    foreach (ListItem item in ddlFrozenUserDesignation.Items)
+        //    {
+        //        if (item.Selected)
+        //        {
+        //            ddlFrozenUserDesignation.Texts.SelectBoxCaption = item.Text;
+        //            break;
+        //        }
+        //    }
+        //}
+
+        private string GetSelectedDesignationsString(Saplin.Controls.DropDownCheckBoxes drpChkBoxes)
+        {
+            String returnVal = string.Empty;
+            StringBuilder sbDesignations = new StringBuilder();
+
+            foreach (ListItem item in drpChkBoxes.Items)
+            {
+                if (item.Selected)
+                {
+                    sbDesignations.Append(String.Concat(item.Value, ","));
+                }
+            }
+
+            if (sbDesignations.Length > 0)
+            {
+                returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
+            }
+
+            return returnVal;
+        }
 
         private System.Web.UI.WebControls.ListItemCollection FillStatusDropDowns(string[] lst)
         {

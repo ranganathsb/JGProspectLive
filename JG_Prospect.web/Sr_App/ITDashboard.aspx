@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="ITDashboard.aspx.cs" Inherits="JG_Prospect.Sr_App.ITDashboard" %>
 
 <%@ Register Src="~/Sr_App/LeftPanel.ascx" TagName="LeftPanel" TagPrefix="uc2" %>
-
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
@@ -282,6 +282,37 @@
                                         <td>
                                             <asp:DropDownList ID="drpDesigFrozen" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigFrozen_SelectedIndexChanged">
                                             </asp:DropDownList>
+                                            <%--<asp:UpdatePanel ID="UpdatePanel3" runat="server" RenderMode="Inline">
+                                            <ContentTemplate>
+                                                <asp:DropDownCheckBoxes ID="ddlFrozenUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlFrozenUserDesignation_SelectedIndexChanged">
+                                                    <style selectboxwidth="195" dropdownboxboxwidth="120" dropdownboxboxheight="150" />
+                                                    <items>
+                                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                                <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
+                                                <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
+                                                <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
+                                                <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
+                                                <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
+                                                <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
+                                                <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
+                                                <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
+                                                <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
+                                                <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
+                                                <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
+                                                <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
+                                                <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
+                                                <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
+                                                <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
+                                                <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
+                                                <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
+                                                <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
+                                                <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
+                                                <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                            </items>
+                                                </asp:DropDownCheckBoxes>
+                                                <asp:CustomValidator ID="CustomValidator2" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkFrozenDesignations"></asp:CustomValidator>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>--%>
                                         </td>
                                         <td>
                                             <asp:DropDownList ID="drpUserFrozen" Style="width: 150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUserFrozen_SelectedIndexChanged">
@@ -384,11 +415,11 @@
                                                     Eval("AdminUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                </asp:HyperLink><br />
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                             </div>
                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
-                                                <input type="text" style="width:100px;" placeholder="Admin password" />
+                                                <input type="text" style="width: 100px;" placeholder="Admin password" />
                                             </div>
 
                                         </div>
@@ -420,11 +451,11 @@
                                                         Eval("TechLeadUserLastName").ToString()
                                                     )
                                     %>
-                                            </asp:HyperLink><br />
+                                                </asp:HyperLink><br />
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                             </div>
                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                <input type="text" style="width:100px;" placeholder="ITLead Password" />
+                                                <input type="text" style="width: 100px;" placeholder="ITLead Password" />
                                             </div>
                                         </div>
                                         <div id="divUser" runat="server" style="margin-bottom: 15px; font-size: x-small;">
@@ -454,11 +485,11 @@
                                                     Eval("OtherUserLastName").ToString()
                                                 )
                                 %>
-                                            </asp:HyperLink><br />
+                                                </asp:HyperLink><br />
                                                 <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
                                             </div>
                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
-                                                <input type="text" style="width:100px;" placeholder="User Password" />
+                                                <input type="text" style="width: 100px;" placeholder="User Password" />
                                             </div>
 
                                         </div>
@@ -538,7 +569,7 @@
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                                 HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Sub Task ID#">
                                 <ItemTemplate>
-                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>'  parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
@@ -598,12 +629,53 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigInProgress" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
-                                        </asp:DropDownList>
+                                        <%--<asp:DropDownList ID="drpDesigInProgress" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigInProgress_SelectedIndexChanged">
+                                        </asp:DropDownList>--%>
+                                        <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
+                                            <ContentTemplate>
+                                                <asp:DropDownCheckBoxes ID="ddlInprogressUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlInprogressUserDesignation_SelectedIndexChanged">
+                                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                    <Items>
+                                                        <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                                        <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
+                                                        <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
+                                                        <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
+                                                        <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
+                                                        <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
+                                                        <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                                    </Items>
+                                                </asp:DropDownCheckBoxes>
+                                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkDesignations"></asp:CustomValidator>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </td>
                                     <td>
-                                        <asp:DropDownList ID="drpUsersInProgress" Style="width: 150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
-                                        </asp:DropDownList>
+                                        <%--<asp:DropDownList ID="drpUsersInProgress" Style="width: 150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersInProgress_SelectedIndexChanged">
+                                        </asp:DropDownList>--%>
+                                        <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
+                                            <ContentTemplate>
+                                                <asp:DropDownCheckBoxes ID="ddlInProgressAssignedUsers" runat="server" UseSelectAllNode="false"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="ddlInProgressAssignedUsers_SelectedIndexChanged">
+                                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                    <Texts SelectBoxCaption="--All--" />
+                                                </asp:DropDownCheckBoxes>
+                                                <%--<asp:LinkButton ID="lbtnViewInProgressAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewInProgressAcceptanceLog_Click" />--%>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </td>
                                 </tr>
                             </table>
@@ -665,7 +737,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="150px" ItemStyle-Width="150px" HeaderText="Parent Task">
                             <ItemTemplate>
-                             <%#Eval("Assigneduser") %>  
+                                <%#Eval("Assigneduser") %>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120px" ItemStyle-Width="120px" HeaderText="Status">
@@ -681,7 +753,7 @@
                                 <asp:CheckBox ID="chkAdmin" Enabled="false" runat="server" />
                                 <asp:CheckBox ID="chkITLead" Enabled="false" runat="server" />
                                 <asp:CheckBox ID="chkUser" Enabled="false" runat="server" />
-                                 <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
+                                <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
                                 <br />
                                 <asp:Label ID="lblHoursDevInPro" runat="server"></asp:Label>
 
@@ -691,7 +763,7 @@
 
                 </asp:GridView>
             </ContentTemplate>
-           
+
         </asp:UpdatePanel>
         <h2></h2>
         <asp:UpdatePanel ID="upClosedTask" runat="server">
@@ -710,12 +782,53 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:DropDownList ID="drpDesigClosed" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
-                                        </asp:DropDownList>
+                                        <%--<asp:DropDownList ID="drpDesigClosed" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesigClosed_SelectedIndexChanged">
+                                        </asp:DropDownList>--%>
+                                        <asp:UpdatePanel ID="UpdatePanel2" runat="server" RenderMode="Inline">
+                                            <ContentTemplate>
+                                                <asp:DropDownCheckBoxes ID="ddlClosedUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlClosedUserDesignation_SelectedIndexChanged">
+                                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                    <Items>
+                                                        <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                                        <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
+                                                        <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
+                                                        <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
+                                                        <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
+                                                        <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
+                                                        <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
+                                                        <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
+                                                        <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
+                                                        <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
+                                                    </Items>
+                                                </asp:DropDownCheckBoxes>
+                                                <asp:CustomValidator ID="CustomValidator1" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkClosedDesignations"></asp:CustomValidator>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </td>
                                     <td>
-                                        <asp:DropDownList ID="drpUsersClosed" Style="width: 150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
-                                        </asp:DropDownList>
+                                        <%--<asp:DropDownList ID="drpUsersClosed" Style="width: 150px;" runat="server" AutoPostBack="true" OnSelectedIndexChanged="drpUsersClosed_SelectedIndexChanged">
+                                        </asp:DropDownList>--%>
+                                        <asp:UpdatePanel ID="UpdatePanel3" runat="server" RenderMode="Inline">
+                                            <ContentTemplate>
+                                                <asp:DropDownCheckBoxes ID="ddlClosedAssignedUsers" runat="server" UseSelectAllNode="false"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="ddlClosedAssignedUsers_SelectedIndexChanged">
+                                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                                    <Texts SelectBoxCaption="--All--" />
+                                                </asp:DropDownCheckBoxes>
+                                                <%--<asp:LinkButton ID="lbtnViewClosedAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewClosedAcceptanceLog_Click" />--%>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </td>
                                 </tr>
                             </table>
@@ -822,6 +935,20 @@ height="600" frameborder="0" scrolling="no"></iframe>--%>
 
 
     <script type="text/javascript">
+
+        // check if user has selected any designations or not.
+        function checkDesignations(oSrc, args) {
+            args.IsValid = ($("#<%= ddlInprogressUserDesignation.ClientID%> input:checked").length > 0);
+        }
+
+        function checkClosedDesignations(oSrc, args) {
+            args.IsValid = ($("#<%= ddlClosedUserDesignation.ClientID%> input:checked").length > 0);
+        }
+
+       <%-- function checkFrozenDesignations(oSrc, args) {
+            args.IsValid = ($("#<%= ddlFrozenUserDesignation.ClientID%> input:checked").length > 0);
+        }--%>
+
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
         prmTaskGenerator.add_endRequest(function () {
