@@ -1158,3 +1158,49 @@ BEGIN
 END
 GO
 
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 20 March 2017  
+-- Description: Get one or all tasks with all sub tasks from all levels.  
+-- =============================================  
+-- [GetTaskHierarchy] 418, 1
+  
+ALTER PROCEDURE  [dbo].[GetTaskHierarchy]   
+ @TaskId INT = NULL  
+ ,@Admin BIT  
+AS  
+BEGIN  
+   
+ ;WITH cteTasks  
+ AS  
+ (  
+  SELECT t1.*  
+  FROM [TaskListView] t1  
+  WHERE 1 = CASE    
+      WHEN @TaskId IS NULL AND ParentTaskId IS NULL THEN 1  
+      WHEN @TaskId = TaskId THEN 1  
+      ELSE 0  
+    END  
+  
+  UNION ALL  
+  
+  SELECT t2.*  
+  FROM [TaskListView] t2 inner join cteTasks  
+   on t2.ParentTaskId = cteTasks.TaskId  AND cteTasks.IsTechTask = 1
+  WHERE t2.IsTechTask = 1
+ )  
+  
+ SELECT *  
+ FROM cteTasks LEFT JOIN [TaskApprovalsView] TaskApprovals   
+   ON cteTasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin  
+ 
+ ORDER BY cteTasks.TaskLevel, cteTasks.ParentTaskId  
+  
+END  
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 04202016
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
