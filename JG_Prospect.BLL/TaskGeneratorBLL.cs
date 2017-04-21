@@ -45,6 +45,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedUsers(TaskId, UserIds);
         }
+
+        public bool SetTaskStatus(int TaskId, string TaskStatus)
+        {
+            return TaskGeneratorDAL.Instance.SetTaskStatus(TaskId, TaskStatus);
+        }
+
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, UserId);

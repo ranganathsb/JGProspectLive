@@ -22,15 +22,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl li_AnnualCalender;
         
         /// <summary>
-        /// upAlerts control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upAlerts;
-        
-        /// <summary>
         /// lblalertpopup control.
         /// </summary>
         /// <remarks>
@@ -94,31 +85,58 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable Table2;
         
         /// <summary>
-        /// Table7 control.
+        /// tblSearchcontrols control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table7;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblSearchcontrols;
         
         /// <summary>
-        /// drpDesigFrozen control.
+        /// upnlDesignationFrozen control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpDesigFrozen;
+        protected global::System.Web.UI.UpdatePanel upnlDesignationFrozen;
         
         /// <summary>
-        /// drpUserFrozen control.
+        /// ddlDesigFrozen control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpUserFrozen;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlDesigFrozen;
+        
+        /// <summary>
+        /// cvalidatorDesignationFrozen control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvalidatorDesignationFrozen;
+        
+        /// <summary>
+        /// upnlUsersFrozen control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlUsersFrozen;
+        
+        /// <summary>
+        /// ddlUserFrozen control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlUserFrozen;
         
         /// <summary>
         /// txtSearchFrozen control.
@@ -157,6 +175,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Label Label2;
         
         /// <summary>
+        /// upnlFrozenTasks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlFrozenTasks;
+        
+        /// <summary>
         /// grdFrozenTask control.
         /// </summary>
         /// <remarks>
@@ -166,13 +193,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView grdFrozenTask;
         
         /// <summary>
-        /// Table5 control.
+        /// htmltblNonFrozen control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table5;
+        protected global::System.Web.UI.HtmlControls.HtmlTable htmltblNonFrozen;
         
         /// <summary>
         /// drpPageSizeNew control.
@@ -193,6 +220,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Label Label3;
         
         /// <summary>
+        /// upnlNonFrozenTasks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlNonFrozenTasks;
+        
+        /// <summary>
         /// grdNewTask control.
         /// </summary>
         /// <remarks>
@@ -211,13 +247,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnCalClose;
         
         /// <summary>
-        /// UpdatePanel1 control.
+        /// upnlInprogressTasks control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+        protected global::System.Web.UI.UpdatePanel upnlInprogressTasks;
         
         /// <summary>
         /// tblInProgress control.
@@ -337,13 +373,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblClosedTask;
         
         /// <summary>
-        /// UpdatePanel2 control.
+        /// upnlDesignationClosedTasks control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
+        protected global::System.Web.UI.UpdatePanel upnlDesignationClosedTasks;
         
         /// <summary>
         /// ddlClosedUserDesignation control.
@@ -364,13 +400,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
         
         /// <summary>
-        /// UpdatePanel3 control.
+        /// upnlUsersClosedTasks control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel3;
+        protected global::System.Web.UI.UpdatePanel upnlUsersClosedTasks;
         
         /// <summary>
         /// ddlClosedAssignedUsers control.

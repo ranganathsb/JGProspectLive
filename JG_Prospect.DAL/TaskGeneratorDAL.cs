@@ -22,7 +22,7 @@ namespace JG_Prospect.DAL
         public static TaskGeneratorDAL Instance
         {
             get { return m_TaskGeneratorDAL; }
-            private set { ; }
+            private set {; }
         }
 
         private DataSet returndata;
@@ -236,6 +236,26 @@ namespace JG_Prospect.DAL
                     //    return false;
                     //}
                 }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool SetTaskStatus(int TaskId, string taskStatus)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + taskStatus + " where TaskId=" + TaskId);
+                    command.CommandType = CommandType.Text;
+                    database.ExecuteNonQuery(command);
+                }
+                return true;
             }
 
             catch (Exception ex)
@@ -564,7 +584,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskByMaxId(string parentTaskid,short taskLVL)
+        public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)
         {
             try
             {
@@ -590,7 +610,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
             try
             {
@@ -604,8 +624,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
 
                     database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
-                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch );
-                    
+                    database.AddInParameter(command, "@searchterm", DbType.String, vsearch);
+
                     database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
                     database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
                     database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
@@ -943,7 +963,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
                     database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
-                    
+
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
@@ -1051,7 +1071,7 @@ namespace JG_Prospect.DAL
             }
 
         }
-       
+
         public bool UpdateTaskUiRequested(Int64 intTaskId, bool blUiRequesed)
         {
             try
@@ -1571,7 +1591,7 @@ namespace JG_Prospect.DAL
         #endregion
 
         #region TaskApprovals
-        
+
         public int InsertTaskApproval(TaskApproval objTaskApproval)
         {
             try
@@ -1605,7 +1625,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UpdateTaskApproval");
 
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     database.AddInParameter(command, "@Id", DbType.Int64, objTaskApproval.Id);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskApproval.TaskId);
                     database.AddInParameter(command, "@EstimatedHours", DbType.String, objTaskApproval.EstimatedHours);
@@ -1648,7 +1668,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(string userid, string desigid, string vSearch,int pageindex=0,int pagesize =0)
+        public DataSet GetClosedTasks(string userid, string desigid, string vSearch, int pageindex = 0, int pagesize = 0)
         {
             try
             {

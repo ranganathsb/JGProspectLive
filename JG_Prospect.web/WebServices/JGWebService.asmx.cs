@@ -676,6 +676,12 @@ namespace JG_Prospect.WebServices
             return true;
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool SetTaskStatus(int intTaskId, string TaskStatus)
+        {
+            return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
+        }
+
         #endregion
 
         #region '--Private Methods--'
