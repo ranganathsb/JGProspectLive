@@ -404,12 +404,45 @@ namespace JG_Prospect.Sr_App
 
         private void HighlightInterviewUsers(DataTable dtUsers, Saplin.Controls.DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
         {
+            #region Commented
+            //if (dtUsers.Rows.Count > 0)
+            //{
+            //    var rows = dtUsers.AsEnumerable();
+
+            //    //get all users comma seperated ids with interviewdate status
+            //    String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+
+            //    // for each userid find it into user dropdown list and apply red color to it.
+            //    foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            //    {
+            //        ListItem item;
+
+            //        if (ddlUsers != null)
+            //        {
+            //            item = ddlUsers.Items.FindByValue(user);
+            //        }
+            //        else
+            //        {
+            //            item = ddlFilterUsers.Items.FindByValue(user);
+            //        }
+
+            //        if (item != null)
+            //        {
+            //            item.Attributes.Add("style", "color:red;");
+            //        }
+            //    }
+
+            //} 
+            #endregion
+            HyperLink lnkUserId = new HyperLink();
+            ListItem lstUserId = new ListItem();
+
             if (dtUsers.Rows.Count > 0)
             {
                 var rows = dtUsers.AsEnumerable();
 
-                //get all users comma seperated ids with interviewdate status
-                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with Active status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "1") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -428,9 +461,34 @@ namespace JG_Prospect.Sr_App
                     if (item != null)
                     {
                         item.Attributes.Add("style", "color:red;");
+
                     }
                 }
 
+                InterviewDateUsers = string.Empty;
+
+                //get all users comma seperated ids with interviewdate and Offer Made status
+                InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "5" || r.Field<string>("Status") == "6") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply blue color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
+
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:blue;");
+                    }
+                }
             }
         }
 
