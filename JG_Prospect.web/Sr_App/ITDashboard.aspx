@@ -999,6 +999,7 @@
 
             SetApprovalUI();
             SetTaskCounterPopup();
+            checkDropdown();
         });
 
         $(document).ready(function () {
@@ -1013,6 +1014,7 @@
 
             SetApprovalUI();
             SetTaskCounterPopup();
+            checkDropdown();
         });
 
         $(".context-menu").bind("contextmenu", function () {
@@ -1235,16 +1237,26 @@
 
 
         function SetTaskCounterPopup() {
-            $('#pnlNewFrozenTask').dialog({
+           
+         var dlg =   $('#pnlNewFrozenTask').dialog({
                 width: 1000,
                 show: 'slide',
                 hide: 'slide',
                 autoOpen: false,
                 modal: true
             });
+
+         dlg.parent().appendTo(jQuery("form:first"));
+
             $('#<%= lblNewCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
                 $('#<%= lblFrozenCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
-            }
+        }
+
+        function checkDropdown() {
+         <%--   $('#<%=ddlDesigFrozen.ClientID %> [type="checkbox"]').each(function () {
+                $(this).click(function () { console.log($(this).prop('checked')); })
+            });--%>
+        }
     </script>
 </asp:Content>
 
