@@ -1058,3 +1058,149 @@ BEGIN
 END
 GO
 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 04182016
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[GetTaskComments]    Script Date: 18-Apr-17 11:22:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 12 April 2017
+-- Description:	This procedure is used to get comments for task or sub task.
+-- =============================================
+-- GetTaskComments 530, NULL, 0, 1
+ALTER PROCEDURE [dbo].[GetTaskComments]
+	@TaskId	BIGINT,
+	@ParentCommentId BIGINT = NULL,
+	@StartIndex INT = NULL,
+	@PageSize	INT = NULL
+AS
+BEGIN
+	
+	IF @StartIndex IS NULL
+	BEGIN
+		SET @StartIndex = 0
+	END
+
+	DECLARE @EndIndex INT = NULL
+	IF @PageSize IS NOT NULL
+	BEGIN
+		SET @EndIndex = (@StartIndex + @PageSize)
+	END
+
+	;WITH cte_TaskComments AS
+	(
+		SELECT 
+			tc.*,
+			iu.UserInstallId AS UserInstallId,
+			iu.FristName AS Username, 
+			iu.FristName AS FirstName, 
+			iu.LastName, 
+			iu.Email,
+			ROW_NUMBER() OVER (ORDER BY tc.DateCreated DESC) AS RowNO,
+			(SELECT COUNT(Id) FROM [tblTaskComments] WHERE ParentCommentId = tc.Id) AS TotalChildRecords
+		FROM [tblTaskComments] tc
+				INNER JOIN [tblInstallUsers] iu ON tc.UserId = iu.Id
+		WHERE tc.TaskId = @TaskId 
+			AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+	)
+
+	-- get records
+	SELECT *
+	FROM cte_TaskComments
+	WHERE RowNo >= @StartIndex AND RowNo <= ISNULL(@EndIndex, RowNo)
+
+	-- get record count
+	SELECT COUNT(Id) AS TotalRecords
+	FROM [tblTaskComments] tc
+	WHERE tc.TaskId = @TaskId 
+		AND ISNULL(tc.ParentCommentId,0) = ISNULL(@ParentCommentId, 0)
+END
+GO
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 04182016
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh
+-- Create date: 19 Apr 17
+-- Description:	Updates tech task flag of a Task by Id.
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateTaskTechTaskById]
+	@TaskId		BIGINT,
+	@IsTechTask BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE tblTask
+	SET
+		IsTechTask = @IsTechTask
+	WHERE TaskId = @TaskId
+END
+GO
+
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 20 March 2017  
+-- Description: Get one or all tasks with all sub tasks from all levels.  
+-- =============================================  
+-- [GetTaskHierarchy] 418, 1
+  
+ALTER PROCEDURE  [dbo].[GetTaskHierarchy]   
+ @TaskId INT = NULL  
+ ,@Admin BIT  
+AS  
+BEGIN  
+   
+ ;WITH cteTasks  
+ AS  
+ (  
+  SELECT t1.*  
+  FROM [TaskListView] t1  
+  WHERE 1 = CASE    
+      WHEN @TaskId IS NULL AND ParentTaskId IS NULL THEN 1  
+      WHEN @TaskId = TaskId THEN 1  
+      ELSE 0  
+    END  
+  
+  UNION ALL  
+  
+  SELECT t2.*  
+  FROM [TaskListView] t2 inner join cteTasks  
+   on t2.ParentTaskId = cteTasks.TaskId  AND cteTasks.IsTechTask = 1
+  WHERE t2.IsTechTask = 1
+ )  
+  
+ SELECT *  
+ FROM cteTasks LEFT JOIN [TaskApprovalsView] TaskApprovals   
+   ON cteTasks.TaskId = TaskApprovals.TaskId AND TaskApprovals.IsAdminOrITLead = @Admin  
+ 
+ ORDER BY cteTasks.TaskLevel, cteTasks.ParentTaskId  
+  
+END  
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 04202016
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -244,6 +244,26 @@ namespace JG_Prospect.DAL
             }
         }
 
+
+        public bool SetTaskStatus(int TaskId, string taskStatus)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + taskStatus + " where TaskId=" + TaskId);
+                    command.CommandType = CommandType.Text;
+                    database.ExecuteNonQuery(command);
+                }
+                return true;
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
         {
             try
@@ -564,7 +584,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskByMaxId(string parentTaskid,short taskLVL)
+        public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)
         {
             try
             {
@@ -590,7 +610,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch="", Int32? intPageIndex=0, Int32? intPageSize=0, int intHighlightTaskId=0)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
             try
             {
@@ -1123,6 +1143,30 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskId);
                     database.AddInParameter(command, "@IsUiRequested", DbType.Boolean, blUiRequesed);
+
+                    database.ExecuteNonQuery(command);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateTaskTechTask(Int64 intTaskId, bool blTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskTechTaskById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, intTaskId);
+                    database.AddInParameter(command, "@IsTechTask", DbType.Boolean, blTechTask);
 
                     database.ExecuteNonQuery(command);
                 }
@@ -1707,7 +1751,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetClosedTasks(string userid, string desigid, string vSearch,int pageindex=0,int pagesize =0)
+        public DataSet GetClosedTasks(string userid, string desigid, string vSearch, int pageindex = 0, int pagesize = 0)
         {
             try
             {

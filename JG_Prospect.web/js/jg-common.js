@@ -462,7 +462,7 @@ function updateQueryStringParameter(uri, key, value, Mainkey, MainValue) {
     }
     else {
         uri = uri.replace("ITDashboard", "TaskGenerator");
-        return uri + separator + Mainkey + MainValue + '&' + key + "=" + value;
+        return uri + separator + Mainkey + "=" + MainValue + '&' + key + "=" + value;
     }
 }
 

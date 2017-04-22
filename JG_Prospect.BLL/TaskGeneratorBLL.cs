@@ -45,6 +45,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedUsers(TaskId, UserIds);
         }
+
+        public bool SetTaskStatus(int TaskId, string TaskStatus)
+        {
+            return TaskGeneratorDAL.Instance.SetTaskStatus(TaskId, TaskStatus);
+        }
+
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, UserId);
@@ -177,6 +183,11 @@ namespace JG_Prospect.BLL
         public bool UpdateTaskUiRequested(Int64 intTaskId, bool blUiRequesed)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskUiRequested(intTaskId, blUiRequesed);
+        }
+
+        public bool UpdateTaskTechTask(Int64 intTaskId, bool blTechTask)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskTechTask(intTaskId, blTechTask);
         }
 
         #region TaskWorkSpecification

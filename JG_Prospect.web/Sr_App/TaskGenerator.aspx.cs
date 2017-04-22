@@ -326,27 +326,6 @@ namespace JG_Prospect.Sr_App
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
 
-        //protected void dlAssignedUsers_ItemDataBound(object sender, DataListItemEventArgs e)
-        //{
-        //    // TO Change color of User Name Text according to the User Status (Active ->  Red, Interview Date and Offer Made -> Blue color)
-        //    if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-        //    {
-        //        DataRowView drv = (DataRowView)(e.Item.DataItem);
-
-        //        Label lblStatus = (Label)e.Item.FindControl("lblStatus");
-        //        CheckBox chkId = (CheckBox)e.Item.FindControl("chkId");
-
-        //        if (lblStatus.Text == "1")
-        //        {
-        //            chkId.Attributes.Add("style", "color:red;");
-        //        }
-        //        else if (lblStatus.Text == "5" || lblStatus.Text == "6")
-        //        {
-        //            chkId.Attributes.Add("style", "color:blue;");
-        //        }
-        //    }
-        //}
-
         #region '--Task Acceptance--'
 
         protected void lbtnAcceptTask_Click(object sender, EventArgs e)
@@ -364,9 +343,6 @@ namespace JG_Prospect.Sr_App
                 {
                     divAcceptRejectButtons.Visible = false;
                 }
-
-                //// To Send Automail for Acceptance
-                SendEmailToUsers(true, int.Parse(hdnTaskId.Value), JGSession.UserId.ToString());
 
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
             }
@@ -388,9 +364,6 @@ namespace JG_Prospect.Sr_App
             {
                 divAcceptRejectButtons.Visible = false;
 
-                // To Send Automail for Rejection
-                SendEmailToUsers(false, int.Parse(hdnTaskId.Value), JGSession.UserId.ToString());
-
                 CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
             }
             else
@@ -399,23 +372,23 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        //protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
-        //{
-        //    FillAcceptanceLog();
+        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
+        {
+            FillAcceptanceLog();
 
-        //    upAcceptanceLog.Update();
+            upAcceptanceLog.Update();
 
-        //    ScriptManager.RegisterStartupScript(
-        //                                            (sender as Control),
-        //                                            this.GetType(),
-        //                                            "ShowPopup_AcceptanceLog",
-        //                                            string.Format(
-        //                                                            "ShowPopup(\"#{0}\");",
-        //                                                            divAcceptanceLog.ClientID
-        //                                                        ),
-        //                                            true
-        //                                      );
-        //}
+            ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "ShowPopup_AcceptanceLog",
+                                                    string.Format(
+                                                                    "ShowPopup(\"#{0}\");",
+                                                                    divAcceptanceLog.ClientID
+                                                                ),
+                                                    true
+                                              );
+        }
 
         #endregion
 
@@ -797,101 +770,6 @@ namespace JG_Prospect.Sr_App
 
         #region "--Private Methods--"
 
-        // To Send Automail to the User about accepted or Rejected Task
-        private void SendEmailToUsers(bool IsAccepted, int intTaskId, string strInstallUserIDs)
-        {
-            try
-            {
-                //string strHTMLTemplateName;
-                DataSet dsEmailTemplate;
-
-                // To Send Mail to User about Acceptance of the task
-                if (IsAccepted == true)
-                {
-                    //strHTMLTemplateName = HTMLTemplates.Task_Accepted_Auto_Email
-                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Accepted_Auto_Email);
-                }
-                // To Send Mail to User about Rejection of the task
-                else
-                {
-                    //strHTMLTemplateName = "Rejected Task Automail";
-                    dsEmailTemplate = AdminBLL.Instance.GetEmailTemplateById((int)HTMLTemplates.Task_Rejected_Auto_Email);
-                }
-
-                //foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                //{
-                DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(strInstallUserIDs));
-
-                string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
-                string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
-                string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
-                string fullname = FName + " " + LName;
-
-                string strHeader = dsEmailTemplate.Tables[0].Rows[0]["Header"].ToString();
-                string strBody = dsEmailTemplate.Tables[0].Rows[0]["Body"].ToString();
-                string strFooter = dsEmailTemplate.Tables[0].Rows[0]["Footer"].ToString();
-                string strsubject = dsEmailTemplate.Tables[0].Rows[0]["Subject"].ToString();
-
-                strBody = strBody.Replace("#Fname#", fullname);
-
-                // To Format Task link with Task Id and Task Name
-                DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(intTaskId);
-                DataRow TaskName = dtTaskDetail.Select("TaskId = " + intTaskId).First();
-
-                // To Format Parent Task LinkName and Link
-                strBody = strBody.Replace("#ParentTaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
-                strBody = strBody.Replace("#ParentTaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
-
-                string strParentTaskId = TaskName["InstallId"].ToString();
-
-                string strSubTaskLink;
-                string strSubTaskList = string.Empty;
-
-                //Adding Links for All SubTask
-                if (hdnSubTaskIds.Value != "")
-                {
-                    foreach (string subTaskId in hdnSubTaskIds.Value.Split(','))
-                    {
-                        if (subTaskId != "")
-                        {
-                            TaskName = dtTaskDetail.Select("TaskId = " + subTaskId).First();
-
-                            strSubTaskLink = string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), subTaskId);
-                            strSubTaskList += "<a href=" + strSubTaskLink + ">" + "TaskID#:" + strParentTaskId + "(" + TaskName["InstallId"].ToString() + ")-" + TaskName["Title"].ToString() + "</a><br/>";
-                        }
-                    }
-                    strBody = strBody.Replace("#SubTaskLink#", strSubTaskList);
-
-                    strBody = strBody.Replace("#QuickViewLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
-                    strBody = strBody.Replace("#QuickViewLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
-
-                    strBody = strBody.Replace("#ViewMoreLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
-                    strBody = strBody.Replace("#ViewMoreLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
-
-                    strBody = strHeader + strBody + strFooter;
-
-                    //List<Attachment> lstAttachments = new List<Attachment>();
-                    //// your remote SMTP server IP.
-                    //for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
-                    //{
-                    //    string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                    //    if (File.Exists(sourceDir))
-                    //    {
-                    //        Attachment attachment = new Attachment(sourceDir);
-                    //        attachment.Name = Path.GetFileName(sourceDir);
-                    //        lstAttachments.Add(attachment);
-                    //    }
-                    //}
-                    CommonFunction.SendEmail(strsubject, emailId, strsubject, strBody, null);
-                }
-                //}
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0} Exception caught.", ex);
-            }
-        }
-
         private void RedirectToViewTasks(string strAction = "")
         {
             Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value + "&Action=" + strAction);
@@ -1049,28 +927,6 @@ namespace JG_Prospect.Sr_App
             ddlAssignedUsers.DataValueField = "Id";
             ddlAssignedUsers.DataBind();
 
-            // Load Assigned Users to the Data List
-            //dlAssignedUsers.DataSource = dsUsers;
-            //dlAssignedUsers.DataBind();
-
-            FillAcceptanceLog();
-
-            upAcceptanceLog.Update();
-
-            //ScriptManager.RegisterStartupScript(
-            //                                        (dlAssignedUsers),
-            //                                        this.GetType(),
-            //                                        "ShowPopup_AcceptanceLog",
-            //                                        string.Format(
-            //                                                        "ShowPopup(\"#{0}\");",
-            //                                                        divAcceptanceLog.ClientID
-            //                                                    ),
-            //                                        true
-            //                                  );
-
-            //dlAssignedUsers.Attributes.Add("onmouseover", "javascript:ShowPopup(" + divAcceptanceLog.ClientID + ");");
-            //dlAssignedUsers.Attributes.Add("onmouseout", "javascript:ClosePopup(" + divAcceptanceLog.ClientID + ");");
-
             HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
         }
 
@@ -1104,18 +960,6 @@ namespace JG_Prospect.Sr_App
                     {
                         item.Attributes.Add("style", "color:red;");
 
-                        // To Create Link with UserId
-                        //lnkUserId.Text = user + "1";
-                        //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
-                        //ddlUsers.Controls.Add(lnkUserId);
-
-                        //lstUserId.Text = user;
-                        //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
-                        //ddlUsers.Items.Add(lstUserId);
-
-                        //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
-
-                        //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
                     }
                 }
 
@@ -1141,20 +985,6 @@ namespace JG_Prospect.Sr_App
                     if (item != null)
                     {
                         item.Attributes.Add("style", "color:blue;");
-
-                        // To Create Link with UserId
-                        //lnkUserId.Text = user + "1";
-                        //lnkUserId.NavigateUrl = "ViewSalesUser.aspx?Id=" + user;
-                        //ddlUsers.Controls.Add(lnkUserId);
-
-                        //lstUserId.Text = user;
-                        //lstUserId.Value = "ViewSalesUser.aspx?Id=" + user;
-                        //ddlUsers.Items.Add(lstUserId);
-
-                        //ddlUsers.Items.Add(new ListItem(user, "ViewSalesUser.aspx?Id=" + user));
-
-                        //item.Attributes.Add("href", "ViewSalesUser.aspx?Id=" + user);
-
                     }
                 }
             }
@@ -1209,19 +1039,6 @@ namespace JG_Prospect.Sr_App
                         blResult = false;
                         strMessage = "Task must be assigned to one or more users, to change status to assigned.";
 
-                        //// To Check List of User whether any user is selected or not
-                        //foreach (DataListItem item in dlAssignedUsers.Items)
-                        //{
-                        //    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-                        //    {
-                        //        if (((CheckBox)item.FindControl("chkId")).Checked == true)
-                        //        {
-                        //            blResult = true;
-                        //            break;
-                        //        }
-                        //    }
-                        //}
-
                         foreach (ListItem objItem in ddlAssignedUsers.Items)
                         {
                             if (objItem.Selected)
@@ -1254,8 +1071,8 @@ namespace JG_Prospect.Sr_App
             txtDescription.Text = string.Empty;
             ddlUserDesignation.ClearSelection();
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
-            //ddlAssignedUsers.Items.Clear();
-            //ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
             cmbStatus.ClearSelection();
             ddlUserAcceptance.ClearSelection();
             ddlTaskPriority.SelectedValue = "0";
@@ -1280,7 +1097,7 @@ namespace JG_Prospect.Sr_App
             SaveTaskDesignations();
 
             // save details of users to whom task is assgined.
-            SaveAssignedTaskUsers((JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers(ddlAssignedUsers, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0")
             {
@@ -1361,14 +1178,14 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(JGConstant.TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddlAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
             {
                 string strUsersIds = string.Empty;
 
-                foreach (ListItem item in ddlAssignedUsers.Items)
+                foreach (ListItem item in ddlAssigned.Items)
                 {
                     if (item.Selected)
                     {
@@ -1378,21 +1195,6 @@ namespace JG_Prospect.Sr_App
 
                 // removes any extra comma "," from the end of the string.
                 strUsersIds = strUsersIds.TrimEnd(',');
-
-                // to get all the Ids for selected checkboxes
-                //foreach (DataListItem item in dlAssignedUsers.Items)
-                //{
-                //    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-                //    {
-                //        if (((CheckBox)item.FindControl("chkId")).Checked == true)
-                //        {
-                //            strUsersIds = strUsersIds + (((Label)item.FindControl("lblId")).Text + ",");
-                //        }
-                //    }
-                //}
-
-                // removes any extra comma "," from the end of the string.
-                //strUsersIds = strUsersIds.TrimEnd(',');
 
                 // save (insert / delete) assigned users.
                 bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), strUsersIds);
@@ -1501,13 +1303,6 @@ namespace JG_Prospect.Sr_App
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-
-                    // To Format Task link with Task Id and Task Name
-                    DataTable dtTaskDetail = TaskGeneratorBLL.Instance.GetTaskDetailsForMail(int.Parse(hdnTaskId.Value));
-                    DataRow TaskName = dtTaskDetail.Select("TaskId = " + hdnTaskId.Value).First();
-
-                    // To Format Parent Task LinkName and Link
-                    strBody = strBody.Replace("#TaskLinkName#", "TaskID#:" + TaskName["InstallId"].ToString() + "-Title:" + TaskName["Title"].ToString());
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
@@ -1551,17 +1346,6 @@ namespace JG_Prospect.Sr_App
             DataTable dtTaskNotesDetails = dsTaskDetails.Tables[3];
 
             DataTable dtSubTaskDetails = dsTaskDetails.Tables[4];
-
-            hdnSubTaskIds.Value = "";
-
-            // To save all the SubTaskIds to Mail
-            if (dtSubTaskDetails.Rows.Count > 0)
-            {
-                foreach (DataRow row in dtSubTaskDetails.Rows)
-                {
-                    hdnSubTaskIds.Value += row["TaskId"].ToString() + ",";
-                }
-            }
 
             SetSubTaskSectionView(true);
 
@@ -1694,27 +1478,21 @@ namespace JG_Prospect.Sr_App
         private bool SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
         {
             string firstAssignedUser = string.Empty;
-            //bool isAssigned = false;
+            foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
+            {
 
-            //// To Checked chekboxes for the already assigned users
-            //foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
-            //{
-            //    foreach (DataListItem item in dlAssignedUsers.Items)
-            //    {
-            //        if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-            //        {
-            //            if (((Label)item.FindControl("lblId")).Text == row["UserId"].ToString())
-            //            {
-            //                ((CheckBox)item.FindControl("chkId")).Checked = true;
+                ListItem item = ddlAssignedUsers.Items.FindByValue(row["UserId"].ToString());
 
-            //                dlAssignedUsers.SelectedIndex = item.ItemIndex;
-            //                isAssigned = true;
-            //            }
-            //        }
-            //    }
-            //}
+                if (item != null)
+                {
+                    item.Selected = true;
 
-            //return isAssigned;
+                    if (string.IsNullOrEmpty(firstAssignedUser))
+                    {
+                        firstAssignedUser = item.Text;
+                    }
+                }
+            }
 
             if (!string.IsNullOrEmpty(firstAssignedUser))
             {
@@ -2094,6 +1872,5 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
-
     }
 }

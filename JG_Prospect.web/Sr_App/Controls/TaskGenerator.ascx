@@ -809,7 +809,7 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-        //setClickableTooltip('#<%=upnlTasks.ClientID%>');
+        <%--setClickableTooltip('#<%=upnlTasks.ClientID%>');--%>
         bindtasklistExpandCollapse();
     });
 

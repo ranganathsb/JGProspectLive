@@ -85,7 +85,8 @@ namespace JG_Prospect.Sr_App
                 }
                 LoadFilterUsersByDesgination("", ddlInProgressAssignedUsers);
                 LoadFilterUsersByDesgination("", ddlClosedAssignedUsers);
-                LoadFilterUsersByDesginationFrozen("", drpUserFrozen);
+                LoadFilterUsersByDesgination("", ddlUserFrozen);
+                //LoadFilterUsersByDesginationFrozen("", drpUserFrozen);
                 //LoadFilterUsersByDesgination("", drpUserNew);
                 BindTaskInProgressGrid();
                 BindTaskClosedGrid();
@@ -256,6 +257,7 @@ namespace JG_Prospect.Sr_App
                 gv.BottomPagerRow.TableSection = TableRowSection.TableFooter;
             }
         }
+
         protected void grdFrozenTask_PreRender(object sender, EventArgs e)
         {
             GridView gv = (GridView)sender;
@@ -334,10 +336,10 @@ namespace JG_Prospect.Sr_App
 
         protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string designation = drpDesigFrozen.SelectedValue;
-            LoadFilterUsersByDesginationFrozen(designation, drpUserFrozen);
-            BindFrozenTasks();
-            upAlerts.Update();
+            //string designation = drpDesigFrozen.SelectedValue;
+            //LoadFilterUsersByDesginationFrozen(designation, drpUserFrozen);
+            //BindFrozenTasks();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
         //protected void drpDesigClosed_SelectedIndexChanged(object sender, EventArgs e)
@@ -359,7 +361,7 @@ namespace JG_Prospect.Sr_App
         protected void drpUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFrozenTasks();
-            upAlerts.Update();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
         //protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
@@ -377,7 +379,7 @@ namespace JG_Prospect.Sr_App
         protected void drpUserNew_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindNewTasks();
-            upAlerts.Update();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
 
@@ -402,12 +404,45 @@ namespace JG_Prospect.Sr_App
 
         private void HighlightInterviewUsers(DataTable dtUsers, Saplin.Controls.DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
         {
+            #region Commented
+            //if (dtUsers.Rows.Count > 0)
+            //{
+            //    var rows = dtUsers.AsEnumerable();
+
+            //    //get all users comma seperated ids with interviewdate status
+            //    String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+
+            //    // for each userid find it into user dropdown list and apply red color to it.
+            //    foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            //    {
+            //        ListItem item;
+
+            //        if (ddlUsers != null)
+            //        {
+            //            item = ddlUsers.Items.FindByValue(user);
+            //        }
+            //        else
+            //        {
+            //            item = ddlFilterUsers.Items.FindByValue(user);
+            //        }
+
+            //        if (item != null)
+            //        {
+            //            item.Attributes.Add("style", "color:red;");
+            //        }
+            //    }
+
+            //} 
+            #endregion
+            HyperLink lnkUserId = new HyperLink();
+            ListItem lstUserId = new ListItem();
+
             if (dtUsers.Rows.Count > 0)
             {
                 var rows = dtUsers.AsEnumerable();
 
-                //get all users comma seperated ids with interviewdate status
-                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+                //get all users comma seperated ids with Active status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "1") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -426,9 +461,34 @@ namespace JG_Prospect.Sr_App
                     if (item != null)
                     {
                         item.Attributes.Add("style", "color:red;");
+
                     }
                 }
 
+                InterviewDateUsers = string.Empty;
+
+                //get all users comma seperated ids with interviewdate and Offer Made status
+                InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "5" || r.Field<string>("Status") == "6") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply blue color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                    }
+                    else
+                    {
+                        item = ddlFilterUsers.Items.FindByValue(user);
+                    }
+
+                    if (item != null)
+                    {
+                        item.Attributes.Add("style", "color:blue;");
+                    }
+                }
             }
         }
 
@@ -469,6 +529,12 @@ namespace JG_Prospect.Sr_App
             ddlClosedUserDesignation.DataTextField = "DesignationName";
             ddlClosedUserDesignation.DataValueField = "ID";
             ddlClosedUserDesignation.DataBind();
+            
+            ddlDesigFrozen.Items.Clear();
+            ddlDesigFrozen.DataSource = dsDesignation.Tables[0];
+            ddlDesigFrozen.DataTextField = "DesignationName";
+            ddlDesigFrozen.DataValueField = "ID";
+            ddlDesigFrozen.DataBind();
 
             //drpDesigClosed.DataValueField = "Id";
             //drpDesigClosed.DataTextField = "DesignationName";
@@ -477,12 +543,12 @@ namespace JG_Prospect.Sr_App
             //drpDesigClosed.Items.Insert(0, new ListItem("--All--", "0"));
             //drpDesigClosed.SelectedIndex = 0;
 
-            drpDesigFrozen.DataValueField = "Id";
-            drpDesigFrozen.DataTextField = "DesignationName";
-            drpDesigFrozen.DataSource = dsDesignation.Tables[0];
-            drpDesigFrozen.DataBind();
-            drpDesigFrozen.Items.Insert(0, new ListItem("--All--", "0"));
-            drpDesigFrozen.SelectedIndex = 0;
+            //drpDesigFrozen.DataValueField = "Id";
+            //drpDesigFrozen.DataTextField = "DesignationName";
+            //drpDesigFrozen.DataSource = dsDesignation.Tables[0];
+            //drpDesigFrozen.DataBind();
+            //drpDesigFrozen.Items.Insert(0, new ListItem("--All--", "0"));
+            //drpDesigFrozen.SelectedIndex = 0;
 
             //ddlFrozenUserDesignation.Items.Clear();
             //ddlFrozenUserDesignation.DataSource = dsDesignation.Tables[0];
@@ -587,75 +653,33 @@ namespace JG_Prospect.Sr_App
                 {
                     DataSet result = new DataSet();
 
-                    /* if (txtSearchFrozen.Text != "")
-                     {
-                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                         {
-                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b,tbltaskassignedusers as c,tblInstallUsers as t ";
-                             strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
-                             strfrozen = strfrozen + " AND  ( ";
-                             strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
-                             strfrozen = strfrozen + " ) ";
-                             strfrozen = strfrozen + "  and (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
-                             strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                         }
-                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                         {
-                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b ,tbltaskassignedusers as c,tblInstallUsers as t ";
-                             strfrozen = strfrozen + " where a.TaskId=b.TaskId and b.TaskId=c.TaskId and c.UserId=t.Id ";
-                             strfrozen = strfrozen + " AND  ( ";
-                             strfrozen = strfrozen + " t.FristName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                             strfrozen = strfrozen + " t.LastName LIKE '%" + txtSearchFrozen.Text + "%'  or ";
-                             strfrozen = strfrozen + " t.Email LIKE '%" + txtSearchFrozen.Text + "%'  ";
-                             strfrozen = strfrozen + " ) ";
-                             strfrozen = strfrozen + " and  (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
-                             strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                         }
-                     }
-                     else
-                     {
-                         if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                         {
-                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                             strfrozen = strfrozen + "   (DateCreated >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
-                             strfrozen = strfrozen + "  and DateCreated <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                         }
-                         else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                         {
-                             strfrozen = "select a.* from tbltask as a,tbltaskapprovals as b where a.TaskId=b.TaskId and ";
-                             strfrozen = strfrozen + "   (DateCreated >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
-                             strfrozen = strfrozen + "  and DateCreated <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                         }
-                     }
-                     DbCommand command = database.GetSqlStringCommand(strfrozen);
-                     command.CommandType = CommandType.Text;
-                     result = database.ExecuteDataSet(command);
-                     // if loggedin user is not manager then show tasks assigned to loggedin user only 
-                     */
-
                     //DataSet resultTask = new DataSet();
-                    int userId = 0;
-                    int desigID = 0;
+                    string userId = "0";
+                    string desigID = "";
                     string strSearch = "";
                     if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                     {
-                        userId = 0;
+                        userId = GetSelectedDesignationsString(ddlUserFrozen);
 
-                        if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
-                        {
-                            userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
-                        }
+                        //if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
+                        //{
+                        //    userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
+                        //}
                     }
                     else
                     {
-                        userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                     }
-                    if (Convert.ToInt32(drpDesigFrozen.SelectedValue) > 0)
-                    {
-                        desigID = Convert.ToInt32(drpDesigFrozen.SelectedValue);
-                    }
+
+                    //if (Convert.ToInt32(drpDesigFrozen.SelectedValue) > 0)
+                    //{
+                    //    desigID = Convert.ToInt32(drpDesigFrozen.SelectedValue);
+                    //}
+
+                    if (string.IsNullOrEmpty(userId))
+                        userId = "0";
+
+                    desigID = GetSelectedDesignationsString(ddlDesigFrozen);
 
                     string vSearch = "";
                     string vStartDate = "";
@@ -684,8 +708,8 @@ namespace JG_Prospect.Sr_App
                     database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
-                    database.AddInParameter(command, "@userid", DbType.Int32, userId);
-                    database.AddInParameter(command, "@desigid", DbType.Int32, desigID);
+                    database.AddInParameter(command, "@userid", DbType.String, userId);
+                    database.AddInParameter(command, "@desigid", DbType.String, desigID);
 
 
                     result = database.ExecuteDataSet(command);
@@ -840,7 +864,7 @@ namespace JG_Prospect.Sr_App
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HiddenField lblStatus = e.Row.FindControl("lblStatus") as HiddenField;
-                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                //Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusInPro = e.Row.FindControl("drpStatusInPro") as DropDownList;
                 HiddenField lblTaskIdInPro = e.Row.FindControl("lblTaskIdInPro") as HiddenField;
                 Label lblHoursLead = e.Row.FindControl("lblHoursLeadInPro") as Label;
@@ -852,12 +876,12 @@ namespace JG_Prospect.Sr_App
                 //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value;
                 lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + hdMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
 
-                if (lblDueDate.Text != "")
-                {
-                    DateTime dtDue = new DateTime();
-                    dtDue = Convert.ToDateTime(lblDueDate.Text);
-                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
-                }
+                //if (lblDueDate.Text != "")
+                //{
+                //    DateTime dtDue = new DateTime();
+                //    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                //    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                //}
 
                 if (lblStatus.Value == "4")
                 {
@@ -916,6 +940,8 @@ namespace JG_Prospect.Sr_App
                         }
                         result.Dispose();
                     }
+                    lblHoursDev.Visible = false;
+                    lblHoursLead.Visible = false;
                 }
 
                 catch (Exception ex)
@@ -994,7 +1020,7 @@ namespace JG_Prospect.Sr_App
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HiddenField lblStatus = e.Row.FindControl("lblStatus") as HiddenField;
-                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                //Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusClosed = e.Row.FindControl("drpStatusClosed") as DropDownList;
                 HiddenField lblTaskIdClosed = e.Row.FindControl("lblTaskIdClosed") as HiddenField;
                 HiddenField hdnMainParentId = e.Row.FindControl("hdnMainParentId") as HiddenField;
@@ -1004,12 +1030,12 @@ namespace JG_Prospect.Sr_App
 
                 //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value;
                 lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + hdnMainParentId.Value + "&hstid=" + lblTaskIdClosed.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
-                if (lblDueDate.Text != "")
-                {
-                    DateTime dtDue = new DateTime();
-                    dtDue = Convert.ToDateTime(lblDueDate.Text);
-                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
-                }
+                //if (lblDueDate.Text != "")
+                //{
+                //    DateTime dtDue = new DateTime();
+                //    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                //    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                //}
 
                 if (lblStatus.Value == "7")
                 {
@@ -1083,9 +1109,9 @@ namespace JG_Prospect.Sr_App
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Label lblStatus = e.Row.FindControl("lblStatus") as Label;
-                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
-                DropDownList drpStatusInPro = e.Row.FindControl("drpStatusInPro") as DropDownList;
+                HiddenField lblStatus = e.Row.FindControl("lblStatus") as HiddenField;
+                //Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                DropDownList drpStatusFrozen = e.Row.FindControl("drpStatusFrozen") as DropDownList;
                 HiddenField lblTaskIdInPro = e.Row.FindControl("lblTaskIdInPro") as HiddenField;
                 HiddenField frozenMainParentId = e.Row.FindControl("frozenMainParentId") as HiddenField;
                 Label lblHoursLead = e.Row.FindControl("lblHoursLeadInPro") as Label;
@@ -1099,29 +1125,12 @@ namespace JG_Prospect.Sr_App
                 //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
                 lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + frozenMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
 
-
-                if (lblDueDate.Text != "")
-                {
-                    DateTime dtDue = new DateTime();
-                    dtDue = Convert.ToDateTime(lblDueDate.Text);
-                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
-                }
-                if (lblStatus.Text == "4")
-                {
-                    lblStatus.Text = "In Progress";
-                }
-                else if (lblStatus.Text == "3")
-                {
-                    lblStatus.Text = "Assigned";
-                }
-                else if (lblStatus.Text == "2")
-                {
-                    lblStatus.Text = "Requested";
-                }
-                else
-                {
-                    lblStatus.Text = "Open";
-                }
+                //if (lblDueDate.Text != "")
+                //{
+                //    DateTime dtDue = new DateTime();
+                //    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                //    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                //}
 
                 bool blAdminStatus = false, blTechLeadStatus = false, blOtherUserStatus = false;
 
@@ -1147,18 +1156,88 @@ namespace JG_Prospect.Sr_App
                     lblHoursDev.Text = "Dev: " + Convert.ToString(DataBinder.Eval(e.Row.DataItem, "UserEstimatedHours"));
                 }
 
-                //if (blAdminStatus)
-                //{
-                //    divAdmin.Visible = true;
-                //}
-                //if (blTechLeadStatus)
-                //{
-                //    divITLead.Visible = true;
-                //}
-                //if (blOtherUserStatus)
-                //{
-                //    divUser.Visible = true;
-                //}
+
+                if (lblStatus.Value == "4")
+                {
+                    //lblStatus.Value = "In Progress";
+                    e.Row.BackColor = System.Drawing.Color.Orange;
+                }
+                else if (lblStatus.Value == "3")
+                {
+                    //lblStatus.Value = "Assigned";
+                    e.Row.BackColor = System.Drawing.Color.Yellow;
+                }
+                else if (lblStatus.Value == "2")
+                {
+                    //lblStatus.Value = "Requested";
+                    e.Row.BackColor = System.Drawing.Color.Yellow;
+                }
+                else
+                {
+                    ////lblStatus.Value = "Open";
+                    System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
+                    e.Row.BackColor = clr;
+                }
+
+                
+
+                // fill status dropdowns
+                //----- If manager level then show all statuses
+                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                {
+                    drpStatusFrozen.DataSource = CommonFunction.GetTaskStatusList();
+                    drpStatusFrozen.DataTextField = "Text";
+                    drpStatusFrozen.DataValueField = "Value";
+                    drpStatusFrozen.DataBind();
+                    drpStatusFrozen.Items.Insert(0, new ListItem("--All--", "0"));
+
+                    for (int i = 0; i < drpStatusFrozen.Items.Count; i++)
+                    {
+                        if (drpStatusFrozen.Items[i].Text == "Assigned")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "LawnGreen");
+                        }
+                        if (drpStatusFrozen.Items[i].Text == "Requested")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "Red");
+                        }
+
+                        if (lblStatus.Value == drpStatusFrozen.Items[i].Value)
+                        {
+                            drpStatusFrozen.SelectedIndex = i;
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    //----- If user level then show Test,Live,Finished statuses
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Finished.ToString() };
+                    drpStatusFrozen.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
+                    drpStatusFrozen.DataTextField = "Text";
+                    drpStatusFrozen.DataValueField = "Value";
+                    drpStatusFrozen.DataBind();
+                    drpStatusFrozen.Items.Insert(0, new ListItem("--All--", "0"));
+                    for (int i = 0; i < drpStatusFrozen.Items.Count; i++)
+                    {
+                        if (drpStatusFrozen.Items[i].Text == "Assigned")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "LawnGreen");
+                        }
+                        if (drpStatusFrozen.Items[i].Text == "Requested")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "Red");
+                        }
+
+                        if (lblStatus.Value == drpStatusFrozen.Items[i].Value)
+                        {
+                            drpStatusFrozen.SelectedIndex = i;
+                        }
+                    }
+                }
+
+                drpStatusFrozen.Attributes.Add("data-task-id", lblTaskIdInPro.Value);
             }
         }
 
@@ -1166,9 +1245,10 @@ namespace JG_Prospect.Sr_App
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Label lblStatus = e.Row.FindControl("lblStatus") as Label;
-                Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
+                HiddenField lblStatus = e.Row.FindControl("lblStatus") as HiddenField;
+                //Label lblDueDate = e.Row.FindControl("lblDueDate") as Label;
                 DropDownList drpStatusInPro = e.Row.FindControl("drpStatusInPro") as DropDownList;
+                DropDownList drpStatusFrozen = e.Row.FindControl("drpStatusFrozen") as DropDownList;
                 HiddenField lblTaskIdInPro = e.Row.FindControl("lblTaskIdInPro") as HiddenField;
                 HiddenField nonfrozenMainParentId = e.Row.FindControl("nonfrozenMainParentId") as HiddenField;
                 Label lblHoursLead = e.Row.FindControl("lblHoursLeadInPro") as Label;
@@ -1179,32 +1259,124 @@ namespace JG_Prospect.Sr_App
                 //lnkInstallId.PostBackUrl = "~/Sr_App/TaskGenerator.aspx?TaskId=" + lblParentTaskIdInPro.Value + "&hstid=" + lblTaskIdInPro.Value;
                 lnkInstallId.PostBackUrl = "javascript:w= window.open('" + System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"] + "Sr_App/TaskGenerator.aspx?TaskId=" + nonfrozenMainParentId.Value + "&hstid=" + lblTaskIdInPro.Value + "','JG Sales','left=20,top=20,width=1000,height=600,toolbar=0,resizable=0');";
 
-                if (lblDueDate.Text != "")
-                {
-                    DateTime dtDue = new DateTime();
-                    dtDue = Convert.ToDateTime(lblDueDate.Text);
-                    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
-                }
+                //if (lblDueDate.Text != "")
+                //{
+                //    DateTime dtDue = new DateTime();
+                //    dtDue = Convert.ToDateTime(lblDueDate.Text);
+                //    lblDueDate.Text = dtDue.ToString("dd-MMM-yyyy");
+                //}
 
-                if (lblStatus.Text == "4")
+                if (lblStatus.Value == "4")
                 {
-                    lblStatus.Text = "In Progress";
-
+                    //lblStatus.Value = "In Progress";
+                    e.Row.BackColor = System.Drawing.Color.Orange;
                 }
-                else if (lblStatus.Text == "3")
+                else if (lblStatus.Value == "3")
                 {
-                    lblStatus.Text = "Assigned";
+                    //lblStatus.Value = "Assigned";
+                    e.Row.BackColor = System.Drawing.Color.Yellow;
                 }
-                else if (lblStatus.Text == "2")
+                else if (lblStatus.Value == "2")
                 {
-                    lblStatus.Text = "Requested";
+                    //lblStatus.Value = "Requested";
+                    e.Row.BackColor = System.Drawing.Color.Yellow;
                 }
                 else
                 {
-                    lblStatus.Text = "Open";
+                    ////lblStatus.Value = "Open";
+                    System.Drawing.Color clr = System.Drawing.ColorTranslator.FromHtml("#f6f1f3");
+                    e.Row.BackColor = clr;
                 }
+
+
+
+                // fill status dropdowns
+                //----- If manager level then show all statuses
+                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                {
+                    drpStatusFrozen.DataSource = CommonFunction.GetTaskStatusList();
+                    drpStatusFrozen.DataTextField = "Text";
+                    drpStatusFrozen.DataValueField = "Value";
+                    drpStatusFrozen.DataBind();
+                    drpStatusFrozen.Items.Insert(0, new ListItem("--All--", "0"));
+
+                    for (int i = 0; i < drpStatusFrozen.Items.Count; i++)
+                    {
+                        if (drpStatusFrozen.Items[i].Text == "Assigned")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "LawnGreen");
+                        }
+                        if (drpStatusFrozen.Items[i].Text == "Requested")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "Red");
+                        }
+
+                        if (lblStatus.Value == drpStatusFrozen.Items[i].Value)
+                        {
+                            drpStatusFrozen.SelectedIndex = i;
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    //----- If user level then show Test,Live,Finished statuses
+                    string[] arrStatus = new string[] { JGConstant.TaskStatus.Requested.ToString(), JGConstant.TaskStatus.Assigned.ToString(), JGConstant.TaskStatus.Open.ToString(), JGConstant.TaskStatus.InProgress.ToString(), JGConstant.TaskStatus.Test.ToString(), JGConstant.TaskStatus.Finished.ToString() };
+                    drpStatusFrozen.DataSource = FillStatusDropDowns(arrStatus);  //objListItemCollection;
+                    drpStatusFrozen.DataTextField = "Text";
+                    drpStatusFrozen.DataValueField = "Value";
+                    drpStatusFrozen.DataBind();
+                    drpStatusFrozen.Items.Insert(0, new ListItem("--All--", "0"));
+                    for (int i = 0; i < drpStatusFrozen.Items.Count; i++)
+                    {
+                        if (drpStatusFrozen.Items[i].Text == "Assigned")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "LawnGreen");
+                        }
+                        if (drpStatusFrozen.Items[i].Text == "Requested")
+                        {
+                            drpStatusFrozen.Items[i].Attributes.CssStyle.Add("color", "Red");
+                        }
+
+                        if (lblStatus.Value == drpStatusFrozen.Items[i].Value)
+                        {
+                            drpStatusFrozen.SelectedIndex = i;
+                        }
+                    }
+                }
+
+                drpStatusFrozen.Attributes.Add("data-task-id", lblTaskIdInPro.Value);
             }
         }
+
+        protected void gv_drpStatusFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddl_status = (DropDownList)sender;
+            GridViewRow row = (GridViewRow)ddl_status.Parent.Parent;
+            int idx = row.RowIndex;
+
+            //Retrieve bookid and studentid from Gridview and status(dropdownlist)
+            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdInPro")).Value);
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
+                    command.CommandType = CommandType.Text;
+                    database.ExecuteNonQuery(command);
+                }
+
+                BindFrozenTasks();
+                BindNewTasks();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         protected void drpStatusInPro_SelectedIndexChanged(object sender, EventArgs e)
         {
             DropDownList ddl_status = (DropDownList)sender;
@@ -1290,7 +1462,7 @@ namespace JG_Prospect.Sr_App
             grdNewTask.PageSize = Convert.ToInt32(drpPageSizeNew.SelectedValue);
             grdNewTask.PageIndex = 0;
             BindNewTasks();
-            upAlerts.Update();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
 
@@ -1299,14 +1471,14 @@ namespace JG_Prospect.Sr_App
             grdFrozenTask.PageSize = Convert.ToInt32(drpPageSizeFrozen.SelectedValue);
             grdFrozenTask.PageIndex = 0;
             BindFrozenTasks();
-            upAlerts.Update();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
 
         protected void btnSearchFrozen_Click(object sender, EventArgs e)
         {
             BindFrozenTasks();
-            upAlerts.Update();
+            //upAlerts.Update();
             //mpNewFrozenTask.Show();
         }
 
@@ -1326,6 +1498,45 @@ namespace JG_Prospect.Sr_App
                 if (item.Selected)
                 {
                     ddlInprogressUserDesignation.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        protected void ddlDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string designations = GetSelectedDesignationsString(ddlDesigFrozen);
+
+            LoadFilterUsersByDesgination(designations, ddlUserFrozen);
+
+            BindFrozenTasks();
+            BindNewTasks();
+
+            gv_ddlUserFrozen_SelectedIndexChanged(sender, e);
+
+            ddlDesigFrozen.Texts.SelectBoxCaption = "Select";
+            foreach (ListItem item in ddlDesigFrozen.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlDesigFrozen.Texts.SelectBoxCaption = item.Text;
+                    break;
+                }
+            }
+        }
+
+        protected void gv_ddlUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindFrozenTasks();
+            BindNewTasks();
+
+            ddlUserFrozen.Texts.SelectBoxCaption = "--All--";
+
+            foreach (ListItem item in ddlUserFrozen.Items)
+            {
+                if (item.Selected)
+                {
+                    ddlUserFrozen.Texts.SelectBoxCaption = item.Text;
                     break;
                 }
             }
@@ -1382,24 +1593,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        //protected void ddlFrozenUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    string designations = GetSelectedDesignationsString(ddlFrozenUserDesignation);
-
-        //    LoadFilterUsersByDesgination(designations, drpUserFrozen);
-
-        //    BindTaskClosedGrid();
-
-        //    ddlFrozenUserDesignation.Texts.SelectBoxCaption = "Select";
-        //    foreach (ListItem item in ddlFrozenUserDesignation.Items)
-        //    {
-        //        if (item.Selected)
-        //        {
-        //            ddlFrozenUserDesignation.Texts.SelectBoxCaption = item.Text;
-        //            break;
-        //        }
-        //    }
-        //}
 
         private string GetSelectedDesignationsString(Saplin.Controls.DropDownCheckBoxes drpChkBoxes)
         {
