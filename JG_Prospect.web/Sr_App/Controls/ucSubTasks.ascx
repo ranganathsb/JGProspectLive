@@ -102,9 +102,13 @@
             }
 
         .Descpopup .content {
-            max-height: 30%;
+            /*max-height: 30%;
             overflow: auto;
-            overflow-x: hidden;
+            overflow-x: hidden;*/
+            max-height: 450px;
+            overflow: scroll;
+            width: 96%;
+            height: 450px;
         }
 
             .Descpopup .content img {
