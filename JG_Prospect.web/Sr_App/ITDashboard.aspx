@@ -367,7 +367,7 @@
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                                 HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Parent Task">
                                 <ItemTemplate>
-                                    <asp:HiddenField ID="frozenMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
+                                    <asp:HiddenField ID="frozenMainParentId" runat="server" Value='<%# Eval("MParentId")%>' />
                                     <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                     <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                     <%--<%#Eval("Assigneduser") %>--%>
@@ -377,7 +377,7 @@
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                                 HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
                                 <ItemTemplate>
-                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MParentId")%>' CssClass="context-menu"></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
@@ -1018,6 +1018,7 @@
         });
 
         $(".context-menu").bind("contextmenu", function () {
+            debugger;
             var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
             copyToClipboard(urltoCopy);
             return false;
