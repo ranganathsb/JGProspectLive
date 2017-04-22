@@ -94,7 +94,7 @@
                                             <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                             <Texts SelectBoxCaption="--Open--" />
                                         </asp:DropDownCheckBoxes>
-                                        <asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />
+                                        <%--<asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                                 <span style="padding-left: 20px;">

@@ -45,6 +45,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedUsers(TaskId, UserIds);
         }
+
+        public bool SetTaskStatus(int TaskId, string TaskStatus)
+        {
+            return TaskGeneratorDAL.Instance.SetTaskStatus(TaskId, TaskStatus);
+        }
+
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, UserId);
@@ -291,12 +297,12 @@ namespace JG_Prospect.BLL
 
 
         //--------- Start DP -----------
-        public DataSet GetInProgressTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)
+        public DataSet GetInProgressTasks(string userid, string desigid, string vSearch, int pageindex, int pagesize)
         {
             return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex, pagesize);
         }
 
-        public DataSet GetClosedTasks(int userid, int desigid, string vSearch, int pageindex, int pagesize)
+        public DataSet GetClosedTasks(string userid, string desigid, string vSearch, int pageindex, int pagesize)
         {
             return TaskGeneratorDAL.Instance.GetClosedTasks(userid, desigid, vSearch, pageindex, pagesize);
         }

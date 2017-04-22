@@ -121,15 +121,6 @@ namespace JG_Prospect.Sr_App {
         protected global::Saplin.Controls.DropDownCheckBoxes ddlAssignedUsers;
         
         /// <summary>
-        /// lbtnViewAcceptanceLog control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnViewAcceptanceLog;
-        
-        /// <summary>
         /// chkTechTask control.
         /// </summary>
         /// <remarks>
