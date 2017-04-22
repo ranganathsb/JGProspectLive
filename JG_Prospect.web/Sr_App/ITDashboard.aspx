@@ -1000,7 +1000,28 @@
             SetApprovalUI();
             SetTaskCounterPopup();
             checkDropdown();
+
+            $(".context-menu").bind("contextmenu", function () {
+                var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
+                copyToClipboard(urltoCopy);
+                return false;
+            });
+
         });
+
+        function _updateQStringParam(uri, key, value, Mainkey, MainValue) {
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+
+            if (uri.match(re)) {
+                return uri.replace(re, '$1' + key + "=" + value + '$2');
+            }
+            else {
+                uri = uri.replace("ITDashboard", "TaskGenerator");
+                return uri + separator + Mainkey + "=" + MainValue + '&' + key + "=" + value;
+            }
+        }
+
 
         $(document).ready(function () {
             SetInProTaskAutoSuggestion();
@@ -1015,14 +1036,21 @@
             SetApprovalUI();
             SetTaskCounterPopup();
             checkDropdown();
+
+            $(".context-menu").bind("contextmenu", function () {
+                var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
+                copyToClipboard(urltoCopy);
+                return false;
+            });
+
         });
 
-        $(".context-menu").bind("contextmenu", function () {
-            debugger;
-            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
-            copyToClipboard(urltoCopy);
-            return false;
-        });
+        //$(".context-menu").bind("contextmenu", function () {
+        //    debugger;
+        //    var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
+        //    copyToClipboard(urltoCopy);
+        //    return false;
+        //});
 
 
         function SetApprovalUI() {

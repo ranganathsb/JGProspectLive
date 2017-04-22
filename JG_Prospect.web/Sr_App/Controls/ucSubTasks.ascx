@@ -102,9 +102,13 @@
             }
 
         .Descpopup .content {
-            max-height: 30%;
+            /*max-height: 30%;
             overflow: auto;
-            overflow-x: hidden;
+            overflow-x: hidden;*/
+            max-height: 450px;
+            overflow: scroll;
+            width: 96%;
+            height: 450px;
         }
 
             .Descpopup .content img {
@@ -1058,7 +1062,7 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-            
+
             //debugger;
             if (data.d.Success) {
                 var viewlink = $(sender);
@@ -1126,7 +1130,7 @@
         var strParentCommentId = $sender.attr('data-parent-commentid');
         var $divSubTaskCommentPlaceHolder = $('div[data-id="divSubTaskCommentPlaceHolder"][data-taskid="' + strTaskId + '"][data-parent-commentid="' + strParentCommentId + '"]');
         var $tfoot;
-        
+
         if ($sender.parent().attr('id') == "replyComment") {
             $tfoot = $sender.parent();
         }
@@ -1688,29 +1692,29 @@
                         if (TaskLevel == "2") {
                             var taskid = GetParameterValues('TaskId');
                             //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
-                        $('#<%=txtInstallId.ClientID%>').val(strInstallId);
-                        $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
-                        $('#<%=hdMainParentId.ClientID%>').val(taskid);
-                        $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
-                        $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                            $('#<%=txtInstallId.ClientID%>').val(strInstallId);
+                            $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+                            $('#<%=hdMainParentId.ClientID%>').val(taskid);
+                            $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
+                            $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                        }
+                        else {
+                            //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+                            $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
+                            $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+                            $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
+                            $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+                        }
+                    },
+                    error: function (a, b, c) {
+                        HideAjaxLoader();
                     }
-                    else {
-                        //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
-                        $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
-                        $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
-                        $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
-                        $('#<%=hdTaskId.ClientID%>').val(cmdArg);
-                    }
-                },
-                error: function (a, b, c) {
-                    HideAjaxLoader();
                 }
-            }
         );
-        }
+            }
 
-        function OnAddMoreSubtaskClick() {
-            $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
+            function OnAddMoreSubtaskClick() {
+                $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
             if (Page_ClientValidate('SubmitSubTask')) {
                 ShowAjaxLoader();
                 var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
@@ -1977,35 +1981,35 @@
                     thumbnailWidth: 90,
                     thumbnailHeight: 90,
                     previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                       init: function () {
-                           this.on("maxfilesexceeded", function (data) {
-                               alert('you are reached maximum attachment upload limit.');
+                    init: function () {
+                        this.on("maxfilesexceeded", function (data) {
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                        this.on("success", function (file, response) {
+                            var filename = response.split("^");
+                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                               if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                                   // saves attachment.
+                                   $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                            //this.removeFile(file);
+                        }
                            });
-
-                           // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                           this.on("success", function (file, response) {
-                               var filename = response.split("^");
-                               $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-
-                               AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
-
-                        if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                            // saves attachment.
-                            $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                                   //this.removeFile(file);
-                               }
-                    });
-                }
-                   });
-               }
+                       }
+                });
+        }
 
             //Apply dropzone for comment section.
-               if (objSubtaskNoteDropzone) {
-                   objSubtaskNoteDropzone.destroy();
-                   objSubTaskNoteDropzone = null;
-               }
+        if (objSubtaskNoteDropzone) {
+            objSubtaskNoteDropzone.destroy();
+            objSubTaskNoteDropzone = null;
+        }
 
-               objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+        objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
            }
 
            function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
