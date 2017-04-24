@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="add-edit-aptitude-test.aspx.cs"
-    Inherits="JG_Prospect.Sr_App.add_edit_aptitude_test" %>
+    Inherits="JG_Prospect.Sr_App.add_edit_aptitude_test" ValidateRequest="false" %>
+
+<%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -12,7 +14,7 @@
             <li><a href="Inventory.aspx">Inventory</a></li>
             <li><a href="Maintenace.aspx">Maintainance</a></li>
             <li><a href="email-template-maintainance.aspx">Maintainance New</a></li>
-            <li><a href="manage-aptitude-tests.aspx.aspx">Aptitude Tests</a></li>
+            <li><a href="manage-aptitude-tests.aspx">Aptitude Tests</a></li>
         </ul>
         <!-- appointment tabs section end -->
         <h1>
@@ -51,9 +53,17 @@
                 <tr>
                     <th class="noborder">Designation:</th>
                     <td>
-                        <asp:DropDownList ID="ddlDesignation" runat="server" />
+                        <%--<asp:DropDownList ID="ddlDesignation" runat="server" />
                         <asp:RequiredFieldValidator ID="rfvDesignation" runat="server" ControlToValidate="ddlDesignation" InitialValue="0" ValidationGroup="vgExam"
-                            ErrorMessage="Please select Designation." Display="None" />
+                            ErrorMessage="Please select Designation." Display="None" />--%>
+                        <%--<asp:UpdatePanel ID="upnlDesignationFrozen" runat="server" RenderMode="Inline">
+                                        <ContentTemplate>--%>
+                        <asp:DropDownCheckBoxes ID="ddlDesigAptitude" runat="server" UseSelectAllNode="false" AutoPostBack="false">
+                            <style selectboxwidth="195" dropdownboxboxwidth="120" dropdownboxboxheight="150" />
+                        </asp:DropDownCheckBoxes>
+                        <asp:CustomValidator ID="cvalidatorDesignationAptitude" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkddlDesigAptitude"></asp:CustomValidator>
+                        <%--</ContentTemplate>
+                                    </asp:UpdatePanel>--%>
                     </td>
                     <td></td>
                     <td></td>
@@ -158,5 +168,11 @@
             $('input[data-id="' + $sender.attr('data-id') + '"]').prop('checked', false);
             $sender.prop('checked', true);
         }
+
+        // check if user has selected any designations or not.
+        function checkddlDesigAptitude(oSrc, args) {
+            args.IsValid = ($("#<%= ddlDesigAptitude.ClientID%> input:checked").length > 0);
+        }
+
     </script>
 </asp:Content>
