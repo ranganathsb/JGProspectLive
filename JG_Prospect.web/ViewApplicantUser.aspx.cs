@@ -19,9 +19,9 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 //using Word = Microsoft.Office.Interop.Word;
 using System.Web.Services;
+//using System.Diagnostics;
 
 namespace JG_Prospect
 {
@@ -90,7 +90,7 @@ namespace JG_Prospect
                     // Store GIUD when user is in create mode and save Touch Point Log..
                     hidTouchPointGUID.Value = Guid.NewGuid().ToString();
                     SetUserControlValue(string.Empty);
-                    hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
+                    //hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
 
             }
@@ -167,8 +167,8 @@ namespace JG_Prospect
                 lblReqSig.Visible = false;
                 rqMaritalStatus.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqNotes.Enabled = false;
-                lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
                 rqSource.Enabled = true;
                 lblSourceReq.Visible = true;
                 lblSourceReq.Visible = true;
@@ -257,8 +257,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -393,6 +393,7 @@ namespace JG_Prospect
                         ViewState["Email"] = ds.Tables[0].Rows[0][3].ToString();
                         txtaddress.Text = ds.Tables[0].Rows[0][4].ToString();
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
+                        txtZipHomeAdd.Text = ds.Tables[0].Rows[0][11].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
 
@@ -510,8 +511,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -566,8 +567,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -623,8 +624,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -690,8 +691,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -882,7 +883,16 @@ namespace JG_Prospect
                         dtResignation.Text = ds.Tables[0].Rows[0][45].ToString();
                         ddlWorkerCompCode.SelectedValue = ds.Tables[0].Rows[0][46].ToString();
                         dtReviewDate.Text = ds.Tables[0].Rows[0][47].ToString();
-                        ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        //ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["EmpType"].ToString()))
+                        {
+                            System.Web.UI.WebControls.ListItem lstEmpType = ddlEmpType.Items.FindByValue(ds.Tables[0].Rows[0]["EmpType"].ToString());
+
+                            if (lstEmpType != null)
+                            {
+                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);
+                            }
+                        }
                         dtLastDate.Text = ds.Tables[0].Rows[0][49].ToString();
                         txtPayRates.Text = ds.Tables[0].Rows[0][50].ToString();
                         //ddlExtraEarning.SelectedValue = ;
@@ -989,15 +999,27 @@ namespace JG_Prospect
                             //txtContractor3.Text = str_Contractor3;
                         }
                         //txtMajorTools.Text = Convert.ToString(ds.Tables[0].Rows[0][66]);
-                        if (Convert.ToString(ds.Tables[0].Rows[0][67]) != "")
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["CrimeStatus"].ToString()))
                         {
-                            if (Convert.ToBoolean(ds.Tables[0].Rows[0][67]))
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["CrimeStatus"]))
                             {
                                 rdoDrugtestYes.Checked = true;
                             }
                             else
                             {
                                 rdoDrugtestNo.Checked = true;
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FELONY"].ToString()))
+                        {
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["FELONY"]))
+                            {
+                                rdoGuiltyYes.Checked = true;
+                            }
+                            else
+                            {
+                                rdoGuiltyYes.Checked = true;
                             }
                         }
 
@@ -2281,6 +2303,7 @@ namespace JG_Prospect
                 {
                     objuser.DrugTest = false;
                 }
+                //Debug.WriteLine(objuser.DrugTest);
                 //if (rdoDriveLicenseYes.Checked)
                 //{
                 //    objuser.ValidLicense = true;
@@ -2313,15 +2336,15 @@ namespace JG_Prospect
                 {
                     objuser.LicenseStatus = false;
                 }
-                //if (rdoGuiltyYes.Checked)
-                //{
-                //    objuser.CrimeStatus = true;
-                //}
-                //else if (rdoGuiltyNo.Checked)
-                //{
-                //    objuser.CrimeStatus = false;
-                //}
-
+                if (rdoGuiltyYes.Checked)
+                {
+                    objuser.CrimeStatus = true;
+                }
+                else if (rdoGuiltyNo.Checked)
+                {
+                    objuser.CrimeStatus = false;
+                }
+                //Debug.WriteLine(objuser.CrimeStatus);
                 //objuser.Avialability = txtAvailability.Text;
                 //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
                 //if (txtYrs.Text != "")
@@ -3042,8 +3065,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3101,8 +3124,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3167,8 +3190,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = true;
                 //rqEmail.Enabled = true;
                 reEmail.Enabled = true;
@@ -3242,8 +3265,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = false;
                 lblSourceReq.Visible = false;
                 rqSource.Enabled = false;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = false;
