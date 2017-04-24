@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -88,7 +89,33 @@ namespace JG_Prospect.Sr_App
                             txtDuration.Text = Convert.ToString(dtExam.Rows[0]["ExamDuration"]);
                             txtPassPercentage.Text = Convert.ToString(dtExam.Rows[0]["PassPercentage"]);
                             chkActive.Checked = Convert.ToBoolean(dtExam.Rows[0]["IsActive"]);
-                            ddlDesignation.SelectedValue = Convert.ToString(dtExam.Rows[0]["DesignationID"]);
+
+                            //ddlDesignation.SelectedValue = Convert.ToString(dtExam.Rows[0]["DesignationID"]);
+                            if (!string.IsNullOrEmpty(Convert.ToString(dtExam.Rows[0]["DesignationID"])))
+                            {
+                                ddlDesigAptitude.Texts.SelectBoxCaption = "Select";
+                                foreach (var DIds in Convert.ToString(dtExam.Rows[0]["DesignationID"]).Split(',').ToList())
+                                {
+                                    foreach (ListItem item in ddlDesigAptitude.Items)
+                                    {
+                                        if (item.Value == DIds)
+                                        {
+                                            ddlDesigAptitude.Items.FindByValue(DIds).Selected = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foreach (ListItem item in ddlDesigAptitude.Items)
+                                {
+                                    if (item.Selected)
+                                    {
+                                        ddlDesigAptitude.Texts.SelectBoxCaption = item.Text;
+                                        break;
+                                    }
+                                }
+                            }
+
 
                             if (dsExam.Tables.Count > 1)
                             {
@@ -114,7 +141,15 @@ namespace JG_Prospect.Sr_App
 
         protected DataTable GetOptionsByQuestionID(Int64 intQuestionID)
         {
-            if (Options == null)
+            var _dataTable = new DataTable();
+            if (Options != null)
+            {
+                DataView dvOptions = Options.DefaultView;
+                dvOptions.RowFilter = string.Format("QuestionID = {0}", intQuestionID);
+                _dataTable = dvOptions.ToTable();
+            }
+
+            if (Options == null || _dataTable.Rows.Count <= 0)
             {
                 DataTable dtOptions = new DataTable();
                 dtOptions.Columns.Add("OptionID", typeof(long));
@@ -163,12 +198,19 @@ namespace JG_Prospect.Sr_App
             List<Designation> lstDesignations = DesignationBLL.Instance.GetAllDesignation();
             if (lstDesignations != null && lstDesignations.Any())
             {
-                ddlDesignation.DataSource = lstDesignations;
-                ddlDesignation.DataTextField = "DesignationName";
-                ddlDesignation.DataValueField = "ID";
-                ddlDesignation.DataBind();
+                //ddlDesignation.DataSource = lstDesignations;
+                //ddlDesignation.DataTextField = "DesignationName";
+                //ddlDesignation.DataValueField = "ID";
+                //ddlDesignation.DataBind();
+
+                ddlDesigAptitude.Items.Clear();
+                ddlDesigAptitude.DataSource = lstDesignations;
+                ddlDesigAptitude.DataTextField = "DesignationName";
+                ddlDesigAptitude.DataValueField = "ID";
+                ddlDesigAptitude.DataBind();
+
             }
-            ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
+            //ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
         }
 
         private MCQ_Exam GetMCQ_Exam()
@@ -176,7 +218,8 @@ namespace JG_Prospect.Sr_App
             MCQ_Exam objMCQ_Exam = new MCQ_Exam();
             objMCQ_Exam.ExamID = this.ExamID;
             objMCQ_Exam.CourseID = 0;
-            objMCQ_Exam.DesignationID = Convert.ToInt32(ddlDesignation.SelectedValue);
+            //objMCQ_Exam.DesignationID = Convert.ToInt32(ddlDesignation.SelectedValue);
+            objMCQ_Exam.DesignationID = GetSelectedDesignationsString(ddlDesigAptitude);
             objMCQ_Exam.ExamDescription = txtDescription.Text.Trim();
             objMCQ_Exam.ExamDuration = Convert.ToInt32(txtDuration.Text.Trim());
             objMCQ_Exam.ExamTitle = txtTitle.Text.Trim();
@@ -261,6 +304,7 @@ namespace JG_Prospect.Sr_App
                 dtQuestion.Columns.Add("PictureURL", typeof(string));
                 dtQuestion.Columns.Add("ExamID", typeof(long));
                 dtQuestion.Columns.Add("AnswerTemplate", typeof(string));
+                dtQuestion.Columns.Add("AnswerOptionID", typeof(long));
 
                 Questions = dtQuestion;
             }
@@ -273,6 +317,27 @@ namespace JG_Prospect.Sr_App
             repQuestions.DataBind();
 
             upQuestions.Update();
+        }
+
+        private string GetSelectedDesignationsString(Saplin.Controls.DropDownCheckBoxes drpChkBoxes)
+        {
+            String returnVal = string.Empty;
+            StringBuilder sbDesignations = new StringBuilder();
+
+            foreach (ListItem item in drpChkBoxes.Items)
+            {
+                if (item.Selected)
+                {
+                    sbDesignations.Append(String.Concat(item.Value, ","));
+                }
+            }
+
+            if (sbDesignations.Length > 0)
+            {
+                returnVal = sbDesignations.ToString().Substring(0, sbDesignations.ToString().Length - 1);
+            }
+
+            return returnVal;
         }
     }
 }

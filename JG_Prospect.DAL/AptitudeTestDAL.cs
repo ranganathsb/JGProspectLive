@@ -29,7 +29,7 @@ namespace JG_Prospect.DAL
         public static AptitudeTestDAL Instance
         {
             get { return m_AptitudeTestDAL; }
-            private set { ; }
+            private set {; }
         }
 
         public DataTable GetPerformanceByUserID(int userID)
@@ -216,7 +216,7 @@ namespace JG_Prospect.DAL
             return ".Net Aptitude Test";
         }
 
-        public DataTable GetMCQ_Exams(int? intDesignationID)
+        public DataTable GetMCQ_Exams(string intDesignationID)
         {
             try
             {
@@ -224,10 +224,10 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetMCQ_Exams");
                     command.CommandType = CommandType.StoredProcedure;
-                    if (intDesignationID.HasValue)
-                    {
-                        database.AddInParameter(command, "@DesignationID", DbType.Int32, intDesignationID.Value);
-                    }
+                    //if (intDesignationID.HasValue)
+                    //{
+                    database.AddInParameter(command, "@DesignationID", DbType.String, intDesignationID);
+                    //}
                     return database.ExecuteDataSet(command).Tables[0];
                 }
             }
@@ -270,7 +270,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CourseID", DbType.Int64, objMCQ_Exam.CourseID);
                     database.AddInParameter(command, "@ExamDuration", DbType.Int32, objMCQ_Exam.ExamDuration);
                     database.AddInParameter(command, "@PassPercentage", DbType.Decimal, objMCQ_Exam.PassPercentage);
-                    database.AddInParameter(command, "@DesignationID", DbType.Int64, objMCQ_Exam.DesignationID);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objMCQ_Exam.DesignationID);
 
                     return Convert.ToInt64(database.ExecuteScalar(command));
                 }
@@ -297,7 +297,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CourseID", DbType.Int64, objMCQ_Exam.CourseID);
                     database.AddInParameter(command, "@ExamDuration", DbType.Int32, objMCQ_Exam.ExamDuration);
                     database.AddInParameter(command, "@PassPercentage", DbType.Decimal, objMCQ_Exam.PassPercentage);
-                    database.AddInParameter(command, "@DesignationID", DbType.Int64, objMCQ_Exam.DesignationID);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objMCQ_Exam.DesignationID);
 
                     database.ExecuteNonQuery(command);
                 }
@@ -413,6 +413,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@OptionText", DbType.String, objMCQ_Option.OptionText);
                     database.AddInParameter(command, "@QuestionID", DbType.Int64, objMCQ_Option.QuestionID);
+                    database.AddInParameter(command, "@OptionID", DbType.Int64, objMCQ_Option.OptionID);
 
                     database.ExecuteNonQuery(command);
                 }
