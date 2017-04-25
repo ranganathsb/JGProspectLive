@@ -517,13 +517,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Label lblReqZip;
         
         /// <summary>
-        /// txtZip control.
+        /// txtZipHomeAdd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtZip;
+        protected global::System.Web.UI.WebControls.TextBox txtZipHomeAdd;
         
         /// <summary>
         /// AutoCompleteExtender1 control.
@@ -1705,13 +1705,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.DropDownList ddlCountry;
         
         /// <summary>
-        /// txtZipHomeAdd control.
+        /// txtZip control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtZipHomeAdd;
+        protected global::System.Web.UI.WebControls.TextBox txtZip;
         
         /// <summary>
         /// lblStateReq control.
@@ -2110,15 +2110,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator7;
         
         /// <summary>
-        /// lblNotesReq control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNotesReq;
-        
-        /// <summary>
         /// txtNotes control.
         /// </summary>
         /// <remarks>
@@ -2126,15 +2117,6 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNotes;
-        
-        /// <summary>
-        /// rqNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rqNotes;
         
         /// <summary>
         /// chkMaddAdd control.
