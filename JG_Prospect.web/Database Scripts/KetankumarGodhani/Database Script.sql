@@ -3819,3 +3819,163 @@ BEGIN
 
 END
 GO
+
+-----------------------------------------------------------------------------------------
+					---25 APR 2017
+-----------------------------------------------------------------------------------------
+
+-- 1
+ALTER PROCEDURE [dbo].[GetMCQ_ExamByID]
+	@ExamID	INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	SELECT e.*, STUFF((SELECT distinct ' ,' + t.DesignationName
+         FROM tbl_Designation t
+         WHERE t.ID in (select * from [dbo].[SplitString](e.DesignationID,','))
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)')
+        ,1,2,'') DesignationName
+	--, d.DesignationName
+	FROM MCQ_Exam e 
+	--INNER JOIN tbl_Designation d ON e.DesignationID = d.ID
+	WHERE e.ExamID = @ExamID
+
+	SELECT q.*, a.OptionID AS AnswerOptionID
+	FROM MCQ_Question q INNER JOIN MCQ_CorrectAnswer a
+			ON q.QuestionID = a.QuestionID
+	WHERE q.ExamID = @ExamID
+	ORDER BY q.QuestionID ASC
+
+	SELECT o.*
+	FROM MCQ_Option o 
+	WHERE o.QuestionID IN (
+							SELECT q.QuestionID 
+							FROM MCQ_Question q
+							WHERE q.ExamID = @ExamID )
+	ORDER BY o.QuestionID ASC
+
+END
+GO
+
+--2
+ALTER PROCEDURE [dbo].[SP_InsertPerfomace] 
+	-- Add the parameters for the stored procedure here
+	@installUserID varchar(20), 
+	@examID int = 0
+	,@marksEarned int
+	,@totalMarks int
+	,@Aggregate real
+	,@ExamPerformanceStatus int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	INSERT INTO [MCQ_Performance]
+           ([UserID]
+           ,[ExamID]
+           ,[MarksEarned]
+           ,[TotalMarks]
+           ,[Aggregate]
+		   ,[ExamPerformanceStatus]           
+		   )
+     VALUES
+           (@installUserID
+           ,@examID
+           ,@marksEarned
+           ,@totalMarks
+           ,@Aggregate
+		   ,@ExamPerformanceStatus
+           )
+END
+GO
+
+
+-----------------------------------------------------------------------------------------
+					---26 APR 2017
+-----------------------------------------------------------------------------------------
+
+--1
+ALTER PROCEDURE [dbo].[GetNonFrozenTasks]
+	-- Add the parameters for the stored procedure here
+
+	@startdate varchar(50),
+	@enddate varchar(50),
+	@PageIndex INT , 
+	@PageSize INT  
+	
+
+As
+BEGIN
+
+DECLARE @StartIndex INT  = 0
+SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+
+;WITH 
+	Tasklist AS
+	(	
+		select  TaskId ,[Description],[Status],convert(Date,DueDate ) as DueDate,
+		Title,[Hours],ParentTaskId,TaskLevel,Assigneduser,ParentTaskTitle,InstallId as InstallId1,AdminStatus,TechLeadStatus,OtherUserStatus,(select * from [GetParent](TaskId)) as MainParentId,
+		case 
+			when (ParentTaskId is null and  TaskLevel=1) then InstallId 
+			when (tasklevel =1 and ParentTaskId>0) then 
+				(select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId  
+			when (tasklevel =2 and ParentTaskId>0) then
+				(select InstallId from tbltask where taskid in (
+			(select parentTaskId from tbltask where   taskid=x.parenttaskid) ))
+			+'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid)	+ '-' +InstallId 
+					
+			when (tasklevel =3 and ParentTaskId>0) then
+			(select InstallId from tbltask where taskid in (
+			(select parenttaskid from tbltask where taskid in (
+			(select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))
+			+'-'+
+				(select InstallId from tbltask where taskid in (
+			(select parentTaskId from tbltask where   taskid=x.parenttaskid) ))
+			+'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid)	+ '-' +InstallId 
+		end as 'InstallId' ,Row_number() OVER (  order by x.TaskId ) AS RowNo_Order
+		from (
+			select a.*
+			,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle
+			,t.FristName + ' ' + t.LastName AS Assigneduser
+			from  tbltask a
+			LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId 
+			LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId
+			LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id  
+			where a.[Status]=1 
+			--and (CreatedOn >=@startdate and CreatedOn <= @enddate ) 
+		) as x
+	)
+
+	---- get CTE data into temp table
+	SELECT *
+	INTO #temp
+	FROM Tasklist
+	WHERE
+		(AdminStatus is null OR AdminStatus = 0)
+		and (TechLeadStatus is null OR TechLeadStatus = 0)
+		and (OtherUserStatus is null OR OtherUserStatus = 0)
+
+
+	SELECT * 
+	FROM #temp 
+	WHERE 
+		RowNo_Order >= @StartIndex AND 
+		(
+			@PageSize = 0 OR 
+			RowNo_Order < (@StartIndex + @PageSize)
+		)
+	ORDER BY RowNo_Order
+
+	SELECT
+	COUNT(*) AS TotalRecords
+		FROM #temp
+END
+GO

@@ -58,7 +58,7 @@ namespace JG_Prospect.DAL
 
         public DataTable GetcorrectAnswerByQuestionID(int questionID)
         {
-            string SQL = "SELECT * FROM [MCQ_CorrectAnswer] where QuestionID = " + questionID.ToString();
+            string SQL = "select *, (select top 1 OptionText FROM MCQ_Option where OptionID=ma.OptionID AND QuestionID=ma.QuestionID) AS AnswerText from MCQ_CorrectAnswer ma where ma.QuestionId = " + questionID.ToString();
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -93,6 +93,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@marksEarned", DbType.Int32, marksEarned);
                     database.AddInParameter(command, "@totalMarks", DbType.Int32, totalMarks);
                     database.AddInParameter(command, "@Aggregate", DbType.Double, percentage);
+                    database.AddInParameter(command, "@ExamPerformanceStatus", DbType.Int32, status);
 
                     database.ExecuteScalar(command);
                     //int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -180,7 +181,18 @@ namespace JG_Prospect.DAL
 
         public DataTable GetExamByExamID(Enums.Aptitude_ExamType examType, int userID)
         {
-            string SQL = "SELECT * FROM [MCQ_Exam] Ex WHERE ExamID NOT IN ( "
+            var UserDetails = UserDAL.Instance.getInstalluserDetails(userID);
+            var _designationId = "0";
+            if (UserDetails.Tables[0].Rows.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(Convert.ToString(UserDetails.Tables[0].Rows[0]["DesignationID"])))
+                {
+                    _designationId = Convert.ToString(UserDetails.Tables[0].Rows[0]["DesignationID"]);
+                }
+            }
+
+            string SQL = @"SELECT * FROM [MCQ_Exam] Ex WHERE
+                (',' + RTRIM(Ex.DesignationID) + ',') LIKE '%," + _designationId + ",%' AND ExamID NOT IN ( "
                         + "select ExamID from [MCQ_Performance] where UserID = "
                         + "'" + userID + "'" + ")";
 

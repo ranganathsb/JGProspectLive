@@ -374,19 +374,20 @@
                                     <asp:Label ID="lblAssigneduser" runat="server" Text='<%# Eval("ParentTaskTitle")%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Sub Task ID#">
+                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left"
+                                HeaderStyle-Width="425px" ItemStyle-Width="425px" HeaderText="Sub Task">
                                 <ItemTemplate>
                                     <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MParentId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:Label ID="lblDesc" runat="server" Text='<%# (string.IsNullOrEmpty(Convert.ToString(Eval("InstallId"))) ? Eval("Title") : (": "+ Eval("Title")) )%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
+                            <%--<asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
                                 HeaderStyle-Width="300px" ItemStyle-Width="300px" HeaderText="Sub Task">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesc" runat="server"
                                         Text='<%# Eval("Title")%>'></asp:Label>
                                 </ItemTemplate>
-                            </asp:TemplateField>
+                            </asp:TemplateField>--%>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
                                 HeaderStyle-Width="120px" ItemStyle-Width="120px" HeaderText="Status">
                                 <ItemTemplate>
@@ -400,9 +401,9 @@
                                 HeaderStyle-Width="150px" ItemStyle-Width="150px" HeaderText="Approval">
                                 <ItemTemplate>
                                     <div class="approvalBoxes">
-                                        <asp:CheckBox ID="chkAdmin" Checked='<%# String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true? false : true %>' runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
-                                        <asp:CheckBox ID="chkITLead" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
-                                        <asp:CheckBox ID="chkUser" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+                                        <asp:CheckBox ID="chkAdmin" Checked='<%# Convert.ToBoolean(Eval("AdminStatus")) %>' runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
+                                        <asp:CheckBox ID="chkITLead" runat="server" Checked='<%# Convert.ToBoolean(Eval("TechLeadStatus")) %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                        <asp:CheckBox ID="chkUser" runat="server" Checked='<%# Convert.ToBoolean(Eval("OtherUserStatus")) %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
                                     </div>
                                     <div class="approvepopup">
 
@@ -567,30 +568,32 @@
                         <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                         <Columns>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Assigned To">
+                                HeaderStyle-Width="100px" ItemStyle-Width="100px" HeaderText="Parent Task">
                                 <ItemTemplate>
                                     <asp:HiddenField ID="nonfrozenMainParentId" runat="server" Value='<%# Eval("MainParentId")%>' />
                                     <asp:HiddenField ID="lblTaskIdInPro" runat="server" Value='<%# Eval("TaskId")%>' />
                                     <asp:HiddenField ID="lblParentTaskIdInPro" runat="server" Value='<%# Eval("ParentTaskId")%>' />
                                     <%--<asp:Label ID="lblDueDate" runat="server" Text='<%# Eval("DueDate")%>'></asp:Label>--%>
-                                    <asp:Label ID="lblAssignedUser" runat="server" Text='<%# Eval("Assigneduser")%>'></asp:Label>
+                                    <%--<asp:Label ID="lblAssignedUser" runat="server" Text='<%# Eval("Assigneduser")%>'></asp:Label>--%>
+                                    <asp:Label ID="lblAssigneduser" runat="server" Text='<%# Eval("ParentTaskTitle")%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderText="Sub Task ID#">
+                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left"
+                                HeaderStyle-Width="425px" ItemStyle-Width="425px" HeaderText="Sub Task">
                                 <ItemTemplate>
-                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId")%>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:LinkButton ForeColor="Blue" ID="lnkInstallId" runat="server" Text='<%# Eval("InstallId") %>' data-highlighter='<%# Eval("TaskId")%>' parentdata-highlighter='<%# Eval("MainParentId")%>' CssClass="context-menu"></asp:LinkButton>
+                                    <asp:Label ID="lblDesc" runat="server" Text='<%# (string.IsNullOrEmpty(Convert.ToString(Eval("InstallId"))) ? Eval("Title") : (": "+ Eval("Title")) )%>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
+                            <%--<asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Justify"
                                 HeaderStyle-Width="30%" ItemStyle-Width="30%" HeaderText="Sub Task">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesc" runat="server"
                                         Text='<%# Eval("Title")%>'></asp:Label>
                                 </ItemTemplate>
-                            </asp:TemplateField>
+                            </asp:TemplateField>--%>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="20%" ItemStyle-Width="20%" HeaderText="Status">
+                                HeaderStyle-Width="120px" ItemStyle-Width="120px" HeaderText="Status">
                                 <ItemTemplate>
                                     <%--<asp:Label ID="lblStatus" runat="server" Text='<%# Eval("Status")%>'></asp:Label>--%>
                                     <asp:HiddenField ID="lblStatus" runat="server" Value='<%# Eval("Status")%>'></asp:HiddenField>
@@ -599,8 +602,13 @@
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center"
-                                HeaderStyle-Width="20%" ItemStyle-Width="20%" HeaderText="Approval">
+                                HeaderStyle-Width="150px" ItemStyle-Width="150px" HeaderText="Approval">
                                 <ItemTemplate>
+                                    <div class="approvalBoxes">
+                                        <asp:CheckBox ID="chkAdmin" Checked="false" runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
+                                        <asp:CheckBox ID="chkITLead" runat="server" Checked="false" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                        <asp:CheckBox ID="chkUser" runat="server" Checked="false" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+                                    </div>
                                     <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
                                     <br />
                                     <asp:Label ID="lblHoursDevInPro" runat="server"></asp:Label>
@@ -767,9 +775,14 @@
                                 <asp:CheckBox ID="chkITLead" Enabled="false" runat="server" />
                                 <asp:CheckBox ID="chkUser" Enabled="false" runat="server" />--%>
                                 <div class="approvalBoxes">
-                                    <asp:CheckBox ID="chkAdmin" Checked='<%# String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true? false : true %>' runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
-                                    <asp:CheckBox ID="chkITLead" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
-                                    <asp:CheckBox ID="chkUser" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+                                    <%--<asp:CheckBox ID="" Checked='<%# String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true? false : true %>' runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
+                                    <asp:CheckBox ID="" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                    <asp:CheckBox ID="" runat="server" Checked='<%# String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true? false : true %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />--%>
+
+                                    <asp:CheckBox ID="chkAdmin" Checked='<%# Convert.ToBoolean(Eval("AdminStatus")) %>' runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
+                                    <asp:CheckBox ID="chkITLead" runat="server" Checked='<%# Convert.ToBoolean(Eval("TechLeadStatus")) %>' CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                    <asp:CheckBox ID="chkUser" runat="server" Checked='<%# Convert.ToBoolean(Eval("OtherUserStatus")) %>' CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+
                                 </div>
 
                                 <asp:Label ID="lblHoursLeadInPro" runat="server"></asp:Label>
@@ -1226,8 +1239,8 @@
                             }
                             // remove loading spinner image.                                
                             $("#<%=txtSearchInPro.ClientID%>").removeClass("ui-autocomplete-loading");
-                            }
-                        });
+                        }
+                    });
                 },
                 minLength: 0,
                 select: function (event, ui) {
@@ -1266,8 +1279,8 @@
 
 
         function SetTaskCounterPopup() {
-           
-         var dlg =   $('#pnlNewFrozenTask').dialog({
+
+            var dlg = $('#pnlNewFrozenTask').dialog({
                 width: 1000,
                 show: 'slide',
                 hide: 'slide',
@@ -1275,10 +1288,10 @@
                 modal: true
             });
 
-         dlg.parent().appendTo(jQuery("form:first"));
+            dlg.parent().appendTo(jQuery("form:first"));
 
             $('#<%= lblNewCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
-                $('#<%= lblFrozenCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
+            $('#<%= lblFrozenCounter.ClientID %>').click(function () { $('#pnlNewFrozenTask').dialog('open'); });
         }
 
         function checkDropdown() {

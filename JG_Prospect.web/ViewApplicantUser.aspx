@@ -35,6 +35,125 @@
             $dialog.dialog('open');
         }
 
+        //function pageLoad() {
+        $(document).ready(function () {
+
+            var dlg = $('#pnlFirstPopup').dialog({
+                width: 270,
+                show: 'slide',
+                hide: 'slide',
+                autoOpen: true,
+                modal: true,
+                closeOnEscape: false,
+                dialogClass: 'task-no-close-dialog'
+            });
+
+            //dlg.parent().appendTo(jQuery("form:first"));
+
+            $('#pnlFirstPopup').dialog('open');
+
+            $('#lbtnAptTestLink').click(function () {
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+            });
+
+
+            $('#btnCalClose').click(function () {
+                $("#hdnBtnClose").click();
+            });
+
+            $('#btnTakeTestNow').click(function () {
+                $("#pnlFirstPopup").dialog("close");
+                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+            });
+
+        });
+        //}
+
+        function ShowHideRespectiveTableData(optionSelected) {
+            if (optionSelected == '') {
+                optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %> option:selected').text();
+            }
+
+            $('#btnGeneralPlus').hide();
+
+            $('.tblSkillAssessment td').hide();
+            $('#btnSkillAssMinusNew').hide();
+
+            $('.tblRecruiterAssMinusNew td').hide();
+            $('#btnRecruiterAssMinusNew').hide();
+
+            $('.tblSalesAssesment td').hide();
+            $('#btnSalesAssMinusNew').hide();
+
+
+            $('.tblSaleMain td').hide();
+            $('.tblRecruiterMain td').hide();
+            $('.tblSkillMain td').hide();
+
+
+            $('.tblSaleMain').hide();
+            $('.tblRecruiterMain').hide();
+            $('.tblSkillMain').hide();
+
+            $('.tblBasicAssessmentMain').hide();
+
+            if (optionSelected == "Admin") {
+                $('#div-AdminAssess').html(optionSelected + " Skill Assessment")
+                $('.tblSkillMain').show("slow");
+                $('.tblSkillMain td').show("slow");
+
+
+                $(".tblSkillAssessment td").show("slow");
+                $('#btnSkillAssPlusNew').hide();
+                $('#btnSkillAssMinusNew').show();
+
+                $('#lbtnAptTestLink').html('Aptitude test for ' + optionSelected);
+            }
+            else if ((optionSelected == "Jr. Sales") || (optionSelected == "Jr Project Manager") || (optionSelected == "Sr. Sales") || (optionSelected == "Sales Manager")) {
+                $('#div-SalesAssess').html(optionSelected + " Skill Assessment")
+                $('.tblSaleMain').show("slow");
+                $('.tblSaleMain td').show("slow");
+
+
+                $(".tblSalesAssesment td").show("slow");
+                $('#btnSalesPlusNew').hide();
+                $('#btnSalesAssMinusNew').show();
+
+                $('#lbtnAptTestLink').html('Aptitude test for ' + optionSelected);
+            }
+            else if (optionSelected == "Recruiter") {
+                $('#div-RecuiterAssess').html(optionSelected + " Skill Assessment")
+                $('.tblRecruiterMain').show("slow");
+                $('.tblRecruiterMain td').show("slow");
+
+                $(".tblRecruiterAssMinusNew td").show("slow");
+                $('#btnRecruiterPlusNew').hide();
+                $('#btnRecruiterAssMinusNew').show();
+
+                $('#lbtnAptTestLink').html('Aptitude test for ' + optionSelected);
+            }
+            else {
+                // show for all user.
+                // alert(optionSelected);
+
+                if ((optionSelected == "0") || (optionSelected == "--Select--")) {
+                    $('#div-BasicAssessment').html("Select Skill Assessment")
+
+                    $('#lbtnAptTestLink').html('Aptitude test');
+                }
+                else {
+                    $('#div-BasicAssessment').html(optionSelected + " Skill Assessment");
+
+                    $('#lbtnAptTestLink').html('Aptitude test for ' + optionSelected);
+                }
+
+
+                $('#tblBasicAssessmentMain').show();
+                $('#tblBasicAssessment').show();
+            }
+
+        }
+
         function changeFlag(countrolD) {
             $("#dvFlag").attr('class', $(countrolD).val().toLowerCase());
         }
@@ -139,16 +258,9 @@
                     changeFlag('#<%=ddlCountry.ClientID%>');
                 });
 
-            <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
+                <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
-
-                $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
-                    var url = window.location.href
-                    var arr = url.split("/");
-                    var currDomainName = arr[0] + "//" + arr[2];
-                    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
-                });
 
                 var text_max = 50;
                 $('#textarea_CharCount').html(text_max + ' characters remaining');
@@ -328,10 +440,6 @@
             });
 
 
-
-
-
-
             $("#btnNewHireMinus").click(function () {
                 $('.tblNewHire td').hide("slow");
                 $('#btnNewHirePluse').show();
@@ -493,7 +601,7 @@
 
         }
         //===ready===END
-        function ShowHideRespectiveTableData(optionSelected) {
+        <%--function ShowHideRespectiveTableData(optionSelected) {
             if (optionSelected == '') {
                 optionSelected = $('#<%= ddlPositionAppliedFor.ClientID %>').val();
             }
@@ -584,7 +692,7 @@
                 $('#tblBasicAssessment').show();
             }
 
-        }
+        }--%>
 
         function formatCurrency(number) {
             var n = number.split('').reverse().join("");
@@ -1325,6 +1433,11 @@
         }
     </script>
     <style>
+        
+        .task-no-close-dialog .ui-dialog-titlebar-close {
+            visibility: hidden;
+        }
+
         /* Absolute Center Spinner */
         .ddlstatus-per-text {
             float: right;
@@ -1459,6 +1572,18 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div id="pnlFirstPopup" class="dialog">
+        <table border="1" cellspacing="5" cellpadding="5">
+            <tr>
+                <td colspan="2">
+                    <asp:Button ID="btnTakeTestNow" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="120px" TabIndex="6" Text="Take Test Now" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                    <asp:Button ID="btnCalClose" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <input type="hidden" id="hidID" runat="server" />
     <input type="hidden" id="hidDesignationBeforeChange" runat="server" />
     <input type="hidden" id="hidExtEmail" runat="server" />
@@ -1470,6 +1595,8 @@
     <%--<div class="loading" style="display: none">Loading&#8230;</div>--%>
     <asp:UpdatePanel ID="UpdatePanel8" runat="server">
         <ContentTemplate>
+            <asp:Button ID="hdnBtnClose" OnClick="btnCalClose_Click" ClientIDMode="Static" CausesValidation="false" runat="server" style="display:none;"/>
+
             <input type="hidden" id="hdnWorkFiles" runat="server" />
             <div class="right_panel">
                 <!-- appointment tabs section start -->
@@ -1691,16 +1818,16 @@
 
                                         <label style="text-align: right;">
                                             Source<asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                                        <asp:DropDownList ID="ddlSource" runat="server" Width="249px" TabIndex="510"  Enabled="false">
+                                        <asp:DropDownList ID="ddlSource" runat="server" Width="249px" TabIndex="510" Enabled="false">
                                         </asp:DropDownList>
 
                                         <%--<asp:TextBox ID="txtSource" runat="server" MaxLength="40" TabIndex="108" autocomplete="off" Width="250px"></asp:TextBox>--%>
                                         <br />
                                         <label></label>
                                         <asp:TextBox ID="txtSource" runat="server" Width="140px" TabIndex="512" Visible="false"></asp:TextBox>
-                                        &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add"  Visible="false" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
+                                        &nbsp;<asp:Button runat="server" ID="btnAddSource" Text="Add" Visible="false" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
                                
-                                        <asp:Button runat="server" ID="btnDeleteSource"  Visible="false" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
+                                        <asp:Button runat="server" ID="btnDeleteSource" Visible="false" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Delete" OnClick="btnDeleteSource_Click" CausesValidation="false" Height="30px" />
                                         <br />
                                         <label>
                                         </label>
@@ -1822,7 +1949,7 @@
 
 
                             <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
-                                <asp:LinkButton ID="lbtnAptTestLink" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                <asp:LinkButton ID="lbtnAptTestLink" ClientIDMode="Static" OnClientClick="return false" runat="server"></asp:LinkButton>
                             </div>
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
@@ -5150,17 +5277,17 @@
                         if (sender._postBackSettings.panelsToUpdate != null) {
                             $(".loading").hide();
                             $("#<%=ddlstatus.ClientID %>").msDropDown();
-                    }
-                });
+                        }
+                    });
 
-            };
+                };
             });
 
-        try {
-            $("#<%=ddlstatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
+            try {
+                $("#<%=ddlstatus.ClientID%>").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
 
 
         <%--try {

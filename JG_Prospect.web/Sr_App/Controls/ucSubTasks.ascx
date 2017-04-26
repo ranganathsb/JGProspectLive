@@ -1265,6 +1265,7 @@
     var maintask = true;
 
     function shownewsubtask() {
+        debugger;
         maintask = true;
         $('#<%=hdTaskLvl.ClientID%>').val("1");
         $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());

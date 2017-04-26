@@ -445,7 +445,7 @@ namespace JG_Prospect
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-                            System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
+                            System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByValue(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
                             if (lstPosition != null)
                             {
                                 ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPosition);
@@ -465,7 +465,7 @@ namespace JG_Prospect
                             ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
                             Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
                         }
-                        ShowHideAptitudeTestLink();
+                        //ShowHideAptitudeTestLink();
 
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
                         {
@@ -3666,69 +3666,69 @@ namespace JG_Prospect
                 ddlmaritalstatus.Visible = true;
             }
 
-            ShowHideAptitudeTestLink();
+            //ShowHideAptitudeTestLink();
 
             hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
         }
 
-        private void ShowHideAptitudeTestLink()
-        {
+        //private void ShowHideAptitudeTestLink()
+        //{
 
-            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+        //    var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
 
-            if (Session["ID"] != null && Session["ID"].ToString() != "")
-                switch ((JGConstant.DesignationType)selDesignation)
-                {
-                    case JGConstant.DesignationType.Admin:
-                        break;
-                    case JGConstant.DesignationType.Jr_Sales:
-                        break;
-                    case JGConstant.DesignationType.Jr_Project_Manager:
-                        break;
-                    case JGConstant.DesignationType.Office_Manager:
-                        break;
-                    case JGConstant.DesignationType.Recruiter:
-                        break;
-                    case JGConstant.DesignationType.Sales_Manager:
-                        break;
-                    case JGConstant.DesignationType.Sr_Sales:
-                        break;
-                    case JGConstant.DesignationType.IT_Network_Admin:
-                        break;
-                    case JGConstant.DesignationType.IT_Jr_Net_Developer:
-                    case JGConstant.DesignationType.IT_Sr_Net_Developer:
-                        lbtnAptTestLink.Text = "Aptitude test for .Net";
-                        lbtnAptTestLink.PostBackUrl = "";
+        //    if (Session["ID"] != null && Session["ID"].ToString() != "")
+        //        switch ((JGConstant.DesignationType)selDesignation)
+        //        {
+        //            case JGConstant.DesignationType.Admin:
+        //                break;
+        //            case JGConstant.DesignationType.Jr_Sales:
+        //                break;
+        //            case JGConstant.DesignationType.Jr_Project_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Office_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Recruiter:
+        //                break;
+        //            case JGConstant.DesignationType.Sales_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Sr_Sales:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Network_Admin:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Jr_Net_Developer:
+        //            case JGConstant.DesignationType.IT_Sr_Net_Developer:
+        //                lbtnAptTestLink.Text = "Aptitude test for .Net";
+        //                lbtnAptTestLink.PostBackUrl = "";
 
-                        break;
-                    case JGConstant.DesignationType.IT_Android_Developer:
-                        break;
-                    case JGConstant.DesignationType.IT_PHP_Developer:
-                        break;
-                    case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
-                        break;
-                    case JGConstant.DesignationType.Installer_Helper:
-                        break;
-                    case JGConstant.DesignationType.Installer_Journeyman:
-                        break;
-                    case JGConstant.DesignationType.Installer_Mechanic:
-                        break;
-                    case JGConstant.DesignationType.Installer_Lead_Mechanic:
-                        break;
-                    case JGConstant.DesignationType.Installer_Foreman:
-                        break;
-                    case JGConstant.DesignationType.Commercial_Only:
-                        break;
-                    case JGConstant.DesignationType.SubContractor:
-                        break;
-                    default:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Android_Developer:
+        //                break;
+        //            case JGConstant.DesignationType.IT_PHP_Developer:
+        //                break;
+        //            case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Helper:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Journeyman:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Mechanic:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Lead_Mechanic:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Foreman:
+        //                break;
+        //            case JGConstant.DesignationType.Commercial_Only:
+        //                break;
+        //            case JGConstant.DesignationType.SubContractor:
+        //                break;
+        //            default:
 
-                        lbtnAptTestLink.Text = "";
-                        lbtnAptTestLink.PostBackUrl = "";
-                        break;
-                }
+        //                lbtnAptTestLink.Text = "";
+        //                lbtnAptTestLink.PostBackUrl = "";
+        //                break;
+        //        }
 
-        }
+        //}
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -6649,5 +6649,14 @@ namespace JG_Prospect
                 txtTouchPointLogNote.Text = "";
             }
         }
+
+        protected void btnCalClose_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session["LogOut"] = 1;
+            Response.Redirect("~/login.aspx");
+        }
+
+        
     }
 }
