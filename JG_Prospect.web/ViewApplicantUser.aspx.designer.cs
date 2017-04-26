@@ -13,6 +13,24 @@ namespace JG_Prospect {
     public partial class ViewApplicantUser {
         
         /// <summary>
+        /// btnTakeTestNow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnTakeTestNow;
+        
+        /// <summary>
+        /// btnCalClose control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCalClose;
+        
+        /// <summary>
         /// hidID control.
         /// </summary>
         /// <remarks>
@@ -74,6 +92,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanel8;
+        
+        /// <summary>
+        /// hdnBtnClose control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button hdnBtnClose;
         
         /// <summary>
         /// hdnWorkFiles control.

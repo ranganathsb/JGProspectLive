@@ -33,13 +33,13 @@ namespace JG_Prospect.MCQTest
 
                 //for (int i = 0; i < performanceTable.Rows.Count; i++)
                 foreach (DataRow row in performanceTable.Rows)
-                {   
+                {
                     String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
                     String studentName = row["UserID"].ToString();
                     String aggregate = row["Aggregate"].ToString();
                     String marksEarned = row["MarksEarned"].ToString();
                     String totalMarks = row["TotalMarks"].ToString();
-                    
+
                     buffer += "<tr><td>" + examName + "</td><td>" + marksEarned + "</td><td>" + totalMarks + "</td><td>" + aggregate + "</td></tr>";
                 }
 
@@ -51,7 +51,7 @@ namespace JG_Prospect.MCQTest
 
         private void populateLabel()
         {
-            DataTable examsNotWrittenYet = AptitudeTestBLL.Instance.GetExamByExamID(Enums.Aptitude_ExamType.DotNet ,UserID);
+            DataTable examsNotWrittenYet = AptitudeTestBLL.Instance.GetExamByExamID(Enums.Aptitude_ExamType.DotNet, UserID);
 
             if (examsNotWrittenYet.Rows.Count == 0)
             {
@@ -64,16 +64,16 @@ namespace JG_Prospect.MCQTest
 
                 foreach (DataRow ExamRow in examsNotWrittenYet.Rows)
                 {
-                    if (Enums.Aptitude_ExamType.DotNet.GetHashCode() == (int)ExamRow["ExamType"])
-                    {
-                        String url = "StartExam";
-                        buff += "<tr><td>Click on following link to Start Exam ";
-                        buff += "</Br></Br></Br>";
-                        buff += "<b><a href=" + url + ".aspx?exam_id=" + ExamRow["ExamID"].ToString() + ">" + ExamRow["ExamTitle"] + "</a></b></td>";
-                        buff += "</tr>";
-                        buff += "<tr><td> </Br></Br>" + ExamRow["ExamDescription"] + "</td>";
-                        buff += "</Br></Br></Br></tr>";
-                    }
+                    //if (Enums.Aptitude_ExamType.DotNet.GetHashCode() == (int)ExamRow["ExamType"])
+                    //{
+                    String url = "StartExam";
+                    buff += "<tr><td>Click on following link to Start Exam ";
+                    buff += "</Br></Br></Br>";
+                    buff += "<b><a href=" + url + ".aspx?exam_id=" + ExamRow["ExamID"].ToString() + ">" + ExamRow["ExamTitle"] + "</a></b></td>";
+                    buff += "</tr>";
+                    buff += "<tr><td> </Br></Br>" + ExamRow["ExamDescription"] + "</td>";
+                    buff += "</Br></Br></Br></tr>";
+                    //}
 
                     buff += "</table>";
                     Label1.Text = buff;

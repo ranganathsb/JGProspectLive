@@ -2661,18 +2661,25 @@ namespace JG_Prospect.Sr_App.Controls
 
                     if (dtSubTaskDetails.Rows.Count > 0)
                     {
-                        dvSubTaskDetails.Sort = "TaskId ASC";
-                        dtSubTaskDetails = dvSubTaskDetails.ToTable();
+                        //dvSubTaskDetails.Sort = "TaskId ASC";
+                        //dtSubTaskDetails = dvSubTaskDetails.ToTable();
+
+                        DataSet _dsSubTaskDetails = GetSubTasks(HighlightedTaskId);
+                        DataView _dvSubTaskDetails = _dsSubTaskDetails.Tables[0].AsDataView();
+                        _dvSubTaskDetails.Sort = "TaskId ASC";
+                        var _dtSubTaskDetails = _dvSubTaskDetails.ToTable();
+
                         //this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-                        hdnLastSubTaskSequence.Value = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+                        hdnLastSubTaskSequence.Value = _dtSubTaskDetails.Rows[_dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
                     }
                     else
                     {
                         //this.LastSubTaskSequence = String.Empty;
                         hdnLastSubTaskSequence.Value = string.Empty;
                     }
-                    ShowAddNewSubTaskSection(false);
+                    //ShowAddNewSubTaskSection(false);
                 }
+                ShowAddNewSubTaskSection(false);
             }
 
             if (repSubTasks.Items.Count == 0)
