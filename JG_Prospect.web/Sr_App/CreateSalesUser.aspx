@@ -137,11 +137,11 @@
         function pageLoad() {
         $(document).ready(function () {
 
-           changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+           <%--changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
 
            $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
-            });
+            });--%>
 
             <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
@@ -457,6 +457,11 @@
         }
         function pageLoad() {
             $(document).ready(function () {
+                 changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+        
+                $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
+                    changeFlag('#<%=ddlCountry.ClientID%>');
+                });
 
                 SetSectionShowHideOnReady();
 
@@ -1665,8 +1670,8 @@
                                     <td style="padding-right: 0px !important;">Phone#<asp:Label ID="lblPhoneReq" runat="server" Text="*" ForeColor="Red"></asp:Label>
                                         <asp:RequiredFieldValidator ID="rqPhone" runat="server" ControlToValidate="txtPhone"
                                             ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Phone No"></asp:RequiredFieldValidator>
-                                        <asp:TextBox ID="txtPhone" runat="server" MaxLength="12" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
-                                            onkeydown="return IsNumeric(event,true);" Width="150"></asp:TextBox>                                        
+                                        <asp:TextBox ID="txtPhone" runat="server" MaxLength="14" onblur="CheckDuplicatePhone(this)" TabIndex="505" OnTextChanged="txtPhone_TextChanged"
+                                            onkeydown="return IsNumeric(event,true);" Width="170"></asp:TextBox>                                        
                                     </td>
                                     <td>&nbsp;&nbsp;Ext. <%--extension--%>
                                         <br /><asp:TextBox ID="txtPhoneExt" runat="server" MaxLength="8" Width="25" onkeydown="return IsNumeric(event,true);"></asp:TextBox></td>
@@ -1838,17 +1843,17 @@
                                         <br />
                                         <asp:DropDownList ID="ddlEmpType" runat="server" Width="170px" AutoPostBack="true" OnSelectedIndexChanged="ddlEmpType_SelectedIndexChanged">
                                             <%--TabIndex="155"--%>
-                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                            <asp:ListItem Text="Temp" Value="Temp"></asp:ListItem>
-                                            <asp:ListItem Text="Internship" Value="Internship"></asp:ListItem>
-                                            <asp:ListItem Text="Part Time - Remote" Value="Part Time - Remote"></asp:ListItem>
-                                            <asp:ListItem Text="Part Time - Onsite" Value="Part Time - Onsite"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time - Remote" Value="Full Time - Remote"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time - Onsite" Value="Full Time - Onsite"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
-                                            <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
-                                            <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
-                                            <asp:ListItem Text="Sub" Value="Sub"></asp:ListItem>
+                                        <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Temp" Value="6"></asp:ListItem>
+                                        <asp:ListItem Text="Internship" Value="5"></asp:ListItem>
+                                        <asp:ListItem Text="Part Time - Remote" Value="1"></asp:ListItem>
+                                        <asp:ListItem Text="Part Time - Onsite" Value="3"></asp:ListItem>
+                                        <asp:ListItem Text="Full Time - Remote" Value="2"></asp:ListItem>
+                                        <asp:ListItem Text="Full Time - Onsite" Value="4"></asp:ListItem>
+                                        <asp:ListItem Text="Full Time Hourly" Value="Full Time Hourly"></asp:ListItem>
+                                        <asp:ListItem Text="Full Time Salary" Value="Full Time Salary"></asp:ListItem>
+                                        <asp:ListItem Text="Part Time" Value="Part Time"></asp:ListItem>
+                                        <asp:ListItem Text="Sub" Value="7"></asp:ListItem>
                                         </asp:DropDownList>
 
                                         <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
@@ -1867,7 +1872,9 @@
                                     </td>
                                     <td colspan="3">Zip<span><asp:Label ID="lblReqZip" runat="server" Text="*" TabIndex="515" ForeColor="Blue"></asp:Label></span>
                                         <br />
-                                        <asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
+                                        <%--<asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
+                                            OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>--%>
+                                        <asp:TextBox ID="txtZipHomeAdd" ReadOnly="true" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
                                             OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>
                                         <%--TabIndex="119"--%>
                                         <ajaxToolkit:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListElementID="auto_complete"
@@ -3122,7 +3129,7 @@
 															Country
                                                                     <br />                                                                  
                                                                 <div style="padding-left: 5px; padding: 2px 5px 2px 5px;">
-                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="in"></div>
+                                                                    <div id="dvFlag" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 24px; width: 24px;margin-top: 2px;" class="us"></div>
                                                                     <asp:DropDownList ID="ddlCountry" Width="315" runat="server"></asp:DropDownList>
                                                                     <%--<select style="width: 250px; border-color: gray; border: none" onchange="changeFlag()" onkeypress="changeFlag()" id="CountryList">--%>
                                                                     </select>
@@ -3134,7 +3141,9 @@
                                                             <td>
 															Zip
                                                                     <br />
-                                                                <asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>
+                                                                <%--<asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>--%>
+                                                                <asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
+                                                                    OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -3540,24 +3549,15 @@
                                         &nbsp;<br />
                                         <%--</ContentTemplate>
                                 </asp:UpdatePanel>--%>
-
+                                        <asp:TextBox ID="txtNotes" Visible="false" runat="server" ></asp:TextBox>
                                     </td>
                                 </tr>
-
-
-
-
-
-
-
-
-
-                                <tr>
+                                <%--<tr>
                                     <td class="style1">
                                         <label>
                                             Notes<asp:Label ID="lblNotesReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
                                         <asp:TextBox ID="txtNotes" runat="server" MaxLength="40" autocomplete="off" Width="240px" Height="32px" TextMode="MultiLine" TabIndex="527"></asp:TextBox>
-                                        <%--TabIndex="112"--%>
+                                        TabIndex="112"
                                         <br />
                                         <label>
                                         </label>
@@ -3565,7 +3565,7 @@
                                         <asp:RequiredFieldValidator ID="rqNotes" runat="server" ControlToValidate="txtNotes"
                                             ForeColor="Red" Display="Dynamic" ValidationGroup="submit">Enter Notes</asp:RequiredFieldValidator><br />
                                     </td>
-                                </tr>
+                                </tr>--%>
                                 <%--<tr>
                             <td class="style1">
                                 <label>

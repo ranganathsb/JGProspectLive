@@ -1627,7 +1627,7 @@
                                             Source
                                             <asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Red"></asp:Label>
                                         </label>
-                                        <asp:DropDownList ID="ddlSource" runat="server" Width="249px" TabIndex="510"  Enabled="false">
+                                        <asp:DropDownList ID="ddlSource" runat="server" Width="249px" TabIndex="510" Enabled="false">
                                         </asp:DropDownList>
                                         <%--<asp:TextBox ID="txtSource" runat="server" MaxLength="40" TabIndex="108" autocomplete="off" Width="250px"></asp:TextBox>--%>
                                         <br />
@@ -1687,8 +1687,9 @@
                                             <asp:Label ID="lblReqZip" runat="server" Text="*" TabIndex="515" ForeColor="Blue"></asp:Label>
                                         </span>
                                         <br />
-                                        <asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
-                                            OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>
+                                        <%--<asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>--%>
+                                        <asp:TextBox ID="txtZipHomeAdd" ReadOnly = "true" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>
+                                            
                                         <%--TabIndex="119"--%>
                                         <ajaxToolkit:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListElementID="auto_complete"
                                             CompletionListCssClass="Autocomplete" UseContextKey="false" CompletionInterval="200"
@@ -2953,7 +2954,9 @@
                                                             <td>
                                                                 Zip
                                                                 <br />
-                                                                <asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>
+                                                                <%--<asp:TextBox ID="txtZipHomeAdd" Width="240" runat="server" onkeypress="return IsNumeric(event);" AutoPostBack="true" OnTextChanged="txtZip_TextChanged"></asp:TextBox>--%>
+                                                                <asp:TextBox ID="txtZip" runat="server" MaxLength="5" onkeypress="return IsNumeric(event);" AutoPostBack="true"
+                                                                    OnTextChanged="txtZip_TextChanged" Width="150px" TabIndex="506"></asp:TextBox>
                                                             </td>
                                                         </tr>
                                                         <tr>

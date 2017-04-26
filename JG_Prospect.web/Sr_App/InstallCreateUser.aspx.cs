@@ -267,7 +267,8 @@ namespace JG_Prospect.Sr_App
                 {
                     ddlSource.DataSource = dsSource.Tables[0];
                     ddlSource.DataTextField = "Source";
-                    ddlSource.DataValueField = "Source";
+                    //ddlSource.DataValueField = "Source";
+                    ddlSource.DataValueField = "Id";
                     ddlSource.DataBind();
                     ddlSource.Items.Insert(0, "Select Source");
                     ddlSource.SelectedIndex = 0;
@@ -795,10 +796,15 @@ namespace JG_Prospect.Sr_App
                         {
                             pnlAll.Visible = false;
                         }
-                        if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //{
+                        //    ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                        //}
+                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
                         {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
                         }
+
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
@@ -1631,7 +1637,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -1680,7 +1686,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["ExtraDtTemp"] = null;
                 Session["ExtraDtTemp"] = dt;
                 GridView2.DataSource = dt;
@@ -1706,7 +1712,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -1755,7 +1761,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -1774,7 +1780,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -1809,7 +1815,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -2162,7 +2168,8 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
                 if (txtReson.Visible == true && ddlstatus.SelectedValue != "InterviewDate")
                 {
@@ -2532,7 +2539,8 @@ namespace JG_Prospect.Sr_App
                     str_Status = ddlstatus.SelectedValue;
                     objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                     objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                    objuser.Source = ddlSource.SelectedValue;
+                    //objuser.Source = ddlSource.SelectedValue;
+                    objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                     objuser.Notes = txtNotes.Text;
                     if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
                     {
@@ -4089,7 +4097,8 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -6020,7 +6029,7 @@ namespace JG_Prospect.Sr_App
                             ddlSource.Items.Add("Select Source");
                             ddlSource.SelectedIndex = 0;
                         }
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true); 
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record deleted successfully.')", true);
                     }
                     else
                     {
@@ -6462,7 +6471,7 @@ namespace JG_Prospect.Sr_App
         //    }
         //}
 
-        
+
         //private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
         //{
         //    object matchCase = true;
@@ -12158,19 +12167,24 @@ namespace JG_Prospect.Sr_App
             {
                 switch (ddlstatus.Items[i].Value)
                 {
-                    case "Applicant": imageURL = "../Sr_App/img/red-astrek.png";
+                    case "Applicant":
+                        imageURL = "../Sr_App/img/red-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "OfferMade": imageURL = "../Sr_App/img/dark-blue-astrek.png";
+                    case "OfferMade":
+                        imageURL = "../Sr_App/img/dark-blue-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "PhoneScreened": imageURL = "../Sr_App/img/yellow-astrek.png";
+                    case "PhoneScreened":
+                        imageURL = "../Sr_App/img/yellow-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "Active": imageURL = "../Sr_App/img/green-astrek.png";
+                    case "Active":
+                        imageURL = "../Sr_App/img/green-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
-                    case "InterviewDate": imageURL = "../Sr_App/img/purple-astrek.png";
+                    case "InterviewDate":
+                        imageURL = "../Sr_App/img/purple-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     default:

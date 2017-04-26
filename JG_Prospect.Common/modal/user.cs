@@ -63,6 +63,7 @@ namespace JG_Prospect.Common.modal
         public int SecondoryTradeId;
         public string Notes;
         public string Source;
+        public int    SourceId;
         public string Reason;
         public string GeneralLiability;
         public string PqLicense;

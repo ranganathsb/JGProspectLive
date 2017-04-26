@@ -298,7 +298,8 @@ namespace JG_Prospect.Sr_App
                 {
                     ddlSource.DataSource = dsSource.Tables[0];
                     ddlSource.DataTextField = "Source";
-                    ddlSource.DataValueField = "Source";
+                    //ddlSource.DataValueField = "Source";
+                    ddlSource.DataValueField = "Id";
                     ddlSource.DataBind();
                     ddlSource.Items.Insert(0, "Select Source");
                     ddlSource.SelectedIndex = 0;
@@ -768,16 +769,20 @@ namespace JG_Prospect.Sr_App
                             ddlstatus.Enabled = false;
                         }
 
+                        //if (ds.Tables[0].Rows[0]["Source"].ToString() != "")
+                        //{
+                        //    System.Web.UI.WebControls.ListItem lstSource = ddlSource.Items.FindByText(ds.Tables[0].Rows[0]["Source"].ToString().Trim());
 
-                        if (ds.Tables[0].Rows[0]["Source"].ToString() != "")
+                        //    if (lstSource != null)
+                        //    {
+                        //        ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource);
+                        //    }
+                        //}
+                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
                         {
-                            System.Web.UI.WebControls.ListItem lstSource = ddlSource.Items.FindByText(ds.Tables[0].Rows[0]["Source"].ToString().Trim());
-
-                            if (lstSource != null)
-                            {
-                                ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource);
-                            }
+                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
                         }
+
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
@@ -1299,7 +1304,9 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+
                 objuser.Notes = txtNotes.Text;
                 if (txtReson.Visible == true && ddlstatus.SelectedValue != "InterviewDate")
                 {
@@ -1597,7 +1604,9 @@ namespace JG_Prospect.Sr_App
                 str_Status = ddlstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+
                 objuser.Notes = txtNotes.Text;
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
                 {
@@ -2178,7 +2187,9 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -3894,7 +3905,8 @@ namespace JG_Prospect.Sr_App
                         {
                             ddlSource.DataSource = dsadd.Tables[0];
                             ddlSource.DataTextField = "Source";
-                            ddlSource.DataValueField = "Source";
+                            //ddlSource.DataValueField = "Source";
+                            ddlSource.DataValueField = "Id";
                             ddlSource.DataBind();
                             ddlSource.Items.Insert(0, "Select Source");
                             ddlSource.SelectedIndex = 0;
@@ -3951,7 +3963,8 @@ namespace JG_Prospect.Sr_App
                     {
                         ddlSource.DataSource = dsadd.Tables[0];
                         ddlSource.DataTextField = "Source";
-                        ddlSource.DataValueField = "Source";
+                        //ddlSource.DataValueField = "Source";
+                        ddlSource.DataValueField = "Id";
                         ddlSource.DataBind();
                         ddlSource.Items.Insert(0, "Select Source");
                         ddlSource.SelectedValue = source;

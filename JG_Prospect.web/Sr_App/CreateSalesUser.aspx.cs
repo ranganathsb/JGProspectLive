@@ -19,7 +19,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
+//using System.IO;
 //using Word = Microsoft.Office.Interop.Word;
 using System.Web.Services;
 
@@ -172,8 +172,8 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqMaritalStatus.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqNotes.Enabled = false;
-                lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
                 rqSource.Enabled = true;
                 lblSourceReq.Visible = true;
                 lblSourceReq.Visible = true;
@@ -262,8 +262,8 @@ namespace JG_Prospect.Sr_App
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -307,7 +307,8 @@ namespace JG_Prospect.Sr_App
                 {
                     ddlSource.DataSource = dsSource.Tables[0];
                     ddlSource.DataTextField = "Source";
-                    ddlSource.DataValueField = "Source";
+                    ddlSource.DataValueField = "Id";
+                    //ddlSource.DataValueField = "Source";
                     ddlSource.DataBind();
                     ddlSource.Items.Insert(0, "Select Source");
                     ddlSource.SelectedIndex = 0;
@@ -398,6 +399,7 @@ namespace JG_Prospect.Sr_App
                         ViewState["Email"] = ds.Tables[0].Rows[0][3].ToString();
                         txtaddress.Text = ds.Tables[0].Rows[0][4].ToString();
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
+                        txtZipHomeAdd.Text = ds.Tables[0].Rows[0][11].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
 
@@ -450,7 +452,12 @@ namespace JG_Prospect.Sr_App
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-                            ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
+                            //ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
+                            System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
+                            if (lstPosition != null)
+                            {
+                                ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPosition);
+                            }
                         }
 
                         if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
@@ -512,8 +519,8 @@ namespace JG_Prospect.Sr_App
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -568,8 +575,8 @@ namespace JG_Prospect.Sr_App
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -625,8 +632,8 @@ namespace JG_Prospect.Sr_App
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -692,8 +699,8 @@ namespace JG_Prospect.Sr_App
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -773,11 +780,15 @@ namespace JG_Prospect.Sr_App
                         }
 
 
-                        if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //{
+                        //    ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                        //}
+                        //if (ds.Tables[0].Rows[0][39].ToString() != "")
+                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
                         {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
                         }
-                        if (ds.Tables[0].Rows[0][39].ToString() != "")
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
                         }
@@ -884,7 +895,17 @@ namespace JG_Prospect.Sr_App
                         dtResignation.Text = ds.Tables[0].Rows[0][45].ToString();
                         ddlWorkerCompCode.SelectedValue = ds.Tables[0].Rows[0][46].ToString();
                         dtReviewDate.Text = ds.Tables[0].Rows[0][47].ToString();
-                        ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        //ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["EmpType"].ToString()))
+                        {
+                            System.Web.UI.WebControls.ListItem lstEmpType = ddlEmpType.Items.FindByValue(ds.Tables[0].Rows[0]["EmpType"].ToString());
+
+                            if (lstEmpType != null)
+                            {
+                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);
+                            }
+                        }
+
                         dtLastDate.Text = ds.Tables[0].Rows[0][49].ToString();
                         txtPayRates.Text = ds.Tables[0].Rows[0][50].ToString();
                         //ddlExtraEarning.SelectedValue = ;
@@ -1003,6 +1024,17 @@ namespace JG_Prospect.Sr_App
                             }
                         }
 
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FELONY"].ToString()))
+                        {
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["FELONY"]))
+                            {
+                                rdoGuiltyYes.Checked = true;
+                            }
+                            else
+                            {
+                                rdoGuiltyYes.Checked = true;
+                            }
+                        }
                         if (Convert.ToString(ds.Tables[0].Rows[0][70]) != "")
                         {
                             if (Convert.ToBoolean(ds.Tables[0].Rows[0][70]))
@@ -1279,7 +1311,8 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
                 if (txtReson.Visible == true && ddlstatus.SelectedValue != "InterviewDate")
                 {
@@ -1426,6 +1459,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    objuser.CrimeStatus = false;
                 //}
+
                 //objuser.StartDate = Convert.ToString(txtStartDateNew.Text);
                 objuser.SalaryReq = txtSalaryRequirments.Text;
                 //objuser.Avialability = txtAvailability.Text;
@@ -1577,7 +1611,8 @@ namespace JG_Prospect.Sr_App
                 str_Status = ddlstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
                 {
@@ -2192,7 +2227,8 @@ namespace JG_Prospect.Sr_App
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -3079,8 +3115,8 @@ namespace JG_Prospect.Sr_App
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3138,8 +3174,8 @@ namespace JG_Prospect.Sr_App
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3204,8 +3240,8 @@ namespace JG_Prospect.Sr_App
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = true;
                 //rqEmail.Enabled = true;
                 reEmail.Enabled = true;
@@ -3279,8 +3315,8 @@ namespace JG_Prospect.Sr_App
                 rqPhone.Enabled = false;
                 lblSourceReq.Visible = false;
                 rqSource.Enabled = false;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = false;
@@ -3906,7 +3942,8 @@ namespace JG_Prospect.Sr_App
                         {
                             ddlSource.DataSource = dsadd.Tables[0];
                             ddlSource.DataTextField = "Source";
-                            ddlSource.DataValueField = "Source";
+                            //ddlSource.DataValueField = "Source";
+                            ddlSource.DataValueField = "Id";
                             ddlSource.DataBind();
                             ddlSource.Items.Insert(0, "Select Source");
                             ddlSource.SelectedIndex = 0;
@@ -3963,7 +4000,8 @@ namespace JG_Prospect.Sr_App
                     {
                         ddlSource.DataSource = dsadd.Tables[0];
                         ddlSource.DataTextField = "Source";
-                        ddlSource.DataValueField = "Source";
+                        //ddlSource.DataValueField = "Source";
+                        ddlSource.DataValueField = "Id";
                         ddlSource.DataBind();
                         ddlSource.Items.Insert(0, "Select Source");
                         ddlSource.SelectedValue = source;
