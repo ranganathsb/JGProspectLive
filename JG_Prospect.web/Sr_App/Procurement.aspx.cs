@@ -427,8 +427,6 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory1.SelectedIndex = -1;
             ddlVendorSubCategory1.SelectedIndex = -1;
             BindVendorByProdCat1(ddlprdtCategory1.SelectedValue.ToString());
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet3", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
-
         }
 
         public void BindFilteredVendorList()
@@ -808,7 +806,6 @@ namespace JG_Prospect.Sr_App
                 row.FindControl("pnlExpandSatelliteAddress").Visible = true;
                 imgShowHide.CommandArgument = "Hide";
                 imgShowHide.ImageUrl = "../img/btn-minus.png";
-                //drTemSecAddrFrmSession = tblSecAddrFrmSession.Select(System.String.Concat("VendorId='", hdnVendorId.Value, "' AND AddressID='" ,hdnVendorAddressId.Value,"'"));
                 drTemSecAddrFrmSession = tblSecAddrFrmSession.Select(System.String.Concat("VendorId='", hdnVendorId.Value, "'"));
                 if (drTemSecAddrFrmSession.Length > 0)
                 {
@@ -833,7 +830,6 @@ namespace JG_Prospect.Sr_App
                 imgShowHide.CommandArgument = "Show";
                 imgShowHide.ImageUrl = "../img/btn_maximize.png";
             }
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
         private void grdSatAddressBind(int intVendoreID, int intAddressID,GridView grdSatellite)
@@ -3602,7 +3598,6 @@ namespace JG_Prospect.Sr_App
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Enter value to add.')", true);
             }
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet9", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
 
         }
 
@@ -4268,11 +4263,6 @@ namespace JG_Prospect.Sr_App
         protected void btnAddNewVenodr_Click(object sender, EventArgs e)
         {
             clear();
-            //gmap fix TaskId=373&hstid=379 Start
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);
-            //gmap fix TaskId=373&hstid=379 End
-
         }
 
         protected void lblNewAddress_Click(object sender, EventArgs e)
@@ -4302,11 +4292,6 @@ namespace JG_Prospect.Sr_App
             string newAddValue = "-" + (DrpVendorAddress.Items.Count).ToString();
             DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem(newAddName, newAddValue));
             DrpVendorAddress.SelectedValue = newAddValue;
-            //gmap fix TaskId=373&hstid=379 Start
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);
-            //gmap fix TaskId=373&hstid=379 End
-
         }
 
         private DataTable GenerateBlankAddressTable()
@@ -4547,7 +4532,6 @@ namespace JG_Prospect.Sr_App
                 HttpContext.Current.Session["NotesTempID"] = TempId;
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBoxAddNote", "alert('Please select Vendor from list.');", true);
             }
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet10", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
@@ -4610,11 +4594,6 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            //MR gMap TaskId=373&hstid=379 Start
-
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "callGmapMarker", "getCellValue('0','0');", true);
-            //MR gMap TaskId=373&hstid=379 End
-
         }
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
@@ -5026,7 +5005,6 @@ namespace JG_Prospect.Sr_App
             {
                 ddlWebSite.Items.Add(new System.Web.UI.WebControls.ListItem(txtWebsite.Text, txtWebsite.Text));
             }
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void btnHoursOfOperation_Click(object sender, EventArgs e)
@@ -5038,7 +5016,6 @@ namespace JG_Prospect.Sr_App
             val += ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
 
             ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(val, val));
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void ddlHoursOfOperation_SelectedIndexChanged(object sender, EventArgs e)
@@ -5182,12 +5159,6 @@ namespace JG_Prospect.Sr_App
         {
             ViewState["ShowCategoryPopup"] = "0";
             ShowCategoryPopup();
-        }
-
-
-        protected void grdExpandSatelliteAddress_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-
         }
 
         protected void cmdVendorLocationWebsite_Click(object sender, EventArgs e)

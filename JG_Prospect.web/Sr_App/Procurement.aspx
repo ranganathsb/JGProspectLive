@@ -1849,8 +1849,8 @@
                                                                     <asp:ImageButton ID="imgExpandSatelliteAddress" runat="server"  onClick="imgExpandSatelliteAddress_Click" ImageUrl="../img/btn_maximize.png"
                                                                         CommandArgument="Show" />
                                                                     <asp:Panel ID="pnlExpandSatelliteAddress" runat="server" Visible="false" Style="position: relative">
-                                                                        <asp:GridView ID="grdExpandSatelliteAddress" runat="server" AutoGenerateColumns="false" PageSize="5"
-                                                                            AllowPaging="true" OnPageIndexChanging="grdExpandSatelliteAddress_PageIndexChanging" CssClass="ChildGrid">
+                                                                        <asp:GridView ID="grdExpandSatelliteAddress" runat="server" AutoGenerateColumns="false" 
+                                                                              CssClass="ChildGrid">
                                                                             <Columns>
                                                                                 <asp:BoundField ItemStyle-Width="150px" DataField="SecondaryAddress" HeaderText="Satellite Location" />
                                                                             </Columns>
@@ -1861,7 +1861,7 @@
                                                             <asp:TemplateField HeaderText="Status">
                                                                 <ItemTemplate>
                                                                     <asp:HiddenField runat="server" ID="hidStatus1" Value='<%#Eval("VendorStatus").ToString() %>'/>
-                                                                    <asp:DropDownList runat="server" ID="ddnStatus1" width="125px" >
+                                                                    <asp:DropDownList runat="server" ID="ddnStatus1" width="125px"  >
                                                                         <asp:ListItem Text="No Entry" Value="" title=""></asp:ListItem>
                                                                         <asp:ListItem Text="Prospects" Value="Prospect" title="../img/BlackBullet.png"></asp:ListItem>
                                                                         <asp:ListItem Text="Active" Value="Active" title="../img/RedBullet.png"></asp:ListItem>
@@ -2320,7 +2320,7 @@
                                                                             <label>State</label><br />
                                                                             <asp:TextBox ID="txtPrimaryState" runat="server" TabIndex="1" placeholder="State" CssClass="clstxtState0"></asp:TextBox>
                                                                         </td> TaskId=373 hstid=416 End--%>
-                                                                        <td>
+                                                                        <td nowrap>
                                                                             <%--TaskId=373 hstid=416 Misc Vendor Module fixes--%>
                                                                             <label>Hours of operation:</label><br />
                                                                             <asp:CheckBox ID="chk24Hours" runat="server" AutoPostBack="false" Text="24 Hr" />
