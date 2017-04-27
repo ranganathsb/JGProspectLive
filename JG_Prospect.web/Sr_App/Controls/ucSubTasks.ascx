@@ -6,7 +6,6 @@
 
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
-
 <style type="text/css">
     .installidright {
         text-align: right;

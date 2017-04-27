@@ -341,6 +341,7 @@ function LoadImageGallery(strSelector) {
     }
 }
 
+
 function DestroyGallery() {
     if (subtaskSliders && typeof (subtaskSliders.destroy) == 'function') {
         subtaskSliders.destroy();
