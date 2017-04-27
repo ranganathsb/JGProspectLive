@@ -2719,7 +2719,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -3061,7 +3060,9 @@
     <Content Include="fileman\lang\ru.json" />
     <Content Include="fileman\lang\sk.json" />
     <Content Include="fileman\lang\tr.json" />
-    <Content Include="fileman\web.config" />
+    <Content Include="fileman\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="fonts\context-menu-icons.eot" />
     <Content Include="fonts\context-menu-icons.ttf" />
     <Content Include="fonts\context-menu-icons.woff" />

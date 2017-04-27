@@ -467,8 +467,15 @@
         </div>
     </form>
     <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
+        <%-- gmap changes TaskId=373&hstid=379 start--%>
+    <link href="../js/msdropdown/icon_msdropdown/dd.css" rel="stylesheet" />
+    <%--<script src="../js/msdropdown/icon_msdropdown/js/jquery-1.6.1.min.js" type="text/javascript"></script>--%>
+    <script src="../js/msdropdown/icon_msdropdown/js/jquery.dd.js" type="text/javascript" async defer></script>
+    <script src="//maps.googleapis.com/maps/api/js?key=<%= ConfigurationManager.AppSettings["googleMap"].ToString()%>&extension=.js" async defer></script>
+        <%-- gmap changes TaskId=373&hstid=379 End--%>
+
     <script src="../js/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
+   
     <script type="text/javascript">
         $(function () {
 

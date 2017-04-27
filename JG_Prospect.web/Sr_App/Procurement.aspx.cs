@@ -23,6 +23,7 @@ using System.Data.SqlClient;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Newtonsoft.Json;
 using System.Net;
+using System.Reflection;
 
 namespace JG_Prospect.Sr_App
 {
@@ -152,7 +153,6 @@ namespace JG_Prospect.Sr_App
                         BindAllVendorCategory();
                         BindvendorSubCatAfter();
                         GetAllVendorSubCat();
-
                         BindVendorByProdCat(ddlprdtCategory.SelectedValue.ToString());
                         BindVendorByProdCat1(ddlprdtCategory1.SelectedValue.ToString());
                         BindVendorSubCatByVendorCat(ddlVndrCategory.SelectedValue.ToString());
@@ -174,7 +174,7 @@ namespace JG_Prospect.Sr_App
                             ddlSource.SelectedIndex = 0;
                         }
                         BindVendorNotes();
-                    }
+                   }
                     catch (Exception ex)
                     {
                         lblerrornew.Text = ex.Message + ex.StackTrace;
@@ -192,7 +192,7 @@ namespace JG_Prospect.Sr_App
                     bindPayPeriod(dsCurrentPeriod);
                     grdprimaryvendor.DataSource = new List<JG_Prospect.BLL.clsProcurementDataAll>();
                     grdprimaryvendor.DataBind();
-
+                    updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
                 }
                 else
                 {
@@ -359,6 +359,10 @@ namespace JG_Prospect.Sr_App
                 bindvendorcategory();
             }
             BindFilteredVendorList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBulletList2", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker3", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
+
         }
 
         protected void rdoManufacturer_CheckedChanged(object sender, EventArgs e)
@@ -369,6 +373,10 @@ namespace JG_Prospect.Sr_App
             }
             ddlVendorSubCategory.SelectedIndex = -1;
             BindFilteredVendorList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBulletList3", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker3", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
+
         }
 
         public void ResetFilterDDL()
@@ -377,10 +385,14 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.SelectedIndex = -1;
             ddlVendorSubCategory.SelectedIndex = -1;
             ddlProductCatgoryPopup.SelectedIndex = -1;
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
         }
         protected void ddlVendorStatusfltr_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFilteredVendorList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
         }
         protected void ddlprdtCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -404,8 +416,10 @@ namespace JG_Prospect.Sr_App
             BindFilteredVendorList();
 
             UpdatePopupProductCategoryList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBulletList4", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker4", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
 
-           
         }
 
         protected void ddlprdtCategory1_SelectedIndexChanged(object sender, EventArgs e)
@@ -413,6 +427,8 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory1.SelectedIndex = -1;
             ddlVendorSubCategory1.SelectedIndex = -1;
             BindVendorByProdCat1(ddlprdtCategory1.SelectedValue.ToString());
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet3", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+
         }
 
         public void BindFilteredVendorList()
@@ -423,7 +439,6 @@ namespace JG_Prospect.Sr_App
                 strVendorStatus = string.Empty;
             }
             bool IsRetailWholesale = rdoRetailWholesale.Checked;
-
             DataSet ds = new DataSet();
             bool dsClone = false;
             foreach (System.Web.UI.WebControls.ListItem li in ddlprdtCategory.Items)
@@ -445,6 +460,8 @@ namespace JG_Prospect.Sr_App
                             ds.Tables[0].ImportRow(dr);
                     }
                 }
+
+
             }
 
             foreach (System.Web.UI.WebControls.ListItem li in ddlVndrCategory.Items)
@@ -497,6 +514,7 @@ namespace JG_Prospect.Sr_App
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     grdVendorList.DataSource = ds.Tables[0];
+                    updateMapMasterTable(ref ds); //MR gMap TaskId=373&hstid=379
                 }
                 else
                 {
@@ -504,7 +522,7 @@ namespace JG_Prospect.Sr_App
                 }
             }
             grdVendorList.DataBind();
-        }
+         }
 
         public void BindVendorByProdCat(string ProductId)
         {
@@ -583,6 +601,9 @@ namespace JG_Prospect.Sr_App
             BindFilteredVendorList();
 
             UpdatePopupVendorCategoryList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBulletList5", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void ddlVndrCategory1_SelectedIndexChanged(object sender, EventArgs e)
@@ -633,6 +654,9 @@ namespace JG_Prospect.Sr_App
             }
 
             UpdatePopupVendorSubCategoryList();
+            updateWorkflowLabel();//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "setTimeout(ddnStatusBullet(),0);", true);//MR gMap TaskId=373&hstid=379
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);//MR gMap TaskId=373&hstid=379
         }
 
         public string GetVendorStatus()
@@ -651,6 +675,7 @@ namespace JG_Prospect.Sr_App
             {
                 grdVendorList.DataSource = ds;
                 grdVendorList.DataBind();
+                updateMapMasterTable(ref ds); //MR gMap TaskId=373&hstid=379
             }
 
             bindVendorMaterialList();
@@ -762,6 +787,178 @@ namespace JG_Prospect.Sr_App
             HttpContext.Current.Session["dtVendorEmail"] = dtVendorEmail as DataTable;
 
         }
+        // Project Gmap TaskId=373&hstid=379 Start DT:04/16/2017
+        //Work ID: TaskId=373&hstid=379
+        //Developer Manorenj
+        //Purpose: To show expandable vendor list Satellite (Secondary) address. This function controls expand/collapse
+        protected void imgExpandSatelliteAddress_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton imgShowHide = (sender as ImageButton);
+            GridViewRow row = (imgShowHide.NamingContainer as GridViewRow);
+            HiddenField hdnVendorId = (HiddenField)row.FindControl("hdnVendorId");
+            HiddenField hdnVendorAddressId = (HiddenField)row.FindControl("hdnVendorAddressId");
+
+            if (imgShowHide.CommandArgument == "Show")
+            {
+                DataTable tblSecAddrFrmSession = HttpContext.Current.Session["tabSecAddress"] as DataTable;
+                DataRow[] drTemSecAddrFrmSession;
+                DataTable tblBindAddrSec = new DataTable();
+                tblBindAddrSec.Columns.AddRange(new DataColumn[1] { new DataColumn("SecondaryAddress")});
+                
+                row.FindControl("pnlExpandSatelliteAddress").Visible = true;
+                imgShowHide.CommandArgument = "Hide";
+                imgShowHide.ImageUrl = "../img/btn-minus.png";
+                //drTemSecAddrFrmSession = tblSecAddrFrmSession.Select(System.String.Concat("VendorId='", hdnVendorId.Value, "' AND AddressID='" ,hdnVendorAddressId.Value,"'"));
+                drTemSecAddrFrmSession = tblSecAddrFrmSession.Select(System.String.Concat("VendorId='", hdnVendorId.Value, "'"));
+                if (drTemSecAddrFrmSession.Length > 0)
+                {
+                    foreach (DataRow dr in drTemSecAddrFrmSession)
+                    {
+                        tblBindAddrSec.Rows.Add(System.String.Concat(dr["City"].ToString()," - ",dr["Zip"].ToString()));
+                    }
+                    
+                }
+                else
+                {
+                    tblBindAddrSec.Rows.Add("None");
+                }
+                GridView grdSecondaryAddr = row.FindControl("grdExpandSatelliteAddress") as GridView;
+                grdSecondaryAddr.DataSource = tblBindAddrSec;
+                grdSecondaryAddr.DataBind();
+
+            }
+            else
+            {
+                row.FindControl("pnlExpandSatelliteAddress").Visible = false;
+                imgShowHide.CommandArgument = "Show";
+                imgShowHide.ImageUrl = "../img/btn_maximize.png";
+            }
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
+        }
+        private void grdSatAddressBind(int intVendoreID, int intAddressID,GridView grdSatellite)
+        {
+
+        }
+
+        //Purpose: To update Work flow Label based on users selection of Vendor
+        private void updateWorkflowLabel()
+        {
+            string strRdoManuactureText = rdoRetailWholesale.Checked ? rdoRetailWholesale.Text : rdoManufacturer.Text;
+            string strListItems = System.String.Concat(getListItemText(ddlprdtCategory.Items), ">", getListItemText(ddlVndrCategory.Items), ">", getListItemText(ddlVendorSubCategory.Items));
+            lblWorkFlowPath.Text = System.String.Concat(ddlVendorStatusfltr.SelectedValue, ">", strRdoManuactureText, ">", strListItems);
+           // ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker1", "getCellValue('0','0');", true);
+        }
+
+        //Purpose: generic function to return text value from List objects
+        public string getListItemText(ListItemCollection lstCntrl)
+        {
+            string strProductCategoryText = System.String.Empty;
+            foreach (System.Web.UI.WebControls.ListItem li in lstCntrl)
+            {
+                if (li.Selected.Equals(true))
+                {
+                    strProductCategoryText = System.String.Concat(strProductCategoryText, ",", li.Text);
+                }
+            }
+
+            return strProductCategoryText;
+        }
+        //Purpose: Get all address that is getting bound to grid. Filter the address so that Vendor ID<>0 and Primary address is saved to session
+
+        private void updateMapMasterTable(ref DataSet dtaTable)
+        {
+            //Create necessary data for map Markers to show up when individual address is clicked
+            DataTable objTempGmapDataTable = new DataTable();
+            DataTable objTempSecAddrCollapseTab = new DataTable();
+            DataRow[] objTempGmapDRow;
+            DataRow[] objTempSecAddress;
+            string strAddressType = "'Primary'";
+
+            objTempGmapDRow=dtaTable.Tables[0].Select(System.String.Concat("VendorId <> 0 AND AddressType =", strAddressType, "AND Latitude <> '' AND Longitude <> ''"));
+            if (objTempGmapDRow.Length > 0)
+            {
+                objTempGmapDataTable = objTempGmapDRow.CopyToDataTable();
+            }
+            Session["vendorAddress"] = objTempGmapDataTable;
+            //objTempSecAddrCollapseRow= dtaTable.Tables[0].Select(System.String.Concat("VendorId <> 0 AND AddressType =", strAddressType, "AND Latitude <> '' AND Longitude <> ''"));
+            objTempSecAddress= dtaTable.Tables[0].Select(System.String.Concat("AddressType <>", strAddressType));
+            objTempSecAddrCollapseTab.Columns.AddRange(new DataColumn[4] { new DataColumn("VendorID"), new DataColumn("AddressID"),new DataColumn("City"),new DataColumn("Zip") });
+            foreach (DataRow dtRow in objTempSecAddress)
+            {
+                objTempSecAddrCollapseTab.Rows.Add(dtRow["VendorID"], dtRow["AddressID"], dtRow["City"], dtRow["Zip"]);
+                objTempSecAddrCollapseTab.AcceptChanges();
+            }
+            Session["tabSecAddress"] = objTempSecAddrCollapseTab;
+        }
+
+        //Purpose: Webservice call to set location in Map
+        [WebMethod(EnableSession = true)]
+        [System.Web.Script.Services.ScriptMethod()]
+        public static MAPS[] BindMapMarker(int strVendorID,int strAddressID)
+        {
+            int intVendorID;
+            int intAddressID;
+            Int32.TryParse(strVendorID.ToString(), out intVendorID);
+            Int32.TryParse(strAddressID.ToString(), out intAddressID);
+            DataTable obGmapData;
+            DataRow[] objVendorClickData;
+            List<MAPS> lstMarkers = new List<MAPS>();
+            try
+            {
+                obGmapData= HttpContext.Current.Session["vendorAddress"] as DataTable;
+                if (!intAddressID.Equals(0))
+                {
+                    objVendorClickData = obGmapData.Select(System.String.Concat("AddressId =",intAddressID, "AND VendorId=",intVendorID));
+                    if (objVendorClickData.Length > 0)
+                    {
+                        obGmapData = objVendorClickData.CopyToDataTable();
+                    }
+                }
+
+                foreach (DataRow dtrow in obGmapData.Rows)
+                {
+                    MAPS objMAPS = new MAPS();
+                    objMAPS.strAddress = System.String.Concat(dtrow["VendorName"].ToString(),System.Environment.NewLine,dtrow["Address"].ToString(), System.Environment.NewLine, dtrow["City"].ToString(), "-", dtrow["Zip"].ToString());
+                    objMAPS.strLatitude = dtrow["Latitude"].ToString();
+                    objMAPS.strLongitude = dtrow["Longitude"].ToString();
+
+                    objMAPS.strAddress = objMAPS.strAddress.Trim();
+                    objMAPS.strLatitude = objMAPS.strLatitude.Trim();
+                    objMAPS.strLongitude = objMAPS.strLongitude.Trim();
+                    lstMarkers.Add(objMAPS);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return lstMarkers.ToArray();
+        }
+        //Purpose: Json object created for Map
+        public class MAPS
+        {
+            public string strAddress = "";
+            public string strLatitude = "";
+            public string strLongitude = "";
+        }
+        protected string returnCountry(string strCountryCd)
+        {
+            string[] strTempCntryCd = {"", "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AN", "AO", "AR", "AS", "AT", "AU", "AW", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BM", "BN", "BO", "BR", "BS", "BT", "BW", "BY", "BZ", "CA", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "FX", "GA", "GB", "GD", "GE", "GF", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GT", "GU", "GW", "GY", "HK", "HN", "HR", "HT", "HU", "HV", "ID", "IE", "IL", "IN", "IO", "IQ", "IR", "IS", "IT", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PT", "PW", "PY", "QA", "RE", "RO", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SK", "SL", "SM", "SN", "SO", "SR", "ST", "SV", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TM", "TN", "TO", "TP", "TR", "TT", "TV", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YU", "ZA", "ZM", "ZR", "ZW" };
+            string[] strTempCountry = {"", "Andorra", "United Arab Emr", "Afghanistan", "Antigua-Barbuda", "GB-Anguilla", "Albania", "Armenia", "Neth Ant-Aruba", "Angola", "Argentina", "American Samoa", "Austria", "Australia", "Aruba", "Azerbaijan", "Bosnia / Hercegovina", "Barbados", "Bangladesh", "Belgium", "Burkina Faso", "Bulgaria (Rep)", "Bahrain", "Burundi", "Benin", "GB-Bermuda", "Brunei Darussalam", "Bolivia", "Brazil", "Bahamas", "Bhutan", "Botswana", "Belarus", "Belize", "Canada", "Central Afr Republic", "Congo", "Switzerland", "Ivory Coast", "NZ-Cook Islands", "Chile", "Cameroon", "China Peo Republic", "Columbia", "Costa Rica", "Cuba", "Cape Verde", "Cyprus", "Czech Republic", "Germany", "Djibouti", "Denmark", "Dominica", "Dominican Republic", "Algeria", "Ecuador", "Estonia", "Egypt", "Eritrea", "Spain", "Ethiopia", "Finland (Inc Aland)", "Fiji", "GB-Falkland Islands", "Micronesia", "Farde Islands", "France", "Fr-Metropolitan", "Gabon", "Great Britain", "Grenada", "Georgia", "FR-French Guiana", "Ghana", "GB-Gibraltar", "Dk-Greenland", "Gambia", "Guinea", "FR-Guadeloupe", "Equatorial Guinea", "Greece", "Guatemala", "US-Guan", "Guinea Bissau", "Guyana", "GB-Hong Kong", "Honduras (Rep)", "Croatia", "Haiti", "Hungary (Rep)", "Burkina Faso", "Indonesia", "Ireland", "Israel", "India", "GB-Indian Ocean", "Iraq", "Iran (Islamic Rep)", "Iceland", "Italy", "Jamaica", "Jordan", "Japan", "Kenya", "Kyrgyzstan", "Kambodia", "Kiribati", "Comoros", "Nevis / St Christophe", "Korea North Dpr", "Korea (Republic)", "Kuwait", "GB-Cayman Islands", "Kazakhastan", "Laos", "Lebanon", "St Lucia", "Leiechtenstein", "Sri Lanka", "Liberia", "Lesotho", "Lithuania", "Luxembourg", "Latvia", "Libyan Jamahiriya", "Morocco", "Monaco", "Moldova", "Madagascar", "Marshall Islands", "Republic Of Macedonia", "Mali", "Myanmar", "Mongolia", "Pt-Macao", "Us-Mariana Islands", "FR- Martinique", "Mauritania", "US-Montserrat", "Malta", "Mauritius", "Maldives", "Malawi", "Mexico", "Malaysia", "Mozambique", "Namibia", "New Caledonia", "Niger", "AU-Norfolk Island", "Nigeria", "Nicaragua", "Netherlands", "Norway", "Nepal", "Naura", "NZ-Niue", "New Zealand", "Oman", "Panama (Republic)", "Peru", "Fr-Polynesia", "Papua New Guinea", "Philippines", "Pakistan", "Poland (Rep)", "St Pierre Miquelon", "GB-Pitcairn Island", "US-Puerto Rico", "Portugal", "US-Palau Islands", "Paraguay", "Qatar", "FR-Reunion & Ilds", "Romania", "Russian Federation", "Rwanda", "Saudi Arabia", "Solomon Islands", "Seychelles", "Sudan", "Sweden", "Singapore", "Sb-St Hel-Asc, Trist", "Slovenia", "Slovakia", "Sierra Leone", "San Marino", "Senegal", "Somalia", "Suriname", "Sao Tome & Principe", "EL Salvador", "Syrian Arab Rep", "Swaziland", "FB-Turks Caicos Ild", "Chad", "FR-Sthn Antarctic T", "Togo", "Thailand", "Tajikistan", "NZ-Tokelau", "Turkmenistan", "Tunisia", "Tonga", "East Timor", "Turkey", "Trinidad & Tobago", "Tuvalu", "Tanzania", "Ukraine", "Uganda", "US-Minor Outly Ilds", "United States", "Uruguay", "Uzbekistan", "Vatican", "St Vincent / Grenadin", "Venezuela", "FB-Virgin Islands", "US-Virgin Islands", "Viet Nam", "Vanuatu", "Wallis & Futana Ild", "Western Samoa", "Yemen", "Yugoslavia", "South Africa", "Zambia", "Zaire", "Zimbabwe" };
+            string strCountry = System.String.Empty;
+            try
+            {
+                int intLocation = Array.IndexOf(strTempCntryCd, strCountryCd.Trim().ToUpper());
+                return strTempCountry[intLocation].ToString();
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+        //gMmap TaskId=373&hstid=379 end
+
 
         [WebMethod]
         public static string CheckVendorDetails()
@@ -1072,7 +1269,7 @@ namespace JG_Prospect.Sr_App
                 clear();
                 BindFilteredVendorList();
             }
-
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBulletList1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void clear()
@@ -1090,8 +1287,8 @@ namespace JG_Prospect.Sr_App
             txtPrimaryState.Text = "";
             txtPrimaryZip.Text = "";
             txtPrimaryAddress.Text = "";
-            ddlCountry.ClearSelection();
-            ddlCountry.SelectedValue = "US";
+            ddnStatus.ClearSelection();
+            ddnStatus.SelectedValue = "US";
             DrpVendorAddress.Items.Clear();
             DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Primary", "0"));
             txtPrimaryContactExten0.Text = txtPrimaryContact0.Text = txtSecContactExten0.Text = txtSecContact0.Text = txtAltContactExten0.Text = txtAltContact0.Text = null;
@@ -1148,9 +1345,9 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
-
-        #region All Others
-        protected void btneditVendor_Click(object sender, EventArgs e)
+        
+    #region All Others
+    protected void btneditVendor_Click(object sender, EventArgs e)
         {
             string vid = Request.Form["vendorId"];
             string vendorAddressID = Request.Form["hdnVendorAddId"];
@@ -3405,6 +3602,8 @@ namespace JG_Prospect.Sr_App
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Enter value to add.')", true);
             }
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet9", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
+
         }
 
         protected void btnDeleteSource_Click(object sender, EventArgs e)
@@ -3457,6 +3656,12 @@ namespace JG_Prospect.Sr_App
             HiddenField hdnVendorAddressId = (HiddenField)gr.FindControl("hdnVendorAddressId");
             EditVendor(Convert.ToInt16(hdnVendorId.Value), hdnVendorAddressId.Value.ToString());
             updtpnlAddVender.Update();
+            //MR gMap TaskId=373&hstid=379 Start
+            string strHidVendorID = hdnVendorID.Value.ToString();
+            string strHdnVendorAddressId = hdnVendorAddressId.Value.ToString();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "formatting", "getCellValue('"+ strHidVendorID+"','"+strHdnVendorAddressId + "');", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);
+            //MR gMap TaskId=373&hstid=379 End
         }
 
         public void EditVendor(int VendorIdToEdit, string hdnVendorAddressId)
@@ -3656,7 +3861,7 @@ namespace JG_Prospect.Sr_App
                         txtPrimaryState.Text = Convert.ToString(dr["State"]);
                         txtPrimaryZip.Text = Convert.ToString(dr["Zip"]);
                         txtPrimaryAddress.Text = Convert.ToString(dr["Address"]);
-                        ddlCountry.SelectedValue = Convert.ToString(dr["Country"]);
+                        ddnStatus.SelectedValue = Convert.ToString(dr["Country"]);
                     }
                     var addr = dr["Address"].ToString();
                     if (!string.IsNullOrEmpty(Convert.ToString(dr["City"])))
@@ -3691,6 +3896,7 @@ namespace JG_Prospect.Sr_App
                 }
 
                 HttpContext.Current.Session["dtVendorAddress"] = dtVendorAddress;
+                
             }
 
             #region Vendor Email Session
@@ -3723,7 +3929,13 @@ namespace JG_Prospect.Sr_App
             //added by harshit
             if (!string.IsNullOrEmpty(Convert.ToString(ds.Tables[0].Rows[0]["Vendrosource"])))
             {
-                ddlSource.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["Vendrosource"]);
+                //gMap fix TaskId=373&hstid=379 to verify if a dropdown item exist before it is selected. Null reference was coming here
+                System.Web.UI.WebControls.ListItem drpDwnItem = ddlSource.Items.FindByText(Convert.ToString(ds.Tables[0].Rows[0]["Vendrosource"]));
+                if (drpDwnItem!=null)
+                { //TaskId=373&hstid=379 End
+                    ddlSource.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["Vendrosource"]);
+                }//TaskId=373&hstid=379
+
             }
             if (!string.IsNullOrEmpty(AddressID))
             {
@@ -3951,8 +4163,8 @@ namespace JG_Prospect.Sr_App
             txtPrimaryState.Text = "";
             txtPrimaryZip.Text = "";
             txtPrimaryAddress.Text = "";
-            ddlCountry.ClearSelection();
-            ddlCountry.SelectedValue = "US";
+            ddnStatus.ClearSelection();
+            ddnStatus.SelectedValue = "US";
 
             string NewTempID = "";
             if (HttpContext.Current.Session["TempID"] != null)
@@ -3971,7 +4183,7 @@ namespace JG_Prospect.Sr_App
                         txtPrimaryState.Text = Convert.ToString(dr["State"]);
                         txtPrimaryZip.Text = Convert.ToString(dr["Zip"]);
                         txtPrimaryAddress.Text = Convert.ToString(dr["Address"]);
-                        ddlCountry.SelectedValue = Convert.ToString(dr["Country"]);
+                        ddnStatus.SelectedValue = Convert.ToString(dr["Country"]);
                     }
                 }
             }
@@ -4056,6 +4268,10 @@ namespace JG_Prospect.Sr_App
         protected void btnAddNewVenodr_Click(object sender, EventArgs e)
         {
             clear();
+            //gmap fix TaskId=373&hstid=379 Start
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);
+            //gmap fix TaskId=373&hstid=379 End
 
         }
 
@@ -4065,15 +4281,15 @@ namespace JG_Prospect.Sr_App
 
             var addr = txtPrimaryAddress.Text;
             addr += ", " + txtPrimaryCity.Text;
-            addr += ", " + ddlCountry.SelectedValue;
+            addr += ", " + ddnStatus.SelectedValue;
              DrpVendorAddress.SelectedItem.Text = addr; 
             DrpVendorAddress.ClearSelection();
             txtPrimaryCity.Text = "";
             txtPrimaryState.Text = "";
             txtPrimaryZip.Text = "";
             txtPrimaryAddress.Text = "";
-            ddlCountry.ClearSelection();
-            ddlCountry.SelectedValue = "US";
+            ddnStatus.ClearSelection();
+            ddnStatus.SelectedValue = "US";
 
             //txtPrimaryContactExten0.Text = "";
             //txtPrimaryContact0.Text = "";
@@ -4086,6 +4302,10 @@ namespace JG_Prospect.Sr_App
             string newAddValue = "-" + (DrpVendorAddress.Items.Count).ToString();
             DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem(newAddName, newAddValue));
             DrpVendorAddress.SelectedValue = newAddValue;
+            //gmap fix TaskId=373&hstid=379 Start
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "gMapMarker2", "getCellValue('0','0');", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);
+            //gmap fix TaskId=373&hstid=379 End
 
         }
 
@@ -4165,7 +4385,7 @@ namespace JG_Prospect.Sr_App
             #region GetLetLong for address
             string Latitude = string.Empty, Longitude = string.Empty;
 
-            string VendorAddress = txtPrimaryAddress.Text + " " + txtPrimaryCity.Text + " " + txtPrimaryState.Text + " " + ddlCountry.SelectedValue + " " + txtPrimaryZip.Text;
+            string VendorAddress = txtPrimaryAddress.Text + " " + txtPrimaryCity.Text + " " + txtPrimaryState.Text + " " + ddnStatus.SelectedValue + " " + txtPrimaryZip.Text;
             try
             {
                 string url = "http://maps.google.com/maps/api/geocode/xml?address=" + VendorAddress;
@@ -4176,13 +4396,16 @@ namespace JG_Prospect.Sr_App
                     {
                         DataSet dsResult = new DataSet();
                         dsResult.ReadXml(reader);
-                        foreach (DataRow row in dsResult.Tables["result"].Rows)
-                        {
-                            string geometry_id = dsResult.Tables["geometry"].Select("result_id = " + row["result_id"].ToString())[0]["geometry_id"].ToString();
-                            DataRow location = dsResult.Tables["location"].Select("geometry_id = " + geometry_id)[0];
-                            Latitude = location["lat"].ToString();
-                            Longitude = location["lng"].ToString();
-                        }
+                        if (dsResult.Tables["result"] != null) //gmap fix TaskId=373&hstid=379. Null returned if address not good. exits without saving
+                        { //TaskId=373&hstid=379
+                            foreach (DataRow row in dsResult.Tables["result"].Rows)
+                            {
+                                string geometry_id = dsResult.Tables["geometry"].Select("result_id = " + row["result_id"].ToString())[0]["geometry_id"].ToString();
+                                DataRow location = dsResult.Tables["location"].Select("geometry_id = " + geometry_id)[0];
+                                Latitude = location["lat"].ToString();
+                                Longitude = location["lng"].ToString();
+                            }
+                        }//TaskId=373&hstid=379
                     }
                 }
             }
@@ -4202,7 +4425,7 @@ namespace JG_Prospect.Sr_App
                     dr["City"] = txtPrimaryCity.Text;
                     dr["State"] = txtPrimaryState.Text;
                     dr["Zip"] = txtPrimaryZip.Text;
-                    dr["Country"] = ddlCountry.SelectedValue;
+                    dr["Country"] = ddnStatus.SelectedValue;
                     dr["TempID"] = NewTempID;
                     dr["Latitude"] = Latitude;
                     dr["Longitude"] = Longitude;
@@ -4221,7 +4444,7 @@ namespace JG_Prospect.Sr_App
                 dr["City"] = txtPrimaryCity.Text;
                 dr["State"] = txtPrimaryState.Text;
                 dr["Zip"] = txtPrimaryZip.Text;
-                dr["Country"] = ddlCountry.SelectedValue;
+                dr["Country"] = ddnStatus.SelectedValue;
                 dr["TempID"] = NewTempID;
                 dr["Latitude"] = Latitude;
                 dr["Longitude"] = Longitude;
@@ -4324,7 +4547,7 @@ namespace JG_Prospect.Sr_App
                 HttpContext.Current.Session["NotesTempID"] = TempId;
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBoxAddNote", "alert('Please select Vendor from list.');", true);
             }
-
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet10", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void txtfrmdate_TextChanged(object sender, EventArgs e)
@@ -4342,11 +4565,13 @@ namespace JG_Prospect.Sr_App
             //mpeCategoryPopup.Show();
             ShowCategoryPopup();
             string strPrdtCategory = "";
+            string strPrdtCatText = ""; ////MR gMap TaskId=373&hstid=379
             foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
             {
                 if (li.Selected == true)
                 {
                     strPrdtCategory = strPrdtCategory + li.Value + ",";
+                    strPrdtCatText = strPrdtCatText + li.Text + ","; //MR gMap TaskId=373&hstid=379
                 }
             }
             string trimmedPrdtcategory = strPrdtCategory.TrimEnd(',');
@@ -4385,6 +4610,11 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
+            //MR gMap TaskId=373&hstid=379 Start
+
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "callGmapMarker", "getCellValue('0','0');", true);
+            //MR gMap TaskId=373&hstid=379 End
+
         }
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
@@ -4714,7 +4944,7 @@ namespace JG_Prospect.Sr_App
                 txtPwd.Visible = false;
                 amt = Convert.ToDecimal(((Convert.ToDecimal(Session["CCtxtAmount"].ToString()) * 3 / 100) + Convert.ToDecimal(Session["CCtxtAmount"].ToString())).ToString("N2"));
                 Payline payline = new Payline();
-                payline = payline.Sale(txtFirstName.Text.ToString(), txtLastName.Text.ToString(), txtCardNumber.Text.ToString(), ccExpireMonth.Text.ToString(), ccExpireYear.Text.ToString(), txtSecurityCode.Text.ToString(), amt, ddlCurrency.SelectedValue.Trim(), txtAddress.InnerText.Trim(), Convert.ToInt32(txtZip.Text.Trim()), ddlCity.SelectedValue.Trim(), ddlState.SelectedValue.Trim(), ddlCountry.SelectedValue.Trim());
+                payline = payline.Sale(txtFirstName.Text.ToString(), txtLastName.Text.ToString(), txtCardNumber.Text.ToString(), ccExpireMonth.Text.ToString(), ccExpireYear.Text.ToString(), txtSecurityCode.Text.ToString(), amt, ddlCurrency.SelectedValue.Trim(), txtAddress.InnerText.Trim(), Convert.ToInt32(txtZip.Text.Trim()), ddlCity.SelectedValue.Trim(), ddlState.SelectedValue.Trim(), ddnStatus.SelectedValue.Trim());
                 if (payline.IsApproved)
                 {
                     //AuthorizationCode, PaylineTransectionId
@@ -4796,7 +5026,7 @@ namespace JG_Prospect.Sr_App
             {
                 ddlWebSite.Items.Add(new System.Web.UI.WebControls.ListItem(txtWebsite.Text, txtWebsite.Text));
             }
-
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void btnHoursOfOperation_Click(object sender, EventArgs e)
@@ -4808,6 +5038,7 @@ namespace JG_Prospect.Sr_App
             val += ddlFromHours.SelectedValue + "-" + ddlFromAMPM.SelectedValue + "-" + ddlToHours.SelectedValue + "-" + ddlToAMPM.SelectedValue;
 
             ddlHoursOfOperation.Items.Add(new System.Web.UI.WebControls.ListItem(val, val));
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBullet1", "ddnStatusBullet();", true);//MR gMap TaskId=373&hstid=379
         }
 
         protected void ddlHoursOfOperation_SelectedIndexChanged(object sender, EventArgs e)
@@ -4951,6 +5182,17 @@ namespace JG_Prospect.Sr_App
         {
             ViewState["ShowCategoryPopup"] = "0";
             ShowCategoryPopup();
+        }
+
+
+        protected void grdExpandSatelliteAddress_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+
+        }
+
+        protected void cmdVendorLocationWebsite_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void UpdatePopupVendorSubCategoryList()
