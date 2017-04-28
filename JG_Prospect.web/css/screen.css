@@ -1995,6 +1995,7 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     margin-top: 5px;
     padding-top: 3px;
 }
+
 .taskComments {
     margin-left: 10px;
     max-height: 170px;
@@ -2021,4 +2022,10 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     font-size: 8px;
     text-align: right;
     font-style: oblique;
+}
+li.activeUser {
+    color: red;
+}
+li.IOUser {
+    color: blue !important;
 }

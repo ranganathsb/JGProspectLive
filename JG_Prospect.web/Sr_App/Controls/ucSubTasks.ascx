@@ -248,75 +248,19 @@
                             ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                     </td>
                 </tr>
-                <tr runat="server" visible="false">
+                <tr>
                     <td>
-                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
-                            <ContentTemplate>
-                                Designation <span style="color: red;">*</span>:
-                                       
-                                       
-
-                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="false">
-                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                        </asp:DropDownCheckBoxes>
-                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
-                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>--%>
+                        <asp:ListBox ID="lstbUsersMaster" runat="server" Visible="false"></asp:ListBox>
                     </td>
                 </tr>
                 <%--as per discussion attachemnt field should be removed.--%>
-                <tr runat="server" visible="false">
-                    <td colspan="2">Attachment(s):
-                               
-                               
-                               
-
-
-                        <%--remove this--%>
-                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
-                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
-                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
-                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
-                                                <HeaderTemplate>
-                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                                </HeaderTemplate>
-                                                <ItemTemplate>
-                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
-                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
-                                                        <br />
-                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
-                                                        <br />
-                                                        <small>
-                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
-                                                            <br />
-                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
-                                                        </small>
-                                                    </li>
-                                                </ItemTemplate>
-                                                <FooterTemplate>
-                                                    </ul>
-                                                                       
-                                               
-                                               
-                                                </FooterTemplate>
-                                            </asp:Repeater>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                </div>--%>
-                        <%--remove end--%>
+                <tr>
+                    <td colspan="2">Attachment(s):                      
                     </td>
                 </tr>
-
                 <tr>
                     <td colspan="2">Description <span style="color: red;">*</span>:
-                
-                               
-
-                        <br />
+                                        <br />
                         <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                         <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                             runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
@@ -399,13 +343,7 @@
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
                     Number of Records: 
-                               
-                   
-
-                   
-
-
-
+                         
                     <asp:DropDownList ID="drpPageSize" runat="server" AutoPostBack="true"
                         OnSelectedIndexChanged="drpPageSize_SelectedIndexChanged">
                         <asp:ListItem Text="5" Value="5" />
@@ -490,8 +428,7 @@
                                                 )
                                 %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
-                                                                            </div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
                                                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
                                                                                 <input type="text" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtAdminPassword" data-hours-id="txtAdminEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -526,8 +463,7 @@
                                                     )
                                     %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
-                                                                            </div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
                                                                                 <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtITLeadPassword" data-hours-id="txtITLeadEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -561,8 +497,7 @@
                                                 )
                                 %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
-                                                                            </div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
                                                                                 <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtUserPassword" data-hours-id="txtUserEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -628,12 +563,10 @@
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
                                                                         <li>
                                                                             <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" ClientIDMode="AutoID"
-                                                                                                Checked='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>'  
-                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged"/>
+                                                                                Checked='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>'
+                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged" />
                                                                         </li>
-                                                                        <li>
-                                                                                
-                                                                        </li>
+                                                                        <li></li>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
@@ -652,7 +585,7 @@
                                                                         <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
-                                                                        
+
                                                                     </ul>
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
@@ -714,7 +647,7 @@
                                                                                         <td>
                                                                                             <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" ClientIDMode="AutoID"
                                                                                                 Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
-                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />                                                                                            
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
@@ -810,6 +743,13 @@
     <%--<asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>--%>
     <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
+        <table border="1" cellspacing="5" cellpadding="5" width="100%">
+            <tr>
+                <td>ListID:
+                
+                                   
+
+                    y: none; background-color: white;">
         <table border="1" cellspacing="5" cellpadding="5" width="100%">
             <tr>
                 <td>ListID:
@@ -1764,9 +1704,9 @@
 
             function OnAddMoreSubtaskClick() {
                 $('#<%=txtTaskDesc.ClientID%>').val(GetCKEditorContent('<%=txtTaskDesc.ClientID%>'));
-            if (Page_ClientValidate('SubmitSubTask')) {
-                ShowAjaxLoader();
-                var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
+                if (Page_ClientValidate('SubmitSubTask')) {
+                    ShowAjaxLoader();
+                    var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
                 var listID = $('#<%=txtInstallId.ClientID%>').val();
                 var txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>').val();
                 var Priority = $('#<%= drpSubTaskPriority.ClientID %>').val();
@@ -1891,6 +1831,9 @@
             SubTaskCommentScript.Initialize();
 
             ChosenDropDown();
+
+            // Choosen selected option with hyperlink to profile.
+            setSelectedUsersLink();
 
             ApplySubtaskLinkContextMenu();
             //ApplyImageGallery();
@@ -2045,73 +1988,73 @@
 
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
 
-                               if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                                   // saves attachment.
-                                   $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                            //this.removeFile(file);
-                        }
-                           });
-                       }
+                            if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                                // saves attachment.
+                                $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                                   //this.removeFile(file);
+                               }
+                        });
+                    }
                 });
-        }
+               }
 
             //Apply dropzone for comment section.
-        if (objSubtaskNoteDropzone) {
-            objSubtaskNoteDropzone.destroy();
-            objSubTaskNoteDropzone = null;
+               if (objSubtaskNoteDropzone) {
+                   objSubtaskNoteDropzone.destroy();
+                   objSubTaskNoteDropzone = null;
+               }
+
+               objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+    }
+
+    function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
+        var sender = $(sender);
+        if (sender.prop('checked')) {
+            sender.closest('tr').next('tr').show();
         }
+        else {
+            sender.closest('tr').next('tr').hide();
+        }
+    }
 
-        objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
-           }
+    function ApplySubtaskLinkContextMenu() {
 
-           function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
-               var sender = $(sender);
-               if (sender.prop('checked')) {
-                   sender.closest('tr').next('tr').show();
-               }
-               else {
-                   sender.closest('tr').next('tr').hide();
-               }
-           }
+        $(".context-menu").bind("contextmenu", function () {
+            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            copyToClipboard(urltoCopy);
+            return false;
+        });
 
-           function ApplySubtaskLinkContextMenu() {
+        ScrollTo($(".yellowthickborder"));
 
-               $(".context-menu").bind("contextmenu", function () {
-                   var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
-                   copyToClipboard(urltoCopy);
-                   return false;
-               });
+        $(".yellowthickborder").bind("click", function () {
+            $(this).removeClass("yellowthickborder");
+        });
+    }
 
-               ScrollTo($(".yellowthickborder"));
-
-               $(".yellowthickborder").bind("click", function () {
-                   $(this).removeClass("yellowthickborder");
-               });
-           }
-
-           // check if user has selected any designations or not.
-           function SubTasks_checkDesignations(oSrc, args) {
-               //args.IsValid = ($("# input:checked").length > 0);
-           }
+    // check if user has selected any designations or not.
+    function SubTasks_checkDesignations(oSrc, args) {
+        //args.IsValid = ($("# input:checked").length > 0);
+    }
 
 
-           //  Created By : Yogesh K
-           // To updat element underlying CKEditor before work submited to server.
-           function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
-               $(ButtonId).bind('click', function () {
-                   var editor = CKEDITOR.instances[CKEditorId];
+    //  Created By : Yogesh K
+    // To updat element underlying CKEditor before work submited to server.
+    function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+        $(ButtonId).bind('click', function () {
+            var editor = CKEDITOR.instances[CKEditorId];
 
-                   if (editor) {
-                       editor.updateElement();
-                   }
-               });
-           }
+            if (editor) {
+                editor.updateElement();
+            }
+        });
+    }
 
 
-           //----------- Start DP ---------
+    //----------- Start DP ---------
 
-           function SetHiddenTaskId(vId) {
-               $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
+    function SetHiddenTaskId(vId) {
+        $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
            }
 
 
@@ -2199,7 +2142,26 @@
             });
         });
     }
+    function setSelectedUsersLink() {
 
+        $('.search-choice').each(function () {
+            var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
+            console.log(itemIndex);
+            if (itemIndex) {
+                //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
+                var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen","") + ' option';
+                
+                 console.log($(selectoptionid)[itemIndex].value);
+                 var chspan = $(this).children('span');
+                 if (chspan) {
+                     chspan.html('<a href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
+                    chspan.bind("click", "a", function () {
+                         window.open($(this).children("a").attr("href"), "_blank", "", false);
+                     });
+                 }
+            }
+        });
+    }
     //--------------- End DP ---------------
 
 </script>

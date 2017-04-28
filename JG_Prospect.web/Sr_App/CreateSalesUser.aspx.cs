@@ -450,7 +450,11 @@ namespace JG_Prospect.Sr_App
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-                            ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
+                            System.Web.UI.WebControls.ListItem PositionAppliedFor = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
+                            if (PositionAppliedFor != null)
+                            {
+                                ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(PositionAppliedFor); 
+                            }
                         }
 
                         if (ds.Tables[0].Rows[0]["CountryCode"].ToString() != "")
