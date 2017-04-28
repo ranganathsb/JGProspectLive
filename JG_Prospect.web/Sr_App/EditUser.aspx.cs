@@ -248,6 +248,7 @@ namespace JG_Prospect
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
+                    Label lblExamResults = e.Row.FindControl("lblExamResults") as Label;
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -343,6 +344,26 @@ namespace JG_Prospect
                     {
                         lnkDelete.Visible = false;
                     }
+
+
+
+                    string hdnUserInstallId = Convert.ToString((e.Row.FindControl("hdnUserInstallId") as HiddenField).Value);
+
+                    DataTable performanceTable = AptitudeTestBLL.Instance.GetPerformanceByUserID(Convert.ToInt32(hdnUserInstallId));
+                    string buffer = "";
+
+                    if (performanceTable.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in performanceTable.Rows)
+                        {
+                            String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
+                            String aggregate = row["Aggregate"].ToString();
+
+                            buffer += examName + " - " + Convert.ToDouble(aggregate).ToString("N2") + "%<br/>";
+                        }
+                    }
+                    lblExamResults.Text += buffer;
+
                 }
             }
             catch (Exception ex)
@@ -1048,13 +1069,13 @@ namespace JG_Prospect
             if (!string.IsNullOrEmpty(EmpType))
             {
                 int intEmpType = 0;
-                int.TryParse( EmpType, out intEmpType);
+                int.TryParse(EmpType, out intEmpType);
 
                 if (intEmpType > 0)
                 {
-                   EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
                 }
-                
+
                 strHtml = strHtml.Replace("#EmpType#", EmpType);
 
             }
@@ -2044,7 +2065,7 @@ namespace JG_Prospect
 
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.Active)).Enabled = false;
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.OfferMade)).Enabled = false;
-   
+
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -3933,7 +3954,7 @@ namespace JG_Prospect
 
             txtEmailSubject.Text = objHTMLTemplate.Subject;
             txtEmailBody.Text = string.Concat(
-                //objHTMLTemplate.Designation + " --- ",
+                                                //objHTMLTemplate.Designation + " --- ",
                                                 objHTMLTemplate.Header,
                                                 objHTMLTemplate.Body,
                                                 objHTMLTemplate.Footer

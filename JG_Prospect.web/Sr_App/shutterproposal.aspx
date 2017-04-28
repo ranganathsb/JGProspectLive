@@ -14,7 +14,7 @@
         $(document).ready(function () {
             $("ol").attr('class', '');
             $(".date").datepicker();
-            $('.time').ptTimeSelect();
+            //$('.time').ptTimeSelect();
             $('#trauthpass').hide();
             $('#trcheque').hide();
             $('#trcard').hide();

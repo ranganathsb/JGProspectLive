@@ -828,6 +828,10 @@
 
                                         <br />
                                         <br />
+                                        <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
+                                        <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
+
+                                        <br />
                                         <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>
                                         <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
 
