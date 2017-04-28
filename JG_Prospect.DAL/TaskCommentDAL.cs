@@ -63,6 +63,12 @@ namespace JG_Prospect.DAL
 
                             objTaskComment.TotalChildRecords = Convert.ToInt32(drTaskComment["TotalChildRecords"]);
 
+                            objTaskComment.UserInstallId = Convert.ToString(drTaskComment["UserInstallId"]);
+                            objTaskComment.UserName = Convert.ToString(drTaskComment["Username"]);
+                            objTaskComment.UserFirstName = Convert.ToString(drTaskComment["FirstName"]);
+                            objTaskComment.UserLastName = Convert.ToString(drTaskComment["LastName"]);
+                            objTaskComment.UserEmail = Convert.ToString(drTaskComment["Email"]);
+
                             lstTaskComments.Add(objTaskComment);
                         }
                     }

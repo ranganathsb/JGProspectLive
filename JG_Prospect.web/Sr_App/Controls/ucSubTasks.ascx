@@ -199,6 +199,7 @@
                                 <asp:Literal ID="listIDOpt" runat="server" />
                             </a>
                         </small>
+                        <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" Checked="false" />
                     </td>
                     <td>Type <span style="color: red;">*</span>:
                                
@@ -623,12 +624,21 @@
                                                                     <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid='<%# Eval("TaskId")%>'
                                                                         data-parent-commentid="0" data-startindex="0" data-pagesize="2" class="hide"
                                                                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View Replies</a>
-                                                                    <h5>Comments/Feedback</h5>
+                                                                    <h5 class="taskCommentTitle">Comments/Feedback</h5>
                                                                     <div data-id="divSubTaskCommentPlaceHolder" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" class="taskComments">
                                                                     </div>
+                                                                    <a href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' data-parent-commentid="0" onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                                                                 </td>
                                                                 <td width="15%">
                                                                     <ul class='<%#Eval("NestLevel").ToString() == "3"? "hide":"stulli" %>'>
+                                                                        <li>
+                                                                            <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" ClientIDMode="AutoID"
+                                                                                                Checked='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>'  
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged"/>
+                                                                        </li>
+                                                                        <li>
+                                                                                
+                                                                        </li>
                                                                         <li>Priority
                                                                         </li>
                                                                         <li>
@@ -647,7 +657,7 @@
                                                                         <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
-
+                                                                        
                                                                     </ul>
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
@@ -709,7 +719,7 @@
                                                                                         <td>
                                                                                             <asp:CheckBox ID="chkUiRequested" runat="server" Text="Ui Requested?" ClientIDMode="AutoID"
                                                                                                 Checked='<%# Convert.ToBoolean(Eval("IsUiRequested")) %>'
-                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />
+                                                                                                AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkUiRequested_CheckedChanged" />                                                                                            
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
@@ -986,7 +996,7 @@
                     <a href="javascript:void(0);" data-id="hypViewComments" data-taskid="{TaskId}"
                         data-parent-commentid="{ParentCommentId}" data-startindex="0" data-pagesize="0"
                         onclick="javascript:SubTaskCommentScript.GetTaskComments(this);">View {RemainingRecords} more comments</a>
-                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}"
+                    <a href="javascript:void(0);" data-taskid="{TaskId}" data-parent-commentid="{ParentCommentId}" class="hide"
                         onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
                 </td>
             </tr>
@@ -1009,7 +1019,16 @@
     <tr data-commentid="{Id}">
         <td class="noborder">
             <div class="taskComment">
-                {Comment}
+                {Comment}               
+              
+                    <div class="ctimestmap">
+                        <a href='<%=Page.ResolveUrl("CreateSalesUser.aspx?id={UserId}")%>' target="_blank">{UserInstallId} - {UserFirstName} {UserLastName}
+                        </a>
+                        <br />
+                        <span>{DateCreated_MDYYYY}</span>&nbsp<span style="color: red">{TimeCreated_HHMMSSTT}</span>&nbsp;<span>(EST)</span>
+                    </div>
+
+
             </div>
             <a href="javascript:void(0);" data-id="hypViewReplies" data-taskid="{TaskId}" data-parent-commentid="{Id}" class="hide"
                 data-startindex="0" data-pagesize="0" style="margin-left: 10px;"
@@ -1093,8 +1112,18 @@
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{Comment}/gi, objTaskComment.Comment);
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{ParentCommentId}/gi, objTaskComment.ParentCommentId.toString());
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TaskId}/gi, objTaskComment.TaskId.toString());
-                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{DateCreated}/gi, objTaskComment.DateCreated.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserId}/gi, objTaskComment.UserId.toString());
+
+                    var intDateCreated = parseInt(objTaskComment.DateCreated.replace(/\//gi, '').replace('Date', '').replace(/[(]/gi, '').replace(/[)]/gi, ''));
+
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{DateCreated_MDYYYY}/gi, SubTaskCommentScript.GetDate_MDYYYY(intDateCreated));
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TimeCreated_HHMMSSTT}/gi, SubTaskCommentScript.GetTime_HHMMSSTT(intDateCreated));
                     strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{TotalChildRecords}/gi, objTaskComment.TotalChildRecords.toString());
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserName}/gi, objTaskComment.UserName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserFirstName}/gi, objTaskComment.UserFirstName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserLastName}/gi, objTaskComment.UserLastName);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserInstallId}/gi, objTaskComment.UserInstallId);
+                    strSubTaskCommentRowTemplate = strSubTaskCommentRowTemplate.replace(/{UserEmail}/gi, objTaskComment.UserEmail);
 
                     $SubTaskCommentRowTemplate = $(strSubTaskCommentRowTemplate);
 
@@ -1169,8 +1198,8 @@
                         $tfoot.find('tr[data-id="trAddComment"]').hide();
                     }
 
-                    $tfoot.find('a[data-id="hypViewComments"]').click();
-
+                    //$tfoot.find('a[data-id="hypViewComments"]').click();
+                    $('a[data-id="hypViewInitialComments"]').click();
                 }
             }
         }
@@ -1218,6 +1247,31 @@
         $tfoot.find('textarea[data-id="txtComment"]').val('');
         $tfoot.find('tr[data-id="trAddComment"]').show();
     };
+
+    SubTaskCommentScript.GetDate_MDYYYY = function (date) {
+        console.log(date);
+        var objDate = new Date(date);
+
+        var dd = objDate.getDate();
+        var mm = objDate.getMonth() + 1; //January is 0! 
+        var yyyy = objDate.getFullYear();
+
+        //if (dd < 10) { dd = '0' + dd; } if (mm < 10) { mm = '0' + mm; }
+
+        return (dd + '/' + mm + '/' + yyyy);
+    }
+
+    SubTaskCommentScript.GetTime_HHMMSSTT = function (date) {
+        var objDate = new Date(date);
+
+        var hh = objDate.getHours();
+        var mm = objDate.getMinutes();
+        var ss = objDate.getSeconds();
+
+        //if (dd < 10) { dd = '0' + dd; } if (mm < 10) { mm = '0' + mm; }
+
+        return (hh + ':' + mm + ':' + ss);
+    }
 </script>
 
 <script type="text/javascript">
@@ -1269,7 +1323,7 @@
         maintask = true;
         $('#<%=hdTaskLvl.ClientID%>').val("1");
         $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
-
+        $('#<%=chkTechTask.ClientID%>').prop('checked', false)
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
         return false;
     }
@@ -1741,6 +1795,7 @@
                     TaskType: type,
                     TaskDesignations: designations,
                     TaskLvl: TaskLvl,
+                    blTechTask: false
                 };
 
                 CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
@@ -1912,6 +1967,7 @@
                 var type = $('#<%= ddlTaskType.ClientID %>').val();
                 var designaions = $('#<%= hdndesignations.ClientID %>').val();
                 var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
+                var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
 
                 var postData = {
                     ParentTaskId: taskid,
@@ -1927,6 +1983,7 @@
                     TaskType: type,
                     TaskDesignations: designaions,
                     TaskLvl: TaskLvl,
+                    blTechTask: blTechTask
                 };
 
                 CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
