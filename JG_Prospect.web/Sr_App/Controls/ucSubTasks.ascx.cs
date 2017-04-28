@@ -397,16 +397,22 @@ namespace JG_Prospect.Sr_App.Controls
                     // As all designations are same as parent task, so no need to bind for each task. 
                     // Already bound one listbox lstbUsersMaster from master task designation and can reuse that.
                     // DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
-                    ListItem[] objUsersList = new ListItem[lstbUsersMaster.Items.Count];
-                    lstbUsersMaster.Items.CopyTo(objUsersList, 0);
-                    
-                    ddcbAssigned.Items.Clear();
+                    //ListItem[] objUsersList = new ListItem[lstbUsersMaster.Items.Count];
+                    //lstbUsersMaster.Items.CopyTo(objUsersList, 0);
 
-                    ddcbAssigned.Items.AddRange(objUsersList);
+                    //ddcbAssigned.Items.Clear();
+
+                    //ddcbAssigned.Items.AddRange(objUsersList);
                     //ddcbAssigned.DataSource = dsUsers;
                     //ddcbAssigned.DataTextField = "FristName";
                     //ddcbAssigned.DataValueField = "Id";
                     //ddcbAssigned.DataBind();
+
+                    DataSet dsUsers = (DataSet)lstbUsersMaster.DataSource;
+                    ddcbAssigned.DataSource = dsUsers;
+                    ddcbAssigned.DataTextField = "FristName";
+                    ddcbAssigned.DataValueField = "Id";
+                    ddcbAssigned.DataBind();
 
                     ddcbAssigned.Attributes.Add("data-taskid", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
                     ddcbAssigned.Attributes.Add("data-taskstatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
@@ -2313,6 +2319,8 @@ namespace JG_Prospect.Sr_App.Controls
         {
             String firstAssignedUser = String.Empty;
             String[] userids = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            taskUsers.ClearSelection();
 
             foreach (string userid in userids)
             {
