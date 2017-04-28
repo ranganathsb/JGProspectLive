@@ -452,18 +452,13 @@ namespace JG_Prospect.Sr_App
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-<<<<<<< HEAD
+
                             //ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString()).Selected = true;
                             System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
                             if (lstPosition != null)
                             {
                                 ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPosition);
-=======
-                            System.Web.UI.WebControls.ListItem PositionAppliedFor = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
-                            if (PositionAppliedFor != null)
-                            {
-                                ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(PositionAppliedFor); 
->>>>>>> yogesh
+
                             }
                         }
 
