@@ -873,6 +873,50 @@ namespace JG_Prospect.App_Code
             return res.ToString();
         }
 
+        internal static void BindAssignUserDropdown(string strTaskDesignations, ListBox lstbUsersMaster)
+        {
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, strTaskDesignations.Trim());
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0 && dsUsers.Tables[0].Rows.Count > 0)
+            {
+                DataTable dtUsers = dsUsers.Tables[0];
+
+                lstbUsersMaster.Items.Clear();
+                lstbUsersMaster.DataSource = dsUsers;
+                lstbUsersMaster.DataTextField = "FristName";
+                lstbUsersMaster.DataValueField = "Id";
+                lstbUsersMaster.DataBind();
+
+                // For all active user set font in red and for all InterviewDate and OfferMade set blue.
+                foreach (ListItem item in lstbUsersMaster.Items)
+                {
+                    DataRow row = (from DataRow dr in dtUsers.Rows
+                                   where dr["Id"].ToString().Equals(item.Value) == true
+                                   select dr).FirstOrDefault();
+
+                    if (row != null)
+                    {
+                        JGConstant.InstallUserStatus Userstatus;
+                        Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
+
+                        switch (Userstatus)
+                        {
+                            case JGConstant.InstallUserStatus.Active:
+                                item.Attributes.Add("class", "activeUser");
+                                break;
+                            case JGConstant.InstallUserStatus.InterviewDate:
+                            case JGConstant.InstallUserStatus.OfferMade:
+                                item.Attributes.Add("class", "IOUser");
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+
+            }
+        }
     }
 }
 
