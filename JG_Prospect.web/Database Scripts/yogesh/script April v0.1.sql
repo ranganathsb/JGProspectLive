@@ -1338,3 +1338,81 @@ WHERE ((AdminStatus = 0 AND TechLeadStatus = 0) OR (AdminStatus IS NULL AND Tech
 
 SELECT TaskId,[Status],Title FROM tblTask 
 WHERE ((AdminStatus = 0 AND TechLeadStatus = 0) OR (AdminStatus IS NULL AND TechLeadStatus IS NULL)) AND TaskId NOT IN (SELECT TaskId FROM [dbo].[tblTaskAssignedUsers]) AND [Status] NOT IN (7,9,10,11,12,14)
+
+
+ALTER PROCEDURE [dbo].[GetNonFrozenTasks]
+ -- Add the parameters for the stored procedure here
+
+ @startdate varchar(50),
+ @enddate varchar(50),
+ @PageIndex INT , 
+ @PageSize INT  
+ 
+
+As
+BEGIN
+
+DECLARE @StartIndex INT  = 0
+SET @StartIndex = (@PageIndex * @PageSize) + 1
+
+
+;WITH 
+ Tasklist AS
+ ( 
+  select  TaskId ,[Description],[Status],convert(Date,DueDate ) as DueDate,
+  Title,[Hours],ParentTaskId,TaskLevel,Assigneduser,ParentTaskTitle,InstallId as InstallId1,AdminStatus,TechLeadStatus,OtherUserStatus,(select * from [GetParent](TaskId)) as MainParentId,
+  case 
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId 
+   when (tasklevel =1 and ParentTaskId>0) then 
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId  
+   when (tasklevel =2 and ParentTaskId>0) then
+    (select InstallId from tbltask where taskid in (
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId 
+     
+   when (tasklevel =3 and ParentTaskId>0) then
+   (select InstallId from tbltask where taskid in (
+   (select parenttaskid from tbltask where taskid in (
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))
+   +'-'+
+    (select InstallId from tbltask where taskid in (
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId 
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order
+  from (
+   select a.*
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle
+   ,t.FristName + ' ' + t.LastName AS Assigneduser
+   from  tbltask a
+   LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId 
+   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId
+   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id  
+   where a.[Status] in (1,8) and (a.AdminStatus is null OR a.AdminStatus = 0)
+  and (a.TechLeadStatus is null OR a.TechLeadStatus = 0)
+  and (a.OtherUserStatus is null OR a.OtherUserStatus = 0)
+
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate ) 
+  ) as x
+ )
+
+ ---- get CTE data into temp table
+ SELECT *
+ INTO #temp
+ FROM Tasklist
+ 
+ SELECT * 
+ FROM #temp 
+ WHERE 
+ RowNo_Order >= @StartIndex AND 
+ (
+  @PageSize = 0 OR 
+  RowNo_Order < (@StartIndex + @PageSize)
+ )
+ ORDER BY RowNo_Order
+
+
+ SELECT
+ COUNT(*) AS TotalRecords
+  FROM #temp
+END
+GO
