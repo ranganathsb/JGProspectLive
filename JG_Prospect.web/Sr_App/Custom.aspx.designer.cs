@@ -166,6 +166,15 @@ namespace JG_Prospect.Sr_App.Product_Line {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvworkarea;
         
         /// <summary>
+        /// pnlUpdate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel pnlUpdate;
+        
+        /// <summary>
         /// hdnWorkFiles control.
         /// </summary>
         /// <remarks>
@@ -182,15 +191,6 @@ namespace JG_Prospect.Sr_App.Product_Line {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveGridAttachment;
-        
-        /// <summary>
-        /// pnlUpdate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel pnlUpdate;
         
         /// <summary>
         /// rptAttachment control.
