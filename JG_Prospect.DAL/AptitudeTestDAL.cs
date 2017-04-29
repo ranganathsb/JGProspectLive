@@ -223,9 +223,32 @@ namespace JG_Prospect.DAL
 
         public string GetExamNameByExamID(string examId)
         {
-            string SQL = "select ExamTitle from [MCQ_Exam] WHERE ExamID =" + examId;
-            //throw new NotImplementedException();
-            return ".Net Aptitude Test";
+            string SQL = "select * from [MCQ_Exam] WHERE ExamID =" + examId;
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.CommandText = SQL;
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = con;
+                        sda.SelectCommand = cmd;
+                        using (DataSet ds = new DataSet())
+                        {
+                            sda.Fill(dt);
+                        }
+                    }
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+              return  dt.Rows[0]["ExamDescription"].ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
         public DataTable GetMCQ_Exams(string intDesignationID)

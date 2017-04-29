@@ -31,16 +31,30 @@ namespace JG_Prospect.MCQTest
             {
                 buffer += "<tr><td><b>Exam Title</b></td><td><b>Marks Earned</b></td><td><b>Total Marks</b></td><td><b>Aggregate</b></td></tr>";
 
+
+
                 //for (int i = 0; i < performanceTable.Rows.Count; i++)
                 foreach (DataRow row in performanceTable.Rows)
                 {
+                    DataTable examDetails = AptitudeTestBLL.Instance.GetMCQ_ExamByID(int.Parse(row["ExamID"].ToString())).Tables[0];
+                    var passingPercent = Convert.ToDouble(string.IsNullOrEmpty(Convert.ToString(examDetails.Rows[0]["PassPercentage"])) ? "0" : Convert.ToString(examDetails.Rows[0]["PassPercentage"]));
+
                     String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
                     String studentName = row["UserID"].ToString();
                     String aggregate = row["Aggregate"].ToString();
                     String marksEarned = row["MarksEarned"].ToString();
                     String totalMarks = row["TotalMarks"].ToString();
 
-                    buffer += "<tr><td>" + examName + "</td><td>" + marksEarned + "</td><td>" + totalMarks + "</td><td>" + aggregate + "</td></tr>";
+                    if (Convert.ToDouble(row["Aggregate"].ToString()) < passingPercent)
+                    {
+                        //fail
+                        buffer += "<tr><td style='color: red;'>" + examName + "</td><td style='color: red;'>" + marksEarned + "</td><td style='color: red;'>" + totalMarks + "</td><td style='color: red;'>" + aggregate + "</td></tr>";
+                    }
+                    else
+                    {
+                        //pass
+                        buffer += "<tr><td style='color: green;'>" + examName + "</td><td style='color: green;'>" + marksEarned + "</td><td style='color: green;'>" + totalMarks + "</td><td style='color: green;'>" + aggregate + "</td></tr>";
+                    }
                 }
 
                 buffer += "</table>";
