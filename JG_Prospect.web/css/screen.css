@@ -2024,7 +2024,7 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     font-style: oblique;
 }
 li.activeUser {
-    color: red;
+    color: red !important;
 }
 li.IOUser {
     color: blue !important;
