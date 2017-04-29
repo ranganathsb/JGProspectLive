@@ -1331,3 +1331,10 @@ END
 -- Live publish 04282017
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+UPDATE tblTask SET [Status] = 8
+
+WHERE ((AdminStatus = 0 AND TechLeadStatus = 0) OR (AdminStatus IS NULL AND TechLeadStatus IS NULL)) AND TaskId NOT IN (SELECT TaskId FROM [dbo].[tblTaskAssignedUsers]) AND [Status] NOT IN (7,9,10,11,12,14)
+
+SELECT TaskId,[Status],Title FROM tblTask 
+WHERE ((AdminStatus = 0 AND TechLeadStatus = 0) OR (AdminStatus IS NULL AND TechLeadStatus IS NULL)) AND TaskId NOT IN (SELECT TaskId FROM [dbo].[tblTaskAssignedUsers]) AND [Status] NOT IN (7,9,10,11,12,14)
