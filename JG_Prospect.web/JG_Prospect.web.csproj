@@ -1774,6 +1774,7 @@
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
+    <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
     <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
@@ -2128,6 +2129,10 @@
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\UploadFileCustomerDocs.aspx.cs">
+      <DependentUpon>UploadFileCustomerDocs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\userbulkupload.aspx.cs">
       <DependentUpon>userbulkupload.aspx</DependentUpon>
@@ -3011,7 +3016,6 @@
     <Folder Include="Database Scripts\Bhavik\Nov\" />
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
-    <Folder Include="Database Scripts\KetankumarGodhani\" />
     <Folder Include="Database Scripts\Shekhar\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />

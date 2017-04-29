@@ -166,22 +166,22 @@ namespace JG_Prospect.Sr_App.Product_Line {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvworkarea;
         
         /// <summary>
-        /// ajaxFileUpload control.
+        /// hdnWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.AsyncFileUpload ajaxFileUpload;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnWorkFiles;
         
         /// <summary>
-        /// btnImageUploadClick control.
+        /// btnSaveGridAttachment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnImageUploadClick;
+        protected global::System.Web.UI.WebControls.Button btnSaveGridAttachment;
         
         /// <summary>
         /// pnlUpdate control.
@@ -193,13 +193,13 @@ namespace JG_Prospect.Sr_App.Product_Line {
         protected global::System.Web.UI.UpdatePanel pnlUpdate;
         
         /// <summary>
-        /// gvCategory control.
+        /// rptAttachment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvCategory;
+        protected global::System.Web.UI.WebControls.Repeater rptAttachment;
         
         /// <summary>
         /// hidCount control.
