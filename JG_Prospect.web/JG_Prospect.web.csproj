@@ -1085,7 +1085,6 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN005_I_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Dec_ITJN016_II_b_V2.sql" />
-    <Content Include="XMLFile1.xml" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
@@ -1775,7 +1774,6 @@
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
-    <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
     <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
@@ -2130,10 +2128,6 @@
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Sr_App\UploadFileCustomerDocs.aspx.cs">
-      <DependentUpon>UploadFileCustomerDocs.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\userbulkupload.aspx.cs">
       <DependentUpon>userbulkupload.aspx</DependentUpon>
