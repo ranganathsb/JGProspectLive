@@ -34,7 +34,7 @@
 
         });
 
-        
+
 
         //prmTaskGenerator.add_beginRequest(function () {
 
@@ -253,11 +253,11 @@ function HidePopup() {
 
     $('#mask').hide();
     $('#<%=pnlpopup.ClientID %>').hide();
-    }
-    $(".btnClose").bind('click', function () {
+}
+$(".btnClose").bind('click', function () {
 
 
-        $('#<%=txtAmount.ClientID %>, #<%=txtauthpass.ClientID %>, #<%=lblError.ClientID %>').val('');
+    $('#<%=txtAmount.ClientID %>, #<%=txtauthpass.ClientID %>, #<%=lblError.ClientID %>').val('');
 
         HidePopup();
     });
@@ -397,12 +397,14 @@ function HidePopup() {
                         </tr>
                         <tr align="left">
                             <td align="left">
-                                <table cellpadding="0" cellspacing="0" class="style2">
-                                    <tr>
-                                        <td style="width: 20%;">Attachement Image
-                                        </td>
-                                        <td style="width: 60%;">
-                                            <%--<asp:HiddenField ID="hdnAttachments" runat="server" />
+                                <asp:UpdatePanel ID="pnlUpdate" runat="server">
+                                    <ContentTemplate>
+                                        <table cellpadding="0" cellspacing="0" class="style2">
+                                            <tr>
+                                                <td style="width: 20%;">Attachement Image
+                                                </td>
+                                                <td style="width: 60%;">
+                                                    <%--<asp:HiddenField ID="hdnAttachments" runat="server" />
                                             <div id="divSubTaskDropzone" runat="server" class="dropzone">
                                                 <div class="fallback">
                                                     <input name="file" type="file" multiple />
@@ -410,41 +412,40 @@ function HidePopup() {
                                                 </div>
                                             </div>--%>
 
-                                            <input type="hidden" id="hdnWorkFiles" runat="server" />
+                                                    <input type="hidden" id="hdnWorkFiles" runat="server" />
 
-                                            <div id="divUploadUserProfilPic" style="width: 250px;" class="dropzone work-file dropzonJgStyle">
-                                                <div class="fallback">
-                                                    <input name="WorkFile" type="file" multiple />
-                                                    <%--<input type="submit" value="Upload Profile Picture" />--%>
-                                                </div>
-                                            </div>
+                                                    <div id="divUploadUserProfilPic" style="width: 250px;" class="dropzone work-file dropzonJgStyle">
+                                                        <div class="fallback">
+                                                            <input name="WorkFile" type="file" multiple />
+                                                            <%--<input type="submit" value="Upload Profile Picture" />--%>
+                                                        </div>
+                                                    </div>
 
-                                            <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
-                                            </div>
+                                                    <div id="divWorkFileAdminPreview" class="dropzone-previews work-file-previews">
+                                                    </div>
 
-                                            <asp:Button ID="btnSaveGridAttachment" runat="server" OnClick="btnSaveGridAttachment_Click" Style="display: none;" Text="Save Attachement" />
+                                                    <asp:Button ID="btnSaveGridAttachment" runat="server" OnClick="btnSaveGridAttachment_Click" Style="display: none;" Text="Save Attachement" />
 
-                                            <%--<ajaxToolkit:AsyncFileUpload ID="ajaxFileUpload" runat="server" ClientIDMode="AutoID"
+                                                    <%--<ajaxToolkit:AsyncFileUpload ID="ajaxFileUpload" runat="server" ClientIDMode="AutoID"
                                                 OnUploadedComplete="ajaxFileUpload_UploadedComplete" ThrobberID="imgLoad" CompleteBackColor="White"
                                                 OnClientUploadComplete="uploadComplete" Style="width: 92% !important; margin-right: 6px" />
                                            
                                                     <asp:Button ID="btnImageUploadClick" ClientIDMode="AutoID" runat="server" CausesValidation="false"
                                                         Text="hidden" Style="display: none" OnClick="btnImageUploadClick_Click" />--%>
 
-                                            <%--<asp:FileUpload ID="FileUpload1" runat="server" onchange="readURL(this);" TabIndex="4"/>--%>
-                                            <%--<asp:RequiredFieldValidator ID="reqUpload" runat="server" ControlToValidate="FileUpload1" 
+                                                    <%--<asp:FileUpload ID="FileUpload1" runat="server" onchange="readURL(this);" TabIndex="4"/>--%>
+                                                    <%--<asp:RequiredFieldValidator ID="reqUpload" runat="server" ControlToValidate="FileUpload1" 
                                                 ErrorMessage="Upload atleast two image." Display="Dynamic" ForeColor="Red" SetFocusOnError="true" ValidationGroup="save">
                                             </asp:RequiredFieldValidator>--%>
-                                        </td>
-                                        <td style="width: 20%;">
-                                            <%--<asp:Button ID="bntAdd" runat="server" Text="Attach" Width="50px" OnClick="bntAdd_Click"
+                                                </td>
+                                                <td style="width: 20%;">
+                                                    <%--<asp:Button ID="bntAdd" runat="server" Text="Attach" Width="50px" OnClick="bntAdd_Click"
                                                 OnClientClick="return ValidateAddImage()" />--%>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3">
-                                            <asp:UpdatePanel ID="pnlUpdate" runat="server">
-                                                <ContentTemplate>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+
                                                     <asp:Repeater ID="rptAttachment" OnItemCommand="rptAttachment_ItemCommand" OnItemDataBound="rptAttachment_ItemDataBound"
                                                         runat="server" ClientIDMode="AutoID">
                                                         <HeaderTemplate>
@@ -506,11 +507,12 @@ function HidePopup() {
                                                         </Columns>
                                                     </asp:GridView>--%>
                                                     <asp:HiddenField ID="hidCount" runat="server" />
-                                                </ContentTemplate>
-                                            </asp:UpdatePanel>
-                                        </td>
-                                    </tr>
-                                </table>
+
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                             </td>
                         </tr>
                         <tr>
