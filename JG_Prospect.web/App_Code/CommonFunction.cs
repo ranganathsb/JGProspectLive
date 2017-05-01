@@ -908,10 +908,10 @@ namespace JG_Prospect.App_Code
                     switch (Userstatus)
                     {
                         case JGConstant.InstallUserStatus.Active:
+                        case JGConstant.InstallUserStatus.OfferMade:
                             item.Attributes.Add("class", "activeUser");
                             break;
-                        case JGConstant.InstallUserStatus.InterviewDate:
-                        case JGConstant.InstallUserStatus.OfferMade:
+                        case JGConstant.InstallUserStatus.InterviewDate:                        
                             item.Attributes.Add("class", "IOUser");
                             break;
                         default:

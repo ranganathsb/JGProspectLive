@@ -491,8 +491,13 @@ function IsNumeric(e, blWholeNumber) {
 }
 
 function ScrollTo(target) {
+
     if (target.length > 0) {
         var offset = target.offset();
+
+        console.log(target);
+        console.log(offset);
+
         if (typeof (offset) != 'undefined' && offset != null) {
             $('html, body').animate({
                 scrollTop: offset.top
