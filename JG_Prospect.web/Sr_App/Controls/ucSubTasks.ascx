@@ -1895,6 +1895,7 @@
             // Choosen selected option with hyperlink to profile.
             setSelectedUsersLink();
 
+            ApplySubtaskLinkContextMenu();
 
             //ApplyImageGallery();
 
@@ -1932,7 +1933,7 @@
 
             pageLoad(null, null);
 
-            ApplySubtaskLinkContextMenu();
+            
 
         }
 
@@ -2083,12 +2084,12 @@
     function ApplySubtaskLinkContextMenu() {
 
         $(".context-menu").bind("contextmenu", function () {            
-            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+            var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
             copyToClipboard(urltoCopy);
             return false;
         });
 
-        ScrollTo($(".yellowthickborder"));
+        ScrollTo($('.yellowthickborder'));
 
         $(".yellowthickborder").bind("click", function () {
             $(this).removeClass("yellowthickborder");
