@@ -557,6 +557,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUsersNDesignationForSalesFilter();
         }
+
+        public DataSet GeAddedBytUsers()
+        {
+            return InstallUserDAL.Instance.GeAddedBytUsers();
+        }
+
         public string AddUserEmails(string hidExtEmail, int UserId)
         {
             return InstallUserDAL.Instance.AddUserEmails(hidExtEmail, UserId);

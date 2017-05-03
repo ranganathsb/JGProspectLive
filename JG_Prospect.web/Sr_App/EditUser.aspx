@@ -596,11 +596,11 @@
                                 <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
                             <td>
                                 <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
-                            <td colspan="2">
-                                <asp:Label ID="Label2" Text="Select Period" runat="server" /></td>
+                            <td colspan="2" style="text-align:left;">
+                                <asp:Label ID="Label2" Text="&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Select Period" runat="server" /></td>                            
                         </tr>
                         <tr style="text-align: center; width: 100%">
-                           <%-- <td style="text-align: center;">
+                                <%-- <td style="text-align: center;">
                                 <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true"  OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />--%>
                             <td style="text-align: center;">
                                 <style>
@@ -611,41 +611,52 @@
                                     width: 95% !important;
                                     }
                                 </style>
-                                <asp:DropDownList ID="ddlUserStatus" style="text-align: left;" runat="server" Width="400px" AutoPostBack="true"
+                                <asp:DropDownList ID="ddlUserStatus" style="text-align: left;" runat="server" Width="380px" AutoPostBack="true"
                                     OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />
-                            </td>
                             </td>
                             <td>
                                 <asp:DropDownList ID="ddlDesignation" runat="server" Width="140px"
                                     OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true" />
                             </td>
                             <td>
-                                <asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-                            <td>
-                                <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-                            <td>
-                                <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" /></td>
-                            <td>
-                                <asp:Label ID="Label3" Text="From :*" runat="server" />
-                                <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
-                                    onkeypress="return false" MaxLength="10" AutoPostBack="true"
-                                    Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
-                                <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                                </cc1:CalendarExtender>
-                                <asp:Label ID="Label4" Text="To :*" runat="server" />
-                                <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
-                                    MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
-                                    Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
-                                </cc1:CalendarExtender>
-                                <br />
-                                <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
-                                    runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
-                                </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
-                                    runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
-                                </asp:RequiredFieldValidator>
-                                <br />
+                                <%--<asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>--%>
+                                <asp:DropDownList ID="drpUser" runat="server" Width="280px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </td>
+                            <td>
+                                <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                            </td>
+							<td style="text-align: left;"> 
+									<asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="&nbsp; All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
+									<br />
+									<asp:CheckBox ID="chkOneMonth" Width="200" runat="server" Checked="false" Text="&nbsp; 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
+									<br />
+									<asp:CheckBox ID="chkOneYear" runat="server" Checked="false" Text="&nbsp; 1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />							
+							</td>
+							<td style="text-align: left; text-wrap:avoid;"> 
+									<asp:CheckBox ID="chkTwoWks" style="vertical-align:top;" Width="500" runat="server" Checked="false" Text="&nbsp; 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" />
+									<br />									
+									<asp:CheckBox ID="chkThreeMonth" Width="400" runat="server" Checked="false" Text="&nbsp; Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" />
+									<br />
+									<asp:Label ID="Label3" Text="From :*" runat="server" />
+									<asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
+										onkeypress="return false" MaxLength="10" AutoPostBack="true"
+										Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
+										<cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+										</cc1:CalendarExtender>
+										<asp:Label ID="Label4" Text="To :*" runat="server" />
+										<asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
+											MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
+											Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
+										<cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+										</cc1:CalendarExtender>
+										<%--<br />--%>
+										<asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
+											runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
+										</asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
+											runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
+										</asp:RequiredFieldValidator>
+										<%--<br />--%>									
+							</td>
                         </tr>
                     </table>
                 </ContentTemplate>
@@ -1450,6 +1461,7 @@
             ApplyDropZone();
 
             try {
+                $("#<%=drpUser.ClientID%>").msDropDown();
                 $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
                 $("#<%=ddlUserStatus.ClientID%>").msDropDown();
                 $(".grd-status").msDropDown();
