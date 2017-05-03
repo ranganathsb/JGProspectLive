@@ -190,6 +190,12 @@ namespace JG_Prospect
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
         }
 
+        protected void ddlStatus_Popup_PreRender(object sender, EventArgs e)
+        {
+            DropDownList ddlStatusPopup = (DropDownList)sender;
+            ddlStatusPopup = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatusPopup);
+        }
+
         protected void ddlFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             GetSalesUsersStaticticsAndData(true);
@@ -1048,13 +1054,13 @@ namespace JG_Prospect
             if (!string.IsNullOrEmpty(EmpType))
             {
                 int intEmpType = 0;
-                int.TryParse( EmpType, out intEmpType);
+                int.TryParse(EmpType, out intEmpType);
 
                 if (intEmpType > 0)
                 {
-                   EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
                 }
-                
+
                 strHtml = strHtml.Replace("#EmpType#", EmpType);
 
             }
@@ -2044,7 +2050,7 @@ namespace JG_Prospect
 
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.Active)).Enabled = false;
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.OfferMade)).Enabled = false;
-   
+
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -3933,7 +3939,7 @@ namespace JG_Prospect
 
             txtEmailSubject.Text = objHTMLTemplate.Subject;
             txtEmailBody.Text = string.Concat(
-                //objHTMLTemplate.Designation + " --- ",
+                                                //objHTMLTemplate.Designation + " --- ",
                                                 objHTMLTemplate.Header,
                                                 objHTMLTemplate.Body,
                                                 objHTMLTemplate.Footer
