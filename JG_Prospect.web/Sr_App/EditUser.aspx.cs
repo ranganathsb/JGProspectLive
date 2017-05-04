@@ -4067,7 +4067,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
-                    strBody = strBody.Replace("http://web.jmgrovebuildingsupply.com/Sr_App/EditEmailTemplate.aspx?htempID=108#TaskLink#", string.Format(
+                    strBody = strBody.Replace("#TaskLink#", string.Format(
                                                                             "{0}?TaskId={1}&hstid={2}",
                                                                             string.Concat(
                                                                                             Request.Url.Scheme,
