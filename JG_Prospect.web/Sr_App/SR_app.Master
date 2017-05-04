@@ -231,7 +231,8 @@
 
         function GetPhoneDiv() {
             $("#ifsoftphone").attr('src', '/Communication/webphone/softphone.html');
-            $("#phoneDashboardDiv").show();           
+            $("#phoneDashboardDiv").show();
+
         }
 
         //Bind Scripts into POPUP
@@ -433,13 +434,13 @@
         <div id="phoneDashboardDiv" style="display: none;">
             <a class="boxclose" id="boxclose"></a>
             <h1 class="phone_dashbaord">Phone Dashboard</h1>
-            <%--<div id="divPhoneScripts">
+            <div id="divPhone">
+                <iframe id="ifsoftphone" height="450" width="400"></iframe>
+            </div>
+            <div id="divPhoneScripts">
                 <ul>
                     <li><a class="clsPhoneLink" onclick="LoadAllScripts()">Phone Script</a></li>
                 </ul>
-            </div>--%>
-             <div id="divPhone" class="dialog">
-                <iframe id="ifsoftphone" height="450" width="400"></iframe>
             </div>
             <div id="divScriptLinks" style="display: none;">
                 <a class="clsPhoneLink" onclick="BackToPhoneScripts()">&lt;&lt;Back</a>
@@ -465,7 +466,7 @@
                     <input type="button" id="btnCancelScript" runat="server" value="cancel" onclick="BackToScriptList()" />
                 </span>
             </div>
-           
+
         </div>
     </form>
     <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
