@@ -22,7 +22,7 @@ using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
-
+//using System.Diagnostics;
 
 namespace JG_Prospect
 {
@@ -155,7 +155,7 @@ namespace JG_Prospect
             {
                 if (Session["HighlightUsersForTypes"] != null)
                 {
-                    HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
+                    // HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
                 }
             }
         }
@@ -170,6 +170,11 @@ namespace JG_Prospect
         {
             if (chkAllDates.Checked)
             {
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
                 txtfrmdate.Enabled = false;
                 txtTodate.Enabled = false;
                 txtfrmdate.Text = "All";
@@ -180,6 +185,106 @@ namespace JG_Prospect
                 txtTodate.Enabled = true;
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
             }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkTwoWk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkTwoWks.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkOneMonth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkOneMonth.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                //chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkThreeMonth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkThreeMonth.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                //chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkOneYear_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkOneYear.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                //chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
             //BindGrid();
             GetSalesUsersStaticticsAndData(true);
         }
@@ -188,6 +293,12 @@ namespace JG_Prospect
         {
             DropDownList ddlStatus = (DropDownList)sender;
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
+        }
+
+        protected void ddlStatus_Popup_PreRender(object sender, EventArgs e)
+        {
+            DropDownList ddlStatusPopup = (DropDownList)sender;
+            ddlStatusPopup = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatusPopup);
         }
 
         protected void ddlFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -684,7 +795,7 @@ namespace JG_Prospect
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
-                ddlInsteviewtime.SelectedValue = "10:00";
+                ddlInsteviewtime.SelectedValue = "10:00 AM";
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
                 return;
             }
@@ -2099,7 +2210,8 @@ namespace JG_Prospect
             //    drpUser.DataBind();
             //}
 
-            DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            //DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            DataSet dsInstalledUser = InstallUserBLL.Instance.GeAddedBytUsers();
             drpUser.DataSource = dsInstalledUser.Tables[0];
             drpUser.DataValueField = "Id";
             drpUser.DataTextField = "FirstName";
@@ -2107,7 +2219,7 @@ namespace JG_Prospect
             drpUser.Items.Insert(0, new ListItem("--All--", "0"));
             DataTable dtInstalledUsers = dsInstalledUser.Tables[0];
             Session["HighlightUsersForTypes"] = dtInstalledUsers;
-            HighlightUsersForTypes(dtInstalledUsers, drpUser);
+            //HighlightUsersForTypes(dtInstalledUsers, drpUser);
         }
 
         private void HighlightUsersForTypes(DataTable dtUsers, DropDownList ddlUsers)
@@ -3480,11 +3592,45 @@ namespace JG_Prospect
 
             DateTime? dtFromDate = null;
             DateTime? dtToDate = null;
-            if (!chkAllDates.Checked)
+
+            if (chkAllDates.Checked)
+            {
+                dtFromDate = null;
+                dtToDate = null;
+            }
+            else if (chkTwoWks.Checked)
+            {
+                dtFromDate = DateTime.Now.AddDays(-13);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkOneMonth.Checked)
+            {
+                dtFromDate = dtFromDate = DateTime.Now.AddMonths(-1).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkThreeMonth.Checked)
+            {
+                dtFromDate = DateTime.Now.AddMonths(-3).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkOneYear.Checked)
+            {
+                dtFromDate = DateTime.Now.AddMonths(-12).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else //no check-boxes checked, then get from to-from fields
             {
                 dtFromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
                 dtToDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
             }
+
+            //Debug.WriteLine(dtFromDate.ToString());
+            //Debug.WriteLine(dtToDate.ToString());
+            //if (!chkAllDates.Checked)
+            //{
+            //    dtFromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            //    dtToDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            //}
             string strUserStatus = string.Empty;
             if (dtFromDate < dtToDate || (dtFromDate == null && dtToDate == null))
             {

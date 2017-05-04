@@ -2595,5 +2595,30 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
+        /// <summary>
+        /// Get all Users for AddedBy filter, with html tags
+        /// <returns>DataSet</returns>
+        public DataSet GeAddedBytUsers()
+        {
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
     }
 }
