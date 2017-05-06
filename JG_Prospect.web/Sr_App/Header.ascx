@@ -97,7 +97,7 @@
             <!--Email with # of unread msgs and new font-->
             <li id="test"><a id="hypEmail" runat="server" style="color: white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error hide"></label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
             <li>|</li>
-            <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
+            <li><a id="idPhoneLink" runat="server" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)</a></li>
             <li>|</li>
             <li><a id="hypChat" href="#" onclick="javascript:OpenChatWindow();">Chat </a></li>
         </ul>

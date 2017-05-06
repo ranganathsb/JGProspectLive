@@ -110,8 +110,8 @@
             -moz-box-shadow: 0 1px 5px #333;
             -webkit-box-shadow: 0 1px 5px #333;
             z-index: 101;
-            width: 400px;
-            height: 500px;
+            width: 900px;
+            height: 525px;
         }
 
             #phoneDashboardDiv .phone_dashbaord {
@@ -230,7 +230,7 @@
         });
 
         function GetPhoneDiv() {
-            $("#ifsoftphone").attr('src', '/Communication/webphone/softphone.html');
+            $("#ifsoftphone").attr('src', '../Communication/webphone/softphone.html');
             $("#phoneDashboardDiv").show();
 
         }
@@ -240,24 +240,28 @@
 
             $.ajax({
                 type: "POST",
-                url: "home.aspx/GetAllScripts",
+                url: "/Sr_App/home.aspx/GetAllScripts",
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
+                asynch: false,
                 data: "{'strScriptId':'" + strScriptId + "'}",
                 success: function (data) {
-                    debugger;
+
                     var dataInput = JSON.parse(data.d);
                     var strLinks = "";
                     $.each(dataInput, function (key, value) {
                         strLinks += "<li><a class='clsPhoneLink' data-id=" + value.intScriptId + " onClick = 'GetScriptById(this)'>" + value.strScriptName + "</a></li>";
                     });
                     $("#ulScriptLinks").html(strLinks);
+                },
+                error: function (a, b, c) {
+                    console.log(a);
                 }
             });
         }
 
         function DeleteScript() {
-            debugger;
+
             $.ajax({
                 type: "POST",
                 url: "home.aspx/ManageScripts",
@@ -265,7 +269,7 @@
                 dataType: "JSON",
                 data: "{intMode:'" + 3 + "', intScriptId:'" + $("#hdnScriptId").val() + "', strScriptName:'" + $("#txtScriptName").val() + "', strScriptDescription:'" + $find("ScriptEditor").get_content() + "'}",
                 success: function (data) {
-                    debugger;
+
                     $("#scriptDiv").hide();
                     var dataInput = JSON.parse(data.d);
                     var strLinks = "";
@@ -286,7 +290,7 @@
             else if ($('#btnSubmitScript').attr("value") == "Update") {
                 intMode = 2;
             }
-            debugger;
+
             $.ajax({
                 type: "POST",
                 url: "home.aspx/ManageScripts",
@@ -294,7 +298,7 @@
                 dataType: "JSON",
                 data: "{intMode:'" + intMode + "', intScriptId:'" + $("#hdnScriptId").val() + "', strScriptName:'" + $("#txtScriptName").val() + "', strScriptDescription:'" + $find("ScriptEditor").get_content() + "'}",
                 success: function (data) {
-                    debugger;
+
                     $("#scriptDiv").hide();
                     var dataInput = JSON.parse(data.d);
                     var strLinks = "";
@@ -308,7 +312,7 @@
         }
 
         function GetScriptById(e, flagInput) {
-            debugger;
+
             $("#divScriptLinks").hide();
             $("#scriptDiv").show();
 
@@ -320,7 +324,7 @@
                     dataType: "JSON",
                     data: "{'strScriptId':'" + $(e).attr("data-id") + "'}",
                     success: function (data) {
-                        debugger;
+
                         var result = JSON.parse(data.d)[0];
                         $("#hdnScriptId").val(result.intScriptId);
                         $("#txtScriptName").val(result.strScriptName)
@@ -346,7 +350,7 @@
         }
 
         function BackToPhoneScripts() {
-            debugger;
+
             $("#divPhoneScripts").show();
             $("#divScriptLinks").hide();
         }
@@ -434,44 +438,55 @@
         <div id="phoneDashboardDiv" style="display: none;">
             <a class="boxclose" id="boxclose"></a>
             <h1 class="phone_dashbaord">Phone Dashboard</h1>
-            <div id="divPhone">
-                <iframe id="ifsoftphone" height="450" width="400"></iframe>
-            </div>
-            <div id="divPhoneScripts">
-                <ul>
-                    <li><a class="clsPhoneLink" onclick="LoadAllScripts()">Phone Script</a></li>
-                </ul>
-            </div>
-            <div id="divScriptLinks" style="display: none;">
-                <a class="clsPhoneLink" onclick="BackToPhoneScripts()">&lt;&lt;Back</a>
-                <ul id="ulScriptLinks">
-                    <%--<li><a class="clsPhoneLink"></a>Phone Script</li>
+            <table>
+                <tr>
+                    <td width="50%" style="vertical-align: top;">
+                        <div id="divPhone">
+                            <iframe id="ifsoftphone" height="450" width="400"></iframe>
+                        </div>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <div id="divPhoneScripts">
+                            <ul>
+                                <li><a class="clsPhoneLink" onclick="LoadAllScripts()">Phone Script</a></li>
+                            </ul>
+                        </div>
+                        <div id="divScriptLinks" style="display: none;">
+                            <a class="clsPhoneLink" onclick="BackToPhoneScripts()">&lt;&lt;Back</a>
+                            <ul id="ulScriptLinks">
+                                <%--<li><a class="clsPhoneLink"></a>Phone Script</li>
                 <li>Welcome Script</li>
                 <li>Thanks Script</li>--%>
-                </ul>
-                <span class="btn_poup">
-                    <input type="button" id="btnNewScript" runat="server" value="Add" tabindex="31" onclick="GetScriptById(this, 0)" />
-                </span>
-            </div>
-            <div id="scriptDiv" style="display: none">
-                <input id="hdnScriptId" type="hidden" />
-                <div class="cls_textbox">
-                    Script Name:
+                            </ul>
+                            <span class="btn_poup">
+                                <input type="button" id="btnNewScript" runat="server" value="Add" tabindex="31" onclick="GetScriptById(this, 0)" />
+                            </span>
+                        </div>
+                        <div id="scriptDiv" style="display: none">
+                            <input id="hdnScriptId" type="hidden" />
+                            <div class="cls_textbox">
+                                Script Name:
                     <input type="text" id="txtScriptName" runat="server" />
-                </div>
-                <cc1:Editor ID="ScriptEditor" runat="server" />
-                <span class="btn_poup">
-                    <input type="button" id="btnSubmitScript" runat="server" value="Submit" onclick="SubmitScript()" />
-                    <input type="button" id="btnDeleteScript" runat="server" value="Delete" onclick="DeleteScript()" />
-                    <input type="button" id="btnCancelScript" runat="server" value="cancel" onclick="BackToScriptList()" />
-                </span>
-            </div>
+                            </div>
+                            <cc1:Editor ID="ScriptEditor" runat="server" />
+                            <span class="btn_poup">
+                                <input type="button" id="btnSubmitScript" runat="server" value="Submit" onclick="SubmitScript()" />
+                                <input type="button" id="btnDeleteScript" runat="server" value="Delete" onclick="DeleteScript()" />
+                                <input type="button" id="btnCancelScript" runat="server" value="cancel" onclick="BackToScriptList()" />
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
 
         </div>
     </form>
     <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
     <script src="../js/jquery-ui.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
+    <script type="text/JavaScript" src="../Communication/webphone/js/linkify/linkify.js"></script>
     <script type="text/javascript">
         $(function () {
 

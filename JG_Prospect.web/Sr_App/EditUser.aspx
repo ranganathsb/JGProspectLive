@@ -793,7 +793,7 @@
                                             <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
-                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
+                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
                                         <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
                                                 <span>Click To Add Phone /Email</span>

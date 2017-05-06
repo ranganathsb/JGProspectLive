@@ -92,7 +92,12 @@ namespace JG_Prospect.Sr_App
             {
                 hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
                 this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+                idPhoneLink.Visible = true;
 
+            }
+            else
+            {
+                idPhoneLink.Visible = false;
             }
         }
         

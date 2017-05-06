@@ -20,12 +20,12 @@ function Convert ()
     var elementCount = dom.length;
 
     for (var i = elementCount; i >= 0; i--)
-    {
+    {  
         if (common.isNull(dom[i])) { continue; }
         if ( (dom[i].nodeName).toUpperCase() === 'BODY' ) { break; }
-
+        
         if ( common.isNull(dom[i].nodeName) || (dom[i].nodeName).toUpperCase() === 'BR' || (dom[i].nodeName).toUpperCase() === 'IMG'
-                || (dom[i].nodeName).toUpperCase() === 'A' )
+                || (dom[i].nodeName).toUpperCase() === 'A' || (dom[i].hasAttribute("data-click-to-call") === false))
         {
             continue;
         }
@@ -198,10 +198,10 @@ var common = {
 
 // public interface
 return {
-        webphone_url: '',
-	serveraddress: '',
-	username: '',
-	password: '',
+    webphone_url: '../Communication/webphone/softphone.html',
+    serveraddress: 'sip.flowroute.com',
+    username: '54944665',
+	password: 'AaKw9DXcengD',
 	md5: '',
 	
 	GoToWebphone: function (number)
