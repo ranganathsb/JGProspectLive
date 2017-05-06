@@ -198,6 +198,19 @@
         cursor: pointer;
         }
     </style>
+    <style type="text/css">
+	#hint{
+		cursor:pointer;
+	}
+	.startooltip{
+		margin:8px;
+		padding:8px;
+		border:1px solid blue;
+		background-color:#ddd;
+		position: absolute;
+		z-index: 2;
+	}
+</style>
     <script type="text/javascript">
 
 
@@ -384,6 +397,23 @@
             height: 300px;
             overflow-y: scroll;
         }*/
+
+       .form_panel table tr td .starimg
+        {
+            width:15px;
+            height:15px;
+            border:none!important;
+            /*background-image:url(../img/star.png);*/
+        }
+
+         .form_panel table tr td .starimgred
+        {
+            width:15px;
+            height:15px;
+            border:none!important;
+            /*background-image:url(../img/starred.png);*/
+        }
+
     </style>
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
@@ -679,8 +709,11 @@
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
-                        </div>
-
+                        
+                              Showing :  
+                                <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" /> of
+                                <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />
+                         </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
@@ -692,8 +725,11 @@
 
                                 <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
                                     <ItemTemplate>
-                                        <asp:CheckBox ID="chkSelected" runat="server" />
-                                        <br />
+                                        <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
+                                        <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
+                                        <asp:CheckBox ID="chkSelected" runat="server" /> <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
+                                       <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
+                                        <br />  
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
@@ -702,9 +738,11 @@
                                         <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        
+
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField ShowHeader="True" HeaderText="Id# <br /> Designation" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
                                     Visible="true" SortExpression="Designation">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
@@ -715,6 +753,8 @@
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
                                         <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
+                                         <br />
+                                          <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>&nbsp;<asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -740,7 +780,7 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="13%" ItemStyle-Width="13%" SortExpression="FristName" ControlStyle-ForeColor="Black">
+                                <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtFirstName" runat="server" MaxLength="30" Text='<%#Eval("FristName")%>'></asp:TextBox>
                                     </EditItemTemplate>
@@ -752,7 +792,7 @@
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
 
                                 <asp:TemplateField HeaderText="Last name" Visible="false" SortExpression="Lastname" ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
@@ -848,6 +888,10 @@
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
 
                                         <br />
+                                        <br />
+                                        <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
+                                        <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
+
                                         <br />
                                         <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>
                                         <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
@@ -1155,14 +1199,14 @@
 
         <asp:Panel ID="pnlUploadBulk" runat="server">
             <style>
-                kTab {
+                /*kTab {
                     :;
                 }
 
                 {
                     x;
                 }
-                /* END EXT
+                /* END EXT*/
             </style>
             <div id="lightUploadBulk" class="white_content" style="text-align: center">
                 <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
@@ -1257,47 +1301,47 @@
                     <Columns>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("FirstName")) %>
+                                <%#Eval("FirstName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("LastName")) %>
+                                <%#Eval("LastName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Email")) %>
+                                <%#Eval("Email")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Designation")) %>
+                                <%#Eval("Designation")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Status")) %>
+                                <%#Eval("Status")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Source*"  HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Source")) %>
+                                <%#Eval("Source")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1")) %>
+                                <%#Eval("Phone1")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1Type")) %>
+                                <%#Eval("Phone1Type")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Zip")) %>
+                                <%#Eval("Zip")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -1433,7 +1477,7 @@
         </div>
     </div>
     <%--Popup Ends--%>
-
+    
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript">
 
@@ -1550,5 +1594,129 @@
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
 
+
+        //============= Start DP =============
+        function GotoStarUser(bookmarkedUser,isdel,obj)
+        {
+            //alert(isdel);
+            //alert(obj);
+            //alert(bookmarkedUser);
+            $(".loading").show();
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/StarBookMarkUsers",
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:'+ isdel +' }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                     //alert("Hello: " + response + " ");
+                   
+                    var d = new Date();
+                    if (isdel == "0") {
+                        // alert("if");
+                        //alert($("#" + obj));
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                    }
+                    else {
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
+                    }
+                    $(".loading").show();
+                },
+                complete: function () {
+                    // Schedule the next request when the current one has been completed
+                    // setTimeout(ajaxInterval, 4000);
+                    $(".loading").hide();
+                },
+                failure: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                },
+                error: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                }
+            });
+          
+        }
+
+
+
+        $(document).ready(function () {
+
+            var changeTooltipPosition = function (event) {
+                var tooltipX = event.pageX - 8;
+                var tooltipY = event.pageY + 8;
+                $('div.startooltip').css({ top: tooltipY, left: tooltipX });
+            };
+
+            var showTooltip = function (event) {
+                //$(".loading").show();
+                var bookmarkedUser = $(this).attr('alt');
+                
+                $.ajax({
+                    type: "POST",
+                    url: "ajaxcalls.aspx/GetBookMarkingUserDetails",
+                    data: '{bookmarkedUser: ' + bookmarkedUser + ' }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.d) {
+                            var str = "";
+                            var parsed = $.parseJSON(data.d);
+                           
+                            $.each(parsed, function (i, item) {
+                                var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
+                                str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
+                            });
+
+                            $('div.startooltip').remove();
+                            $('<div class="startooltip">' + str + '</div>')
+                                  .appendTo('body');
+                            changeTooltipPosition(event);
+                        }
+                        // $(".loading").show();
+                    },
+                    complete: function () {
+                        // Schedule the next request when the current one has been completed
+                        // setTimeout(ajaxInterval, 4000);
+                        //$(".loading").hide();
+                    },
+                    failure: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    },
+                    error: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    }
+                });
+
+            };
+
+            var hideTooltip = function () {
+                $('div.startooltip').remove();
+                //$(".loading").hide();
+            };
+
+            $(".starimgred").bind({
+                mousemove: changeTooltipPosition,
+                mouseenter: showTooltip,
+                mouseleave: hideTooltip
+              
+            });
+
+          
+            
+        });
+
+        //============== End DP ==============
+
     </script>
 </asp:Content>
+

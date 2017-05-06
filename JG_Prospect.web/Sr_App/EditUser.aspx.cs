@@ -359,6 +359,7 @@ namespace JG_Prospect
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
+                    Label lblExamResults = e.Row.FindControl("lblExamResults") as Label;
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -454,6 +455,26 @@ namespace JG_Prospect
                     {
                         lnkDelete.Visible = false;
                     }
+
+
+
+                    string hdnUserInstallId = Convert.ToString((e.Row.FindControl("hdnUserInstallId") as HiddenField).Value);
+
+                    DataTable performanceTable = AptitudeTestBLL.Instance.GetPerformanceByUserID(Convert.ToInt32(hdnUserInstallId));
+                    string buffer = "";
+
+                    if (performanceTable.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in performanceTable.Rows)
+                        {
+                            String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
+                            String aggregate = row["Aggregate"].ToString();
+
+                            buffer += examName + " - " + Convert.ToDouble(aggregate).ToString("N2") + "%<br/>";
+                        }
+                    }
+                    lblExamResults.Text += buffer;
+
                 }
             }
             catch (Exception ex)
@@ -2654,11 +2675,11 @@ namespace JG_Prospect
 
                     #region Old - Field Description
 
-                    //0 ID #: ---	1 *Designitions:--	2 status:	-- 3 Date Sourced: 	-- 4 *First Name*  	-- 5 *Last Name	-- 6 * Source	-- 7 *Primary contact phone #:(3-3-4)
+                    //0 ID #: ---	1 *Designitions:--	2 status:	-- 3 Date Sourced: 	-- 4 *First Name*  	-- 5 *Last Name	-- 6 * Source	-- 7 *Primary contact phone #:(3-3-4)
                     //8 *phone type:(drop down: Cell Phone #, House Phone #, Work Phone #, Alt #)	-- 9 secondary contact phone #(3-3-4)	-- 10 phone type:(drop down: Cell Phone #, House Phone #, Work Phone #, Alt #)
-                    //11 *Company Name	-- 12 *Primary Trade 	-- 13 SecondaryTrade* (list as many secondary… 1 primary)	
-                    //14 *Home Address  	-- 15 Zip  	-- 16 State  17 City 	 -- 18 Suite/Apt/Room(If applicable)   
-                    //19 *Secondary Address	 -- 20 Zip  -- 21 State -- 22 City 	-- 23 Suite/Apt/Room(If applicable)
+                    //11 *Company Name	-- 12 *Primary Trade 	-- 13 SecondaryTrade* (list as many secondary… 1 primary)	
+                    //14 *Home Address  	-- 15 Zip  	-- 16 State  17 City 	 -- 18 Suite/Apt/Room(If applicable)   
+                    //19 *Secondary Address	 -- 20 Zip  -- 21 State -- 22 City 	-- 23 Suite/Apt/Room(If applicable)
                     //24 Are you currently employed? 	-- 25 Reason for leaving your current employer/position  -- 26 Have you ever applied or worked here before? 
                     //27 How many full time positions have you had in the past 5 years?	 -- 28 Can you tell me a little about any sales or construction industry experience you have?
                     //29 No FELONY or DUI charges?  -- 30 Will you be able to pass a drug test and background check?  -- 31  What are your salary requirements for this position?
@@ -4213,7 +4234,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
-                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                    strBody = strBody.Replace("http://web.jmgrovebuildingsupply.com/Sr_App/EditEmailTemplate.aspx?htempID=108#TaskLink#", string.Format(
                                                                             "{0}?TaskId={1}&hstid={2}",
                                                                             string.Concat(
                                                                                             Request.Url.Scheme,
