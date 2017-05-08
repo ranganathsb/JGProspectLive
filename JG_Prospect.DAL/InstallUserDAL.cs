@@ -614,6 +614,28 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet ChangeDesignition(int EditId, int DesignitionID)
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_ChangeDesignition");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, EditId);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, DesignitionID);
+
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
+
         public DataSet ChangeSatatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();

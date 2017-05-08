@@ -454,6 +454,12 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateInstallUserStatus(Status, StatusId);
         }
 
+        public DataSet ChangeDesignition(int EditId, int DesignitionID)
+        {
+
+            return InstallUserDAL.Instance.ChangeDesignition(EditId, DesignitionID);
+        }
+
         public DataSet ChangeStatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
 
