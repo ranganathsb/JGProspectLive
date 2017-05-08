@@ -754,14 +754,12 @@
                                         <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <<<<<<< HEAD
+
                                         <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
                                         <asp:DropDownList ID="drpDesig" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged">
                                         </asp:DropDownList>
-                                        =======
-                                        <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
-                                        >>>>>>> nandc
-                                         <br />
+
+                                        <br />
                                         <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>&nbsp;<asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
@@ -947,7 +945,8 @@
                             <input id="hdnBulkUploadFile" runat="server" type="hidden" />
                             <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClientClick="return ValidateFile()" OnClick="btnUpload_Click" />
 
-                            <label>Upload Prospects using xlsx file:
+                            <label>
+                                Upload Prospects using xlsx file:
                                 <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                         </div>
