@@ -13,77 +13,78 @@
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
     <style type="text/css">
         .ddlstatus-per-text {
-        float: right;
-        padding-right: 25px;
+            float: right;
+            padding-right: 25px;
         }
 
         /*Grid add Container START*/
         .GrdContainer {
-        width: 100%;
-        border: 1px solid #d3d3d3;
+            width: 100%;
+            border: 1px solid #d3d3d3;
         }
 
-        .GrdContainer div {
-        width: 100%;
-        }
+            .GrdContainer div {
+                width: 100%;
+            }
 
-        .GrdContainer .GrdHeader {
-        background-color: #d3d3d3;
-        padding: 2px;
-        cursor: pointer;
-        font-weight: bold;
-        }
+            .GrdContainer .GrdHeader {
+                background-color: #d3d3d3;
+                padding: 2px;
+                cursor: pointer;
+                font-weight: bold;
+            }
 
-        .GrdContainer .GrdContent {
-        display: none;
-        padding: 5px;
-        height: 160px;
-        }
+            .GrdContainer .GrdContent {
+                display: none;
+                padding: 5px;
+                height: 160px;
+            }
+
         .GrdContent ul li span {
-        width: 100% !important;
+            width: 100% !important;
         }
 
         .GrdContent ul li {
-        width: 80%;
-        padding-top: 10px;
+            width: 80%;
+            padding-top: 10px;
         }
 
-        .GrdContent ul li span label {
-        width: 75%;
-        float: left;
-        padding-top: 0px;
-        }
+            .GrdContent ul li span label {
+                width: 75%;
+                float: left;
+                padding-top: 0px;
+            }
 
-        .GrdContent ul li span input {
-        width: 20% !important;
-        float: left;
-        }
+            .GrdContent ul li span input {
+                width: 20% !important;
+                float: left;
+            }
 
-        .GrdContent ul li select, .GrdContent ul li input {
-        width: 85% !important;
-        }
+            .GrdContent ul li select, .GrdContent ul li input {
+                width: 85% !important;
+            }
 
         .GrdBtnAdd {
-        margin-top: 12px;
-        height: 30px;
-        background: url(img/main-header-bg.png) repeat-x;
-        color: #fff;
+            margin-top: 12px;
+            height: 30px;
+            background: url(img/main-header-bg.png) repeat-x;
+            color: #fff;
         }
 
         /*Grid add Container END */
         .PrimaryPhone {
-        cursor: pointer;
+            cursor: pointer;
         }
 
         .GrdPrimaryEmail {
-        text-decoration: underline;
-        cursor: pointer;
-        color: blue;
-        line-height: 20px;
-        width: 150px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+            text-decoration: underline;
+            cursor: pointer;
+            color: blue;
+            line-height: 20px;
+            width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         /*.GrdPrimaryEmail:hover {
@@ -94,123 +95,125 @@
         background-color: #FFF;
         }*/
         .ddChild li {
-        text-align: left;
-        margin: 0 !important;
-        /*width: auto ;!important;*/
-        width: auto ;
-        border-bottom: none ;
+            text-align: left;
+            margin: 0 !important;
+            /*width: auto ;!important;*/
+            width: auto;
+            border-bottom: none;
         }
 
         .grd-lblPrimaryPhone img {
-        float: left;
+            float: left;
         }
 
         .grd-lblPrimaryPhone {
-        width: 135px !important;
-        padding-top: 8px;
+            width: 135px !important;
+            padding-top: 8px;
         }
 
         .user-zip {
-        padding-left: 50px;
-        margin-left: 70px;
+            padding-left: 50px;
+            margin-left: 70px;
         }
 
         .SearchLoad {
-        position: absolute;
-        display: block;
-        margin-top: 116px;
-        margin-left: 153px;
+            position: absolute;
+            display: block;
+            margin-top: 116px;
+            margin-left: 153px;
         }
 
         .wordBreak {
-        word-wrap: break-word;
+            word-wrap: break-word;
         }
 
         .black_overlay {
-        display: none;
-        position: fixed;
-        top: 0%;
-        left: 0%;
-        width: 100%;
-        height: 100%;
-        background-color: black;
-        z-index: 1001;
-        -moz-opacity: 0.8;
-        opacity: .80;
-        filter: alpha(opacity=80);
-        overflow-y: hidden;
+            display: none;
+            position: fixed;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=80);
+            overflow-y: hidden;
         }
 
         /*#327FB5*/
         .white_content {
-        display: none;
-        position: absolute;
-        top: 10%;
-        left: 20%;
-        width: 60%;
-        min-height: 10%;
-        padding: 0 16px 16px 16px;
-        border: 10px solid #000000;
-        background-color: white;
-        z-index: 1002;
-        overflow: auto;
+            display: none;
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            width: 60%;
+            min-height: 10%;
+            padding: 0 16px 16px 16px;
+            border: 10px solid #000000;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
         }
 
         .close {
-        position: absolute;
-        top: 35px;
-        right: 30px;
-        transition: all 200ms;
-        font-size: 30px;
-        font-weight: bold;
-        text-decoration: none;
-        color: #333;
+            position: absolute;
+            top: 35px;
+            right: 30px;
+            transition: all 200ms;
+            font-size: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
         }
 
         .HeaderFreez {
-        position: absolute;
-        /*top: expression(this.offsetParent.scrollTop);*/
-        z-index: 10;
-        margin-top: -53px;
+            position: absolute;
+            /*top: expression(this.offsetParent.scrollTop);*/
+            z-index: 10;
+            margin-top: -53px;
         }
 
         .grdUserMain {
-        /*margin-top: 50px;*/
+            /*margin-top: 50px;*/
         }
 
-        .grdUserMain tr td {
-        padding: 10px 8px 12px 4px !important;
-        }
+            .grdUserMain tr td {
+                padding: 10px 8px 12px 4px !important;
+            }
+
         .txtSearch {
-        width: 135px;
-        padding: 5px;
-        border-radius: 5px 0 0 5px;
-        color: #666;
-        font-size: 14px;
+            width: 135px;
+            padding: 5px;
+            border-radius: 5px 0 0 5px;
+            color: #666;
+            font-size: 14px;
         }
 
         .btnSearc {
-        width: 100px;
-        border-radius: 0 5px 5px 0;
-        line-height: 28px;
-        background: #A33E3F;
-        color: #fff;
-        cursor: pointer;
+            width: 100px;
+            border-radius: 0 5px 5px 0;
+            line-height: 28px;
+            background: #A33E3F;
+            color: #fff;
+            cursor: pointer;
         }
     </style>
     <style type="text/css">
-	#hint{
-		cursor:pointer;
-	}
-	.startooltip{
-		margin:8px;
-		padding:8px;
-		border:1px solid blue;
-		background-color:#ddd;
-		position: absolute;
-		z-index: 2;
-	}
-</style>
+        #hint {
+            cursor: pointer;
+        }
+
+        .startooltip {
+            margin: 8px;
+            padding: 8px;
+            border: 1px solid blue;
+            background-color: #ddd;
+            position: absolute;
+            z-index: 2;
+        }
+    </style>
     <script type="text/javascript">
 
 
@@ -398,22 +401,19 @@
             overflow-y: scroll;
         }*/
 
-       .form_panel table tr td .starimg
-        {
-            width:15px;
-            height:15px;
-            border:none!important;
+        .form_panel table tr td .starimg {
+            width: 15px;
+            height: 15px;
+            border: none !important;
             /*background-image:url(../img/star.png);*/
         }
 
-         .form_panel table tr td .starimgred
-        {
-            width:15px;
-            height:15px;
-            border:none!important;
+        .form_panel table tr td .starimgred {
+            width: 15px;
+            height: 15px;
+            border: none !important;
             /*background-image:url(../img/starred.png);*/
         }
-
     </style>
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
@@ -626,11 +626,11 @@
                                 <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
                             <td>
                                 <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
-                            <td colspan="2" style="text-align:left;">
-                                <asp:Label ID="Label2" Text="&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Select Period" runat="server" /></td>                            
+                            <td colspan="2" style="text-align: left;">
+                                <asp:Label ID="Label2" Text="&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Select Period" runat="server" /></td>
                         </tr>
                         <tr style="text-align: center; width: 100%">
-                                <%-- <td style="text-align: center;">
+                            <%-- <td style="text-align: center;">
                                 <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true"  OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />--%>
                             <td style="text-align: center;">
                                 <style>
@@ -638,10 +638,10 @@
                                     width: 90% !important;
                                     }*/
                                     .dd .ddChild li {
-                                    width: 95% !important;
+                                        width: 95% !important;
                                     }
                                 </style>
-                                <asp:DropDownList ID="ddlUserStatus" style="text-align: left;" runat="server" Width="380px" AutoPostBack="true"
+                                <asp:DropDownList ID="ddlUserStatus" Style="text-align: left;" runat="server" Width="380px" AutoPostBack="true"
                                     OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />
                             </td>
                             <td>
@@ -655,38 +655,38 @@
                             <td>
                                 <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </td>
-							<td style="text-align: left;"> 
-									<asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="&nbsp; All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
-									<br />
-									<asp:CheckBox ID="chkOneMonth" Width="200" runat="server" Checked="false" Text="&nbsp; 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
-									<br />
-									<asp:CheckBox ID="chkOneYear" runat="server" Checked="false" Text="&nbsp; 1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />							
-							</td>
-							<td style="text-align: left; text-wrap:avoid;"> 
-									<asp:CheckBox ID="chkTwoWks" style="vertical-align:top;" Width="500" runat="server" Checked="false" Text="&nbsp; 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" />
-									<br />									
-									<asp:CheckBox ID="chkThreeMonth" Width="400" runat="server" Checked="false" Text="&nbsp; Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" />
-									<br />
-									<asp:Label ID="Label3" Text="From :*" runat="server" />
-									<asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
-										onkeypress="return false" MaxLength="10" AutoPostBack="true"
-										Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
-										<cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-										</cc1:CalendarExtender>
-										<asp:Label ID="Label4" Text="To :*" runat="server" />
-										<asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
-											MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
-											Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
-										<cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
-										</cc1:CalendarExtender>
-										<%--<br />--%>
-										<asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
-											runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
-										</asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
-											runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
-										</asp:RequiredFieldValidator>
-										<%--<br />--%>									
-							</td>
+                            <td style="text-align: left;">
+                                <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="&nbsp; All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
+                                <br />
+                                <asp:CheckBox ID="chkOneMonth" Width="200" runat="server" Checked="false" Text="&nbsp; 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
+                                <br />
+                                <asp:CheckBox ID="chkOneYear" runat="server" Checked="false" Text="&nbsp; 1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />
+                            </td>
+                            <td style="text-align: left; text-wrap: avoid;">
+                                <asp:CheckBox ID="chkTwoWks" Style="vertical-align: top;" Width="500" runat="server" Checked="false" Text="&nbsp; 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" />
+                                <br />
+                                <asp:CheckBox ID="chkThreeMonth" Width="400" runat="server" Checked="false" Text="&nbsp; Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" />
+                                <br />
+                                <asp:Label ID="Label3" Text="From :*" runat="server" />
+                                <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
+                                    onkeypress="return false" MaxLength="10" AutoPostBack="true"
+                                    Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
+                                <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+                                </cc1:CalendarExtender>
+                                <asp:Label ID="Label4" Text="To :*" runat="server" />
+                                <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
+                                    MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
+                                    Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
+                                <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+                                </cc1:CalendarExtender>
+                                <%--<br />--%>
+                                <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
+                                    runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
+                                </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
+                                    runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
+                                </asp:RequiredFieldValidator>
+                                <%--<br />--%>									
+                            </td>
                         </tr>
                     </table>
                 </ContentTemplate>
@@ -695,7 +695,7 @@
                 <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
 
-                        <div style="float: left; padding-top: 10px; /*margin-bottom: -40px;*/">
+                        <div style="float: left; padding-top: 10px; /*margin-bottom: -40px; */">
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
@@ -709,11 +709,12 @@
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
-                        
-                              Showing :  
-                                <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" /> of
+
+                            Showing :  
+                                <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" />
+                            of
                                 <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />
-                         </div>
+                        </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
@@ -727,9 +728,10 @@
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-                                        <asp:CheckBox ID="chkSelected" runat="server" /> <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image>
-                                       <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
-                                        <br />  
+                                        <asp:CheckBox ID="chkSelected" runat="server" />
+                                        <asp:Image CssClass="starimg" ID="starblankimg" runat="server" ImageUrl="../img/star.png"></asp:Image>
+                                        <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
+                                        <br />
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
@@ -738,7 +740,7 @@
                                         <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-                                        
+
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -752,11 +754,15 @@
                                         <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
+                                        <<<<<<< HEAD
                                         <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
-                                         <asp:DropDownList ID="drpDesig" runat="server" style="width:150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged">
+                                        <asp:DropDownList ID="drpDesig" runat="server" Style="width: 150px;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged">
                                         </asp:DropDownList>
+                                        =======
+                                        <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        >>>>>>> nandc
                                          <br />
-                                          <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>&nbsp;<asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname") %>'></asp:Label>
+                                        <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>&nbsp;<asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -819,7 +825,7 @@
                                         <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
                                         <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
-                                                                                
+
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
                                         <br />
                                         <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
@@ -924,7 +930,7 @@
                     </td>
                     <td>
                         <div style="float: left;">
-                            <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>" 
+                            <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>"
                                 data-accepted-files=".csv,.xlsx" data-upload-path-code="1">
                                 <div class="fallback">
                                     <input name="WorkFile" type="file" />
@@ -935,13 +941,14 @@
                             </div>
                         </div>
                         <div class="btn_sec" style="float: left;">
-                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" style="padding:0px 10px 0px 10px!important;" />
+                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
                         </div>
                         <div class="hide">
                             <input id="hdnBulkUploadFile" runat="server" type="hidden" />
                             <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClientClick="return ValidateFile()" OnClick="btnUpload_Click" />
-                            
-                            <label>Upload Prospects using xlsx file: <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
+
+                            <label>Upload Prospects using xlsx file:
+                                <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                         </div>
                     </td>
@@ -1290,11 +1297,11 @@
     <%--Popup Stars--%>
     <div class="hide">
         <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
-            <div style="padding:5px 10px;">
-                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue;font-weight:bold;text-align: center;font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
+            <div style="padding: 5px 10px;">
+                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
             </div>
-            <div style="max-height:500px; height:500px; overflow: auto;">
-                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false" 
+            <div style="max-height: 500px; height: 500px; overflow: auto;">
+                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
                     CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
@@ -1326,7 +1333,7 @@
                                 <%#Eval("Status")%>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Source*"  HeaderStyle-Width="60" ItemStyle-Width="60">
+                        <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
                                 <%#Eval("Source")%>
                             </ItemTemplate>
@@ -1467,19 +1474,21 @@
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
-                    <br /><br />
+                    <br />
+                    <br />
                     <div class="btn_sec">
                         <asp:Button ID="btnSaveStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
                             OnClick="btnSaveStatusForSelected_Click" />&nbsp;
                     <asp:Button ID="btnCancelChangeStatusForSelected" runat="server" Text="Cancel" OnClick="btnCancelChangeStatusForSelected_Click" />
-                        <br /><br />
+                        <br />
+                        <br />
                     </div>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
     </div>
     <%--Popup Ends--%>
-    
+
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript">
 
@@ -1598,8 +1607,7 @@
 
 
         //============= Start DP =============
-        function GotoStarUser(bookmarkedUser,isdel,obj)
-        {
+        function GotoStarUser(bookmarkedUser, isdel, obj) {
             //alert(isdel);
             //alert(obj);
             //alert(bookmarkedUser);
@@ -1607,12 +1615,12 @@
             $.ajax({
                 type: "POST",
                 url: "ajaxcalls.aspx/StarBookMarkUsers",
-                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:'+ isdel +' }',
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                     //alert("Hello: " + response + " ");
-                   
+                    //alert("Hello: " + response + " ");
+
                     var d = new Date();
                     if (isdel == "0") {
                         // alert("if");
@@ -1644,7 +1652,7 @@
                     $(".loading").hide();
                 }
             });
-          
+
         }
 
 
@@ -1660,7 +1668,7 @@
             var showTooltip = function (event) {
                 //$(".loading").show();
                 var bookmarkedUser = $(this).attr('alt');
-                
+
                 $.ajax({
                     type: "POST",
                     url: "ajaxcalls.aspx/GetBookMarkingUserDetails",
@@ -1671,7 +1679,7 @@
                         if (data.d) {
                             var str = "";
                             var parsed = $.parseJSON(data.d);
-                           
+
                             $.each(parsed, function (i, item) {
                                 var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
                                 str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
@@ -1710,11 +1718,11 @@
                 mousemove: changeTooltipPosition,
                 mouseenter: showTooltip,
                 mouseleave: hideTooltip
-              
+
             });
 
-          
-            
+
+
         });
 
         //============== End DP ==============
