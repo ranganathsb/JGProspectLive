@@ -29,7 +29,7 @@ namespace JG_Prospect.DAL
         public static AptitudeTestDAL Instance
         {
             get { return m_AptitudeTestDAL; }
-            private set { ; }
+            private set {; }
         }
 
         public DataTable GetPerformanceByUserID(int userID)
@@ -58,7 +58,7 @@ namespace JG_Prospect.DAL
 
         public DataTable GetcorrectAnswerByQuestionID(int questionID)
         {
-            string SQL = "SELECT * FROM [MCQ_CorrectAnswer] where QuestionID = " + questionID.ToString();
+            string SQL = "select *, (select top 1 OptionText FROM MCQ_Option where OptionID=ma.OptionID AND QuestionID=ma.QuestionID) AS AnswerText from MCQ_CorrectAnswer ma where ma.QuestionId = " + questionID.ToString();
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -93,6 +93,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@marksEarned", DbType.Int32, marksEarned);
                     database.AddInParameter(command, "@totalMarks", DbType.Int32, totalMarks);
                     database.AddInParameter(command, "@Aggregate", DbType.Double, percentage);
+                    database.AddInParameter(command, "@ExamPerformanceStatus", DbType.Int32, status);
 
                     database.ExecuteScalar(command);
                     //int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
@@ -180,7 +181,18 @@ namespace JG_Prospect.DAL
 
         public DataTable GetExamByExamID(Enums.Aptitude_ExamType examType, int userID)
         {
-            string SQL = "SELECT * FROM [MCQ_Exam] Ex WHERE ExamID NOT IN ( "
+            var UserDetails = UserDAL.Instance.getInstalluserDetails(userID);
+            var _designationId = "0";
+            if (UserDetails.Tables[0].Rows.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(Convert.ToString(UserDetails.Tables[0].Rows[0]["DesignationID"])))
+                {
+                    _designationId = Convert.ToString(UserDetails.Tables[0].Rows[0]["DesignationID"]);
+                }
+            }
+
+            string SQL = @"SELECT * FROM [MCQ_Exam] Ex WHERE
+                (',' + RTRIM(Ex.DesignationID) + ',') LIKE '%," + _designationId + ",%' AND ExamID NOT IN ( "
                         + "select ExamID from [MCQ_Performance] where UserID = "
                         + "'" + userID + "'" + ")";
 
@@ -211,12 +223,35 @@ namespace JG_Prospect.DAL
 
         public string GetExamNameByExamID(string examId)
         {
-            string SQL = "select ExamTitle from [MCQ_Exam] WHERE ExamID =" + examId;
-            //throw new NotImplementedException();
-            return ".Net Aptitude Test";
+            string SQL = "select * from [MCQ_Exam] WHERE ExamID =" + examId;
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.CommandText = SQL;
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = con;
+                        sda.SelectCommand = cmd;
+                        using (DataSet ds = new DataSet())
+                        {
+                            sda.Fill(dt);
+                        }
+                    }
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+              return  dt.Rows[0]["ExamDescription"].ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
-        public DataTable GetMCQ_Exams(int? intDesignationID)
+        public DataTable GetMCQ_Exams(string intDesignationID)
         {
             try
             {
@@ -224,10 +259,10 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("GetMCQ_Exams");
                     command.CommandType = CommandType.StoredProcedure;
-                    if (intDesignationID.HasValue)
-                    {
-                        database.AddInParameter(command, "@DesignationID", DbType.Int32, intDesignationID.Value);
-                    }
+                    //if (intDesignationID.HasValue)
+                    //{
+                    database.AddInParameter(command, "@DesignationID", DbType.String, intDesignationID);
+                    //}
                     return database.ExecuteDataSet(command).Tables[0];
                 }
             }
@@ -270,7 +305,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CourseID", DbType.Int64, objMCQ_Exam.CourseID);
                     database.AddInParameter(command, "@ExamDuration", DbType.Int32, objMCQ_Exam.ExamDuration);
                     database.AddInParameter(command, "@PassPercentage", DbType.Decimal, objMCQ_Exam.PassPercentage);
-                    database.AddInParameter(command, "@DesignationID", DbType.Int64, objMCQ_Exam.DesignationID);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objMCQ_Exam.DesignationID);
 
                     return Convert.ToInt64(database.ExecuteScalar(command));
                 }
@@ -297,7 +332,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CourseID", DbType.Int64, objMCQ_Exam.CourseID);
                     database.AddInParameter(command, "@ExamDuration", DbType.Int32, objMCQ_Exam.ExamDuration);
                     database.AddInParameter(command, "@PassPercentage", DbType.Decimal, objMCQ_Exam.PassPercentage);
-                    database.AddInParameter(command, "@DesignationID", DbType.Int64, objMCQ_Exam.DesignationID);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objMCQ_Exam.DesignationID);
 
                     database.ExecuteNonQuery(command);
                 }
@@ -413,6 +448,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@OptionText", DbType.String, objMCQ_Option.OptionText);
                     database.AddInParameter(command, "@QuestionID", DbType.Int64, objMCQ_Option.QuestionID);
+                    database.AddInParameter(command, "@OptionID", DbType.Int64, objMCQ_Option.OptionID);
 
                     database.ExecuteNonQuery(command);
                 }
