@@ -1416,3 +1416,178 @@ SET @StartIndex = (@PageIndex * @PageSize) + 1
   FROM #temp
 END
 GO
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live Publish - 06 May 2017
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+GO
+
+
+-----------------------------------------------------------------------------------------
+                    ---24 APR 2017
+-----------------------------------------------------------------------------------------
+--1
+ALTER TABLE [JGBS_Dev_New].[dbo].[MCQ_Exam]
+ALTER COLUMN DesignationID nvarchar(300)
+GO
+
+--2
+ALTER PROCEDURE [dbo].[GetMCQ_Exams]
+    @DesignationID    nvarchar(300) = ''
+AS
+BEGIN
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+
+IF @DesignationID=''
+SELECT e.* ,STUFF((SELECT distinct ' ,' + t.DesignationName
+         FROM tbl_Designation t
+         WHERE t.ID in (select * from [dbo].[SplitString](e.DesignationID,','))
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)')
+        ,1,2,'') DesignationName
+FROM MCQ_Exam e 
+ELSE
+    SELECT e.* ,STUFF((SELECT distinct ' ,' + t.DesignationName
+         FROM tbl_Designation t
+         WHERE t.ID in (select * from [dbo].[SplitString](e.DesignationID,','))
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)')
+        ,1,2,'') DesignationName
+FROM MCQ_Exam e 
+WHERE (',' + RTRIM(e.DesignationID) + ',') LIKE '%,' + @DesignationID + ',%'
+
+    --SELECT e.*, d.DesignationName
+    --FROM MCQ_Exam e INNER JOIN tbl_Designation d
+    --    ON e.DesignationID = d.ID
+    --WHERE d.ID = ISNULL(@DesignationID, d.ID)
+
+END
+GO
+
+--3
+ALTER PROCEDURE [dbo].[InsertMCQ_Exam]
+    @ExamTitle    varchar(500)
+    ,@ExamDescription    varchar(500)
+    ,@IsActive    bit
+    ,@CourseID    bigint
+    ,@ExamDuration    int
+    ,@PassPercentage    float
+    ,@DesignationID    nvarchar(300)
+AS
+BEGIN
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[MCQ_Exam]
+           ([ExamTitle]
+           ,[ExamDescription]
+           ,[IsActive]
+           ,[CourseID]
+           ,[ExamDuration]
+           ,[PassPercentage]
+           ,[DesignationID])
+     VALUES
+           (@ExamTitle
+           ,@ExamDescription
+           ,@IsActive
+           ,@CourseID
+           ,@ExamDuration
+           ,@PassPercentage
+           ,@DesignationID)
+
+    SELECT SCOPE_IDENTITY()
+
+END
+GO
+
+--4
+ALTER PROCEDURE [dbo].[UpdateMCQ_Exam]
+    @ExamID    bigint
+    ,@ExamTitle    varchar(500)
+    ,@ExamDescription    varchar(500)
+    ,@IsActive    bit
+    ,@CourseID    bigint
+    ,@ExamDuration    int
+    ,@PassPercentage    float
+    ,@DesignationID    nvarchar(300)
+AS
+BEGIN
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+
+    UPDATE [dbo].[MCQ_Exam]
+       SET [ExamTitle] = @ExamTitle
+          ,[ExamDescription] = @ExamDescription
+          ,[IsActive] = @IsActive
+          ,[CourseID] = @CourseID
+          ,[ExamDuration] = @ExamDuration
+          ,[PassPercentage] = @PassPercentage
+          ,[DesignationID] = @DesignationID
+     WHERE ExamID = @ExamID
+
+END
+GO
+
+--5
+ALTER PROCEDURE [dbo].[GetMCQ_ExamByID]
+    @ExamID    INT
+AS
+BEGIN
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+
+    SELECT e.*
+    --, d.DesignationName
+    FROM MCQ_Exam e 
+    --INNER JOIN tbl_Designation d ON e.DesignationID = d.ID
+    WHERE e.ExamID = @ExamID
+
+    SELECT q.*, a.OptionID AS AnswerOptionID
+    FROM MCQ_Question q INNER JOIN MCQ_CorrectAnswer a
+            ON q.QuestionID = a.QuestionID
+    WHERE q.ExamID = @ExamID
+    ORDER BY q.QuestionID ASC
+
+    SELECT o.*
+    FROM MCQ_Option o 
+    WHERE o.QuestionID IN (
+                            SELECT q.QuestionID 
+                            FROM MCQ_Question q
+                            WHERE q.ExamID = @ExamID )
+    ORDER BY o.QuestionID ASC
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: May 05 2017
+-- Description:	Update exam designation
+-- =============================================
+CREATE PROCEDURE dbo.usp_UpdateExamDesignation 
+	(
+		@ExamID BIGINT,
+		@DesigantionIDs NVARCHAR(300)
+	)
+AS
+BEGIN
+	
+	UPDATE MCQ_Exam SET [DesignationID] = @DesigantionIDs
+	WHERE ExamID = @ExamID
+	
+
+END
+GO

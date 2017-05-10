@@ -688,6 +688,15 @@ namespace JG_Prospect.WebServices
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool SaveExamDesignation(Int64 intExamId, string Designations)
+        {
+            bool returnVal = true;
+            AptitudeTestBLL.Instance.UpdateMCQ_ExamDesignations(intExamId, Designations);
+            return returnVal;
+        }
+
+
         #endregion
 
         #region '--Private Methods--'

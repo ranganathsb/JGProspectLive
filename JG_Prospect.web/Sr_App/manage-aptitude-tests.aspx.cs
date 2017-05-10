@@ -106,5 +106,53 @@ namespace JG_Prospect.Sr_App
 
             return returnVal;
         }
+
+        protected void grdExams_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                String DesignID = DataBinder.Eval(e.Row.DataItem, "DesignationID").ToString();
+
+                if (!String.IsNullOrEmpty(DesignID))
+                {
+                    ListBox ddcbDesig = (ListBox)e.Row.FindControl("ddcbDesig");
+                    String ExamID = DataBinder.Eval(e.Row.DataItem, "ExamID").ToString();
+
+                    BindDesignationDropdown(DesignID, ddcbDesig,ExamID);
+                }
+
+            }
+        }
+
+        private void BindDesignationDropdown(string designID, ListBox ddcbDesig, String ExamID)
+        {
+            List<Designation> lstDesignations = (List<Designation>)ddlDesigAptitude.DataSource;
+
+            if (lstDesignations != null && lstDesignations.Any())
+            {
+                ddcbDesig.Items.Clear();
+                ddcbDesig.DataSource = lstDesignations;
+                ddcbDesig.DataTextField = "DesignationName";
+                ddcbDesig.DataValueField = "ID";
+                ddcbDesig.DataBind();
+
+                ddcbDesig.Attributes.Add("data-examid", ExamID);
+
+                ddcbDesig.Attributes.Add("onchange", "javascript:EditTestsDesignations(this);");
+
+            }
+
+            String[] strDesignIds = designID.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string DesignId in strDesignIds)
+            {
+                ListItem item = ddcbDesig.Items.FindByValue(DesignId);
+
+                if (item != null)
+                {
+                    item.Selected = true;
+                }
+            }
+        }
     }
 }

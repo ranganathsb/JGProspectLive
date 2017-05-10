@@ -500,5 +500,26 @@ namespace JG_Prospect.DAL
                 throw ex;
             }
         }
+
+        public void UpdateMCQ_ExamDesignations(Int64 intExamId, string Designations)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateExamDesignation");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@ExamID", DbType.Int64, intExamId);
+                    database.AddInParameter(command, "@DesigantionIDs", DbType.String, Designations);
+                    
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

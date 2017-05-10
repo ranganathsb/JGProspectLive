@@ -43,7 +43,7 @@ function SetCKEditor(Id, onBlurCallBack) {
 
     var editor = CKEDITOR.instances[Id];
 
-    console.log(editor.name + ' editor created.');
+    //console.log(editor.name + ' editor created.');
 
     arrCKEditor.push(editor);
 

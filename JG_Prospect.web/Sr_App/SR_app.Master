@@ -536,6 +536,13 @@
            }
        });
 
+        function ShowAjaxLoader() {
+            $('.loading').show();
+        }
+
+        function HideAjaxLoader() {
+            $('.loading').hide();
+        }
 
     </script>
 </body>

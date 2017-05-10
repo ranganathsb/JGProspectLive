@@ -1523,14 +1523,7 @@
             isadded = false;
         }
     }
-
-    function ShowAjaxLoader() {
-        $('.loading').show();
-    }
-
-    function HideAjaxLoader() {
-        $('.loading').hide();
-    }
+       
 
     function FreezeTask(sender) {
         var $sender = $(sender);

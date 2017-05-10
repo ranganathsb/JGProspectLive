@@ -124,5 +124,11 @@ namespace JG_Prospect.BLL
         {
             AptitudeTestDAL.Instance.UpdateMCQ_CorrectAnswer(objMCQ_Option);
         }
+
+        public void UpdateMCQ_ExamDesignations(Int64 intExamId, string Designations)
+        {
+            AptitudeTestDAL.Instance.UpdateMCQ_ExamDesignations(intExamId,Designations);
+        }
+
     }
 }
