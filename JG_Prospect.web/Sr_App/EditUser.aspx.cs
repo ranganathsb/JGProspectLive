@@ -718,7 +718,7 @@ namespace JG_Prospect
             DropDownList ddlNew = sender as DropDownList;
             string strddlNew = ddlNew.SelectedValue;
             GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-            Label lblDesignation = (Label)(grow.FindControl("lblDesignation"));
+            Label lblDesignation = (Label)(grow.FindControl("lblGrdDesignation"));
             Label lblFirstName = (Label)(grow.FindControl("lblFirstName"));
             Label lblLastName = (Label)(grow.FindControl("lblLastName"));
             LinkButton lbtnEmail = (LinkButton)(grow.FindControl("lbtnEmail"));

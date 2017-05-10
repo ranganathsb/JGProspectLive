@@ -810,6 +810,7 @@
                                         <asp:TextBox ID="txtDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:TextBox>
                                     </EditItemTemplate>
                                     <ItemTemplate>
+                                        <asp:Label ID="lblGrdDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
