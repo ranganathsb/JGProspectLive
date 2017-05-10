@@ -394,30 +394,24 @@ namespace JG_Prospect.Sr_App.Controls
 
                 if (this.IsAdminMode)
                 {
-                    // As all designations are same as parent task, so no need to bind for each task. 
-                    // Already bound one listbox lstbUsersMaster from master task designation and can reuse that.
-                    // DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
-                    ListItem[] objUsersList = new ListItem[lstbUsersMaster.Items.Count];
-                    lstbUsersMaster.Items.CopyTo(objUsersList, 0);
-                    
-                    ddcbAssigned.Items.Clear();
+                    // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
+                    //DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
+                    DataSet dsUsers = (DataSet)lstbUsersMaster.DataSource;
 
-                    ddcbAssigned.Items.AddRange(objUsersList);
-                    //ddcbAssigned.DataSource = dsUsers;
-                    //ddcbAssigned.DataTextField = "FristName";
-                    //ddcbAssigned.DataValueField = "Id";
-                    //ddcbAssigned.DataBind();
+                    ddcbAssigned.Items.Clear();
+                    ddcbAssigned.DataSource = dsUsers;
+                    ddcbAssigned.DataTextField = "FristName";
+                    ddcbAssigned.DataValueField = "Id";
+                    ddcbAssigned.DataBind();
+
+                    CommonFunction.ApplyColorCodeToAssignUserDropdown(dsUsers.Tables[0], ddcbAssigned);
+
 
                     ddcbAssigned.Attributes.Add("data-taskid", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());
                     ddcbAssigned.Attributes.Add("data-taskstatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
                     ddcbAssigned.Attributes.Add("onchange", "javascript:EditAssignedTaskUsers(this);");
 
-                    //Instead of User's Name, it should select with UserId's for better performance.
-                    // SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")), ddcbAssigned);
-
-                    
-                    SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUserIds")), ddcbAssigned);
-
+                    SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")), ddcbAssigned);
 
                     lblAssigned.Visible = false;
                 }
@@ -2312,17 +2306,17 @@ namespace JG_Prospect.Sr_App.Controls
         private void SetTaskAssignedUsers(String strAssignedUser, ListBox taskUsers)
         {
             String firstAssignedUser = String.Empty;
-            String[] userids = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string userid in userids)
+            foreach (string user in users)
             {
                 //ListItem item = taskUsers.Items.FindByText(user.Trim());
-                ListItem item = taskUsers.Items.FindByValue(userid);
-                // ListItem item = FindIndexOfItem(taskUsers, user.Trim());
+
+                ListItem item = FindIndexOfItem(taskUsers, user.Trim());
+
                 if (item != null)
                 {
                     item.Selected = true;
-                    item.Attributes.Add("data-user-id",item.Value);
 
                     if (string.IsNullOrEmpty(firstAssignedUser))
                     {
@@ -2343,13 +2337,12 @@ namespace JG_Prospect.Sr_App.Controls
             ListItem item = null;
             for (int i = 0; i < taskUsers.Items.Count; i++)
             {
-                if (taskUsers.Items[i].Text.Split('-')[0].Trim().Contains(user))
+                if (taskUsers.Items[i].Text.Contains(user))
                 {
                     item = taskUsers.Items[i];
                     break;
                 }
             }
-
             return item;
         }
 
@@ -2662,6 +2655,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                     if (dtSubTaskDetails.Rows.Count > 0)
                     {
+
                         BindMasterUserDropdown(dvSubTaskDetails);
 
                         repSubTasks.DataSource = dtSubTaskDetails;
@@ -2669,7 +2663,7 @@ namespace JG_Prospect.Sr_App.Controls
 
                         repSubTasks_CustomPager.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]);
                         repSubTasks_CustomPager.FillPager(Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]));
-                        
+
                         upSubTasks.Update();
                     }
 
@@ -2711,15 +2705,6 @@ namespace JG_Prospect.Sr_App.Controls
             //rptImageGallery.DataBind();
             //upImageGallery.Update();
         }
-
-        private void BindMasterUserDropdown(DataView dtTasks)
-        {
-            String strTaskDesignations = dtSubTasks.Rows[0]["TaskDesignations"].ToString();
-
-            CommonFunction.BindAssignUserDropdown(strTaskDesignations,lstbUsersMaster);
-
-        }
-
         private void FillInitialData()
         {
             FillDropDrowns();
@@ -3232,6 +3217,15 @@ namespace JG_Prospect.Sr_App.Controls
 
             return CommonFunction.GetNextSequenceValue(strStartAt, strLastSubTaskInstallId, blRoman);
         }
+
+        private void BindMasterUserDropdown(DataView dtTasks)
+        {
+            String strTaskDesignations = dtSubTasks.Rows[0]["TaskDesignations"].ToString();
+
+            CommonFunction.BindAssignUserDropdown(strTaskDesignations, lstbUsersMaster);
+
+        }
+
 
         #endregion
     }

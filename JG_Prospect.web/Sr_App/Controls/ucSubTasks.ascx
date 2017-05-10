@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <script type="text/javascript" src="../js/lightslider.js"></script>
+
 <style type="text/css">
     .installidright {
         text-align: right;
@@ -252,19 +253,75 @@
                             ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                     </td>
                 </tr>
-                <tr>
+                <tr runat="server" visible="false">
                     <td>
-                        <asp:ListBox ID="lstbUsersMaster" runat="server" Visible="false"></asp:ListBox>
+                        <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
+                            <ContentTemplate>
+                                Designation <span style="color: red;">*</span>:
+                                       
+                                       
+
+                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false"
+                                            AutoPostBack="false">
+                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                        </asp:DropDownCheckBoxes>
+                                <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="vgSubTask" ErrorMessage="Please Select Designation" Display="None"
+                                    ClientValidationFunction="SubTasks_checkDesignations"></asp:CustomValidator>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>--%>
                     </td>
                 </tr>
                 <%--as per discussion attachemnt field should be removed.--%>
-                <tr>
-                    <td colspan="2">Attachment(s):                      
+                <tr runat="server" visible="false">
+                    <td colspan="2">Attachment(s):
+                               
+                               
+                               
+
+
+                        <%--remove this--%>
+                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
+                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
+                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
+                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
+                                                <HeaderTemplate>
+                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
+                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
+                                                        <br />
+                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
+                                                        <br />
+                                                        <small>
+                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
+                                                            <br />
+                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
+                                                        </small>
+                                                    </li>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </ul>
+                                                                       
+                                               
+                                               
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </div>--%>
+                        <%--remove end--%>
                     </td>
                 </tr>
+
                 <tr>
                     <td colspan="2">Description <span style="color: red;">*</span>:
-                                        <br />
+                
+                               
+
+                        <br />
                         <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                         <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
                             runat="server" ControlToValidate="txtSubTaskDescription" ForeColor="Red" ErrorMessage="Please Enter Task Description" Display="None" />
@@ -347,7 +404,13 @@
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
                     Number of Records: 
-                         
+                               
+                   
+
+                   
+
+
+
                     <asp:DropDownList ID="drpPageSize" runat="server" AutoPostBack="true"
                         OnSelectedIndexChanged="drpPageSize_SelectedIndexChanged">
                         <asp:ListItem Text="5" Value="5" />
@@ -373,6 +436,8 @@
                     </table>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table edit-subtask">
                         <tbody>
+                            <asp:ListBox ID="lstbUsersMaster" runat="server" Visible="false"></asp:ListBox>
+
                             <asp:Repeater ID="repSubTasks" runat="server" OnItemDataBound="repSubTasks_ItemDataBound">
                                 <ItemTemplate>
                                     <tr id="trItem" runat="server">
@@ -432,7 +497,8 @@
                                                 )
                                 %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("AdminStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("AdminStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("AdminStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
                                                                             <div class='<%# String.IsNullOrEmpty( Eval("AdminStatusUpdated").ToString()) == true ? "display_inline" : "hide"  %>'>
                                                                                 <input type="text" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtAdminPassword" data-hours-id="txtAdminEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -467,7 +533,8 @@
                                                     )
                                     %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("TechLeadStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("TechLeadStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("TechLeadStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("TechLeadStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
                                                                                 <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtITLeadPassword" data-hours-id="txtITLeadEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -501,7 +568,8 @@
                                                 )
                                 %>
                                                                                 </asp:HyperLink><br />
-                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span></div>
+                                                                                <span><%#String.Format("{0:M/d/yyyy}", Eval("OtherUserStatusUpdated"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("OtherUserStatusUpdated"))%></span>&nbsp;<span><%#  String.IsNullOrEmpty(Eval("OtherUserStatusUpdated").ToString())== true?"":"(EST)" %></span>
+                                                                            </div>
                                                                             <div style="width: 50%; float: right; font-size: x-small;" class='<%# String.IsNullOrEmpty( Eval("OtherUserStatusUpdated").ToString()) == true ? "display_inline": "hide" %>'>
                                                                                 <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeTask(this);"
                                                                                     data-id="txtUserPassword" data-hours-id="txtUserEstimatedHours" data-taskid='<%# Eval("TaskId")%>' />
@@ -747,13 +815,6 @@
     <%--<asp:UpdatePanel ID="upEditSubTask" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>--%>
     <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
-        <table border="1" cellspacing="5" cellpadding="5" width="100%">
-            <tr>
-                <td>ListID:
-                
-                                   
-
-                    y: none; background-color: white;">
         <table border="1" cellspacing="5" cellpadding="5" width="100%">
             <tr>
                 <td>ListID:
@@ -1836,11 +1897,11 @@
             SubTaskCommentScript.Initialize();
 
             ChosenDropDown();
-
             // Choosen selected option with hyperlink to profile.
             setSelectedUsersLink();
 
             ApplySubtaskLinkContextMenu();
+
             //ApplyImageGallery();
 
             LoadImageGallery('.sub-task-attachments-list');
@@ -1876,6 +1937,9 @@
             }
 
             pageLoad(null, null);
+
+            
+
         }
 
         function txtSubTaskDescription_Blur(editor) {
@@ -2024,13 +2088,13 @@
 
     function ApplySubtaskLinkContextMenu() {
 
-        $(".context-menu").bind("contextmenu", function () {
-            var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'));
+        $(".context-menu").bind("contextmenu", function () {            
+            var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
             copyToClipboard(urltoCopy);
             return false;
         });
 
-        ScrollTo($(".yellowthickborder"));
+        ScrollTo($('.yellowthickborder'));
 
         $(".yellowthickborder").bind("click", function () {
             $(this).removeClass("yellowthickborder");
@@ -2147,6 +2211,8 @@
             });
         });
     }
+
+
     function setSelectedUsersLink() {
 
         $('.search-choice').each(function () {
@@ -2154,19 +2220,20 @@
             console.log(itemIndex);
             if (itemIndex) {
                 //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
-                var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen","") + ' option';
-                
-                 console.log($(selectoptionid)[itemIndex].value);
-                 var chspan = $(this).children('span');
-                 if (chspan) {
-                     chspan.html('<a href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
+                var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
+
+                console.log($(selectoptionid)[itemIndex].value);
+                var chspan = $(this).children('span');
+                if (chspan) {
+                    chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
                     chspan.bind("click", "a", function () {
-                         window.open($(this).children("a").attr("href"), "_blank", "", false);
-                     });
-                 }
+                        window.open($(this).children("a").attr("href"), "_blank", "", false);
+                    });
+                }
             }
         });
     }
+
     //--------------- End DP ---------------
 
 </script>
