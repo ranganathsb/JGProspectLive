@@ -58,9 +58,13 @@
                             ErrorMessage="Please select Designation." Display="None" />--%>
                         <%--<asp:UpdatePanel ID="upnlDesignationFrozen" runat="server" RenderMode="Inline">
                                         <ContentTemplate>--%>
-                        <asp:DropDownCheckBoxes ID="ddlDesigAptitude" runat="server" UseSelectAllNode="false" AutoPostBack="false">
+                        <%--<asp:DropDownCheckBoxes ID="ddlDesigAptitude" runat="server" UseSelectAllNode="false" AutoPostBack="false">
                             <style selectboxwidth="195" dropdownboxboxwidth="120" dropdownboxboxheight="150" />
-                        </asp:DropDownCheckBoxes>
+                        </asp:DropDownCheckBoxes>--%>
+                        <asp:ListBox ID="ddlDesigAptitude" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
+                            CssClass="chosen-select" data-placeholder="Select"
+                            AutoPostBack="false" />
+
                         <asp:CustomValidator ID="cvalidatorDesignationAptitude" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkddlDesigAptitude"></asp:CustomValidator>
                         <%--</ContentTemplate>
                                     </asp:UpdatePanel>--%>
@@ -172,6 +176,19 @@
         // check if user has selected any designations or not.
         function checkddlDesigAptitude(oSrc, args) {
             args.IsValid = ($("#<%= ddlDesigAptitude.ClientID%> input:checked").length > 0);
+        }
+
+        $(document).ready(function () {
+            Intialize();
+        });
+
+        function Intialize() {
+            ChosenDropDown();
+        }
+
+        function ChosenDropDown(options) {
+            var _options = options || {};
+            $('.chosen-select').chosen(_options);
         }
 
     </script>

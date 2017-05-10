@@ -93,27 +93,33 @@ namespace JG_Prospect.Sr_App
                             //ddlDesignation.SelectedValue = Convert.ToString(dtExam.Rows[0]["DesignationID"]);
                             if (!string.IsNullOrEmpty(Convert.ToString(dtExam.Rows[0]["DesignationID"])))
                             {
-                                ddlDesigAptitude.Texts.SelectBoxCaption = "Select";
-                                foreach (var DIds in Convert.ToString(dtExam.Rows[0]["DesignationID"]).Split(',').ToList())
+                               // ddlDesigAptitude.Texts.SelectBoxCaption = "Select";
+                                foreach (String DIds in Convert.ToString(dtExam.Rows[0]["DesignationID"]).Split(','))
                                 {
-                                    foreach (ListItem item in ddlDesigAptitude.Items)
+                                    ListItem item = ddlDesigAptitude.Items.FindByValue(DIds);
+
+                                    if (item != null)
                                     {
-                                        if (item.Value == DIds)
-                                        {
-                                            ddlDesigAptitude.Items.FindByValue(DIds).Selected = true;
-                                            break;
-                                        }
+                                        item.Selected = true;
                                     }
+                                    //foreach (ListItem item in ddlDesigAptitude.Items)
+                                    //{
+                                    //    if (item.Value == DIds)
+                                    //    {
+                                    //        ddlDesigAptitude.Items.FindByValue(DIds).Selected = true;
+                                    //        break;
+                                    //    }
+                                    //}
                                 }
 
-                                foreach (ListItem item in ddlDesigAptitude.Items)
-                                {
-                                    if (item.Selected)
-                                    {
-                                        ddlDesigAptitude.Texts.SelectBoxCaption = item.Text;
-                                        break;
-                                    }
-                                }
+                                //foreach (ListItem item in ddlDesigAptitude.Items)
+                                //{
+                                //    if (item.Selected)
+                                //    {
+                                //        ddlDesigAptitude.Texts.SelectBoxCaption = item.Text;
+                                //        break;
+                                //    }
+                                //}
                             }
 
 
@@ -319,7 +325,7 @@ namespace JG_Prospect.Sr_App
             upQuestions.Update();
         }
 
-        private string GetSelectedDesignationsString(Saplin.Controls.DropDownCheckBoxes drpChkBoxes)
+        private string GetSelectedDesignationsString(ListBox drpChkBoxes)
         {
             String returnVal = string.Empty;
             StringBuilder sbDesignations = new StringBuilder();
