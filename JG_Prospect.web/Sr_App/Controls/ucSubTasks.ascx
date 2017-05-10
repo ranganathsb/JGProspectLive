@@ -2214,7 +2214,7 @@
                 var chspan = $(this).children('span');
                 if (chspan) {
                     chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
-                    chspan.bind("click", "a", function () {
+                    chspanz.bind("click", "a", function () {
                         window.open($(this).children("a").attr("href"), "_blank", "", false);
                     });
                 }

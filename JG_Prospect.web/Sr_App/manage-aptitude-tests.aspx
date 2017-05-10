@@ -74,7 +74,7 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Active">
                                             <ItemTemplate>
-                                                <img src='<%# Convert.ToBoolean(Eval("IsActive")) ? Page.ResolveUrl("~/img/success.png") : "javascript:void(0);" %>' />
+                                                <img src='<%# Convert.ToBoolean(Eval("IsActive")) ? Page.ResolveUrl("~/img/success.png") : Page.ResolveUrl("~/img/error.png") %>' />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Designation">
