@@ -122,7 +122,7 @@
                                                                             <li class='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "answer": "" %>'>
                                                                                 <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
                                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" GroupName='<%# "Q" + Eval("QuestionID") %>'
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionID") %>' 
                                                                     Checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))%>' />
                                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
@@ -140,9 +140,7 @@
                                                         </FooterTemplate>
                                                     </asp:Repeater>
                                                 </ContentTemplate>
-                                                <Triggers>
-                                                    <asp:AsyncPostBackTrigger ControlID="lbtnAddQuestion" EventName="Click" />
-                                                </Triggers>
+                                               
                                             </asp:UpdatePanel>
                                         </td>
                                     </tr>
@@ -190,6 +188,7 @@
 
         function Intialize() {
             ChosenDropDown();
+            ApplyQuestionRadioName();
         }
 
         function ChosenDropDown(options) {
@@ -202,6 +201,13 @@
         prmTaskGenerator.add_endRequest(function () {
             Intialize();
         });
+
+        function ApplyQuestionRadioName() {
+
+            $("span[data-radioname]").each(function () {
+                $(this).children('input:radio').attr("name", $(this).attr('data-radioname'));
+            });
+        }
 
     </script>
 </asp:Content>
