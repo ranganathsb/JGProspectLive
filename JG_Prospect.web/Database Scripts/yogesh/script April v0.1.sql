@@ -1422,10 +1422,6 @@ GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-ALTER TABLE [JGBS_Dev_New].[dbo].[MCQ_Exam]
-ALTER COLUMN DesignationID nvarchar(300)
-GO
-
 --2
 ALTER PROCEDURE [dbo].[GetMCQ_Exams]
     @DesignationID    nvarchar(300) = ''
@@ -1462,42 +1458,46 @@ END
 GO
 
 --3
-ALTER PROCEDURE [dbo].[InsertMCQ_Exam]
-    @ExamTitle    varchar(500)
-    ,@ExamDescription    varchar(500)
-    ,@IsActive    bit
-    ,@CourseID    bigint
-    ,@ExamDuration    int
-    ,@PassPercentage    float
-    ,@DesignationID    nvarchar(300)
-AS
-BEGIN
-    -- SET NOCOUNT ON added to prevent extra result sets from
-    -- interfering with SELECT statements.
-    SET NOCOUNT ON;
-
-    INSERT INTO [dbo].[MCQ_Exam]
-           ([ExamTitle]
-           ,[ExamDescription]
-           ,[IsActive]
-           ,[CourseID]
-           ,[ExamDuration]
-           ,[PassPercentage]
-           ,[DesignationID])
-     VALUES
-           (@ExamTitle
-           ,@ExamDescription
-           ,@IsActive
-           ,@CourseID
-           ,@ExamDuration
-           ,@PassPercentage
-           ,@DesignationID)
-
-    SELECT SCOPE_IDENTITY()
-
-END
-GO
-
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 14 Mar 2017  
+-- Description: Adds exam details.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[InsertMCQ_Exam]  
+ @ExamTitle varchar(500)  
+ ,@ExamDescription varchar(500)  
+ ,@IsActive bit  
+ ,@CourseID bigint  
+ ,@ExamDuration int  
+ ,@PassPercentage float  
+ ,@DesignationID nvarchar(300)  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ INSERT INTO [dbo].[MCQ_Exam]  
+           ([ExamTitle]  
+           ,[ExamDescription]  
+           ,[IsActive]  
+           ,[CourseID]  
+           ,[ExamDuration]  
+           ,[PassPercentage]  
+           ,[DesignationID])  
+     VALUES  
+           (@ExamTitle  
+           ,@ExamDescription  
+           ,@IsActive  
+           ,@CourseID  
+           ,@ExamDuration  
+           ,@PassPercentage  
+           ,@DesignationID)  
+  
+ SELECT SCOPE_IDENTITY()  
+  
+END  
+  
 --4
 ALTER PROCEDURE [dbo].[UpdateMCQ_Exam]
     @ExamID    bigint
@@ -1528,37 +1528,46 @@ END
 GO
 
 --5
-ALTER PROCEDURE [dbo].[GetMCQ_ExamByID]
-    @ExamID    INT
-AS
-BEGIN
-    -- SET NOCOUNT ON added to prevent extra result sets from
-    -- interfering with SELECT statements.
-    SET NOCOUNT ON;
-
-    SELECT e.*
-    --, d.DesignationName
-    FROM MCQ_Exam e 
-    --INNER JOIN tbl_Designation d ON e.DesignationID = d.ID
-    WHERE e.ExamID = @ExamID
-
-    SELECT q.*, a.OptionID AS AnswerOptionID
-    FROM MCQ_Question q INNER JOIN MCQ_CorrectAnswer a
-            ON q.QuestionID = a.QuestionID
-    WHERE q.ExamID = @ExamID
-    ORDER BY q.QuestionID ASC
-
-    SELECT o.*
-    FROM MCQ_Option o 
-    WHERE o.QuestionID IN (
-                            SELECT q.QuestionID 
-                            FROM MCQ_Question q
-                            WHERE q.ExamID = @ExamID )
-    ORDER BY o.QuestionID ASC
-
-END
-GO
-
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 09 Mar 2017  
+-- Description: Gets exam details by exam id.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[GetMCQ_ExamByID]  
+ @ExamID INT  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ SELECT e.*, STUFF((SELECT distinct ' ,' + t.DesignationName  
+         FROM tbl_Designation t  
+         WHERE t.ID in (select * from [dbo].[SplitString](e.DesignationID,','))  
+            FOR XML PATH(''), TYPE  
+            ).value('.', 'NVARCHAR(MAX)')  
+        ,1,2,'') DesignationName  
+ --, d.DesignationName  
+ FROM MCQ_Exam e   
+ --INNER JOIN tbl_Designation d ON e.DesignationID = d.ID  
+ WHERE e.ExamID = @ExamID  
+  
+ SELECT q.*, a.OptionID AS AnswerOptionID  
+ FROM MCQ_Question q INNER JOIN MCQ_CorrectAnswer a  
+   ON q.QuestionID = a.QuestionID  
+ WHERE q.ExamID = @ExamID  
+ ORDER BY q.QuestionID ASC  
+  
+ SELECT o.*  
+ FROM MCQ_Option o   
+ WHERE o.QuestionID IN (  
+       SELECT q.QuestionID   
+       FROM MCQ_Question q  
+       WHERE q.ExamID = @ExamID )  
+ ORDER BY o.QuestionID ASC  
+  
+END  
+  
 
 SET ANSI_NULLS ON
 GO

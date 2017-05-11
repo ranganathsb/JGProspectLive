@@ -162,7 +162,7 @@
             $.ajax
             (
                 {
-                    url: '../WebServices/JGWebService.asmx/' + strWebMethod,
+                    url: '/WebServices/JGWebService.asmx/' + strWebMethod,
                     contentType: 'application/json; charset=utf-8;',
                     type: 'POST',
                     dataType: 'json',
