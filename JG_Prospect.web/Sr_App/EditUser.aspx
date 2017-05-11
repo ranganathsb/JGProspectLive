@@ -997,8 +997,8 @@
                                 <td>: </td>
                                 <td align="left">
                                     <asp:DropDownList ID="ddlTechSubTask" runat="server" />
-                                    <%--<asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
-                                        InitialValue="0" ValidationGroup="InterviewDate" />--%>
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
                                 </td>
                             </tr>
                             <tr>

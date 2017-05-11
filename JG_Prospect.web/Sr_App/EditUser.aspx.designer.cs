@@ -796,6 +796,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlTechSubTask;
         
         /// <summary>
+        /// rfvTechSubTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTechSubTask;
+        
+        /// <summary>
         /// btnSaveInterview control.
         /// </summary>
         /// <remarks>
