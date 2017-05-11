@@ -398,7 +398,6 @@ namespace JG_Prospect.Sr_App
             drp.DataBind();
             drp.Items.Insert(0, new ListItem("--All--", "0"));
             drp.SelectedIndex = 0;
-
             HighlightInterviewUsers(dsUsers.Tables[0], drp, null);
         }
 
