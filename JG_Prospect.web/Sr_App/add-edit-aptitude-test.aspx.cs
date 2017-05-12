@@ -345,5 +345,97 @@ namespace JG_Prospect.Sr_App
 
             return returnVal;
         }
+
+        protected void repQuestions_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "SaveMcQ")
+            {
+                SaveMCQ(e.Item);
+                BindQuestionsData();
+            }
+        }
+
+
+        /// <summary>
+        /// Bind questions data to repeater.
+        /// </summary>
+        private void BindQuestionsData()
+        {
+            DataSet dsExam = AptitudeTestBLL.Instance.GetMCQ_ExamByID(this.ExamID);
+
+            if (dsExam != null && dsExam.Tables.Count > 0)
+            {
+                dtExam = dsExam.Tables[0];
+
+                if (dtExam.Rows.Count > 0)
+                {
+                    if (dsExam.Tables.Count > 1)
+                    {
+                        Questions = dsExam.Tables[1];
+
+                        if (dsExam.Tables.Count > 2)
+                        {
+                            Options = dsExam.Tables[2];
+                        }
+
+                        repQuestions.DataSource = Questions;
+                        repQuestions.DataBind();
+                    }
+                }
+            }
+        }
+
+        private void SaveMCQ(RepeaterItem questionItem)
+        {
+            MCQ_Question objMCQ_Question = new MCQ_Question();
+            objMCQ_Question.ExamID = this.ExamID;
+            objMCQ_Question.QuestionID = Convert.ToInt64((questionItem.FindControl("hdnQuestionID") as HiddenField).Value.Trim());
+            objMCQ_Question.Question = (questionItem.FindControl("txtQuestion") as TextBox).Text.Trim();
+            objMCQ_Question.PositiveMarks = Convert.ToInt64((questionItem.FindControl("txtPositiveMarks") as TextBox).Text.Trim());
+            objMCQ_Question.NegetiveMarks = Convert.ToInt64((questionItem.FindControl("txtNegetiveMarks") as TextBox).Text.Trim());
+            objMCQ_Question.QuestionType = 1;
+
+            if (objMCQ_Question.QuestionID > 0)
+            {
+                AptitudeTestBLL.Instance.UpdateMCQ_Question(objMCQ_Question);
+            }
+            else
+            {
+                objMCQ_Question.QuestionID = AptitudeTestBLL.Instance.InsertMCQ_Question(objMCQ_Question);
+            }
+
+            Repeater repOptions = (questionItem.FindControl("repOptions") as Repeater);
+            SaveMCQOptions(objMCQ_Question.QuestionID, repOptions);
+        }
+
+        private static void SaveMCQOptions(long  QuestionID , Repeater repOptions)
+        {
+            foreach (RepeaterItem riOptions in repOptions.Items)
+            {
+                MCQ_Option objMCQ_Option = new MCQ_Option();
+                objMCQ_Option.OptionID = Convert.ToInt64((riOptions.FindControl("hdnOptionID") as HiddenField).Value.Trim());
+                objMCQ_Option.OptionText = (riOptions.FindControl("txtOptionText") as TextBox).Text.Trim();
+                objMCQ_Option.QuestionID = QuestionID;
+
+                if (objMCQ_Option.OptionID > 0)
+                {
+                    AptitudeTestBLL.Instance.UpdateMCQ_Option(objMCQ_Option);
+
+                    if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+                    {
+                        AptitudeTestBLL.Instance.UpdateMCQ_CorrectAnswer(objMCQ_Option);
+                    }
+                }
+                else
+                {
+                    objMCQ_Option.OptionID = AptitudeTestBLL.Instance.InsertMCQ_Option(objMCQ_Option);
+
+                    if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+                    {
+                        AptitudeTestBLL.Instance.InsertMCQ_CorrectAnswer(objMCQ_Option);
+                    }
+                }
+            }
+        }
     }
 }

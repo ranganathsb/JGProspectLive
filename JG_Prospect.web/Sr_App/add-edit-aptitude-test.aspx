@@ -85,7 +85,7 @@
                                         <td>
                                             <asp:UpdatePanel ID="upQuestions" runat="server" UpdateMode="Conditional">
                                                 <ContentTemplate>
-                                                    <asp:Repeater ID="repQuestions" runat="server">
+                                                    <asp:Repeater ID="repQuestions" runat="server" OnItemCommand="repQuestions_ItemCommand">
                                                         <HeaderTemplate>
                                                             <table class="question-list" width="100%" cellpadding="0" cellspacing="0" border="0">
                                                         </HeaderTemplate>
@@ -103,9 +103,9 @@
                                                                 </td>
                                                                 <td width="250" valign="top" align="right">
                                                                     <b>Positive Marks</b> :
-                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# Eval("PositiveMarks") %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                                                    <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("PositiveMarks").ToString()) == true ? "1":  Eval("PositiveMarks").ToString() %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <b>Negetive Marks</b> :
-                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# Eval("NegetiveMarks") %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("PositiveMarks").ToString()) == true ? "0":  Eval("NegetiveMarks").ToString() %>'  onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
                                                                         ErrorMessage="Please enter Positive Marks." Display="None" />
                                                                     <asp:RequiredFieldValidator ID="rfvNegetiveMarks" runat="server" ControlToValidate="txtNegetiveMarks" InitialValue="" ValidationGroup="vgExam"
@@ -122,7 +122,7 @@
                                                                             <li class='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "answer": "" %>'>
                                                                                 <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
                                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionID") %>' 
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionID") %>'
                                                                     Checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))%>' />
                                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
@@ -134,13 +134,18 @@
                                                                     </asp:Repeater>
                                                                 </td>
                                                             </tr>
+                                                            <tr>
+                                                                <td colspan="3">
+                                                                    <asp:LinkButton ID="lbtnSaveMCQ" runat="server" Text="Save Question" CommandName="SaveMcQ" Visible='<%# Convert.ToInt64(Eval("QuestionID")) > 0 ? false : true%>'></asp:LinkButton>
+                                                                </td>
+                                                            </tr>
                                                         </ItemTemplate>
                                                         <FooterTemplate>
                                                             </table>
                                                         </FooterTemplate>
                                                     </asp:Repeater>
                                                 </ContentTemplate>
-                                               
+
                                             </asp:UpdatePanel>
                                         </td>
                                     </tr>
@@ -161,8 +166,8 @@
                             <td align="rigt">
                                 <a href='<%=Page.ResolveUrl("~/sr_app/manage-aptitude-tests.aspx") %>'>Aptitude Tests</a>
                             </td>
-                        </tr>
                     </table>
+                        </tr>
 
                 </ContentTemplate>
             </asp:UpdatePanel>
