@@ -96,6 +96,7 @@
                                                                 </td>
                                                                 <td valign="top">
                                                                     <asp:HiddenField ID="hdnQuestionID" runat="server" Value='<%# Eval("QuestionID") %>' />
+                                                                    <asp:HiddenField ID="hdnQuestionUniqueID" runat="server" Value='<%# Eval("QuestionUniqueID") %>' />
                                                                     <asp:TextBox ID="txtQuestion" runat="server" TextMode="MultiLine" Rows="2" Width="100%"
                                                                         Text='<%# Eval("Question") %>' />
                                                                     <asp:RequiredFieldValidator ID="rfvQuestion" runat="server" ControlToValidate="txtQuestion" InitialValue="" ValidationGroup="vgExam"
@@ -114,16 +115,17 @@
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="3">
-                                                                    <asp:Repeater ID="repOptions" runat="server" DataSource='<%# GetOptionsByQuestionID(Convert.ToInt64(Eval("QuestionID"))) %>'>
+                                                                    <asp:Repeater ID="repOptions" runat="server" DataSource='<%# GetOptionsByQuestionID(Convert.ToString(Eval("QuestionUniqueID"))) %>'>
                                                                         <HeaderTemplate>
-                                                                            <ol class="option-list">
+                                                                            <ol class="option-list" style="margin-bottom: 0;">
                                                                         </HeaderTemplate>
                                                                         <ItemTemplate>
-                                                                            <li class='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))? "answer": "" %>'>
+                                                                            <li class='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))? "answer": "" %>'>
                                                                                 <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
+                                                                                <asp:HiddenField ID="hdnOptionUniqueID" runat="server" Value='<%# Eval("OptionUniqueID") %>' />
                                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionID") %>'
-                                                                    Checked='<%# IsCorrectAnswer(Convert.ToInt64(Eval("QuestionID")), Convert.ToInt64(Eval("OptionID")))%>' />
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionUniqueID") %>'
+                                                                    Checked='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))%>' />
                                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
                                                                             </li>
@@ -135,8 +137,9 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="3">
-                                                                    <asp:LinkButton ID="lbtnSaveMCQ" runat="server" Text="Save Question" CommandName="SaveMcQ" Visible='<%# Convert.ToInt64(Eval("QuestionID")) > 0 ? false : true%>'></asp:LinkButton>
+                                                                <td colspan="3" style="padding-bottom: 10px; padding-left:25px;">
+                                                                    <asp:LinkButton ID="lbtnSaveMCQ" runat="server" Text="Save Question" CommandName="SaveMcQ"
+                                                                        Visible='<%# (Convert.ToInt64(Eval("QuestionID")) > 0) %>'/>
                                                                 </td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -150,8 +153,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
-                                            <asp:LinkButton ID="lbtnAddQuestion" runat="server" Text="Add Question" OnClick="lbtnAddQuestion_Click" />
+                                        <td style="padding-top: 20px;">
+                                            <asp:LinkButton ID="lbtnAddQuestion" runat="server" Text="Add New Question" OnClick="lbtnAddQuestion_Click" />
                                         </td>
                                     </tr>
                                 </table>
