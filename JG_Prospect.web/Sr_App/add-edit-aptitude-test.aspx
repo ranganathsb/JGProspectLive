@@ -34,7 +34,7 @@
                             <th width="120" align="right" class="noborder">Duration:</th>
                             <td width="15">
                                 <asp:TextBox ID="txtDuration" runat="server" Width="15" MaxLength="3" onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
-                                <asp:RequiredFieldValidator ID="rfvDuration" runat="server" ControlToValidate="txtDuration" InitialValue="" ValidationGroup="vgExam"
+                                <asp:RequiredFieldValidator ID="rfvDuration" runat="server" ControlToValidate="txtDuration" InitialValuepositive="" ValidationGroup="vgExam"
                                     ErrorMessage="Please enter Duration." Display="None" />
                             </td>
                         </tr>
@@ -46,7 +46,7 @@
                                     ErrorMessage="Please enter Description." Display="None" /></td>
                             <th class="noborder" align="right">Pass Percentage:</th>
                             <td>
-                                <asp:TextBox ID="txtPassPercentage" runat="server" Width="15" MaxLength="3" onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                                <asp:TextBox ID="txtPassPercentage" runat="server" Width="15" MaxLength="3" onkeypress="return IsNumeric(event, true);" onpatse="return false;" Text="80" />
                                 <asp:RequiredFieldValidator ID="rfvPassPercentage" runat="server" ControlToValidate="txtPassPercentage" InitialValue="" ValidationGroup="vgExam"
                                     ErrorMessage="Please enter Pass Percentage." Display="None" />
                             </td>
@@ -105,7 +105,7 @@
                                                                     <b>Positive Marks</b> :
                                                     <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("PositiveMarks").ToString()) == true ? "1":  Eval("PositiveMarks").ToString() %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <b>Negetive Marks</b> :
-                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("PositiveMarks").ToString()) == true ? "0":  Eval("NegetiveMarks").ToString() %>'  onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("NegetiveMarks").ToString()) == true ? "1":  Eval("NegetiveMarks").ToString() %>'  onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
                                                                         ErrorMessage="Please enter Positive Marks." Display="None" />
                                                                     <asp:RequiredFieldValidator ID="rfvNegetiveMarks" runat="server" ControlToValidate="txtNegetiveMarks" InitialValue="" ValidationGroup="vgExam"
