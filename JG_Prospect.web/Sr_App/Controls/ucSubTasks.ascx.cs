@@ -2578,9 +2578,13 @@ namespace JG_Prospect.Sr_App.Controls
         public void SetSubTaskDetails(int intTaskId = 0)
         {
             string strScript = string.Empty;
-            if (intTaskId > 0)
+
+            int intHighlightedTaskId = HighlightedTaskId;
+
+            //if (intTaskId > 0)
+            if (intHighlightedTaskId > 0) // changed to highlighted taskid so task highlight don't get lost.
             {
-                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\"" + intTaskId.ToString() + "\"]')); });";
+                strScript += "$(document).ready(function(){ ScrollTo($('tr[data-taskid=\"" + intHighlightedTaskId.ToString() + "\"]')); });";
             }
             else
             {
@@ -2596,7 +2600,7 @@ namespace JG_Prospect.Sr_App.Controls
                                                 );
 
 
-            int intHighlightedTaskId = HighlightedTaskId;
+           
 
             if (IsPostBack)
             {

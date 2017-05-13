@@ -501,7 +501,8 @@ function IsNumeric(e, blWholeNumber) {
 }
 
 function ScrollTo(target) {
-
+    console.log(target);
+    console.log('Scroll to called for ' + target.Id);
     if (target.length > 0) {
         var offset = target.offset();
         if (typeof (offset) != 'undefined' && offset != null) {
