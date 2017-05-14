@@ -1141,8 +1141,18 @@ namespace JG_Prospect
                     lnkFacePage.Visible = false;
                 }
 
-                //Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
-                Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
+                if (JGSession.UserStatus == JGConstant.InstallUserStatus.Rejected)
+                {
+                    string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                    strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                    strMessage += "Thank you for applying with JMG.";
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+                }
+                else
+                {
+                    //Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
+                    Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
+                }
             }
             else
             {
@@ -6653,7 +6663,17 @@ namespace JG_Prospect
 
         protected void btnStartTest_Click(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "showAptTestPage('" + Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") + "');", true);
+            if (JGSession.UserStatus == JGConstant.InstallUserStatus.Rejected)
+            {
+                string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                strMessage += "Thank you for applying with JMG.";
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "HidePopup('#" + divStartTest.ClientID + "');showAptTestPage('" + Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") + "');", true);
+            }
         }
 
         protected void btnCancelTest_Click(object sender, EventArgs e)

@@ -878,6 +878,8 @@ namespace JG_Prospect
                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                     if (ds.Tables[0].Rows.Count > 0)
                     {
+                        #region 'Active User Found'
+
                         if (ds.Tables[0].Rows.Count > 0)
                         {
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
@@ -1006,8 +1008,25 @@ namespace JG_Prospect
                             JGSession.UserLoginId = null;
                             JGSession.GuIdAtLogin = null;
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
+                        } 
+
+                        #endregion
+                    }
+                    else
+                    {
+                        DataSet ds1 = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim(), true);
+
+                        if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0].Rows.Count > 0 &&
+                            Convert.ToInt32(ds1.Tables[0].Rows[0]["Status"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Rejected))
+                        {
+                            string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                            strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                            strMessage += "Thank you for applying with JMG.";
+                            Page.ClientScript.RegisterStartupScript(this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+                            return;
                         }
                     }
+
                     #endregion
 
                     // redirects user to the last accessed page.

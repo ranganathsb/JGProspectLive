@@ -1852,7 +1852,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet getInstallerUserDetailsByLoginId(string loginid)
+        public DataSet getInstallerUserDetailsByLoginId(string loginid, bool blIncludeRejected = false)
         {
             try
             {
@@ -1866,6 +1866,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ApplicantStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString());
                     database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
                     database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
+                    if (blIncludeRejected)
+                    {
+                        database.AddInParameter(command, "@RejectedStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString());
+                    }
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;

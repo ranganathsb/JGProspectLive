@@ -56,6 +56,8 @@ namespace JG_Prospect.MCQTest
             {
                 int intUserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
 
+                JGSession.UserStatus = JGConstant.InstallUserStatus.Rejected;
+
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString(), intUserID, DateTime.Today, DateTime.Now.ToShortTimeString(), intUserID, JGSession.IsInstallUser.Value, "Rejected: Failed apptitude test.");
 
                 pFail.Visible = true;

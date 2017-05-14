@@ -299,9 +299,9 @@ namespace JG_Prospect.BLL
             return UserDAL.Instance.getperioddetails(periodId);
         }
 
-        public DataSet getInstallerUserDetailsByLoginId(string loginid)
+        public DataSet getInstallerUserDetailsByLoginId(string loginid, bool blIncludeRejected = false)
         {
-            return InstallUserDAL.Instance.getInstallerUserDetailsByLoginId(loginid);
+            return InstallUserDAL.Instance.getInstallerUserDetailsByLoginId(loginid, blIncludeRejected);
         }
 
         public DataSet getCustomerUserDetails(string Email, string Password)

@@ -1598,3 +1598,53 @@ GO
 -- Live Publish - 10 May 2017
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[UDP_GetInstallerUserDetailsByLoginId]    Script Date: 14-May-17 4:42:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================    
+-- Author:  Yogesh    
+-- Create date: 23 Feb 2017  
+-- Updated By : Yogesh  
+--     Added applicant status to allow applicant to login.  
+-- Updated By : Nand Chavan (Task ID#: REC001-XIII)
+--                  Replace Source with SourceID
+-- Description: Get an install user by email and status.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[UDP_GetInstallerUserDetailsByLoginId]  
+ @loginId varchar(50) ,  
+ @ActiveStatus varchar(5) = '1',  
+ @ApplicantStatus varchar(5) = '2',  
+ @InterviewDateStatus varchar(5) = '5',  
+ @OfferMadeStatus varchar(5) = '6'  ,
+ @RejectedStatus varchar(5) = NULL
+AS  
+BEGIN  
+
+	DECLARE @phone varchar(1000) = @loginId
+
+	--REC001-XIII - create formatted phone#
+	IF ISNUMERIC(@loginId) = 1 AND LEN(@loginId) > 5
+	BEGIN
+		SET @phone =  '(' + SUBSTRING(@phone, 1, 3) + ')-' + SUBSTRING(@phone, 4, 3) + '-' + SUBSTRING(@phone, 7, LEN(@phone))
+	END
+	   
+	 SELECT Id,FristName,Lastname,Email,Address,Designation,[Status],  
+	  [Password],[Address],Phone,Picture,Attachements,usertype , Picture,IsFirstTime,DesignationID  
+	 FROM tblInstallUsers   
+	 WHERE   
+	  (Email = @loginId OR Phone = @loginId  OR Phone = @phone) 
+	  AND ISNULL(@loginId, '') != ''   AND
+	  (  
+	   [Status] = @ActiveStatus OR   
+	   [Status] = @ApplicantStatus OR  
+	   [Status] = @OfferMadeStatus OR   
+	   [Status] = @InterviewDateStatus  OR
+	   [Status] = ISNULL(@RejectedStatus, '-1')
+	  )  
+
+END  
+GO
