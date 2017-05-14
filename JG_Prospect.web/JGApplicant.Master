@@ -303,6 +303,8 @@
     </script>
 </head>
 <body>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery-ui.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jg-common.js")%>'></script>
     <form id="form1" runat="server">
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" AsyncPostBackTimeout="360000">
             <Services>
@@ -405,6 +407,5 @@
         </ul>
     </div>
     </form>
-    <script src="/js/jquery-ui.js"></script>
 </body>
 </html>

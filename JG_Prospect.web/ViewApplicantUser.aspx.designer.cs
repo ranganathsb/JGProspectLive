@@ -571,6 +571,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Button btnAddNote;
         
         /// <summary>
+        /// upAptTestLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upAptTestLink;
+        
+        /// <summary>
         /// lbtnAptTestLink control.
         /// </summary>
         /// <remarks>
@@ -2828,5 +2837,41 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveOfferMade;
+        
+        /// <summary>
+        /// divStartTest control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divStartTest;
+        
+        /// <summary>
+        /// upStartTest control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upStartTest;
+        
+        /// <summary>
+        /// btnStartTest control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnStartTest;
+        
+        /// <summary>
+        /// btnCancelTest control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelTest;
     }
 }

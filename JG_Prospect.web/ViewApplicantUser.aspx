@@ -143,12 +143,12 @@
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
 
-                $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
-                    var url = window.location.href
-                    var arr = url.split("/");
-                    var currDomainName = arr[0] + "//" + arr[2];
-                    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
-                });
+                //$('#<%=lbtnAptTestLink.ClientID%>').click(function () {
+                //    var url = window.location.href
+                //    var arr = url.split("/");
+                //    var currDomainName = arr[0] + "//" + arr[2];
+                //    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
+                //});
 
                 var text_max = 50;
                 $('#textarea_CharCount').html(text_max + ' characters remaining');
@@ -1822,7 +1822,11 @@
 
 
                             <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
-                                <asp:LinkButton ID="lbtnAptTestLink" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                <asp:UpdatePanel ID="upAptTestLink" runat="server">
+                                    <ContentTemplate>
+                                        <asp:LinkButton ID="lbtnAptTestLink" runat="server" CausesValidation="false" OnClick="btnStartTest_Click" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                             </div>
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
@@ -5003,10 +5007,20 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
-
+    <div class="hide">
+        <div id="divStartTest" runat="server"  title="Apptitude Test" data-width="300px">
+            <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" OnClick="btnStartTest_Click" />
+                    <asp:Button ID="btnCancelTest" runat="server" Text="Cancel" OnClick="btnCancelTest_Click" />
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery-ui.js")%>'></script>
     <script type="text/javascript">
 
         Dropzone.autoDiscover = false;

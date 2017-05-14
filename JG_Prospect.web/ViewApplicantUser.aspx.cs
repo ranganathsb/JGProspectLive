@@ -1141,7 +1141,8 @@ namespace JG_Prospect
                     lnkFacePage.Visible = false;
                 }
 
-                Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
+                //Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
+                Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
             }
             else
             {
@@ -4700,7 +4701,7 @@ namespace JG_Prospect
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-                label:
+            label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4749,7 +4750,7 @@ namespace JG_Prospect
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-                label1:
+            label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4768,7 +4769,7 @@ namespace JG_Prospect
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-            label:
+        label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4803,7 +4804,7 @@ namespace JG_Prospect
             }
             dt.Rows.Add(drNew);
             goto label;
-            label1:
+        label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -6648,6 +6649,17 @@ namespace JG_Prospect
                 fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
                 txtTouchPointLogNote.Text = "";
             }
+        }
+
+        protected void btnStartTest_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "showAptTestPage('" + Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") + "');", true);
+        }
+
+        protected void btnCancelTest_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/stafflogin.aspx");
         }
     }
 }
