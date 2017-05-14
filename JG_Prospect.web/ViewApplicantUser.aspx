@@ -5011,7 +5011,7 @@
         <div id="divStartTest" runat="server"  title="Apptitude Test" data-width="300px">
             <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" OnClick="btnStartTest_Click" />
+                    <asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />
                     <asp:Button ID="btnCancelTest" runat="server" Text="Cancel" OnClick="btnCancelTest_Click" />
                 </ContentTemplate>
             </asp:UpdatePanel>

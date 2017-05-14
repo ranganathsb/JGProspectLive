@@ -64,7 +64,7 @@ namespace JG_Prospect.MCQTest
 
                 foreach (DataRow ExamRow in examsNotWrittenYet.Rows)
                 {
-                    if (Enums.Aptitude_ExamType.DotNet.GetHashCode() == (int)ExamRow["ExamType"])
+                    //if (Enums.Aptitude_ExamType.DotNet.GetHashCode() == (int)ExamRow["ExamType"])
                     {
                         String url = "StartExam";
                         buff += "<tr><td>Click on following link to Start Exam ";
