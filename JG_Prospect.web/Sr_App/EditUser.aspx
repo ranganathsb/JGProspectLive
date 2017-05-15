@@ -655,25 +655,35 @@
                             <td>
                                 <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </td>
-							<td style="text-align: left;"> 
-									<asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="&nbsp; All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
-									<br />
-									<asp:CheckBox ID="chkOneMonth" Width="200" runat="server" Checked="false" Text="&nbsp; 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
-									<br />
-									<asp:CheckBox ID="chkOneYear" runat="server" Checked="false" Text="&nbsp; 1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />							
-							</td>
 							<td style="text-align: left; text-wrap:avoid;"> 
-									<asp:CheckBox ID="chkTwoWks" style="vertical-align:top;" Width="500" runat="server" Checked="false" Text="&nbsp; 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" />
-									<br />									
-									<asp:CheckBox ID="chkThreeMonth" Width="400" runat="server" Checked="false" Text="&nbsp; Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" />
-									<br />
+                                   <style>
+                                    label  {
+                                    vertical-align:top !important;;
+                                    }
+                                </style>
+									<asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="&nbsp; All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
+                                    <asp:CheckBox ID="chkOneYear"  runat="server" Checked="false" Text="&nbsp; 1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />							
+                                <br />
+									<asp:CheckBox ID="chkOneMonth" Width="200" runat="server" Checked="false" Text="&nbsp; 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
+									<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 									<asp:Label ID="Label3" Text="From :*" runat="server" />
 									<asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
 										onkeypress="return false" MaxLength="10" AutoPostBack="true"
 										Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
 										<cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-										</cc1:CalendarExtender>
-										<asp:Label ID="Label4" Text="To :*" runat="server" />
+										</cc1:CalendarExtender>							
+							</td>
+							<td style="text-align: left; text-wrap:avoid;"> 
+                                   <style>
+                                        label  {
+                                        vertical-align:top !important;;
+                                        }
+                                    </style>
+                                    <asp:CheckBox ID="chkThreeMonth" runat="server" Checked="false" Text="&nbsp; Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" />									
+									<br />									
+									<asp:CheckBox ID="chkTwoWks" Width="375" runat="server" Checked="false" Text="&nbsp; 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" />
+								   <br />
+                                        <asp:Label ID="Label4" Text="To :*" runat="server" />
 										<asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
 											MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
 											Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
@@ -684,10 +694,10 @@
 											runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
 										</asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
 											runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
-										</asp:RequiredFieldValidator>
-										<%--<br />--%>									
+										</asp:RequiredFieldValidator>	
 							</td>
                         </tr>
+
                     </table>
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -1407,7 +1417,7 @@
                     <asp:ValidationSummary ID="vsChangeStatus" runat="server" ValidationGroup="vgChangeStatus" ShowMessageBox="true" ShowSummary="false" />
                     <div>
                         Status:
-                        <asp:DropDownList ID="ddlStatus_Popup" Width="400px" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlStatus_Popup" Width="400px" runat="server" AutoPostBack="true" OnPreRender="ddlStatus_Popup_PreRender" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
                         <asp:RequiredFieldValidator ID="rfvStatus_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
                             ControlToValidate="ddlStatus_Popup" ValidationGroup="vgChangeStatus" Display="None" />
                     </div>

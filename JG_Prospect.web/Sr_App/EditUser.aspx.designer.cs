@@ -382,15 +382,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.CheckBox chkAllDates;
         
         /// <summary>
-        /// chkOneMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkOneMonth;
-        
-        /// <summary>
         /// chkOneYear control.
         /// </summary>
         /// <remarks>
@@ -400,22 +391,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.CheckBox chkOneYear;
         
         /// <summary>
-        /// chkTwoWks control.
+        /// chkOneMonth control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkTwoWks;
-        
-        /// <summary>
-        /// chkThreeMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkThreeMonth;
+        protected global::System.Web.UI.WebControls.CheckBox chkOneMonth;
         
         /// <summary>
         /// Label3 control.
@@ -443,6 +425,24 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.CalendarExtender calExtendFromDate;
+        
+        /// <summary>
+        /// chkThreeMonth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkThreeMonth;
+        
+        /// <summary>
+        /// chkTwoWks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkTwoWks;
         
         /// <summary>
         /// Label4 control.
