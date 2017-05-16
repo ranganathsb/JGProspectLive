@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace JG_Prospect.Sr_App
@@ -258,7 +259,9 @@ namespace JG_Prospect.Sr_App
                     {
                         AptitudeTestBLL.Instance.UpdateMCQ_Option(objMCQ_Option);
 
-                        if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+                        HtmlInputHidden hdnIsAnswer = (HtmlInputHidden) riOptions.FindControl("hdnIsAnswer") ;
+
+                        if (hdnIsAnswer.Value.Equals("1"))
                         {
                             AptitudeTestBLL.Instance.UpdateMCQ_CorrectAnswer(objMCQ_Option);
                         }
@@ -267,7 +270,9 @@ namespace JG_Prospect.Sr_App
                     {
                         objMCQ_Option.OptionID = AptitudeTestBLL.Instance.InsertMCQ_Option(objMCQ_Option);
 
-                        if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+                        HtmlInputHidden hdnIsAnswer = (HtmlInputHidden)riOptions.FindControl("hdnIsAnswer");
+
+                        if (hdnIsAnswer.Value.Equals("1"))
                         {
                             AptitudeTestBLL.Instance.InsertMCQ_CorrectAnswer(objMCQ_Option);
                         }

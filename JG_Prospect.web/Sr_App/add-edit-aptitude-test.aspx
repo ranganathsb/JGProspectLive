@@ -123,8 +123,9 @@
                                                                             <li class='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))? "answer": "" %>'>
                                                                                 <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
                                                                                 <asp:HiddenField ID="hdnOptionUniqueID" runat="server" Value='<%# Eval("OptionUniqueID") %>' />
+                                                                                <input ID="hdnIsAnswer" type="hidden"  runat="server" class="validanswer" />
                                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" data-radioname='<%# "Q" + Eval("QuestionUniqueID") %>'
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server"  data-radioname='<%# "Q" + Eval("QuestionUniqueID") %>'
                                                                     Checked='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))%>' />
                                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
@@ -185,6 +186,21 @@
             $sender.prop('checked', true);
         }
 
+        //Mark Valid answer
+        function ApplyMarkValidAnswer() {
+            
+            $("span[data-radioname]").each(function () {               
+                $(this).children('input:radio').change(function () {
+                 $($(this).closest('ol')).children('li').each(function () {
+                 $(this).children('.validanswer').val('');
+                    });
+                 //   console.log($($(this).parent()).parent());
+                   $($($(this).parent()).parent()).children('.validanswer').val('1');
+                    //console.log(  $(this).parent().children('.validanswer').val('1'));
+                });
+            });
+        }
+
         // check if user has selected any designations or not.
         function checkddlDesigAptitude(oSrc, args) {
             args.IsValid = ($("#<%= ddlDesigAptitude.ClientID%> input:checked").length > 0);
@@ -197,6 +213,7 @@
         function Intialize() {
             ChosenDropDown();
             ApplyQuestionRadioName();
+            ApplyMarkValidAnswer();
         }
 
         function ChosenDropDown(options) {
