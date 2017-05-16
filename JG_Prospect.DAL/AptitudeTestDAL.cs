@@ -489,7 +489,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UpdateMCQ_CorrectAnswer");
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@OptionText", DbType.String, objMCQ_Option.OptionText);
+                    database.AddInParameter(command, "@OptionID", DbType.String, objMCQ_Option.OptionID);
                     database.AddInParameter(command, "@QuestionID", DbType.Int64, objMCQ_Option.QuestionID);
 
                     database.ExecuteNonQuery(command);

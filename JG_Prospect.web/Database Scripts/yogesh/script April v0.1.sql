@@ -1648,3 +1648,34 @@ BEGIN
 
 END  
 GO
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 14 Mar 2017  
+-- Description: Updates answer for exam question.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[UpdateMCQ_CorrectAnswer]  
+ (
+  @OptionID bigint
+ ,@QuestionID bigint  
+ )
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;   
+  
+ IF EXISTS(SELECT AnswerID FROM DBO.[MCQ_CorrectAnswer] WHERE QuestionID = @QuestionID)
+ BEGIN
+	 UPDATE [dbo].[MCQ_CorrectAnswer]  
+		SET OptionID = @OptionID  
+	 WHERE QuestionID = @QuestionID  
+ END
+ ELSE
+	 BEGIN
+	 INSERT INTO [dbo].[MCQ_CorrectAnswer](QuestionID, OptionID) VALUES (@QuestionID, @OptionID)
+	 END
+  
+END
