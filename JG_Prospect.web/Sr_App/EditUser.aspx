@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" ValidateRequest="false"
-    CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" MaintainScrollPositionOnPostback="true" %>
+    CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" MaintainScrollPositionOnPostback="true" Async="true" %>
 
 <%@ Register Assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI.DataVisualization.Charting" TagPrefix="asp" %>
 
@@ -12,6 +12,11 @@
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
     <style type="text/css">
+        .ddlstatus-per-text {
+            float: right;
+            padding-right: 5px;
+        }
+
         /*Grid add Container START*/
         .GrdContainer {
             width: 100%;
@@ -81,18 +86,20 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+
         /*.GrdPrimaryEmail:hover {
-                overflow: visible;
-                white-space: normal;
-                width: auto;
-                position: absolute;
-                background-color: #FFF;
-            }*/
+        overflow: visible;
+        white-space: normal;
+        width: auto;
+        position: absolute;
+        background-color: #FFF;
+        }*/
         .ddChild li {
             text-align: left;
             margin: 0 !important;
-            width: auto !important;
-            border-bottom: none !important;
+            /*width: auto ;!important;*/
+            width: auto;
+            border-bottom: none;
         }
 
         .grd-lblPrimaryPhone img {
@@ -134,6 +141,7 @@
             filter: alpha(opacity=80);
             overflow-y: hidden;
         }
+
         /*#327FB5*/
         .white_content {
             display: none;
@@ -190,6 +198,20 @@
             background: #A33E3F;
             color: #fff;
             cursor: pointer;
+        }
+    </style>
+    <style type="text/css">
+        #hint {
+            cursor: pointer;
+        }
+
+        .startooltip {
+            margin: 8px;
+            padding: 8px;
+            border: 1px solid blue;
+            background-color: #ddd;
+            position: absolute;
+            z-index: 2;
         }
     </style>
     <script type="text/javascript">
@@ -378,6 +400,20 @@
             height: 300px;
             overflow-y: scroll;
         }*/
+
+        .form_panel table tr td .starimg {
+            width: 15px;
+            height: 15px;
+            border: none !important;
+            /*background-image:url(../img/star.png);*/
+        }
+
+        .form_panel table tr td .starimgred {
+            width: 15px;
+            height: 15px;
+            border: none !important;
+            /*background-image:url(../img/starred.png);*/
+        }
     </style>
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
@@ -590,12 +626,22 @@
                                 <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
                             <td>
                                 <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
-                            <td colspan="2">
-                                <asp:Label ID="Label2" Text="Select Period" runat="server" /></td>
+                            <td colspan="2" style="text-align: left;">
+                                <asp:Label ID="Label2" Text="&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Select Period" runat="server" /></td>
                         </tr>
                         <tr style="text-align: center; width: 100%">
+                            <%-- <td style="text-align: center;">
+                                <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true"  OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />--%>
                             <td style="text-align: center;">
-                                <asp:DropDownList ID="ddlUserStatus" runat="server" Width="140px" AutoPostBack="true"
+                                <style>
+                                    /*.form_panel ul li {
+                                    width: 90% !important;
+                                    }*/
+                                    .dd .ddChild li {
+                                        width: 95% !important;
+                                    }
+                                </style>
+                                <asp:DropDownList ID="ddlUserStatus" Style="text-align: left;" runat="server" Width="200px" AutoPostBack="true"
                                     OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" OnPreRender="ddlUserStatus_PreRender" />
                             </td>
                             <td>
@@ -603,33 +649,57 @@
                                     OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true" />
                             </td>
                             <td>
-                                <asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                                <%--<asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>--%>
+                                <asp:DropDownList ID="drpUser" runat="server" Width="130px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                            </td>
                             <td>
-                                <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
-                            <td>
-                                <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" /></td>
-                            <td>
-                                <asp:Label ID="Label3" Text="From :*" runat="server" />
-                                <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
-                                    onkeypress="return false" MaxLength="10" AutoPostBack="true"
-                                    Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
-                                <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                                </cc1:CalendarExtender>
-                                <asp:Label ID="Label4" Text="To :*" runat="server" />
-                                <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
-                                    MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
-                                    Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
-                                </cc1:CalendarExtender>
-                                <br />
-                                <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
-                                    runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
-                                </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
-                                    runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
-                                </asp:RequiredFieldValidator>
-                                <br />
+                                <asp:DropDownList ID="ddlSource" runat="server" Width="90px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                            </td>
+                            <td style="text-align: left; text-wrap: avoid;">
+                                <div>
+                                    <ul class="userDatafilter">
+                                        <li>
+                                            <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
+                                        </li>
+                                        <li>
+                                            <asp:CheckBox ID="chkOneYear" runat="server" Checked="false" Text="1 year" OnCheckedChanged="chkOneYear_CheckedChanged" AutoPostBack="true" />
+                                        </li>
+                                        <li>
+                                            <asp:CheckBox ID="chkThreeMonth" runat="server" Checked="false" Text=" Quarter (3 months)" OnCheckedChanged="chkThreeMonth_CheckedChanged" AutoPostBack="true" /></li>
+
+                                    </ul>
+                                    <ul class="userDatafilter">
+                                        <li>
+                                            <asp:CheckBox ID="chkOneMonth" runat="server" Checked="false" Text=" 1 month" OnCheckedChanged="chkOneMonth_CheckedChanged" AutoPostBack="true" />
+                                        </li>
+                                        <li>
+                                            <asp:CheckBox ID="chkTwoWks" runat="server" Checked="false" Text=" 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" /></li>
+                                    </ul>
+                                </div>
+                                <div style="clear: both;"></div>
+                                <div>
+                                    <asp:Label ID="Label3" Text="From :*" runat="server" />
+                                    <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
+                                        onkeypress="return false" MaxLength="10" AutoPostBack="true"
+                                        Style="width: 60px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
+                                    <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+                                    </cc1:CalendarExtender>
+                                    <asp:Label ID="Label4" Text="To :*" runat="server" />
+                                    <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
+                                        MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
+                                        Style="width: 65px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
+                                    <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+                                    </cc1:CalendarExtender>
+                                    <%--<br />--%>
+                                    <asp:RequiredFieldValidator ID="requirefrmdate" ControlToValidate="txtfrmdate"
+                                        runat="server" ErrorMessage=" Select From date" ForeColor="Red" ValidationGroup="show">
+                                    </asp:RequiredFieldValidator><asp:RequiredFieldValidator ID="Requiretodate" ControlToValidate="txtTodate"
+                                        runat="server" ErrorMessage=" Select To date" ForeColor="Red" ValidationGroup="show">
+                                    </asp:RequiredFieldValidator>
+                                </div>
                             </td>
                         </tr>
+
                     </table>
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -637,7 +707,7 @@
                 <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
 
-                        <div style="float: left; padding-top: 10px; /*margin-bottom: -40px;*/">
+                        <div style="float: left; padding-top: 10px; /*margin-bottom: -40px; */">
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
@@ -651,8 +721,12 @@
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
-                        </div>
 
+                            Showing :  
+                                <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" />
+                            of
+                                <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />
+                        </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
                             AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
@@ -664,7 +738,11 @@
 
                                 <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
                                     <ItemTemplate>
+                                        <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
+                                        <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
                                         <asp:CheckBox ID="chkSelected" runat="server" />
+                                        <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
+                                        <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
                                         <br />
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
@@ -674,9 +752,11 @@
                                         <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+
+
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField ShowHeader="True" HeaderText="Id# <br /> Designation" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
                                     Visible="true" SortExpression="Designation">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
@@ -686,7 +766,13 @@
                                         <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        <asp:HiddenField ID="lblDesignationID" runat="server" Value='<%#Eval("DesignationID")%>'></asp:HiddenField>
+                                        <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
+                                        <asp:DropDownList ID="drpDesig" Width="140px" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged" runat="server">
+                                        </asp:DropDownList>
+                                        <br />
+                                        <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
+                                        <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -712,7 +798,7 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
+                                <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtFirstName" runat="server" MaxLength="30" Text='<%#Eval("FristName")%>'></asp:TextBox>
                                     </EditItemTemplate>
@@ -724,7 +810,7 @@
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
 
                                 <asp:TemplateField HeaderText="Last name" Visible="false" SortExpression="Lastname" ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
@@ -738,25 +824,19 @@
                                         <asp:TextBox ID="txtDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:TextBox>
                                     </EditItemTemplate>
                                     <ItemTemplate>
+                                        <asp:Label ID="lblGrdDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="20%" ItemStyle-Width="20%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="25%" ItemStyle-Width="25%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
-                                        <asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
-                                            <%--<asp:ListItem Text="Referral applicant" Value="ReferralApplicant"></asp:ListItem>
-                                            <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
-                                            <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
-                                            <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
-                                            <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
-                                            <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
-                                            <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
-                                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
-                                            <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>--%>
-                                        </asp:DropDownList><br />
+                                        <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
+                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
+                                        </asp:DropDownList>
+
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
                                         <br />
                                         <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
@@ -819,7 +899,7 @@
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="15%" ItemStyle-Width="15%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="12%" ItemStyle-Width="12%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
@@ -827,6 +907,10 @@
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
 
                                         <br />
+                                        <br />
+                                        <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
+                                        <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
+
                                         <br />
                                         <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>
                                         <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
@@ -857,7 +941,7 @@
                     </td>
                     <td>
                         <div style="float: left;">
-                            <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>" 
+                            <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>"
                                 data-accepted-files=".csv,.xlsx" data-upload-path-code="1">
                                 <div class="fallback">
                                     <input name="WorkFile" type="file" />
@@ -868,13 +952,15 @@
                             </div>
                         </div>
                         <div class="btn_sec" style="float: left;">
-                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" style="padding:0px 10px 0px 10px!important;" />
+                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
                         </div>
                         <div class="hide">
                             <input id="hdnBulkUploadFile" runat="server" type="hidden" />
                             <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClientClick="return ValidateFile()" OnClick="btnUpload_Click" />
-                            
-                            <label>Upload Prospects using xlsx file: <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
+
+                            <label>
+                                Upload Prospects using xlsx file:
+                                <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                         </div>
                     </td>
@@ -1134,14 +1220,14 @@
 
         <asp:Panel ID="pnlUploadBulk" runat="server">
             <style>
-                kTab {
-                    :;
+                :;
                 }
 
                 {
                     x;
                 }
-                /* END EXT
+                /* END EXT*/
+                /* END E
             </style>
             <div id="lightUploadBulk" class="white_content" style="text-align: center">
                 <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
@@ -1223,11 +1309,11 @@
     <%--Popup Stars--%>
     <div class="hide">
         <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
-            <div style="padding:5px 10px;">
-                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue;font-weight:bold;text-align: center;font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
+            <div style="padding: 5px 10px;">
+                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
             </div>
-            <div style="max-height:500px; height:500px; overflow: auto;">
-                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false" 
+            <div style="max-height: 500px; height: 500px; overflow: auto;">
+                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
                     CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
@@ -1236,47 +1322,47 @@
                     <Columns>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("FirstName")) %>
+                                <%#Eval("FirstName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("LastName")) %>
+                                <%#Eval("LastName")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Email")) %>
+                                <%#Eval("Email")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Designation")) %>
+                                <%#Eval("Designation")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Status")) %>
+                                <%#Eval("Status")%>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Source*"  HeaderStyle-Width="60" ItemStyle-Width="60">
+                        <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Source")) %>
+                                <%#Eval("Source")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1")) %>
+                                <%#Eval("Phone1")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Phone1Type")) %>
+                                <%#Eval("Phone1Type")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
                             <ItemTemplate>
-                                <%#grdBulkUploadUserErrors_GetCellText(Eval("Zip")) %>
+                                <%#Eval("Zip")%>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -1337,7 +1423,7 @@
                     <asp:ValidationSummary ID="vsChangeStatus" runat="server" ValidationGroup="vgChangeStatus" ShowMessageBox="true" ShowSummary="false" />
                     <div>
                         Status:
-                        <asp:DropDownList ID="ddlStatus_Popup" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlStatus_Popup" Width="400px" runat="server" AutoPostBack="true" OnPreRender="ddlStatus_Popup_PreRender" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
                         <asp:RequiredFieldValidator ID="rfvStatus_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
                             ControlToValidate="ddlStatus_Popup" ValidationGroup="vgChangeStatus" Display="None" />
                     </div>
@@ -1401,10 +1487,13 @@
                         </Columns>
                     </asp:GridView>
                     <br />
+                    <br />
                     <div class="btn_sec">
                         <asp:Button ID="btnSaveStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
                             OnClick="btnSaveStatusForSelected_Click" />&nbsp;
                     <asp:Button ID="btnCancelChangeStatusForSelected" runat="server" Text="Cancel" OnClick="btnCancelChangeStatusForSelected_Click" />
+                        <br />
+                        <br />
                     </div>
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -1439,6 +1528,8 @@
             ApplyDropZone();
 
             try {
+                $("#<%=drpUser.ClientID%>").msDropDown();
+                $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
                 $("#<%=ddlUserStatus.ClientID%>").msDropDown();
                 $(".grd-status").msDropDown();
             } catch (e) {
@@ -1526,5 +1617,128 @@
             ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
         }
 
+
+        //============= Start DP =============
+        function GotoStarUser(bookmarkedUser, isdel, obj) {
+            //alert(isdel);
+            //alert(obj);
+            //alert(bookmarkedUser);
+            $(".loading").show();
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/StarBookMarkUsers",
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    //alert("Hello: " + response + " ");
+
+                    var d = new Date();
+                    if (isdel == "0") {
+                        // alert("if");
+                        //alert($("#" + obj));
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                    }
+                    else {
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
+                    }
+                    $(".loading").show();
+                },
+                complete: function () {
+                    // Schedule the next request when the current one has been completed
+                    // setTimeout(ajaxInterval, 4000);
+                    $(".loading").hide();
+                },
+                failure: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                },
+                error: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                }
+            });
+
+        }
+
+
+
+        $(document).ready(function () {
+
+            var changeTooltipPosition = function (event) {
+                var tooltipX = event.pageX - 8;
+                var tooltipY = event.pageY + 8;
+                $('div.startooltip').css({ top: tooltipY, left: tooltipX });
+            };
+
+            var showTooltip = function (event) {
+                //$(".loading").show();
+                var bookmarkedUser = $(this).attr('alt');
+
+                $.ajax({
+                    type: "POST",
+                    url: "ajaxcalls.aspx/GetBookMarkingUserDetails",
+                    data: '{bookmarkedUser: ' + bookmarkedUser + ' }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.d) {
+                            var str = "";
+                            var parsed = $.parseJSON(data.d);
+
+                            $.each(parsed, function (i, item) {
+                                var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
+                                str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
+                            });
+
+                            $('div.startooltip').remove();
+                            $('<div class="startooltip">' + str + '</div>')
+                                  .appendTo('body');
+                            changeTooltipPosition(event);
+                        }
+                        // $(".loading").show();
+                    },
+                    complete: function () {
+                        // Schedule the next request when the current one has been completed
+                        // setTimeout(ajaxInterval, 4000);
+                        //$(".loading").hide();
+                    },
+                    failure: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    },
+                    error: function (response) {
+                        // alert(response.responseText);
+                        // $(".loading").hide();
+                    }
+                });
+
+            };
+
+            var hideTooltip = function () {
+                $('div.startooltip').remove();
+                //$(".loading").hide();
+            };
+
+            $(".starimgred").bind({
+                mousemove: changeTooltipPosition,
+                mouseenter: showTooltip,
+                mouseleave: hideTooltip
+
+            });
+
+
+
+        });
+
+        //============== End DP ==============
+
     </script>
 </asp:Content>
+

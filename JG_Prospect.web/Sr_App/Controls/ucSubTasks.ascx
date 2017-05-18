@@ -1224,6 +1224,7 @@
     };
 
     SubTaskCommentScript.AddTaskComment = function (sender) {
+        debugger;
         var $sender = $(sender);
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
@@ -1239,7 +1240,6 @@
         else {
             $tfoot = $divSubTaskCommentPlaceHolder.find('tfoot[data-parent-commentid="' + strParentCommentId + '"]');
         }
-
 
         $tfoot.find('textarea[data-id="txtComment"]').val('');
         $tfoot.find('tr[data-id="trAddComment"]').show();

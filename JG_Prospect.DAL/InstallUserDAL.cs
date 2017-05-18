@@ -250,6 +250,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
                     database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
                     database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -611,6 +612,28 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
             }
+        }
+
+        public DataSet ChangeDesignition(int EditId, int DesignitionID)
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_ChangeDesignition");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, EditId);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, DesignitionID);
+
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
         }
 
         public DataSet ChangeSatatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
@@ -1458,6 +1481,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
                     database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
                     database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
@@ -1482,7 +1506,7 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("UDP_UpdateStatus ");
+                    DbCommand command = database.GetStoredProcCommand("UDP_UpdateStatus");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@id", DbType.String, Convert.ToInt32(id));
                     database.AddInParameter(command, "@status", DbType.String, Status);
@@ -2318,6 +2342,49 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+        public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetStarBookMarkUsers");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@bookmarkedUser", DbType.String, bookmarkedUser);
+                    database.AddInParameter(command, "@bookmarkingUser", DbType.String, bookmarkingUser);
+                    database.AddInParameter(command, "@isdelete", DbType.String, isdelete);
+                    database.ExecuteDataSet(command);
+                }
+
+                return "true";
+            }
+            catch (Exception ex)
+            {
+                return "false";
+            }
+        }
+        public DataSet GetBookMarkingUserDetails(int bookmarkedUser )
+        {
+            DataSet result = null;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetBookMarkingUserDetails");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, bookmarkedUser);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        
         //------------- end DP -------------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
@@ -2541,6 +2608,31 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_GetUsersNDesignationForSalesFilter");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
+
+        /// <summary>
+        /// Get all Users for AddedBy filter, with html tags
+        /// <returns>DataSet</returns>
+        public DataSet GeAddedBytUsers()
+        {
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);

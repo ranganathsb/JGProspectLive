@@ -217,8 +217,14 @@ namespace JG_Prospect.Common
         }
 
         public enum UserRoles
-        { 
+        {
             Admin = 1
+        }
+
+        public enum ExamPerformanceStatus
+        { 
+            Pass = 1,
+            Fail = 0
         }
 
         /// <summary>

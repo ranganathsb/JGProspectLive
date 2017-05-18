@@ -1565,6 +1565,7 @@ input.fz-user, .fz-user > input {
 .redtext {
     color: red !important;
 }
+
 .greentext {
     color: darkgreen !important;
 }
@@ -2026,14 +2027,42 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     text-align: right;
     font-style: oblique;
 }
+
 li.activeUser {
     color: red !important;
 }
+
 li.IOUser {
     color: blue !important;
 }
 
 li.testresults {
-font-size:small;
-font-weight:normal;
+    font-size: small;
+    font-weight: normal;
+}
+
+.form_panel ul.userDatafilter {
+    margin: 0 0 10px;
+}
+
+
+.form_panel ul.userDatafilter li {
+        margin: 0px;
+        border: none;
+        display: inline;
+        width: inherit;
+        float:none;
+}
+
+.form_panel table tr td ul.userDatafilter li label {
+    width: inherit;
+    display: inline;
+    padding: 0 2px 0 0;
+    font-size:12px;
+   
+}
+
+.form_panel table tr td ul.userDatafilter li input {
+    position:relative;
+    top:3px;  
 }

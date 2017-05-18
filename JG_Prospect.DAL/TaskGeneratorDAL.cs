@@ -729,6 +729,40 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetInstallUserswithIds(int Key, string Designastion, string TaskId)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetInstallUserswithId");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Key", DbType.Int16, Key);
+                    database.AddInParameter(command, "@ActiveStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString());
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+                    database.AddInParameter(command, "@OfferMadeStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString());
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, int.Parse(TaskId));
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetAllActiveTechTask()
         {
             DataSet result = new DataSet();
@@ -836,6 +870,31 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int16, Id);
                     result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// to GetInstallUserDetails by Id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public DataTable GetTaskDetailsForMail(int TaskId)
+        {
+            DataTable result = new DataTable();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetTaskDetailsForMail");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int16, TaskId);
+                    result = (database.ExecuteDataSet(command)).Tables[0];
                 }
                 return result;
             }

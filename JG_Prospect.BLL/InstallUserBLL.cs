@@ -454,6 +454,12 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateInstallUserStatus(Status, StatusId);
         }
 
+        public DataSet ChangeDesignition(int EditId, int DesignitionID)
+        {
+
+            return InstallUserDAL.Instance.ChangeDesignition(EditId, DesignitionID);
+        }
+
         public DataSet ChangeStatus(string Status, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
 
@@ -501,6 +507,17 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetTaskUsers(searchTerm);
         }
+
+        public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);
+        }
+
+        public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
+        {
+            return InstallUserDAL.Instance.GetBookMarkingUserDetails( bookmarkedUser);
+        }
+
         //--------- end DP ----------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
@@ -557,6 +574,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUsersNDesignationForSalesFilter();
         }
+
+        public DataSet GeAddedBytUsers()
+        {
+            return InstallUserDAL.Instance.GeAddedBytUsers();
+        }
+
         public string AddUserEmails(string hidExtEmail, int UserId)
         {
             return InstallUserDAL.Instance.AddUserEmails(hidExtEmail, UserId);

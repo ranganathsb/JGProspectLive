@@ -22,7 +22,7 @@ using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
-
+//using System.Diagnostics;
 
 namespace JG_Prospect
 {
@@ -155,7 +155,7 @@ namespace JG_Prospect
             {
                 if (Session["HighlightUsersForTypes"] != null)
                 {
-                    HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
+                    // HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
                 }
             }
         }
@@ -170,6 +170,11 @@ namespace JG_Prospect
         {
             if (chkAllDates.Checked)
             {
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
                 txtfrmdate.Enabled = false;
                 txtTodate.Enabled = false;
                 txtfrmdate.Text = "All";
@@ -180,6 +185,106 @@ namespace JG_Prospect
                 txtTodate.Enabled = true;
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
             }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkTwoWk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkTwoWks.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkOneMonth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkOneMonth.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                //chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkThreeMonth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkThreeMonth.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                //chkThreeMonth.Checked = false;
+                chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
+            //BindGrid();
+            GetSalesUsersStaticticsAndData(true);
+        }
+
+        protected void chkOneYear_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkOneYear.Checked)
+            {
+                chkAllDates.Checked = false;
+                chkTwoWks.Checked = false;
+                chkOneMonth.Checked = false;
+                chkThreeMonth.Checked = false;
+                //chkOneYear.Checked = false;
+
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+                txtfrmdate.Text = "";
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+            }
+
             //BindGrid();
             GetSalesUsersStaticticsAndData(true);
         }
@@ -188,6 +293,12 @@ namespace JG_Prospect
         {
             DropDownList ddlStatus = (DropDownList)sender;
             ddlStatus = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatus);
+        }
+
+        protected void ddlStatus_Popup_PreRender(object sender, EventArgs e)
+        {
+            DropDownList ddlStatusPopup = (DropDownList)sender;
+            ddlStatusPopup = JG_Prospect.Utilits.FullDropDown.UserStatusDropDown_Set_ImageAtt(ddlStatusPopup);
         }
 
         protected void ddlFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -250,6 +361,24 @@ namespace JG_Prospect
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
+
+                    //populate Designation
+                    DropDownList ddlDesiGrd = (e.Row.FindControl("drpDesig") as DropDownList);//Find the DropDownList in the Row
+                    DataSet dsDesignation = new DataSet();
+                    dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+                    if (dsDesignation.Tables.Count > 0)
+                    {
+                        ddlDesiGrd.DataSource = dsDesignation.Tables[0];
+                        ddlDesiGrd.DataTextField = "DesignationName";
+                        ddlDesiGrd.DataValueField = "ID";
+                        ddlDesiGrd.DataBind();
+                    }
+                    string strDesignationID = Convert.ToString((e.Row.FindControl("lblDesignationID") as HiddenField).Value);//Select the Designation in DropDownList
+                    //Debug.WriteLine(strDesignation);
+                    if (strDesignationID != "")
+                    {
+                        ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
+                    }
 
                     ddlContactType = BindContactDllForGrid(ddlContactType);
 
@@ -556,13 +685,40 @@ namespace JG_Prospect
             GetSalesUsersStaticticsAndData();
         }
 
+        protected void drpDesig_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddDesi = sender as DropDownList;
+            Session["DesignitionIdSC"] = ddDesi.SelectedValue;
+
+            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+            HiddenField lblDesignation = (HiddenField)(grow.FindControl("lblDesignation")); //<<==
+            lblDesignation.Value = ddDesi.SelectedItem.Text;
+            Session["DesignitionSC"] = lblDesignation.Value;
+
+            HiddenField hdnDesignationID = (HiddenField)(grow.FindControl("lblDesignationID"));
+            hdnDesignationID.Value = ddDesi.SelectedValue;
+            //Session["DesignitionIdSC"] = grdUsers.DataKeys[grow.RowIndex]["DesignationID"].ToString();
+
+            if (ddlDesignationForTask.Items.FindByText(lblDesignation.Value) != null)
+            {
+                ddlDesignationForTask.ClearSelection();
+                ddlDesignationForTask.Items.FindByText(lblDesignation.Value).Selected = true;
+            }
+
+            Label Id = (Label)grow.FindControl("lblid");
+            Session["EditId"] = Id.Text;
+            InstallUserBLL.Instance.ChangeDesignition(Convert.ToInt32(Session["EditId"]), Convert.ToInt32(ddDesi.SelectedValue));
+
+            GetSalesUsersStaticticsAndData();
+        }
+
         protected void grdUsers_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Below 4 lines is to get that particular row control values
             DropDownList ddlNew = sender as DropDownList;
             string strddlNew = ddlNew.SelectedValue;
             GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-            Label lblDesignation = (Label)(grow.FindControl("lblDesignation"));
+            Label lblDesignation = (Label)(grow.FindControl("lblGrdDesignation"));
             Label lblFirstName = (Label)(grow.FindControl("lblFirstName"));
             Label lblLastName = (Label)(grow.FindControl("lblLastName"));
             LinkButton lbtnEmail = (LinkButton)(grow.FindControl("lbtnEmail"));
@@ -663,7 +819,7 @@ namespace JG_Prospect
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
-                ddlInsteviewtime.SelectedValue = "10:00";
+                ddlInsteviewtime.SelectedValue = "10:00 AM";
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
                 return;
             }
@@ -934,6 +1090,7 @@ namespace JG_Prospect
             string HireDate = "";
             string EmpType = "";
             string PayRates = "";
+            string gitusername = string.Empty;
 
 
             //string InterviewDate = dtInterviewDate.Text;
@@ -965,12 +1122,20 @@ namespace JG_Prospect
                     {
                         PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
                     }
+                    if (ds.Tables[0].Rows[0]["GitUserName"] != null)
+                    {
+                        gitusername = ds.Tables[0].Rows[0]["GitUserName"].ToString();
+                    }
                 }
             }
 
             SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]),
                 "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]).Trim(), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, HTMLTemplates.InterviewDateAutoEmail
                 , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
+            if (!string.IsNullOrEmpty(gitusername))
+            {
+                AddUserAsGitcollaborator(gitusername);
+            }
 
             //AssignedTask if any or Default
             AssignedTaskToUser(Convert.ToInt32(Session["EditId"]), ddlTechTask, ddlTechSubTask);
@@ -1048,13 +1213,13 @@ namespace JG_Prospect
             if (!string.IsNullOrEmpty(EmpType))
             {
                 int intEmpType = 0;
-                int.TryParse( EmpType, out intEmpType);
+                int.TryParse(EmpType, out intEmpType);
 
                 if (intEmpType > 0)
                 {
-                   EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
                 }
-                
+
                 strHtml = strHtml.Replace("#EmpType#", EmpType);
 
             }
@@ -1755,7 +1920,7 @@ namespace JG_Prospect
                                         Convert.ToString(grdUsers.DataKeys[objUserRow.RowIndex]["Id"]),
                                         (objUserRow.FindControl("lblFirstName") as Label).Text,
                                         (objUserRow.FindControl("lblLastName") as Label).Text,
-                                        (objUserRow.FindControl("lblDesignation") as Label).Text,
+                                        (objUserRow.FindControl("lblDesignation") as HiddenField).Value,
                                         Convert.ToString(grdUsers.DataKeys[objUserRow.RowIndex]["DesignationID"]),
                                         DateTime.Now.AddDays(1).ToShortDateString(),
                                         "10:00 AM"
@@ -2044,7 +2209,7 @@ namespace JG_Prospect
 
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.Active)).Enabled = false;
             ddlUserStatus.Items.FindByValue(Convert.ToString((byte)JGConstant.InstallUserStatus.OfferMade)).Enabled = false;
-   
+
 
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
@@ -2078,7 +2243,8 @@ namespace JG_Prospect
             //    drpUser.DataBind();
             //}
 
-            DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            //DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            DataSet dsInstalledUser = InstallUserBLL.Instance.GeAddedBytUsers();
             drpUser.DataSource = dsInstalledUser.Tables[0];
             drpUser.DataValueField = "Id";
             drpUser.DataTextField = "FirstName";
@@ -2086,7 +2252,7 @@ namespace JG_Prospect
             drpUser.Items.Insert(0, new ListItem("--All--", "0"));
             DataTable dtInstalledUsers = dsInstalledUser.Tables[0];
             Session["HighlightUsersForTypes"] = dtInstalledUsers;
-            HighlightUsersForTypes(dtInstalledUsers, drpUser);
+            //HighlightUsersForTypes(dtInstalledUsers, drpUser);
         }
 
         private void HighlightUsersForTypes(DataTable dtUsers, DropDownList ddlUsers)
@@ -3459,11 +3625,45 @@ namespace JG_Prospect
 
             DateTime? dtFromDate = null;
             DateTime? dtToDate = null;
-            if (!chkAllDates.Checked)
+
+            if (chkAllDates.Checked)
+            {
+                dtFromDate = null;
+                dtToDate = null;
+            }
+            else if (chkTwoWks.Checked)
+            {
+                dtFromDate = DateTime.Now.AddDays(-13);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkOneMonth.Checked)
+            {
+                dtFromDate = dtFromDate = DateTime.Now.AddMonths(-1).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkThreeMonth.Checked)
+            {
+                dtFromDate = DateTime.Now.AddMonths(-3).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else if (chkOneYear.Checked)
+            {
+                dtFromDate = DateTime.Now.AddMonths(-12).AddDays(-1);
+                dtToDate = DateTime.Now;
+            }
+            else //no check-boxes checked, then get from to-from fields
             {
                 dtFromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
                 dtToDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
             }
+
+            //Debug.WriteLine(dtFromDate.ToString());
+            //Debug.WriteLine(dtToDate.ToString());
+            //if (!chkAllDates.Checked)
+            //{
+            //    dtFromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            //    dtToDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            //}
             string strUserStatus = string.Empty;
             if (dtFromDate < dtToDate || (dtFromDate == null && dtToDate == null))
             {
@@ -3933,7 +4133,7 @@ namespace JG_Prospect
 
             txtEmailSubject.Text = objHTMLTemplate.Subject;
             txtEmailBody.Text = string.Concat(
-                //objHTMLTemplate.Designation + " --- ",
+                                                //objHTMLTemplate.Designation + " --- ",
                                                 objHTMLTemplate.Header,
                                                 objHTMLTemplate.Body,
                                                 objHTMLTemplate.Footer
@@ -3983,6 +4183,30 @@ namespace JG_Prospect
             else
             {
                 return "<div style=\"color: blue;font-weight:bold;text-align: center;font-size: 20px;\">x</div>";
+            }
+        }
+
+        /// <summary>
+        /// Add a GitHub user as Collaborator in repo        
+        /// </summary>
+        /// <param name="gitUserName"></param>
+        private async void AddUserAsGitcollaborator(string gitUserName)
+        {
+            try
+            {
+                var reponame = ConfigurationManager.AppSettings["GitRepoName"].ToString();
+                var adminname = ConfigurationManager.AppSettings["GitRepoAdminName"].ToString();
+                var adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginId"].ToString();
+                var adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPassword"].ToString();
+                var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("my-cool-app"));
+                var basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
+                client.Credentials = basicAuth;
+                await client.Repository.Collaborator.Add(adminname, reponame, gitUserName);
+            }
+            catch (Exception ex)
+            {
+                //Log exception 
+                Console.WriteLine("{0} Exception caught.", ex);
             }
         }
 

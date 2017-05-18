@@ -218,6 +218,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NReco.PdfGenerator.1.1.10.0\lib\net20\NReco.PdfGenerator.dll</HintPath>
     </Reference>
+    <Reference Include="Octokit, Version=0.24.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.24.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
     <Reference Include="Org.Mentalis.Security.Cryptography, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Org.Mentalis.Security.Cryptography.dll</HintPath>
@@ -1467,6 +1470,8 @@
     <Content Include="Database Scripts\KetankumarGodhani\OLD\14 Apr 2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\Ketankumar_03262017_db_FrozenTaskSP.sql" />
     <Content Include="Database Scripts\yogesh\script May v0.1.sql" />
+    <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
+    <Content Include="Database Scripts\yogesh\script April v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -2140,6 +2145,7 @@
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
+    <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
     <Content Include="Sr_App\view-aptitude-test.aspx" />
     <Content Include="Sr_App\ViewSalesUser.aspx" />
@@ -2494,6 +2500,10 @@
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.designer.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\UploadFileCustomerDocs.aspx.cs">
+      <DependentUpon>UploadFileCustomerDocs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\userbulkupload.aspx.cs">
       <DependentUpon>userbulkupload.aspx</DependentUpon>

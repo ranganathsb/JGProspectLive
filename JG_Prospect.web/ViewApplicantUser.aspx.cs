@@ -19,9 +19,9 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 //using Word = Microsoft.Office.Interop.Word;
 using System.Web.Services;
+//using System.Diagnostics;
 
 namespace JG_Prospect
 {
@@ -90,7 +90,7 @@ namespace JG_Prospect
                     // Store GIUD when user is in create mode and save Touch Point Log..
                     hidTouchPointGUID.Value = Guid.NewGuid().ToString();
                     SetUserControlValue(string.Empty);
-                    hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
+                    //hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
 
             }
@@ -167,8 +167,8 @@ namespace JG_Prospect
                 lblReqSig.Visible = false;
                 rqMaritalStatus.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqNotes.Enabled = false;
-                lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
                 rqSource.Enabled = true;
                 lblSourceReq.Visible = true;
                 lblSourceReq.Visible = true;
@@ -257,8 +257,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -302,7 +302,8 @@ namespace JG_Prospect
                 {
                     ddlSource.DataSource = dsSource.Tables[0];
                     ddlSource.DataTextField = "Source";
-                    ddlSource.DataValueField = "Source";
+                    //ddlSource.DataValueField = "Source";
+                    ddlSource.DataValueField = "Id";
                     ddlSource.DataBind();
                     ddlSource.Items.Insert(0, "Select Source");
                     ddlSource.SelectedIndex = 0;
@@ -393,6 +394,7 @@ namespace JG_Prospect
                         ViewState["Email"] = ds.Tables[0].Rows[0][3].ToString();
                         txtaddress.Text = ds.Tables[0].Rows[0][4].ToString();
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
+                        txtZipHomeAdd.Text = ds.Tables[0].Rows[0][11].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
 
@@ -445,7 +447,7 @@ namespace JG_Prospect
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
-                            System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
+                            System.Web.UI.WebControls.ListItem lstPosition = ddlPositionAppliedFor.Items.FindByValue(ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString());
                             if (lstPosition != null)
                             {
                                 ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPosition);
@@ -465,7 +467,7 @@ namespace JG_Prospect
                             ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
                             Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
                         }
-                        ShowHideAptitudeTestLink();
+                        //ShowHideAptitudeTestLink();
 
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
                         {
@@ -510,8 +512,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -566,8 +568,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -623,8 +625,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -690,8 +692,8 @@ namespace JG_Prospect
                                 rqPhone.Enabled = true;
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
-                                lblNotesReq.Visible = false;
-                                rqNotes.Enabled = false;
+                                //lblNotesReq.Visible = false;
+                                //rqNotes.Enabled = false;
                                 lblReqEmail.Visible = false;
                                 //rqEmail.Enabled = false;
                                 reEmail.Enabled = true;
@@ -770,11 +772,17 @@ namespace JG_Prospect
                             ddlstatus.Enabled = false;
                         }
 
-
-                        if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //if (ds.Tables[0].Rows[0][38].ToString() != "")
+                        //{
+                        //    ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                        //}
+                        //string strs = ds.Tables[0].Rows[0]["SourceID"].ToString();
+                        //Debug.WriteLine(strs);
+                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
                         {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
+                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
                         }
+
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
@@ -882,7 +890,16 @@ namespace JG_Prospect
                         dtResignation.Text = ds.Tables[0].Rows[0][45].ToString();
                         ddlWorkerCompCode.SelectedValue = ds.Tables[0].Rows[0][46].ToString();
                         dtReviewDate.Text = ds.Tables[0].Rows[0][47].ToString();
-                        ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        //ddlEmpType.SelectedValue = ds.Tables[0].Rows[0][48].ToString();
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["EmpType"].ToString()))
+                        {
+                            System.Web.UI.WebControls.ListItem lstEmpType = ddlEmpType.Items.FindByValue(ds.Tables[0].Rows[0]["EmpType"].ToString());
+
+                            if (lstEmpType != null)
+                            {
+                                ddlEmpType.SelectedIndex = ddlEmpType.Items.IndexOf(lstEmpType);
+                            }
+                        }
                         dtLastDate.Text = ds.Tables[0].Rows[0][49].ToString();
                         txtPayRates.Text = ds.Tables[0].Rows[0][50].ToString();
                         //ddlExtraEarning.SelectedValue = ;
@@ -989,15 +1006,27 @@ namespace JG_Prospect
                             //txtContractor3.Text = str_Contractor3;
                         }
                         //txtMajorTools.Text = Convert.ToString(ds.Tables[0].Rows[0][66]);
-                        if (Convert.ToString(ds.Tables[0].Rows[0][67]) != "")
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["CrimeStatus"].ToString()))
                         {
-                            if (Convert.ToBoolean(ds.Tables[0].Rows[0][67]))
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["CrimeStatus"]))
                             {
                                 rdoDrugtestYes.Checked = true;
                             }
                             else
                             {
                                 rdoDrugtestNo.Checked = true;
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FELONY"].ToString()))
+                        {
+                            if (Convert.ToBoolean(ds.Tables[0].Rows[0]["FELONY"]))
+                            {
+                                rdoGuiltyYes.Checked = true;
+                            }
+                            else
+                            {
+                                rdoGuiltyYes.Checked = true;
                             }
                         }
 
@@ -1588,8 +1617,10 @@ namespace JG_Prospect
                 str_Status = ddlstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
                 objuser.Notes = txtNotes.Text;
+
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
                 {
                     str_Reason = txtReson.Text;
@@ -2169,7 +2200,9 @@ namespace JG_Prospect
                 objuser.maritalstatus = ddlmaritalstatus.SelectedValue;
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                objuser.Source = ddlSource.SelectedValue;
+                //objuser.Source = ddlSource.SelectedValue;
+                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -2292,6 +2325,7 @@ namespace JG_Prospect
                 {
                     objuser.DrugTest = false;
                 }
+                //Debug.WriteLine(objuser.DrugTest);
                 //if (rdoDriveLicenseYes.Checked)
                 //{
                 //    objuser.ValidLicense = true;
@@ -2324,15 +2358,15 @@ namespace JG_Prospect
                 {
                     objuser.LicenseStatus = false;
                 }
-                //if (rdoGuiltyYes.Checked)
-                //{
-                //    objuser.CrimeStatus = true;
-                //}
-                //else if (rdoGuiltyNo.Checked)
-                //{
-                //    objuser.CrimeStatus = false;
-                //}
-
+                if (rdoGuiltyYes.Checked)
+                {
+                    objuser.CrimeStatus = true;
+                }
+                else if (rdoGuiltyNo.Checked)
+                {
+                    objuser.CrimeStatus = false;
+                }
+                //Debug.WriteLine(objuser.CrimeStatus);
                 //objuser.Avialability = txtAvailability.Text;
                 //objuser.WarrentyPolicy = txtWarrantyPolicy.Text;
                 //if (txtYrs.Text != "")
@@ -2481,7 +2515,7 @@ namespace JG_Prospect
                         lblInstallerType.Visible = false;
                         ddlInstallerType.Visible = false;
                     }
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User  Update successfully.');window.location ='EditUser.aspx';", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User  Update successfully.');window.location ='~/Sr_App/EditUser.aspx';", true);
                     //Server.Transfer("EditInstallUser.aspx");
                 }
             }
@@ -3053,8 +3087,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3112,8 +3146,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = true;
@@ -3178,8 +3212,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = true;
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = true;
                 //rqEmail.Enabled = true;
                 reEmail.Enabled = true;
@@ -3253,8 +3287,8 @@ namespace JG_Prospect
                 rqPhone.Enabled = false;
                 lblSourceReq.Visible = false;
                 rqSource.Enabled = false;
-                lblNotesReq.Visible = false;
-                rqNotes.Enabled = false;
+                //lblNotesReq.Visible = false;
+                //rqNotes.Enabled = false;
                 lblReqEmail.Visible = false;
                 //rqEmail.Enabled = false;
                 reEmail.Enabled = false;
@@ -3677,69 +3711,69 @@ namespace JG_Prospect
                 ddlmaritalstatus.Visible = true;
             }
 
-            ShowHideAptitudeTestLink();
+            //ShowHideAptitudeTestLink();
 
             hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
         }
 
-        private void ShowHideAptitudeTestLink()
-        {
+        //private void ShowHideAptitudeTestLink()
+        //{
 
-            var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
+        //    var selDesignation = (JGConstant.DesignationType)Convert.ToInt32(ddldesignation.SelectedValue);
 
-            if (Session["ID"] != null && Session["ID"].ToString() != "")
-                switch ((JGConstant.DesignationType)selDesignation)
-                {
-                    case JGConstant.DesignationType.Admin:
-                        break;
-                    case JGConstant.DesignationType.Jr_Sales:
-                        break;
-                    case JGConstant.DesignationType.Jr_Project_Manager:
-                        break;
-                    case JGConstant.DesignationType.Office_Manager:
-                        break;
-                    case JGConstant.DesignationType.Recruiter:
-                        break;
-                    case JGConstant.DesignationType.Sales_Manager:
-                        break;
-                    case JGConstant.DesignationType.Sr_Sales:
-                        break;
-                    case JGConstant.DesignationType.IT_Network_Admin:
-                        break;
-                    case JGConstant.DesignationType.IT_Jr_Net_Developer:
-                    case JGConstant.DesignationType.IT_Sr_Net_Developer:
-                        lbtnAptTestLink.Text = "Aptitude test for .Net";
-                        lbtnAptTestLink.PostBackUrl = "";
+        //    if (Session["ID"] != null && Session["ID"].ToString() != "")
+        //        switch ((JGConstant.DesignationType)selDesignation)
+        //        {
+        //            case JGConstant.DesignationType.Admin:
+        //                break;
+        //            case JGConstant.DesignationType.Jr_Sales:
+        //                break;
+        //            case JGConstant.DesignationType.Jr_Project_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Office_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Recruiter:
+        //                break;
+        //            case JGConstant.DesignationType.Sales_Manager:
+        //                break;
+        //            case JGConstant.DesignationType.Sr_Sales:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Network_Admin:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Jr_Net_Developer:
+        //            case JGConstant.DesignationType.IT_Sr_Net_Developer:
+        //                lbtnAptTestLink.Text = "Aptitude test for .Net";
+        //                lbtnAptTestLink.PostBackUrl = "";
 
-                        break;
-                    case JGConstant.DesignationType.IT_Android_Developer:
-                        break;
-                    case JGConstant.DesignationType.IT_PHP_Developer:
-                        break;
-                    case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
-                        break;
-                    case JGConstant.DesignationType.Installer_Helper:
-                        break;
-                    case JGConstant.DesignationType.Installer_Journeyman:
-                        break;
-                    case JGConstant.DesignationType.Installer_Mechanic:
-                        break;
-                    case JGConstant.DesignationType.Installer_Lead_Mechanic:
-                        break;
-                    case JGConstant.DesignationType.Installer_Foreman:
-                        break;
-                    case JGConstant.DesignationType.Commercial_Only:
-                        break;
-                    case JGConstant.DesignationType.SubContractor:
-                        break;
-                    default:
+        //                break;
+        //            case JGConstant.DesignationType.IT_Android_Developer:
+        //                break;
+        //            case JGConstant.DesignationType.IT_PHP_Developer:
+        //                break;
+        //            case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Helper:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Journeyman:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Mechanic:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Lead_Mechanic:
+        //                break;
+        //            case JGConstant.DesignationType.Installer_Foreman:
+        //                break;
+        //            case JGConstant.DesignationType.Commercial_Only:
+        //                break;
+        //            case JGConstant.DesignationType.SubContractor:
+        //                break;
+        //            default:
 
-                        lbtnAptTestLink.Text = "";
-                        lbtnAptTestLink.PostBackUrl = "";
-                        break;
-                }
+        //                lbtnAptTestLink.Text = "";
+        //                lbtnAptTestLink.PostBackUrl = "";
+        //                break;
+        //        }
 
-        }
+        //}
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3880,7 +3914,8 @@ namespace JG_Prospect
                         {
                             ddlSource.DataSource = dsadd.Tables[0];
                             ddlSource.DataTextField = "Source";
-                            ddlSource.DataValueField = "Source";
+                            //ddlSource.DataValueField = "Source";
+                            ddlSource.DataValueField = "Id";
                             ddlSource.DataBind();
                             ddlSource.Items.Insert(0, "Select Source");
                             ddlSource.SelectedIndex = 0;
@@ -3937,7 +3972,8 @@ namespace JG_Prospect
                     {
                         ddlSource.DataSource = dsadd.Tables[0];
                         ddlSource.DataTextField = "Source";
-                        ddlSource.DataValueField = "Source";
+                        //ddlSource.DataValueField = "Source";
+                        ddlSource.DataValueField = "Id";
                         ddlSource.DataBind();
                         ddlSource.Items.Insert(0, "Select Source");
                         ddlSource.SelectedValue = source;
@@ -6660,7 +6696,6 @@ namespace JG_Prospect
                 txtTouchPointLogNote.Text = "";
             }
         }
-
         protected void btnStartTest_Click(object sender, EventArgs e)
         {
             if (JGSession.UserStatus == JGConstant.InstallUserStatus.Rejected)
@@ -6681,5 +6716,12 @@ namespace JG_Prospect
             Session.Clear();
             Response.Redirect("~/stafflogin.aspx");
         }
+        protected void btnCalClose_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session["LogOut"] = 1;
+            Response.Redirect("~/login.aspx");
+        }
+
     }
 }

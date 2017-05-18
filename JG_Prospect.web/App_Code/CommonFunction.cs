@@ -19,7 +19,6 @@ namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
-
         public static String PreConfiguredAdminUserId
         {
             get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }

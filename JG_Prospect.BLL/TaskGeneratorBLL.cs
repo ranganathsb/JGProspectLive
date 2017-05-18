@@ -104,6 +104,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
+
+        public DataSet GetInstallUserswithIds(int key, string Designation,string TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUserswithIds(key, Designation, TaskId);
+        }
+
         public DataSet GetAllActiveTechTask()
         {
             return TaskGeneratorDAL.Instance.GetAllActiveTechTask();
@@ -117,6 +123,11 @@ namespace JG_Prospect.BLL
         public DataSet GetInstallUserDetails(Int32 Id)
         {
             return TaskGeneratorDAL.Instance.GetInstallUserDetails(Id);
+        }
+
+        public DataTable GetTaskDetailsForMail(Int32 Id)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskDetailsForMail(Id);
         }
 
         public DataSet GetTaskSearchAutoSuggestion(String searchTerm)
