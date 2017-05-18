@@ -626,6 +626,17 @@ namespace JG_Prospect.Sr_App.Controls
 
                 TextBox txtPasswordToFreezeSubTask = e.Item.FindControl("txtPasswordToFreezeSubTask") as TextBox;
 
+                Label lblHoursLeadInPro = e.Item.FindControl("lblHoursLeadInPro") as Label;
+
+                lblHoursLeadInPro.Text = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "AdminOrITLeadEstimatedHours"));
+
+                Label lblHoursDevInPro = e.Item.FindControl("lblHoursDevInPro") as Label;
+
+                lblHoursDevInPro.Text = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "UserEstimatedHours"));
+
+
+
+
                 bool blAdminStatus = false, blTechLeadStatus = false, blOtherUserStatus = false;
 
                 if (!string.IsNullOrEmpty(DataBinder.Eval(e.Item.DataItem, "AdminStatus").ToString()))

@@ -469,8 +469,9 @@
                                                                     <!-- Freezingn Task Part Starts -->
                                                                     <div class="approvalBoxes">
                                                                         <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
-                                                                        <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
                                                                         <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
+                                                                        <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
+                                                                        
                                                                     </div>
                                                                     <div data-taskid='<%# Eval("TaskId")%>' class="approvepopup">
 
@@ -1526,21 +1527,39 @@
        
 
     function FreezeTask(sender) {
+        
         var $sender = $(sender);
+        
+        var adminCheckBox = $sender.attr('data-id');
+        
         var strTaskId = $sender.attr('data-taskid');
         var strHoursId = $sender.attr('data-hours-id');
         var strPasswordId = $sender.attr('data-id');
 
         var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
+        var postData;
+        var MethodToCall;
+        
+        if (adminCheckBox && adminCheckBox.includes("txtAdminPassword")) {
+            postData = {
+                strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+                strTaskId: strTaskId,
+                strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+            };
+            MethodToCall = "AdminFreezeTask";
+        }
+        else {
+            postData = {
+                strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
+                strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+                strTaskId: strTaskId,
+                strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+            };
+            MethodToCall = "FreezeTask";
+        }
+         
 
-        var postData = {
-            strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
-            strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
-            strTaskId: strTaskId,
-            strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
-        };
-
-        CallJGWebService('FreezeTask', postData, OnFreezeTaskSuccess);
+        CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
 
         function OnFreezeTaskSuccess(data) {
             if (data.d.Success) {

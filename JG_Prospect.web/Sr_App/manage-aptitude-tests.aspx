@@ -146,7 +146,7 @@
                 "Designations": arrAssignedDesign .join()              
             };
 
-            CallJGWebService('SaveExamDesignation', postData, function (data) { OnExamSaveDesignationsSuccess(data, sender) });
+             CallJGWebServiceCommon('SaveExamDesignation', postData, function (data) { OnExamSaveDesignationsSuccess(data, sender) });
 
             function OnExamSaveDesignationsSuccess(data, sender) {
                 HideAjaxLoader();
@@ -156,36 +156,5 @@
 
         }
 
-      
-
-        function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnErrorCallBack) {
-            $.ajax
-            (
-                {
-                    url: '/WebServices/JGWebService.asmx/' + strWebMethod,
-                    contentType: 'application/json; charset=utf-8;',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: JSON.stringify(objPostDataJSON),
-                    asynch: false,
-                    success: function (data) {
-                        HideAjaxLoader();
-                        if (typeof (OnSuccessCallBack) === 'function') {
-                            OnSuccessCallBack(data);
-                        }
-                    },
-                    error: function (a, b, c) {
-                        HideAjaxLoader();
-                        console.log('jQuery ajax error.');
-                        console.log(a);
-                        console.log(b);
-                        console.log(c);
-                        if (typeof (OnErrorCallBack) === 'function') {
-                            OnErrorCallBack(a, b, c);
-                        }
-                    }
-                }
-            );
-        }
     </script>
 </asp:Content>

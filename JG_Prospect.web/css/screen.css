@@ -1565,6 +1565,9 @@ input.fz-user, .fz-user > input {
 .redtext {
     color: red !important;
 }
+.greentext {
+    color: darkgreen !important;
+}
 
 .haligncenter {
     text-align: center;
@@ -2028,4 +2031,9 @@ li.activeUser {
 }
 li.IOUser {
     color: blue !important;
+}
+
+li.testresults {
+font-size:small;
+font-weight:normal;
 }

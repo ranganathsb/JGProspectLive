@@ -87,7 +87,7 @@
     </script>
     <script type="text/javascript">
         $(function () {
-            
+
             pageLoad();
             $("#DOBdatepicker").datepicker({
                 changeMonth: true,
@@ -134,25 +134,25 @@
 
         //function pageLoad() { $(document).ready(function () {    });  }
 
-    function ClosePassword() {
-        document.getElementById('litePassword').style.display = 'none';
-        document.getElementById('fadePassword').style.display = 'none';
-    }
+        function ClosePassword() {
+            document.getElementById('litePassword').style.display = 'none';
+            document.getElementById('fadePassword').style.display = 'none';
+        }
 
-    function overlayPassword() {
-        document.getElementById('litePassword').style.display = 'block';
-        document.getElementById('fadePassword').style.display = 'block';
-    }
+        function overlayPassword() {
+            document.getElementById('litePassword').style.display = 'block';
+            document.getElementById('fadePassword').style.display = 'block';
+        }
 
-    function ClosePopup() {
-        document.getElementById('light').style.display = 'none';
-        document.getElementById('fade').style.display = 'none';
-    }
+        function ClosePopup() {
+            document.getElementById('light').style.display = 'none';
+            document.getElementById('fade').style.display = 'none';
+        }
 
-    function overlay() {
-        document.getElementById('light').style.display = 'block';
-        document.getElementById('fade').style.display = 'block';
-    }
+        function overlay() {
+            document.getElementById('light').style.display = 'block';
+            document.getElementById('fade').style.display = 'block';
+        }
 
     </script>
     <script type="text/javascript">
@@ -341,32 +341,32 @@
         }
         function pageLoad() {
             $(document).ready(function () {
-                 changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
+                changeFlag('#<%=ddlCountry.ClientID%>'); // Set Flag.
 
-            $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
-                changeFlag('#<%=ddlCountry.ClientID%>');
-           });
+                $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
+                    changeFlag('#<%=ddlCountry.ClientID%>');
+                });
 
             <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
 
-            $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
-                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
-            });
-            $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
-                showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
-            });
+                $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
+                    showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+                });
+                $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
+                    showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
+                });
 
-            var text_max = 50;
-            $('#textarea_CharCount').html(text_max + ' characters remaining');
+                var text_max = 50;
+                $('#textarea_CharCount').html(text_max + ' characters remaining');
 
-            $('#<%=txtREasonChange.ClientID%>').keyup(function () {
-                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
-                var text_remaining = text_max - text_length;
+                $('#<%=txtREasonChange.ClientID%>').keyup(function () {
+                    var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
+                    var text_remaining = text_max - text_length;
 
-                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
-            });
+                    $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
+                });
 
                 SetSectionShowHideOnReady();
 
@@ -588,125 +588,125 @@
                 $('#tblBasicAssessment').show();
             }
 
-        }
+}
 
-        function formatCurrency(number) {
-            var n = number.split('').reverse().join("");
-            var n2 = n.replace(/\d\d\d(?!$)/g, "$&,");
-            return '$' + n2.split('').reverse().join('');
-        }
+function formatCurrency(number) {
+    var n = number.split('').reverse().join("");
+    var n2 = n.replace(/\d\d\d(?!$)/g, "$&,");
+    return '$' + n2.split('').reverse().join('');
+}
 
-        function SetEmailValuefromCtlToHid() {
-            var delimeter = '|,|';
-            var strEmailIds = '';
+function SetEmailValuefromCtlToHid() {
+    var delimeter = '|,|';
+    var strEmailIds = '';
 
-            var mailEmail = $('#<%= txtemail.ClientID %>').val();
+    var mailEmail = $('#<%= txtemail.ClientID %>').val();
 
-            validateEmail(mailEmail);
+    validateEmail(mailEmail);
 
-            $('#EmailContainer .ExtEmailClass').each(function () {
-                if (this.value != '') {
+    $('#EmailContainer .ExtEmailClass').each(function () {
+        if (this.value != '') {
 
-                    if (strEmailIds == '') {
-                        strEmailIds = strEmailIds + this.value;
-                    }
-                    else {
-                        strEmailIds = strEmailIds + delimeter + this.value;
-                    }
-                }
-            });
-
-            $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
-        }
-
-        function SetPhoneValuefromCtlToHid() {
-            var delimeter = '|,|';
-            var Subdelimeter = '|%|';
-            var strPhoneValue = '';
-            var len = $('.ExtAddPhone').length;
-            var PhoneISDCode = [];
-            var txtPhone = [];
-            var txtPhoneExt = [];
-            var ddlPhoneType = [];
-            var chkPhoneProroty = [];
-            var i = 0;
-
-            if (len <= 0) {
-                return;
+            if (strEmailIds == '') {
+                strEmailIds = strEmailIds + this.value;
             }
-            var html = $('#container').clone();
-
-            //== Getting value of Phone Type selected 
-            $('#container .ddlPhoneTypeExt').each(function () {
-                ddlPhoneType[i] = this.value;
-
-                var optionSelected = $("option:selected", this).text();
-
-                if ((optionSelected.lastIndexOf('Other') < 0) && (optionSelected != 'skype') && (optionSelected != 'whatsapp')) {
-                    //IF not other or skyp then get the value of ext and country ISD
-
-                    var PhoneExtID = '#' + this.getAttribute("AddtxtPhoneExtID");
-                    var txtPhoneID = '#' + this.getAttribute("AddtxtPhoneID");
-                    //ShowPhoneExtOnType(optionSelected, txtPhoneID, PhoneExtID);
-
-                    //$(txtPhoneID).intlTelInput("setCountry", 'in');
-                    //var countryData = $(txtPhoneID).intlTelInput("getSelectedCountryData");
-                    //alert(countryData.iso2);
-                    var countryData = $(txtPhoneID).intlTelInput("getSelectedCountryData");
-                    PhoneISDCode[i] = countryData.iso2;
-                    txtPhoneExt[i] = $(PhoneExtID).val();
-                }
-                else {
-                    PhoneISDCode[i] = "";
-                    txtPhoneExt[i] = "";
-                }
-
-                i++;
-            });
-
-            i = 0;
-            //== Getting value of Phone Type Checkbox 
-            $('#container .PrimaryPhonechk').each(function () {
-                if (this.checked == true) {
-                    chkPhoneProroty[i] = "1";
-                }
-                else {
-                    chkPhoneProroty[i] = "0";
-                }
-
-                i++;
-            });
-
-            i = 0;
-            //== Getting value of Phone Type textBox
-            $('#container .ExtPhoneClass').each(function () {
-                txtPhone[i] = this.value;
-                i++;
-            });
-
-
-            for (i = 0; i < len; i++) {
-                //var txtPhone = html.find('[name=AddedPhone' + i + ']');
-                if (txtPhone[i] != '') {
-                    var strPhoneCombainValue = chkPhoneProroty[i] + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
-
-                    if (strPhoneValue == '') {
-                        strPhoneValue = strPhoneCombainValue;
-                    }
-                    else {
-                        strPhoneValue = strPhoneValue + delimeter + strPhoneCombainValue;
-                    }
-                }
+            else {
+                strEmailIds = strEmailIds + delimeter + this.value;
             }
+        }
+    });
+
+    $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
+}
+
+function SetPhoneValuefromCtlToHid() {
+    var delimeter = '|,|';
+    var Subdelimeter = '|%|';
+    var strPhoneValue = '';
+    var len = $('.ExtAddPhone').length;
+    var PhoneISDCode = [];
+    var txtPhone = [];
+    var txtPhoneExt = [];
+    var ddlPhoneType = [];
+    var chkPhoneProroty = [];
+    var i = 0;
+
+    if (len <= 0) {
+        return;
+    }
+    var html = $('#container').clone();
+
+    //== Getting value of Phone Type selected 
+    $('#container .ddlPhoneTypeExt').each(function () {
+        ddlPhoneType[i] = this.value;
+
+        var optionSelected = $("option:selected", this).text();
+
+        if ((optionSelected.lastIndexOf('Other') < 0) && (optionSelected != 'skype') && (optionSelected != 'whatsapp')) {
+            //IF not other or skyp then get the value of ext and country ISD
+
+            var PhoneExtID = '#' + this.getAttribute("AddtxtPhoneExtID");
+            var txtPhoneID = '#' + this.getAttribute("AddtxtPhoneID");
+            //ShowPhoneExtOnType(optionSelected, txtPhoneID, PhoneExtID);
+
+            //$(txtPhoneID).intlTelInput("setCountry", 'in');
+            //var countryData = $(txtPhoneID).intlTelInput("getSelectedCountryData");
+            //alert(countryData.iso2);
+            var countryData = $(txtPhoneID).intlTelInput("getSelectedCountryData");
+            PhoneISDCode[i] = countryData.iso2;
+            txtPhoneExt[i] = $(PhoneExtID).val();
+        }
+        else {
+            PhoneISDCode[i] = "";
+            txtPhoneExt[i] = "";
+        }
+
+        i++;
+    });
+
+    i = 0;
+    //== Getting value of Phone Type Checkbox 
+    $('#container .PrimaryPhonechk').each(function () {
+        if (this.checked == true) {
+            chkPhoneProroty[i] = "1";
+        }
+        else {
+            chkPhoneProroty[i] = "0";
+        }
+
+        i++;
+    });
+
+    i = 0;
+    //== Getting value of Phone Type textBox
+    $('#container .ExtPhoneClass').each(function () {
+        txtPhone[i] = this.value;
+        i++;
+    });
+
+
+    for (i = 0; i < len; i++) {
+        //var txtPhone = html.find('[name=AddedPhone' + i + ']');
+        if (txtPhone[i] != '') {
+            var strPhoneCombainValue = chkPhoneProroty[i] + Subdelimeter + PhoneISDCode[i] + Subdelimeter + txtPhone[i] + Subdelimeter + txtPhoneExt[i] + Subdelimeter + ddlPhoneType[i];
+
+            if (strPhoneValue == '') {
+                strPhoneValue = strPhoneCombainValue;
+            }
+            else {
+                strPhoneValue = strPhoneValue + delimeter + strPhoneCombainValue;
+            }
+        }
+    }
 
 
 
 
-            //chkPhoneProroty[i] + Subdelimeter + txtPhone[i] + Subdelimeter + ddlPhoneType[i];
-            //So it will be like Eg.for 1 record =="1|%|9429822|%|WorkPhone
-            //So it will be like Eg.for 2 record =="1|%|9429822|%|WorkPhone|,|0|%|937660|%|HomePhone
+    //chkPhoneProroty[i] + Subdelimeter + txtPhone[i] + Subdelimeter + ddlPhoneType[i];
+    //So it will be like Eg.for 1 record =="1|%|9429822|%|WorkPhone
+    //So it will be like Eg.for 2 record =="1|%|9429822|%|WorkPhone|,|0|%|937660|%|HomePhone
 
-            $('#<%= hidExtPhone.ClientID %>').val(strPhoneValue);
+    $('#<%= hidExtPhone.ClientID %>').val(strPhoneValue);
         }
 
         function ReadPhoneValuesFromHidGenControls() {
@@ -1817,7 +1817,7 @@
                             </table>
 
 
-                            
+
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
                                 <tr>
@@ -1859,7 +1859,7 @@
                                         <input type="button" id="btnSkillAssMinusNew" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-AdminAssess" style="float:left;">Skill Assessment</div>
+                                        <div id="div-AdminAssess" style="float: left;">Skill Assessment</div>
                                         <div style="float: right; margin-right: 25px;">
                                             <asp:LinkButton ID="lbtnAptTestLink1" OnClientClick="return false" runat="server"></asp:LinkButton>
                                         </div>
@@ -2305,10 +2305,15 @@
 
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
-                                        <div id="div-BasicAssessment" style="float:left;"></div>
+                                        <div id="div-BasicAssessment" style="float: left;"></div>
                                         <div style="float: right; margin-right: 25px;">
                                             <asp:LinkButton ID="lbtnAptTestLink2" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                            <br />
+                                            <ul id="ulTestResults"></ul>
                                         </div>
+
+
+
                                     </td>
                                 </tr>
                             </table>
@@ -2917,6 +2922,7 @@
                                     </td>
                                     <td style="font-weight: bold; font-size: large">
                                         <div id="div-BasicAssessment"></div>
+
                                     </td>
                                 </tr>
                             </table>
@@ -4942,11 +4948,11 @@
 
         $(function () {
             Initialize();
-            $.fn.hitch = function (scope, fn) {
-                //return function () {
-                //    return fn.apply(scope, arguments);
-                //}
-            }
+            //$.fn.hitch = function (scope, fn) {
+            //    //return function () {
+            //    //    return fn.apply(scope, arguments);
+            //    //}
+            //}
         });
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -4957,6 +4963,7 @@
 
         function Initialize() {
             ApplyDropZone();
+            GetApptitudeResult();
         }
 
 
@@ -5028,68 +5035,68 @@
 
 
                 $("#<%=ddlstatus.ClientID%>").click(function () {
-                if ($('#<%=ddlstatus.ClientID%>').val() == "Active") {
-                    $('#pnlcolaps').show(500);
-                } else {
-                    $("#pnlcolaps").hide(500);
-                }
-            });
-            var des = $("#ddldesignation").val();
-            $("#lnkW9").hide();
-            $("#lnkw4").hide();
-            $("#lnkI9").hide();
-            $("#lnkEsrow").hide();
-            $("#lnkface").hide();
-            if (des == "ForeMan") {
+                    if ($('#<%=ddlstatus.ClientID%>').val() == "Active") {
+                        $('#pnlcolaps').show(500);
+                    } else {
+                        $("#pnlcolaps").hide(500);
+                    }
+                });
+                var des = $("#ddldesignation").val();
                 $("#lnkW9").hide();
-                $("#lnkw4").show();
-                $("#lnkI9").show();
-                $("#lnkEsrow").hide();
-                $("#lnkface").hide();
-                Installer;
-            }
-            else if (des == "Installer") {
-                $("#lnkW9").hide();
-                $("#lnkw4").show();
-                $("#lnkI9").show();
-                $("#lnkEsrow").hide();
-                $("#lnkface").hide();
-
-            }
-            else if (des == "SubContractor") {
-                $("#lnkW9").show();
                 $("#lnkw4").hide();
-                $("#lnkI9").show();
-                $("#lnkEsrow").show();
-                $("#lnkface").show();
+                $("#lnkI9").hide();
+                $("#lnkEsrow").hide();
+                $("#lnkface").hide();
+                if (des == "ForeMan") {
+                    $("#lnkW9").hide();
+                    $("#lnkw4").show();
+                    $("#lnkI9").show();
+                    $("#lnkEsrow").hide();
+                    $("#lnkface").hide();
+                    Installer;
+                }
+                else if (des == "Installer") {
+                    $("#lnkW9").hide();
+                    $("#lnkw4").show();
+                    $("#lnkI9").show();
+                    $("#lnkEsrow").hide();
+                    $("#lnkface").hide();
 
+                }
+                else if (des == "SubContractor") {
+                    $("#lnkW9").show();
+                    $("#lnkw4").hide();
+                    $("#lnkI9").show();
+                    $("#lnkEsrow").show();
+                    $("#lnkface").show();
+
+                }
+
+                //On UpdatePanel Refresh
+                //;
+                var prm = Sys.WebForms.PageRequestManager.getInstance();
+                if (prm != null) {
+                    // ;
+                    prm.add_beginRequest(function (sender, e) {
+                        if (sender._postBackSettings.panelsToUpdate != null) {
+                            $(".loading").show();
+                        }
+                    });
+                    prm.add_endRequest(function (sender, e) {
+                        if (sender._postBackSettings.panelsToUpdate != null) {
+                            $(".loading").hide();
+                            $("#<%=ddlstatus.ClientID %>").msDropDown();
+                        }
+                    });
+
+                };
+            });
+
+            try {
+                $("#<%=ddlstatus.ClientID%>").msDropDown();
+            } catch (e) {
+                alert(e.message);
             }
-
-            //On UpdatePanel Refresh
-            //;
-            var prm = Sys.WebForms.PageRequestManager.getInstance();
-            if (prm != null) {
-                // ;
-                prm.add_beginRequest(function (sender, e) {
-                    if (sender._postBackSettings.panelsToUpdate != null) {
-                        $(".loading").show();
-                    }
-                });
-                prm.add_endRequest(function (sender, e) {
-                    if (sender._postBackSettings.panelsToUpdate != null) {
-                        $(".loading").hide();
-                        $("#<%=ddlstatus.ClientID %>").msDropDown();
-                    }
-                });
-
-            };
-        });
-
-        try {
-            $("#<%=ddlstatus.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
 
 
         <%--try {
@@ -5098,6 +5105,35 @@
             alert(e.message);
         }
         --%>
+
+        function GetApptitudeResult() {
+
+            var UserID = $('#<%= hidID.ClientID %>').val();
+
+            var postData = {
+                "UserID": UserID,
+            };
+
+            CallJGWebServiceCommon('GetTestResultsByUserID', postData, function (data) { OnTestScoreSuccess(data) });
+
+            function OnTestScoreSuccess(data) {
+
+                if (data) {
+
+                    var results = JSON.parse(data.d);
+                    $.each(results, function (index, item) {
+                       
+                        var cssclass = "redtext";
+                        if (item.Result == "1") {
+                            cssclass = "greentext";
+                        }
+                        $('#ulTestResults').prepend($('<li class="testresults"> <span class="' + cssclass + '"> <a target="_blank" href="/Sr_App/view-aptitude-test.aspx?ExamID=' + item.ExamID + '">' + item.ExamTitle + '</a> - ' + item.Aggregate + '% </span></li>'));
+                    });
+                }
+
+            }
+
+        }
 
     </script>
 

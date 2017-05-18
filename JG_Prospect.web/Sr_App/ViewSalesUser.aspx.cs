@@ -95,6 +95,7 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
+                
                 FillControls();
                 BindProducts1();
                 BindProducts2();

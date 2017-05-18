@@ -34,26 +34,51 @@ namespace JG_Prospect.DAL
 
         public DataTable GetPerformanceByUserID(int userID)
         {
-            string SQL = "select * from [MCQ_Performance] where UserID = '" + userID.ToString() + "'";
+            //string SQL = "select * from [MCQ_Performance] where UserID = '" + userID.ToString() + "'";
 
-            using (SqlConnection con = new SqlConnection(constr))
+            //using (SqlConnection con = new SqlConnection(constr))
+            //{
+            //    using (SqlCommand cmd = new SqlCommand())
+            //    {
+            //        cmd.CommandText = SQL;
+            //        using (SqlDataAdapter sda = new SqlDataAdapter())
+            //        {
+            //            cmd.Connection = con;
+            //            sda.SelectCommand = cmd;
+            //            using (DataSet ds = new DataSet())
+            //            {
+            //                DataTable dt = new DataTable();
+            //                sda.Fill(dt);
+            //                return dt;
+            //            }
+            //        }
+            //    }
+            //}
+            DataTable dt = null;
+
+            try
             {
-                using (SqlCommand cmd = new SqlCommand())
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    cmd.CommandText = SQL;
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    DbCommand command = database.GetStoredProcCommand("usp_GetCandidateTestsResults");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.String, userID.ToString());
+                    DataSet dsResult =  database.ExecuteDataSet(command);
+                    
+
+                    if ( dsResult != null && dsResult.Tables.Count > 0)
                     {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataSet ds = new DataSet())
-                        {
-                            DataTable dt = new DataTable();
-                            sda.Fill(dt);
-                            return dt;
-                        }
+                        dt = dsResult.Tables[0];
                     }
+                    
                 }
             }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return dt;
         }
 
         public DataTable GetcorrectAnswerByQuestionID(int questionID)

@@ -10,6 +10,7 @@ using JG_Prospect.Common;
 using JG_Prospect.App_Code;
 using System.Net.Mail;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace JG_Prospect.WebServices
 {
@@ -213,6 +214,64 @@ namespace JG_Prospect.WebServices
                     blIsUser = true;
                 }
 
+                TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                            (
+                                                objTask,
+                                                blIsAdmin,
+                                                blIsTechLead,
+                                                blIsUser
+                                            );
+
+                blSuccess = true;
+                strMessage = "Sub Task freezed successfully.";
+
+                #endregion
+            }
+
+            var result = new
+            {
+                Success = blSuccess,
+                Message = strMessage,
+                TaskId = strTaskId
+            };
+
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public object AdminFreezeTask( string strTaskApprovalId, string strTaskId, string strPassword)
+        {
+            string strMessage;
+            bool blSuccess = false;
+            
+            if (string.IsNullOrEmpty(strPassword))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not provided.";
+            }
+            else if (!strPassword.Equals(Convert.ToString(Session["loginpassword"])))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not valid.";
+            }
+           else
+            {
+                
+                #region Update Task (Freeze, Status)
+
+                Task objTask = new Task();
+
+                objTask.TaskId = Convert.ToInt32(strTaskId);
+
+                bool blIsAdmin, blIsTechLead, blIsUser;
+
+                blIsAdmin = blIsTechLead = blIsUser = false;
+                if (JGSession.DesignationId == (byte)JG_Prospect.Common.JGConstant.DesignationType.Admin)
+                {
+                    objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                    objTask.AdminStatus = true;
+                    blIsAdmin = true;
+                }
+                               
                 TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
                                             (
                                                 objTask,
@@ -688,15 +747,6 @@ namespace JG_Prospect.WebServices
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
         }
 
-        [WebMethod(EnableSession = true)]
-        public bool SaveExamDesignation(Int64 intExamId, string Designations)
-        {
-            bool returnVal = true;
-            AptitudeTestBLL.Instance.UpdateMCQ_ExamDesignations(intExamId, Designations);
-            return returnVal;
-        }
-
-
         #endregion
 
         #region '--Private Methods--'
@@ -951,6 +1001,38 @@ namespace JG_Prospect.WebServices
             {
 
             }
+        }
+
+        #endregion
+
+        #region "-- Apptitude Test --"
+
+        [WebMethod(EnableSession = true)]
+        public bool SaveExamDesignation(Int64 intExamId, string Designations)
+        {
+            bool returnVal = true;
+            AptitudeTestBLL.Instance.UpdateMCQ_ExamDesignations(intExamId, Designations);
+            return returnVal;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetTestResultsByUserID(Int32 UserID)
+        {
+            DataTable dtResult = AptitudeTestBLL.Instance.GetPerformanceByUserID(UserID);
+            String ExamResults;
+
+
+            if (dtResult != null)
+            {
+                 ExamResults = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                ExamResults = String.Empty;
+            }
+
+            return ExamResults;
+        
         }
 
         #endregion
