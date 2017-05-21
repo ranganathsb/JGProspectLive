@@ -23,6 +23,7 @@
 
     <script type="text/javascript">
         function showAptTestPage(PageUrl) {
+
             var $dialog = $('<div class="Aptitude-popup"></div>')
                            .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
                            .dialog({
@@ -32,25 +33,30 @@
                                width: 800,
                                title: "Aptitude Test"
                            });
+
+            var testConfirmationPopup = $('#<%=divStartTest.ClientID%>');
+
+            $dialog.append(testConfirmationPopup);
+
             $dialog.dialog('open');
         }
 
         //function pageLoad() {
         $(document).ready(function () {
 
-            var dlg = $('#pnlFirstPopup').dialog({
-                width: 270,
-                show: 'slide',
-                hide: 'slide',
-                autoOpen: true,
-                modal: true,
-                closeOnEscape: false,
-                dialogClass: 'task-no-close-dialog'
-            });
+            //var dlg = $('#pnlFirstPopup').dialog({
+            //    width: 270,
+            //    show: 'slide',
+            //    hide: 'slide',
+            //    autoOpen: true,
+            //    modal: true,
+            //    closeOnEscape: false,
+            //    dialogClass: 'task-no-close-dialog'
+            //});
 
-            //dlg.parent().appendTo(jQuery("form:first"));
+            ////dlg.parent().appendTo(jQuery("form:first"));
 
-            $('#pnlFirstPopup').dialog('open');
+            //$('#pnlFirstPopup').dialog('open');
 
             $('#lbtnAptTestLink').click(function () {
                 showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
@@ -5142,11 +5148,11 @@
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
     <div class="hide">
-        <div id="divStartTest" runat="server"  title="Apptitude Test" data-width="300px">
+        <div id="divStartTest" runat="server" style="text-align:center;" title="Apptitude Test" data-width="300px">
             <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />
-                    <asp:Button ID="btnCancelTest" runat="server" Text="Cancel" OnClick="btnCancelTest_Click" />
+                    <%--<asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />--%>
+                    <asp:Button ID="btnCancelTest" runat="server" CssClass="ui-button" Text="Cancel Test" OnClick="btnCancelTest_Click" />
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
