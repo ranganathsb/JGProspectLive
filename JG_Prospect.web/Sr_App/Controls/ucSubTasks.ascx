@@ -102,9 +102,13 @@
             }
 
         .Descpopup .content {
-            max-height: 30%;
+            /*max-height: 30%;
             overflow: auto;
-            overflow-x: hidden;
+            overflow-x: hidden;*/
+            max-height: 450px;
+            overflow: scroll;
+            width: 96%;
+            height: 450px;
         }
 
             .Descpopup .content img {
@@ -151,6 +155,58 @@
     .sub-task-attachments-list {
         height: 270px !important;
     }
+
+    .handle-counter {
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+        .handle-counter .counter-minus, .handle-counter .counter-plus, .handle-counter input {
+            float: left;
+            text-align: center;
+        }
+
+        .handle-counter .counter-minus, .handle-counter .counter-plus {
+            text-align: center;
+        }
+
+        .handle-counter input {
+            width: 50px;
+            border-width: 1px;
+            border-left: none;
+            border-right: none;
+        }
+
+    .btn {
+        padding: 6px 12px;
+        border: 1px solid transparent;
+        color: #fff;
+    }
+
+    .badge {
+        padding: 3px 8px;
+        border: 1px solid transparent;
+        color: #fff;
+    }
+
+    .badge-success {
+        background-color: forestgreen;
+    }
+
+    .btn:disabled, .btn:disabled:hover {
+        background-color: darkgrey;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background-color: #009dda;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #0486b9;
+        }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -173,24 +229,8 @@
             <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
             <table class="tablealign fullwidth">
                 <tr>
-                    <td>ListID:
-                               
-                               
-
-                               
-
-
-
-                        <asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
-                        &nbsp;
-                               
-                               
-
-                               
-
-
-
-                        <small>
+                    <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
+                        &nbsp;<small>
                             <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
                                 <asp:Literal ID="listIDOpt" runat="server" />
                             </a>
@@ -198,51 +238,22 @@
                         <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" Checked="false" />
                     </td>
                     <td>Type <span style="color: red;">*</span>:
-                               
-                               
-
-                               
-
-
-
-                        <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
+ <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
                             ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
-                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:
-                               
-                               
-
-                               
-
-
-
-                        <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:<asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
                             ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
                     </td>
                 </tr>
                 <tr>
                     <td>Title <span style="color: red;">*</span>:
-                               
-                               
-
-                               
-
-
-
                         <br />
                         <asp:TextBox ID="txtSubTaskTitle" Text="" runat="server" Width="98%" CssClass="textbox" TextMode="SingleLine" />
                         <asp:RequiredFieldValidator ID="rfvTitle" runat="server" Display="None" ValidationGroup="vgSubTask"
                             ControlToValidate="txtSubTaskTitle" ErrorMessage="Please enter Task Title." />
                     </td>
                     <td>Url <span style="color: red;">*</span>:
-                               
-                               
-
-                               
-
-
-
                         <br />
                         <asp:TextBox ID="txtUrl" Text="" runat="server" Width="98%" CssClass="textbox" />
                         <asp:RequiredFieldValidator ID="rfvUrl" runat="server" Display="None" ValidationGroup="vgSubTask"
@@ -269,54 +280,12 @@
                 </tr>
                 <%--as per discussion attachemnt field should be removed.--%>
                 <tr runat="server" visible="false">
-                    <td colspan="2">Attachment(s):
-                               
-                               
-                               
-
-
-                        <%--remove this--%>
-                        <%--<div style="max-height: 300px; clear: both; background-color: white; overflow-y: auto; overflow-x: hidden;">
-                                    <asp:UpdatePanel ID="upnlAttachments" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <asp:Repeater ID="rptSubTaskAttachments" runat="server"
-                                                OnItemDataBound="rptSubTaskAttachments_ItemDataBound"
-                                                OnItemCommand="rptSubTaskAttachments_ItemCommand">
-                                                <HeaderTemplate>
-                                                    <ul style="width: 100%; list-style-type: none; margin: 0px; padding: 0px;">
-                                                </HeaderTemplate>
-                                                <ItemTemplate>
-                                                    <li style="margin: 10px; text-align: center; float: left; width: 100px;">
-                                                        <asp:LinkButton ID="lbtnDelete" runat="server" ClientIDMode="AutoID" ForeColor="Blue" Text="Delete" CommandArgument='<%#Eval("Id").ToString()+ "|" + Eval("attachment").ToString() %>' CommandName="delete-attachment" />
-                                                        <br />
-                                                        <img id="imgIcon" class="gallery-ele" runat="server" height="100" width="100" src="javascript:void(0);" />
-                                                        <br />
-                                                        <small>
-                                                            <asp:LinkButton ID="lbtnDownload" runat="server" ForeColor="Blue" CommandName="download-attachment" />
-                                                            <br />
-                                                            <small><%# Convert.ToDateTime(Eval("UpdatedOn")).ToString("MM/dd/yyyy hh:mm tt") %></small>
-                                                        </small>
-                                                    </li>
-                                                </ItemTemplate>
-                                                <FooterTemplate>
-                                                    </ul>
-                                                                       
-                                               
-                                               
-                                                </FooterTemplate>
-                                            </asp:Repeater>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                </div>--%>
-                        <%--remove end--%>
+                    <td colspan="2">Attachment(s):                        
                     </td>
                 </tr>
 
                 <tr>
                     <td colspan="2">Description <span style="color: red;">*</span>:
-                
-                               
-
                         <br />
                         <asp:TextBox ID="txtSubTaskDescription" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="5" Width="98%" />
                         <asp:RequiredFieldValidator ID="rfvSubTaskDescription" ValidationGroup="vgSubTask"
@@ -399,14 +368,7 @@
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                     <asp:Button ID="btnSearch" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearch_Click" />
 
-                    Number of Records: 
-                               
-                   
-
-                   
-
-
-
+                    Number of Records:                                
                     <asp:DropDownList ID="drpPageSize" runat="server" AutoPostBack="true"
                         OnSelectedIndexChanged="drpPageSize_SelectedIndexChanged">
                         <asp:ListItem Text="5" Value="5" />
@@ -471,7 +433,7 @@
                                                                         <asp:CheckBox ID="chkAdmin" runat="server" CssClass="fz fz-admin" ToolTip="Admin" ClientIDMode="AutoID" />
                                                                         <asp:CheckBox ID="chkITLead" runat="server" CssClass="fz fz-techlead" ToolTip="IT Lead" ClientIDMode="AutoID" />
                                                                         <asp:CheckBox ID="chkUser" runat="server" CssClass="fz fz-user" ToolTip="User" ClientIDMode="AutoID" />
-                                                                        
+
                                                                     </div>
                                                                     <div data-taskid='<%# Eval("TaskId")%>' class="approvepopup">
 
@@ -615,8 +577,6 @@
                                                                         <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                                                     </div>
                                                                     <div class="clr" style="height: 1px;"></div>
-                                                                    <%--<asp:LinkButton ID="lnkAddMoreSubTask" Style="display: inline;" runat="server" ClientIDMode="AutoID" CssClass="showsubtaskDIV"
-                                                                         >+</asp:LinkButton>--%><%--OnClick="lnkAddMoreSubTask_Click"--%>
                                                                     <asp:Button ID="btnshowdivsub1" CssClass='<%#Eval("NestLevel").ToString() == "2" ? "showsubtaskDIV" : "hide" %>' runat="server" Text="+" data-parent-taskid='<%# Eval("TaskId")%>'
                                                                         Style="text-decoration: underline; cursor: pointer; background: none;" OnClientClick="return false;" />
                                                                     &nbsp;
@@ -654,7 +614,22 @@
                                                                         <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
+                                                                        <li>Sequence
+                                                                        </li>
+                                                                        <li>
+                                                                            <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
+                                                                            <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this);" data-taskid='<%# Eval("TaskId")%>'>Edit</a>
+                                                                            <div class="handle-counter hide" id='divSeq<%# Eval("TaskId")%>'>
+                                                                                <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
+                                                                                <input type="text" class="textbox" data-original-val='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' id='txtSeq<%# Eval("TaskId")%>' value='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' />
+                                                                                <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
+                                                                                <div style="clear: both;">
+                                                                                    <a id="save" href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' onclick="javascript:UpdateTaskSequence(this);">Save</a>
+                                                                                </div>
+                                                                            </div>
 
+
+                                                                        </li>
                                                                     </ul>
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
@@ -753,8 +728,6 @@
                                         
                                                                                         </div>
                                                                            
-                                                                                       
-                                                                                               
                                                                                                 </FooterTemplate>
                                                                                             </asp:Repeater>
 
@@ -822,13 +795,7 @@
                 </td>
 
                 <td>Sub Title <span style="color: red;">*</span>:
-                                   
-                                   
-
-                                   
-
-
-
+                  
                     <asp:TextBox ID="txtSubSubTitle" runat="server"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ValidationGroup="SubmitSubTask"
                         runat="server" ControlToValidate="txtSubSubTitle" ForeColor="Red"
@@ -903,26 +870,7 @@
                 <fieldset>
                     <legend>
                         <asp:Literal ID="ltrlSubTaskFeedbackTitle" runat="server" /></legend>
-                    <%--<table cellspacing="3" cellpadding="3" width="100%">
-                        <tr>
-                            <td>
-                                <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1"
-                                    style="background-color: White; width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr class="trHeader " style="color: White; background-color: Black;">
-                                            <th align="left" scope="col">Description</th>
-                                            <th align="center" scope="col" style="width: 15%;">Attachments</th>
-                                        </tr>
-                                        <tr class="FirstRow">
-                                            <td align="left">Feedback for sub task with install Id I.
-                                            </td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>--%>
+
                     <table id="tblAddEditSubTaskFeedback" runat="server" cellspacing="3" cellpadding="3" width="100%">
                         <tr>
                             <td colspan="2">&nbsp;
@@ -982,6 +930,8 @@
 </div>
 <%--Popup Ends--%>
 <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/js/handleCounter.js")%>"></script>
+
 
 <script type="text/template" class="hide" data-id="divSubTaskCommentTemplate">
     <table width="100%">
@@ -1078,8 +1028,6 @@
         CallJGWebService('GetTaskComments', postData, function (data) { OnGetTaskCommentsSuccess(data, sender) });
 
         function OnGetTaskCommentsSuccess(data, sender) {
-
-            //debugger;
             if (data.d.Success) {
                 var viewlink = $(sender);
                 var strTaskId = viewlink.attr('data-taskid');
@@ -1224,7 +1172,7 @@
     };
 
     SubTaskCommentScript.AddTaskComment = function (sender) {
-        debugger;
+
         var $sender = $(sender);
         var strTaskId = $sender.attr('data-taskid');
         var strParentCommentId = $sender.attr('data-parent-commentid');
@@ -1234,7 +1182,7 @@
 
         if ($sender.html() == "Reply") {
             $tfoot = $sender.siblings('div[id="replyComment"]');
-            console.log($tfoot.html());
+            //console.log($tfoot.html());
             $tfoot.removeClass('hide');
         }
         else {
@@ -1524,14 +1472,14 @@
             isadded = false;
         }
     }
-       
+
 
     function FreezeTask(sender) {
-        
+
         var $sender = $(sender);
-        
+
         var adminCheckBox = $sender.attr('data-id');
-        
+
         var strTaskId = $sender.attr('data-taskid');
         var strHoursId = $sender.attr('data-hours-id');
         var strPasswordId = $sender.attr('data-id');
@@ -1539,7 +1487,7 @@
         var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
         var postData;
         var MethodToCall;
-        
+
         if (adminCheckBox && adminCheckBox.includes("txtAdminPassword")) {
             postData = {
                 strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
@@ -1557,7 +1505,7 @@
             };
             MethodToCall = "FreezeTask";
         }
-         
+
 
         CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
 
@@ -1780,231 +1728,231 @@
                 if (Page_ClientValidate('SubmitSubTask')) {
                     ShowAjaxLoader();
                     var hdParentTaskId = $('#<%=hdParentTaskId.ClientID%>').val();
-                var listID = $('#<%=txtInstallId.ClientID%>').val();
-                var txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>').val();
-                var Priority = $('#<%= drpSubTaskPriority.ClientID %>').val();
-                var type = $('#<%= drpSubTaskType.ClientID %>').val();
-                var desc = GetCKEditorContent('<%= txtTaskDesc.ClientID %>');
-                var designations = $('#<%= hdndesignations.ClientID %>').val();
-                var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
+                    var listID = $('#<%=txtInstallId.ClientID%>').val();
+                    var txtSubSubTitle = $('#<%=txtSubSubTitle.ClientID%>').val();
+                    var Priority = $('#<%= drpSubTaskPriority.ClientID %>').val();
+                    var type = $('#<%= drpSubTaskType.ClientID %>').val();
+                    var desc = GetCKEditorContent('<%= txtTaskDesc.ClientID %>');
+                    var designations = $('#<%= hdndesignations.ClientID %>').val();
+                    var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
 
-                var postData = {
-                    ParentTaskId: hdParentTaskId,
-                    Title: txtSubSubTitle,
-                    URL: "",
-                    Desc: desc,
-                    Status: "1",
-                    Priority: Priority,
-                    DueDate: "",
-                    TaskHours: "",
-                    InstallID: listID,
-                    Attachments: "",
-                    TaskType: type,
-                    TaskDesignations: designations,
-                    TaskLvl: TaskLvl,
-                    blTechTask: false
-                };
+                    var postData = {
+                        ParentTaskId: hdParentTaskId,
+                        Title: txtSubSubTitle,
+                        URL: "",
+                        Desc: desc,
+                        Status: "1",
+                        Priority: Priority,
+                        DueDate: "",
+                        TaskHours: "",
+                        InstallID: listID,
+                        Attachments: "",
+                        TaskType: type,
+                        TaskDesignations: designations,
+                        TaskLvl: TaskLvl,
+                        blTechTask: false
+                    };
 
-                CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+                    CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
-                function OnAddNewSubTaskSuccess(data) {
-                    if (data.d.Success) {
-                        alert('Task saved successfully.');
-                        $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                    function OnAddNewSubTaskSuccess(data) {
+                        if (data.d.Success) {
+                            alert('Task saved successfully.');
+                            $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
+                        }
+                        else {
+                            alert('Task cannot be saved. Please try again.');
+                        }
                     }
-                    else {
+
+                    function OnAddNewSubTaskError(err) {
                         alert('Task cannot be saved. Please try again.');
                     }
-                }
 
-                function OnAddNewSubTaskError(err) {
-                    alert('Task cannot be saved. Please try again.');
-                }
-
-                return false;
-            }
-        }
-
-        function SetUserAutoSuggestion() {
-            $("#<%=txtSearch.ClientID%>").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsers",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 2,
-                select: function (event, ui) {
-                    $("#<%=btnSearch.ClientID%>").val(ui.item.value);
-                    //TriggerSearch();
-                    $('#<%=btnSearch.ClientID%>').click();
-                }
-            });
-        }
-
-        function SetUserAutoSuggestionUI() {
-
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    var that = this,
-                      currentCategory = "";
-                    $.each(items, function (index, item) {
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
-
-                }
-            });
-        }
-
-        function SetApprovalUI() {
-
-            $('.approvalBoxes').each(function () {
-                var approvaldialog = $($(this).next('.approvepopup'));
-                approvaldialog.dialog({
-                    width: 400,
-                    show: 'slide',
-                    hide: 'slide',
-                    autoOpen: false
-                });
-
-                $(this).click(function () {
-                    approvaldialog.dialog('open');
-                });
-            });
-        }
-
-        function ucSubTasks_Initialize() {
-
-            SubTaskCommentScript.Initialize();
-
-            ChosenDropDown();
-            // Choosen selected option with hyperlink to profile.
-            setSelectedUsersLink();
-
-            ApplySubtaskLinkContextMenu();
-
-            //ApplyImageGallery();
-
-            LoadImageGallery('.sub-task-attachments-list');
-
-            //----------- start DP -----
-            GridDropZone();
-            //----------- end DP -----
-
-            SetApprovalUI();
-
-            var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
-
-            if (controlmode == "true") {
-                ucSubTasks_ApplyDropZone();
-                SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
-                UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>', '#<%=btnSaveSubTask.ClientID%>');
-
-
-                SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
-                UpdateTaskDescBeforeSubmit('<%=txtTaskDesc.ClientID%>', '#<%=btnAddMoreSubtask.ClientID%>');
-
-
-                $('#<%=txtInstallId.ClientID%>').bind('keypress', function (e) {
                     return false;
-                });
+                }
+            }
 
-                $('#<%=txtInstallId.ClientID%>').bind('keydown', function (e) {
-                    if (e.keyCode === 8 || e.which === 8) {
-                        return false;
+            function SetUserAutoSuggestion() {
+                $("#<%=txtSearch.ClientID%>").catcomplete({
+                    delay: 500,
+                    source: function (request, response) {
+                        $.ajax({
+                            type: "POST",
+                            url: "ajaxcalls.aspx/GetTaskUsers",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify({ searchterm: request.term }),
+                            success: function (data) {
+                                // Handle 'no match' indicated by [ "" ] response
+                                if (data.d) {
+
+                                    response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                                }
+                                // remove loading spinner image.                                
+                                $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                            }
+                        });
+                    },
+                    minLength: 2,
+                    select: function (event, ui) {
+                        $("#<%=btnSearch.ClientID%>").val(ui.item.value);
+                        //TriggerSearch();
+                        $('#<%=btnSearch.ClientID%>').click();
                     }
                 });
+            }
+
+            function SetUserAutoSuggestionUI() {
+
+                $.widget("custom.catcomplete", $.ui.autocomplete, {
+                    _create: function () {
+                        this._super();
+                        this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                    },
+                    _renderMenu: function (ul, items) {
+                        var that = this,
+                          currentCategory = "";
+                        $.each(items, function (index, item) {
+                            var li;
+                            if (item.Category != currentCategory) {
+                                ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                                currentCategory = item.Category;
+                            }
+                            li = that._renderItemData(ul, item);
+                            if (item.Category) {
+                                li.attr("aria-label", item.Category + " : " + item.label);
+                            }
+                        });
+
+                    }
+                });
+            }
+
+            function SetApprovalUI() {
+
+                $('.approvalBoxes').each(function () {
+                    var approvaldialog = $($(this).next('.approvepopup'));
+                    approvaldialog.dialog({
+                        width: 400,
+                        show: 'slide',
+                        hide: 'slide',
+                        autoOpen: false
+                    });
+
+                    $(this).click(function () {
+                        approvaldialog.dialog('open');
+                    });
+                });
+            }
+
+            function ucSubTasks_Initialize() {
+
+                SubTaskCommentScript.Initialize();
+
+                ChosenDropDown();
+                // Choosen selected option with hyperlink to profile.
+                setSelectedUsersLink();
+
+                ApplySubtaskLinkContextMenu();
+
+                //ApplyImageGallery();
+
+                LoadImageGallery('.sub-task-attachments-list');
+
+                //----------- start DP -----
+                GridDropZone();
+                //----------- end DP -----
+
+                SetApprovalUI();
+
+                var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
+
+                if (controlmode == "true") {
+                    ucSubTasks_ApplyDropZone();
+                    SetCKEditor('<%=txtSubTaskDescription.ClientID%>', txtSubTaskDescription_Blur);
+                    UpdateTaskDescBeforeSubmit('<%=txtSubTaskDescription.ClientID%>', '#<%=btnSaveSubTask.ClientID%>');
+
+
+                    SetCKEditor('<%=txtTaskDesc.ClientID%>', txtTaskDesc_Blur);
+                    UpdateTaskDescBeforeSubmit('<%=txtTaskDesc.ClientID%>', '#<%=btnAddMoreSubtask.ClientID%>');
+
+
+                    $('#<%=txtInstallId.ClientID%>').bind('keypress', function (e) {
+                        return false;
+                    });
+
+                    $('#<%=txtInstallId.ClientID%>').bind('keydown', function (e) {
+                        if (e.keyCode === 8 || e.which === 8) {
+                            return false;
+                        }
+                    });
+
+                }
+
+                pageLoad(null, null);
+
+
 
             }
 
-            pageLoad(null, null);
-
-            
-
-        }
-
-        function txtSubTaskDescription_Blur(editor) {
-            if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
-                if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
-                    $('#<%=btnSaveSubTask.ClientID%>').click();
+            function txtSubTaskDescription_Blur(editor) {
+                if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
+                    if (Page_ClientValidate('vgSubTask') && confirm('Do you wish to save description?')) {
+                        $('#<%=btnSaveSubTask.ClientID%>').click();
+                    }
                 }
             }
-        }
 
-        function OnSaveSubTaskClick() {
-            if (Page_ClientValidate('vgSubTask')) {
-                ShowAjaxLoader();
-                var taskid = '';
-                if (maintask) {
-                    taskid = GetParameterValues('TaskId');
-                }
-                else {
-                    taskid = $('#<%=hdParentTaskId.ClientID%>').val();
-                }
+            function OnSaveSubTaskClick() {
+                if (Page_ClientValidate('vgSubTask')) {
+                    ShowAjaxLoader();
+                    var taskid = '';
+                    if (maintask) {
+                        taskid = GetParameterValues('TaskId');
+                    }
+                    else {
+                        taskid = $('#<%=hdParentTaskId.ClientID%>').val();
+                    }
 
-                var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
-                var url = $('#<%= txtUrl.ClientID %>').val();
-                var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
-                var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
-                var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
-                var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
-                var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
-                var installID = $('#<%= txtTaskListID.ClientID %>').val();
-                var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
-                var type = $('#<%= ddlTaskType.ClientID %>').val();
-                var designaions = $('#<%= hdndesignations.ClientID %>').val();
-                var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
-                var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
+                    var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
+                    var url = $('#<%= txtUrl.ClientID %>').val();
+                    var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
+                    var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
+                    var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
+                    var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
+                    var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
+                    var installID = $('#<%= txtTaskListID.ClientID %>').val();
+                    var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
+                    var type = $('#<%= ddlTaskType.ClientID %>').val();
+                    var designaions = $('#<%= hdndesignations.ClientID %>').val();
+                    var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
+                    var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
 
-                var postData = {
-                    ParentTaskId: taskid,
-                    Title: title,
-                    URL: url,
-                    Desc: desc,
-                    Status: status,
-                    Priority: Priority,
-                    DueDate: DueDate,
-                    TaskHours: tHours,
-                    InstallID: installID,
-                    Attachments: Attachments,
-                    TaskType: type,
-                    TaskDesignations: designaions,
-                    TaskLvl: TaskLvl,
-                    blTechTask: blTechTask
-                };
+                    var postData = {
+                        ParentTaskId: taskid,
+                        Title: title,
+                        URL: url,
+                        Desc: desc,
+                        Status: status,
+                        Priority: Priority,
+                        DueDate: DueDate,
+                        TaskHours: tHours,
+                        InstallID: installID,
+                        Attachments: Attachments,
+                        TaskType: type,
+                        TaskDesignations: designaions,
+                        TaskLvl: TaskLvl,
+                        blTechTask: blTechTask
+                    };
 
-                CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+                    CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
-                function OnAddNewSubTaskSuccess(data) {
-                    if (data.d.Success) {
-                        alert('Task saved successfully.');
-                        $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                    function OnAddNewSubTaskSuccess(data) {
+                        if (data.d.Success) {
+                            alert('Task saved successfully.');
+                            $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
                         $('#<%=btnUpdateRepeater.ClientID%>').click();
                     }
                     else {
@@ -2067,74 +2015,74 @@
                             if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
                                 // saves attachment.
                                 $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                                   //this.removeFile(file);
-                               }
+                                //this.removeFile(file);
+                            }
                         });
                     }
                 });
-               }
+            }
 
             //Apply dropzone for comment section.
-               if (objSubtaskNoteDropzone) {
-                   objSubtaskNoteDropzone.destroy();
-                   objSubTaskNoteDropzone = null;
-               }
-
-               objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
-    }
-
-    function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
-        var sender = $(sender);
-        if (sender.prop('checked')) {
-            sender.closest('tr').next('tr').show();
-        }
-        else {
-            sender.closest('tr').next('tr').hide();
-        }
-    }
-
-    function ApplySubtaskLinkContextMenu() {
-
-        $(".context-menu").bind("contextmenu", function () {            
-            var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
-            copyToClipboard(urltoCopy);
-            return false;
-        });
-
-        ScrollTo($('.yellowthickborder'));
-
-        $(".yellowthickborder").bind("click", function () {
-            $(this).removeClass("yellowthickborder");
-        });
-    }
-
-    // check if user has selected any designations or not.
-    function SubTasks_checkDesignations(oSrc, args) {
-        //args.IsValid = ($("# input:checked").length > 0);
-    }
-
-
-    //  Created By : Yogesh K
-    // To updat element underlying CKEditor before work submited to server.
-    function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
-        $(ButtonId).bind('click', function () {
-            var editor = CKEDITOR.instances[CKEditorId];
-
-            if (editor) {
-                editor.updateElement();
+            if (objSubtaskNoteDropzone) {
+                objSubtaskNoteDropzone.destroy();
+                objSubTaskNoteDropzone = null;
             }
-        });
-    }
+
+            objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+        }
+
+        function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
+            var sender = $(sender);
+            if (sender.prop('checked')) {
+                sender.closest('tr').next('tr').show();
+            }
+            else {
+                sender.closest('tr').next('tr').hide();
+            }
+        }
+
+        function ApplySubtaskLinkContextMenu() {
+
+            $(".context-menu").bind("contextmenu", function () {
+                var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
+                copyToClipboard(urltoCopy);
+                return false;
+            });
+
+            ScrollTo($('.yellowthickborder'));
+
+            $(".yellowthickborder").bind("click", function () {
+                $(this).removeClass("yellowthickborder");
+            });
+        }
+
+        // check if user has selected any designations or not.
+        function SubTasks_checkDesignations(oSrc, args) {
+            //args.IsValid = ($("# input:checked").length > 0);
+        }
 
 
-    //----------- Start DP ---------
+        //  Created By : Yogesh K
+        // To updat element underlying CKEditor before work submited to server.
+        function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+            $(ButtonId).bind('click', function () {
+                var editor = CKEDITOR.instances[CKEditorId];
 
-    function SetHiddenTaskId(vId) {
-        $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
-           }
+                if (editor) {
+                    editor.updateElement();
+                }
+            });
+        }
 
 
-           $('#<%=pnlCalendar.ClientID%>').hide();
+        //----------- Start DP ---------
+
+        function SetHiddenTaskId(vId) {
+            $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
+        }
+
+
+        $('#<%=pnlCalendar.ClientID%>').hide();
   <%--  $('#<%=divSubTask.ClientID%>').hide();--%>
 
     function txtTaskDesc_Blur(editor) {
@@ -2178,7 +2126,6 @@
         Dropzone.autoDiscover = false;
 
         $(".dropzonetask").each(function () {
-            // debugger;
             var objSubTaskDropzone1;
             var taskId = $(this).attr('data-taskid');
             //alert(taskId);
@@ -2241,6 +2188,121 @@
         });
     }
 
+    function ShowTaskSequence(editlink) {
+
+        var edithyperlink = $(editlink);
+        var TaskID = edithyperlink.attr('data-taskid');
+        var sequencetextbox = $('#divSeq' + TaskID);
+
+        if (sequencetextbox) {
+
+            //check if already sequence assigned or not.
+            var currentVal = parseInt(sequencetextbox.children('input[type="text"]').val());
+
+            if (!isNaN(currentVal) || currentVal > 0) {// if already sequence assigned than set its value in textbox.
+                sequencetextbox.children('input[type="text"]').val(currentVal);
+            }
+
+            getLastAvailableSequence(sequencetextbox);
+
+        }
+
+    }
+
+    function getLastAvailableSequence(sequencebox) {
+        ShowAjaxLoader();
+        var postData = {
+
+        };
+
+        CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, sequencebox) }, function (data) { OnGetLatestSeqError(data, sequencebox) });
+
+        function OnGetLatestSeqSuccess(data, sequencebox) {
+            HideAjaxLoader();
+            if (data.d) {
+                var sequence = JSON.parse(data.d);
+                var valExisting = parseInt(sequencebox.children('input[type="text"]').val());
+
+                if (isNaN(valExisting) || valExisting == 0) {
+                    sequencebox.children('input[type="text"]').val(sequence.Table[0].Sequence);
+                }
+
+                DisplySequenceBox(sequencebox, sequence.Table[0].Sequence);
+            }
+
+        }
+        function OnGetLatestSeqError(data, sequencetextbox) {
+            HideAjaxLoader();
+            DisplySequenceBox(sequencetextbox);
+        }
+    }
+
+    var isWarnedForSequenceChange = false;
+
+    function DisplySequenceBox(sequencebox, maxValueforSeq) {
+
+        sequencebox.removeClass('hide');
+      var divSequence =  $(sequencebox).handleCounter({
+            minimum: 1,
+            maximize: maxValueforSeq            
+      });
+    }
+
+    function UpdateTaskSequence(savebutton) {
+        var button = $(savebutton);
+        var TaskID = button.attr('data-taskid');
+        var sequence = parseInt($('#txtSeq' + TaskID).val());
+
+        if (!isNaN(sequence) && sequence > 0) {
+            // if original sequence is changed than it will warn user.
+            var originalSequence = parseInt($('#txtSeq' + TaskID).attr('data-original-val'));
+            
+            // if user has changes original sequence than he/she will be prompted to confirm save.
+            if (!isNaN(originalSequence) && sequence != originalSequence) {
+
+                var userDecision = confirm('Are you sure you want to change sequence of task which is assigned to some other task already?');
+                if (!userDecision) {// user selected not to change sequence assigned to some other task.
+                    return false;
+                }
+            }
+
+           SaveTaskSequence(TaskID, sequence);
+            
+        }
+        else {
+            alert('Please enter valid sequence');
+        }
+
+     
+    }
+
+    function SaveTaskSequence(TaskID, Sequence) {
+
+        var postData = {
+            "Sequence": Sequence,
+            TaskID: TaskID
+        };
+
+        ShowAjaxLoader();
+
+        CallJGWebServiceCommon('UpdateTaskSequence', postData, function (data) { OnSaveSeqSuccess(data, TaskID, Sequence) }, function (data) { OnSaveSeqError(data, TaskID) });
+
+        function OnSaveSeqSuccess(data, TaskID, Sequence) {
+            HideAjaxLoader();
+            alert('Sequence updated successfully');
+            $('#TaskSeque' + TaskID).html(Sequence);
+            $('#divSeq' + TaskID).addClass('hide');
+            $('#<%=btnUpdateRepeater.ClientID%>').click();
+            return false;
+        }
+
+        function OnSaveSeqError(data, TaskID) {
+            HideAjaxLoader();
+            alert('Could not update Sequence this time, Please try again later.');
+            return false;
+        }
+
+    }
     //--------------- End DP ---------------
 
 </script>

@@ -239,11 +239,11 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public object AdminFreezeTask( string strTaskApprovalId, string strTaskId, string strPassword)
+        public object AdminFreezeTask(string strTaskApprovalId, string strTaskId, string strPassword)
         {
             string strMessage;
             bool blSuccess = false;
-            
+
             if (string.IsNullOrEmpty(strPassword))
             {
                 strMessage = "Sub Task cannot be freezed as password is not provided.";
@@ -252,9 +252,9 @@ namespace JG_Prospect.WebServices
             {
                 strMessage = "Sub Task cannot be freezed as password is not valid.";
             }
-           else
+            else
             {
-                
+
                 #region Update Task (Freeze, Status)
 
                 Task objTask = new Task();
@@ -271,7 +271,7 @@ namespace JG_Prospect.WebServices
                     objTask.AdminStatus = true;
                     blIsAdmin = true;
                 }
-                               
+
                 TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
                                             (
                                                 objTask,
@@ -540,6 +540,13 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool UpdateTaskSequence(Int64 Sequence, Int64 TaskID)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
         public bool UpdateTaskURLById(string tid, string URL)
         {
             TaskGeneratorBLL.Instance.UpdateTaskURLById(tid, URL);
@@ -695,6 +702,23 @@ namespace JG_Prospect.WebServices
 
             return result;
         }
+
+        [WebMethod(EnableSession = true)]
+        public string GetLatestTaskSequence()
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence();
+            if (dtResult != null)
+            {
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
 
         [WebMethod(EnableSession = true)]
         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
@@ -1024,7 +1048,7 @@ namespace JG_Prospect.WebServices
 
             if (dtResult != null)
             {
-                 ExamResults = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                ExamResults = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
             }
             else
             {
@@ -1032,7 +1056,7 @@ namespace JG_Prospect.WebServices
             }
 
             return ExamResults;
-        
+
         }
 
         #endregion

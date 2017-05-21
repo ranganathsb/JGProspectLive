@@ -1388,6 +1388,7 @@
     <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\flags24.css" />
+    <Content Include="css\handle-counter.min.css" />
     <Content Include="css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="css\img\flags%402x.png" />
     <Content Include="css\img\flags.png" />
@@ -1471,7 +1472,6 @@
     <Content Include="Database Scripts\KetankumarGodhani\OLD\Ketankumar_03262017_db_FrozenTaskSP.sql" />
     <Content Include="Database Scripts\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
-    <Content Include="Database Scripts\yogesh\script April v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1914,6 +1914,7 @@
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\handleCounter.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\langs\en.js" />

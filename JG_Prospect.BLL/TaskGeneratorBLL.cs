@@ -27,6 +27,17 @@ namespace JG_Prospect.BLL
             get { return m_TaskGeneratorBLL; }
             set { ; }
         }
+
+        public DataSet GetLatestTaskSequence()
+        {
+            return TaskGeneratorDAL.Instance.GetLatestTaskSequence();
+        }
+        public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskSequence(Sequence,TaskID);
+
+        }
+
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);

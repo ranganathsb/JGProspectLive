@@ -2618,38 +2618,7 @@ namespace JG_Prospect.Sr_App.Controls
                 // do not fecth page data based on highlighted task id.
                 intHighlightedTaskId = 0;
             }
-
-            #region '--Get Top Level Parent To Highlight--'
-
-            //if (intHighlightedTaskId > 0 && isPaging == false)
-            //{
-            //    DataSet resultTask = new DataSet();
-            //    try
-            //    {
-            //        SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-            //        {
-            //            DbCommand command = database.GetStoredProcCommand("GetFirstParentTaskFromChild");
-            //            command.CommandType = CommandType.StoredProcedure;
-            //            database.AddInParameter(command, "@taskid", DbType.Int32, intHighlightedTaskId);
-            //            resultTask = database.ExecuteDataSet(command);
-
-            //            if (resultTask.Tables[0].Rows.Count > 0)
-            //            {
-            //                if (int.TryParse(resultTask.Tables[0].Rows[0]["TaskId"].ToString(), out intHighlightedTaskId))
-            //                {
-            //                    intHighlightedTaskId = HighlightedTaskId;
-            //                }
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //LogManager.Instance.WriteToFlatFile(ex);
-            //    }
-            //}
-
-            #endregion
-
+            
             repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
 
             DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);

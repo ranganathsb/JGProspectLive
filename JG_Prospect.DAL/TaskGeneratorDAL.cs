@@ -27,6 +27,57 @@ namespace JG_Prospect.DAL
 
         private DataSet returndata;
 
+
+        public DataSet GetLatestTaskSequence()
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetLastAvailableSequence");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public int UpdateTaskSequence(Int64 Sequence , Int64 TaskID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateTaskSequence");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Sequence", DbType.Int64, Sequence);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskID);
+                    
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             try

@@ -1978,6 +1978,7 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 
 .form_panel_custom ul.stulli {
     overflow: hidden;
+    margin:5px 0 !important;
 }
 
 .divtdetails img {
@@ -1988,6 +1989,7 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 .form_panel_custom ul.stulli li {
     width: 100%;
     display: block;
+    margin: 3px 0px;
 }
 
 .display_inline {

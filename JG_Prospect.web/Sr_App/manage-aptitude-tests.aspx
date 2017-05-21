@@ -143,7 +143,7 @@
 
             var postData = {
                 "intExamId": intExamID,
-                "Designations": arrAssignedDesign .join()              
+                "Designations": arrAssignedDesign.join()              
             };
 
              CallJGWebServiceCommon('SaveExamDesignation', postData, function (data) { OnExamSaveDesignationsSuccess(data, sender) });

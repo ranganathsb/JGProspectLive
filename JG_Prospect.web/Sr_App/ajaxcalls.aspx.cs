@@ -68,8 +68,13 @@ namespace JG_Prospect.Sr_App
         [WebMethod]
         public static string GetEmailCounters()
         {
+            String Result = String.Empty;
             YandexEmailCountersResponse EmailCounters = YandexManager.GetUnreadEmailCount(AppSettingsValues.GetDomainActiveUserEmailCreation, "jgrove@jmgroveconstruction.com");
-            return JsonConvert.SerializeObject(EmailCounters.counters, Formatting.Indented);
+            if (EmailCounters != null)
+            {
+               Result =  JsonConvert.SerializeObject(EmailCounters.counters, Formatting.Indented);
+            }
+            return Result;
 
         }
 
