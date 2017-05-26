@@ -85,8 +85,6 @@ BEGIN
 			WHERE        ([Sequence] >= @Sequence)
 
 		END
-
-
 		
 			UPDATE tblTask
 			SET                [Sequence] = @Sequence	
@@ -265,10 +263,6 @@ FROM
 		) AS OtherUser
 
 
-
-
-
-
 GO
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -342,3 +336,294 @@ END
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+USE JGBS_Dev_New
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 05222017
+-- Description:	This will load all tasks with title and sequence
+-- =============================================
+CREATE PROCEDURE usp_GetAllTaskWithSequence 
+
+AS
+BEGIN
+
+	SELECT Title, [Sequence] AS TaskSequence FROM tblTask WHERE [Sequence] IS NOT NULL ORDER BY [Sequence] DESC
+
+END
+GO
+
+
+
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 14 Nov 16  
+-- Description: Inserts, Updates or Deletes a task.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[SP_SaveOrDeleteTask]    
+  @Mode tinyint, -- 0:Insert, 1: Update, 2: Delete    
+  @TaskId bigint,    
+  @Title varchar(250),    
+  @Url varchar(250),  
+  @Description varchar(MAX),    
+  @Status tinyint,    
+  @DueDate datetime = NULL,    
+  @Hours varchar(25),  
+  @CreatedBy int,   
+  @InstallId varchar(50) = NULL,  
+  @ParentTaskId bigint = NULL,  
+  @TaskType tinyint = NULL,  
+  @TaskLevel int,  
+  @MainTaskId int,  
+  @TaskPriority tinyint = null,  
+  @IsTechTask bit = NULL,  
+  @DeletedStatus TINYINT = 9,  
+  @Sequence bigint = NULL,
+  @Result int output  
+AS    
+BEGIN    
+    
+ IF @Mode=0    
+   BEGIN    
+  INSERT INTO tblTask   
+    (  
+     Title,  
+     Url,  
+     [Description],  
+     [Status],  
+     DueDate,  
+     [Hours],  
+     CreatedBy,  
+     CreatedOn,  
+     IsDeleted,  
+     InstallId,  
+     ParentTaskId,  
+     TaskType,  
+     TaskPriority,  
+     IsTechTask,  
+     AdminStatus,  
+     TechLeadStatus,  
+     OtherUserStatus,  
+     TaskLevel,  
+     MainParentId  
+    )  
+  VALUES  
+    (  
+     @Title,  
+     @Url,  
+     @Description,  
+     @Status,  
+     @DueDate,  
+     @Hours,  
+     @CreatedBy,  
+     GETDATE(),  
+     0,  
+     @InstallId,  
+     @ParentTaskId,  
+     @TaskType,  
+     @TaskPriority,  
+     @IsTechTask,  
+     0,  
+     0,  
+     0,  
+     @TaskLevel,  
+     @MainTaskId  
+    )    
+    
+  SET @Result=SCOPE_IDENTITY ()    
+    
+	--- Update task sequence
+			IF(@Result > 0)
+			BEGIN
+
+
+			-- if sequence is already assigned to some other task, all sequence will push back by 1 from alloted sequence.
+				IF EXISTS(SELECT TaskId FROM tblTask WHERE [Sequence] = @Sequence AND TaskId <> @Result)
+				BEGIN
+
+					UPDATE       tblTask
+					SET                [Sequence] = [Sequence] + 1			
+					WHERE        ([Sequence] >= @Sequence)
+
+				END
+		
+					UPDATE tblTask
+					SET                [Sequence] = @Sequence	
+					WHERE        (TaskId = @Result)
+
+
+		    END
+
+  RETURN @Result    
+ END    
+ ELSE IF @Mode=1 -- Update    
+ BEGIN      
+  UPDATE tblTask    
+  SET    
+   Title=@Title,    
+   Url = @Url,  
+   [Description]=@Description,    
+   [Status]=@Status,    
+   DueDate=@DueDate,    
+   [Hours]=@Hours,  
+   [TaskType] = @TaskType,  
+   [TaskPriority] = @TaskPriority,  
+   [IsTechTask] = @IsTechTask  
+  WHERE TaskId=@TaskId    
+  
+  SET @Result= @TaskId  
+    
+  RETURN @Result    
+ END    
+ ELSE IF @Mode=2 --Delete    
+ BEGIN    
+  UPDATE tblTask    
+  SET    
+   IsDeleted=1,  
+   [Status] = @DeletedStatus  
+  WHERE TaskId=@TaskId OR ParentTaskId=@TaskId    
+ END    
+    
+END  
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 05252017
+-- Description:	This will load exams for user based on his designation
+-- =============================================
+-- usp_GetAptTestsByUserID 2934
+CREATE PROCEDURE usp_GetAptTestsByUserID 
+(
+	@UserID bigint
+)	  
+AS
+BEGIN
+	
+	DECLARE @DesignationID INT
+
+	-- Get users designation based on its user id.
+    SELECT        @DesignationID = DesignationID
+	FROM            tblInstallUsers
+	WHERE        (Id = @UserID)
+
+
+	  IF(@DesignationID IS NOT NULL)
+	  BEGIN
+
+	     SELECT        MCQ_Exam.ExamID, MCQ_Exam.ExamDuration, MCQ_Exam.ExamTitle, ExamResult.MarksEarned, ExamResult.TotalMarks, ExamResult.[Aggregate], ExamResult.ExamPerformanceStatus
+FROM            MCQ_Exam LEFT OUTER JOIN
+                         MCQ_Performance AS ExamResult ON MCQ_Exam.ExamID = ExamResult.ExamID AND ExamResult.UserID = @UserID
+WHERE        (@DesignationID IN
+                             (SELECT        Item
+                               FROM            dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1))
+
+	  END
+
+
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 05252017
+-- Description:	This will load exam questions randomly
+-- =============================================
+CREATE PROCEDURE usp_GetQuestionsByExamID 
+(	
+	@ExamId int 
+)
+AS
+BEGIN
+
+DECLARE @Lower INT ---- The lowest random number
+DECLARE @Upper INT
+
+-- Generate random number and orderby questions according to it to load different sequence of exam everytime.
+SET @Lower = 1 ---- The lowest random number
+SET @Upper = 999 ---- The highest random number
+
+SELECT        QuestionID, Question, PositiveMarks, NegetiveMarks, ExamID, ROUND(((@Upper - @Lower -1) * RAND() + @Lower), 0) AS QuestionOrder
+FROM            MCQ_Question
+WHERE        (ExamID = @ExamId)
+ORDER BY QuestionOrder
+
+END
+GO
+
+
+  
+-- =============================================  
+-- Author: Yogesh Keraliya  
+-- Create date: 05262017  
+-- Description: Update users exam performance.  
+-- =============================================  
+ALTER PROCEDURE [dbo].[SP_InsertPerfomace]   
+ -- Add the parameters for the stored procedure here  
+ @installUserID varchar(20),   
+ @examID int = 0  
+ ,@marksEarned int  
+ ,@totalMarks int  
+ ,@Aggregate real  
+ ,@ExamPerformanceStatus int  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+
+ DECLARE @PassPercentage REAL
+
+ SELECT @PassPercentage = [PassPercentage] FROM MCQ_Exam WHERE [ExamID] = @examID
+
+
+ IF(@PassPercentage < @Aggregate)
+	BEGIN
+
+	SET @ExamPerformanceStatus = 1
+
+	END
+ ELSE
+	 BEGIN
+ 
+	 SET @ExamPerformanceStatus = 0
+
+	 END
+  
+    -- Insert statements for procedure here  
+ INSERT INTO [MCQ_Performance]  
+           ([UserID]  
+           ,[ExamID]  
+           ,[MarksEarned]  
+           ,[TotalMarks]  
+           ,[Aggregate]  
+     ,[ExamPerformanceStatus]             
+     )  
+     VALUES  
+           (@installUserID  
+           ,@examID  
+           ,@marksEarned  
+           ,@totalMarks  
+           ,@Aggregate  
+     ,@ExamPerformanceStatus  
+           )  
+END  
+  
+  

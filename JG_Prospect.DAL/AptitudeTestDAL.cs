@@ -104,7 +104,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool InsertPerformance(int installUserID, int examID, int marksEarned, int totalMarks, float percentage, int status)
+        public bool InsertPerformance(int installUserID, int examID, int marksEarned, int totalMarks, double percentage, int status)
         {
             try
             {
@@ -180,30 +180,55 @@ namespace JG_Prospect.DAL
 
         public DataTable GetQuestionsForExamByID(string examID)
         {
+            DataTable dtResult = new DataTable();
 
-            string SQL = "SELECT * FROM [MCQ_Question] WHERE ExamID = " + examID;
-
-            using (SqlConnection con = new SqlConnection(constr))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand())
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    cmd.CommandText = SQL;
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    DbCommand command = database.GetStoredProcCommand("usp_GetQuestionsByExamID");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@ExamId", DbType.Int32, examID);                  
+                     
+                  DataSet dsResult = database.ExecuteDataSet(command);
+
+                    if (dsResult.Tables.Count > 0)
                     {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataSet ds = new DataSet())
-                        {
-                            DataTable dt = new DataTable();
-                            sda.Fill(dt);
-                            return dt;
-                        }
+                        dtResult = dsResult.Tables[0];
                     }
+
+                    return dtResult;
                 }
+            }
+            catch (Exception ex)
+            {
+                return dtResult;
+
             }
 
         }
 
+        public DataTable GetExamsByUserID(int userID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAptTestsByUserID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    //if (intDesignationID.HasValue)
+                    //{
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userID);
+                    //}
+                    return database.ExecuteDataSet(command).Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public DataTable GetExamByExamID(Enums.Aptitude_ExamType examType, int userID)
         {
             var UserDetails = UserDAL.Instance.getInstalluserDetails(userID);

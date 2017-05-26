@@ -11,6 +11,7 @@ using JG_Prospect.App_Code;
 using System.Net.Mail;
 using System.IO;
 using Newtonsoft.Json;
+using System.Web.Script.Services;
 
 namespace JG_Prospect.WebServices
 {
@@ -561,9 +562,9 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64 Sequence)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask,Sequence);
         }
 
         [WebMethod(EnableSession = true)]
@@ -719,6 +720,26 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        [WebMethod(EnableSession = true )]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public void GetAllTaskWithSequence()
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence();
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                Context.Response.Clear();
+                Context.Response.ContentType = "application/json";
+                Context.Response.Write(JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented));
+                
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            //return strMessage;
+        }
+
 
         [WebMethod(EnableSession = true)]
         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
@@ -820,7 +841,7 @@ namespace JG_Prospect.WebServices
             return ReturnSequence;
         }
 
-        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask)
+        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64 Sequence)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -853,6 +874,7 @@ namespace JG_Prospect.WebServices
             objTask.InstallId = InstallID.Trim();
             objTask.ParentTaskId = ParentTaskId;
             objTask.Attachment = Attachments;
+            objTask.Sequence = Sequence;
             int maintaskid = Convert.ToInt32(Context.Request.QueryString["TaskId"]);
 
             if (!String.IsNullOrEmpty(TaskType))

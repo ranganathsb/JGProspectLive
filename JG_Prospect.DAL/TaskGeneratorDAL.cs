@@ -27,6 +27,29 @@ namespace JG_Prospect.DAL
 
         private DataSet returndata;
 
+        public DataSet GetAllTaskWithSequence()
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllTaskWithSequence");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
 
         public DataSet GetLatestTaskSequence()
         {
@@ -121,6 +144,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
                     database.AddInParameter(command, "@TaskLevel", DbType.Int32, TaskLevel);
                     database.AddInParameter(command, "@MainTaskId", DbType.Int32, maintaskid);
+                    database.AddInParameter(command, "@Sequence", DbType.Int64, objTask.Sequence);
 
                     database.AddOutParameter(command, "@Result", DbType.Int32, 0);
 

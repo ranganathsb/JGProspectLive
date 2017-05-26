@@ -220,7 +220,7 @@
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
         <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
-        <button type="button" id="lbtnAddNewSubTask1" onclick="shownewsubtask()" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
+        <button type="button" id="lbtnAddNewSubTask1" onclick="javascript:shownewsubtask();" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
         <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
@@ -237,13 +237,33 @@
                         </small>
                         <asp:CheckBox ID="chkTechTask" runat="server" Text=" Tech Task?" Checked="false" />
                     </td>
-                    <td>Type <span style="color: red;">*</span>:
- <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
-                        &nbsp;&nbsp;Priority <span style="color: red;">*</span>:<asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="None" ValidationGroup="vgSubTask"
-                            ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                    <td>
+                        <div style="display: inline;">
+                            Type <span style="color: red;">*</span>
+                            <br />
+                            <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
+                                ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                        </div>
+                        <div id="divSeqForAddNewTask" style="display: inline;" data-ng-controller="AddNewTaskSequenceController">
+                            Priority/Sequence <span style="color: red;">*</span>
+                            <div class="handle-counter hide" id="divNewAddSeq">
+
+                                <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
+                                <input type="text" id="txtSeqAdd" class="textbox" />
+                                <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
+
+                            </div>
+                            <div style="clear: both">
+                                Other Task Sequencing:
+                            <select ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected"></select>
+                            </div>
+                        </div>
+                        <div class="hide">
+                            <asp:DropDownList ID="ddlSubTaskPriority" runat="server" />
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Visible="false" Display="None" ValidationGroup="vgSubTask"
+                                ControlToValidate="ddlSubTaskPriority" ErrorMessage="Please enter Task Priority." />
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -596,9 +616,24 @@
                                                                                 AutoPostBack="true" OnCheckedChanged="repSubTasksNested_chkTechTask_CheckedChanged" />
                                                                         </li>
                                                                         <li></li>
-                                                                        <li>Priority
+                                                                        <li>Priority/Sequence
                                                                         </li>
                                                                         <li>
+                                                                            <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
+                                                                            <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this);" data-taskid='<%# Eval("TaskId")%>'>Edit</a>
+                                                                            <div class="handle-counter hide" id='divSeq<%# Eval("TaskId")%>'>
+                                                                                <h5>Sequence for: <%# Eval("Title")%></h5>
+                                                                                <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
+                                                                                <input type="text" class="textbox" data-original-val='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' id='txtSeq<%# Eval("TaskId")%>' value='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' />
+                                                                                <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
+                                                                                <div style="clear: both;">
+                                                                                    <a id="save" href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' onclick="javascript:UpdateTaskSequence(this);">Save</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li class="hide">Priority
+                                                                        </li>
+                                                                        <li class="hide">
                                                                             <asp:DropDownList ID="ddlTaskPriority" CssClass="clsTaskPriority textbox" runat="server"
                                                                                 ClientIDMode="AutoID" AutoPostBack="false" />
                                                                         </li>
@@ -614,22 +649,7 @@
                                                                         <li style="display: none;">
                                                                             <asp:Literal ID="ltrlTaskType" runat="server" Text="N.A." />
                                                                         </li>
-                                                                        <li>Sequence
-                                                                        </li>
-                                                                        <li>
-                                                                            <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
-                                                                            <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this);" data-taskid='<%# Eval("TaskId")%>'>Edit</a>
-                                                                            <div class="handle-counter hide" id='divSeq<%# Eval("TaskId")%>'>
-                                                                                <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
-                                                                                <input type="text" class="textbox" data-original-val='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' id='txtSeq<%# Eval("TaskId")%>' value='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' />
-                                                                                <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
-                                                                                <div style="clear: both;">
-                                                                                    <a id="save" href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' onclick="javascript:UpdateTaskSequence(this);">Save</a>
-                                                                                </div>
-                                                                            </div>
 
-
-                                                                        </li>
                                                                     </ul>
                                                                     <div class='<%#Eval("NestLevel").ToString() == "3"? "hide":"" %>'>
                                                                         <span>Assigned
@@ -787,8 +807,7 @@
     <div id="pnlCalendar" runat="server" align="center" class="tasklistfieldset" style="display: none; background-color: white;">
         <table border="1" cellspacing="5" cellpadding="5" width="100%">
             <tr>
-                <td>ListID:
-                
+                <td>ListID:                
                                    
 
                     <asp:TextBox ID="txtInstallId" runat="server"></asp:TextBox>
@@ -919,7 +938,30 @@
 
 
 </div>
+<script src="../Scripts/angular.min.js"></script>
+<script src="../js/TaskSequenceapp.js"></script>
+<script src="../js/TaskSequence.js"></script>
+<div id="taskSequence" class="modal" data-ng-controller="TaskSequenceController">
+    <h5>Other Sequenced Tasks: </h5>
+    <%--<select class="textbox" ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected">
+    </select>--%>
+    <table class="table">
+        <tr class="trHeader">
+            <th>Sequence#</th>
+            <th>TaskTitle</th>
+        </tr>
 
+        <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class-even="'AlternateRow'">
+
+            <td>{{ Task.TaskSequence }}
+                   
+            </td>
+            <td>{{ Task.Title }}
+            </td>
+
+        </tr>
+    </table>
+</div>
 <div id="descimgpopup1" class="Descoverlay">
     <div class="Descpopup">
         <a class="close" href="#" id="closebtn">&times;</a>
@@ -997,6 +1039,8 @@
         </td>
     </tr>
 </script>
+
+
 
 <script type="text/javascript" data-id="divSubTaskCommentScript">
     var SubTaskCommentScript = {};
@@ -1230,10 +1274,12 @@
 
     prmTaskGenerator.add_endRequest(function () {
         console.log('end req.');
+       
         ucSubTasks_Initialize();
 
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();
+        initializeAngular();
     });
 
     prmTaskGenerator.add_beginRequest(function () {
@@ -1242,6 +1288,7 @@
         DestroyDropzones();
         DestroyCKEditors();
     });
+
 
 
     $(document).ready(function () {
@@ -1261,14 +1308,29 @@
         })
     });
 
+    function initializeAngular() {
+        var elem = angular.element(document.getElementById("divSeqForAddNewTask"));
+        var elem1 = angular.element(document.getElementById("taskSequence"));
+
+        elem.replaceWith($compile(elem)($scope));
+        elem1.replaceWith($compile(elem1)($scope));
+     
+        $scope.$apply();
+
+
+    }
+
     var maintask = true;
 
     function shownewsubtask() {
+
         maintask = true;
+        SetLatestSequenceForAddNewSubTask();
         $('#<%=hdTaskLvl.ClientID%>').val("1");
         $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
         $('#<%=chkTechTask.ClientID%>').prop('checked', false)
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
+
         return false;
     }
 
@@ -1929,6 +1991,7 @@
                     var designaions = $('#<%= hdndesignations.ClientID %>').val();
                     var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
                     var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
+                    var sequence = $('#txtSeqAdd').val();
 
                     var postData = {
                         ParentTaskId: taskid,
@@ -1944,7 +2007,8 @@
                         TaskType: type,
                         TaskDesignations: designaions,
                         TaskLvl: TaskLvl,
-                        blTechTask: blTechTask
+                        blTechTask: blTechTask,
+                        Sequence: sequence
                     };
 
                     CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
@@ -1953,136 +2017,136 @@
                         if (data.d.Success) {
                             alert('Task saved successfully.');
                             $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                        $('#<%=btnUpdateRepeater.ClientID%>').click();
+                            $('#<%=btnUpdateRepeater.ClientID%>').click();
+                        }
+                        else {
+                            alert('Task cannot be saved. Please try again.');
+                        }
                     }
-                    else {
+
+                    function OnAddNewSubTaskError(err) {
                         alert('Task cannot be saved. Please try again.');
                     }
-                }
-
-                function OnAddNewSubTaskError(err) {
-                    alert('Task cannot be saved. Please try again.');
-                }
-                return false;
-            }
-        }
-        function GetParameterValues(param) {
-            var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for (var i = 0; i < url.length; i++) {
-                var urlparam = url[i].split('=');
-                if (urlparam[0] == param) {
-                    return urlparam[1];
+                    return false;
                 }
             }
-        }
-
-        function copytoListID(sender) {
-            var strListID = $.trim($(sender).text());
-            if (strListID.length > 0) {
-                $('#<%= txtTaskListID.ClientID %>').val(strListID);
-                ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
-                ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
+            function GetParameterValues(param) {
+                var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < url.length; i++) {
+                    var urlparam = url[i].split('=');
+                    if (urlparam[0] == param) {
+                        return urlparam[1];
+                    }
+                }
             }
-        }
 
-        var objSubTaskDropzone, objSubtaskNoteDropzone;
-
-        function ucSubTasks_ApplyDropZone() {
-            //remove already attached dropzone.
-            if (objSubTaskDropzone) {
-                objSubTaskDropzone.destroy();
-                objSubTaskDropzone = null;
+            function copytoListID(sender) {
+                var strListID = $.trim($(sender).text());
+                if (strListID.length > 0) {
+                    $('#<%= txtTaskListID.ClientID %>').val(strListID);
+                    ValidatorEnable(document.getElementById('<%=rfvTitle.ClientID%>'), true)
+                    ValidatorEnable(document.getElementById('<%=rfvUrl.ClientID%>'), true)
+                }
             }
-            if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
-                objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
-                    maxFiles: 5,
-                    url: "taskattachmentupload.aspx",
-                    thumbnailWidth: 90,
-                    thumbnailHeight: 90,
-                    previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
-                    init: function () {
-                        this.on("maxfilesexceeded", function (data) {
-                            alert('you are reached maximum attachment upload limit.');
-                        });
 
-                        // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                        this.on("success", function (file, response) {
-                            var filename = response.split("^");
-                            $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+            var objSubTaskDropzone, objSubtaskNoteDropzone;
 
-                            AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+            function ucSubTasks_ApplyDropZone() {
+                //remove already attached dropzone.
+                if (objSubTaskDropzone) {
+                    objSubTaskDropzone.destroy();
+                    objSubTaskDropzone = null;
+                }
+                if ($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                    objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
+                        maxFiles: 5,
+                        url: "taskattachmentupload.aspx",
+                        thumbnailWidth: 90,
+                        thumbnailHeight: 90,
+                        previewsContainer: 'div#<%=divSubTaskDropzonePreview.ClientID%>',
+                        init: function () {
+                            this.on("maxfilesexceeded", function (data) {
+                                alert('you are reached maximum attachment upload limit.');
+                            });
 
-                            if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
-                                // saves attachment.
-                                $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                                //this.removeFile(file);
-                            }
-                        });
+                            // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                            this.on("success", function (file, response) {
+                                var filename = response.split("^");
+                                $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+
+                                AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnAttachments.ClientID %>');
+
+                                if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
+                                    // saves attachment.
+                                    $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                                    //this.removeFile(file);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                //Apply dropzone for comment section.
+                if (objSubtaskNoteDropzone) {
+                    objSubtaskNoteDropzone.destroy();
+                    objSubTaskNoteDropzone = null;
+                }
+
+                objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+            }
+
+            function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
+                var sender = $(sender);
+                if (sender.prop('checked')) {
+                    sender.closest('tr').next('tr').show();
+                }
+                else {
+                    sender.closest('tr').next('tr').hide();
+                }
+            }
+
+            function ApplySubtaskLinkContextMenu() {
+
+                $(".context-menu").bind("contextmenu", function () {
+                    var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
+                    copyToClipboard(urltoCopy);
+                    return false;
+                });
+
+                ScrollTo($('.yellowthickborder'));
+
+                $(".yellowthickborder").bind("click", function () {
+                    $(this).removeClass("yellowthickborder");
+                });
+            }
+
+            // check if user has selected any designations or not.
+            function SubTasks_checkDesignations(oSrc, args) {
+                //args.IsValid = ($("# input:checked").length > 0);
+            }
+
+
+            //  Created By : Yogesh K
+            // To updat element underlying CKEditor before work submited to server.
+            function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
+                $(ButtonId).bind('click', function () {
+                    var editor = CKEDITOR.instances[CKEditorId];
+
+                    if (editor) {
+                        editor.updateElement();
                     }
                 });
             }
 
-            //Apply dropzone for comment section.
-            if (objSubtaskNoteDropzone) {
-                objSubtaskNoteDropzone.destroy();
-                objSubTaskNoteDropzone = null;
+
+            //----------- Start DP ---------
+
+            function SetHiddenTaskId(vId) {
+                $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
             }
 
-            objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
-        }
 
-        function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
-            var sender = $(sender);
-            if (sender.prop('checked')) {
-                sender.closest('tr').next('tr').show();
-            }
-            else {
-                sender.closest('tr').next('tr').hide();
-            }
-        }
-
-        function ApplySubtaskLinkContextMenu() {
-
-            $(".context-menu").bind("contextmenu", function () {
-                var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
-                copyToClipboard(urltoCopy);
-                return false;
-            });
-
-            ScrollTo($('.yellowthickborder'));
-
-            $(".yellowthickborder").bind("click", function () {
-                $(this).removeClass("yellowthickborder");
-            });
-        }
-
-        // check if user has selected any designations or not.
-        function SubTasks_checkDesignations(oSrc, args) {
-            //args.IsValid = ($("# input:checked").length > 0);
-        }
-
-
-        //  Created By : Yogesh K
-        // To updat element underlying CKEditor before work submited to server.
-        function UpdateTaskDescBeforeSubmit(CKEditorId, ButtonId) {
-            $(ButtonId).bind('click', function () {
-                var editor = CKEDITOR.instances[CKEditorId];
-
-                if (editor) {
-                    editor.updateElement();
-                }
-            });
-        }
-
-
-        //----------- Start DP ---------
-
-        function SetHiddenTaskId(vId) {
-            $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
-        }
-
-
-        $('#<%=pnlCalendar.ClientID%>').hide();
+            $('#<%=pnlCalendar.ClientID%>').hide();
   <%--  $('#<%=divSubTask.ClientID%>').hide();--%>
 
     function txtTaskDesc_Blur(editor) {
@@ -2188,6 +2252,14 @@
         });
     }
 
+    function SetLatestSequenceForAddNewSubTask() {
+
+        var sequencetextbox = $('#divNewAddSeq');
+        getLastAvailableSequence(sequencetextbox);
+        angular.element(document.getElementById('divSeqForAddNewTask')).scope().getTasks();
+
+    }
+
     function ShowTaskSequence(editlink) {
 
         var edithyperlink = $(editlink);
@@ -2205,6 +2277,18 @@
 
             getLastAvailableSequence(sequencetextbox);
 
+            angular.element(document.getElementById('taskSequence')).scope().getTasks();
+
+            $('#taskSequence').prepend(sequencetextbox);
+
+            var dlg = $('#taskSequence').dialog({
+                width: 400,
+                height: 250,
+                show: 'slide',
+                hide: 'slide',
+                autoOpen: true,
+                modal: false
+            });
         }
 
     }
@@ -2242,10 +2326,10 @@
     function DisplySequenceBox(sequencebox, maxValueforSeq) {
 
         sequencebox.removeClass('hide');
-      var divSequence =  $(sequencebox).handleCounter({
+        var divSequence = $(sequencebox).handleCounter({
             minimum: 1,
-            maximize: maxValueforSeq            
-      });
+            maximize: maxValueforSeq
+        });
     }
 
     function UpdateTaskSequence(savebutton) {
@@ -2256,7 +2340,7 @@
         if (!isNaN(sequence) && sequence > 0) {
             // if original sequence is changed than it will warn user.
             var originalSequence = parseInt($('#txtSeq' + TaskID).attr('data-original-val'));
-            
+
             // if user has changes original sequence than he/she will be prompted to confirm save.
             if (!isNaN(originalSequence) && sequence != originalSequence) {
 
@@ -2266,14 +2350,14 @@
                 }
             }
 
-           SaveTaskSequence(TaskID, sequence);
-            
+            SaveTaskSequence(TaskID, sequence);
+
         }
         else {
             alert('Please enter valid sequence');
         }
 
-     
+
     }
 
     function SaveTaskSequence(TaskID, Sequence) {

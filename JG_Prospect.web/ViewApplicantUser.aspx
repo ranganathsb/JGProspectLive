@@ -22,23 +22,39 @@
     <%--<script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>--%>
 
     <script type="text/javascript">
+        function showFillInformationPopup() {
+
+            var $dialog = $('#divFillDesigInfo').dialog({
+                               autoOpen: true,
+                               modal: false,
+                               height: 100,
+                               width: 900,
+                               title: "Fill Required Information"
+                           });
+
+        }
+
         function showAptTestPage(PageUrl) {
 
-            var $dialog = $('<div class="Aptitude-popup"></div>')
+            var dialogApptitude = $('<div class="Aptitude-popup"></div>')
                            .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
                            .dialog({
                                autoOpen: false,
-                               modal: true,
+                               modal: false,
                                height: 625,
-                               width: 800,
+                               width: 900,
                                title: "Aptitude Test"
                            });
+            
+            dialogApptitude.dialog('open');
 
-            var testConfirmationPopup = $('#<%=divStartTest.ClientID%>');
+            var dialogApptitudeZindex = $(dialogApptitude).closest("div[role='dialog']").css("z-index");
+            
+            $("#divFillDesigInfo").closest("div[role='dialog']").css("z-index", dialogApptitudeZindex + 1);
 
-            $dialog.append(testConfirmationPopup);
+            $("#divFillDesigInfo").closest("div[role='dialog']").css("top", "0px");
 
-            $dialog.dialog('open');
+            $(dialogApptitude).closest("div[role='dialog']").css("top", "110px");
         }
 
         //function pageLoad() {
@@ -5147,6 +5163,7 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
+    <div id="divFillDesigInfo" class="modal"> <asp:Literal id="ltlFillDesigInfo" runat="server"></asp:Literal> </div>
     <div class="hide">
         <div id="divStartTest" runat="server" style="text-align:center;" title="Apptitude Test" data-width="300px">
             <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">

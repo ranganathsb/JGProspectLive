@@ -1914,6 +1914,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\TaskSequenceapp.js" />
     <Content Include="js\chosen.jquery.js" />
     <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
@@ -2045,6 +2046,7 @@
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
+    <Content Include="js\TaskSequence.js" />
     <Content Include="js\TimerFunctions.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
@@ -2055,6 +2057,9 @@
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -2330,6 +2335,7 @@
     <Content Include="ProspectReport.aspx" />
     <Content Include="Webmail\checkemail.aspx" />
     <Content Include="WebServices\JGWebService.asmx" />
+    <Content Include="Scripts\angular.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation.aspx.cs">

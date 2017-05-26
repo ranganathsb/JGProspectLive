@@ -1179,7 +1179,9 @@ namespace JG_Prospect
                 }
                 else
                 {
-                    Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');","showAptTestPage('" , Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") ,"'); "), true);
+                    //fill designation information alert converted to jquery dialog.
+                    ltlFillDesigInfo.Text = GetViewSalesUserAlertPopup();
+                    Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "Give candidate alert", String.Concat("showFillInformationPopup();showAptTestPage('", Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") ,"'); "), true);
                     //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
                 }
             }

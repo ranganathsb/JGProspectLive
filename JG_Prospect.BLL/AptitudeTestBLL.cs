@@ -34,6 +34,10 @@ namespace JG_Prospect.BLL
             return AptitudeTestDAL.Instance.GetExamByExamID(ExamType,userID);
         }
 
+        public DataTable GetExamsByUserID(int userID)
+        {
+            return AptitudeTestDAL.Instance.GetExamsByUserID(userID);
+        }
         public string GetExamNameByExamID(string ExamId)
         {
             return AptitudeTestDAL.Instance.GetExamNameByExamID(ExamId);
@@ -74,7 +78,7 @@ namespace JG_Prospect.BLL
             return AptitudeTestDAL.Instance.GetQuestionsoptionByQustionID(questionID);
         }
 
-        public bool InsertPerformance(int InstallUserID, int ExamID, int marksEarned, int totalMarks, float percentage, int Status)
+        public bool InsertPerformance(int InstallUserID, int ExamID, int marksEarned, int totalMarks, double percentage, int Status)
         {
             return AptitudeTestDAL.Instance.InsertPerformance(InstallUserID, ExamID, marksEarned, totalMarks, percentage, Status);
         }

@@ -236,7 +236,7 @@ hr {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 /*------------------------------------------------------------------
@@ -1978,7 +1978,7 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 
 .form_panel_custom ul.stulli {
     overflow: hidden;
-    margin:5px 0 !important;
+    margin: 5px 0 !important;
 }
 
 .divtdetails img {
@@ -2048,23 +2048,61 @@ li.testresults {
 }
 
 
-.form_panel ul.userDatafilter li {
+    .form_panel ul.userDatafilter li {
         margin: 0px;
         border: none;
         display: inline;
         width: inherit;
-        float:none;
-}
+        float: none;
+    }
 
 .form_panel table tr td ul.userDatafilter li label {
     width: inherit;
     display: inline;
     padding: 0 2px 0 0;
-    font-size:12px;
-   
+    font-size: 12px;
 }
 
 .form_panel table tr td ul.userDatafilter li input {
-    position:relative;
-    top:3px;  
+    position: relative;
+    top: 3px;
+}
+
+.mcqquesMain {
+    margin-top: 10px;
+    border: 2px solid #e55456;
+    padding: 5px;
+}
+
+li.mcqques {
+    display: inline;
+    margin-left: 5px;
+    border: none;
+}
+
+    li.mcqques a {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+.mcqQuestion {
+    border-top: 2px solid #b5b4b4;
+}
+
+p.mcqQuestion {
+    display: inline;
+}
+
+.endExam {
+    padding: 10px;
+    text-align: center;
+}
+
+.examProgress {
+    top: 0;
+    min-height: 10px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bolder;
+    color: #e55456;
 }

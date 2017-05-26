@@ -2716,17 +2716,18 @@ namespace JG_Prospect.Sr_App.Controls
 
             ddlSubTaskPriority.Items.RemoveAt(0);
             ddlSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
-            ddlSubTaskPriority.SelectedIndex = 0;
+            ddlSubTaskPriority.SelectedIndex = 1;
+
 
 
             drpSubTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
             drpSubTaskPriority.DataTextField = "Text";
             drpSubTaskPriority.DataValueField = "Value";
             drpSubTaskPriority.DataBind();
-
+            
             drpSubTaskPriority.Items.RemoveAt(0);
             drpSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
-            drpSubTaskPriority.SelectedIndex = 0;
+            drpSubTaskPriority.SelectedIndex = 1;
 
             ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
             ddlTaskType.DataTextField = "Text";
@@ -2929,7 +2930,7 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.Open).ToString()).Selected = true;
                 ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()).Enabled = true;
             }
-            ddlSubTaskPriority.SelectedIndex = 0;
+            ddlSubTaskPriority.SelectedIndex = 1;
             btnSaveSubTaskAttachment.Visible = false;
             //rptSubTaskAttachments.DataSource = null;
             //rptSubTaskAttachments.DataBind();

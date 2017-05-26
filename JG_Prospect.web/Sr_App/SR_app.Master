@@ -8,7 +8,7 @@
 <%@ Register Src="~/UserControl/ucRenewSession.ascx" TagPrefix="uc1" TagName="ucRenewSession" %>
 
 <!DOCTYPE html>
-<html>
+<html data-ng-app="JGApp">
 <head id="Head1" runat="server">
     <title>JG Sales</title>
 
@@ -419,7 +419,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="loading" style="display: none">Loading&#8230;</div>
+                <div class="loading"  style="display: none">Loading&#8230;</div>
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                 </asp:ContentPlaceHolder>
                 <div class="clr">
