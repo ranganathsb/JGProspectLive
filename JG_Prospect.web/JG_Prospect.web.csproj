@@ -1388,6 +1388,8 @@
     <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\flags24.css" />
+    <Content Include="css\flipclock.css" />
+    <Content Include="css\flipclock_old.css" />
     <Content Include="css\handle-counter.min.css" />
     <Content Include="css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="css\img\flags%402x.png" />
@@ -1914,6 +1916,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\flipclock.min.js" />
     <Content Include="js\TaskSequenceapp.js" />
     <Content Include="js\chosen.jquery.js" />
     <Content Include="js\clipboard.min.js" />

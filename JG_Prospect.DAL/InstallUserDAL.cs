@@ -669,6 +669,32 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
+        public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId,  Int64 UserId, string StatusReason = "")
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[USP_ChangeUserStatusToReject]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int64, UserId);
+                    database.AddInParameter(command, "@StatusId", DbType.Int32, StatusId);
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
+                    database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
+                    database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
+                    database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
+                  
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
+
         public DataSet GetAllInterivewUserByPastDate()
         {
             DataSet dsTemp = new DataSet();

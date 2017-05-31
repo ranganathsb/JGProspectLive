@@ -466,6 +466,12 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
 
+        public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, Int64 UserId, string StatusReason = "")
+        {
+            return InstallUserDAL.Instance.ChangeUserStatusToReject( StatusId, RejectionDate, RejectionTime, RejectedUserId, UserId,  StatusReason);
+        }
+        
+
         public DataSet GetAllInterivewUserByPastDate()
         {
             return InstallUserDAL.Instance.GetAllInterivewUserByPastDate();

@@ -176,6 +176,8 @@ namespace JG_Prospect.MCQTest
         #region "-- Page Methods --"
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Display Page Timer.
+            SetTimerOnPage();
             if (!Page.IsPostBack)
             {
                 if (Session["ID"] != null)
@@ -197,7 +199,6 @@ namespace JG_Prospect.MCQTest
         {
             StartExam();
         }
-
 
         protected void rptQuestions_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -250,6 +251,31 @@ namespace JG_Prospect.MCQTest
         }
 
 
+        protected void rptExams_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            //Result data available
+            if (DataBinder.Eval(e.Item.DataItem, "MarksEarned") != null && !String.IsNullOrEmpty(DataBinder.Eval(e.Item.DataItem, "MarksEarned").ToString()))
+            {
+                Label lblMarks = (Label)e.Item.FindControl("lblMarks");
+                Label lblPercentage = (Label)e.Item.FindControl("lblPercentage");
+                Label lblResult = (Label)e.Item.FindControl("lblResult");
+
+                lblMarks.Text = String.Concat("Marks Obtained: ", DataBinder.Eval(e.Item.DataItem, "MarksEarned").ToString(), "/", DataBinder.Eval(e.Item.DataItem, "TotalMarks").ToString());
+                lblPercentage.Text = String.Concat("Percentage Obtained: ", DataBinder.Eval(e.Item.DataItem, "Aggregate").ToString());
+
+                if (Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "ExamPerformanceStatus").ToString()) > 0)
+                {
+                    lblResult.CssClass = "greentext";
+                    lblResult.Text = "Pass";
+                }
+                else
+                {
+                    lblResult.CssClass = "redtext";
+                    lblResult.Text = "Fail";
+                }
+            }
+        }
+
         #endregion
 
         #region "-- Private Methods --"
@@ -278,33 +304,6 @@ namespace JG_Prospect.MCQTest
             rptExams.DataSource = dsExams;
             rptExams.DataBind();
             upnlMainExams.Update();
-        }
-
-        private void populatePerformanceArea()
-        {
-            DataTable performanceTable = AptitudeTestBLL.Instance.GetPerformanceByUserID(UserID);
-            string buffer = "<table class='tblResult' bgcolor=white border=1>";
-
-            if (performanceTable.Rows.Count > 0)
-            {
-                buffer += "<tr><td><b>Exam Title</b></td><td><b>Marks Earned</b></td><td><b>Total Marks</b></td><td><b>Aggregate</b></td></tr>";
-
-                //for (int i = 0; i < performanceTable.Rows.Count; i++)
-                foreach (DataRow row in performanceTable.Rows)
-                {
-                    String examName = AptitudeTestBLL.Instance.GetExamNameByExamID(row["ExamID"].ToString());
-                    String studentName = row["UserID"].ToString();
-                    String aggregate = row["Aggregate"].ToString();
-                    String marksEarned = row["MarksEarned"].ToString();
-                    String totalMarks = row["TotalMarks"].ToString();
-
-                    buffer += "<tr><td>" + examName + "</td><td>" + marksEarned + "</td><td>" + totalMarks + "</td><td>" + aggregate + "</td></tr>";
-                }
-
-                buffer += "</table>";
-                lblSPI.Text = buffer;
-                //performanceAdapter.Fill(perfTable);
-            }
         }
 
         private void populateLabel()
@@ -352,6 +351,43 @@ namespace JG_Prospect.MCQTest
             rptQuestions.DataSource = questionTable;
 
             rptQuestions.DataBind();
+
+            //Set Exam Timeout Values in 
+            SetExamTimerSessionValues(questionTable);
+
+            SetTimerOnPage();
+
+        }
+
+        private void SetTimerOnPage()
+        {
+            // if exam start registration time available.
+            if (JGSession.ExamTimerSetTime != null && divExamSection.Visible == true)
+            {
+                // Subtract Registered time from time now will yeild total time taken so far.
+                TimeSpan TimeTaken = DateTime.Now.Subtract(Convert.ToDateTime(JGSession.ExamTimerSetTime));
+
+                // Subtract total exam alloted time from time taken will yeild Time left to give exam.
+                Double MilliSecondLeft = (JGSession.CurrentExamTime * 60000) - TimeTaken.TotalMilliseconds;
+
+                //TODO: If timeup then call time up methods.
+
+                // If time left to give exam then show that time.
+                if (MilliSecondLeft > 0)
+                {
+                    int secondLeft = Convert.ToInt32(MilliSecondLeft * 0.001);
+                    hdnTimeLeft.Value = secondLeft.ToString();
+                    //ScriptManager.RegisterStartupScript(this,this.Page.GetType(), "timerDisplay", "startExamTimer(" + secondLeft.ToString() + ");", true); 
+                }
+
+            }
+        }
+
+        private void SetExamTimerSessionValues(DataTable questionTable)
+        {
+            // Set when exam time started.
+            JGSession.ExamTimerSetTime = DateTime.Now;
+            JGSession.CurrentExamTime = Convert.ToInt32(questionTable.Rows[0]["ExamDuration"]);
 
         }
 
@@ -517,7 +553,8 @@ namespace JG_Prospect.MCQTest
 
             }
 
-            double percentageObtained = getUserPassingPercentage(TotalMarks, markScored);
+            double percentageObtained = 0.0;
+            percentageObtained = getUserPassingPercentage(TotalMarks, markScored);
 
             UpdateUserExamSummary((int)markScored, (int)TotalMarks, percentageObtained, this.CurrentExamID, this.UserID);
 
@@ -527,20 +564,47 @@ namespace JG_Prospect.MCQTest
         private void ResetExamParameter()
         {
 
-            this.ExamsGiven = String.Concat(this.ExamsGiven,this.CurrentExamID.ToString(), ",");
+            this.ExamsGiven = String.Concat(this.ExamsGiven, this.CurrentExamID.ToString(), ",");
 
             this.CurrentQuestion = 0;
             this.ExamAttempted = null;
-            this.NextQuestion = 0;            
+            this.NextQuestion = 0;
             this.CurrentExamID = 0;
+            JGSession.ExamTimerSetTime = null;
+            JGSession.CurrentExamTime = 0;
 
             String userExamsGiven = this.ExamsGiven;
 
             string[] exams = userExamsGiven.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (exams.Length == this.TotalExams)
+            bool isAllExamGiven = false;
+            double overAllPercentageScored = 0;
+
+            overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(UserID, ref isAllExamGiven);
+
+
+            if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
             {
                 //All exams finished.
+
+                // If obtained aggregated percentage is less than acceptable level, user is unfit to join JG.
+                if (overAllPercentageScored < JGApplicationInfo.GetAcceptiblePrecentage())
+                {
+                    //Set User status as rejected.
+                    UpdateUserStatusAsRejectedWithReason(UserID);
+                    //Logout user and clear its session value.
+                    Session["ID"] = null;
+                    Session.Clear();
+                    Session.Abandon();
+                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "redirectParentToLoginPage('" + Page.ResolveUrl("~/stafflogin.aspx") + "?UF=1');", true);
+
+
+                }
+                else // User is pass into our application.
+                {
+                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                }
+
             }
             else
             {
@@ -553,6 +617,11 @@ namespace JG_Prospect.MCQTest
 
 
         }
+        private void UpdateUserStatusAsRejectedWithReason(int userID)
+        {
+            InstallUserBLL.Instance.ChangeUserStatusToReject( Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]) ,"Didn't Passed apptitude test.");
+        }
+
         //Update User Exam Summary.
         private void UpdateUserExamSummary(int markScored, int totalMarks, double percentageObtained, int currentExam, int userID)
         {
@@ -561,7 +630,10 @@ namespace JG_Prospect.MCQTest
 
         private double getUserPassingPercentage(double totalMakrs, double markScored)
         {
+            //set total Marks to 1 to avoid divide by zero error.
+            totalMakrs = totalMakrs <= 0 ? 1 : totalMakrs;
             return Math.Round((markScored / totalMakrs) * 100.00, 2);
+
         }
 
         private void StartExam()
@@ -587,29 +659,5 @@ namespace JG_Prospect.MCQTest
 
         #endregion
 
-        protected void rptExams_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            //Result data available
-            if (DataBinder.Eval(e.Item.DataItem, "MarksEarned") != null && !String.IsNullOrEmpty(DataBinder.Eval(e.Item.DataItem, "MarksEarned").ToString()))
-            {
-                Label lblMarks = (Label)e.Item.FindControl("lblMarks");
-                Label lblPercentage = (Label)e.Item.FindControl("lblPercentage");
-                Label lblResult = (Label)e.Item.FindControl("lblResult");
-
-                lblMarks.Text = String.Concat("Marks Obtained: ", DataBinder.Eval(e.Item.DataItem, "MarksEarned").ToString(), "/", DataBinder.Eval(e.Item.DataItem, "TotalMarks").ToString());
-                lblPercentage.Text = String.Concat("Percentage Obtained: ", DataBinder.Eval(e.Item.DataItem, "Aggregate").ToString());
-
-                if (Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "ExamPerformanceStatus").ToString()) > 0)
-                {
-                    lblResult.CssClass = "greentext";
-                    lblResult.Text = "Pass";
-                }
-                else
-                {
-                    lblResult.CssClass = "redtext";
-                    lblResult.Text = "Fail";
-                }
-            }
-        }
     }
 }

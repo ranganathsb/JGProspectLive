@@ -886,7 +886,7 @@ namespace JG_Prospect.App_Code
                 lstbUsersMaster.DataTextField = "FristName";
                 lstbUsersMaster.DataValueField = "Id";
                 lstbUsersMaster.DataBind();
-                
+
             }
         }
 
@@ -910,7 +910,7 @@ namespace JG_Prospect.App_Code
                         case JGConstant.InstallUserStatus.OfferMade:
                             item.Attributes.Add("class", "activeUser");
                             break;
-                        case JGConstant.InstallUserStatus.InterviewDate:                        
+                        case JGConstant.InstallUserStatus.InterviewDate:
                             item.Attributes.Add("class", "IOUser");
                             break;
                         default:
@@ -1239,6 +1239,32 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["microsoft"] = value;
+            }
+        }
+        public static DateTime? ExamTimerSetTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["estime"] == null)
+                    return null;
+                return Convert.ToDateTime(HttpContext.Current.Session["estime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["estime"] = value;
+            }
+        }
+        public static Int32 CurrentExamTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["cextime"] == null)
+                    return 0;
+                return Convert.ToInt32(HttpContext.Current.Session["cextime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["cextime"] = value;
             }
         }
     }

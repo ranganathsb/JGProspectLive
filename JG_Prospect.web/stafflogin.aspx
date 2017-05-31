@@ -43,6 +43,7 @@
                 yearRange: '1950:2050',
                 maxDate: 'today'
           });
+          checkandShowFailAlert();
       });
 
 
@@ -120,6 +121,26 @@
             loginFailMsg += 'If you still can not log in you may recover your user login and password by selecting forgot username &/or forgot password link!';
 
             alert(loginFailMsg);
+        }
+
+        function checkandShowFailAlert() {
+
+            var UF = getUrlVars()["UF"];
+            if (UF) {
+                alert('Unfortunately you did NOT pass the apptitude test for the designation you applied for. If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test. Thank you for applying with JMG.');
+            }
+        } 
+
+        // Read a page's GET URL variables and return them as an associative array.
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
         }
 
         function AutoLoginApplicant(email,pwd)

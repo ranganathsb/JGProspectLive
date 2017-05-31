@@ -334,7 +334,6 @@ END
 
 -- Live Published on 05212017
 
-
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 USE JGBS_Dev_New
@@ -537,93 +536,220 @@ WHERE        (@DesignationID IN
 END
 GO
 
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
--- =============================================
--- Author:		Yogesh Keraliya
--- Create date: 05252017
--- Description:	This will load exam questions randomly
--- =============================================
-CREATE PROCEDURE usp_GetQuestionsByExamID 
-(	
-	@ExamId int 
-)
-AS
-BEGIN
-
-DECLARE @Lower INT ---- The lowest random number
-DECLARE @Upper INT
-
--- Generate random number and orderby questions according to it to load different sequence of exam everytime.
-SET @Lower = 1 ---- The lowest random number
-SET @Upper = 999 ---- The highest random number
-
-SELECT        QuestionID, Question, PositiveMarks, NegetiveMarks, ExamID, ROUND(((@Upper - @Lower -1) * RAND() + @Lower), 0) AS QuestionOrder
-FROM            MCQ_Question
-WHERE        (ExamID = @ExamId)
-ORDER BY QuestionOrder
-
-END
-GO
-
-
-  
 -- =============================================  
--- Author: Yogesh Keraliya  
--- Create date: 05262017  
--- Description: Update users exam performance.  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05252017  
+-- Description: This will load exam questions randomly  
 -- =============================================  
-ALTER PROCEDURE [dbo].[SP_InsertPerfomace]   
- -- Add the parameters for the stored procedure here  
- @installUserID varchar(20),   
- @examID int = 0  
- ,@marksEarned int  
- ,@totalMarks int  
- ,@Aggregate real  
- ,@ExamPerformanceStatus int  
+-- usp_GetQuestionsByExamID  20  
+CREATE PROCEDURE usp_GetQuestionsByExamID   
+(   
+ @ExamId int   
+)  
 AS  
 BEGIN  
- -- SET NOCOUNT ON added to prevent extra result sets from  
- -- interfering with SELECT statements.  
- SET NOCOUNT ON;  
-
- DECLARE @PassPercentage REAL
-
- SELECT @PassPercentage = [PassPercentage] FROM MCQ_Exam WHERE [ExamID] = @examID
-
-
- IF(@PassPercentage < @Aggregate)
-	BEGIN
-
-	SET @ExamPerformanceStatus = 1
-
-	END
- ELSE
-	 BEGIN
- 
-	 SET @ExamPerformanceStatus = 0
-
-	 END
   
-    -- Insert statements for procedure here  
- INSERT INTO [MCQ_Performance]  
-           ([UserID]  
-           ,[ExamID]  
-           ,[MarksEarned]  
-           ,[TotalMarks]  
-           ,[Aggregate]  
-     ,[ExamPerformanceStatus]             
-     )  
-     VALUES  
-           (@installUserID  
-           ,@examID  
-           ,@marksEarned  
-           ,@totalMarks  
-           ,@Aggregate  
-     ,@ExamPerformanceStatus  
-           )  
+DECLARE @Lower INT ---- The lowest random number  
+DECLARE @Upper INT  
+  
+-- Generate random number and orderby questions according to it to load different sequence of exam everytime.  
+SET @Lower = 1 ---- The lowest random number  
+SET @Upper = 999 ---- The highest random number  
+  
+SELECT        MCQ_Question.QuestionID, MCQ_Question.Question, MCQ_Question.PositiveMarks, MCQ_Question.NegetiveMarks, MCQ_Question.ExamID, ABS(CAST(NEWID() AS binary(6)) % 1000) + 1 AS QuestionOrder, 
+                         MCQ_Exam.ExamDuration
+FROM            MCQ_Question INNER JOIN
+                         MCQ_Exam ON MCQ_Question.ExamID = MCQ_Exam.ExamID
+WHERE        (MCQ_Question.ExamID = @ExamId)
+ORDER BY QuestionOrder  
+  
 END  
   
+    
+-- =============================================    
+-- Author: Yogesh Keraliya    
+-- Create date: 05262017    
+-- Description: Update users exam performance.    
+-- =============================================    
+ALTER PROCEDURE [dbo].[SP_InsertPerfomace]     
+ -- Add the parameters for the stored procedure here    
+ @installUserID varchar(20),     
+ @examID int = 0    
+ ,@marksEarned int    
+ ,@totalMarks int    
+ ,@Aggregate real    
+ ,@ExamPerformanceStatus int    
+AS    
+BEGIN    
+ -- SET NOCOUNT ON added to prevent extra result sets from    
+ -- interfering with SELECT statements.    
+ SET NOCOUNT ON;    
   
+ DECLARE @PassPercentage REAL  
+   
+ SELECT @PassPercentage = [PassPercentage] FROM MCQ_Exam WHERE [ExamID] = @examID  
+  
+  
+ IF(@PassPercentage < @Aggregate)  
+ BEGIN  
+  
+ SET @ExamPerformanceStatus = 1  
+  
+ END  
+ ELSE  
+  BEGIN  
+   
+  SET @ExamPerformanceStatus = 0  
+  
+  END  
+ 
+ -- Get Total Marks Properly from Database
+ 
+ SELECT @totalMarks = SUM([PositiveMarks]) FROM MCQ_Question WHERE ExamID = @examID
+   
+    -- Insert statements for procedure here    
+ INSERT INTO [MCQ_Performance]    
+           ([UserID]    
+           ,[ExamID]    
+           ,[MarksEarned]    
+           ,[TotalMarks]    
+           ,[Aggregate]    
+     ,[ExamPerformanceStatus]               
+     )    
+     VALUES    
+           (@installUserID    
+           ,@examID    
+           ,@marksEarned    
+           ,@totalMarks    
+           ,@Aggregate    
+     ,@ExamPerformanceStatus    
+           )    
+END    
+
+
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05302017  
+-- Description: This will load exam result for user based on his designation  
+-- =============================================  
+-- usp_isAllExamsGivenByUser 2934  
+CREATE PROCEDURE usp_isAllExamsGivenByUser   
+(  
+ @UserID bigint , 
+ @AggregateScored FLOAT= 0 OUTPUT,
+ @AllExamsGiven BIT = 0 OUTPUT
+)     
+AS  
+BEGIN  
+   
+	 DECLARE @DesignationID INT  
+  
+	 -- Get users designation based on its user id.  
+	 SELECT        @DesignationID = DesignationID  
+	 FROM            tblInstallUsers  
+	 WHERE        (Id = @UserID)  
+  
+  
+	   IF(@DesignationID IS NOT NULL)  
+	   BEGIN  
+  
+			DECLARE @ExamCount INT
+			DECLARE @GivenExamCount INT
+
+			-- check exams available for existing designation
+			SELECT      @ExamCount = COUNT(MCQ_Exam.ExamID)
+		  FROM          MCQ_Exam 
+		  WHERE        (@DesignationID IN 
+						 (SELECT   Item   FROM  dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1))  
+
+				-- check exams given by user
+				SELECT @GivenExamCount = COUNT(ExamID) FROM MCQ_Performance WHERE UserID = @UserID
+
+				-- IF all exam given, calcualte result.	  
+				IF( @ExamCount = @GivenExamCount AND @GivenExamCount > 0)
+				BEGIN
+
+				 SELECT @AggregateScored = (SUM([Aggregate])/@GivenExamCount) FROM MCQ_Performance  WHERE UserID = @UserID
+
+				 SET @AllExamsGiven = 1
+
+				END
+				ELSE
+				BEGIN
+					SET @AllExamsGiven = 0
+				END
+
+
+	END  
+  
+  RETURN @AggregateScored
+  
+END  
+ 
+ 
+
+-- =============================================    
+  
+-- Author:  Yogesh    
+  
+-- Create date: 22 Sep 2016    
+  
+-- Description: Updates status and status related fields for install user.    
+  
+--    Inserts event and event users for interview status.    
+  
+--    Deletes any exising events and event users for non interview status.    
+  
+--    Gets install users details.    
+  
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[USP_ChangeUserStatusToReject]
+(    
+  
+ @UserID BIGINT ,
+
+ @StatusId int = 0,    
+  
+ @RejectionDate DATE = NULL,    
+  
+ @RejectionTime VARCHAR(20) = NULL,    
+  
+ @RejectedUserId int = 0,    
+  
+ @StatusReason varchar(max) = ''
+  
+)    
+  
+AS    
+  
+BEGIN  
+  
+		-- SET NOCOUNT ON added to prevent extra result sets from    
+  
+		-- interfering with SELECT statements.    
+  
+		SET NOCOUNT ON;  
+  
+  
+		-- Updates user status and status related information.    
+  
+		UPDATE [dbo].[tblInstallUsers]  
+  
+		SET [Status] = @StatusId  
+  
+		 ,RejectionDate = @RejectionDate  
+  
+		 ,RejectionTime = @RejectionTime  
+  
+		 ,InterviewTime = @RejectionTime  
+  
+		 ,RejectedUserId = @RejectedUserId  
+  
+		 ,StatusReason = @StatusReason  
+  
+		WHERE Id = @UserID
+  
+
+END  
+      

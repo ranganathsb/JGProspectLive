@@ -10,6 +10,8 @@
 
     <link href="../css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery-ui.css" rel="stylesheet" />
+    <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../css/flipclock.css" type="text/css" />
 
     <style>
         .tblResult {
@@ -72,8 +74,8 @@
                                     <asp:Literal ID="ltlExamId" runat="server" Visible="false" Text='<%#Eval("ExamID")%>'></asp:Literal><strong><%#Eval("ExamTitle")%></strong></td>
                                 <td><%#Eval("ExamDuration")%> Mins</td>
                                 <td>
-                                   <asp:Label ID="lblMarks" runat="server"></asp:Label><br />
-                                   <asp:Label ID="lblPercentage" runat="server"></asp:Label><br />
+                                    <asp:Label ID="lblMarks" runat="server"></asp:Label><br />
+                                    <asp:Label ID="lblPercentage" runat="server"></asp:Label><br />
                                     <asp:Label ID="lblResult" runat="server"></asp:Label>
                                 </td>
                             </tr>
@@ -92,10 +94,11 @@
             <asp:Button ID="btnCancelTest" runat="server" Text="Cancel Test" CssClass="ui-button" />
         </div>
 
-        <div id="divExamSection" runat="server" visible="false" class="mcqquesMain">
-
-            <asp:UpdatePanel ID="upnlExamSection" runat="server" UpdateMode="Conditional">
-                <ContentTemplate>
+        <asp:UpdatePanel ID="upnlExamSection" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <asp:Button ID="btnEndExamTimeOut" runat="server" OnClick="btnEndExam_Click" Style="display: none;" Text="Button" />
+                <div id="divExamSection" runat="server" visible="false" class="mcqquesMain">
+                    <div id="divTimer" class="clock"></div>
 
                     <!-- Questions Section Start-->
                     <asp:Repeater ID="rptQuestions" runat="server" OnItemCommand="rptQuestions_ItemCommand">
@@ -124,16 +127,23 @@
                         <asp:HiddenField ID="hdnPMarks" runat="server" />
                         <asp:HiddenField ID="hdnNMarks" runat="server" />
                         <asp:HiddenField ID="hdnCorrectAnswer" runat="server" />
+                        <asp:HiddenField ID="hdnTimeLeft" runat="server" />
+
                     </div>
 
                     <div id="divEndExam" class="endExam" visible="false" runat="server">
                         <asp:Button ID="btnEndExam" runat="server" CssClass="ui-button" OnClick="btnEndExam_Click" Text="Submit Exam/View Result" />
+
                     </div>
 
-                </ContentTemplate>
-            </asp:UpdatePanel>
 
-        </div>
+
+                </div>
+            </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="btnEndExamTimeOut" EventName="click" />
+            </Triggers>
+        </asp:UpdatePanel>
         <div class="hide">
             <p class="hide">
                 <asp:Label ID="Label1" runat="server" BackColor="RosyBrown"></asp:Label>
@@ -143,7 +153,90 @@
             </p>
 
         </div>
+        <div id="examPassed" class="modal hide">
+            <h2>You have passed all your apptitude assigned to your designation.</h2>
+        </div>
 
     </form>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery-ui.js")%>'></script>
+    <script src="../js/flipclock.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            Initialize();
+        });
+
+        //On UpdatePanel Refresh
+        var prm = Sys.WebForms.PageRequestManager.getInstance();
+        if (prm != null) {
+            prm.add_endRequest(function (sender, e) {
+                if (sender._postBackSettings.panelsToUpdate != null) {
+                    Initialize();
+                }
+            });
+        };
+
+        function Initialize() {
+            //disableOperations();
+            startExamTimer();
+        }
+        function disableOperations() {
+
+            //Disable right click.
+            $("body").on("contextmenu", function (e) {
+                alert('This operation is disabled on this page.');
+                return false;
+            });
+
+            //Disable Cut,Copy,Paste.
+            $('body').bind('cut copy paste', function (e) {
+                alert('This operation is disabled on this page.');
+                e.preventDefault();
+
+            });
+        }
+
+        var clock;
+
+        function startExamTimer() {
+
+            clock = $('#divTimer').FlipClock($('#<%=hdnTimeLeft.ClientID%>').val(), {
+                countdown: true,
+                clockFace: 'MinuteCounter',
+                callbacks: {
+                    stop: function () {
+                        if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "") {   // If exam is time out than hit end result automatically.                                                        
+                            $('#<%=divExamSection.ClientID%>').find("input,button,select").attr("disabled", "disabled");
+                            $('#<%=divExamSection.ClientID%>').find("a").attr("href", "javascript:void(0);");
+                            alert('Your exam is timeup!');
+                            //console.log($('#<%=btnEndExamTimeOut.ClientID%>'));
+                            $('#<%=hdnTimeLeft.ClientID%>').val("");
+                            $('#<%=btnEndExamTimeOut.ClientID%>').click();
+
+                        }
+                    }
+                }
+
+            });
+        }
+
+        function showExamPassPopup() {
+            $('#examPassed').removeClass('hide');
+            var $dialog = $('#examPassed').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 100,
+                width: 500,
+                title: "Congratulations!!"
+            });
+
+        }
+
+        function redirectParentToLoginPage(URL)
+        {
+            window.top.location.href = URL;
+        }
+    </script>
 </body>
 </html>

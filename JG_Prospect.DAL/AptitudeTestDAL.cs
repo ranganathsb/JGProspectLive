@@ -81,6 +81,34 @@ namespace JG_Prospect.DAL
             return dt;
         }
 
+        public double GetExamsResultByUserID(int userID, ref bool isAllExamGiven)
+        {
+            Double aggregateResult = 0;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_isAllExamsGivenByUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int64, userID);
+                    database.AddOutParameter(command, "@AggregateScored",DbType.Double,8);
+                    database.AddOutParameter(command, "@AllExamsGiven", DbType.Boolean,1);
+                    database.ExecuteNonQuery(command);
+
+                    aggregateResult = Convert.ToDouble(database.GetParameterValue(command, "@AggregateScored"));
+
+                    isAllExamGiven = Convert.ToBoolean(database.GetParameterValue(command, "@AllExamsGiven"));
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return aggregateResult;
+        }
+
         public DataTable GetcorrectAnswerByQuestionID(int questionID)
         {
             string SQL = "select *, (select top 1 OptionText FROM MCQ_Option where OptionID=ma.OptionID AND QuestionID=ma.QuestionID) AS AnswerText from MCQ_CorrectAnswer ma where ma.QuestionId = " + questionID.ToString();

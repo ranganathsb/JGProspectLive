@@ -85,15 +85,6 @@ namespace JG_Prospect.MCQTest {
         protected global::System.Web.UI.WebControls.Button btnCancelTest;
         
         /// <summary>
-        /// divExamSection control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divExamSection;
-        
-        /// <summary>
         /// upnlExamSection control.
         /// </summary>
         /// <remarks>
@@ -101,6 +92,24 @@ namespace JG_Prospect.MCQTest {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel upnlExamSection;
+        
+        /// <summary>
+        /// btnEndExamTimeOut control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEndExamTimeOut;
+        
+        /// <summary>
+        /// divExamSection control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divExamSection;
         
         /// <summary>
         /// rptQuestions control.
@@ -164,6 +173,15 @@ namespace JG_Prospect.MCQTest {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnCorrectAnswer;
+        
+        /// <summary>
+        /// hdnTimeLeft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTimeLeft;
         
         /// <summary>
         /// divEndExam control.
