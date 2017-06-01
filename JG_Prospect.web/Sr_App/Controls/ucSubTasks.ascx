@@ -240,12 +240,13 @@
                     <td>
                         <div style="display: inline;">
                             Type <span style="color: red;">*</span>
-                            <br />
                             <asp:DropDownList ID="ddlTaskType" AutoPostBack="false" runat="server" />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="None" ValidationGroup="vgSubTask"
                                 ControlToValidate="ddlTaskType" ErrorMessage="Please enter Task Type." />
+                            Designation<span style="color: red;">*</span>:<asp:DropDownList ID="ddlUserDesignation" runat="server" AutoPostBack="false">
+                            </asp:DropDownList>
                         </div>
-                        <div id="divSeqForAddNewTask" style="display: inline;" data-ng-controller="AddNewTaskSequenceController">
+                        <div id="divSeqForAddNewTask" style="display: none;" data-ng-controller="AddNewTaskSequenceController">
                             Priority/Sequence <span style="color: red;">*</span>
                             <div class="handle-counter hide" id="divNewAddSeq">
 
@@ -280,8 +281,9 @@
                             ControlToValidate="txtUrl" ErrorMessage="Please enter Task Url." />
                     </td>
                 </tr>
-                <tr runat="server" visible="false">
+                <tr>
                     <td>
+
                         <%-- <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
                             <ContentTemplate>
                                 Designation <span style="color: red;">*</span>:
@@ -946,19 +948,53 @@
     <%--<select class="textbox" ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected">
     </select>--%>
     <table class="table">
+        <tr>
+            <td>Designation
+                <br />
+                <asp:DropDownCheckBoxes ID="ddlDesigSeq" runat="server" UseSelectAllNode="false"
+                    AutoPostBack="false">
+                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                </asp:DropDownCheckBoxes>
+            </td>
+            <td>
+                <asp:CheckBox ID="chkTechTaskSeq" runat="server" Text="TechTask" /></td>
+            <td width="50%" align="right">
+                <input type="text" class="textbox" placeholder="Search users" /></td>
+
+        </tr>
+    </table>
+    <table class="table">
         <tr class="trHeader">
             <th>Sequence#</th>
+            <th>ID#</th>
+            <th>Parent Task</th>
             <th>TaskTitle</th>
+            <th>Designation</th>
+            <th>Status</th>
         </tr>
 
         <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class-even="'AlternateRow'">
-
-            <td>{{ Task.TaskSequence }}
-                   
+            <td>{{ Task.Sequence }}</td>
+            <td>{{ Task.InstallId }}</td>
+            <td>{{ Task.ParentTaskTitle }}</td>
+            <td>{{ Task.Title }}</td>
+            <td>{{ Task.TaskDesignation }}</td>
+            <td>
+                <any ng-switch="Task.Status">
+  
+                    <ANY ng-switch-when="4">InProgress</ANY>
+                    <ANY ng-switch-when="5">Pending</ANY>
+                    <ANY ng-switch-when="6">ReOpened</ANY>
+                    <ANY ng-switch-when="7">Closed</ANY>
+                    <ANY ng-switch-when="8">SpecsInProgress</ANY>
+                    <ANY ng-switch-when="9">Deleted</ANY>
+                    <ANY ng-switch-when="10">Finished</ANY>
+                    <ANY ng-switch-when="11">Test</ANY>
+                    <ANY ng-switch-when="12">Live</ANY>
+                    <ANY ng-switch-when="14">Billed</ANY>
+                    
+                </any>
             </td>
-            <td>{{ Task.Title }}
-            </td>
-
         </tr>
     </table>
 </div>
@@ -1274,7 +1310,7 @@
 
     prmTaskGenerator.add_endRequest(function () {
         console.log('end req.');
-       
+
         ucSubTasks_Initialize();
 
         SetUserAutoSuggestion();
@@ -1314,7 +1350,7 @@
 
         elem.replaceWith($compile(elem)($scope));
         elem1.replaceWith($compile(elem1)($scope));
-     
+
         $scope.$apply();
 
 
@@ -1795,7 +1831,8 @@
                     var Priority = $('#<%= drpSubTaskPriority.ClientID %>').val();
                     var type = $('#<%= drpSubTaskType.ClientID %>').val();
                     var desc = GetCKEditorContent('<%= txtTaskDesc.ClientID %>');
-                    var designations = $('#<%= hdndesignations.ClientID %>').val();
+                    //var designations = $('#<%= hdndesignations.ClientID %>').val();
+                    var designations = $("#<%= ddlUserDesignation.ClientID %> option:selected").val();
                     var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
 
                     var postData = {
@@ -1814,6 +1851,8 @@
                         TaskLvl: TaskLvl,
                         blTechTask: false
                     };
+
+                    console.log(postData);
 
                     CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
@@ -1988,7 +2027,8 @@
                     var installID = $('#<%= txtTaskListID.ClientID %>').val();
                     var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
                     var type = $('#<%= ddlTaskType.ClientID %>').val();
-                    var designaions = $('#<%= hdndesignations.ClientID %>').val();
+                    //var designaions = $('#<%= hdndesignations.ClientID %>').val();
+                    var designations = $("#<%= ddlUserDesignation.ClientID %> option:selected").val();
                     var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
                     var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
                     var sequence = $('#txtSeqAdd').val();
@@ -2005,7 +2045,7 @@
                         InstallID: installID,
                         Attachments: Attachments,
                         TaskType: type,
-                        TaskDesignations: designaions,
+                        TaskDesignations: designations,
                         TaskLvl: TaskLvl,
                         blTechTask: blTechTask,
                         Sequence: sequence
@@ -2282,8 +2322,8 @@
             $('#taskSequence').prepend(sequencetextbox);
 
             var dlg = $('#taskSequence').dialog({
-                width: 400,
-                height: 250,
+                width: 800,
+                height: 300,
                 show: 'slide',
                 hide: 'slide',
                 autoOpen: true,

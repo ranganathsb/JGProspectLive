@@ -55,5 +55,9 @@ namespace JG_Prospect.BLL
         {
             return DesignationDAL.Instance.DesignationInsertUpdate(objDep);
         }
+        public DataSet GetDesignationByTaskID(Int64 TaskID)
+        {
+            return DesignationDAL.Instance.GetDesignationByTaskID(TaskID);
+        }
     }
 }

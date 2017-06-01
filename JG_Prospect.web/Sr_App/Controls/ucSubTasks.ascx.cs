@@ -2682,6 +2682,7 @@ namespace JG_Prospect.Sr_App.Controls
             //rptImageGallery.DataBind();
             //upImageGallery.Update();
         }
+
         private void FillInitialData()
         {
             FillDropDrowns();
@@ -2695,13 +2696,21 @@ namespace JG_Prospect.Sr_App.Controls
 
         private void FillDropDrowns()
         {
-            //DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
-            //ddlUserDesignation.Items.Clear();
-            //ddlUserDesignation.DataSource = ds.Tables[0];
-            //ddlUserDesignation.DataTextField = "DesignationName";
-            //ddlUserDesignation.DataValueField = "ID";
-            //ddlUserDesignation.DataBind();
-            //ddlUserDesignation.Texts.SelectBoxCaption = "Select";
+            DataSet ds = DesignationBLL.Instance.GetDesignationByTaskID(TaskId);
+            ddlUserDesignation.Items.Clear();
+            ddlUserDesignation.DataSource = ds.Tables[0];
+            ddlUserDesignation.DataTextField = "DesignationName";
+            ddlUserDesignation.DataValueField = "DesignationID";
+            ddlUserDesignation.DataBind();
+
+            DataSet dsDesi = DesignationBLL.Instance.GetActiveDesignationByID(0,1);
+            ddlDesigSeq.Items.Clear();
+            ddlDesigSeq.DataSource = dsDesi.Tables[0];
+            ddlDesigSeq.DataTextField = "DesignationName";
+            ddlDesigSeq.DataValueField = "ID";
+            ddlDesigSeq.DataBind();
+
+            ddlDesigSeq.Texts.SelectBoxCaption = "Select";
 
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
             ddlSubTaskStatus.DataTextField = "Text";

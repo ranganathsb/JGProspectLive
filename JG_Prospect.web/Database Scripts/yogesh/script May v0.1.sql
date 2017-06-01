@@ -752,4 +752,120 @@ BEGIN
   
 
 END  
+ 
+-- =============================================  
+-- Author:  Jaylem  
+-- Create date: 13-Dec-2016  
+-- Description: Returns all/selected Active Designation   
+  
+-- Updated : Added DesignationCode.  
+--  date: 22 Mar 2017  
+--  by : Yogesh  
+-- =============================================  
+-- [dbo].[UDP_GetAllDesignationByTaskID] 418
+CREATE PROCEDURE [dbo].[UDP_GetAllDesignationByTaskID]  
+ (
+ @TaskID As Int  
+ )
+AS  
+BEGIN  
+
+ SET NOCOUNT ON;   
+   
+SELECT        TD.DesignationID, D.DesignationName, TD.TaskId
+FROM            tblTaskDesignations AS TD LEFT OUTER JOIN
+                         tbl_Designation AS D ON TD.DesignationID = D.ID
+WHERE        (TD.TaskId = @TaskID)
+
+END
+
+
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05222017  
+-- Description: This will load all tasks with title and sequence  
+-- =============================================  
+-- usp_GetAllTaskWithSequence 0,20
+ALTER PROCEDURE usp_GetAllTaskWithSequence   
+(  
+ 
+ @PageIndex INT = 0,   
+ @PageSize INT =20   
+   
+)  
+As  
+BEGIN  
+  
+DECLARE @StartIndex INT  = 0  
+SET @StartIndex = (@PageIndex * @PageSize) + 1  
+  
+  
+;WITH   
+ Tasklist AS  
+ (   
+  select DISTINCT TaskId ,[Status],[Sequence], 
+  Title,ParentTaskId,Assigneduser,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,
+  case   
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId   
+   when (tasklevel =1 and ParentTaskId>0) then   
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId    
+   when (tasklevel =2 and ParentTaskId>0) then  
+    (select InstallId from tbltask where taskid in (  
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))  
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId   
+       
+   when (tasklevel =3 and ParentTaskId>0) then  
+   (select InstallId from tbltask where taskid in (  
+   (select parenttaskid from tbltask where taskid in (  
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))  
+   +'-'+  
+    (select InstallId from tbltask where taskid in (  
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))  
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId   
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order  
+  from (  
+   select DISTINCT a.*  
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle  
+   ,t.FristName + ' ' + t.LastName AS Assigneduser,
+   (
+   STUFF((SELECT ', ' + Designation
+           FROM tblTaskdesignations td 
+           WHERE td.TaskID = a.TaskId 
+          FOR XML PATH('')), 1, 2, '')
+  )  AS TaskDesignation
+   from  tbltask a  
+   LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId   
+   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId  
+   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id    
+   where a.[Sequence] IS NOT NULL
+  
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )   
+  ) as x  
+ )  
+  
+ ---- get CTE data into temp table  
+ SELECT *  
+ INTO #temp  
+ FROM Tasklist  
+   
+ SELECT *   
+ FROM #temp   
+ WHERE   
+ RowNo_Order >= @StartIndex AND   
+ (  
+  @PageSize = 0 OR   
+  RowNo_Order < (@StartIndex + @PageSize)  
+ )  
+ ORDER BY [Sequence]  DESC
+  
+  
+ SELECT  
+ COUNT(*) AS TotalRecords  
+  FROM #temp  
+
+END
+
+ SELECT Title, [Sequence] AS TaskSequence FROM tblTask WHERE [Sequence] IS NOT NULL ORDER BY [Sequence] DESC  
+  
+
       

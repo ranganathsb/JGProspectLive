@@ -148,6 +148,15 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
         
         /// <summary>
+        /// ddlUserDesignation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlUserDesignation;
+        
+        /// <summary>
         /// ddlSubTaskPriority control.
         /// </summary>
         /// <remarks>
@@ -740,5 +749,23 @@ namespace JG_Prospect.Sr_App.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveCommentAttachment;
+        
+        /// <summary>
+        /// ddlDesigSeq control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlDesigSeq;
+        
+        /// <summary>
+        /// chkTechTaskSeq control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkTechTaskSeq;
     }
 }
