@@ -541,9 +541,9 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public bool UpdateTaskSequence(Int64 Sequence, Int64 TaskID)
+        public bool UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
         {
-            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID);
+            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID,  DesignationID, IsTechTask);
             return true;
         }
 
@@ -564,7 +564,7 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64 Sequence)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask,Sequence);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask, Sequence);
         }
 
         [WebMethod(EnableSession = true)]
@@ -705,10 +705,10 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public string GetLatestTaskSequence()
+        public string GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             string strMessage = string.Empty;
-            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence();
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence(DesignationId,IsTechTask);
             if (dtResult != null)
             {
                 strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
@@ -720,24 +720,48 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
-        [WebMethod(EnableSession = true )]
-        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public void GetAllTaskWithSequence()
+        //[WebMethod(EnableSession = true)]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        //public void GetAllTaskWithSequence()
+        //{
+        //    string strMessage = string.Empty;
+        //    DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(0, 999);
+        //    if (dtResult != null && dtResult.Tables.Count > 0)
+        //    {
+        //        Context.Response.Clear();
+        //        Context.Response.ContentType = "application/json";
+        //        Context.Response.Write(JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented));
+
+        //    }
+        //    else
+        //    {
+        //        strMessage = String.Empty;
+        //    }
+        //    //return strMessage;
+        //}
+
+
+        [WebMethod(EnableSession = true)]
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask,Int64 HighlightedTaskID)
         {
             string strMessage = string.Empty;
-            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence();
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize),DesignationIDs,IsTechTask,HighlightedTaskID);
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
-                Context.Response.Clear();
-                Context.Response.ContentType = "application/json";
-                Context.Response.Write(JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented));
-                
+                //Context.Response.Clear();
+                //Context.Response.ContentType = "application/json";
+                //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "RecordCount";
+
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+
             }
             else
             {
                 strMessage = String.Empty;
             }
-            //return strMessage;
+            return strMessage;
         }
 
 

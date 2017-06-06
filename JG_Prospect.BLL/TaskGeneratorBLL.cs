@@ -28,20 +28,20 @@ namespace JG_Prospect.BLL
             set { ; }
         }
 
-        public DataSet GetLatestTaskSequence()
+        public DataSet GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
-            return TaskGeneratorDAL.Instance.GetLatestTaskSequence();
+            return TaskGeneratorDAL.Instance.GetLatestTaskSequence(DesignationId,IsTechTask);
         }
 
-        public DataSet GetAllTaskWithSequence()
+        public DataSet GetAllTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, Int64 HighlightedTaskID)
         {
-            return TaskGeneratorDAL.Instance.GetAllTaskWithSequence();
+            return TaskGeneratorDAL.Instance.GetAllTaskWithSequence(page,pageSize,DesignationIds,IsTechTask,HighlightedTaskID);
         }
 
 
-        public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID)
+        public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID , bool IsTechTask)
         {
-            return TaskGeneratorDAL.Instance.UpdateTaskSequence(Sequence,TaskID);
+            return TaskGeneratorDAL.Instance.UpdateTaskSequence(Sequence,TaskID,DesignationID,IsTechTask);
 
         }
 

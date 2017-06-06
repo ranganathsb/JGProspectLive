@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
 
         private DataSet returndata;
 
-        public DataSet GetAllTaskWithSequence()
+        public DataSet GetAllTaskWithSequence(Int32 page, Int32 pageSize,String DesignationIds , bool IsTechTask, Int64 HighlightedTaskID)
         {
             try
             {
@@ -35,7 +35,13 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_GetAllTaskWithSequence");
 
-                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit,IsTechTask);
+                    database.AddInParameter(command, "@HighLightedTaskID", SqlDbType.BigInt, HighlightedTaskID);
+                    
+                   command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
 
@@ -51,7 +57,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public DataSet GetLatestTaskSequence()
+        public DataSet GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             try
             {
@@ -61,6 +67,9 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
 
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationId);
+                    database.AddInParameter(command, "@IsTechTask", DbType.Boolean, IsTechTask);
+
                     DataSet result = database.ExecuteDataSet(command);
 
                     return result;
@@ -74,7 +83,7 @@ namespace JG_Prospect.DAL
             }
 
         }
-        public int UpdateTaskSequence(Int64 Sequence , Int64 TaskID)
+        public int UpdateTaskSequence(Int64 Sequence , Int64 TaskID, Int32 DesignationID, bool IsTechTask)
         {
             try
             {
@@ -85,9 +94,10 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@Sequence", DbType.Int64, Sequence);
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationID);                    
                     database.AddInParameter(command, "@TaskId", DbType.Int64, TaskID);
+                    database.AddInParameter(command, "@IsTechTask", DbType.Boolean, IsTechTask);
                     
-
                     int result = database.ExecuteNonQuery(command);
 
                     return result;

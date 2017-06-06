@@ -155,58 +155,6 @@
     .sub-task-attachments-list {
         height: 270px !important;
     }
-
-    .handle-counter {
-        overflow: hidden;
-        margin: 10px 0;
-    }
-
-        .handle-counter .counter-minus, .handle-counter .counter-plus, .handle-counter input {
-            float: left;
-            text-align: center;
-        }
-
-        .handle-counter .counter-minus, .handle-counter .counter-plus {
-            text-align: center;
-        }
-
-        .handle-counter input {
-            width: 50px;
-            border-width: 1px;
-            border-left: none;
-            border-right: none;
-        }
-
-    .btn {
-        padding: 6px 12px;
-        border: 1px solid transparent;
-        color: #fff;
-    }
-
-    .badge {
-        padding: 3px 8px;
-        border: 1px solid transparent;
-        color: #fff;
-    }
-
-    .badge-success {
-        background-color: forestgreen;
-    }
-
-    .btn:disabled, .btn:disabled:hover {
-        background-color: darkgrey;
-        cursor: not-allowed;
-    }
-
-    .btn-primary {
-        background-color: #009dda;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-        .btn-primary:hover, .btn-primary:focus {
-            background-color: #0486b9;
-        }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -623,15 +571,7 @@
                                                                         <li>
                                                                             <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
                                                                             <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this);" data-taskid='<%# Eval("TaskId")%>'>Edit</a>
-                                                                            <div class="handle-counter hide" id='divSeq<%# Eval("TaskId")%>'>
-                                                                                <h5>Sequence for: <%# Eval("Title")%></h5>
-                                                                                <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
-                                                                                <input type="text" class="textbox" data-original-val='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' id='txtSeq<%# Eval("TaskId")%>' value='<%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? String.Empty:Eval("Sequence").ToString()%>' />
-                                                                                <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
-                                                                                <div style="clear: both;">
-                                                                                    <a id="save" href="javascript:void(0);" data-taskid='<%# Eval("TaskId")%>' onclick="javascript:UpdateTaskSequence(this);">Save</a>
-                                                                                </div>
-                                                                            </div>
+
                                                                         </li>
                                                                         <li class="hide">Priority
                                                                         </li>
@@ -941,10 +881,12 @@
 
 </div>
 <script src="../Scripts/angular.min.js"></script>
-<script src="../js/TaskSequenceapp.js"></script>
-<script src="../js/TaskSequence.js"></script>
-<div id="taskSequence" class="modal" data-ng-controller="TaskSequenceController">
-    <h5>Other Sequenced Tasks: </h5>
+<script src="../../js/angular/scripts/jgapp.js"></script>
+<script src="../../js/angular/scripts/jgappfactories.js"></script>
+<script src="../js/angular/scripts/TaskSequence.js"></script>
+
+<div id="taskSequence" class="modal" data-ng-controller="TaskSequenceSearchController">
+    <h5>Sequenced Tasks: </h5>
     <%--<select class="textbox" ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected">
     </select>--%>
     <table class="table">
@@ -958,12 +900,10 @@
             </td>
             <td>
                 <asp:CheckBox ID="chkTechTaskSeq" runat="server" Text="TechTask" /></td>
-            <td width="50%" align="right">
-                <input type="text" class="textbox" placeholder="Search users" /></td>
 
         </tr>
     </table>
-    <table class="table">
+    <table class="table tableSeqTask">
         <tr class="trHeader">
             <th>Sequence#</th>
             <th>ID#</th>
@@ -973,15 +913,26 @@
             <th>Status</th>
         </tr>
 
-        <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class-even="'AlternateRow'">
-            <td>{{ Task.Sequence }}</td>
-            <td>{{ Task.InstallId }}</td>
+        <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'">
+            <td><a href="javascript:void(0);" onclick="javascript:showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}">{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
+                <div class="handle-counter hide" ng-attr-id="divSeq{{Task.TaskId}}">
+                    <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
+                    <input type="text" class="textbox" ng-attr-data-original-val='{{ Task.Sequence == null && 0 || Task.Sequence}}' ng-attr-id='txtSeq{{Task.TaskId}}' value="{{  Task.Sequence == null && 0 || Task.Sequence}}" />
+                    <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
+                    <div style="clear: both;">
+                        <a id="save" href="javascript:void(0);" ng-attr-data-taskid="{{Task.TaskId}}" onclick="javascript:UpdateTaskSequence(this);">Save</a>
+                    </div>
+                </div>
+            </td>
+            <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" target="_blank">{{ Task.InstallId }}</a></td>
             <td>{{ Task.ParentTaskTitle }}</td>
             <td>{{ Task.Title }}</td>
             <td>{{ Task.TaskDesignation }}</td>
             <td>
                 <any ng-switch="Task.Status">
-  
+                    <ANY ng-switch-when="1">Open</ANY>
+                    <ANY ng-switch-when="2">Requested</ANY>
+                    <ANY ng-switch-when="3">Assigned</ANY>
                     <ANY ng-switch-when="4">InProgress</ANY>
                     <ANY ng-switch-when="5">Pending</ANY>
                     <ANY ng-switch-when="6">ReOpened</ANY>
@@ -997,6 +948,9 @@
             </td>
         </tr>
     </table>
+    <div class="text-center">
+        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
+    </div>
 </div>
 <div id="descimgpopup1" class="Descoverlay">
     <div class="Descpopup">
@@ -2303,6 +2257,28 @@
     function ShowTaskSequence(editlink) {
 
         var edithyperlink = $(editlink);
+
+        var TaskID = edithyperlink.attr('data-taskid');
+
+        //search initially all tasks with sequencing.
+        angular.element(document.getElementById('taskSequence')).scope().getTasks(0, '', false, TaskID);
+
+
+        var dlg = $('#taskSequence').dialog({
+            width: 800,
+            height: 300,
+            show: 'slide',
+            hide: 'slide',
+            autoOpen: true,
+            modal: false
+        });
+    }
+
+
+
+    function showEditTaskSequence(editlink) {
+        
+        var edithyperlink = $(editlink);
         var TaskID = edithyperlink.attr('data-taskid');
         var sequencetextbox = $('#divSeq' + TaskID);
 
@@ -2313,30 +2289,24 @@
 
             if (!isNaN(currentVal) || currentVal > 0) {// if already sequence assigned than set its value in textbox.
                 sequencetextbox.children('input[type="text"]').val(currentVal);
+                DisplySequenceBox(sequencetextbox, currentVal);
+            }
+            else {
+
+                // if it is new sequence to assign, load latest sequence based on designation.
+                getLastAvailableSequence(sequencetextbox);
             }
 
-            getLastAvailableSequence(sequencetextbox);
-
-            angular.element(document.getElementById('taskSequence')).scope().getTasks();
-
-            $('#taskSequence').prepend(sequencetextbox);
-
-            var dlg = $('#taskSequence').dialog({
-                width: 800,
-                height: 300,
-                show: 'slide',
-                hide: 'slide',
-                autoOpen: true,
-                modal: false
-            });
         }
 
     }
 
     function getLastAvailableSequence(sequencebox) {
         ShowAjaxLoader();
-        var postData = {
 
+        var postData = {
+            DesignationId: 9,
+            IsTechTask : false
         };
 
         CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, sequencebox) }, function (data) { OnGetLatestSeqError(data, sequencebox) });
@@ -2403,8 +2373,10 @@
     function SaveTaskSequence(TaskID, Sequence) {
 
         var postData = {
-            "Sequence": Sequence,
-            TaskID: TaskID
+            Sequence: Sequence,
+            TaskID: TaskID,
+            DesignationID: 9,
+            IsTechTask : false
         };
 
         ShowAjaxLoader();
@@ -2416,7 +2388,9 @@
             alert('Sequence updated successfully');
             $('#TaskSeque' + TaskID).html(Sequence);
             $('#divSeq' + TaskID).addClass('hide');
-            $('#<%=btnUpdateRepeater.ClientID%>').click();
+
+            angular.element(document.getElementById('taskSequence')).scope().getTasks(0, '', false, TaskID);
+
             return false;
         }
 

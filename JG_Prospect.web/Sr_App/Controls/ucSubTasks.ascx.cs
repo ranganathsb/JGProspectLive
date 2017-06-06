@@ -404,7 +404,10 @@ namespace JG_Prospect.Sr_App.Controls
                     ddcbAssigned.DataValueField = "Id";
                     ddcbAssigned.DataBind();
 
-                    CommonFunction.ApplyColorCodeToAssignUserDropdown(dsUsers.Tables[0], ddcbAssigned);
+                    if ( dsUsers!= null && dsUsers.Tables.Count > 0)
+                    {
+                        CommonFunction.ApplyColorCodeToAssignUserDropdown(dsUsers.Tables[0], ddcbAssigned); 
+                    }
 
 
                     ddcbAssigned.Attributes.Add("data-taskid", DataBinder.Eval(e.Item.DataItem, "TaskId").ToString());

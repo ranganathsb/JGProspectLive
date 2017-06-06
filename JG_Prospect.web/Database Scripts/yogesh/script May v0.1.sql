@@ -865,7 +865,264 @@ SET @StartIndex = (@PageIndex * @PageSize) + 1
 
 END
 
- SELECT Title, [Sequence] AS TaskSequence FROM tblTask WHERE [Sequence] IS NOT NULL ORDER BY [Sequence] DESC  
+/*
+   Monday, June 5, 20171:02:30 PM
+   User: jgrovesa
+   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
+   Database: JGBS_Dev_New
+   Application: 
+*/
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblTask ADD
+	SequenceDesignationId int NULL,
+	UpdatedBy int NULL,
+	UpdatedOn datetime NULL
+GO
+ALTER TABLE dbo.tblTask ADD CONSTRAINT
+	DF_tblTask_UpdatedOn DEFAULT getdate() FOR UpdatedOn
+GO
+ALTER TABLE dbo.tblTask SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+select Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'CONTROL') as Contr_Per 
   
 
+USE JGBS_Dev_New
+GO
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTaskSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_UpdateTaskSequence   
+
+	END
+		
+GO
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05162017  
+-- Description: This will update task sequence  
+-- =============================================  
+CREATE PROCEDURE usp_UpdateTaskSequence   
+(   
+ @Sequence bigint ,
+ @DesignationID int,   
+ @TaskId bigint,
+ @IsTechTask bit   
+)  
+AS  
+BEGIN  
+  
+
+-- if sequence is already assigned to some other task with same designation, all sequence will push back by 1 from alloted sequence for that designation.  
+IF EXISTS(SELECT   T.TaskId
+FROM            tblTask AS T 
+WHERE        (T.[Sequence] = @Sequence) AND (T.TaskId <> @TaskId) AND (T.[SequenceDesignationId] = @DesignationID) AND T.IsTechTask = @IsTechTask)  
+  BEGIN  
+  
+		-- push back all task sequence for 1 from sequence assigned in between.
+		   UPDATE       tblTask  
+		   SET                [Sequence] = [Sequence] + 1     
+		   WHERE        ([Sequence] >= @Sequence) AND ([SequenceDesignationId] = @DesignationID) AND IsTechTask = @IsTechTask
+  
+  END  
+  
+  -- Update task sequence and its respective designationid.
+  UPDATE tblTask  
+   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID
+   WHERE        (TaskId = @TaskId) 
+
+
+END  
+GO
+
+USE JGBS_Dev_New
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTaskWithSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTaskWithSequence   
+
+	END
+		
+GO
+
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 05222017      
+-- Description: This will load all tasks with title and sequence      
+-- =============================================      
+-- usp_GetAllTaskWithSequence 0,20,NULL,0,516
+CREATE PROCEDURE usp_GetAllTaskWithSequence       
+(      
+     
+ @PageIndex INT = 0,       
+ @PageSize INT =20,
+ @DesignationIds VARCHAR(20) = NULL,
+ @IsTechTask BIT = 0,
+ @HighLightedTaskID BIGINT = NULL
+        
+)      
+As      
+BEGIN      
+
+
+IF( @DesignationIds = '' )
+BEGIN
+
+ SET @DesignationIds = NULL
+
+END
+            
       
+;WITH       
+ Tasklist AS      
+ (       
+  select DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],     
+  Title,ParentTaskId,Assigneduser,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,    
+  case       
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId       
+   when (tasklevel =1 and ParentTaskId>0) then       
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId        
+   when (tasklevel =2 and ParentTaskId>0) then      
+    (select InstallId from tbltask where taskid in (      
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))      
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId       
+           
+   when (tasklevel =3 and ParentTaskId>0) then      
+   (select InstallId from tbltask where taskid in (      
+   (select parenttaskid from tbltask where taskid in (      
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))      
+   +'-'+      
+    (select InstallId from tbltask where taskid in (      
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))      
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId       
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order      
+  from (      
+   select DISTINCT a.*      
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle      
+   ,t.FristName + ' ' + t.LastName AS Assigneduser,    
+   (    
+   STUFF((SELECT ', ' + Designation    
+           FROM tblTaskdesignations td     
+           WHERE td.TaskID = a.TaskId     
+          FOR XML PATH('')), 1, 2, '')    
+  )  AS TaskDesignation    
+   from  tbltask a      
+   LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId       
+   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId      
+   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id        
+   WHERE 
+  ( 
+	   (a.[Sequence] IS NOT NULL) 
+	   AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) ) 
+	   AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)
+   
+   ) 
+   OR
+   (
+     a.TaskId = @HighLightedTaskID
+   )     
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )       
+  ) as x      
+ )      
+      
+ ---- get CTE data into temp table      
+ SELECT *      
+ INTO #Tasks      
+ FROM Tasklist      
+
+-- find page number to show taskid sent.
+DECLARE @StartIndex INT  = 0      
+
+      
+IF @HighLightedTaskID  > 0
+	BEGIN
+		DECLARE @RowNumber BIGINT = NULL
+
+		-- Find in which rownumber highlighter taskid is.
+		SELECT @RowNumber = RowNo_Order 
+		FROM #Tasks 
+		WHERE TaskId = @HighLightedTaskID
+
+		-- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.
+		-- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than. 
+		-- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index
+		-- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.
+		 
+		IF @RowNumber IS NOT NULL
+		BEGIN
+			SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1
+		END
+	END		
+
+	-- Set start index to fetch record.
+	SET @StartIndex = (@PageIndex * @PageSize) + 1      
+ 
+ -- fetch records from temptable
+ SELECT *       
+ FROM #Tasks       
+ WHERE       
+ RowNo_Order >= @StartIndex AND       
+ (      
+  @PageSize = 0 OR       
+  RowNo_Order < (@StartIndex + @PageSize)      
+ )      
+ ORDER BY [Sequence]  DESC    
+      
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.     
+ SELECT      
+ COUNT(*) AS TotalRecords, CAST((COUNT(*)/@PageSize) AS INT) AS TotalPages, @PageIndex AS PageIndex     
+  FROM #Tasks      
+
+ DROP TABLE #Tasks
+
+    
+END  
+GO
+      
+USE JGBS_Dev_New
+GO
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetLastAvailableSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetLastAvailableSequence   
+
+	END
+		
+GO
+
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05152017  
+-- Description: This will load last available sequence for task  
+-- =============================================  
+CREATE PROCEDURE usp_GetLastAvailableSequence   
+(
+	@DesignationID INT,
+	@IsTechTask BIT
+)  
+AS  
+BEGIN  
+  
+-- Got MAX allocated sequence to same designation and techtask or non techtask tasks.
+SELECT  ISNULL(MAX([Sequence])+1,1) [Sequence] FROM tblTask WHERE [SequenceDesignationId] = @DesignationID AND IsTechTask = @IsTechTask    
+
+  
+END        
