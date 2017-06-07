@@ -884,11 +884,11 @@
 <script src="../../js/angular/scripts/jgapp.js"></script>
 <script src="../../js/angular/scripts/jgappfactories.js"></script>
 <script src="../js/angular/scripts/TaskSequence.js"></script>
+<script src="../js/TaskSequencing.js"></script>
 
 <div id="taskSequence" class="modal" data-ng-controller="TaskSequenceSearchController">
+    <div class="loading" ng-show="loading === true"></div>
     <h5>Sequenced Tasks: </h5>
-    <%--<select class="textbox" ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected">
-    </select>--%>
     <table class="table">
         <tr>
             <td>Designation
@@ -899,7 +899,11 @@
                 </asp:DropDownCheckBoxes>
             </td>
             <td>
-                <asp:CheckBox ID="chkTechTaskSeq" runat="server" Text="TechTask" /></td>
+                <label>
+                    TechTask
+                <input type="checkbox" ng-model="IsTechTask" ng-change="SetIsTechTask()" />
+                </label>
+            </td>
 
         </tr>
     </table>
@@ -914,20 +918,22 @@
         </tr>
 
         <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'">
-            <td><a href="javascript:void(0);" onclick="javascript:showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}">{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
+            <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}">{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
                 <div class="handle-counter hide" ng-attr-id="divSeq{{Task.TaskId}}">
-                    <a href="javascript:void(0);" class="counter-minus btn btn-primary">-</a>
+                    <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
+                    </select>
+
                     <input type="text" class="textbox" ng-attr-data-original-val='{{ Task.Sequence == null && 0 || Task.Sequence}}' ng-attr-id='txtSeq{{Task.TaskId}}' value="{{  Task.Sequence == null && 0 || Task.Sequence}}" />
-                    <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
+
                     <div style="clear: both;">
                         <a id="save" href="javascript:void(0);" ng-attr-data-taskid="{{Task.TaskId}}" onclick="javascript:UpdateTaskSequence(this);">Save</a>
                     </div>
                 </div>
             </td>
-            <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" target="_blank">{{ Task.InstallId }}</a></td>
+            <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a></td>
             <td>{{ Task.ParentTaskTitle }}</td>
             <td>{{ Task.Title }}</td>
-            <td>{{ Task.TaskDesignation }}</td>
+            <td>{{getDesignationString(Task.TaskDesignation)}}</td>
             <td>
                 <any ng-switch="Task.Status">
                     <ANY ng-switch-when="1">Open</ANY>
@@ -1029,8 +1035,6 @@
         </td>
     </tr>
 </script>
-
-
 
 <script type="text/javascript" data-id="divSubTaskCommentScript">
     var SubTaskCommentScript = {};
@@ -1298,17 +1302,6 @@
         })
     });
 
-    function initializeAngular() {
-        var elem = angular.element(document.getElementById("divSeqForAddNewTask"));
-        var elem1 = angular.element(document.getElementById("taskSequence"));
-
-        elem.replaceWith($compile(elem)($scope));
-        elem1.replaceWith($compile(elem1)($scope));
-
-        $scope.$apply();
-
-
-    }
 
     var maintask = true;
 
@@ -1945,12 +1938,10 @@
                     });
 
                 }
-
+                BindSeqDesignationChange('#<%=ddlDesigSeq.ClientID %>');
                 pageLoad(null, null);
-
-
-
             }
+
 
             function txtSubTaskDescription_Blur(editor) {
                 if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
@@ -1969,48 +1960,48 @@
                     }
                     else {
                         taskid = $('#<%=hdParentTaskId.ClientID%>').val();
-                    }
+            }
 
-                    var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
-                    var url = $('#<%= txtUrl.ClientID %>').val();
-                    var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
-                    var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
-                    var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
-                    var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
-                    var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
-                    var installID = $('#<%= txtTaskListID.ClientID %>').val();
-                    var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
-                    var type = $('#<%= ddlTaskType.ClientID %>').val();
-                    //var designaions = $('#<%= hdndesignations.ClientID %>').val();
-                    var designations = $("#<%= ddlUserDesignation.ClientID %> option:selected").val();
-                    var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
-                    var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
-                    var sequence = $('#txtSeqAdd').val();
+            var title = $('#<%= txtSubTaskTitle.ClientID %>').val();
+            var url = $('#<%= txtUrl.ClientID %>').val();
+            var desc = GetCKEditorContent('<%= txtSubTaskDescription.ClientID %>');
+            var status = "<%=Convert.ToByte(JG_Prospect.Common.JGConstant.TaskStatus.Open)%>";
+            var Priority = $('#<%= ddlSubTaskPriority.ClientID %>').val();
+            var DueDate = ''; //$('#<%= txtSubTaskDueDate.ClientID %>').val();
+            var tHours = ''; //$('#<%= txtSubTaskHours.ClientID %>').val();
+            var installID = $('#<%= txtTaskListID.ClientID %>').val();
+            var Attachments = ''; //$('#<%= hdnAttachments.ClientID %>').val();
+            var type = $('#<%= ddlTaskType.ClientID %>').val();
+            //var designaions = $('#<%= hdndesignations.ClientID %>').val();
+            var designations = $("#<%= ddlUserDesignation.ClientID %> option:selected").val();
+            var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
+            var blTechTask = $('#<%=chkTechTask.ClientID%>').prop('checked');
+            var sequence = $('#txtSeqAdd').val();
 
-                    var postData = {
-                        ParentTaskId: taskid,
-                        Title: title,
-                        URL: url,
-                        Desc: desc,
-                        Status: status,
-                        Priority: Priority,
-                        DueDate: DueDate,
-                        TaskHours: tHours,
-                        InstallID: installID,
-                        Attachments: Attachments,
-                        TaskType: type,
-                        TaskDesignations: designations,
-                        TaskLvl: TaskLvl,
-                        blTechTask: blTechTask,
-                        Sequence: sequence
-                    };
+            var postData = {
+                ParentTaskId: taskid,
+                Title: title,
+                URL: url,
+                Desc: desc,
+                Status: status,
+                Priority: Priority,
+                DueDate: DueDate,
+                TaskHours: tHours,
+                InstallID: installID,
+                Attachments: Attachments,
+                TaskType: type,
+                TaskDesignations: designations,
+                TaskLvl: TaskLvl,
+                blTechTask: blTechTask,
+                Sequence: sequence
+            };
 
-                    CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+            CallJGWebService('AddNewSubTask', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
-                    function OnAddNewSubTaskSuccess(data) {
-                        if (data.d.Success) {
-                            alert('Task saved successfully.');
-                            $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+            function OnAddNewSubTaskSuccess(data) {
+                if (data.d.Success) {
+                    alert('Task saved successfully.');
+                    $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
                             $('#<%=btnUpdateRepeater.ClientID%>').click();
                         }
                         else {
@@ -2246,161 +2237,7 @@
         });
     }
 
-    function SetLatestSequenceForAddNewSubTask() {
 
-        var sequencetextbox = $('#divNewAddSeq');
-        getLastAvailableSequence(sequencetextbox);
-        angular.element(document.getElementById('divSeqForAddNewTask')).scope().getTasks();
-
-    }
-
-    function ShowTaskSequence(editlink) {
-
-        var edithyperlink = $(editlink);
-
-        var TaskID = edithyperlink.attr('data-taskid');
-
-        //search initially all tasks with sequencing.
-        angular.element(document.getElementById('taskSequence')).scope().getTasks(0, '', false, TaskID);
-
-
-        var dlg = $('#taskSequence').dialog({
-            width: 800,
-            height: 300,
-            show: 'slide',
-            hide: 'slide',
-            autoOpen: true,
-            modal: false
-        });
-    }
-
-
-
-    function showEditTaskSequence(editlink) {
-        
-        var edithyperlink = $(editlink);
-        var TaskID = edithyperlink.attr('data-taskid');
-        var sequencetextbox = $('#divSeq' + TaskID);
-
-        if (sequencetextbox) {
-
-            //check if already sequence assigned or not.
-            var currentVal = parseInt(sequencetextbox.children('input[type="text"]').val());
-
-            if (!isNaN(currentVal) || currentVal > 0) {// if already sequence assigned than set its value in textbox.
-                sequencetextbox.children('input[type="text"]').val(currentVal);
-                DisplySequenceBox(sequencetextbox, currentVal);
-            }
-            else {
-
-                // if it is new sequence to assign, load latest sequence based on designation.
-                getLastAvailableSequence(sequencetextbox);
-            }
-
-        }
-
-    }
-
-    function getLastAvailableSequence(sequencebox) {
-        ShowAjaxLoader();
-
-        var postData = {
-            DesignationId: 9,
-            IsTechTask : false
-        };
-
-        CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, sequencebox) }, function (data) { OnGetLatestSeqError(data, sequencebox) });
-
-        function OnGetLatestSeqSuccess(data, sequencebox) {
-            HideAjaxLoader();
-            if (data.d) {
-                var sequence = JSON.parse(data.d);
-                var valExisting = parseInt(sequencebox.children('input[type="text"]').val());
-
-                if (isNaN(valExisting) || valExisting == 0) {
-                    sequencebox.children('input[type="text"]').val(sequence.Table[0].Sequence);
-                }
-
-                DisplySequenceBox(sequencebox, sequence.Table[0].Sequence);
-            }
-
-        }
-        function OnGetLatestSeqError(data, sequencetextbox) {
-            HideAjaxLoader();
-            DisplySequenceBox(sequencetextbox);
-        }
-    }
-
-    var isWarnedForSequenceChange = false;
-
-    function DisplySequenceBox(sequencebox, maxValueforSeq) {
-
-        sequencebox.removeClass('hide');
-        var divSequence = $(sequencebox).handleCounter({
-            minimum: 1,
-            maximize: maxValueforSeq
-        });
-    }
-
-    function UpdateTaskSequence(savebutton) {
-        var button = $(savebutton);
-        var TaskID = button.attr('data-taskid');
-        var sequence = parseInt($('#txtSeq' + TaskID).val());
-
-        if (!isNaN(sequence) && sequence > 0) {
-            // if original sequence is changed than it will warn user.
-            var originalSequence = parseInt($('#txtSeq' + TaskID).attr('data-original-val'));
-
-            // if user has changes original sequence than he/she will be prompted to confirm save.
-            if (!isNaN(originalSequence) && sequence != originalSequence) {
-
-                var userDecision = confirm('Are you sure you want to change sequence of task which is assigned to some other task already?');
-                if (!userDecision) {// user selected not to change sequence assigned to some other task.
-                    return false;
-                }
-            }
-
-            SaveTaskSequence(TaskID, sequence);
-
-        }
-        else {
-            alert('Please enter valid sequence');
-        }
-
-
-    }
-
-    function SaveTaskSequence(TaskID, Sequence) {
-
-        var postData = {
-            Sequence: Sequence,
-            TaskID: TaskID,
-            DesignationID: 9,
-            IsTechTask : false
-        };
-
-        ShowAjaxLoader();
-
-        CallJGWebServiceCommon('UpdateTaskSequence', postData, function (data) { OnSaveSeqSuccess(data, TaskID, Sequence) }, function (data) { OnSaveSeqError(data, TaskID) });
-
-        function OnSaveSeqSuccess(data, TaskID, Sequence) {
-            HideAjaxLoader();
-            alert('Sequence updated successfully');
-            $('#TaskSeque' + TaskID).html(Sequence);
-            $('#divSeq' + TaskID).addClass('hide');
-
-            angular.element(document.getElementById('taskSequence')).scope().getTasks(0, '', false, TaskID);
-
-            return false;
-        }
-
-        function OnSaveSeqError(data, TaskID) {
-            HideAjaxLoader();
-            alert('Could not update Sequence this time, Please try again later.');
-            return false;
-        }
-
-    }
     //--------------- End DP ---------------
 
 </script>

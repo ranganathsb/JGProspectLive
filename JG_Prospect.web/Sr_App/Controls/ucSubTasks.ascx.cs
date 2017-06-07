@@ -395,8 +395,8 @@ namespace JG_Prospect.Sr_App.Controls
                 if (this.IsAdminMode)
                 {
                     // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
-                    //DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
-                    DataSet dsUsers = (DataSet)lstbUsersMaster.DataSource;
+                    DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskDesignations")).Trim());
+                    //DataSet dsUsers = (DataSet)lstbUsersMaster.DataSource;
 
                     ddcbAssigned.Items.Clear();
                     ddcbAssigned.DataSource = dsUsers;

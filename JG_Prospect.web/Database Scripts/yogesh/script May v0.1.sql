@@ -949,150 +949,151 @@ WHERE        (T.[Sequence] = @Sequence) AND (T.TaskId <> @TaskId) AND (T.[Sequen
 END  
 GO
 
-USE JGBS_Dev_New
-GO
+--SP_HELPTEXT 'usp_GetAllTaskWithSequence'
 
 IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTaskWithSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	BEGIN
  
 	DROP PROCEDURE usp_GetAllTaskWithSequence   
 
-	END
-		
-GO
-
--- =============================================      
--- Author:  Yogesh Keraliya      
--- Create date: 05222017      
--- Description: This will load all tasks with title and sequence      
--- =============================================      
--- usp_GetAllTaskWithSequence 0,20,NULL,0,516
-CREATE PROCEDURE usp_GetAllTaskWithSequence       
-(      
-     
- @PageIndex INT = 0,       
- @PageSize INT =20,
- @DesignationIds VARCHAR(20) = NULL,
- @IsTechTask BIT = 0,
- @HighLightedTaskID BIGINT = NULL
-        
-)      
-As      
-BEGIN      
-
-
-IF( @DesignationIds = '' )
-BEGIN
-
- SET @DesignationIds = NULL
-
-END
+	END  
+GO    
+-- =============================================          
+-- Author:  Yogesh Keraliya          
+-- Create date: 05222017          
+-- Description: This will load all tasks with title and sequence          
+-- =============================================          
+-- usp_GetAllTaskWithSequence 2,2,'',0,516    
+CREATE PROCEDURE usp_GetAllTaskWithSequence           
+(          
+         
+ @PageIndex INT = 0,           
+ @PageSize INT =20,    
+ @DesignationIds VARCHAR(20) = NULL,    
+ @IsTechTask BIT = 0,    
+ @HighLightedTaskID BIGINT = NULL    
             
-      
-;WITH       
- Tasklist AS      
- (       
-  select DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],     
-  Title,ParentTaskId,Assigneduser,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,    
-  case       
-   when (ParentTaskId is null and  TaskLevel=1) then InstallId       
-   when (tasklevel =1 and ParentTaskId>0) then       
-    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId        
-   when (tasklevel =2 and ParentTaskId>0) then      
-    (select InstallId from tbltask where taskid in (      
-   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))      
-   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId       
-           
-   when (tasklevel =3 and ParentTaskId>0) then      
-   (select InstallId from tbltask where taskid in (      
-   (select parenttaskid from tbltask where taskid in (      
-   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))      
-   +'-'+      
-    (select InstallId from tbltask where taskid in (      
-   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))      
-   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId       
-  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order      
-  from (      
-   select DISTINCT a.*      
-   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle      
-   ,t.FristName + ' ' + t.LastName AS Assigneduser,    
-   (    
-   STUFF((SELECT ', ' + Designation    
-           FROM tblTaskdesignations td     
-           WHERE td.TaskID = a.TaskId     
-          FOR XML PATH('')), 1, 2, '')    
-  )  AS TaskDesignation    
-   from  tbltask a      
-   LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId       
-   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId      
-   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id        
-   WHERE 
-  ( 
-	   (a.[Sequence] IS NOT NULL) 
-	   AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) ) 
-	   AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)
-   
-   ) 
-   OR
-   (
-     a.TaskId = @HighLightedTaskID
-   )     
-   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )       
-  ) as x      
- )      
-      
- ---- get CTE data into temp table      
- SELECT *      
- INTO #Tasks      
- FROM Tasklist      
-
--- find page number to show taskid sent.
-DECLARE @StartIndex INT  = 0      
-
-      
-IF @HighLightedTaskID  > 0
-	BEGIN
-		DECLARE @RowNumber BIGINT = NULL
-
-		-- Find in which rownumber highlighter taskid is.
-		SELECT @RowNumber = RowNo_Order 
-		FROM #Tasks 
-		WHERE TaskId = @HighLightedTaskID
-
-		-- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.
-		-- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than. 
-		-- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index
-		-- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.
-		 
-		IF @RowNumber IS NOT NULL
-		BEGIN
-			SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1
-		END
-	END		
-
-	-- Set start index to fetch record.
-	SET @StartIndex = (@PageIndex * @PageSize) + 1      
- 
- -- fetch records from temptable
- SELECT *       
- FROM #Tasks       
- WHERE       
- RowNo_Order >= @StartIndex AND       
- (      
-  @PageSize = 0 OR       
-  RowNo_Order < (@StartIndex + @PageSize)      
- )      
- ORDER BY [Sequence]  DESC    
-      
- -- fetch other statistics, total records, total pages, pageindex to highlighted.     
- SELECT      
- COUNT(*) AS TotalRecords, CAST((COUNT(*)/@PageSize) AS INT) AS TotalPages, @PageIndex AS PageIndex     
-  FROM #Tasks      
-
- DROP TABLE #Tasks
-
+)          
+As          
+BEGIN          
     
-END  
+    
+IF( @DesignationIds = '' )    
+BEGIN    
+    
+ SET @DesignationIds = NULL    
+    
+END    
+          
+          
+;WITH           
+ Tasklist AS          
+ (           
+  SELECT DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],         
+  Title,ParentTaskId,Assigneduser,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,        
+  case           
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId           
+   when (tasklevel =1 and ParentTaskId>0) then           
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId            
+   when (tasklevel =2 and ParentTaskId>0) then          
+    (select InstallId from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))          
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId           
+               
+   when (tasklevel =3 and ParentTaskId>0) then          
+   (select InstallId from tbltask where taskid in (          
+   (select parenttaskid from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))          
+   +'-'+          
+    (select InstallId from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))          
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId           
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order          
+  from (          
+   select DISTINCT a.*          
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle          
+   ,t.FristName + ' ' + t.LastName AS Assigneduser,        
+   (        
+   STUFF((SELECT ', ' + Designation        
+           FROM tblTaskdesignations td         
+           WHERE td.TaskID = a.TaskId         
+          FOR XML PATH('')), 1, 2, '')        
+  )  AS TaskDesignation        
+   from  tbltask a          
+   LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId           
+   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId          
+   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id            
+   WHERE     
+  (     
+    (a.[Sequence] IS NOT NULL)     
+    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )     
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)    
+       
+   )     
+   OR    
+   (    
+     a.TaskId = @HighLightedTaskID    
+   )         
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )           
+  ) as x          
+ )          
+          
+ ---- get CTE data into temp table          
+ SELECT *          
+ INTO #Tasks          
+ FROM Tasklist          
+    
+---- find page number to show taskid sent.    
+DECLARE @StartIndex INT  = 0          
+    
+          
+--IF @HighLightedTaskID  > 0    
+-- BEGIN    
+--  DECLARE @RowNumber BIGINT = NULL    
+    
+--  -- Find in which rownumber highlighter taskid is.    
+--  SELECT @RowNumber = RowNo_Order     
+--  FROM #Tasks     
+--  WHERE TaskId = @HighLightedTaskID    
+    
+--  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.    
+--  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.     
+--  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index    
+--  -- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.    
+       
+--  IF @RowNumber IS NOT NULL    
+--  BEGIN    
+--   SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1    
+--  END    
+-- END      
+    
+ -- Set start index to fetch record.    
+ SET @StartIndex = (@PageIndex * @PageSize) + 1          
+     
+ -- fetch records from temptable    
+ SELECT *           
+ FROM #Tasks           
+ WHERE           
+ (RowNo_Order >= @StartIndex AND           
+ (          
+  @PageSize = 0 OR           
+  RowNo_Order < (@StartIndex + @PageSize)          
+ ))
+ or
+ (
+  TaskId = @HighLightedTaskID
+ )          
+ ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC        
+          
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.         
+ SELECT          
+ COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex + 1 AS PageIndex         
+  FROM #Tasks          
+    
+ DROP TABLE #Tasks    
+    
+        
+END 
 GO
       
 USE JGBS_Dev_New
@@ -1126,3 +1127,158 @@ SELECT  ISNULL(MAX([Sequence])+1,1) [Sequence] FROM tblTask WHERE [SequenceDesig
 
   
 END        
+
+USE JGBS_Dev_New
+GO
+
+--SP_HELPTEXT 'usp_GetAllTaskWithSequence'
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTaskWithSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTaskWithSequence   
+
+	END  
+GO    
+-- =============================================          
+-- Author:  Yogesh Keraliya          
+-- Create date: 05222017          
+-- Description: This will load all tasks with title and sequence          
+-- =============================================          
+-- usp_GetAllTaskWithSequence 0,2,'',0,516    
+CREATE PROCEDURE usp_GetAllTaskWithSequence           
+(          
+         
+ @PageIndex INT = 0,           
+ @PageSize INT =20,    
+ @DesignationIds VARCHAR(20) = NULL,    
+ @IsTechTask BIT = 0,    
+ @HighLightedTaskID BIGINT = NULL    
+            
+)          
+As          
+BEGIN          
+    
+    
+IF( @DesignationIds = '' )    
+BEGIN    
+    
+ SET @DesignationIds = NULL    
+    
+END    
+          
+          
+;WITH           
+ Tasklist AS          
+ (           
+  SELECT DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],         
+  Title,ParentTaskId,Assigneduser,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,        
+  case           
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId           
+   when (tasklevel =1 and ParentTaskId>0) then           
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId            
+   when (tasklevel =2 and ParentTaskId>0) then          
+    (select InstallId from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))          
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId           
+               
+   when (tasklevel =3 and ParentTaskId>0) then          
+   (select InstallId from tbltask where taskid in (          
+   (select parenttaskid from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))          
+   +'-'+          
+    (select InstallId from tbltask where taskid in (          
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))          
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId           
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order          
+  from (          
+   select DISTINCT a.*          
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle          
+   ,t.FristName + ' ' + t.LastName AS Assigneduser,        
+   (        
+   STUFF((SELECT ', {"Name": "' + Designation +'","Id":'+ CONVERT(VARCHAR(5),DesignationID)+'}'      
+           FROM tblTaskdesignations td         
+           WHERE td.TaskID = a.TaskId         
+          FOR XML PATH('')), 1, 2, '')        
+  )  AS TaskDesignation
+  --(SELECT TOP 1 DesignationID       
+  --         FROM tblTaskdesignations td         
+  --         WHERE td.TaskID = a.TaskId ) AS DesignationId       
+   from  tbltask a          
+   --LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId           
+   LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId          
+   LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id            
+   WHERE     
+  (     
+    (a.[Sequence] IS NOT NULL)     
+    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )     
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)    
+       
+   )     
+   OR    
+   (    
+     a.TaskId = @HighLightedTaskID    
+   )         
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )           
+  ) as x          
+ )          
+          
+ ---- get CTE data into temp table          
+ SELECT *          
+ INTO #Tasks          
+ FROM Tasklist          
+    
+---- find page number to show taskid sent.    
+DECLARE @StartIndex INT  = 0          
+    
+          
+--IF @HighLightedTaskID  > 0    
+-- BEGIN    
+--  DECLARE @RowNumber BIGINT = NULL    
+    
+--  -- Find in which rownumber highlighter taskid is.    
+--  SELECT @RowNumber = RowNo_Order     
+--  FROM #Tasks     
+--  WHERE TaskId = @HighLightedTaskID    
+    
+--  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.    
+--  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.     
+--  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index    
+--  -- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.    
+       
+--  IF @RowNumber IS NOT NULL    
+--  BEGIN    
+--   SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1    
+--  END    
+-- END      
+    
+ -- Set start index to fetch record.    
+ SET @StartIndex = (@PageIndex * @PageSize) + 1          
+     
+ -- fetch records from temptable    
+ SELECT *           
+ FROM #Tasks           
+ WHERE           
+ (RowNo_Order >= @StartIndex AND           
+ (          
+  @PageSize = 0 OR           
+  RowNo_Order < (@StartIndex + @PageSize)          
+ ))
+ ORDER BY  [Sequence]  DESC        
+ --or
+ --(
+ -- TaskId = @HighLightedTaskID
+ --)          
+ --ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC        
+          
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.         
+ SELECT          
+ COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex AS PageIndex         
+  FROM #Tasks          
+    
+ DROP TABLE #Tasks    
+    
+        
+END 
+
+GO
