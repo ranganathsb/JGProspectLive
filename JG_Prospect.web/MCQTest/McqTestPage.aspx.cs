@@ -7,6 +7,10 @@ using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections;
 using System.Collections.Generic;
+using JG_Prospect.Common.modal;
+using System.Net.Mail;
+using System.IO;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.MCQTest
 {
@@ -171,6 +175,41 @@ namespace JG_Prospect.MCQTest
 
         }
 
+        public int DesignationID {
+            get
+            {
+                int intDesignID = 0;
+                if (ViewState["DesignID"] != null)
+                {
+                    Int32.TryParse(ViewState["DesignID"].ToString(), out intDesignID);
+                }
+                return intDesignID;
+            }
+            set
+            {
+                ViewState["DesignID"] = value;
+            }
+
+        }
+
+        public String DesignationName
+        {
+            get
+            {
+                String strDesign = String.Empty;
+                if (ViewState["DGName"] != null)
+                {
+                    strDesign = ViewState["DGName"].ToString();
+                }
+                return strDesign;
+            }
+            set
+            {
+                ViewState["DGName"] = value;
+            }
+
+        }
+
         #endregion
 
         #region "-- Page Methods --"
@@ -280,6 +319,110 @@ namespace JG_Prospect.MCQTest
 
         #region "-- Private Methods --"
 
+        private void AssignedTaskToUser(int UserId, UInt64 TaskId, UInt64 ParentTaskId,String TaskTitle,String InstallId)
+        {
+            string ApplicantId = UserID.ToString();
+                                    
+            // save (insert / delete) assigned users.
+                
+                // save assigned user a TASK.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, ApplicantId);
+
+                // Change task status to assigned = 3.
+                if (isSuccessful)
+                    UpdateTaskStatus(TaskId, Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+                                                
+                    SendEmailToAssignedUsers(ApplicantId, ParentTaskId.ToString(), TaskId.ToString(), TaskTitle,InstallId);
+            
+        }
+
+        private void UpdateTaskStatus(UInt64 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = Convert.ToInt32(taskId);
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+         
+        }
+
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strSubTaskId, string strTaskTitle,String InstallId)
+        {
+            try
+            {
+                //string strHTMLTemplateName = "Task Generator Auto Email";
+                //DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Task_Generator_Auto_Email, JGSession.DesignationId.ToString());
+
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    //string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    //string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    //string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    //string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = objHTMLTemplate.Header;
+                    string strBody = objHTMLTemplate.Body;
+                    string strFooter = objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
+
+                    strsubject = strsubject.Replace("#ID#", strTaskId);
+                    strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
+                    strsubject = strsubject.Replace("#TaskTitle#", strTaskTitle);
+
+                    strBody = strBody.Replace("#ID#", strTaskId);
+                    strBody = strBody.Replace("#TaskTitleID#", strTaskTitle);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskTitle);
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#email#", emailId);
+
+                    strBody = strBody.Replace("#Designation(s)#", this.DesignationName);
+                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                                                                            "{0}?TaskId={1}&hstid={2}",
+                                                                            string.Concat(
+                                                                                            Request.Url.Scheme,
+                                                                                            Uri.SchemeDelimiter,
+                                                                                            Request.Url.Host,
+                                                                                            "/Sr_App/TaskGenerator.aspx"
+                                                                                         ),
+                                                                            strTaskId,
+                                                                            strSubTaskId
+                                                                        )
+                                            );
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    string strHTMLTemplateName = "Task Generator Auto Email";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(HTMLTemplates.Task_Generator_Auto_Email.ToString(), emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
         private void LoadNextQuestion()
         {
             int repeaterItemIndex = 0;
@@ -298,12 +441,17 @@ namespace JG_Prospect.MCQTest
         private void populateExams()
         {
             DataTable dsExams = AptitudeTestBLL.Instance.GetExamsByUserID(UserID);
+            if (dsExams != null && dsExams.Rows.Count > 0)
+            {
 
-            this.TotalExams = dsExams.Rows.Count;
+                this.TotalExams = dsExams.Rows.Count;
+                this.DesignationID = Convert.ToInt32(dsExams.Rows[0]["DesignationID"].ToString());
+                this.DesignationName = Convert.ToString(dsExams.Rows[0]["Designation"].ToString());
 
-            rptExams.DataSource = dsExams;
-            rptExams.DataBind();
-            upnlMainExams.Update();
+                rptExams.DataSource = dsExams;
+                rptExams.DataBind();
+                upnlMainExams.Update(); 
+            }
         }
 
         private void populateLabel()
@@ -602,7 +750,19 @@ namespace JG_Prospect.MCQTest
                 }
                 else // User is pass into our application.
                 {
-                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    //Get latest task to be assigned for user's designation.
+                    DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID,true);
+
+                    if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0)
+                    {
+                        // Assign automatic task to user.
+                        AssignedTaskToUser(UserID,Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
+
+                        //Update automatic task sequence  assignment
+                        InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]),this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]),true);
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup('"+ getExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString()) +"');", true); 
+                    }
                 }
 
             }
@@ -617,6 +777,20 @@ namespace JG_Prospect.MCQTest
 
 
         }
+
+        private void InsertAssignedTaskSequenceInfo(long TaskId, int DesignationID, long AssignedSequence, bool IsTechTask)
+        {
+            TaskGeneratorBLL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationID, IsTechTask, AssignedSequence, TaskId, this.UserID);
+        }
+
+        private string getExamPassedMessage(String InstallId, String TaskTitle)
+        {
+            string message = "Congratulations!You have passed the 1st round apptitude test for the #designation# position you applied for.<br/> A Technical task & interview date has been assigned, you will receive an email confirmation & further instructions: <br/><br/>Tech Task ID#: #InstallId#<br/>Tech Task Title: #Title#<br/><br/>Please have the above tech task complete for Tech Lead analysis and Hiring Manager final review on date:*Interview Date & Time: _________(default date & time ?)(Monday, Wednesday, Friday)Monday - Friday - 10 a.m.ISTWednesday - 8 p.m.IST";
+            message = message.Replace("#designation#",this.DesignationName).Replace("#InstallId#", InstallId).Replace("#Title#", TaskTitle);
+
+            return message;
+        }
+
         private void UpdateUserStatusAsRejectedWithReason(int userID)
         {
             InstallUserBLL.Instance.ChangeUserStatusToReject( Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]) ,"Didn't Passed apptitude test.");

@@ -154,7 +154,7 @@
 
         </div>
         <div id="examPassed" class="modal hide">
-            <h2>You have passed all your apptitude assigned to your designation.</h2>
+            <span id="examSuccess"></span>
         </div>
 
     </form>
@@ -221,12 +221,16 @@
             });
         }
 
-        function showExamPassPopup() {
+        function showExamPassPopup(message) {
+
             $('#examPassed').removeClass('hide');
+
+            $('#examSuccess').html(message);
+
             var $dialog = $('#examPassed').dialog({
                 autoOpen: true,
                 modal: false,
-                height: 100,
+                height: 400,
                 width: 500,
                 title: "Congratulations!!"
             });

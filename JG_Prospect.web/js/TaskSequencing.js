@@ -1,27 +1,42 @@
 ﻿
 function initializeAngular() {
-    var elem = angular.element(document.getElementById("divSeqForAddNewTask"));
-    var elem1 = angular.element(document.getElementById("taskSequence"));
-
-    elem.replaceWith($compile(elem)($scope));
-    elem1.replaceWith($compile(elem1)($scope));
-
-    $scope.$apply();
+    //var elem = angular.element(document.getElementById("taskSequence"));
+    //$compile(elem.children())($scope);
+    //$scope.$apply();
+    console.log(angular.element(document.getElementById('taskSequence')).scope());
+    angular.element(document.getElementById('taskSequence')).scope().updateonAjaxRequest();
 }
 
 function SetLatestSequenceForAddNewSubTask() {
 
     var sequencetextbox = $('#divNewAddSeq');
     getLastAvailableSequence(sequencetextbox);
-    angular.element(document.getElementById('divSeqForAddNewTask')).scope().getTasks();
+
 
 }
 
-function ShowTaskSequence(editlink) {
-
+function ShowTaskSequence(editlink, designationDropdownId) {
+        
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
+    var TechTask = edithyperlink.attr('data-task-TechTask');
+    var DesignationIds = edithyperlink.attr('data-task-designationids');
+
+    if (DesignationIds) {
+        angular.element(document.getElementById('taskSequence')).scope().UserSelectedDesigIds = DesignationIds.split(",");
+
+        $.each(DesignationIds.split(","), function (index, value) {
+
+            var checkbox = $(designationDropdownId).children("input[value='" + $.trim(value) + "']");
+            if (checkbox) {
+                $(checkbox).attr('checked', true);
+            }
+        });
+    }
+
+    //Set if tech task than load tech task related sequencing.
+    angular.element(document.getElementById('taskSequence')).scope().IsTechTask = TechTask;
 
     //search initially all tasks with sequencing.
     angular.element(document.getElementById('taskSequence')).scope().HighLightTaskId = TaskID;
@@ -49,7 +64,7 @@ function showEditTaskSequence(element) {
 
     if (sequenceDiv) {
 
-        DesignationID = sequenceDiv .children('select').val();
+        DesignationID = sequenceDiv.children('select').val();
 
         if (DesignationID) {
             getLastAvailableSequence(TaskID, DesignationID);
@@ -89,12 +104,12 @@ function getLastAvailableSequence(TaskID, DesignationID) {
         if (data.d) {
             var sequence = JSON.parse(data.d);
 
-            var valExisting = parseInt($('#txtSeq'+TaskID).val());
-            
+            var valExisting = parseInt($('#txtSeq' + TaskID).val());
+
 
             if (isNaN(valExisting) || valExisting == 0 || valExisting + 1 >= parseInt(sequence.Table[0].Sequence)) {
                 $('#txtSeq' + TaskID).val(parseInt(sequence.Table[0].Sequence));
-                }
+            }
 
             DisplySequenceBox(TaskID, sequence.Table[0].Sequence);
         }
@@ -102,7 +117,7 @@ function getLastAvailableSequence(TaskID, DesignationID) {
     }
     function OnGetLatestSeqError(data, TaskID) {
         HideAjaxLoader();
-        DisplySequenceBox(TaskID,1);
+        DisplySequenceBox(TaskID, 1);
     }
 }
 
@@ -117,7 +132,7 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
     //    onMaximize: function () { console.log(this);}
     //});
     var instance = $('#txtSeq' + TaskID);
-        
+
     if (instance.spinner("instance")) {
         instance.spinner("destroy");
     }

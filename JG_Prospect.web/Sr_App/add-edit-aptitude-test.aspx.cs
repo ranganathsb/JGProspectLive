@@ -284,6 +284,17 @@ namespace JG_Prospect.Sr_App
 
             Response.Redirect("~/sr_app/view-aptitude-test.aspx?ExamID=" + objMCQ_Exam.ExamID);
         }
+        
+        protected void repQuestions_ItemCreated(object sender, RepeaterItemEventArgs e)
+        {
+            ScriptManager scriptMan = ScriptManager.GetCurrent(this);
+            LinkButton btn = e.Item.FindControl("lbtnSaveMCQ") as LinkButton;
+            if (btn != null)
+            {
+                //btn.Click += LinkButton1_Click;
+                scriptMan.RegisterAsyncPostBackControl(btn);
+            }
+        }
 
         #endregion
 
@@ -499,7 +510,10 @@ namespace JG_Prospect.Sr_App
                 {
                     AptitudeTestBLL.Instance.UpdateMCQ_Option(objMCQ_Option);
 
-                    if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+
+                    HtmlInputHidden hdnIsAnswer = (riOptions.FindControl("hdnIsAnswer") as HtmlInputHidden);
+
+                    if (hdnIsAnswer != null && hdnIsAnswer.Value.Equals("1"))
                     {
                         AptitudeTestBLL.Instance.UpdateMCQ_CorrectAnswer(objMCQ_Option);
                     }
@@ -508,7 +522,9 @@ namespace JG_Prospect.Sr_App
                 {
                     objMCQ_Option.OptionID = AptitudeTestBLL.Instance.InsertMCQ_Option(objMCQ_Option);
 
-                    if ((riOptions.FindControl("rdoIsAnswer") as RadioButton).Checked)
+                    HtmlInputHidden hdnIsAnswer = (riOptions.FindControl("hdnIsAnswer") as HtmlInputHidden);
+
+                    if (hdnIsAnswer != null && hdnIsAnswer.Value.Equals("1"))
                     {
                         AptitudeTestBLL.Instance.InsertMCQ_CorrectAnswer(objMCQ_Option);
                     }
@@ -517,5 +533,6 @@ namespace JG_Prospect.Sr_App
         }
 
         #endregion
+
     }
 }

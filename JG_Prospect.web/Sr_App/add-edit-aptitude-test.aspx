@@ -85,7 +85,7 @@
                                         <td>
                                             <asp:UpdatePanel ID="upQuestions" runat="server" UpdateMode="Conditional">
                                                 <ContentTemplate>
-                                                    <asp:Repeater ID="repQuestions" runat="server" OnItemCommand="repQuestions_ItemCommand">
+                                                    <asp:Repeater ID="repQuestions" runat="server" OnItemCommand="repQuestions_ItemCommand" OnItemCreated="repQuestions_ItemCreated">
                                                         <HeaderTemplate>
                                                             <table class="question-list" width="100%" cellpadding="0" cellspacing="0" border="0">
                                                         </HeaderTemplate>
@@ -106,7 +106,7 @@
                                                                     <b>Positive Marks</b> :
                                                     <asp:TextBox ID="txtPositiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("PositiveMarks").ToString()) == true ? "1":  Eval("PositiveMarks").ToString() %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <b>Negetive Marks</b> :
-                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("NegetiveMarks").ToString()) == true ? "1":  Eval("NegetiveMarks").ToString() %>'  onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
+                                                    <asp:TextBox ID="txtNegetiveMarks" runat="server" Width="15" Text='<%# String.IsNullOrEmpty(Eval("NegetiveMarks").ToString()) == true ? "1":  Eval("NegetiveMarks").ToString() %>' onkeypress="return IsNumeric(event, true);" onpatse="return false;" />
                                                                     <asp:RequiredFieldValidator ID="rfvPositiveMarks" runat="server" ControlToValidate="txtPositiveMarks" InitialValue="" ValidationGroup="vgExam"
                                                                         ErrorMessage="Please enter Positive Marks." Display="None" />
                                                                     <asp:RequiredFieldValidator ID="rfvNegetiveMarks" runat="server" ControlToValidate="txtNegetiveMarks" InitialValue="" ValidationGroup="vgExam"
@@ -123,9 +123,9 @@
                                                                             <li class='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))? "answer": "" %>'>
                                                                                 <asp:HiddenField ID="hdnOptionID" runat="server" Value='<%# Eval("OptionID") %>' />
                                                                                 <asp:HiddenField ID="hdnOptionUniqueID" runat="server" Value='<%# Eval("OptionUniqueID") %>' />
-                                                                                <input ID="hdnIsAnswer" type="hidden"  runat="server" class="validanswer" />
+                                                                                <input id="hdnIsAnswer" type="hidden" runat="server" class="validanswer" />
                                                                                 <asp:TextBox ID="txtOptionText" runat="server" Width="200" Text='<%# Eval("OptionText") %>' />&nbsp;
-                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server"  data-radioname='<%# "Q" + Eval("QuestionUniqueID") %>'
+                                                                <asp:RadioButton ID="rdoIsAnswer" runat="server" ClientIDMode="AutoID" data-radioname='<%# "Q" + Eval("QuestionUniqueID") %>'
                                                                     Checked='<%# IsCorrectAnswer(Convert.ToString(Eval("QuestionUniqueID")), Convert.ToString(Eval("OptionUniqueID")))%>' />
                                                                                 <asp:RequiredFieldValidator ID="rfvOptionText" runat="server" ControlToValidate="txtOptionText" InitialValue="" ValidationGroup="vgExam"
                                                                                     ErrorMessage='<%# "Please enter Option " + (Container.ItemIndex + 1) + "." %>' Display="None" />
@@ -138,9 +138,8 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="3" style="padding-bottom: 10px; padding-left:25px;">
-                                                                    <asp:LinkButton ID="lbtnSaveMCQ" runat="server" Text="Save Question" CommandName="SaveMcQ"
-                                                                        Visible='<%# (Convert.ToInt64(Eval("QuestionID")) > 0) %>'/>
+                                                                <td colspan="3" style="padding-bottom: 10px; padding-left: 25px;">
+                                                                    <asp:LinkButton ID="lbtnSaveMCQ" ClientIDMode="AutoID" runat="server" Text="Save Question" CommandName="SaveMcQ" />
                                                                 </td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -171,7 +170,7 @@
                                 <a href='<%=Page.ResolveUrl("~/sr_app/manage-aptitude-tests.aspx") %>'>Aptitude Tests</a>
                             </td>
                     </table>
-                        </tr>
+                    </tr>
 
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -188,14 +187,14 @@
 
         //Mark Valid answer
         function ApplyMarkValidAnswer() {
-            
-            $("span[data-radioname]").each(function () {               
+
+            $("span[data-radioname]").each(function () {
                 $(this).children('input:radio').change(function () {
-                 $($(this).closest('ol')).children('li').each(function () {
-                 $(this).children('.validanswer').val('');
+                    $($(this).closest('ol')).children('li').each(function () {
+                        $(this).children('.validanswer').val('');
                     });
-                 //   console.log($($(this).parent()).parent());
-                   $($($(this).parent()).parent()).children('.validanswer').val('1');
+                    //   console.log($($(this).parent()).parent());
+                    $($($(this).parent()).parent()).children('.validanswer').val('1');
                     //console.log(  $(this).parent().children('.validanswer').val('1'));
                 });
             });

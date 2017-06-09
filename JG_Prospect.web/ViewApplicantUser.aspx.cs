@@ -461,12 +461,20 @@ namespace JG_Prospect
                         }
 
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
+                        System.Web.UI.WebControls.ListItem lstPositionDesig = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
 
                         if (lstDesig != null)
                         {
                             ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
                             Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
                         }
+
+                        if (lstPositionDesig != null)
+                        {
+                            ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPositionDesig);
+
+                        }
+
                         //ShowHideAptitudeTestLink();
 
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
@@ -1181,7 +1189,7 @@ namespace JG_Prospect
                 {
                     //fill designation information alert converted to jquery dialog.
                     ltlFillDesigInfo.Text = GetViewSalesUserAlertPopup();
-                    Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "Give candidate alert", String.Concat("showFillInformationPopup();showAptTestPage('", Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") ,"'); "), true);
+                    Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "Give candidate alert", String.Concat("showFillInformationPopup();showAptTestPage('", Page.ResolveUrl("~/MCQTest/McqTestPage.aspx"), "'); "), true);
                     //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
                 }
             }
@@ -4749,7 +4757,7 @@ namespace JG_Prospect
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4798,7 +4806,7 @@ namespace JG_Prospect
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4817,7 +4825,7 @@ namespace JG_Prospect
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4852,7 +4860,7 @@ namespace JG_Prospect
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;

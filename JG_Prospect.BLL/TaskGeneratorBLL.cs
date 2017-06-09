@@ -296,6 +296,16 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskHierarchy(intTaskID, isAdmin);
         }
 
+        public DataSet GetDesignationTaskToAssignWithSequence(Int32 DesignationId, bool IsTechTask)
+        {
+            return TaskGeneratorDAL.Instance.GetDesignationTaskToAssignWithSequence(DesignationId, IsTechTask);
+        }
+
+        public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask, Int64 AssignedSequence, Int64 TaskId, Int32 UserId)
+        {
+            return TaskGeneratorDAL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationId, IsTechTask,AssignedSequence,TaskId,UserId);
+
+        }
 
 
         #region TaskAcceptance

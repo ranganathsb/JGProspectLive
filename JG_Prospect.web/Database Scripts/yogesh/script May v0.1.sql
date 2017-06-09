@@ -336,8 +336,6 @@ END
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
-USE JGBS_Dev_New
-GO
 
 
 SET ANSI_NULLS ON
@@ -1455,4 +1453,673 @@ FROM
 
 GO
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+-- Published on live 06082017
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+USE [JGBS]
+GO
+
+/****** Object:  Table [dbo].[tblAssignedSequencing]    Script Date: 6/10/2017 4:06:13 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tblAssignedSequencing](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[DesignationId] [int] NOT NULL,
+	[AssignedDesigSeq] [bigint] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[IsTechTask] [bit] NOT NULL,
+	[TaskId] [bigint] NOT NULL,
+	[CreatedDateTime] [datetime] NULL,
+	[ModifiedDateTime] [datetime] NULL,
+ CONSTRAINT [PK_tblAssignedSequencing] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing] ADD  CONSTRAINT [DF_tblAssignedSequencing_CreatedDateTime]  DEFAULT (getdate()) FOR [CreatedDateTime]
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing] ADD  CONSTRAINT [DF_tblAssignedSequencing_ModifiedDateTime]  DEFAULT (getdate()) FOR [ModifiedDateTime]
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing]  WITH CHECK ADD  CONSTRAINT [FK_tblAssignedSequencing_tblInstallUsers] FOREIGN KEY([UserId])
+REFERENCES [dbo].[tblInstallUsers] ([Id])
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing] CHECK CONSTRAINT [FK_tblAssignedSequencing_tblInstallUsers]
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing]  WITH CHECK ADD  CONSTRAINT [FK_tblAssignedSequencing_tblTask] FOREIGN KEY([TaskId])
+REFERENCES [dbo].[tblTask] ([TaskId])
+GO
+
+ALTER TABLE [dbo].[tblAssignedSequencing] CHECK CONSTRAINT [FK_tblAssignedSequencing_tblTask]
+GO
+
+
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTaskWithSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTaskWithSequence   
+
+	END  
+GO    
+
+
+-- =============================================            
+-- Author:  Yogesh Keraliya            
+-- Create date: 05222017            
+-- Description: This will load all tasks with title and sequence            
+-- =============================================            
+-- usp_GetAllTaskWithSequence 0,20,'',10,575      
+CREATE PROCEDURE usp_GetAllTaskWithSequence             
+(            
+           
+ @PageIndex INT = 0,             
+ @PageSize INT =20,      
+ @DesignationIds VARCHAR(20) = NULL,      
+ @IsTechTask BIT = 0,      
+ @HighLightedTaskID BIGINT = NULL      
+              
+)            
+As            
+BEGIN            
+      
+      
+IF( @DesignationIds = '' )      
+BEGIN      
+      
+ SET @DesignationIds = NULL      
+      
+END      
+            
+            
+;WITH             
+ Tasklist AS            
+ (             
+  SELECT DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],           
+  Title,ParentTaskId,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,          
+  case             
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId             
+   when (tasklevel =1 and ParentTaskId>0) then             
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId              
+   when (tasklevel =2 and ParentTaskId>0) then            
+    (select InstallId from tbltask where taskid in (            
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))            
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId             
+                 
+   when (tasklevel =3 and ParentTaskId>0) then            
+   (select InstallId from tbltask where taskid in (            
+   (select parenttaskid from tbltask where taskid in (            
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))            
+   +'-'+            
+    (select InstallId from tbltask where taskid in (            
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))            
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId             
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order            
+  from (            
+   select DISTINCT a.*            
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle,            
+   --,t.FristName + ' ' + t.LastName AS Assigneduser,          
+   (          
+   STUFF((SELECT ', {"Name": "' + Designation +'","Id":'+ CONVERT(VARCHAR(5),DesignationID)+'}'        
+           FROM tblTaskdesignations td           
+           WHERE td.TaskID = a.TaskId           
+          FOR XML PATH('')), 1, 2, '')          
+  )  AS TaskDesignation  
+  --(SELECT TOP 1 DesignationID         
+  --         FROM tblTaskdesignations td           
+  --         WHERE td.TaskID = a.TaskId ) AS DesignationId         
+   from  tbltask a            
+   --LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId             
+   --LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId            
+  -- LEFT OUTER JOIN tblInstallUsers as t ON c.UserId = t.Id              
+   WHERE       
+  (       
+    (a.[Sequence] IS NOT NULL)       
+    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )       
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)      
+         
+   )       
+   OR      
+   (      
+     a.TaskId = @HighLightedTaskID      
+   )           
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )             
+  ) as x            
+ )            
+            
+ ---- get CTE data into temp table            
+ SELECT *            
+ INTO #Tasks            
+ FROM Tasklist            
+      
+---- find page number to show taskid sent.      
+DECLARE @StartIndex INT  = 0            
+      
+            
+--IF @HighLightedTaskID  > 0      
+-- BEGIN      
+--  DECLARE @RowNumber BIGINT = NULL      
+      
+--  -- Find in which rownumber highlighter taskid is.      
+--  SELECT @RowNumber = RowNo_Order       
+--  FROM #Tasks       
+--  WHERE TaskId = @HighLightedTaskID      
+      
+--  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.      
+--  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.       
+--  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index      
+--  -- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.      
+         
+--  IF @RowNumber IS NOT NULL      
+--  BEGIN      
+--   SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1      
+--  END      
+-- END        
+      
+ -- Set start index to fetch record.      
+ SET @StartIndex = (@PageIndex * @PageSize) + 1            
+       
+ -- fetch records from temptable      
+ SELECT *             
+ FROM #Tasks             
+ WHERE             
+ (RowNo_Order >= @StartIndex AND             
+ (            
+  @PageSize = 0 OR             
+  RowNo_Order < (@StartIndex + @PageSize)            
+ ))  
+ ORDER BY  [Sequence]  DESC          
+ --or  
+ --(  
+ -- TaskId = @HighLightedTaskID  
+ --)            
+ --ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC          
+            
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.           
+ SELECT            
+ COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex AS PageIndex           
+  FROM #Tasks            
+      
+ DROP TABLE #Tasks      
+      
+          
+END   
+
+
+
+DROP VIEW [dbo].[TaskListView] 
+GO
+
+/****** Object:  View [dbo].[TaskListView]    Script Date: 6/9/2017 5:44:28 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE VIEW [dbo].[TaskListView] 
+AS
+SELECT 
+	Tasks.*,
+
+	TaskCreator.Id AS TaskCreatorId,
+	TaskCreator.InstallId AS TaskCreatorInstallId,
+	TaskCreator.FristName AS TaskCreatorUsername, 
+	TaskCreator.FristName AS TaskCreatorFirstName, 
+	TaskCreator.LastName AS TaskCreatorLastName, 
+	TaskCreator.Email AS TaskCreatorEmail,
+
+	--AdminUser.Id AS AdminUserId,
+	AdminUser.InstallId AS AdminUserInstallId,
+	AdminUser.Username AS AdminUsername,
+	AdminUser.FirstName AS AdminUserFirstName,
+	AdminUser.LastName AS AdminUserLastName,
+	AdminUser.Email AS AdminUserEmail,
+			
+	--TechLeadUser.Id AS TechLeadUserId,
+	TechLeadUser.InstallId AS TechLeadUserInstallId,
+	TechLeadUser.Username AS TechLeadUsername,
+	TechLeadUser.FirstName AS TechLeadUserFirstName,
+	TechLeadUser.LastName AS TechLeadUserLastName,
+	TechLeadUser.Email AS TechLeadUserEmail,
+
+	--OtherUser.Id AS OtherUserId,
+	OtherUser.InstallId AS OtherUserInstallId,
+	OtherUser.Username AS OtherUsername,
+	OtherUser.FirstName AS OtherUserFirstName,
+	OtherUser.LastName AS OtherUserLastName,
+	OtherUser.Email AS OtherUserEmail,
+	STUFF
+	(
+		(SELECT  CAST(', ' + td.Designation as VARCHAR) AS Designation
+		FROM tblTaskDesignations td
+		WHERE td.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskDesignations,
+	STUFF
+	(
+		(SELECT  CAST(', ' + CONVERT(VARCHAR(5), td.DesignationID) as VARCHAR)
+		FROM tblTaskDesignations td
+		WHERE td.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskDesignationIds,
+	STUFF
+	(
+		(SELECT  CAST(', ' + u.FristName + ' ' + u.LastName as VARCHAR) AS Name
+		FROM tblTaskAssignedUsers tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignedUsers,
+	STUFF
+	(
+		(SELECT  ',' + CAST(tu.UserId as VARCHAR) AS Id
+		FROM tblTaskAssignedUsers tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,1
+		,''
+	) AS TaskAssignedUserIds,
+	STUFF
+	(
+		(SELECT  CAST(', ' + CAST(tu.UserId AS VARCHAR) + ':' + u.FristName as VARCHAR) AS Name
+		FROM tblTaskAssignmentRequests tu
+			INNER JOIN tblInstallUsers u ON tu.UserId = u.Id
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAssignmentRequestUsers,
+	STUFF
+	(
+		(SELECT  ', ' + CAST(tu.UserId AS VARCHAR) AS UserId
+		FROM tblTaskAcceptance tu
+		WHERE tu.TaskId = Tasks.TaskId
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskAcceptanceUsers,
+	STUFF
+	(
+		(SELECT  CAST(
+						', ' + CAST(tuf.[Id] AS VARCHAR) + 
+						'@' + tuf.[Attachment] + 
+						'@' + tuf.[AttachmentOriginal]  + 
+						'@' + CAST( tuf.[AttachedFileDate] AS VARCHAR(100)) + 
+						'@' + (
+								CASE 
+									WHEN ctuser.Id IS NULL THEN 'N.A.' 
+									ELSE ISNULL(ctuser.FirstName,'') + ' ' + ISNULL(ctuser.LastName ,'')
+								END
+							) as VARCHAR(max)) AS attachment
+		FROM dbo.tblTaskUserFiles tuf  
+			OUTER APPLY
+			(
+				SELECT TOP 1 iu.Id, iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+				FROM tblInstallUsers iu
+				WHERE iu.Id = tuf.UserId
+			
+				UNION
+
+				SELECT TOP 1 u.Id,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+				FROM tblUsers u
+				WHERE u.Id = tuf.UserId
+			) AS ctuser
+		WHERE tuf.TaskId = Tasks.TaskId AND tuf.IsDeleted <> 1
+		FOR XML PATH(''), TYPE).value('.','NVARCHAR(MAX)')
+		,1
+		,2
+		,' '
+	) AS TaskUserFiles
+FROM          
+	tblTask AS Tasks
+		LEFT JOIN tblInstallUsers TaskCreator ON TaskCreator.Id = Tasks.CreatedBy
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.AdminUserId AND Tasks.IsAdminInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.AdminUserId AND Tasks.IsAdminInstallUser = 0
+		) AS AdminUser
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.TechLeadUserId AND Tasks.IsTechLeadInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.TechLeadUserId AND Tasks.IsTechLeadInstallUser = 0
+		) AS TechLeadUser
+		OUTER APPLY
+		(
+			SELECT TOP 1 iu.Id, iu.InstallId ,iu.FristName AS Username, iu.FristName AS FirstName, iu.LastName, iu.Email
+			FROM tblInstallUsers iu
+			WHERE iu.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 1
+			
+			UNION
+
+			SELECT TOP 1 u.Id, '' AS InstallId ,u.Username AS Username, u.FirstName AS FirstName, u.LastName, u.Email
+			FROM tblUsers u
+			WHERE u.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 0
+		) AS OtherUser
+
+GO  
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetLastAssignedDesigSequencnce]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetLastAssignedDesigSequencnce   
+
+	END  
+GO    
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06092017
+-- Description:	This will fetch latest sequence assigned to same designation
+-- =============================================
+ -- usp_GetLastAssignedDesigSequencnce 10,0
+
+CREATE PROCEDURE usp_GetLastAssignedDesigSequencnce 
+(	-- Add the parameters for the stored procedure here
+	@DesignationId int ,
+	@IsTechTask BIT 
+)
+AS
+BEGIN
+
+-- Got MAX allocated sequence to same designation and techtask or non techtask tasks.
+SELECT  TOP 1 ISNULL([Sequence],1) AS [AvailableSequence],TaskId, Title FROM tblTask 
+WHERE [SequenceDesignationId] = @DesignationID AND IsTechTask = @IsTechTask AND [Sequence] IS NOT NULL AND [Sequence] > (   
+
+		SELECT       ISNULL(MAX(AssignedDesigSeq),0) AS LastAssignedSequence
+		 FROM            tblAssignedSequencing
+		WHERE        (DesignationId = @DesignationId) AND (IsTechTask = @IsTechTask)
+
+)
+
+ORDER BY [Sequence] ASC
+
+END
+GO
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_InsertLastAssignedDesigSequencnce]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_InsertLastAssignedDesigSequencnce   
+
+	END  
+GO    
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06092017
+-- Description:	This will update latest sequence assigned to same designation
+-- =============================================
+ -- usp_UpdateLastAssignedDesigSequencnce
+
+CREATE PROCEDURE usp_InsertLastAssignedDesigSequencnce 
+(	-- Add the parameters for the stored procedure here
+	@AssignedSequence BIGINT,
+	@DesignationId INT ,
+	@IsTechTask BIT,
+	@TaskId BIGINT,
+	@UserId INT 
+)
+AS
+BEGIN
+
+INSERT INTO tblAssignedSequencing
+                         (AssignedDesigSeq, UserId, IsTechTask, TaskId, CreatedDateTime, DesignationId)
+VALUES        (@AssignedSequence,@UserId,@IsTechTask,@TaskId, GETDATE(),@DesignationId)
+
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAptTestsByUserID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAptTestsByUserID   
+
+	END  
+GO    
+
+
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05252017  
+-- Description: This will load exams for user based on his designation  
+-- =============================================  
+-- usp_GetAptTestsByUserID 2934  
+CREATE PROCEDURE usp_GetAptTestsByUserID   
+(  
+ @UserID bigint  
+)     
+AS  
+BEGIN  
+   
+ DECLARE @DesignationID INT  
+  
+ -- Get users designation based on its user id.  
+    SELECT        @DesignationID = DesignationID  
+ FROM            tblInstallUsers  
+ WHERE        (Id = @UserID)  
+  
+  
+   IF(@DesignationID IS NOT NULL)  
+   BEGIN  
+  
+      SELECT        MCQ_Exam.ExamID, MCQ_Exam.ExamDuration, MCQ_Exam.ExamTitle, ExamResult.MarksEarned, ExamResult.TotalMarks, ExamResult.[Aggregate], ExamResult.ExamPerformanceStatus, @DesignationID AS DesignationID,
+	  (SELECT DesignationName FROM [dbo].[tbl_Designation] WHERE ID = @DesignationID) AS Designation
+FROM            MCQ_Exam LEFT OUTER JOIN  
+                         MCQ_Performance AS ExamResult ON MCQ_Exam.ExamID = ExamResult.ExamID AND ExamResult.UserID = @UserID  
+WHERE        (@DesignationID IN  
+                             (SELECT        Item  
+                               FROM            dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1))  
+  
+   END  
+  
+  
+  
+END  
+
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06102017
+-- Description:	Get parent task id for given task
+-- =============================================
+CREATE FUNCTION udf_GetParentTaskId 
+(
+	
+	@TaskId bigint
+)
+RETURNS BIGINT 
+AS
+BEGIN
+
+DECLARE @ParentTaskId BIGINT 
+	
+;WITH MyCTE
+AS ( 
+
+SELECT  t.TaskId,t.ParentTaskId
+FROM tblTask AS t
+WHERE t.ParentTaskId IS NULL
+
+UNION ALL
+
+SELECT t2.TaskId,t2.ParentTaskId
+      FROM tblTask AS t2
+INNER JOIN MyCTE ON t2.ParentTaskId = MyCTE.TaskId
+WHERE t2.ParentTaskId IS NOT NULL 
+
+)
+
+
+
+SELECT @ParentTaskId = ParentTaskId
+FROM MyCTE 
+where TaskId = @TaskId
+
+-- Return the result of the function
+RETURN @ParentTaskId
+
+END
+
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06102017
+-- Description:	Get combine intall id for task id
+-- =============================================
+CREATE FUNCTION dbo.udf_GetCombineInstallId
+(
+	
+	@TaskId bigint
+)
+RETURNS VARCHAR(1000)
+AS
+BEGIN
+
+DECLARE @InstallId VARCHAR(1000)
+	
+;WITH MyCTE
+AS ( 
+
+SELECT  t.TaskId,t.ParentTaskId, CAST( InstallId AS VARCHAR(1000)) AS InstallId 
+FROM tblTask AS t
+WHERE t.ParentTaskId IS NULL
+
+UNION ALL
+
+SELECT t2.TaskId,t2.ParentTaskId,  CAST(( MyCTE.InstallId+ ' - ' + t2.InstallId )AS VARCHAR(1000))
+      FROM tblTask AS t2
+INNER JOIN MyCTE ON t2.ParentTaskId = MyCTE.TaskId
+WHERE t2.ParentTaskId IS NOT NULL 
+
+)
+
+
+SELECT @InstallId = InstallId
+FROM MyCTE 
+where TaskId = @TaskId
+
+-- Return the result of the function
+RETURN @InstallId
+
+END
+
+GO
+
+use jgbs_dev_new
+go
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetLastAssignedDesigSequencnce]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetLastAssignedDesigSequencnce   
+
+	END  
+GO    
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06092017
+-- Description:	This will fetch latest sequence assigned to same designation
+-- =============================================
+ -- usp_GetLastAssignedDesigSequencnce 10,0
+
+CREATE PROCEDURE usp_GetLastAssignedDesigSequencnce 
+(	-- Add the parameters for the stored procedure here
+	@DesignationId int ,
+	@IsTechTask BIT 
+)
+AS
+BEGIN
+
+-- Got MAX allocated sequence to same designation and techtask or non techtask tasks.
+SELECT  TOP 1 ISNULL([Sequence],1) AS [AvailableSequence],TaskId, dbo.udf_GetParentTaskId(TaskId) AS ParentTaskId, dbo.udf_GetCombineInstallId(TaskId) AS InstallId , Title FROM tblTask 
+WHERE [SequenceDesignationId] = @DesignationID AND IsTechTask = @IsTechTask AND [Sequence] IS NOT NULL AND [Sequence] > (   
+
+		SELECT       ISNULL(MAX(AssignedDesigSeq),0) AS LastAssignedSequence
+		 FROM            tblAssignedSequencing
+		WHERE        (DesignationId = @DesignationId) AND (IsTechTask = @IsTechTask)
+
+)
+
+ORDER BY [Sequence] ASC
+
+END
+GO
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--Live publish 06102017
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

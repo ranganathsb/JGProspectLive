@@ -1,8 +1,9 @@
 ﻿app.controller('TaskSequenceSearchController', function PostsController($scope, taskSequenceFactory) {
+
     $scope.Tasks = [];
-    $scope.UserSelectedDesigIds = [];    
+    $scope.UserSelectedDesigIds = [];
     $scope.DesignationSelectModel = [];
-    $scope.IsTechTask = false;
+    $scope.IsTechTask = true;
 
     $scope.loading = false;
     $scope.page = 0;
@@ -11,13 +12,13 @@
     $scope.TotalRecords = 0;
     $scope.HighLightTaskId = 0;
 
-    $scope.getTasks = function (page) {        
-      
+    $scope.getTasks = function (page) {
+
         $scope.loading = true;
         $scope.page = page || 0;
 
         //get all Customers
-        taskSequenceFactory.getTasksWithSearchandPaging("GetAllTasksWithPaging", { page: $scope.page , pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: $scope.IsTechTask, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+        taskSequenceFactory.getTasksWithSearchandPaging("GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: $scope.IsTechTask, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
             //console.log(results.Tasks);
@@ -27,8 +28,8 @@
             $scope.Tasks = results.Tasks;
 
             $scope.TaskSelected = $scope.Tasks[0];
-           // $scope.loading = false;
-            
+            // $scope.loading = false;
+
         });
     };
 
@@ -36,16 +37,16 @@
         $scope.getTasks();
     }
 
-    $scope.SetDesignForSearch = function (value,isRemove) {
+    $scope.SetDesignForSearch = function (value, isRemove) {
 
         if (isRemove) {
             $scope.UserSelectedDesigIds.pop(value);
         }
         else { // if element is to be added
-            if ( $scope.UserSelectedDesigIds.indexOf(value) === -1) {//check if value is not already added then only add it.
+            if ($scope.UserSelectedDesigIds.indexOf(value) === -1) {//check if value is not already added then only add it.
                 $scope.UserSelectedDesigIds.push(value);
             }
-        }        
+        }
         $scope.getTasks();
     };
 
@@ -65,14 +66,17 @@
         $scope.DesignationSelectModel.push(DesignationArray[0]);
 
         return DesignationArray;
-      
+
     };
 
     $scope.designationChanged = function () {
+    };
 
+    $scope.updateonAjaxRequest = function () {
+        taskSequenceFactory.updateonAjaxRequest('taskSequence', $scope);
     }
-    
-   
+
+
 });
 
 

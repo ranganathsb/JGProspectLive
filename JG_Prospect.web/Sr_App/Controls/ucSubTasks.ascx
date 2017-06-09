@@ -194,7 +194,7 @@
                             Designation<span style="color: red;">*</span>:<asp:DropDownList ID="ddlUserDesignation" runat="server" AutoPostBack="false">
                             </asp:DropDownList>
                         </div>
-                        <div id="divSeqForAddNewTask" style="display: none;" data-ng-controller="AddNewTaskSequenceController">
+                        <div id="divSeqForAddNewTask" style="display: none;">
                             Priority/Sequence <span style="color: red;">*</span>
                             <div class="handle-counter hide" id="divNewAddSeq">
 
@@ -203,9 +203,9 @@
                                 <a href="javascript:void(0);" class="counter-plus btn btn-primary">+</a>
 
                             </div>
-                            <div style="clear: both">
+                            <div style="clear: both;display:none;">
                                 Other Task Sequencing:
-                            <select ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected"></select>
+                            <%--<select ng-options="Task as Task.TaskSequence + ' - ' + Task.Title for Task in Tasks track by Task.TaskSequence" ng-model="TaskSelected"></select>--%>
                             </div>
                         </div>
                         <div class="hide">
@@ -570,7 +570,7 @@
                                                                         </li>
                                                                         <li>
                                                                             <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
-                                                                            <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this);" data-taskid='<%# Eval("TaskId")%>'>Edit</a>
+                                                                            <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this,'#<%=ddlDesigSeq.ClientID %>');"  data-task-designationids='<%# Eval("TaskDesignationIds")%>' data-task-TechTask='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>' data-taskid='<%# Eval("TaskId")%>'>Edit</a>
 
                                                                         </li>
                                                                         <li class="hide">Priority
@@ -918,7 +918,7 @@
         </tr>
 
         <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'">
-            <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}">{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
+            <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}"><span ng-if="Task.IsTechTask">TTS-</span> <span ng-if="!Task.IsTechTask">SS-</span>{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
                 <div class="handle-counter hide" ng-attr-id="divSeq{{Task.TaskId}}">
                     <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
                     </select>
@@ -1308,7 +1308,7 @@
     function shownewsubtask() {
 
         maintask = true;
-        SetLatestSequenceForAddNewSubTask();
+       // SetLatestSequenceForAddNewSubTask();
         $('#<%=hdTaskLvl.ClientID%>').val("1");
         $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
         $('#<%=chkTechTask.ClientID%>').prop('checked', false)

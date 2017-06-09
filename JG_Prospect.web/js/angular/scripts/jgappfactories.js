@@ -1,4 +1,4 @@
-﻿app.factory('taskSequenceFactory', function ($http) {
+﻿app.factory('taskSequenceFactory', function ($http, $compile) {
 
     // methodName = webmethod in webservice
     var getTasksandSequenceM = function (methodName) {
@@ -10,9 +10,22 @@
         return $http.post(url + methodName, filters);
     };
 
+    var updateonAjaxRequestM = function (element,scope) {
+
+        var elem = angular.element(document.getElementById(element));
+
+        console.log('Angular Element' + elem);
+
+        elem.replaceWith($compile(elem)(scope));
+
+        scope.$apply();
+
+    };
+
     return {
         getTaskwithSequence: getTasksandSequenceM,
-        getTasksWithSearchandPaging: getTasksWithSearchandPagingM
+        getTasksWithSearchandPaging: getTasksWithSearchandPagingM,
+        updateonAjaxRequest: updateonAjaxRequestM
     };
 
 });
