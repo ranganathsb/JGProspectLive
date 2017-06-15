@@ -26,7 +26,7 @@ namespace JG_Prospect.Sr_App
 
         private void FillHtmlTemplates()
         {
-            DataSet dsHtmlTemplates = HTMLTemplateBLL.Instance.GetHTMLTemplateMasters();
+            DataSet dsHtmlTemplates = HTMLTemplateBLL.Instance.GetHTMLTemplateMasters(1);
             if (dsHtmlTemplates != null && dsHtmlTemplates.Tables.Count > 0)
             {
                 DataView dvHtmlTemplates = dsHtmlTemplates.Tables[0].DefaultView;

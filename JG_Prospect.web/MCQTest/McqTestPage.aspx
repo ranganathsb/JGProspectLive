@@ -29,9 +29,19 @@
             width: 100%;
             padding: 50px;
         }
+
+        .ui-button {
+            background: url('../img/main-header-bg.png') repeat-x;
+            color: #fff;
+        }
     </style>
 </head>
 <body style="background: none;">
+    <script type="text/javascript">
+        function redirectParentToLoginPage(URL) {
+            window.top.location.href = URL;
+        }
+    </script>
     <form id="form1" method="post" runat="server">
         <div>
             <ajaxToolkit:ToolkitScriptManager ID="scmExam" runat="server" AsyncPostBackTimeout="360000">
@@ -91,7 +101,7 @@
         </div>
         <div id="divTakeExam" runat="server" style="text-align: center;">
             <asp:Button ID="btnTakeTest" Text="Take Test" CssClass="ui-button" runat="server" OnClick="btnTakeTest_Click" />
-            <asp:Button ID="btnCancelTest" runat="server" Text="Cancel Test" CssClass="ui-button" />
+            <asp:Button ID="btnCancelTest" runat="server" OnClick="btnCancelTest_Click" OnClientClick="javascript:return confirm('Are you sure you want to Cancel Test?');" Text="Cancel Test" CssClass="ui-button" />
         </div>
 
         <asp:UpdatePanel ID="upnlExamSection" runat="server" UpdateMode="Conditional">
@@ -136,7 +146,88 @@
 
                     </div>
 
+                    <div id="examPassed" class="modal hide">
+                        <span id="examSuccess">Congratulations!You have passed the 1st round apptitude test for the
+                <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+                            position you applied for.<br />
+                            A Technical task & interview date has been assigned, you will receive an email confirmation & further instructions:
+                <br />
+                            <br />
+                            <strong>Tech Task ID#:
+                <a id="hypTaskLink" runat="server">
+                    <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
+                </a></strong>
+                            <br />
+                            <strong>Task Title:
+                <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
+                            </strong>
+                            <br />
+                            <br />
+                            Please have the above tech task complete for Tech Lead analysis and Hiring Manager final review on date:</span>
+                        <br />
+                        <br />
+                        <span><strong>*Interview Date & Time: </strong>
+                            <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
+                        </span>
+                        <br />
+                        <br />
+                        <span>To accept this task and due date, fill out the following required interview date fields and select "Confirm" button at the bottom of the page.
+Have your tech task completely finished for due date. login to the JG application at above "interview date & time to have your Video/Voice/chat "Interview Date Meeting" with Manager
+                <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
+                            If you need an alternate due date, you may toggle the above date & time
+                        </span>
+                        <div style="display: none;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <asp:TextBox ID="txtApplicantAddress" runat="server" TextMode="MultiLine"></asp:TextBox></td>
+                                    <td>
+                                        <asp:TextBox ID="txtDateOfBirth" runat="server"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td>Penalty of Perjury:
+                            <asp:DropDownList ID="ddlPenaltyOfPerjury" runat="server"></asp:DropDownList></td>
+                                    <td>Marital Status:
+                            <asp:DropDownList ID="ddlMaritalStatus" runat="server"></asp:DropDownList></td>
+                                </tr>
+                                <tr>
+                                    <td>Children:
+                            <asp:DropDownList ID="ddlChildren" runat="server">
+                                <asp:ListItem Text="1" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                                <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                                <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                                <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                                <asp:ListItem Text="6" Value="6"></asp:ListItem>
+                                <asp:ListItem Text="7" Value="7"></asp:ListItem>
+                                <asp:ListItem Text="8" Value="8"></asp:ListItem>
+                                <asp:ListItem Text="9" Value="9"></asp:ListItem>
+                                <asp:ListItem Text="10" Value="10"></asp:ListItem>
+                            </asp:DropDownList></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Contract acceptance attach</td>
+                                    <td>*ID
+                            <asp:DropDownList ID="ddlIdentity" runat="server">
+                                <asp:ListItem Text="Passport"></asp:ListItem>
+                                <asp:ListItem Text="Driver's Liscense"></asp:ListItem>
+                            </asp:DropDownList>
+                                        <br />
+                                        Attach:
+                            <asp:FileUpload ID="fluIdentity" runat="server" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" OnClick="btnConfirm_Click" Text="Confirm" /></td>
+                                    <td>
+                                        <asp:Button ID="btnCancel" runat="server" CssClass="ui-button" OnClick="btnCancel_Click" Text="Cancel" /></td>
+                                </tr>
+                            </table>
+                        </div>
 
+                    </div>
 
                 </div>
             </ContentTemplate>
@@ -153,9 +244,7 @@
             </p>
 
         </div>
-        <div id="examPassed" class="modal hide">
-            <span id="examSuccess"></span>
-        </div>
+
 
     </form>
 
@@ -237,10 +326,7 @@
 
         }
 
-        function redirectParentToLoginPage(URL)
-        {
-            window.top.location.href = URL;
-        }
+
     </script>
 </body>
 </html>

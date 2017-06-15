@@ -1106,5 +1106,37 @@ namespace JG_Prospect.WebServices
         }
 
         #endregion
+
+        #region "-- Auto Email/SMS Templates --"
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateFromId(TemplateId, FromID);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateSubject(TemplateId, Subject);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateTriggerText(Int32 TemplateId, String TriggerText)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateTriggerText(TemplateId, TriggerText);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateFreQuency(Int32 TemplateId, Int32 FrequencyInDays, DateTime FrequencyStartDate, DateTime FrequencyTime)
+        {
+            // Send only date part to database
+            FrequencyStartDate = FrequencyStartDate.Date;
+
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays, FrequencyStartDate, FrequencyTime);
+
+        }
+        
+        #endregion
     }
 }

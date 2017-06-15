@@ -355,6 +355,7 @@ function ChosenDropDown(options) {
 
 /********************************************* jQuery Ajax Functions ******************************************************/
 function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnErrorCallBack) {
+    ShowAjaxLoader();
     $.ajax
     (
         {

@@ -27,13 +27,14 @@ namespace JG_Prospect.DAL
             private set { ; }
         }
 
-        public DataSet GetHTMLTemplateMasters()
+        public DataSet GetHTMLTemplateMasters(Int32 TemplateUsedFor)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("GetHTMLTemplateMasters");
+                    database.AddInParameter(command, "@UsedFor", DbType.Int32, TemplateUsedFor);
                     command.CommandType = CommandType.StoredProcedure;
                     return database.ExecuteDataSet(command);
                 }
@@ -99,7 +100,7 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("GetDesignationHTMLTemplate");
+                    DbCommand command = database.GetStoredProcCommand(" ");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int16, (byte)objHTMLTemplates);
                     if (!string.IsNullOrEmpty(strDesignation))
@@ -195,5 +196,97 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
+
+        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[usp_UpdateTemplateFromID]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, TemplateId);
+                    database.AddInParameter(command, "@FromID", DbType.String, FromID);
+                                        
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[usp_UpdateTemplateSubject]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, TemplateId);
+                    database.AddInParameter(command, "@Subject", DbType.String, Subject);
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateHTMLTemplateTriggerText(Int32 TemplateId, String TriggerText)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateTemplateTriggerText");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, TemplateId);
+                    database.AddInParameter(command, "@TriggerText", DbType.String, TriggerText);
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateHTMLTemplateFreQuency(Int32 TemplateId, Int32 FrequencyInDays, DateTime FrequencyStartDate, DateTime FrequenchTime)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[usp_UpdateTemplateFrequency]");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int32, TemplateId);
+                    database.AddInParameter(command, "@FrequencyInDays", DbType.Int32, FrequencyInDays);
+                    database.AddInParameter(command, "@FrequencyStartDate", DbType.DateTime, FrequencyStartDate);
+                    database.AddInParameter(command, "@FrequencyStartTime", DbType.DateTime, FrequenchTime);
+ 
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

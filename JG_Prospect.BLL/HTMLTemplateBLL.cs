@@ -25,9 +25,9 @@ namespace JG_Prospect.BLL
             set { ; }
         }
 
-        public DataSet GetHTMLTemplateMasters()
+        public DataSet GetHTMLTemplateMasters(Int32 TemplateUsedFor)
         {
-            return HTMLTemplateDAL.Instance.GetHTMLTemplateMasters();
+            return HTMLTemplateDAL.Instance.GetHTMLTemplateMasters(TemplateUsedFor);
         }
 
         public HTMLTemplatesMaster GetHTMLTemplateMasterById(HTMLTemplates objHTMLTemplates)
@@ -48,6 +48,24 @@ namespace JG_Prospect.BLL
         public bool DeleteDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
         {
             return HTMLTemplateDAL.Instance.DeleteDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
+        }
+
+        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID) {
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFromId(TemplateId ,FromID);
+        }
+        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject) {
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateSubject(TemplateId, Subject);
+        }
+
+        public bool UpdateHTMLTemplateTriggerText(Int32 TemplateId, String TriggerText)
+        {
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateTriggerText(TemplateId, TriggerText);
+        }
+
+        public bool UpdateHTMLTemplateFreQuency(Int32 TemplateId, Int32 FrequencyInDays, DateTime FrequencyStartDate, DateTime FrequenchTime)
+        {
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays,FrequencyStartDate,FrequenchTime);
+
         }
     }
 }

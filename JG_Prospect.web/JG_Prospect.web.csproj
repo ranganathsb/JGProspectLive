@@ -1379,6 +1379,7 @@
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
     <Content Include="CreateUser.aspx" />
+    <Content Include="css\bootstrap-datepicker.css" />
     <Content Include="css\chosen.css" />
     <Content Include="css\connected-carousel.css" />
     <Content Include="css\dropzone\css\basic.css" />
@@ -1399,6 +1400,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.contextMenu.min.css" />
     <Content Include="css\jquery.multiselect.css" />
+    <Content Include="css\jquery.timepicker.css" />
     <Content Include="css\lightslider.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
@@ -2047,6 +2049,9 @@
     <Content Include="js\jquery.js" />
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />
+    <Content Include="js\jquery.timepicker.js" />
+    <Content Include="js\jquery.timepicker.min.js" />
+    <Content Include="js\jquery.timepicker.min_old.js" />
     <Content Include="js\jquery.ui.core.js" />
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
@@ -2094,6 +2099,7 @@
     <Content Include="Sr_App\edit-html-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
+    <Content Include="Sr_App\email-template-maintainance.aspx" />
     <Content Include="Sr_App\html-template-maintainance.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendors.aspx" />
@@ -2469,6 +2475,13 @@
     </Compile>
     <Compile Include="Sr_App\edit-html-template.aspx.designer.cs">
       <DependentUpon>edit-html-template.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.designer.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\html-template-maintainance.aspx.cs">
       <DependentUpon>html-template-maintainance.aspx</DependentUpon>

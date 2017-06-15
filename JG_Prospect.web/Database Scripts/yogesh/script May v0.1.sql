@@ -2123,3 +2123,179 @@ GO
 --Live publish 06102017
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[GetHTMLTemplateMasters]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[GetHTMLTemplateMasters]   
+
+	END  
+GO    
+ 
+-- =============================================    
+  
+-- Author:  Yogesh    
+ 
+-- Create date: 27 Jan 2017    
+  
+-- Description: Gets all Master HTMLTemplates.    
+
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[GetHTMLTemplateMasters]    
+(
+@UsedFor INT
+)  
+AS    
+  
+BEGIN    
+  
+ SET NOCOUNT ON;    
+    
+ SELECT * FROM tblHTMLTemplatesMaster  WHERE Id IN (1, 7, 12, 28, 36, 41, 48, 50, 57, 58, 60,69,70,71,72,73,74, 75, 76, 77, 78, 79, 80, 81)   AND UsedFor = @UsedFor  ORDER BY Id ASC    
+  
+   
+END
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTemplateFromID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_UpdateTemplateFromID]   
+
+	END  
+GO    
+ 
+-- =============================================    
+  
+-- Author:  Yogesh    
+ 
+-- Create date: 15 June 2017    
+  
+-- Description: Updates FromID for give html template.
+
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[usp_UpdateTemplateFromID]    
+(
+@Id INT,
+@FromID varchar(250)
+)  
+AS    
+  
+BEGIN    
+  
+UPDATE       tblHTMLTemplatesMaster
+SET          FromID = @FromID
+WHERE        (Id = @Id)
+
+END    
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTemplateSubject]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_UpdateTemplateSubject]   
+
+	END  
+GO    
+ 
+-- =============================================    
+  
+-- Author:  Yogesh    
+ 
+-- Create date: 15 June 2017    
+  
+-- Description: Updates Subject for give html template.
+
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[usp_UpdateTemplateSubject]    
+(
+@Id INT,
+@Subject varchar(4000)
+)  
+AS    
+  
+BEGIN    
+  
+   UPDATE       tblHTMLTemplatesMaster
+	SET             [Subject] = @Subject
+   WHERE        (Id = @Id)
+
+END        
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].usp_UpdateTemplateTriggerText') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].usp_UpdateTemplateTriggerText   
+
+	END  
+GO    
+ 
+-- =============================================    
+  
+-- Author:  Yogesh    
+ 
+-- Create date: 15 June 2017    
+  
+-- Description: Updates TriggerText for given html template.
+
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[usp_UpdateTemplateTriggerText]    
+(
+@Id INT,
+@TriggerText varchar(5000)
+)  
+AS    
+  
+BEGIN    
+  
+   UPDATE       tblHTMLTemplatesMaster
+	SET             [TriggerText] = @TriggerText
+   WHERE        (Id = @Id)
+
+END    
+
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTemplateFrequency]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_UpdateTemplateFrequency]   
+
+	END  
+GO    
+ 
+-- =============================================    
+  
+-- Author:  Yogesh    
+ 
+-- Create date: 15 June 2017    
+  
+-- Description: Updates Frequency details for given html template.
+
+-- =============================================    
+  
+CREATE PROCEDURE [dbo].[usp_UpdateTemplateFrequency]    
+(
+@Id INT,
+@FrequencyInDays INT,
+@FrequencyStartDate Datetime,
+@FrequencyStartTime Datetime
+
+)  
+AS    
+  
+BEGIN    
+  
+   
+UPDATE       tblHTMLTemplatesMaster
+SET                FrequencyInDays = @FrequencyInDays, FrequencyStartDate = @FrequencyStartDate, FrequencyStartTime = @FrequencyStartTime
+WHERE        (Id = @Id)
+
+END    

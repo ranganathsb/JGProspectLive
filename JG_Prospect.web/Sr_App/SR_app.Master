@@ -554,7 +554,8 @@
                     dataType: 'json',
                     data: JSON.stringify(objPostDataJSON),
                     asynch: false,
-                    success: function (data) {
+                    success: function (data) {                        
+                        console.log(OnSuccessCallBack);
                         HideAjaxLoader();
                         if (typeof (OnSuccessCallBack) === 'function') {
                             OnSuccessCallBack(data);

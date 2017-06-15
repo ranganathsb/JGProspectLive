@@ -1606,7 +1606,7 @@
             <tr>
                 <td colspan="2">
                     <asp:Button ID="btnTakeTestNow" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="120px" TabIndex="6" Text="Take Test Now" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
-                    <asp:Button ID="btnCalClose" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                    <asp:Button ID="btnCalClose" OnClientClick="javascript:return confirm('Are you sure you want to Cancel Test?');" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                 </td>
             </tr>
         </table>
@@ -5169,7 +5169,7 @@
             <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <%--<asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />--%>
-                    <asp:Button ID="btnCancelTest" runat="server" CssClass="ui-button" Text="Cancel Test" OnClick="btnCancelTest_Click" />
+                    <asp:Button ID="btnCancelTest" runat="server" CssClass="ui-button" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Cancel Test" OnClick="btnCancelTest_Click" />
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
