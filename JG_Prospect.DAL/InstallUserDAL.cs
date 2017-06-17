@@ -94,7 +94,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
                     database.AddInParameter(command, "@State", DbType.String, objuser.state);
                     database.AddInParameter(command, "@City", DbType.String, objuser.city);
-                    
+
                     database.AddInParameter(command, "@password", DbType.String, objuser.password);
                     database.AddInParameter(command, "@designation", DbType.String, objuser.designation);
                     database.AddInParameter(command, "@status", DbType.String, objuser.status);
@@ -123,7 +123,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@maritalstatus", DbType.String, objuser.maritalstatus);
                     database.AddInParameter(command, "@PrimeryTradeId", DbType.Int32, objuser.PrimeryTradeId);
                     //database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
-                    
+
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@StatusReason", DbType.String, objuser.Reason);
@@ -269,7 +269,7 @@ namespace JG_Prospect.DAL
             return tupResult;
         }
 
-        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog , string strGUID)
+        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
         {
             try
             {
@@ -302,7 +302,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("Sp_UpdateNewUserIDInTouchPointLog");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@NewuserID", DbType.Int32, installUserID);                    
+                    database.AddInParameter(command, "@NewuserID", DbType.Int32, installUserID);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
 
                     string lResult = database.ExecuteScalar(command).ToString();
@@ -310,11 +310,11 @@ namespace JG_Prospect.DAL
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
-        public string CheckForNewUserByEmaiID(string userEmail, int userID ,string DefaultPW)
+        public string CheckForNewUserByEmaiID(string userEmail, int userID, string DefaultPW)
         {
             DataSet dsResult = new DataSet();
             try
@@ -326,7 +326,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@userEmail", DbType.String, userEmail);
                     database.AddInParameter(command, "@userID", DbType.Int32, userID);
                     database.AddInParameter(command, "@DefaultPassWord", DbType.String, DefaultPW);
-                    
+
 
                     //dsResult = database.ExecuteDataSet(command);
 
@@ -377,7 +377,7 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return null;
-            } 
+            }
         }
 
         public string AddUserEmail(bool isPrimaryEmail, string strEmail, int UserID, bool ClearDataBeforInsert)
@@ -404,7 +404,7 @@ namespace JG_Prospect.DAL
         }
 
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID,
-                                    string PhoneExtNo,string PhoneISDCode, bool ClearDataBeforInsert)
+                                    string PhoneExtNo, string PhoneISDCode, bool ClearDataBeforInsert)
         {
             try
             {
@@ -470,7 +470,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        
+
 
         public string AddUserEmails(string ExtEmail, int userId)
         {
@@ -669,7 +669,7 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
-        public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId,  Int64 UserId, string StatusReason = "")
+        public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, Int64 UserId, string StatusReason = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -684,7 +684,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
-                  
+
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;
                 }
@@ -1502,7 +1502,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
                     database.AddInParameter(command, "@IsEmailPrimaryEmail", DbType.Boolean, objuser.IsEmailPrimaryEmail);
-                    database.AddInParameter(command, "@IsPhonePrimaryPhone", DbType.Boolean, objuser.IsPhonePrimaryPhone);                    
+                    database.AddInParameter(command, "@IsPhonePrimaryPhone", DbType.Boolean, objuser.IsPhonePrimaryPhone);
                     database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
                     database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
                     database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
@@ -2131,7 +2131,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("InsertUserOTP");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@OTP", DbType.String, OTP);
-                    database.AddInParameter(command, "@UserID", DbType.Int32 , userID);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userID);
                     database.AddInParameter(command, "@UserType", DbType.Int32, userType);
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
@@ -2271,6 +2271,28 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
+        public DataSet GetInstallUsersForBulkEmail(Int32 DesignationId)
+        {
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[GetInstallUsersForBulkEmail]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
+
         public int AddSalesFollowUp(int customerid, DateTime meetingdate, string Status, int userId)
         {
             int result = 0;
@@ -2389,7 +2411,7 @@ namespace JG_Prospect.DAL
                 return "false";
             }
         }
-        public DataSet GetBookMarkingUserDetails(int bookmarkedUser )
+        public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
             DataSet result = null;
             try
@@ -2410,7 +2432,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        
+
         //------------- end DP -------------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)

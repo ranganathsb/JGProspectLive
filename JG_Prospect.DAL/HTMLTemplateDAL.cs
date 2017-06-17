@@ -45,6 +45,24 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetSMSTemplateMasters(Int32 TemplateUsedFor)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetSMSTemplateMasters");
+                    database.AddInParameter(command, "@UsedFor", DbType.Int32, TemplateUsedFor);
+                    command.CommandType = CommandType.StoredProcedure;
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public HTMLTemplatesMaster GetHTMLTemplateMasterById(HTMLTemplates objHTMLTemplates)
         {
             try
@@ -100,7 +118,7 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand(" ");
+                    DbCommand command = database.GetStoredProcCommand("GetDesignationHTMLTemplate");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int16, (byte)objHTMLTemplates);
                     if (!string.IsNullOrEmpty(strDesignation))

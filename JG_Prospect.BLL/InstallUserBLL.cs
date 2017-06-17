@@ -71,6 +71,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetSalesTouchPointLogData(CustomerId, userid);
         }
+
+        public DataSet GetInstallUsersForBulkEmail(Int32 DesignationId)
+        {
+            return InstallUserDAL.Instance.GetInstallUsersForBulkEmail(DesignationId);
+        }
+
         public void UpdateProspect(user objuser)
         {
             InstallUserDAL.Instance.UpdateProspect(objuser);

@@ -33,5 +33,11 @@ namespace JG_Prospect.Common
         {
             return Convert.ToInt32(ConfigurationManager.AppSettings["JMGCAUTOUSERID"]);
         }
+        public static string GetApplicationEnvironment()
+        {
+            return ConfigurationManager.AppSettings["ApplicationEnvironment"];
+
+        }
     }
+    
 }

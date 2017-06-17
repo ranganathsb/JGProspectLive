@@ -1073,6 +1073,8 @@ namespace JG_Prospect.WebServices
             }
         }
 
+     
+
         #endregion
 
         #region "-- Apptitude Test --"
@@ -1136,7 +1138,28 @@ namespace JG_Prospect.WebServices
             return HTMLTemplateBLL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays, FrequencyStartDate, FrequencyTime);
 
         }
-        
+
+
+        [WebMethod(EnableSession = true)]
+        public void TriggerBulkAutoEmail(Int32 TemplateId)
+        {
+            DataSet Designation = CommonFunction.GetDesignations();
+
+            if (Designation != null && Designation.Tables.Count > 0 && Designation.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow RowItem in Designation.Tables[0].Rows)
+                {
+                    Int32 DesignationId = Convert.ToInt32(RowItem["ID"]);
+
+                    CommonFunction.BulkEmail((HTMLTemplates)Enum.Parse(typeof(HTMLTemplates),TemplateId.ToString()),DesignationId);
+                }
+            }
+
+
+        }
+
+
+
         #endregion
     }
 }

@@ -30,6 +30,11 @@ namespace JG_Prospect.BLL
             return HTMLTemplateDAL.Instance.GetHTMLTemplateMasters(TemplateUsedFor);
         }
 
+        public DataSet GetSMSTemplateMasters(Int32 TemplateUsedFor)
+        {
+            return HTMLTemplateDAL.Instance.GetSMSTemplateMasters(TemplateUsedFor);
+        }
+
         public HTMLTemplatesMaster GetHTMLTemplateMasterById(HTMLTemplates objHTMLTemplates)
         {
             return HTMLTemplateDAL.Instance.GetHTMLTemplateMasterById(objHTMLTemplates);

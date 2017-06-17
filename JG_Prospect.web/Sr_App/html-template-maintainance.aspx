@@ -97,7 +97,7 @@
                                     <br />
                                     <span data-id='<%#Eval("Id") %>' class='<%# String.IsNullOrEmpty(Eval("FrequencyStartDate").ToString()) == true? "hide" : "" %>'>Starts on <%# String.IsNullOrEmpty(Eval("FrequencyStartDate").ToString()) == true? "" : String.Format("{0: MM/dd/yy}", Convert.ToDateTime( Eval("FrequencyStartDate"))) %> at <%# String.IsNullOrEmpty(Eval("FrequencyStartTime").ToString()) == true? "" : String.Format("{0: hh:mm tt}", Eval("FrequencyStartTime")) %></span>
                                     <br />
-                                    <a data-id='<%#Eval("Id") %>' onclick="javascript:openFrequencyEditArea(this);" href="javascript:void(0);">Edit</a>
+                                    <a data-id='<%#Eval("Id") %>' onclick="javascript:openFrequencyEditArea(this);" href="javascript:void(0);">Edit</a> &nbsp;|&nbsp;<a data-id='<%#Eval("Id") %>' onclick="javascript:triggerBulkAutoEmail(this);" href="javascript:void(0);">Send</a>
                                     <table id='tblFreq<%#Eval("Id") %>' class="hide table">
                                         <tr>
                                             <td colspan="2"><strong>Frequency</strong></td>
@@ -144,26 +144,52 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="From Email">
                                 <ItemTemplate>
-                                    <%# Eval("FromID") %>
+                                    <span data-id='<%#Eval("Id") %>' class="tempFromID  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("FromID").ToString())== true?"N.A.":Eval("FromID") %></span>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Subject">
                                 <ItemTemplate>
-                                    <%# Eval("Subject") %>
+                                    <span data-id='<%#Eval("Id") %>' class="tempSubject  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("Subject").ToString())== true?"N.A.":Eval("Subject") %></span>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Trigger for Email">
                                 <ItemTemplate>
-                                    <%# Eval("TriggerText") %>
+                                    <span data-id='<%#Eval("Id") %>' class="tempTriggerText  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("TriggerText").ToString())== true?"N.A.":Eval("TriggerText") %></span>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Frequency">
                                 <ItemTemplate>
-                                    <span>Repeates: Every <%# Eval("FrequencyInDays") %>Days</span>
+                                    <span data-id='<%#Eval("Id") %>' class='<%# String.IsNullOrEmpty(Eval("FrequencyInDays").ToString()) == true? "hide" : "" %>'>Repeates: Every <%# Eval("FrequencyInDays") %> Days</span>
                                     <br />
-                                    <span>Starts on <%# Eval("FrequencyStartDate") %> at <%# Eval("FrequencyStartTime") %></span>
+                                    <span data-id='<%#Eval("Id") %>' class='<%# String.IsNullOrEmpty(Eval("FrequencyStartDate").ToString()) == true? "hide" : "" %>'>Starts on <%# String.IsNullOrEmpty(Eval("FrequencyStartDate").ToString()) == true? "" : String.Format("{0: MM/dd/yy}", Convert.ToDateTime( Eval("FrequencyStartDate"))) %> at <%# String.IsNullOrEmpty(Eval("FrequencyStartTime").ToString()) == true? "" : String.Format("{0: hh:mm tt}", Eval("FrequencyStartTime")) %></span>
+                                    <br />
+                                    <a data-id='<%#Eval("Id") %>' onclick="javascript:openFrequencyEditArea(this);" href="javascript:void(0);">Edit</a>
+                                    <table id='tblFreq<%#Eval("Id") %>' class="hide table">
+                                        <tr>
+                                            <td colspan="2"><strong>Frequency</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Repeate in Days:</td>
+                                            <td>
+                                                <input type="text" class="textbox" style="width: 20px;" data-type="frdays" value='<%#Eval("FrequencyInDays") %>' /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Starts on Date:</td>
+                                            <td>
+                                                <input type="text" class="textbox" style="width: 90px;" data-type="frdate" value='<%#String.IsNullOrEmpty(Eval("FrequencyStartDate").ToString()) == true? "" : String.Format("{0: MM/dd/yy}", Convert.ToDateTime( Eval("FrequencyStartDate"))) %>' /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email will be sent at:</td>
+                                            <td>
+                                                <input type="text" class="textbox time ui-timepicker-input" style="width: 90px;" data-type="frtime" value='<%#String.IsNullOrEmpty(Eval("FrequencyStartTime").ToString()) == true? "" : String.Format("{0: hh:mm tt}", Eval("FrequencyStartTime")) %>' /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a data-id='<%#Eval("Id")%>' onclick="javascript:saveTemplateFrequency(this);" href="javascript:void(0);">Save</a></td>
+                                        </tr>
+                                    </table>
                                 </ItemTemplate>
                             </asp:TemplateField>
+
                         </Columns>
                     </asp:GridView>
                 </div>
@@ -189,7 +215,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Subject">
                         <ItemTemplate>
-                            <%# Eval("Subject") %>
+                            <span data-id='<%#Eval("Id") %>' class="tempSubject  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("Subject").ToString())== true?"N.A.":Eval("Subject") %></span>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -213,7 +239,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Subject">
                         <ItemTemplate>
-                            <%# Eval("Subject") %>
+                            <span data-id='<%#Eval("Id") %>' class="tempSubject  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("Subject").ToString())== true?"N.A.":Eval("Subject") %></span>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -407,6 +433,31 @@
                     }
                 }
             });
+        }
+
+        function triggerBulkAutoEmail(link) {
+
+            var HtmlTemplateId = $(link).attr("data-id");
+
+            var OnBulkEmailSuccess = function (response) {
+
+                if (response) {
+                    alert('Emails to all candidates with status "Applicant, Refferal Applcant, InterviewDate" of all designation are sent.');
+
+                }
+                else {
+                    OnBulkEmailError();
+                }
+            };
+
+            var OnBulkEmailError = function (response) {
+                alert('We were not able to sent emails to all candidates with status "Applicant, Refferal Applcant, InterviewDate" of all designations.');
+            };
+
+            postData = { TemplateId: HtmlTemplateId }
+            CallJGWebService("TriggerBulkAutoEmail", postData, OnBulkEmailSuccess, OnBulkEmailError);
+
+            
         }
     </script>
 </asp:Content>

@@ -1219,16 +1219,7 @@
         </div>
 
         <asp:Panel ID="pnlUploadBulk" runat="server">
-            <style>
-                :;
-                }
 
-                {
-                    x;
-                }
-                /* END EXT*/
-                /* END E
-            </style>
             <div id="lightUploadBulk" class="white_content" style="text-align: center">
                 <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
 

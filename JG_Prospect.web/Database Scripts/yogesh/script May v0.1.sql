@@ -2299,3 +2299,97 @@ SET                FrequencyInDays = @FrequencyInDays, FrequencyStartDate = @Fre
 WHERE        (Id = @Id)
 
 END    
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[GetSMSTemplateMasters]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[GetSMSTemplateMasters]   
+
+	END  
+GO      
+-- =============================================      
+    
+-- Author:  Yogesh      
+   
+-- Create date: 16 June 2017      
+    
+-- Description: Gets all Master SMSTemplates.      
+  
+-- =============================================      
+    
+CREATE PROCEDURE [dbo].[GetSMSTemplateMasters]      
+(  
+@UsedFor INT  
+)    
+AS      
+    
+BEGIN      
+    
+ SET NOCOUNT ON;      
+      
+ SELECT * FROM tblHTMLTemplatesMaster  WHERE Id > 81 AND Id < 106 AND UsedFor = @UsedFor  ORDER BY Id ASC      
+     
+END
+ 
+
+Declare @TemplateId INT
+
+Declare InsertTemplate CURSOR FOR
+SELECT Id FROM tblHTMLTemplatesMaster  WHERE Id IN (1, 7, 12, 28, 36, 41, 48, 50, 57, 58, 60,69,70,71,72,73,74, 75, 76, 77, 78, 79, 80, 81)
+
+Open InsertTemplate
+Fetch Next from InsertTemplate INTO @TemplateId
+While @@FETCH_STATUS = 0
+BEGIN
+
+DECLARE @Id INT
+SELECT @Id = MAX(Id) + 1 FROM tblHTMLTemplatesMaster
+
+INSERT INTO tblHTMLTemplatesMaster
+                         (Id, [Name], [Subject], Header, Body, Footer, DateUpdated, [Type], Category, FromID, FrequencyInDays, TriggerText, FrequencyStartDate, FrequencyStartTime, UsedFor)
+SELECT       @Id , [Name], [Subject], Header, Body, Footer, GETDATE(), [Type], Category, FromID, FrequencyInDays, TriggerText, FrequencyStartDate, FrequencyStartTime, 2
+FROM            tblHTMLTemplatesMaster AS tblHTMLTemplatesMaster_1
+WHERE        (Id = @TemplateId)        
+
+        Fetch Next from InsertTemplate INTO @TemplateId
+END
+
+close InsertTemplate
+deallocate InsertTemplate
+
+GO
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[GetInstallUsersForBulkEmail]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[GetInstallUsersForBulkEmail]   
+
+	END  
+GO      
+-- =============================================      
+    
+-- Author:  Yogesh      
+   
+-- Create date: 16 June 2017      
+    
+-- Description: Gets all Install Users with status Applicant, Referal Applicant,InterviewDate.      
+  
+-- =============================================      
+    
+CREATE PROCEDURE [dbo].[GetInstallUsersForBulkEmail]      
+(
+@DesignationId INT
+)
+AS      
+    
+BEGIN      
+    
+ SET NOCOUNT ON;      
+      
+ SELECT * FROM tblInstallUsers WHERE [Status] IN ('2','5','10') AND DesignationID = @DesignationId
+     
+END
+ 

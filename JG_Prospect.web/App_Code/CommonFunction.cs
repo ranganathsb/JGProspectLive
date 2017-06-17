@@ -14,6 +14,7 @@ using System.Web.UI.WebControls;
 using System.Linq;
 using System.Reflection;
 using System.ComponentModel;
+using JG_Prospect.Common.modal;
 
 namespace JG_Prospect.App_Code
 {
@@ -921,11 +922,83 @@ namespace JG_Prospect.App_Code
             }
         }
 
-        internal static  int GetNextWeekdayDifference(DateTime start, DayOfWeek day)
+        internal static int GetNextWeekdayDifference(DateTime start, DayOfWeek day)
         {
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
             int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
             return daysToAdd;
+        }
+
+        internal static void BulkEmail(HTMLTemplates objHTMLTemplateType, Int32 DesignationId)
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignationId.ToString());
+
+            // Get all install users with statuses, Applicant, Refferal Applcant, InterviewDate
+            DataSet dsUser = InstallUserBLL.Instance.GetInstallUsersForBulkEmail(DesignationId);
+
+            if (dsUser != null && dsUser.Tables.Count > 0)
+            {
+                foreach (DataRow installUser in dsUser.Tables[0].Rows)
+                {
+                    // Send email to each user.
+                    string emailId = String.Empty;
+                    string strBody = String.Empty;
+
+                    if (JGApplicationInfo.GetApplicationEnvironment() == "1")
+                    {
+                        emailId = "jgrove.georgegrove@gmail.com";
+                        strBody = "<h1>Email is intended for " + installUser["Email"].ToString() + "</h1><br/><br/>";
+                    }
+                    else
+                    {
+                        emailId = installUser["Email"].ToString();
+                    } 
+
+                    string FName = installUser["FristName"].ToString();
+                    string LName = installUser["LastName"].ToString();
+                    string Designation = installUser["Designation"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                    string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+
+                    string strHeader = objHTMLTemplate.Header;
+                     strBody =  String.Concat(strBody,objHTMLTemplate.Body);
+                    string strFooter = objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
+
+                    strBody = strBody.Replace("#name#", fullname);
+                    strFooter = strFooter.Replace("#Designation#", Designation);
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+
+                    //if (Attachments != null)
+                    //{
+                    //    lstAttachments.AddRange(Attachments);
+                    //}
+
+                    try
+                    {
+                        SendEmail(Designation, emailId, strsubject, strBody, lstAttachments);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+
+        }
+
+        internal static DataSet GetDesignations()
+        {
+            DataSet dsDesignation = new DataSet();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+            return dsDesignation;
         }
     }
 }
