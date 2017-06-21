@@ -22,7 +22,7 @@ namespace JG_Prospect.BLL
         public static HTMLTemplateBLL Instance
         {
             get { return m_HTMLTemplateBLL; }
-            set { ; }
+            set {; }
         }
 
         public DataSet GetHTMLTemplateMasters(Int32 TemplateUsedFor)
@@ -55,10 +55,18 @@ namespace JG_Prospect.BLL
             return HTMLTemplateDAL.Instance.DeleteDesignationHTMLTemplate(objHTMLTemplates, strDesignation);
         }
 
-        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID) {
-            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFromId(TemplateId ,FromID);
+        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID)
+        {
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFromId(TemplateId, FromID);
         }
-        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject) {
+
+        public bool RevertDesignationHTMLTemplatesByMasterTemplateId(Int32 MasterTemplateId)
+        {
+            return HTMLTemplateDAL.Instance.RevertDesignationHTMLTemplatesByMasterTemplateId(MasterTemplateId);
+        }
+
+        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject)
+        {
             return HTMLTemplateDAL.Instance.UpdateHTMLTemplateSubject(TemplateId, Subject);
         }
 
@@ -69,8 +77,13 @@ namespace JG_Prospect.BLL
 
         public bool UpdateHTMLTemplateFreQuency(Int32 TemplateId, Int32 FrequencyInDays, DateTime FrequencyStartDate, DateTime FrequenchTime)
         {
-            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays,FrequencyStartDate,FrequenchTime);
+            return HTMLTemplateDAL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays, FrequencyStartDate, FrequenchTime);
 
+        }
+
+        public bool SaveMasterHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
+        {
+            return HTMLTemplateDAL.Instance.SaveMasterHTMLTemplate(objDesignationHTMLTemplate);
         }
     }
 }

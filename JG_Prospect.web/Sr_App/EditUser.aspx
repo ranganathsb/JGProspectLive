@@ -773,6 +773,11 @@
                                         <br />
                                         <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
                                         <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
+                                        <br />
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
+                                        <br />
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#Eval("RejectDetail").ToString()%>'></asp:Literal>
+                                        
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -913,7 +918,7 @@
 
                                         <br />
                                         <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>
-                                        <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
+                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
 
                                         <br />
                                         <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>

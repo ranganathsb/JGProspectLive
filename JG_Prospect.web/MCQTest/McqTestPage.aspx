@@ -43,6 +43,7 @@
         }
     </script>
     <form id="form1" method="post" runat="server">
+        
         <div>
             <ajaxToolkit:ToolkitScriptManager ID="scmExam" runat="server" AsyncPostBackTimeout="360000">
                 <Services>
@@ -228,7 +229,7 @@ Have your tech task completely finished for due date. login to the JG applicati
                         </div>
 
                     </div>
-
+                    <asp:HiddenField ID="hdnExamsOver" runat="server" />
                 </div>
             </ContentTemplate>
             <Triggers>
@@ -295,14 +296,13 @@ Have your tech task completely finished for due date. login to the JG applicati
                 clockFace: 'MinuteCounter',
                 callbacks: {
                     stop: function () {
-                        if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "") {   // If exam is time out than hit end result automatically.                                                        
+                        if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "" && $('#<%=hdnExamsOver.ClientID%>').val() != "1") {   // If exam is time out than hit end result automatically.                                                        
                             $('#<%=divExamSection.ClientID%>').find("input,button,select").attr("disabled", "disabled");
                             $('#<%=divExamSection.ClientID%>').find("a").attr("href", "javascript:void(0);");
                             alert('Your exam is timeup!');
                             //console.log($('#<%=btnEndExamTimeOut.ClientID%>'));
                             $('#<%=hdnTimeLeft.ClientID%>').val("");
                             $('#<%=btnEndExamTimeOut.ClientID%>').click();
-
                         }
                     }
                 }

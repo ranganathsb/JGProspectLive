@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.ComponentModel;
 using JG_Prospect.Common.modal;
+using System.Collections.Specialized;
 
 namespace JG_Prospect.App_Code
 {
@@ -183,7 +184,7 @@ namespace JG_Prospect.App_Code
                 Msg.To.Add(strToAddress);
                 Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
                 Msg.Subject = strSubject;// "JG Prospect Notification";
-                Msg.Body = strBody;
+                Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
                 Msg.IsBodyHtml = true;
 
                 //ds = AdminBLL.Instance.GetEmailTemplate('');
@@ -946,13 +947,13 @@ namespace JG_Prospect.App_Code
 
                     if (JGApplicationInfo.GetApplicationEnvironment() == "1")
                     {
-                        emailId = "jgrove.georgegrove@gmail.com";
-                        strBody = "<h1>Email is intended for " + installUser["Email"].ToString() + "</h1><br/><br/>";
+                        emailId = "error@kerconsultancy.com";
+                        strBody = "<h1>Email is intended for Email Address: " + installUser["Email"].ToString() + "</h1><br/><br/>";
                     }
                     else
                     {
                         emailId = installUser["Email"].ToString();
-                    } 
+                    }
 
                     string FName = installUser["FristName"].ToString();
                     string LName = installUser["LastName"].ToString();
@@ -964,7 +965,7 @@ namespace JG_Prospect.App_Code
 
 
                     string strHeader = objHTMLTemplate.Header;
-                     strBody =  String.Concat(strBody,objHTMLTemplate.Body);
+                    strBody = String.Concat(strBody, objHTMLTemplate.Body);
                     string strFooter = objHTMLTemplate.Footer;
                     string strsubject = objHTMLTemplate.Subject;
 
@@ -1347,5 +1348,38 @@ namespace JG_Prospect
                 HttpContext.Current.Session["cextime"] = value;
             }
         }
+    }
+}
+
+namespace JG_Prospect
+{
+    public static class JGSMSHelper
+    {
+
+        /// <summary>
+        /// Send text SMS to given mobile number
+        /// </summary>
+        /// <param name="MobileNumber">Mobile message number with international dialing code. for ex. +91</param>
+        /// <param name="MSGText"></param>
+        /// <returns></returns>
+        internal static bool SendSMS(String MobileNumber, String MSGText)
+        {
+
+            //using (WebClient client = new WebClient())
+            //{
+            //    byte[] response = client.UploadValues("http://textbelt.com/text", new NameValueCollection() { { "phone", MobileNumber }, { "message", MSGText }, { "key", "b6c82eaecce10df0c4fa006c8a3093438bd5850fZ6ZspSTasK3XtwO9OyoBUwS9r" } });
+            //    string result = System.Text.Encoding.UTF8.GetString(response);
+            //}
+
+            return true;
+
+        }
+
+        internal static string[] GetFromatedMobileNumber(String MobileNumber)
+        {
+            return new string[] { "", "" };
+
+        }
+
     }
 }

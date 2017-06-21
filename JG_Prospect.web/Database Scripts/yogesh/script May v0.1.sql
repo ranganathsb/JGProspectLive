@@ -2392,4 +2392,967 @@ BEGIN
  SELECT * FROM tblInstallUsers WHERE [Status] IN ('2','5','10') AND DesignationID = @DesignationId
      
 END
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--Live publish 06172017
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  Table [dbo].[tblEmailSubscription]    Script Date: 6/19/2017 10:36:13 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tblEmailSubscription](
+	[UnSubscribeId] [bigint] IDENTITY(1,1) NOT NULL,
+	[Email] [varchar](250) NOT NULL,
+	[UnSubscribeType] [int] NOT NULL,
+	[CreatedDateTime] [datetime] NULL,
+ CONSTRAINT [PK_tblEmailSubscription] PRIMARY KEY CLUSTERED 
+(
+	[UnSubscribeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[tblEmailSubscription] ADD  CONSTRAINT [DF_tblEmailSubscription_UnSubscribeType]  DEFAULT ((1)) FOR [UnSubscribeType]
+GO
+
+ALTER TABLE [dbo].[tblEmailSubscription] ADD  CONSTRAINT [DF_tblEmailSubscription_CreatedDateTime]  DEFAULT (getdate()) FOR [CreatedDateTime]
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'This will be type of unsubscription, i.e. User Email might be registered for more than one category of email, like job, marketing etc.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tblEmailSubscription', @level2type=N'COLUMN',@level2name=N'UnSubscribeType'
+GO
+
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAptTestsByUserID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
  
+	DROP PROCEDURE [dbo].[usp_GetAptTestsByUserID]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05252017    
+-- Description: This will load exams for user based on his designation    
+-- =============================================    
+-- usp_GetAptTestsByUserID 3565     
+CREATE PROCEDURE usp_AddUnsubscribeEmail    
+(    
+ @EmailId VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    INSERT INTO tblEmailSubscription
+                         (Email, UnSubscribeType)
+VALUES        (@EmailId, 1)
+    
+END    
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_RemoveUnsubscribeEmail]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_RemoveUnsubscribeEmail]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05252017    
+-- Description: This will load exams for user based on his designation    
+-- =============================================    
+-- usp_GetAptTestsByUserID 3565     
+CREATE PROCEDURE usp_RemoveUnsubscribeEmail    
+(    
+ @EmailId VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    DELETE FROM tblEmailSubscription WHERE Email = @EmailId
+    
+END
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAptTestsByUserID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAptTestsByUserID   
+
+	END  
+GO    
+
+
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 05252017  
+-- Description: This will load exams for user based on his designation  
+-- =============================================  
+-- usp_GetAptTestsByUserID 2934  
+CREATE PROCEDURE usp_GetAptTestsByUserID   
+(  
+ @UserID bigint  
+)     
+AS  
+BEGIN  
+   
+ DECLARE @DesignationID INT  
+  
+ -- Get users designation based on its user id.  
+    SELECT        @DesignationID = DesignationID  
+ FROM            tblInstallUsers  
+ WHERE        (Id = @UserID)  
+  
+  
+   IF(@DesignationID IS NOT NULL)  
+   BEGIN  
+  
+      SELECT        MCQ_Exam.ExamID, MCQ_Exam.ExamDuration, MCQ_Exam.ExamTitle, ExamResult.MarksEarned, ExamResult.TotalMarks, ExamResult.[Aggregate], ExamResult.ExamPerformanceStatus, @DesignationID AS DesignationID,
+	  (SELECT DesignationName FROM [dbo].[tbl_Designation] WHERE ID = @DesignationID) AS Designation
+FROM            MCQ_Exam LEFT OUTER JOIN  
+                         MCQ_Performance AS ExamResult ON MCQ_Exam.ExamID = ExamResult.ExamID AND ExamResult.UserID = @UserID  
+WHERE        (@DesignationID IN  
+                             (SELECT        Item  
+                               FROM            dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1))  
+			AND MCQ_Exam.IsActive = 1	AND MCQ_Exam.EXAMID IN (SELECT ExamID FROM	MCQ_Question GROUP BY ExamID )
+  
+   END  
+  
+  
+  
+END  
+
+GO
+ 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--Live publish 06202017
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*
+   Tuesday, June 20, 20179:18:56 PM
+   User: jgrovesa
+   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
+   Database: JGBS_Dev_New
+   Application: 
+*/
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.tblUnsubscriberList
+	DROP CONSTRAINT DF_tblEmailSubscription_UnSubscribeType
+GO
+ALTER TABLE dbo.tblUnsubscriberList
+	DROP CONSTRAINT DF_tblEmailSubscription_CreatedDateTime
+GO
+CREATE TABLE dbo.Tmp_tblUnsubscriberList
+	(
+	UnSubscribeId bigint NOT NULL IDENTITY (1, 1),
+	Email varchar(250) NULL,
+	Mobile varchar(50) NULL,
+	UnSubscribeType int NOT NULL,
+	CreatedDateTime datetime NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_tblUnsubscriberList SET (LOCK_ESCALATION = TABLE)
+GO
+DECLARE @v sql_variant 
+SET @v = N'This will be type of unsubscription, i.e. User Email might be registered for more than one category of email, like job, marketing etc.'
+EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'Tmp_tblUnsubscriberList', N'COLUMN', N'UnSubscribeType'
+GO
+ALTER TABLE dbo.Tmp_tblUnsubscriberList ADD CONSTRAINT
+	DF_tblEmailSubscription_UnSubscribeType DEFAULT ((1)) FOR UnSubscribeType
+GO
+ALTER TABLE dbo.Tmp_tblUnsubscriberList ADD CONSTRAINT
+	DF_tblEmailSubscription_CreatedDateTime DEFAULT (getdate()) FOR CreatedDateTime
+GO
+SET IDENTITY_INSERT dbo.Tmp_tblUnsubscriberList ON
+GO
+IF EXISTS(SELECT * FROM dbo.tblUnsubscriberList)
+	 EXEC('INSERT INTO dbo.Tmp_tblUnsubscriberList (UnSubscribeId, Email, UnSubscribeType, CreatedDateTime)
+		SELECT UnSubscribeId, Email, UnSubscribeType, CreatedDateTime FROM dbo.tblUnsubscriberList WITH (HOLDLOCK TABLOCKX)')
+GO
+SET IDENTITY_INSERT dbo.Tmp_tblUnsubscriberList OFF
+GO
+DROP TABLE dbo.tblUnsubscriberList
+GO
+EXECUTE sp_rename N'dbo.Tmp_tblUnsubscriberList', N'tblUnsubscriberList', 'OBJECT' 
+GO
+ALTER TABLE dbo.tblUnsubscriberList ADD CONSTRAINT
+	PK_tblEmailSubscription PRIMARY KEY CLUSTERED 
+	(
+	UnSubscribeId
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+COMMIT
+select Has_Perms_By_Name(N'dbo.tblUnsubscriberList', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblUnsubscriberList', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblUnsubscriberList', 'Object', 'CONTROL') as Contr_Per 
+
+
+USE JGBS_Dev_New
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_AddUnsubscribeEmail]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_AddUnsubscribeEmail]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05252017    
+-- Description: This will load exams for user based on his designation    
+-- =============================================    
+-- usp_GetAptTestsByUserID 3565     
+CREATE PROCEDURE usp_AddUnsubscribeEmail    
+(    
+ @EmailId VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    INSERT INTO tblUnsubscriberList
+                         (Email, UnSubscribeType)
+VALUES        (@EmailId, 1)
+    
+END    
+
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_RemoveUnsubscribeEmail]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_RemoveUnsubscribeEmail]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05252017    
+-- Description: This will load exams for user based on his designation    
+-- =============================================    
+-- usp_GetAptTestsByUserID 3565     
+CREATE PROCEDURE usp_RemoveUnsubscribeEmail    
+(    
+ @EmailId VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    DELETE FROM tblUnsubscriberList WHERE Email = @EmailId
+    
+END
+
+GO
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_AddUnsubscribeMobile]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_AddUnsubscribeMobile]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 06202017    
+-- Description: This will add any unsubscriber of SMS.    
+-- =============================================    
+-- usp_GetAptTestsByUserID 3565     
+CREATE PROCEDURE usp_AddUnsubscribeMobile    
+(    
+ @Mobile VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    INSERT INTO tblUnsubscriberList
+                         (Mobile, UnSubscribeType)
+	VALUES        (@Mobile, 1)
+    
+END    
+
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_RemoveUnsubscribeMobile]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[usp_RemoveUnsubscribeMobile]   
+
+	END  
+GO      
+  
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05252017    
+-- Description: This will remove any mobile from unsubscription list.
+-- =============================================    
+     
+CREATE PROCEDURE usp_RemoveUnsubscribeMobile    
+(    
+ @Mobile VARCHAR(250)
+)       
+AS    
+BEGIN    
+ 
+    DELETE FROM tblUnsubscriberList WHERE Mobile = @Mobile
+    
+END
+
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[USP_ChangeUserStatusToRejectByEmail]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[USP_ChangeUserStatusToRejectByEmail]   
+
+	END  
+GO 
+
+-- =============================================      
+    
+-- Author:  Yogesh Keraliya
+    
+-- Create date: 22 Sep 2016      
+    
+-- Description: Updates status and status related fields for install user by their email id.      
+    
+--    Inserts event and event users for interview status.      
+    
+--    Deletes any exising events and event users for non interview status.      
+    
+--    Gets install users details.      
+    
+-- =============================================      
+    
+CREATE PROCEDURE [dbo].[USP_ChangeUserStatusToRejectByEmail]  
+(      
+    
+ @UserEmail VARCHAR(250),  
+  
+ @StatusId int = 0,      
+    
+ @RejectionDate DATE = NULL,      
+    
+ @RejectionTime VARCHAR(20) = NULL,      
+    
+ @RejectedUserId int = 0,      
+    
+ @StatusReason varchar(max) = ''  
+    
+)      
+    
+AS      
+    
+BEGIN    
+    
+     
+    
+  -- Updates user status and status related information.      
+    
+  UPDATE [dbo].[tblInstallUsers]    
+    
+  SET [Status] = @StatusId    
+    
+   ,RejectionDate = @RejectionDate    
+    
+   ,RejectionTime = @RejectionTime    
+    
+   ,InterviewTime = @RejectionTime    
+    
+   ,RejectedUserId = @RejectedUserId    
+    
+   ,StatusReason = @StatusReason    
+    
+  WHERE Email = @UserEmail  
+    
+  
+END    
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[USP_ChangeUserStatusToRejectByMobile]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[USP_ChangeUserStatusToRejectByMobile]   
+
+	END  
+GO 
+
+-- =============================================      
+    
+-- Author:  Yogesh Keraliya
+    
+-- Create date: 22 Sep 2016      
+    
+-- Description: Updates status and status related fields for install user by their mobile.      
+    
+--    Inserts event and event users for interview status.      
+    
+--    Deletes any exising events and event users for non interview status.      
+    
+--    Gets install users details.      
+    
+-- =============================================      
+    
+CREATE PROCEDURE [dbo].[USP_ChangeUserStatusToRejectByMobile]  
+(      
+    
+ @UserMobile VARCHAR(20),  
+  
+ @StatusId int = 0,      
+    
+ @RejectionDate DATE = NULL,      
+    
+ @RejectionTime VARCHAR(20) = NULL,      
+    
+ @RejectedUserId int = 0,      
+    
+ @StatusReason varchar(max) = ''  
+    
+)      
+    
+AS      
+    
+BEGIN    
+    
+     
+    
+  -- Updates user status and status related information.      
+    
+  UPDATE [dbo].[tblInstallUsers]    
+    
+  SET [Status] = @StatusId    
+    
+   ,RejectionDate = @RejectionDate    
+    
+   ,RejectionTime = @RejectionTime    
+    
+   ,InterviewTime = @RejectionTime    
+    
+   ,RejectedUserId = @RejectedUserId    
+    
+   ,StatusReason = @StatusReason    
+    
+  WHERE Phone = @UserMobile  
+    
+  
+END  
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_RevertTemplatesToMasterHTMLTemplate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].usp_RevertTemplatesToMasterHTMLTemplate   
+
+	END  
+GO 
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06/21/2017
+-- Description:	This will revert all child templates of master HTML template for given HTML template ID
+-- =============================================
+CREATE PROCEDURE usp_RevertTemplatesToMasterHTMLTemplate
+( 
+	-- Add the parameters for the stored procedure here
+	@MasterTemplateID int 
+)
+AS
+BEGIN
+
+-- get master template header, body, footer, subject
+DECLARE @Subject VARCHAR(4000)
+DECLARE @Header VARCHAR(max)
+DECLARE @Body VARCHAR(max)
+DECLARE @Footer VARCHAR(max)
+
+SELECT       @Subject = [Subject], @Header = Header, @Body = Body, @Footer = Footer
+FROM            tblHTMLTemplatesMaster
+WHERE        (Id = @MasterTemplateID)
+
+-- update already existing designation html templates.
+UPDATE       tblDesignationHTMLTemplates
+SET                [Subject] = @Subject, Header = @Header, Body = @Body, Footer = @Footer, DateUpdated = GETDATE()
+WHERE [HTMLTemplatesMasterId] = @MasterTemplateID
+
+
+-- Insert templates which are not already available.
+INSERT INTO tblDesignationHTMLTemplates
+                         (Designation,[Subject], Header, Body, Footer, DateUpdated, HTMLTemplatesMasterId)
+SELECT   CONVERT(VARCHAR(50), D.ID) , @Subject, @Header, @Body, @Footer, GETDATE(), @MasterTemplateID
+FROM     [dbo].[tbl_Designation] AS D 
+WHERE  D.IsActive = 1 AND D.ID NOT IN (SELECT CONVERT(INT,Designation) FROM tblDesignationHTMLTemplates WHERE HTMLTemplatesMasterId = @MasterTemplateID)
+
+END
+GO
+
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 060212017
+-- Description:	This will get aggregate % for user's given exam if any
+-- =============================================
+CREATE FUNCTION [dbo].[udf_GetUserExamPercentile] 
+(	
+	@UserID INT
+)
+RETURNS FLOAT
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @AggregateScored FLOAT = NULL
+    DECLARE @ExamCount INT  
+    DECLARE @GivenExamCount INT  
+  
+  
+    -- check exams given by user  
+    SELECT @GivenExamCount = COUNT(ExamID) FROM MCQ_Performance WHERE UserID = @UserID  
+  
+    
+    
+IF( @GivenExamCount > 0 )
+BEGIN
+
+SELECT @AggregateScored = (SUM([Aggregate])/@GivenExamCount) FROM MCQ_Performance  WHERE UserID = @UserID   
+
+END
+
+-- Return the result of the function
+RETURN @AggregateScored
+
+END
+GO
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_updateMasterHTMLTemplate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].usp_updateMasterHTMLTemplate   
+
+	END  
+GO 
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 06/21/2017
+-- Description:	This will update master template data for given HTML template ID
+-- =============================================
+CREATE PROCEDURE usp_updateMasterHTMLTemplate
+( 	-- Add the parameters for the stored procedure here
+	@MasterTemplateID int,
+	@Subject VARCHAR(4000),
+	@Header VARCHAR(max),
+	@Body VARCHAR(max),
+	@Footer VARCHAR(max)
+)
+AS
+BEGIN
+
+UPDATE       tblHTMLTemplatesMaster
+SET                [Subject] = @Subject, Header = @Header, Body = @Body, Footer = @Footer, DateUpdated = GETDATE()
+WHERE [Id] = @MasterTemplateID
+
+
+END
+GO
+
+
+USE JGBS_Dev_New
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[sp_GetHrData]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [dbo].[sp_GetHrData]   
+
+	END  
+GO 
+
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 16 Jan 2017      
+-- Description: Gets statictics and records for edit user page.      
+-- =============================================      
+-- [sp_GetHrData] '0','0','0', '0', NULL,NULL,0,10      
+CREATE PROCEDURE [dbo].[sp_GetHrData]      
+ @SearchTerm VARCHAR(15) = NULL,      
+ @Status VARCHAR(50),      
+ @DesignationId INT,      
+ @SourceId INT,      
+ @AddedByUserId INT,      
+ @FromDate DATE = NULL,      
+ @ToDate DATE = NULL,      
+ @PageIndex INT = NULL,       
+ @PageSize INT = NULL,      
+ @SortExpression VARCHAR(50),      
+ @InterviewDateStatus VARChAR(5) = '5',      
+ @RejectedStatus VARChAR(5) = '9',      
+ @OfferMadeStatus VARChAR(5) = '6',      
+ @ActiveStatus VARChAR(5) = '1'    
+AS      
+BEGIN      
+       
+ SET NOCOUNT ON;      
+       
+ IF @Status = '0'      
+ BEGIN      
+  SET @Status = NULL      
+ END      
+      
+ IF @DesignationId = '0'      
+ BEGIN      
+  SET @DesignationId = NULL      
+ END      
+       
+ IF @SourceId = '0'      
+ BEGIN      
+  SET @SourceId = NULL      
+ END      
+      
+ IF @AddedByUserId = 0      
+ BEGIN      
+  SET @AddedByUserId = NULL      
+ END      
+      
+ DECLARE @StartIndex INT  = 0      
+      
+ IF @PageIndex IS NULL      
+ BEGIN      
+  SET @PageIndex = 0      
+ END      
+      
+ IF @PageSize IS NULL      
+ BEGIN      
+  SET @PageSize = 0      
+ END      
+      
+ SET @StartIndex = (@PageIndex * @PageSize) + 1      
+      
+ -- get statistics (Status)      
+ SELECT       
+  t.Status, COUNT(*) [Count]       
+ FROM       
+  tblInstallUsers t       
+   LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+   LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id       
+ WHERE       
+  (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+  AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+  AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+ GROUP BY t.status      
+       
+ -- get statistics (AddedBy)      
+ SELECT       
+  ISNULL(U.Username, t2.FristName + '' + t2.LastName)  AS AddedBy, COUNT(*) [Count]       
+ FROM       
+  tblInstallUsers t   
+     
+   LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+   LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser  
+   LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id      
+   LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id   
+        
+ WHERE        
+  (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+  AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+  AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+ GROUP BY U.Username,t2.FristName,t2.LastName      
+      
+ -- get statistics (Designation)      
+ SELECT       
+  t.Designation, COUNT(*) [Count]       
+ FROM       
+  tblInstallUsers t       
+   LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+   LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id      
+   LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id         
+ WHERE        
+  (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+  AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+  AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+ GROUP BY t.Designation      
+       
+ -- get statistics (Source)      
+ SELECT       
+  t.Source, COUNT(*) [Count]       
+ FROM       
+  tblInstallUsers t       
+   LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+   LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id      
+   LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id         
+ WHERE        
+  (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+  AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+  AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+ GROUP BY t.Source      
+      
+ -- get records      
+ ;WITH SalesUsers      
+ AS       
+ (      
+  SELECT       
+   t.Id,      
+   t.FristName,      
+   t.LastName,      
+   t.Phone,      
+   t.Zip,      
+   d.DesignationName AS Designation,      
+   t.Status,      
+   t.HireDate,      
+   t.InstallId,      
+   t.picture,       
+   t.CreatedDateTime,       
+   Isnull(s.Source,'') AS Source,      
+   t.SourceUser,       
+   ISNULL(U.Username,t2.FristName + ' ' + t2.LastName)  AS AddedBy ,      
+    ISNULL (t.UserInstallId ,t.id) As UserInstallId ,       
+   InterviewDetail = case       
+         when (t.Status=@InterviewDateStatus) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR)  + ' ' + coalesce(t.InterviewTime,'')       
+         else '' end,      
+   RejectDetail = case when (t.[Status]=@RejectedStatus ) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR) + ' ' + coalesce(t.RejectionTime,'') + ' ' + '-' + coalesce(ru.LastName,'')       
+         else '' end,      
+   t.Email,       
+   t.DesignationID,       
+   ISNULL(t1.[UserInstallId] , t2.[UserInstallId]) As AddedByUserInstallId,       
+   ISNULL(t1.Id,t2.Id) As AddedById ,       
+   0 as 'EmpType',         
+   t.Phone As PrimaryPhone ,       
+   t.CountryCode,       
+   t.Resumepath  ,    
+   --ISNULL (ISNULL (t1.[UserInstallId],t1.id),t.Id) As AddedByUserInstallId ,     
+   Task.TaskId AS 'TechTaskId',  
+   Task.ParentTaskId AS 'ParentTechTaskId',   
+   Task.InstallId as 'TechTaskInstallId',     
+   bm.bookmarkedUser, 
+   t.[StatusReason],
+   dbo.udf_GetUserExamPercentile(t.Id) AS [Aggregate] ,
+   ROW_NUMBER() OVER      
+       (      
+        ORDER BY      
+         CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,      
+         CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,      
+         CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,      
+         CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,      
+         CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,      
+         CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,      
+         CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,      
+         CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,      
+         CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,      
+         CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,      
+         CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,      
+         CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,      
+         CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,      
+         CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC,      
+         CASE WHEN @SortExpression = 'CreatedDateTime ASC' THEN t.CreatedDateTime END ASC,      
+         CASE WHEN @SortExpression = 'CreatedDateTime DESC' THEN t.CreatedDateTime END DESC      
+              
+       ) AS RowNumber      
+  FROM       
+   tblInstallUsers t       
+    LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+    LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser  
+ LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id      
+    LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id         
+    LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id        
+    LEFT JOIN tblSource s ON t.SourceId = s.Id      
+  left outer join InstallUserBMLog as bm on t.id  =bm.bookmarkedUser and bm.isDeleted=0  
+ OUTER APPLY  
+ (  
+  SELECT TOP 1 tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo  
+  FROM tblTaskAssignedUsers u   
+    INNER JOIN tblTask tsk ON u.TaskId = tsk.TaskId AND   
+     (tsk.ParentTaskId IS NOT NULL OR tsk.IsTechTask = 1)   
+  WHERE u.UserId = t.Id  
+ ) AS Task  
+  WHERE       
+   (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+   AND       
+   (      
+    @SearchTerm IS NULL OR       
+    1 = CASE      
+      WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1      
+      WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1      
+      ELSE 0      
+     END      
+   )      
+   AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))    
+   AND t.Status NOT IN (@OfferMadeStatus, @ActiveStatus)    
+   AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))      
+   AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))      
+   --AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))      
+   AND ISNULL(t1.Id,t2.Id)=ISNULL(@AddedByUserId,ISNULL(t1.Id,t2.Id))      
+   AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+   AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+ )      
+      
+ SELECT Id,      
+   FristName,      
+   LastName,      
+   Phone,      
+   Zip,      
+    Designation,      
+   Status,      
+   HireDate,      
+   InstallId,      
+   picture,       
+   CreatedDateTime,       
+   Source,      
+   SourceUser,       
+   AddedBy ,      
+    UserInstallId ,       
+   InterviewDetail,      
+   RejectDetail,      
+   Email,       
+   DesignationID,       
+     AddedByUserInstallId,       
+   AddedById ,       
+   EmpType  ,    
+    [Aggregate] ,      
+    PrimaryPhone ,       
+   CountryCode,       
+   Resumepath  ,    
+   TechTaskId ,  
+   ParentTechTaskId ,  
+   TechTaskInstallId   ,   
+   bookmarkedUser,
+   [StatusReason]  
+ FROM SalesUsers      
+ WHERE       
+  RowNumber >= @StartIndex AND       
+  (      
+   @PageSize = 0 OR       
+   RowNumber < (@StartIndex + @PageSize)      
+  )      
+    group by   
+   Id,      
+   FristName,      
+   LastName,      
+   Phone,      
+   Zip,      
+   Designation,      
+   [Status],      
+   HireDate,      
+   InstallId,      
+   picture,       
+   CreatedDateTime,       
+   Source,      
+   SourceUser,       
+   AddedBy ,      
+    UserInstallId ,       
+   InterviewDetail,      
+   RejectDetail,      
+   Email,       
+   DesignationID,       
+     AddedByUserInstallId,       
+   AddedById ,       
+   EmpType  ,    
+    [Aggregate] ,      
+    PrimaryPhone ,       
+   CountryCode,       
+   Resumepath  ,    
+   TechTaskId ,  
+   ParentTechTaskId ,  
+   TechTaskInstallId   ,   
+   bookmarkedUser,
+   [StatusReason]
+      
+   ORDER BY      
+         CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,      
+         CASE WHEN @SortExpression = 'Id DESC' THEN Id END DESC,      
+         CASE WHEN @SortExpression = 'Status ASC' THEN Status END ASC,      
+         CASE WHEN @SortExpression = 'Status DESC' THEN Status END DESC,      
+         CASE WHEN @SortExpression = 'FristName ASC' THEN FristName END ASC,      
+         CASE WHEN @SortExpression = 'FristName DESC' THEN FristName END DESC,      
+         CASE WHEN @SortExpression = 'Designation ASC' THEN Designation END ASC,      
+         CASE WHEN @SortExpression = 'Designation DESC' THEN Designation END DESC,      
+         CASE WHEN @SortExpression = 'Source ASC' THEN Source END ASC,      
+         CASE WHEN @SortExpression = 'Source DESC' THEN Source END DESC,      
+         CASE WHEN @SortExpression = 'Phone ASC' THEN Phone END ASC,      
+         CASE WHEN @SortExpression = 'Phone DESC' THEN Phone END DESC,      
+         CASE WHEN @SortExpression = 'Zip ASC' THEN Phone END ASC,      
+         CASE WHEN @SortExpression = 'Zip DESC' THEN Phone END DESC,      
+         CASE WHEN @SortExpression = 'CreatedDateTime ASC' THEN CreatedDateTime END ASC,      
+         CASE WHEN @SortExpression = 'CreatedDateTime DESC' THEN CreatedDateTime END DESC      
+  
+      
+ -- get record count      
+ SELECT COUNT(*) AS TotalRecordCount      
+ FROM       
+  tblInstallUsers t       
+   LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser      
+   LEFT OUTER JOIN tblUsers ru on t.RejectedUserId=ru.Id      
+   LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id          
+   LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id          
+   LEFT JOIN tblSource s ON t.SourceId = s.Id      
+   
+ WHERE        
+  (t.UserType = 'SalesUser' OR t.UserType = 'sales')      
+  AND       
+  (      
+   @SearchTerm IS NULL OR       
+   1 = CASE      
+     WHEN t.InstallId LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.FristName LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.LastName LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.Email LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.Phone LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.CountryCode LIKE '%'+ @SearchTerm + '%' THEN 1      
+     WHEN t.Zip LIKE '%'+ @SearchTerm + '%' THEN 1      
+     ELSE 0      
+    END      
+  )      
+  AND ISNULL(t.Status,'') = ISNULL(@Status, ISNULL(t.Status,''))     
+  AND t.Status NOT IN (@OfferMadeStatus, @ActiveStatus)       
+  AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))      
+  AND ISNULL(s.Id,'') = ISNULL(@SourceId, ISNULL(s.Id,''))      
+  AND ISNULL(U.Id,'')=ISNULL(@AddedByUserId,ISNULL(U.Id,''))      
+  AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
+  AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
+END  
+  

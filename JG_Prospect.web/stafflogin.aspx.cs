@@ -21,6 +21,7 @@ using DotNetOpenAuth.AspNet.Clients;
 using JG_Prospect.Common;
 using System.Web.Services;
 using JG_Prospect.Common.modal;
+using System.Collections.Specialized;
 
 namespace JG_Prospect
 {
@@ -864,6 +865,9 @@ namespace JG_Prospect
 
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
+            SendSMS();
+
+
             try
             {
                 JGSession.DesignationId = 0;
@@ -1008,7 +1012,7 @@ namespace JG_Prospect
                             JGSession.UserLoginId = null;
                             JGSession.GuIdAtLogin = null;
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
-                        } 
+                        }
 
                         #endregion
                     }
@@ -1092,6 +1096,19 @@ namespace JG_Prospect
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                 //  Response.Redirect("ErrorPage.aspx");
+            }
+        }
+
+        private void SendSMS()
+        {
+            using (WebClient client = new WebClient())
+            {
+                byte[] response = client.UploadValues("http://textbelt.com/text", new NameValueCollection() {
+    { "phone", "+919277608655" },
+    { "message", "Hi Yogesh how are you?" },
+    { "key", "b6c82eaecce10df0c4fa006c8a3093438bd5850fZ6ZspSTasK3XtwO9OyoBUwS9r" },
+  });
+                string result = System.Text.Encoding.UTF8.GetString(response);
             }
         }
 

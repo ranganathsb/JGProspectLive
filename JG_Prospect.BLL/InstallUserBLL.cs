@@ -644,5 +644,15 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.InsertUserOTP(userID, userType, OTP);
         }
 
+        public bool ChangeUserStatusToRejectByEmail(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserEmail, string StatusReason = "")
+        {
+            return InstallUserDAL.Instance.ChangeUserStatusToRejectByEmail(StatusId,RejectionDate,RejectionTime,RejectedUserId,UserEmail,StatusReason);
+        }
+
+        public bool ChangeUserStatusToRejectByMobile(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserMobile, string StatusReason = "")
+        {
+            return InstallUserDAL.Instance.ChangeUserStatusToRejectByMobile(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserMobile, StatusReason);
+
+        }
     }
 }

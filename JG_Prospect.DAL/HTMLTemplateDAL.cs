@@ -112,6 +112,27 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public bool RevertDesignationHTMLTemplatesByMasterTemplateId(int masterTemplateId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_RevertTemplatesToMasterHTMLTemplate");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@MasterTemplateID", DbType.Int32, masterTemplateId);
+                    
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public DesignationHTMLTemplate GetDesignationHTMLTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
         {
             try
@@ -142,7 +163,7 @@ namespace JG_Prospect.DAL
                         objHTMLTemplate.HTMLTemplatesMasterId = Convert.ToInt32(dr["HTMLTemplatesMasterId"]);
                         objHTMLTemplate.Subject = Convert.ToString(dr["Subject"]);
                         objHTMLTemplate.Header = Convert.ToString(dr["Header"]);
-                        objHTMLTemplate.Body = Convert.ToString(dr["Body"]);
+                        objHTMLTemplate.Body = String.Concat(Convert.ToString(dr["Body"]), JGCommon.GetEmailUnSubscribeSection());                       
                         objHTMLTemplate.Footer = Convert.ToString(dr["Footer"]);
                         objHTMLTemplate.DateUpdated = Convert.ToDateTime(dr["DateUpdated"]);
                     }
@@ -174,6 +195,31 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@MasterCategory", DbType.Byte, DBNull.Value);
                     }
                     database.AddInParameter(command, "@Designation", DbType.String, objDesignationHTMLTemplate.Designation);
+                    database.AddInParameter(command, "@Subject", DbType.String, objDesignationHTMLTemplate.Subject);
+                    database.AddInParameter(command, "@Header", DbType.String, objDesignationHTMLTemplate.Header);
+                    database.AddInParameter(command, "@Body", DbType.String, objDesignationHTMLTemplate.Body);
+                    database.AddInParameter(command, "@Footer", DbType.String, objDesignationHTMLTemplate.Footer);
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool SaveMasterHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_updateMasterHTMLTemplate");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@MasterTemplateID", DbType.Int16, objDesignationHTMLTemplate.HTMLTemplatesMasterId);
                     database.AddInParameter(command, "@Subject", DbType.String, objDesignationHTMLTemplate.Subject);
                     database.AddInParameter(command, "@Header", DbType.String, objDesignationHTMLTemplate.Header);
                     database.AddInParameter(command, "@Body", DbType.String, objDesignationHTMLTemplate.Body);

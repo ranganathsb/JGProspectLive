@@ -236,13 +236,13 @@ namespace JG_Prospect.MCQTest
         #endregion
 
         #region "-- Control Events --"
-
-
+        
         protected void btnCancelTest_Click(object sender, EventArgs e)
         {
             LogoutUser(false);
 
         }
+
         protected void btnTakeTest_Click(object sender, EventArgs e)
         {
             StartExam();
@@ -298,7 +298,6 @@ namespace JG_Prospect.MCQTest
             CountExamResultandReset();
         }
 
-
         protected void rptExams_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             //Result data available
@@ -322,6 +321,16 @@ namespace JG_Prospect.MCQTest
                     lblResult.Text = "Fail";
                 }
             }
+        }
+
+        protected void btnConfirm_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnCancel_Click(object sender, EventArgs e)
+        {
+
         }
 
         #endregion
@@ -396,9 +405,7 @@ namespace JG_Prospect.MCQTest
                     strBody = strBody.Replace("#TaskLink#", string.Format(
                                                                             "{0}?TaskId={1}&hstid={2}",
                                                                             string.Concat(
-                                                                                            Request.Url.Scheme,
-                                                                                            Uri.SchemeDelimiter,
-                                                                                            Request.Url.Host,
+                                                                                            JGApplicationInfo.GetSiteURL(),
                                                                                             "/Sr_App/TaskGenerator.aspx"
                                                                                          ),
                                                                             strTaskId,
@@ -729,6 +736,7 @@ namespace JG_Prospect.MCQTest
             this.CurrentExamID = 0;
             JGSession.ExamTimerSetTime = null;
             JGSession.CurrentExamTime = 0;
+            divEndExam.Visible = false;
 
             String userExamsGiven = this.ExamsGiven;
 
@@ -742,6 +750,9 @@ namespace JG_Prospect.MCQTest
 
             if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
             {
+                // set flag to exam over so auto exam time up doesn't happens.
+                hdnExamsOver.Value = "1";
+
                 //All exams finished.
 
                 // If obtained aggregated percentage is less than acceptable level, user is unfit to join JG.
@@ -765,7 +776,7 @@ namespace JG_Prospect.MCQTest
                         //Update automatic task sequence  assignment
                         InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
 
-                        SetInterviewDateNTime();
+                        //SetInterviewDateNTime();
 
                         SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]));
 
@@ -800,8 +811,8 @@ namespace JG_Prospect.MCQTest
             switch (InterviewDate.DayOfWeek)
             {
                 case DayOfWeek.Monday:
-                    FirstInterviewDate = InterviewDate.AddDays(1);// First Interview Date Option - Wednesday                    
-                    SecondInterviewDate = InterviewDate.AddDays(3);// Second Interview Date Option - Friday 
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
+                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday 
                     InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
 
                     FirstInterviewTime = new TimeSpan(20, 00, 00);
@@ -809,16 +820,16 @@ namespace JG_Prospect.MCQTest
                     break;
 
                 case DayOfWeek.Friday:
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Monday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Wednesday                    
+                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Monday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Wednesday                    
 
                     InterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
                     SecondInterviewTime = new TimeSpan(20, 00, 00);
                     break;
 
                 case DayOfWeek.Wednesday:
-                    FirstInterviewDate = InterviewDate.AddDays(1);// First Interview Date Option - Friday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// second Interview Date Option - Monday                    
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// second Interview Date Option - Monday                    
 
                     InterviewTime = new TimeSpan(20, 00, 00);
 
@@ -838,7 +849,7 @@ namespace JG_Prospect.MCQTest
                 case DayOfWeek.Tuesday:
                     InterviewDate = InterviewDate.AddDays(1); // Default Interview Date Option - Wednesday
                     FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Monday
+                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Monday
 
                     InterviewTime = new TimeSpan(20, 00, 00);
                     SecondInterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
@@ -856,8 +867,8 @@ namespace JG_Prospect.MCQTest
                     break;
                 case DayOfWeek.Saturday:
                     InterviewDate = InterviewDate.AddDays(2);// Default Interview Date Option - Monday                    
-                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Wednesday                    
-                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Friday                    
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
+                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday                    
 
                     InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
 
@@ -871,8 +882,10 @@ namespace JG_Prospect.MCQTest
             }
 
             InterviewDate = InterviewDate.Date + InterviewTime;
-            FirstInterviewDate = FirstInterviewDate + FirstInterviewTime;
-            SecondInterviewDate = SecondInterviewDate + SecondInterviewTime;
+            FirstInterviewDate = FirstInterviewDate.Date + FirstInterviewTime;
+            SecondInterviewDate = SecondInterviewDate.Date + SecondInterviewTime;
+
+            ddlInterviewDTOptions.Items.Clear();
 
             //ltlDefaultInterviewDateTime.Text = InterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture);
             ddlInterviewDTOptions.Items.Add(new ListItem(InterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)));
@@ -904,7 +917,7 @@ namespace JG_Prospect.MCQTest
             ltlUDesg.Text = this.DesignationName;
             ltlTaskInstallID.Text = InstallId;
             ltlTaskTitle.Text = TaskTitle;
-            hypTaskLink.HRef = String.Concat(HttpContext.Current.Request.Url.Host, "/Sr_App/ITDashboard.aspx?TaskId=", TaskId.ToString(), "&hstid=", ParentTaskId);
+            hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
         }
         private void FillUserDetailsForConfirmation()
         {
@@ -953,14 +966,6 @@ namespace JG_Prospect.MCQTest
 
         #endregion
 
-        protected void btnConfirm_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void btnCancel_Click(object sender, EventArgs e)
-        {
-
-        }
+       
     }
 }

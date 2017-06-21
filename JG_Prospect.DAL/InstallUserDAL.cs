@@ -695,6 +695,60 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
+        public bool ChangeUserStatusToRejectByEmail(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserEmail, string StatusReason = "")
+        {
+            //DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[USP_ChangeUserStatusToRejectByEmail]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserEmail", DbType.String, UserEmail);
+                    database.AddInParameter(command, "@StatusId", DbType.Int32, StatusId);
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
+                    database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
+                    database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
+                    database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
+
+                     database.ExecuteNonQuery(command);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
+        }
+
+        public bool ChangeUserStatusToRejectByMobile(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserMobile, string StatusReason = "")
+        {
+           // DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("[USP_ChangeUserStatusToRejectByMobile]");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserMobile", DbType.String, UserMobile);
+                    database.AddInParameter(command, "@StatusId", DbType.Int32, StatusId);
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
+                    database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
+                    database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
+                    database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
+
+                     database.ExecuteNonQuery(command);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
+        }
+
         public DataSet GetAllInterivewUserByPastDate()
         {
             DataSet dsTemp = new DataSet();

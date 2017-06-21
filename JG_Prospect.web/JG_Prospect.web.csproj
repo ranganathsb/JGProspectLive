@@ -229,6 +229,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PhoneNumbers, Version=8.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libphonenumber-csharp.8.3.1.1\lib\PhoneNumbers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -2316,6 +2320,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="unsubscribe.aspx" />
     <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />
     <Content Include="Styles\dd.css" />
@@ -2556,6 +2561,13 @@
     </Compile>
     <Compile Include="Sr_App\ViewSalesUser.aspx.designer.cs">
       <DependentUpon>ViewSalesUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="unsubscribe.aspx.cs">
+      <DependentUpon>unsubscribe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="unsubscribe.aspx.designer.cs">
+      <DependentUpon>unsubscribe.aspx</DependentUpon>
     </Compile>
     <Compile Include="stafflogin.aspx.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
