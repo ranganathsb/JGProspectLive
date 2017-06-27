@@ -654,5 +654,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.ChangeUserStatusToRejectByMobile(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserMobile, StatusReason);
 
         }
+
+        public DataSet ChangeUserSatatus(Int32 UserId, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "") {
+
+            return InstallUserDAL.Instance.ChangeUserSatatus(UserId,StatusId,RejectionDate, RejectionTime,RejectedUserId,IsInstallUser,StatusReason,UserIds);
+        }
     }
 }

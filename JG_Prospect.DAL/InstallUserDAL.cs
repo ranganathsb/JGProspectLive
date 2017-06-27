@@ -669,6 +669,40 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
+        public DataSet ChangeUserSatatus(Int32 UserId , int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_ChangeStatus");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, UserId);
+                    database.AddInParameter(command, "@Status", DbType.String, StatusId.ToString());
+                    database.AddInParameter(command, "@RejectionDate", DbType.Date, RejectionDate);
+                    database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
+                    database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
+                    database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, IsInstallUser);
+                    database.AddInParameter(command, "@InterviewDateStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString());
+
+                    if (!string.IsNullOrEmpty(UserIds))
+                    {
+                        database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
+                    }
+
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
+
+
         public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, Int64 UserId, string StatusReason = "")
         {
             DataSet dsTemp = new DataSet();

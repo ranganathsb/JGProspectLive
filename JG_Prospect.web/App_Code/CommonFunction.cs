@@ -16,6 +16,7 @@ using System.Reflection;
 using System.ComponentModel;
 using JG_Prospect.Common.modal;
 using System.Collections.Specialized;
+using System.Globalization;
 
 namespace JG_Prospect.App_Code
 {
@@ -892,6 +893,21 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        internal static string GetStandardDateTimeString(DateTime interviewDate)
+        {
+            return interviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture);
+        }
+
+        internal static string GetStandardDateString(DateTime interviewDate)
+        {
+            return interviewDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+        }
+
+        internal static string GetStandardTimeString(DateTime interviewDate)
+        {
+            return interviewDate.ToString("h:mm tt", CultureInfo.InvariantCulture);
+        }
+
         internal static void ApplyColorCodeToAssignUserDropdown(DataTable dataSource, ListBox lstAssignUser)
         {
             // For all active user set font in red and for all InterviewDate and OfferMade set blue.
@@ -1097,6 +1113,22 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["Username"] = value;
+            }
+        }
+
+        public static string LastName
+        {
+            get
+            {
+                if (HttpContext.Current.Session["Lastname"] == null)
+                {
+                    return null;
+                }
+                return Convert.ToString(HttpContext.Current.Session["Lastname"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["Lastname"] = value;
             }
         }
 

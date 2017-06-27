@@ -1,5 +1,6 @@
 ﻿var app = angular.module('JGApp', []);
 var url = '/WebServices/JGWebService.asmx/';
+var sequenceScope;
 
 /*************************************************************************/
 // DIRECTIVES

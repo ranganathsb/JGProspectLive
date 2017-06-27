@@ -236,7 +236,7 @@ namespace JG_Prospect.MCQTest
         #endregion
 
         #region "-- Control Events --"
-        
+
         protected void btnCancelTest_Click(object sender, EventArgs e)
         {
             LogoutUser(false);
@@ -323,16 +323,7 @@ namespace JG_Prospect.MCQTest
             }
         }
 
-        protected void btnConfirm_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void btnCancel_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        
         #endregion
 
         #region "-- Private Methods --"
@@ -759,29 +750,32 @@ namespace JG_Prospect.MCQTest
                 if (overAllPercentageScored < JGApplicationInfo.GetAcceptiblePrecentage())
                 {
                     //Set User status as rejected.
-                    UpdateUserStatusAsRejectedWithReason(UserID);
+                    UpdateUserStatusAsRejectedWithReason(UserID, "Didn't Passed apptitude test.");
                     LogoutUser(true);
 
                 }
                 else // User is pass into our application.
                 {
-                    //Get latest task to be assigned for user's designation.
-                    DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID, true);
+                    //Response.Redirect("~/ViewApplicantUser.aspx?Id="+UserID+"&IE=1");
 
-                    if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
-                    {
-                        // Assign automatic task to user.
-                        AssignedTaskToUser(UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
+                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "SuccessRedirect("+ UserID +");", true);
+                    ////Get latest task to be assigned for user's designation.
+                    //DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID, true);
 
-                        //Update automatic task sequence  assignment
-                        InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
+                    //if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
+                    //{
+                    //    // Assign automatic task to user.
+                    //    AssignedTaskToUser(UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
 
-                        //SetInterviewDateNTime();
+                    //    //Update automatic task sequence  assignment
+                    //    InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
 
-                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]));
+                    //    //SetInterviewDateNTime();
 
-                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
-                    }
+                    //    SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]));
+
+                    //    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    //}
                 }
 
             }
@@ -797,103 +791,12 @@ namespace JG_Prospect.MCQTest
 
         }
 
-        private void SetInterviewDateNTime()
+     
+
+        // update user status to interview date.
+        private DataSet UpdateUserStatusAsInterviewDateWithReason(DateTime InterviewDateNTime, String StatusReason = "Default automated interview date assigned")
         {
-
-            int dayDifference = 5;
-
-            DateTime InterviewDate = DateTime.Now.AddDays(dayDifference);
-            DateTime FirstInterviewDate, SecondInterviewDate;
-            TimeSpan InterviewTime, FirstInterviewTime, SecondInterviewTime;
-
-            // Check Interview day of week, it should be only Monday, Wednesday, Friday
-            // Monday - Friday Interview Time - 10 AM IST and Wednesday Interview Time - 8 PM IST
-            switch (InterviewDate.DayOfWeek)
-            {
-                case DayOfWeek.Monday:
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday 
-                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
-
-                    FirstInterviewTime = new TimeSpan(20, 00, 00);
-
-                    break;
-
-                case DayOfWeek.Friday:
-                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Monday                    
-                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Wednesday                    
-
-                    InterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
-                    SecondInterviewTime = new TimeSpan(20, 00, 00);
-                    break;
-
-                case DayOfWeek.Wednesday:
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
-                    SecondInterviewDate = InterviewDate.AddDays(5);// second Interview Date Option - Monday                    
-
-                    InterviewTime = new TimeSpan(20, 00, 00);
-
-                    SecondInterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
-                    break;
-
-                case DayOfWeek.Sunday:
-                    InterviewDate = InterviewDate.AddDays(1);// Default Interview Date Option - Monday                    
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday                    
-
-                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
-
-                    FirstInterviewTime = new TimeSpan(20, 00, 00);
-
-                    break;
-                case DayOfWeek.Tuesday:
-                    InterviewDate = InterviewDate.AddDays(1); // Default Interview Date Option - Wednesday
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
-                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Monday
-
-                    InterviewTime = new TimeSpan(20, 00, 00);
-                    SecondInterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
-
-                    break;
-                case DayOfWeek.Thursday:
-                    InterviewDate = InterviewDate.AddDays(1);// Default Interview Date Option - Friday                    
-                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Monday                    
-                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Wednesday                    
-
-                    InterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
-
-                    SecondInterviewTime = new TimeSpan(20, 00, 00);
-
-                    break;
-                case DayOfWeek.Saturday:
-                    InterviewDate = InterviewDate.AddDays(2);// Default Interview Date Option - Monday                    
-                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
-                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday                    
-
-                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
-
-                    FirstInterviewTime = new TimeSpan(20, 00, 00);
-                    break;
-                default:
-                    InterviewTime = FirstInterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
-                    FirstInterviewDate = SecondInterviewDate = InterviewDate;
-                    break;
-
-            }
-
-            InterviewDate = InterviewDate.Date + InterviewTime;
-            FirstInterviewDate = FirstInterviewDate.Date + FirstInterviewTime;
-            SecondInterviewDate = SecondInterviewDate.Date + SecondInterviewTime;
-
-            ddlInterviewDTOptions.Items.Clear();
-
-            //ltlDefaultInterviewDateTime.Text = InterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            ddlInterviewDTOptions.Items.Add(new ListItem(InterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)));
-            ddlInterviewDTOptions.Items.Add(new ListItem(FirstInterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)));
-            ddlInterviewDTOptions.Items.Add(new ListItem(SecondInterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)));
-
-            ddlInterviewDTOptions.SelectedIndex = 0;
-
+            return InstallUserBLL.Instance.ChangeUserSatatus(UserID, Convert.ToInt32(JGConstant.InstallUserStatus.InterviewDate), InterviewDateNTime.Date, InterviewDateNTime.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), JGSession.IsInstallUser.Value, StatusReason, UserID.ToString());
         }
 
         private void LogoutUser(bool isFailed)
@@ -910,23 +813,15 @@ namespace JG_Prospect.MCQTest
         {
             TaskGeneratorBLL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationID, IsTechTask, AssignedSequence, TaskId, this.UserID);
         }
-
-        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId)
-        {
-            SetInterviewDateNTime();
-            ltlUDesg.Text = this.DesignationName;
-            ltlTaskInstallID.Text = InstallId;
-            ltlTaskTitle.Text = TaskTitle;
-            hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
-        }
+        
         private void FillUserDetailsForConfirmation()
         {
             DataSet dsUserDetails = InstallUserBLL.Instance.getuserdetails(UserID);
         }
 
-        private void UpdateUserStatusAsRejectedWithReason(int userID)
+        private void UpdateUserStatusAsRejectedWithReason(int userID, String ReasonMessage)
         {
-            InstallUserBLL.Instance.ChangeUserStatusToReject(Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), "Didn't Passed apptitude test.");
+            InstallUserBLL.Instance.ChangeUserStatusToReject(Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), ReasonMessage);
         }
 
         //Update User Exam Summary.
@@ -948,6 +843,9 @@ namespace JG_Prospect.MCQTest
             // Start very first exam.
             if (this.NextExamSeq == 0)
             {
+                //Before user starts exam set his/her status to Rejected/With Reason, and set it to interview date only when that user has completed all exams. 
+                UpdateUserStatusAsRejectedWithReason(UserID, "Left apptitude test without completing it.");
+
                 this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[0].FindControl("ltlExamId")).Text);
                 this.NextExamSeq = 1;// fetch next exam from repeater item index.
             }
@@ -963,9 +861,64 @@ namespace JG_Prospect.MCQTest
             LoadNextQuestion();
         }
 
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, DateTime InterviewDateTime, List<Attachment> Attachments = null, string strManager = "")
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
+
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            strBody = strBody.Replace("#Date#", CommonFunction.GetStandardDateString(InterviewDateTime)).Replace("#date#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strBody = strBody.Replace("#Time#", CommonFunction.GetStandardTimeString(InterviewDateTime)).Replace("#time#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            strFooter = strFooter.Replace("#Date#", CommonFunction.GetStandardDateString(InterviewDateTime)).Replace("#date#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strFooter = strFooter.Replace("#Time#", CommonFunction.GetStandardTimeString(InterviewDateTime)).Replace("#time#", CommonFunction.GetStandardTimeString(InterviewDateTime));
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+            //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+            strBody = strBody.Replace("Reason", Reason);
+
+            strBody = strBody.Replace("#manager#", strManager);
+
+            strBody = strHeader + strBody + strFooter;
+
+
+
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+
+            if (Attachments != null)
+            {
+                lstAttachments.AddRange(Attachments);
+            }
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + emailId + ".');", true);
+            }
+        }
 
         #endregion
 
-       
+
     }
 }

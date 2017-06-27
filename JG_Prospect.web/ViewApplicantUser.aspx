@@ -25,12 +25,12 @@
         function showFillInformationPopup() {
 
             var $dialog = $('#divFillDesigInfo').dialog({
-                               autoOpen: true,
-                               modal: false,
-                               height: 100,
-                               width: 900,
-                               title: "Fill Required Information"
-                           });
+                autoOpen: true,
+                modal: false,
+                height: 100,
+                width: 900,
+                title: "Fill Required Information"
+            });
 
         }
 
@@ -45,11 +45,11 @@
                                width: 900,
                                title: "Aptitude Test"
                            });
-            
+
             dialogApptitude.dialog('open');
 
             var dialogApptitudeZindex = $(dialogApptitude).closest("div[role='dialog']").css("z-index");
-            
+
             $("#divFillDesigInfo").closest("div[role='dialog']").css("z-index", dialogApptitudeZindex + 1);
 
             $("#divFillDesigInfo").closest("div[role='dialog']").css("top", "0px");
@@ -283,7 +283,7 @@
                 <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
-               //$('#<%=lbtnAptTestLink.ClientID%>').click(function () {
+                //$('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                 //    var url = window.location.href
                 //    var arr = url.split("/");
                 //    var currDomainName = arr[0] + "//" + arr[2];
@@ -1461,7 +1461,6 @@
         }
     </script>
     <style>
-        
         .task-no-close-dialog .ui-dialog-titlebar-close {
             visibility: hidden;
         }
@@ -1623,7 +1622,7 @@
     <%--<div class="loading" style="display: none">Loading&#8230;</div>--%>
     <asp:UpdatePanel ID="UpdatePanel8" runat="server">
         <ContentTemplate>
-            <asp:Button ID="hdnBtnClose" OnClick="btnCalClose_Click" ClientIDMode="Static" CausesValidation="false" runat="server" style="display:none;"/>
+            <asp:Button ID="hdnBtnClose" OnClick="btnCalClose_Click" ClientIDMode="Static" CausesValidation="false" runat="server" Style="display: none;" />
 
             <input type="hidden" id="hdnWorkFiles" runat="server" />
             <div class="right_panel">
@@ -1977,7 +1976,7 @@
 
 
                             <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
-           <asp:UpdatePanel ID="upAptTestLink" runat="server">
+                                <asp:UpdatePanel ID="upAptTestLink" runat="server">
                                     <ContentTemplate>
                                         <asp:LinkButton ID="lbtnAptTestLink" runat="server" CausesValidation="false" OnClick="btnStartTest_Click" />
                                     </ContentTemplate>
@@ -5163,9 +5162,11 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
-    <div id="divFillDesigInfo" class="modal"> <asp:Literal id="ltlFillDesigInfo" runat="server"></asp:Literal> </div>
+    <div id="divFillDesigInfo" class="modal">
+        <asp:Literal ID="ltlFillDesigInfo" runat="server"></asp:Literal>
+    </div>
     <div class="hide">
-        <div id="divStartTest" runat="server" style="text-align:center;" title="Apptitude Test" data-width="300px">
+        <div id="divStartTest" runat="server" style="text-align: center;" title="Apptitude Test" data-width="300px">
             <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <%--<asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />--%>
@@ -5173,6 +5174,112 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
+    </div>
+    <div id="examPassed" class="modal hide">
+        <span id="examSuccess">Congratulations! You have passed the aptitude test for the
+            <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+            position you applied for. You will receive 2 auto-emails in regards to an Interview with hiring Manager &  1st interview assignment. The email also contains additional instructions and training requirements in preparation for your Interview.
+                        
+                      
+                <br />
+            <br />
+            Click on the “Tech Task ID#” link below to view your assigned interview technical task. Please have the following tech task submitted before *Interview Date & Time, If the tech task is not submitted by deadline, your account will be LOCKED and your task will be reassigned! Completing assignment promptly is viewed highly upon by Management!
+            <br />
+            <br />
+            <strong>Tech Task ID#:&nbsp;
+                 <a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
+                     <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
+                 </a></strong>
+            <br />
+            <strong>Parent Task:
+                <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
+            </strong>
+            <br />
+            <strong>Task Title:
+                <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
+            </strong>
+            <br />
+            <strong>Status: 
+                <asp:Literal ID="ltlTaskStatus" runat="server"></asp:Literal>
+            </strong>
+            <br />
+            <strong>Assigned To: 
+                <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal>
+            </strong>
+            <br />
+            Please have the above tech task complete for Tech Lead analysis and Hiring Manager final review on date:</span>
+        <br />
+        <br />
+        <span><strong>*Interview Date & Time: </strong>
+            <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
+        </span>
+        <br />
+        <br />
+        <span>To accept this task and due date, fill out the following required interview date fields and select "Confirm" button at the bottom of the page.
+Have your tech task completely finished for due date. login to the JG application at above "interview date & time to have your Video/Voice/chat "Interview Date Meeting" with Manager
+                <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
+            If you need an alternate due date, you may toggle the above date & time.
+        </span>
+
+        <div id="confirmBox">
+            <table style="width: 100%; text-align: center; border: solid 1px gray;">
+                <tr>
+                    <td class="tdright">Address:<asp:TextBox ID="txtApplicantAddress" runat="server" TextMode="MultiLine"></asp:TextBox></td>
+                    <td class="tdleft">Date of Birth: 
+                                    <asp:TextBox ID="txtDateOfBirth" CssClass="textbox" runat="server"></asp:TextBox></td>
+                </tr>
+                <tr>
+                    <td class="tdright">Penalty of Perjury:
+                            <asp:DropDownList ID="ddlPenaltyOfPerjury" CssClass="textbox" runat="server"></asp:DropDownList></td>
+                    <td class="tdleft">Marital Status:
+                            <asp:DropDownList ID="DropDownList1" CssClass="textbox" runat="server"></asp:DropDownList></td>
+                </tr>
+                <tr>
+                    <td class="tdright">Children:
+                            <asp:DropDownList ID="ddlChildren" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="1" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                                <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                                <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                                <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                                <asp:ListItem Text="6" Value="6"></asp:ListItem>
+                                <asp:ListItem Text="7" Value="7"></asp:ListItem>
+                                <asp:ListItem Text="8" Value="8"></asp:ListItem>
+                                <asp:ListItem Text="9" Value="9"></asp:ListItem>
+                                <asp:ListItem Text="10" Value="10"></asp:ListItem>
+                            </asp:DropDownList></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tdright">Contract acceptance attach</td>
+                    <td class="tdleft">*ID
+                            <asp:DropDownList ID="ddlIdentity" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="Passport"></asp:ListItem>
+                                <asp:ListItem Text="Driver's Liscense"></asp:ListItem>
+                            </asp:DropDownList>
+
+                        Attach:
+                            <asp:FileUpload ID="fluIdentity" runat="server" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdright">Change Password:
+                    </td>
+                    <td class="tdleft">
+                        <asp:TextBox ID="TextBox1" CssClass="textbox" runat="server"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr id="trConfirmInterview" runat="server" visible="false" style="text-align: center;">
+                    <td colspan="2">
+                        <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnConfirm_Click" Text="Confirm" />
+
+                        <asp:Button ID="Button3" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnCancel_Click" Text="Cancel" />
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+
     </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
@@ -5199,6 +5306,27 @@
 
         function Initialize() {
             ApplyDropZone();
+        }
+
+        function showExamPassPopup(message) {
+
+            $('#examPassed').removeClass('hide');
+
+            $('#examSuccess').html(message);
+
+            var dialog = $('#examPassed').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 700,
+                width: 900,
+                title: "Congratulations!!"
+            });
+
+
+            $($(dialog.parent())).appendTo($(dialog.parent()).parent().find('form'));
+
+            //console.log($(dialog.parent()).parent().find('form'));
+
         }
 
 

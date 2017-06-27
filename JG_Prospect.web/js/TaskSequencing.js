@@ -3,8 +3,8 @@ function initializeAngular() {
     //var elem = angular.element(document.getElementById("taskSequence"));
     //$compile(elem.children())($scope);
     //$scope.$apply();
-    console.log(angular.element(document.getElementById('taskSequence')).scope());
-    angular.element(document.getElementById('taskSequence')).scope().updateonAjaxRequest();
+    //console.log(angular.element(document.getElementById('taskSequence')).scope());
+    //angular.element(document.getElementById('taskSequence')).scope().updateonAjaxRequest();
 }
 
 function SetLatestSequenceForAddNewSubTask() {
@@ -24,7 +24,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     var DesignationIds = edithyperlink.attr('data-task-designationids');
 
     if (DesignationIds) {
-        angular.element(document.getElementById('taskSequence')).scope().UserSelectedDesigIds = DesignationIds.split(",");
+        sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
 
         $.each(DesignationIds.split(","), function (index, value) {
 
@@ -36,11 +36,11 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     }
 
     //Set if tech task than load tech task related sequencing.
-    angular.element(document.getElementById('taskSequence')).scope().IsTechTask = TechTask;
+    sequenceScope.IsTechTask = TechTask;
 
     //search initially all tasks with sequencing.
-    angular.element(document.getElementById('taskSequence')).scope().HighLightTaskId = TaskID;
-    angular.element(document.getElementById('taskSequence')).scope().getTasks();
+    sequenceScope.HighLightTaskId = TaskID;
+    sequenceScope.getTasks();
 
 
     var dlg = $('#taskSequence').dialog({
@@ -94,16 +94,17 @@ function getLastAvailableSequence(TaskID, DesignationID) {
 
     var postData = {
         DesignationId: DesignationID,
-        IsTechTask: angular.element(document.getElementById('taskSequence')).scope().IsTechTask
+        IsTechTask: sequenceScope.IsTechTask
     };
-    console.log(postData);
+   
     CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, TaskID) }, function (data) { OnGetLatestSeqError(data, TaskID) });
 
     function OnGetLatestSeqSuccess(data, TaskID) {
+        
         HideAjaxLoader();
         if (data.d) {
             var sequence = JSON.parse(data.d);
-
+            
             var valExisting = parseInt($('#txtSeq' + TaskID).val());
 
 
@@ -124,7 +125,7 @@ function getLastAvailableSequence(TaskID, DesignationID) {
 var isWarnedForSequenceChange = false;
 
 function DisplySequenceBox(TaskID, maxValueforSeq) {
-
+    console.log($('#divSeq' + TaskID));
     $('#divSeq' + TaskID).removeClass('hide');
     //var divSequence = $(sequencebox).handleCounter({
     //    minimum: 1,
@@ -179,7 +180,7 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
         Sequence: Sequence,
         TaskID: TaskID,
         DesignationID: DesigataionId,
-        IsTechTask: angular.element(document.getElementById('taskSequence')).scope().IsTechTask
+        IsTechTask: sequenceScope.IsTechTask
     };
 
     ShowAjaxLoader();
@@ -192,7 +193,7 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
         $('#TaskSeque' + TaskID).html(Sequence);
         $('#divSeq' + TaskID).addClass('hide');
 
-        angular.element(document.getElementById('taskSequence')).scope().getTasks(0, '', false, TaskID);
+        sequenceScope.getTasks(0, '', false, TaskID);
 
         return false;
     }
@@ -210,7 +211,7 @@ function BindSeqDesignationChange(ControlID) {
         //if user selected designation than add it for search.        
         //search initially all tasks with sequencing.
         // remove it from search.
-        angular.element(document.getElementById('taskSequence')).scope().SetDesignForSearch($(this).val(), !this.checked);
+        sequenceScope.SetDesignForSearch($(this).val(), !this.checked);
 
     });
 }

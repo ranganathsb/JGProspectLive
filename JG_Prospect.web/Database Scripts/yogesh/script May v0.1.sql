@@ -3355,4 +3355,13 @@ BEGIN
   AND CAST(t.CreatedDateTime as date) >= CAST(ISNULL(@FromDate,t.CreatedDateTime) as date)       
   AND CAST(t.CreatedDateTime as date) <= CAST(ISNULL(@ToDate,t.CreatedDateTime) as date)      
 END  
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live Published on 06212017
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
   

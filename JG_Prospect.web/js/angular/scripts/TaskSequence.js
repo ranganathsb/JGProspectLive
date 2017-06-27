@@ -1,4 +1,17 @@
-﻿app.controller('TaskSequenceSearchController', function PostsController($scope, taskSequenceFactory) {
+﻿app.controller('TaskSequenceSearchController', function ($scope, $compile, $http) {
+    applyFunctions($scope, $compile, $http);
+
+});
+
+function getTasksWithSearchandPaging(methodName, $http) {
+    return $http.get(url + methodName);
+}
+
+function getTasksWithSearchandPagingM($http, methodName, filters) {
+    return $http.post(url + methodName, filters);
+};
+
+function applyFunctions($scope, $compile, $http) {
 
     $scope.Tasks = [];
     $scope.UserSelectedDesigIds = [];
@@ -18,7 +31,7 @@
         $scope.page = page || 0;
 
         //get all Customers
-        taskSequenceFactory.getTasksWithSearchandPaging("GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: $scope.IsTechTask, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: $scope.IsTechTask, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
             //console.log(results.Tasks);
@@ -72,12 +85,35 @@
     $scope.designationChanged = function () {
     };
 
-    $scope.updateonAjaxRequest = function () {
-        taskSequenceFactory.updateonAjaxRequest('taskSequence', $scope);
-    }
+    initializeOnAjaxUpdate($scope, $compile, $http);
+
+    sequenceScope = $scope;
+
+}
+
+function initializeOnAjaxUpdate(scope, compile, http) {
 
 
-});
+    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+        var elem = angular.element(document.getElementById("divTaskNG"));
+        compile(elem.children())(scope);
+        scope.$apply();
+
+        applyFunctions(scope, compile, http);
+    });
+
+    //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function (sender, args) {
+    //    var elem = angular.element(document.getElementById("divTaskNG"));
+
+    //    elem.replaceWith(compile(elem)(scope));
+    //    scope.$apply();
+
+    //    console.log(scope);
+
+    //    applyFunctions(scope, compile, http);
+
+    //});
+}
 
 
 app.controller('AddNewTaskSequenceController', function PostsController($scope, taskSequenceFactory) {
