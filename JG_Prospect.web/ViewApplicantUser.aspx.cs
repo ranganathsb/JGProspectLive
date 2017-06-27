@@ -73,7 +73,6 @@ namespace JG_Prospect
             }
 
         }
-
         public int UserID
         {
             get
@@ -90,6 +89,23 @@ namespace JG_Prospect
                 ViewState["UserID"] = value;
             }
         }
+        public Int64 AssignedSequenceID
+        {
+            get
+            {
+                Int64 intSeqID = 0;
+                if (ViewState["ASID"] != null)
+                {
+                    Int64.TryParse(ViewState["ASID"].ToString(), out intSeqID);
+                }
+                return intSeqID;
+            }
+            set
+            {
+                ViewState["ASID"] = value;
+            }
+        }
+
         #endregion
 
         #region '--Page Events--'
@@ -423,7 +439,7 @@ namespace JG_Prospect
                             hlnkUserID.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
                             //If Designation is change at edit mode can track it out.
                             hidDesignationBeforeChange.Value = ds.Tables[0].Rows[0]["Designation"].ToString();
-                          
+
                         }
 
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
@@ -1245,38 +1261,7 @@ namespace JG_Prospect
                     //User has cleared all exam then show him success popup.
                     if (Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]))
                     {
-                        bool isAllExamGiven = false;
-                        double overAllPercentageScored = 0;
-
-                        overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
-
-
-                        if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
-                        {
-                            if (overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage())
-                            {
-
-                                //Get latest task to be assigned for user's designation.
-                                DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID, true);
-
-                                if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
-                                {
-                                    // Assign automatic task to user.
-                                    AssignedTaskToUser(this.UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
-
-                                    //Update automatic task sequence  assignment
-                                   //TODO:Uncomment after full spec implementation.
-                                    // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
-
-                                    //SetInterviewDateNTime();
-
-                                    SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]));
-
-                                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
-                                }
-                            }
-                        }
-
+                        SetAutoTaskSequence();
 
                         //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
                     }
@@ -1322,6 +1307,43 @@ namespace JG_Prospect
             pnlFngPrint.Visible = false;
         }
 
+        private void SetAutoTaskSequence()
+        {
+            bool isAllExamGiven = false;
+            double overAllPercentageScored = 0;
+
+            overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
+
+
+            if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
+            {
+                if (overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage())
+                {
+
+                    //Get latest task to be assigned for user's designation.
+                    DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedWithSequence(this.DesignationID, true, this.UserID);
+
+                    if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
+                    {
+                        this.AssignedSequenceID = Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["Id"]);
+
+                        // Assign automatic task to user.
+                        AssignedTaskToUser(this.UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
+
+                        //Update automatic task sequence  assignment
+                        //TODO:Uncomment after full spec implementation.
+                        // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
+
+                        SetInterviewDateNTime();
+
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    }
+                }
+            }
+        }
+
         private string GetViewSalesUserAlertPopup()
         {
             string alertMessage = "For consideration for the designation #designation#; please fill in the additional required fields & complete timed aptitude test. When all is complete you may schedule an \"tech task interview date and time with a Manager\"";
@@ -1331,12 +1353,18 @@ namespace JG_Prospect
             return alertMessage;
         }
 
-        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId)
+        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId, String ParentTaskTitle)
         {
             SetInterviewDateNTime();
             ltlUDesg.Text = this.DesignationName;
             ltlTaskInstallID.Text = InstallId;
             ltlTaskTitle.Text = TaskTitle;
+            ltlParentTask.Text = ParentTaskTitle;
+
+            ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ", hlnkUserID.Text);
+
+            hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
+
             hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
             trConfirmInterview.Visible = true;
 
@@ -1440,7 +1468,7 @@ namespace JG_Prospect
             ddlInterviewDTOptions.SelectedIndex = 0;
 
             // set user status to Interview Date with automatic 
-           // UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
+            // UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
 
         }
 
@@ -2249,7 +2277,6 @@ namespace JG_Prospect
         }
 
         #endregion
-
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
             DataSet dsStatusUpdate;
@@ -3818,8 +3845,6 @@ namespace JG_Prospect
             pnl4.Visible = false;
         }
 
-
-
         protected void btnAddExtraIncome_Click(object sender, EventArgs e)
         {
             Double extraincome;
@@ -4866,6 +4891,18 @@ namespace JG_Prospect
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
             //binddata();
+        }
+
+        protected void btnAcceptTask_Click(object sender, EventArgs e)
+        {
+            TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
+
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect(" + hypExam.HRef + ");", true);
+        }
+
+        protected void btnRejectTask_Click(object sender, EventArgs e)
+        {
+            TaskGeneratorBLL.Instance.RejectUserAssignedWithSequence(this.AssignedSequenceID,this.UserID, JGApplicationInfo.GetJMGCAutoUserID());
         }
 
         #endregion
@@ -7173,8 +7210,9 @@ namespace JG_Prospect
         }
 
 
-        #endregion
 
+
+        #endregion
 
 
     }

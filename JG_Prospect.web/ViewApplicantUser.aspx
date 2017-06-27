@@ -19,6 +19,7 @@
     <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet" />
 
 
+
     <%--<script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>--%>
 
     <script type="text/javascript">
@@ -1373,6 +1374,11 @@
         .clsOverFlow {
             overflow: auto;
             height: 150px;
+        }
+
+        .ui-button {
+            background: url('../img/main-header-bg.png') repeat-x;
+            color: #fff;
         }
     </style>
     <script type="text/javascript">
@@ -5184,43 +5190,49 @@
                 <br />
             <br />
             Click on the “Tech Task ID#” link below to view your assigned interview technical task. Please have the following tech task submitted before *Interview Date & Time, If the tech task is not submitted by deadline, your account will be LOCKED and your task will be reassigned! Completing assignment promptly is viewed highly upon by Management!
-            <br />
-            <br />
-            <strong>Tech Task ID#:&nbsp;
+        </span>
+        <br />
+        <br />
+        <strong>Tech Task ID#:&nbsp;
                  <a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
                      <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
                  </a></strong>
-            <br />
-            <strong>Parent Task:
+        <br />
+        <strong>Parent Task:
                 <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
-            </strong>
-            <br />
-            <strong>Task Title:
+        </strong>
+        <br />
+        <strong>Task Title:
                 <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
-            </strong>
-            <br />
-            <strong>Status: 
-                <asp:Literal ID="ltlTaskStatus" runat="server"></asp:Literal>
-            </strong>
-            <br />
-            <strong>Assigned To: 
-                <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal>
-            </strong>
-            <br />
-            Please have the above tech task complete for Tech Lead analysis and Hiring Manager final review on date:</span>
+        </strong>
+        <br />
+        <strong>Status: 
+                <asp:Literal ID="ltlTaskStatus" runat="server" Text="Assigned"></asp:Literal>
+        </strong>
+        <br />
+        <strong>Assigned To: 
+                <a id="hypExam" runat="server" href="ViewApplicantUser.aspx?Id=">
+                    <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal></a>
+        </strong>
+        <br />
+        <br />
+        Your default Interview Date & Time Deadline has been scheduled for & with below, If you need an alternate due date and time, you may toggle the below date & time:
         <br />
         <br />
         <span><strong>*Interview Date & Time: </strong>
             <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
         </span>
         <br />
+        Recruiter:
+        <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
         <br />
-        <span>To accept this task and due date, fill out the following required interview date fields and select "Confirm" button at the bottom of the page.
-Have your tech task completely finished for due date. login to the JG application at above "interview date & time to have your Video/Voice/chat "Interview Date Meeting" with Manager
-                <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
-            If you need an alternate due date, you may toggle the above date & time.
-        </span>
-
+        <div style="text-align: center;">
+            <asp:Button ID="btnAcceptTask" Text="Accept" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnAcceptTask_Click" />
+            &nbsp;&nbsp;
+            <asp:Button ID="btnRejectTask" Text="Reject" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnRejectTask_Click" />
+        </div>
+        <br />
+        To accept the task and confirm the interview due date, select "Accept" button above. You  have 24 hours to accept technical and Interview Date.
         <div id="confirmBox">
             <table style="width: 100%; text-align: center; border: solid 1px gray;">
                 <tr>
@@ -5279,7 +5291,6 @@ Have your tech task completely finished for due date. login to the JG applicati
                 </tr>
             </table>
         </div>
-
     </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
@@ -5323,7 +5334,7 @@ Have your tech task completely finished for due date. login to the JG applicati
             });
 
 
-            $($(dialog.parent())).appendTo($(dialog.parent()).parent().find('form'));
+           $($(dialog.parent())).appendTo($('#form1'));
 
             //console.log($(dialog.parent()).parent().find('form'));
 
@@ -5453,162 +5464,21 @@ Have your tech task completely finished for due date. login to the JG applicati
                     });
 
                 };
+                try {
+                    $("#<%=ddlstatus.ClientID%>").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
             });
 
-            try {
-                $("#<%=ddlstatus.ClientID%>").msDropDown();
-            } catch (e) {
-                alert(e.message);
+            function TaskAcceptSuccessRedirect(HREF) {
+                window.parent.location.href = HREF;
             }
 
 
-        <%--try {
-            $("#<%=ddlPhontType.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
-        --%>
-
     </script>
 
-    <%--
-    <asp:Panel ID="Panel2" runat="server">
-                        <ul style="overflow: hidden; margin-bottom: 10px;">
-                            <li style="width: 100%;">
-                                
-                            </li>
-                            
-                            <li style="width: 49%;">
-                                 <asp:Panel ID="Panel4" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                    <td class="auto-style14">How many full time positions have you had in the last 5 years?
-                                                            <br />
-                                        <br />
-                                        <asp:TextBox ID="txtFullTimePos"  onkeypress="return IsNumeric(event);" MaxLength="2" runat="server" Width="222px" TabIndex="177"></asp:TextBox>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </td>
-                                </tr>--%>
-    <%--<tr>
-                                    <td class="auto-style15">
-                                        Please list major tools you own for your primary trade only!
-                                                        <asp:TextBox ID="txtMajorTools" runat="server" TextMode="MultiLine" Width="230px" Height="33px" TabIndex="181"></asp:TextBox>
-
-                                        <br />
-
-                                    </td>
-                                </tr>
-                                <%--<tr>
-                                    <td class="auto-style15">Have you previously worked for or applied at j.m grove construction or supply? 
-                                                        <br />
-                                        <br />
-                                        <asp:RadioButton ID="rdoJMApplyYes" runat="server" Text="Yes" GroupName="JMApply" TabIndex="188" />
-                                        <asp:RadioButton ID="rdoJMApplyNo" runat="server" Text="No" GroupName="JMApply" TabIndex="189" />
-                                    </td>
-                                </tr>-%>
-                                <tr>
-                                    
-                                </tr>
 
 
-                                <tr>
-                                    <td class="auto-style15">
-                                        <label>
-                                            Certification/training
-                                        </label>
-                                        &nbsp;<asp:FileUpload ID="flpCirtification" runat="server" Width="221px" TabIndex="201" />
-                                        &nbsp;
-                                                        <asp:Button ID="btnCirtification" runat="server" CssClass="cancel" with="10%" Text="Upload" Height="27px" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnCirtification_Click" OnClientClick="return ValidateFileCirtificate()" TabIndex="202" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        How long have you been doing business under your present company name? Yrs.
-                                                        <asp:TextBox ID="txtCurrentComp" runat="server" onkeypress="return IsNumeric(event);" TabIndex="204" MaxLength="2"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        Add Employee & Partners(If Any)
-                                                        <br />
-                                        <br />
-                                        <label>Type:</label>
-                                        <asp:DropDownList ID="ddlType" runat="server" TabIndex="206" ClientIDMode="Static">
-                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                            <asp:ListItem Text="Employee" Value="Employee"></asp:ListItem>
-                                            <asp:ListItem Text="Parnter" Value="Partner"></asp:ListItem>
-                                        </asp:DropDownList>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlType" InitialValue="0" ValidationGroup="type" ForeColor="Red" ErrorMessage="Select type"></asp:RequiredFieldValidator>
-                                        <br />
-                                        <label>
-                                            Name:</label>
-                                        <asp:TextBox ID="txtName" runat="server" TabIndex="207" Width="242px"></asp:TextBox>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="txtName" runat="server" ValidationGroup="type" ForeColor="Red" ErrorMessage="Enter name"></asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:Button ID="btnAddEmpPartner" TabIndex="208" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="type" CssClass="cancel" Height="27px" Text="Add" with="10%" OnClick="btnAddEmpPartner_Click" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:UpdatePanel ID="UpdatePanel23" runat="server">
-                                            <ContentTemplate>
-                                                <asp:Panel runat="server" ID="Panel5">
-                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
-                                                        <div class="grid">
-                                                            <%--<table id="table2" class="auto-style11">
-                                    <tr>
-                                        <td>-%>
-                                                            <asp:GridView ID="GridView2" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
-                                                                <EmptyDataTemplate>
-                                                                    No data to display
-                                                                </EmptyDataTemplate>
-                                                                <Columns>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("PersonName")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("PersonType")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                            <br />
-                                                            <%--</td>
-                                    </tr>
-                                </table>%>
-                                                        </div>
-                                                    </div>
-                                                </asp:Panel>
-                                            </ContentTemplate>
-                                            <Triggers>
-                                                <asp:AsyncPostBackTrigger ControlID="btnAddEmpPartner" EventName="Click" />
-                                            </Triggers>
-                                        </asp:UpdatePanel>
-                                    </td>
-                                </tr>
-                                                           
-                                    </table>
-                                </asp:Panel>
-                            </li>
-                        </ul>
-                    </asp:Panel>--%>
+
 </asp:Content>

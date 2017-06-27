@@ -2956,6 +2956,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Literal ltlTaskStatus;
         
         /// <summary>
+        /// hypExam control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor hypExam;
+        
+        /// <summary>
         /// ltlAssignTo control.
         /// </summary>
         /// <remarks>
@@ -2981,6 +2990,24 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltlManagerName;
+        
+        /// <summary>
+        /// btnAcceptTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAcceptTask;
+        
+        /// <summary>
+        /// btnRejectTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRejectTask;
         
         /// <summary>
         /// txtApplicantAddress control.

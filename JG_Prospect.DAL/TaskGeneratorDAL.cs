@@ -84,13 +84,95 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetUserAssignedWithSequence(Int32 DesignationId, bool IsTechTask, Int32 UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetUserAssignedDesigSequencnce");
+
+                    database.AddInParameter(command, "@DesignationId", SqlDbType.Int, DesignationId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    database.AddInParameter(command, "@UserID", SqlDbType.Int, UserID);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet RejectUserAssignedWithSequence(Int64 SequenceID, Int32 UserID, Int32 RejectedUserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_RemoveUserAssignedSeq");
+
+                    database.AddInParameter(command, "@AssignedSeqID", SqlDbType.BigInt, SequenceID);
+                    database.AddInParameter(command, "@UserId", SqlDbType.Int, UserID);
+                    database.AddInParameter(command, "@RejectedUserID", SqlDbType.Int, RejectedUserID);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public bool AcceptUserAssignedWithSequence(Int64 SequenceId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateUserAssignedSeqAcceptance");
+
+                    database.AddInParameter(command, "@AssignedSeqID", SqlDbType.BigInt,SequenceId);
+                    
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask,Int64 AssignedSequence, Int64 TaskId,Int32 UserId)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("usp_InsertLastAssignedDesigSequencnce");
+                    DbCommand command = database.GetStoredProcCommand(" ");
 
                     database.AddInParameter(command, "@AssignedSequence", SqlDbType.BigInt, AssignedSequence);
                     database.AddInParameter(command, "@DesignationId", SqlDbType.Int, DesignationId);

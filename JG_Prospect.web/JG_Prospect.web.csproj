@@ -1483,8 +1483,9 @@
     <Content Include="Database Scripts\nandc\Script HR Edit Page ITJN028-VII v1.0.sql" />
     <Content Include="Database Scripts\nandc\Scripts App Status - ITSN042-IV  v1.0.sql" />
     <Content Include="Database Scripts\nandc\Scripts REC001-XIII v 1.0.sql" />
-    <Content Include="Database Scripts\yogesh\script May v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
+    <Content Include="Database Scripts\yogesh\Script July v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
