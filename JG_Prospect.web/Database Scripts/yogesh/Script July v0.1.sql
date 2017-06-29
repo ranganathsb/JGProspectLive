@@ -233,3 +233,168 @@ END
 --- Live publish 06272017
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_CheckEmailSubscription]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_CheckEmailSubscription   
+
+	END  
+GO    
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 06282017  
+-- Description: This will check email subscription for given email address.
+-- =============================================  
+ -- usp_CheckEmailSubscription 'error@kerconsultancy.com'  
+  
+CREATE PROCEDURE usp_CheckEmailSubscription   
+( 
+@Email VARCHAR(250)
+)  
+AS  
+BEGIN  
+
+		SELECT        UnSubscribeId
+		FROM            tblUnsubscriberList
+		WHERE        (Email = @Email)
+  
+END    
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[SaveDesignationSMSTemplate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE SaveDesignationSMSTemplate   
+
+	END  
+GO
+-- =============================================  
+-- Author:  Yogesh  
+-- Create date: 27 Jan 2017  
+-- Description: Saves designation HTMLTemplate either inserts or updates.  
+-- =============================================  
+CREATE PROCEDURE [dbo].[SaveDesignationSMSTemplate]  
+ (
+
+ @HTMLTemplatesMasterId INT,  
+ @MasterCategory   TINYINT,  
+ @Designation   VARCHAR(50),  
+ @Body     NVARCHAR(max)
+ 
+ )
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+ UPDATE [tblHTMLTemplatesMaster]  
+ SET  
+  Category = @MasterCategory  
+ WHERE Id = @HTMLTemplatesMasterId  
+  
+ IF EXISTS (SELECT ID   
+     FROM [tblDesignationHTMLTemplates]   
+     WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation)  
+  BEGIN  
+  
+   UPDATE [dbo].[tblDesignationHTMLTemplates]  
+      SET       
+      [Body] = @Body  
+     ,[DateUpdated] = GETDATE()  
+    WHERE HTMLTemplatesMasterId = @HTMLTemplatesMasterId AND Designation = @Designation  
+  
+  END  
+ ELSE  
+  BEGIN  
+   INSERT INTO [dbo].[tblDesignationHTMLTemplates]  
+       ([HTMLTemplatesMasterId]  
+       ,[Designation]  
+       ,[Subject]  
+       ,[Header]  
+       ,[Body]  
+       ,[Footer]  
+       ,[DateUpdated])  
+    VALUES  
+       (@HTMLTemplatesMasterId  
+       ,@Designation  
+       ,''  
+       ,''
+       ,@Body  
+       ,''
+       ,GETDATE())  
+  END  
+  
+END  
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_updateMasterSMSTemplate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_updateMasterSMSTemplate   
+
+	END  
+GO
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 06/21/2017  
+-- Description: This will update master template data for given HTML template ID  
+-- =============================================  
+CREATE PROCEDURE usp_updateMasterSMSTemplate  
+(  -- Add the parameters for the stored procedure here  
+ @MasterTemplateID int,  
+ @Body VARCHAR(max)
+)  
+AS  
+BEGIN  
+  
+UPDATE       tblHTMLTemplatesMaster  
+SET                 Body = @Body, DateUpdated = GETDATE()  
+WHERE [Id] = @MasterTemplateID  
+  
+  
+END    
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_RevertTemplatesToMasterSMSTemplate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_RevertTemplatesToMasterSMSTemplate     
+
+	END  
+GO
+-- =============================================  
+-- Author:  Yogesh Keraliya  
+-- Create date: 06/21/2017  
+-- Description: This will revert all child templates of master HTML template for given HTML template ID  
+-- =============================================  
+CREATE PROCEDURE usp_RevertTemplatesToMasterSMSTemplate  
+(   
+ -- Add the parameters for the stored procedure here  
+ @MasterTemplateID int   
+)  
+AS  
+BEGIN  
+  
+-- get master template header, body, footer, subject  
+DECLARE @Body VARCHAR(max)  
+
+  
+SELECT        @Body = Body
+FROM            tblHTMLTemplatesMaster  
+WHERE        (Id = @MasterTemplateID)  
+  
+-- update already existing designation html templates.  
+UPDATE       tblDesignationHTMLTemplates  
+SET                 Body = @Body, DateUpdated = GETDATE()  
+WHERE [HTMLTemplatesMasterId] = @MasterTemplateID  
+  
+  
+-- Insert templates which are not already available.  
+INSERT INTO tblDesignationHTMLTemplates  
+                         (Designation,[Subject], Header, Body, Footer, DateUpdated, HTMLTemplatesMasterId)  
+SELECT   CONVERT(VARCHAR(50), D.ID) , '', '', @Body, '', GETDATE(), @MasterTemplateID  
+FROM     [dbo].[tbl_Designation] AS D   
+WHERE  D.IsActive = 1 AND D.ID NOT IN (SELECT CONVERT(INT,Designation) FROM tblDesignationHTMLTemplates WHERE HTMLTemplatesMasterId = @MasterTemplateID)  
+  
+END  

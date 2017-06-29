@@ -163,77 +163,87 @@ namespace JG_Prospect.App_Code
         public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
             bool retValue = false;
-            try
+            if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
             {
-                /* Sample HTML Template
-                 * *****************************************************************************
-                 * Hi #lblFName#,
-                 * <br/>
-                 * <br/>
-                 * You are requested to appear for an interview on #lblDate# - #lblTime#.
-                 * <br/>
-                 * <br/>
-                 * Regards,
-                 * <br/>
-                */
-
-                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
-
-                MailMessage Msg = new MailMessage();
-                Msg.From = new MailAddress(userName, "JGrove Construction");
-                Msg.To.Add(strToAddress);
-                Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-                Msg.Subject = strSubject;// "JG Prospect Notification";
-                Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
-                Msg.IsBodyHtml = true;
-
-                //ds = AdminBLL.Instance.GetEmailTemplate('');
-                //// your remote SMTP server IP.
-                if (lstAttachments != null)
-                {
-                    foreach (Attachment objAttachment in lstAttachments)
-                    {
-                        Msg.Attachments.Add(objAttachment);
-                    }
-                }
-
-                if (lstAlternateView != null)
-                {
-                    foreach (AlternateView objAlternateView in lstAlternateView)
-                    {
-                        Msg.AlternateViews.Add(objAlternateView);
-                    }
-                }
-
-                SmtpClient sc = new SmtpClient(
-                                                ConfigurationManager.AppSettings["smtpHost"].ToString(),
-                                                Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
-                                              );
-                NetworkCredential ntw = new NetworkCredential(userName, password);
-                sc.UseDefaultCredentials = false;
-                sc.Credentials = ntw;
-                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                 try
                 {
-                    sc.Send(Msg);
-                    retValue = true;
+                    /* Sample HTML Template
+                     * *****************************************************************************
+                     * Hi #lblFName#,
+                     * <br/>
+                     * <br/>
+                     * You are requested to appear for an interview on #lblDate# - #lblTime#.
+                     * <br/>
+                     * <br/>
+                     * Regards,
+                     * <br/>
+                    */
+
+                    string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
+                    string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
+                    string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
+
+                    if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                    {
+                        strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
+                        strToAddress = "error@kerconsultancy.com";
+
+                    }
+
+                    MailMessage Msg = new MailMessage();
+                    Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                    Msg.To.Add(strToAddress);
+                    Msg.Subject = strSubject;// "JG Prospect Notification";
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.IsBodyHtml = true;
+
+                    //ds = AdminBLL.Instance.GetEmailTemplate('');
+                    //// your remote SMTP server IP.
+                    if (lstAttachments != null)
+                    {
+                        foreach (Attachment objAttachment in lstAttachments)
+                        {
+                            Msg.Attachments.Add(objAttachment);
+                        }
+                    }
+
+                    if (lstAlternateView != null)
+                    {
+                        foreach (AlternateView objAlternateView in lstAlternateView)
+                        {
+                            Msg.AlternateViews.Add(objAlternateView);
+                        }
+                    }
+
+                    SmtpClient sc = new SmtpClient(
+                                                    ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                    Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                                  );
+                    NetworkCredential ntw = new NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                    try
+                    {
+                        sc.Send(Msg);
+                        retValue = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        // throw will call application error event, which will log error details.
+                        throw ex;
+                    }
+
+                    Msg = null;
+                    sc.Dispose();
+                    sc = null;
                 }
                 catch (Exception ex)
                 {
                     // throw will call application error event, which will log error details.
                     throw ex;
                 }
-
-                Msg = null;
-                sc.Dispose();
-                sc = null;
-            }
-            catch (Exception ex)
-            {
-                // throw will call application error event, which will log error details.
-                throw ex;
             }
             return retValue;
         }

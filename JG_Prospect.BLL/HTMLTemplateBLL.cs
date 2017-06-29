@@ -81,9 +81,34 @@ namespace JG_Prospect.BLL
 
         }
 
+        public HTMLTemplatesMaster GetSMSTemplateMasterById(HTMLTemplates objHTMLTemplates)
+        {
+            return HTMLTemplateDAL.Instance.GetSMSTemplateMasterById(objHTMLTemplates);
+        }
+
         public bool SaveMasterHTMLTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
         {
             return HTMLTemplateDAL.Instance.SaveMasterHTMLTemplate(objDesignationHTMLTemplate);
+        }
+
+        public bool SaveDesignationSMSTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate, byte? intMasterCategory)
+        {
+            return HTMLTemplateDAL.Instance.SaveDesignationSMSTemplate(objDesignationHTMLTemplate, intMasterCategory);
+        }
+
+        public bool SaveMasterSMSTemplate(DesignationHTMLTemplate objDesignationHTMLTemplate)
+        {
+            return HTMLTemplateDAL.Instance.SaveMasterSMSTemplate(objDesignationHTMLTemplate);
+        }
+
+        public bool RevertDesignationSMSTemplatesByMasterTemplateId(int MasterTemplateId)
+        {
+            return HTMLTemplateDAL.Instance.RevertDesignationSMSTemplatesByMasterTemplateId(MasterTemplateId);
+        }
+
+        public DesignationHTMLTemplate GetDesignationSMSTemplate(HTMLTemplates objHTMLTemplates, string strDesignation)
+        {
+            return HTMLTemplateDAL.Instance.GetDesignationSMSTemplate(objHTMLTemplates, strDesignation);
         }
     }
 }

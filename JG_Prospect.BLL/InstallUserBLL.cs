@@ -201,6 +201,12 @@ namespace JG_Prospect.BLL
             }
             return ds;
         }
+
+        public bool CheckUnsubscribedEmail(string strToAddress)
+        {
+            return InstallUserDAL.Instance.CheckUnsubscribedEmail(strToAddress);
+        }
+
         public DataSet getUser(string loginid)
         {
             return UserDAL.Instance.getUser(loginid);

@@ -10,7 +10,7 @@
 namespace JG_Prospect.Sr_App {
     
     
-    public partial class Header {
+    public partial class SRAppHeader {
         
         /// <summary>
         /// TaskGenerator control.

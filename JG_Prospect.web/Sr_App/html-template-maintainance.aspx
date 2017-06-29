@@ -137,22 +137,22 @@
                             <asp:TemplateField HeaderText="Name">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="hypEdit" ForeColor="Blue" runat="server" Text='<%# Eval("Name") %>'
-                                        NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-html-template.aspx?MasterId=" + Eval("Id") + 
+                                        NavigateUrl='<%# Page.ResolveUrl("~/Sr_App/edit-sms-template.aspx?MasterId=" + Eval("Id") + 
                                                 "&Type="+ Convert.ToByte(JG_Prospect.Common.HTMLTemplateTypes.AutoEmailTemplate).ToString() +
                                                 "&Category="+ Eval("Category")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="From Email">
+                            <asp:TemplateField HeaderText="From Mobile Number">
                                 <ItemTemplate>
                                     <span data-id='<%#Eval("Id") %>' class="tempFromID  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("FromID").ToString())== true?"N.A.":Eval("FromID") %></span>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Subject">
+                            <%--<asp:TemplateField HeaderText="Subject">
                                 <ItemTemplate>
                                     <span data-id='<%#Eval("Id") %>' class="tempSubject  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("Subject").ToString())== true?"N.A.":Eval("Subject") %></span>
                                 </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Trigger for Email">
+                            </asp:TemplateField>--%>
+                            <asp:TemplateField HeaderText="Trigger for SMS">
                                 <ItemTemplate>
                                     <span data-id='<%#Eval("Id") %>' class="tempTriggerText  ui-helper-clearfix"><%# String.IsNullOrEmpty(Eval("TriggerText").ToString())== true?"N.A.":Eval("TriggerText") %></span>
                                 </ItemTemplate>

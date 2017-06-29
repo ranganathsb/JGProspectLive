@@ -11,6 +11,7 @@ using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using System.Xml;
 using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
 
 namespace JG_Prospect.DAL
 {
@@ -267,6 +268,28 @@ namespace JG_Prospect.DAL
 
             }
             return tupResult;
+        }
+
+        public bool CheckUnsubscribedEmail(string strToAddress)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_CheckEmailSubscription");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Email", DbType.String, strToAddress);
+                 
+
+                    SqlDataReader dr = (SqlDataReader) database.ExecuteReader(command);
+
+                    return dr.HasRows;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)

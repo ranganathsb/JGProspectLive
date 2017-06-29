@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Header.ascx.cs" Inherits="JG_Prospect.Sr_App.Header" %>
-<%@ Register Src="~/Sr_App/Controls/TaskGenerator.ascx" TagPrefix="uc1" TagName="TaskGenerator" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SRAppHeader.ascx.cs" Inherits="JG_Prospect.Sr_App.SRAppHeader" %>
+<%@ Register Src="~/Controls/TaskGenerator.ascx" TagPrefix="uc1" TagName="TaskGenerator" %>
 
 <!--tabs jquery-->
 <%--<script type="text/javascript" src="../js/jquery.ui.core.js"></script>

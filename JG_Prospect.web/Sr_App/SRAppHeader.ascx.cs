@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace JG_Prospect.Sr_App
 {
-    public partial class Header : System.Web.UI.UserControl
+    public partial class SRAppHeader : System.Web.UI.UserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {

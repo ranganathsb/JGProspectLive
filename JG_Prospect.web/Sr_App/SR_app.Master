@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="SR_app.master.cs" Inherits="JG_Prospect.Sr_App.SR_app" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
-<%@ Register Src="~/Sr_App/Header.ascx" TagName="Header" TagPrefix="uc1" %>
+<%@ Register Src="~/Sr_App/SRAppHeader.ascx" TagName="Header" TagPrefix="uc1" %>
 <%@ Register Src="~/Sr_App/LeftPanel.ascx" TagName="LeftPanel" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor"
     TagPrefix="cc1" %>

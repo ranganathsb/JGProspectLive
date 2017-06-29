@@ -2088,7 +2088,7 @@
     <Content Include="Sr_App\ConstructionCalendar.aspx" />
     <Content Include="Sr_App\ContractFooter.aspx" />
     <Content Include="Sr_App\Controls\AddProductLinesControl.ascx" />
-    <Content Include="Sr_App\Controls\TaskGenerator.ascx" />
+    <Content Include="Controls\TaskGenerator.ascx" />
     <Content Include="Sr_App\Controls\ucSubTasks.ascx" />
     <Content Include="Sr_App\Controls\ucTaskHistory.ascx" />
     <Content Include="Sr_App\Controls\ucTaskWorkSpecifications.ascx" />
@@ -2101,6 +2101,7 @@
     <Content Include="Sr_App\DepartmentList.aspx" />
     <Content Include="Sr_App\DesignationAddEdit.aspx" />
     <Content Include="Sr_App\DesignationList.aspx" />
+    <Content Include="Sr_App\edit-sms-template.aspx" />
     <Content Include="Sr_App\edit-html-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
@@ -2304,7 +2305,7 @@
     <Content Include="login.aspx" />
     <Content Include="ProgressReport.aspx" />
     <Content Include="Prospectmaster.aspx" />
-    <Content Include="Sr_App\Header.ascx" />
+    <Content Include="Sr_App\SRAppHeader.ascx" />
     <Content Include="Sr_App\home.aspx" />
     <Content Include="Sr_App\LeftPanel.ascx" />
     <Content Include="Location_img\Chrysanthemum.jpg" />
@@ -2474,6 +2475,13 @@
     </Compile>
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\edit-sms-template.aspx.cs">
+      <DependentUpon>edit-sms-template.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\edit-sms-template.aspx.designer.cs">
+      <DependentUpon>edit-sms-template.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\edit-html-template.aspx.cs">
       <DependentUpon>edit-html-template.aspx</DependentUpon>
@@ -2832,11 +2840,11 @@
     <Compile Include="Sr_App\Controls\AddProductLinesControl.ascx.designer.cs">
       <DependentUpon>AddProductLinesControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Sr_App\Controls\TaskGenerator.ascx.cs">
+    <Compile Include="Controls\TaskGenerator.ascx.cs">
       <DependentUpon>TaskGenerator.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sr_App\Controls\TaskGenerator.ascx.designer.cs">
+    <Compile Include="Controls\TaskGenerator.ascx.designer.cs">
       <DependentUpon>TaskGenerator.ascx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\Controls\ucTaskWorkSpecifications.ascx.cs">
@@ -3236,12 +3244,12 @@
     <Compile Include="Prospectmaster.aspx.designer.cs">
       <DependentUpon>Prospectmaster.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sr_App\Header.ascx.cs">
-      <DependentUpon>Header.ascx</DependentUpon>
+    <Compile Include="Sr_App\SRAppHeader.ascx.cs">
+      <DependentUpon>SRAppHeader.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sr_App\Header.ascx.designer.cs">
-      <DependentUpon>Header.ascx</DependentUpon>
+    <Compile Include="Sr_App\SRAppHeader.ascx.designer.cs">
+      <DependentUpon>SRAppHeader.ascx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\home.aspx.cs">
       <DependentUpon>home.aspx</DependentUpon>
