@@ -122,6 +122,8 @@ namespace JG_Prospect
         {
             CommonFunction.AuthenticateUser();
 
+            this.Form.Enctype = "multipart/form-data";
+
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
             //createForeMenForJobAcceptance();
@@ -1334,7 +1336,6 @@ namespace JG_Prospect
                         //TODO:Uncomment after full spec implementation.
                         // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
 
-                        SetInterviewDateNTime();
 
                         SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
 
@@ -1361,12 +1362,14 @@ namespace JG_Prospect
             ltlTaskTitle.Text = TaskTitle;
             ltlParentTask.Text = ParentTaskTitle;
 
-            ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ", hlnkUserID.Text);
+            ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+            ltlAssignToInstallID.Text = hlnkUserID.Text;
 
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
             hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
             trConfirmInterview.Visible = true;
+            ChangetoInterviewdateStatusandSendEmailtoUser();
 
         }
 
@@ -1468,7 +1471,7 @@ namespace JG_Prospect
             ddlInterviewDTOptions.SelectedIndex = 0;
 
             // set user status to Interview Date with automatic 
-            // UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
+            UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
 
         }
 
@@ -2279,6 +2282,85 @@ namespace JG_Prospect
         #endregion
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
+            UpdateInstallUserConfirmDetails();
+
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+
+        }
+
+        private void UpdateInstallUserConfirmDetails()
+        {
+            user objConfirmUser = new user();
+            objConfirmUser.attachements = GetContractAttachments();
+            objConfirmUser.dob = txtCDateOfBirth.Text;
+            objConfirmUser.citizenship = ddlPenaltyOfPerjury.SelectedValue;
+            objConfirmUser.maritalstatus = ddlcmaritalstatus.SelectedValue;
+            objConfirmUser.MailingAddress = txtApplicantAddress.Text;
+            objConfirmUser.PqLicense = UploadDrivingLicense();
+
+            if (rdoLicenseYes.Checked)
+            {
+                objConfirmUser.LicenseStatus = true;
+            }
+
+            objConfirmUser.id = this.UserID;
+
+            bool result = InstallUserBLL.Instance.UpdateConfirmInstallUser(objConfirmUser);
+
+
+        }
+
+        private string GetContractAttachments()
+        {
+            //string attach = string.Empty;
+            string CsvAttachments = string.Empty;
+            CsvAttachments = UploadFile();
+
+            return CsvAttachments;
+        }
+
+        private string UploadDrivingLicense()
+        {
+            String UploadedFile = String.Empty;
+            if (fupIdentity.HasFile)
+            {
+                string filename = Path.GetFileName(fupIdentity.PostedFile.FileName);
+                filename = DateTime.Now.ToString() + filename;
+                filename = filename.Replace("/", "");
+                filename = filename.Replace(":", "");
+                filename = filename.Replace(" ", "");
+                fupIdentity.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+
+                UploadedFile = filename;
+            }
+
+            return UploadedFile;
+        }
+
+        private String UploadFile()
+        {
+            String UploadedFileName = String.Empty;
+
+            if (fupContractAttachment.HasFile)
+            {
+                string filename = Path.GetFileName(fupContractAttachment.FileName);
+
+                filename = DateTime.Now.ToString() + filename;
+                filename = filename.Replace("/", "");
+                filename = filename.Replace(":", "");
+                filename = filename.Replace(" ", "");
+                Server.MapPath("~/Sr_App/UploadedFile/" + filename);
+                fupContractAttachment.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+
+                UploadedFileName = filename;
+            }
+
+            return UploadedFileName;
+
+        }
+
+        private void ChangetoInterviewdateStatusandSendEmailtoUser()
+        {
             DataSet dsStatusUpdate;
 
             if (ddlInterviewDTOptions.SelectedIndex == 0) // that is user has kept default interview date time option.
@@ -2325,9 +2407,6 @@ namespace JG_Prospect
            , Convert.ToDateTime(ddlInterviewDTOptions.SelectedValue), null, "");
 
             }
-
-            Response.Redirect(hypTaskLink.HRef);
-
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
@@ -4897,12 +4976,28 @@ namespace JG_Prospect
         {
             TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
 
-            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect(" + hypExam.HRef + ");", true);
+            ChangePassword();
+
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+        }
+
+        private void ChangePassword()
+        {
+            //int loginid = (int)Session["loginid"];
+            int id = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            // string UserType = (string)Session["usertype"];
+            bool result = false;
+            result = UserBLL.Instance.changepassword(id, txtChangePassword1.Text, JGSession.IsCustomer);//, UserType
         }
 
         protected void btnRejectTask_Click(object sender, EventArgs e)
         {
-            TaskGeneratorBLL.Instance.RejectUserAssignedWithSequence(this.AssignedSequenceID,this.UserID, JGApplicationInfo.GetJMGCAutoUserID());
+            TaskGeneratorBLL.Instance.RejectUserAssignedWithSequence(this.AssignedSequenceID, this.UserID, JGApplicationInfo.GetJMGCAutoUserID());
+        }
+
+        protected void btnConfirmCancel_Click(object sender, EventArgs e)
+        {
+
         }
 
         #endregion
@@ -7208,6 +7303,7 @@ namespace JG_Prospect
             //    ddlInstallerType.Visible = false;
             //}
         }
+
 
 
 

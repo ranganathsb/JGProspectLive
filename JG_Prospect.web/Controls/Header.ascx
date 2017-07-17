@@ -80,7 +80,7 @@
   <div class="user_panel">
   Welcome! <span>
   <asp:Label ID="lbluser" runat="server" Text="User"></asp:Label>
-  <asp:Button ID="btnlogout" runat="server" Text="Logout" onclick="btnlogout_Click" 
+  <asp:Button ID="btnlogout" runat="server" CausesValidation="false" Text="Logout" onclick="btnlogout_Click" 
       />
       </span> 
   &nbsp;<div class="clr"></div>

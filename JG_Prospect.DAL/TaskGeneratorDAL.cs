@@ -166,6 +166,36 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId , Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_SwapTaskSequences");
+
+                    database.AddInParameter(command, "@FirstTaskID", SqlDbType.BigInt, FirstTaskId);
+                    database.AddInParameter(command, "@SecondTaskID", SqlDbType.BigInt, SecondTaskId);
+                    database.AddInParameter(command, "@FirstSeq", SqlDbType.BigInt, FirstSequenceId);
+                    database.AddInParameter(command, "@SecondSeq", SqlDbType.BigInt, SecondSequenceId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+
         public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask,Int64 AssignedSequence, Int64 TaskId,Int32 UserId)
         {
             try

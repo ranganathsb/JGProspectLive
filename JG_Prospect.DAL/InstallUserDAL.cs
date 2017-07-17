@@ -279,9 +279,9 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("usp_CheckEmailSubscription");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Email", DbType.String, strToAddress);
-                 
 
-                    SqlDataReader dr = (SqlDataReader) database.ExecuteReader(command);
+
+                    SqlDataReader dr = (SqlDataReader)database.ExecuteReader(command);
 
                     return dr.HasRows;
                 }
@@ -692,7 +692,7 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
-        public DataSet ChangeUserSatatus(Int32 UserId , int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        public DataSet ChangeUserSatatus(Int32 UserId, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -768,7 +768,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
 
-                     database.ExecuteNonQuery(command);
+                    database.ExecuteNonQuery(command);
                     return true;
                 }
             }
@@ -776,12 +776,12 @@ namespace JG_Prospect.DAL
             {
                 return false;
             }
-            
+
         }
 
         public bool ChangeUserStatusToRejectByMobile(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserMobile, string StatusReason = "")
         {
-           // DataSet dsTemp = new DataSet();
+            // DataSet dsTemp = new DataSet();
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
@@ -795,7 +795,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
 
-                     database.ExecuteNonQuery(command);
+                    database.ExecuteNonQuery(command);
                     return true;
                 }
             }
@@ -803,7 +803,7 @@ namespace JG_Prospect.DAL
             {
                 return false;
             }
-            
+
         }
 
         public DataSet GetAllInterivewUserByPastDate()
@@ -1446,6 +1446,35 @@ namespace JG_Prospect.DAL
 
             }
 
+        }
+
+        public bool UpdateConfirmInstallUser(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateInstallUserConfirmDetails");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objuser.id);
+                    database.AddInParameter(command, "@Address", DbType.String, objuser.MailingAddress);
+                    database.AddInParameter(command, "@DOB", DbType.String, objuser.dob);
+                    database.AddInParameter(command, "@maritalstatus", DbType.String, objuser.maritalstatus);
+                    database.AddInParameter(command, "@Attachements", DbType.String, objuser.attachements);
+                    database.AddInParameter(command, "@PCLiscense", DbType.String, objuser.PqLicense);
+                    database.AddInParameter(command, "@Citizenship", DbType.String, objuser.citizenship);
+
+                    database.ExecuteScalar(command);
+
+                    return true;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
 
         public bool UpdateInstallUser(user objuser, int id)

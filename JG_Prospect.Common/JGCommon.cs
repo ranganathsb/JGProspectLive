@@ -49,6 +49,23 @@ namespace JG_Prospect.Common
             return ConfigurationManager.AppSettings["URL"];
 
         }
+        public static string GetDefaultBCCEmail()
+        {
+            return ConfigurationManager.AppSettings["DefaultBCCEmail"];
+
+        }
+
+        public static bool IsSendEmailExceptionOn()
+        {
+            bool returnVal = false;
+
+            if (ConfigurationManager.AppSettings["AllowEmailSendingExceptionEmail"].Equals("1"))
+            {
+                returnVal = true; 
+            }
+
+            return returnVal;
+        }
     }
-    
+
 }

@@ -149,6 +149,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+
         #endregion
 
         #region '--Page Events--'
@@ -404,9 +405,9 @@ namespace JG_Prospect.Sr_App.Controls
                     ddcbAssigned.DataValueField = "Id";
                     ddcbAssigned.DataBind();
 
-                    if ( dsUsers!= null && dsUsers.Tables.Count > 0)
+                    if (dsUsers != null && dsUsers.Tables.Count > 0)
                     {
-                        CommonFunction.ApplyColorCodeToAssignUserDropdown(dsUsers.Tables[0], ddcbAssigned); 
+                        CommonFunction.ApplyColorCodeToAssignUserDropdown(dsUsers.Tables[0], ddcbAssigned);
                     }
 
 
@@ -897,7 +898,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             CheckBox chkUiRequested = sender as CheckBox;
             RepeaterItem objRepeaterItem = chkUiRequested.NamingContainer as RepeaterItem;
-            
+
             if (objRepeaterItem != null)
             {
                 HiddenField hdTaskId = objRepeaterItem.FindControl("hdTaskId") as HiddenField;
@@ -2078,7 +2079,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdParentTaskId.Value = string.Empty;
             hdMainParentId.Value = string.Empty;
             hdTaskLvl.Value = string.Empty;
-            hdTaskId.Value = string.Empty;            
+            hdTaskId.Value = string.Empty;
         }
 
 
@@ -2614,14 +2615,14 @@ namespace JG_Prospect.Sr_App.Controls
                                                 );
 
 
-           
+
 
             if (IsPostBack)
             {
                 // do not fecth page data based on highlighted task id.
                 intHighlightedTaskId = 0;
             }
-            
+
             repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
 
             DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);
@@ -2706,14 +2707,14 @@ namespace JG_Prospect.Sr_App.Controls
             ddlUserDesignation.DataValueField = "DesignationID";
             ddlUserDesignation.DataBind();
 
-            DataSet dsDesi = DesignationBLL.Instance.GetActiveDesignationByID(0,1);
+            DataSet dsDesi = DesignationBLL.Instance.getParentTaskDesignation(Convert.ToUInt64(TaskId));
             ddlDesigSeq.Items.Clear();
             ddlDesigSeq.DataSource = dsDesi.Tables[0];
             ddlDesigSeq.DataTextField = "DesignationName";
             ddlDesigSeq.DataValueField = "ID";
             ddlDesigSeq.DataBind();
 
-            ddlDesigSeq.Texts.SelectBoxCaption = "Select";
+            //ddlDesigSeq.Texts.SelectBoxCaption = "Select";
 
             ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
             ddlSubTaskStatus.DataTextField = "Text";
@@ -2736,7 +2737,7 @@ namespace JG_Prospect.Sr_App.Controls
             drpSubTaskPriority.DataTextField = "Text";
             drpSubTaskPriority.DataValueField = "Value";
             drpSubTaskPriority.DataBind();
-            
+
             drpSubTaskPriority.Items.RemoveAt(0);
             drpSubTaskPriority.Items.Insert(0, new ListItem("--None--", ""));
             drpSubTaskPriority.SelectedIndex = 1;
@@ -3216,6 +3217,19 @@ namespace JG_Prospect.Sr_App.Controls
 
         }
 
+        /// <summary>
+        /// Prepare sequencing string in format of "4-ITJN:SS"
+        /// </summary>
+        /// <param name="strSequence"></param>
+        /// <param name="strDesigntionID"></param>
+        /// <param name="IsTechTask"></param>
+        /// <returns></returns>
+        public string getSequenceDisplayText(String strSequence, String strDesigntionID, bool IsTechTask)
+        {
+            String sequenceText = String.Format("{0}-{1}:{2}", strSequence, CommonFunction.GetInstallIDPrefixFromDesignationID(strDesigntionID), IsTechTask ? "TT" : "SS");
+
+            return sequenceText;
+        }
 
         #endregion
     }

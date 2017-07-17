@@ -2956,6 +2956,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Literal ltlTaskStatus;
         
         /// <summary>
+        /// ltlAssignTo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlAssignTo;
+        
+        /// <summary>
         /// hypExam control.
         /// </summary>
         /// <remarks>
@@ -2965,13 +2974,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor hypExam;
         
         /// <summary>
-        /// ltlAssignTo control.
+        /// ltlAssignToInstallID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlAssignTo;
+        protected global::System.Web.UI.WebControls.Literal ltlAssignToInstallID;
         
         /// <summary>
         /// ddlInterviewDTOptions control.
@@ -2992,6 +3001,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Literal ltlManagerName;
         
         /// <summary>
+        /// txtChangePassword1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtChangePassword1;
+        
+        /// <summary>
+        /// rfvCPW1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCPW1;
+        
+        /// <summary>
         /// btnAcceptTask control.
         /// </summary>
         /// <remarks>
@@ -3010,6 +3037,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Button btnRejectTask;
         
         /// <summary>
+        /// upnlConfirmDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlConfirmDetails;
+        
+        /// <summary>
         /// txtApplicantAddress control.
         /// </summary>
         /// <remarks>
@@ -3019,13 +3055,31 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.TextBox txtApplicantAddress;
         
         /// <summary>
-        /// txtDateOfBirth control.
+        /// rfvCAddess control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateOfBirth;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCAddess;
+        
+        /// <summary>
+        /// txtCDateOfBirth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCDateOfBirth;
+        
+        /// <summary>
+        /// rfvCDob control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCDob;
         
         /// <summary>
         /// ddlPenaltyOfPerjury control.
@@ -3037,13 +3091,31 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlPenaltyOfPerjury;
         
         /// <summary>
-        /// DropDownList1 control.
+        /// rfvcPenaltyofPerjury control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvcPenaltyofPerjury;
+        
+        /// <summary>
+        /// ddlcmaritalstatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlcmaritalstatus;
+        
+        /// <summary>
+        /// rfvcMaritalStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvcMaritalStatus;
         
         /// <summary>
         /// ddlChildren control.
@@ -3055,6 +3127,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlChildren;
         
         /// <summary>
+        /// fupContractAttachment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fupContractAttachment;
+        
+        /// <summary>
         /// ddlIdentity control.
         /// </summary>
         /// <remarks>
@@ -3064,22 +3145,31 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlIdentity;
         
         /// <summary>
-        /// fluIdentity control.
+        /// fupIdentity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload fluIdentity;
+        protected global::System.Web.UI.WebControls.FileUpload fupIdentity;
         
         /// <summary>
-        /// TextBox1 control.
+        /// rfvCIndentity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCIndentity;
+        
+        /// <summary>
+        /// rfvCIDAttachment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCIDAttachment;
         
         /// <summary>
         /// trConfirmInterview control.
@@ -3100,12 +3190,12 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Button btnConfirm;
         
         /// <summary>
-        /// Button3 control.
+        /// btnConfirmCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button3;
+        protected global::System.Web.UI.WebControls.Button btnConfirmCancel;
     }
 }

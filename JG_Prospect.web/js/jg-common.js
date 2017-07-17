@@ -20,24 +20,24 @@ function SetCKEditor(Id, onBlurCallBack) {
                 blur: function (event) {
                     event.editor.updateElement();
                 },
-                fileUploadResponse:function (evt) {
-                        // Prevent the default response handler.
-                        evt.stop();
+                fileUploadResponse: function (evt) {
+                    // Prevent the default response handler.
+                    evt.stop();
 
-                        // Ger XHR and response.
-                        var data = evt.data,
-                            xhr = data.fileLoader.xhr,
-                            response = xhr.responseText.split('|');
+                    // Ger XHR and response.
+                    var data = evt.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split('|');
 
-                        var jsonarray = JSON.parse(response[0]);
+                    var jsonarray = JSON.parse(response[0]);
 
-                        if (jsonarray && jsonarray.uploaded != "1") {
-                            // Error occurred during upload.                
-                            evt.cancel();
-                        } else {
-                            data.url = jsonarray.url;
-                        }
+                    if (jsonarray && jsonarray.uploaded != "1") {
+                        // Error occurred during upload.                
+                        evt.cancel();
+                    } else {
+                        data.url = jsonarray.url;
                     }
+                }
             }
         });
 
@@ -240,7 +240,7 @@ function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector, strHiddenF
     if ($(strDropzoneSelector).attr("data-accepted-files")) {
         strAcceptedFiles = $(strDropzoneSelector).attr("data-accepted-files");
     }
-    
+
     var strUrl = 'taskattachmentupload.aspx';
     switch ($(strDropzoneSelector).attr("data-upload-path-code")) {
         case '1':
@@ -458,7 +458,7 @@ function GetQueryStringParameterValue(param) {
 function updateQueryStringParameter(uri, key, value, Mainkey, MainValue) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
     var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-    
+
     if (uri.match(re)) {
         return uri.replace(re, '$1' + key + "=" + value + '$2');
     }
@@ -513,4 +513,3 @@ function ScrollTo(target) {
         }
     }
 }
-

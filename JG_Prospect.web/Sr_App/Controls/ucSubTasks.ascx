@@ -553,9 +553,8 @@
                                                                             <li>Priority/Sequence
                                                                             </li>
                                                                             <li>
-                                                                                <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.":Eval("Sequence").ToString()%></label>
-                                                                                <a id="hypEditTaskSequence" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this,'#<%=ddlDesigSeq.ClientID %>');" data-task-designationids='<%# Eval("TaskDesignationIds")%>' data-task-techtask='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>' data-taskid='<%# Eval("TaskId")%>'>Edit</a>
-
+                                                                                <a id="hypEditTaskSequence" class="badge-hyperlink" href="javascript:void(0);" onclick="javascript:ShowTaskSequence(this,'#<%=ddlDesigSeq.ClientID %>');" data-task-designationids='<%# Eval("TaskDesignationIds")%>' data-task-techtask='<%# String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")) %>' data-taskid='<%# Eval("TaskId")%>'>
+                                                                                    <label id='TaskSeque<%#Eval("TaskId")%>' class="badge badge-success badge-largetext"><%# String.IsNullOrEmpty(Eval("Sequence").ToString())== true ? "N.A.": getSequenceDisplayText(Eval("Sequence").ToString(),Eval("SequenceDesignationId").ToString(),String.IsNullOrEmpty(Eval("IsTechTask").ToString())==true? false: Convert.ToBoolean(Eval("IsTechTask")))%></label></a>
                                                                             </li>
                                                                             <li class="hide">Priority
                                                                             </li>
@@ -730,49 +729,57 @@
                         <tr>
                             <td>Designation
                 <br />
-                                <asp:DropDownCheckBoxes ID="ddlDesigSeq" runat="server" UseSelectAllNode="false"
-                                    AutoPostBack="false">
-                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                </asp:DropDownCheckBoxes>
+                                <asp:DropDownList ID="ddlDesigSeq" CssClass="textbox" runat="server" AutoPostBack="false"></asp:DropDownList>
                             </td>
                             <td>
                                 <label>
-                                    TechTask
-                <input type="checkbox" ng-model="IsTechTask" ng-change="SetIsTechTask()" />
+
+                                    <input type="checkbox" style="display: none;" ng-model="IsTechTask" ng-change="SetIsTechTask()" />
                                 </label>
                             </td>
 
                         </tr>
                     </table>
-                    <table class="table tableSeqTask">
-                        <tr class="trHeader">
-                            <th>Sequence#</th>
-                            <th>ID#</th>
-                            <th>Parent Task</th>
-                            <th>TaskTitle</th>
-                            <th>Designation</th>
-                            <th>Status</th>
-                        </tr>
 
-                        <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'">
-                            <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="bluetext" ng-attr-data-taskid="{{Task.TaskId}}"><span ng-if="Task.IsTechTask">TTS-</span> <span ng-if="!Task.IsTechTask">SS-</span>{{ Task.Sequence }}<b ng-if="!Task.Sequence">N.A.</b></a>
-                                <div class="handle-counter hide" ng-attr-id="divSeq{{Task.TaskId}}">
-                                    <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
-                                    </select>
+                    <div id="taskSequenceTabs">
+                        <ul>
+                            <li><a href="#StaffTask">Staff Tasks</a></li>
+                            <li><a href="#TechTask">Tech Tasks</a></li>
+                        </ul>
+                        <div id="StaffTask">
+                            <table id="tblStaffSeq" class="table tableSeqTask">
+                                <tr class="trHeader">
+                                    <th>Sequence#</th>
+                                    <th>ID#</th>
+                                    <th>Parent Task</th>
+                                    <th>TaskTitle</th>
+                                    <th>Designation</th>
+                                    <th>Status</th>
+                                </tr>
 
-                                    <input type="text" class="textbox" ng-attr-data-original-val='{{ Task.Sequence == null && 0 || Task.Sequence}}' ng-attr-id='txtSeq{{Task.TaskId}}' value="{{  Task.Sequence == null && 0 || Task.Sequence}}" />
+                                <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'" repeat-end="onEnd()">
+                                    <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{Task.TaskId}}"><span class="badge badge-success badge-xstext">
+                                        <label>{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,!Task.IsTechTask ? "SS" : "TT")}}</label></span></a><a style="text-decoration: none;" ng-attr-data-taskid="{{Task.TaskId}}" href="javascript:void(0);" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" onclick="swapSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" href="javascript:void(0);" onclick="swapSequence(this,false)">&#9660;</a>
+                                        <div class="handle-counter" ng-class="{hide: Task.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{Task.TaskId}}">
 
-                                    <div style="clear: both;">
-                                        <a id="save" href="javascript:void(0);" ng-attr-data-taskid="{{Task.TaskId}}" onclick="javascript:UpdateTaskSequence(this);">Save</a>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a></td>
-                            <td>{{ Task.ParentTaskTitle }}</td>
-                            <td>{{ Task.Title }}</td>
-                            <td>{{getDesignationString(Task.TaskDesignation)}}</td>
-                            <td>
-                                <any ng-switch="Task.Status">
+                                            <input type="text" class="textbox" ng-attr-data-original-val='{{ Task.Sequence == null && 0 || Task.Sequence}}' ng-attr-id='txtSeq{{Task.TaskId}}' value="{{  Task.Sequence == null && 0 || Task.Sequence}}" />
+
+                                            <div style="clear: both;">
+                                                <a id="save" href="javascript:void(0);" ng-attr-data-taskid="{{Task.TaskId}}" onclick="javascript:UpdateTaskSequence(this);">Save</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a></td>
+                                    <td>{{ Task.ParentTaskTitle }}</td>
+                                    <td>{{ Task.Title }}</td>
+                                    <td>{{getDesignationString(Task.TaskDesignation)}}
+                                        <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
+                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <any ng-switch="Task.Status">
                     <ANY ng-switch-when="1">Open</ANY>
                     <ANY ng-switch-when="2">Requested</ANY>
                     <ANY ng-switch-when="3">Assigned</ANY>
@@ -788,12 +795,74 @@
                     <ANY ng-switch-when="14">Billed</ANY>
                     
                 </any>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="text-center">
-                        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="text-center">
+                                <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
+                            </div>
+
+                        </div>
+                        <div id="TechTask">
+                            <table id="tblTechSeq" class="table tableSeqTask">
+                                <tr class="trHeader">
+                                    <th>Sequence#</th>
+                                    <th>ID#</th>
+                                    <th>Parent Task</th>
+                                    <th>TaskTitle</th>
+                                    <th>Designation</th>
+                                    <th>Status</th>
+                                </tr>
+
+                                <tr data-ng-repeat="Task in TechTasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == HighLightTaskId}" ng-class-even="'AlternateRow'" repeat-end="onEnd()">
+                                    <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{Task.TaskId}}"><span class="badge badge-success badge-xstext">
+                                        <label>{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,!Task.IsTechTask ? "SS" : "TT")}}</label></span></a><a style="text-decoration: none;" ng-attr-data-taskid="{{Task.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" onclick="swapSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-taskseq="{{Task.Sequence}}" class="downlink" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" href="javascript:void(0);" onclick="swapSequence(this,false)">&#9660;</a>
+                                        <div class="handle-counter" ng-class="{hide: Task.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{Task.TaskId}}">
+                                            <input type="text" class="textbox" ng-attr-data-original-val='{{ Task.Sequence == null && 0 || Task.Sequence}}' ng-attr-id='txtSeq{{Task.TaskId}}' value="{{  Task.Sequence == null && 0 || Task.Sequence}}" />
+
+                                            <div style="clear: both;">
+                                                <a id="save" href="javascript:void(0);" ng-attr-data-taskid="{{Task.TaskId}}" onclick="javascript:UpdateTaskSequence(this);">Save</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a></td>
+                                    <td>{{ Task.ParentTaskTitle }}</td>
+                                    <td>{{ Task.Title }}</td>
+                                    <td>{{getDesignationString(Task.TaskDesignation)}}
+                                        <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
+                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <any ng-switch="Task.Status">
+                    <ANY ng-switch-when="1">Open</ANY>
+                    <ANY ng-switch-when="2">Requested</ANY>
+                    <ANY ng-switch-when="3">Assigned</ANY>
+                    <ANY ng-switch-when="4">InProgress</ANY>
+                    <ANY ng-switch-when="5">Pending</ANY>
+                    <ANY ng-switch-when="6">ReOpened</ANY>
+                    <ANY ng-switch-when="7">Closed</ANY>
+                    <ANY ng-switch-when="8">SpecsInProgress</ANY>
+                    <ANY ng-switch-when="9">Deleted</ANY>
+                    <ANY ng-switch-when="10">Finished</ANY>
+                    <ANY ng-switch-when="11">Test</ANY>
+                    <ANY ng-switch-when="12">Live</ANY>
+                    <ANY ng-switch-when="14">Billed</ANY>
+                    
+                </any>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="text-center">
+                                <jgpager page="{{Techpage}}" pages-count="{{TechpagesCount}}" total-count="{{TechTotalRecords}}" search-func="getTechTasks(page)"></jgpager>
+                            </div>
+
+                        </div>
+
                     </div>
+
+
                 </div>
 
             </ContentTemplate>
@@ -822,12 +891,6 @@
                 </td>
 
                 <td>Priority <span style="color: red;">*</span>:
-                                   
-                                   
-
-                                   
-
-
 
                     <asp:DropDownList ID="drpSubTaskPriority" runat="server" />
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="None" ValidationGroup="SubmitSubTask"
@@ -1471,6 +1534,32 @@
 
     }
 
+    function placeHighlightedRowonTop(isTechTask) {
+
+        $("#taskSequenceTabs").find("tr.yellowthickborder").each(function () {
+            var editLink = $(this).find("a.autoclickSeqEdit");
+
+            if (editLink) {
+                setTimeout(function () { editLink.click(); }, 1000);
+            }
+        });
+
+        //$("#tblTechSeq tbody  > tr").each(function () {
+        //    console.log($(this));
+        //    if ($(this).hasClass("yellowthickborder")) {
+        //        console.log('class has yellowthick border');
+        //        $(this).click(function () { alert('i am clicked');});
+        //    }
+        //});
+
+        //var row = $("#tblTechSeq").find("tr.yellowthickborder");
+        //$(row).remove();
+        ////$("#tblTechSeq").find("tr.yellowthickborder").remove();
+        //console.log(row);
+        //        row.appendTo($('#tblTechSeq'));
+
+    }
+
     function updatePriority(id, value) {
         ShowAjaxLoader();
         var postData = {
@@ -1867,7 +1956,6 @@
             }
 
             function SetApprovalUI() {
-
                 $('.approvalBoxes').each(function () {
                     var approvaldialog = $($(this).next('.approvepopup'));
                     approvaldialog.dialog({
@@ -1892,6 +1980,8 @@
                 setSelectedUsersLink();
 
                 ApplySubtaskLinkContextMenu();
+
+                applyTaskSequenceTabs();
 
                 //ApplyImageGallery();
 
@@ -1930,6 +2020,43 @@
                 pageLoad(null, null);
             }
 
+            function applyTaskSequenceTabs() {
+                $('#taskSequenceTabs').tabs({
+                    beforeActivate: function (event, ui) {
+                        if (ui.newPanel.attr('id') == "TechTask") {
+                            sequenceScope.IsTechTask = true;
+                            sequenceScope.getTechTasks();
+                        }
+                        else {
+                            sequenceScope.IsTechTask = false;
+                            sequenceScope.getTasks();
+                        }
+
+                    }
+                });
+            }
+
+            function setActiveTab(isTechTask) {
+
+                var activeTab = 0;
+                var clickEditLinkDiv = "#tblStaffSeq tbody > tr.yellowthickborder";
+
+                if (isTechTask) {
+                    activeTab = 1;
+                    clickEditLinkDiv = "#tblTechSeq  tbody > tr.yellowthickborder";
+                }
+
+                $("#taskSequenceTabs").tabs("option", "active", activeTab);
+
+                var divToFindLink = $(clickEditLinkDiv);
+
+                var linkToClick = divToFindLink.find(".autoclickSeqEdit");
+
+                if (linkToClick) {
+                    showEditTaskSequence(linkToClick);
+                }
+
+            }
 
             function txtSubTaskDescription_Blur(editor) {
                 if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {
@@ -2052,20 +2179,20 @@
                                 if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
                                     // saves attachment.
                                     $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
-                            //this.removeFile(file);
-                        }
+                                    //this.removeFile(file);
+                                }
                             });
                         }
                     });
-        }
+                }
 
                 //Apply dropzone for comment section.
-        if (objSubtaskNoteDropzone) {
-            objSubtaskNoteDropzone.destroy();
-            objSubTaskNoteDropzone = null;
-        }
+                if (objSubtaskNoteDropzone) {
+                    objSubtaskNoteDropzone.destroy();
+                    objSubTaskNoteDropzone = null;
+                }
 
-        objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
+                objSubTaskNoteDropzone = GetWorkFileDropzone("#<%=divSubTaskNoteDropzone.ClientID%>", '#<%=divSubTaskNoteDropzonePreview.ClientID%>', '#<%= hdnSubTaskNoteAttachments.ClientID %>', '#<%=btnSaveCommentAttachment.ClientID%>');
             }
 
             function ucSubTasks_OnApprovalCheckBoxChanged(sender) {
@@ -2212,8 +2339,6 @@
             if (itemIndex) {
                 //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
                 var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
-
-                console.log($(selectoptionid)[itemIndex].value);
                 var chspan = $(this).children('span');
                 if (chspan) {
                     chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
@@ -2224,6 +2349,10 @@
             }
         });
     }
+
+
+
+
 
 
     //--------------- End DP ---------------

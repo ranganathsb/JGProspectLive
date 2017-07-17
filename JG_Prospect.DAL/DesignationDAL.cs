@@ -82,6 +82,26 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet getParentTaskDesignation(UInt64 parentTaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetParentTaskDesignations");
+                    database.AddInParameter(command, "@ParentTaskID", DbType.Int64, parentTaskId);                    
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetActiveDesignationByFilter(int? DesignationID, int? DepartmentID)
         {
             try

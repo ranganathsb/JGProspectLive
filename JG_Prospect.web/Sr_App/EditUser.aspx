@@ -266,6 +266,7 @@
         }
 
         function OverlayPopupUploadBulk() {
+            alert('Successfully imported users and auto-email/sms sent for request for applicant to fill out Hr form http://www.jmgroveconstruction.com/employment.php');
             document.getElementById('lightUploadBulk').style.display = 'block';
             document.getElementById('fadeUploadBulk').style.display = 'block';
             $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -732,7 +733,7 @@
                             AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
                             OnPageIndexChanging="grdUsers_PageIndexChanging">
-                            <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="TopAndBottom" />
+                            <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
                             <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                             <Columns>
 
@@ -773,11 +774,8 @@
                                         <br />
                                         <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
                                         <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
-                                        <br />
-                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
-                                        <br />
-                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#Eval("RejectDetail").ToString()%>'></asp:Literal>
-                                        
+
+
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -841,8 +839,13 @@
                                         <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
                                         <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
-
-                                        <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
+                                        <br />
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
+                                        <br />
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#Eval("RejectDetail").ToString()%>'></asp:Literal>
+                                        <br />
+                                        <span><%#Eval("RejectedByUserName")%></span>
+                                        <a target="_blank" href='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("RejectedUserId")%>'><%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))?"":"- "+ Eval("RejectedByUserInstallId")%></a>
                                         <br />
                                         <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                         <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />

@@ -16,7 +16,7 @@ function SetLatestSequenceForAddNewSubTask() {
 }
 
 function ShowTaskSequence(editlink, designationDropdownId) {
-        
+
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
@@ -40,27 +40,37 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     //search initially all tasks with sequencing.
     sequenceScope.HighLightTaskId = TaskID;
-    sequenceScope.getTasks();
 
+    if (TechTask === 'True') {
+
+        sequenceScope.getTechTasks();
+    }
+    else {
+
+        sequenceScope.getTasks();
+    }
 
     var dlg = $('#taskSequence').dialog({
         width: 800,
-        height: 300,
+        height: 500,
         show: 'slide',
         hide: 'slide',
         autoOpen: true,
         modal: false
     });
+
+
 }
 
 function showEditTaskSequence(element) {
 
-    // var edithyperlink = $($('a [data-data-taskid="'+ tasksid +'"]'));
 
+    // var edithyperlink = $($('a [data-data-taskid="'+ tasksid +'"]'));
     var TaskID = $(element).attr('data-taskid');
     //var TaskID = taskid;
 
-    var sequenceDiv = $('#divSeq' + TaskID);
+
+    var sequenceDiv = $('#divSeqDesg' + TaskID);
 
     if (sequenceDiv) {
 
@@ -96,15 +106,16 @@ function getLastAvailableSequence(TaskID, DesignationID) {
         DesignationId: DesignationID,
         IsTechTask: sequenceScope.IsTechTask
     };
-   
+
     CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, TaskID) }, function (data) { OnGetLatestSeqError(data, TaskID) });
 
     function OnGetLatestSeqSuccess(data, TaskID) {
-        
+
         HideAjaxLoader();
+
         if (data.d) {
             var sequence = JSON.parse(data.d);
-            
+
             var valExisting = parseInt($('#txtSeq' + TaskID).val());
 
 
@@ -125,13 +136,10 @@ function getLastAvailableSequence(TaskID, DesignationID) {
 var isWarnedForSequenceChange = false;
 
 function DisplySequenceBox(TaskID, maxValueforSeq) {
-    console.log($('#divSeq' + TaskID));
+
     $('#divSeq' + TaskID).removeClass('hide');
-    //var divSequence = $(sequencebox).handleCounter({
-    //    minimum: 1,
-    //    maximize: parseInt(maxValueforSeq),
-    //    onMaximize: function () { console.log(this);}
-    //});
+    $('#divSeqDesg' + TaskID).removeClass('hide');
+
     var instance = $('#txtSeq' + TaskID);
 
     if (instance.spinner("instance")) {
@@ -143,13 +151,14 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
             max: parseInt(maxValueforSeq)
         }
      );
+
 }
 
 function UpdateTaskSequence(savebutton) {
     var button = $(savebutton);
     var TaskID = button.attr('data-taskid');
     var sequence = parseInt($('#txtSeq' + TaskID).val());
-    var DesignationID = $('#divSeq' + TaskID).children('select').val();
+    var DesignationID = $('#divSeqDesg' + TaskID).children('select').val();
 
     if (!isNaN(sequence) && sequence > 0) {
         // if original sequence is changed than it will warn user.
@@ -158,7 +167,7 @@ function UpdateTaskSequence(savebutton) {
         // if user has changes original sequence than he/she will be prompted to confirm save.
         if (!isNaN(originalSequence) && sequence != originalSequence) {
 
-            var userDecision = confirm('Are you sure you want to change sequence of task which is assigned to some other task already?');
+            var userDecision = confirm('Are you sure you want to change sequence of task, which might be assigned to some other task already?');
             if (!userDecision) {// user selected not to change sequence assigned to some other task.
                 return false;
             }
@@ -193,7 +202,7 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
         $('#TaskSeque' + TaskID).html(Sequence);
         $('#divSeq' + TaskID).addClass('hide');
 
-        sequenceScope.getTasks(0, '', false, TaskID);
+        sequenceScope.refreshTasks();
 
         return false;
     }
@@ -207,11 +216,64 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
 }
 
 function BindSeqDesignationChange(ControlID) {
-    $(ControlID + ' input').bind('change', function () {
+    //$(ControlID + ' input').bind('change', function () {
         //if user selected designation than add it for search.        
         //search initially all tasks with sequencing.
-        // remove it from search.
-        sequenceScope.SetDesignForSearch($(this).val(), !this.checked);
+    // remove it from search.
+    $(ControlID).bind('change', function () {
+        sequenceScope.SetDesignForSearch($(this).val(), false);
 
     });
+}
+
+function swapSequence(hyperlink, isup) {
+
+    var FirstTaskID = $(hyperlink).attr("data-taskid");
+    var FirstSeq = $(hyperlink).attr("data-taskseq");
+    var FirstTaskDesg = $(hyperlink).attr("data-taskdesg");
+    var SecondTaskID, SecondSeq, SecondTaskDesg, otherlink;
+    var row = $(hyperlink).closest('tr');
+
+    if (isup) {                      
+        otherlink = row.prev().find('[data-taskdesg]').first();
+    }
+    else {
+        otherlink = row.next().find('[data-taskdesg]').first();        
+    }
+
+    SecondTaskID = otherlink.attr("data-taskid");
+    SecondSeq = otherlink.attr("data-taskseq");
+    SecondTaskDesg = otherlink.attr("data-taskdesg");
+
+    if ((FirstTaskDesg === SecondTaskDesg) && FirstTaskID && SecondTaskID && FirstTaskDesg && SecondTaskDesg) {
+
+        var postData = {
+            FirstSequenceId: FirstSeq,
+            SecondSequenceId: SecondSeq,
+            FirstTaskId: FirstTaskID,
+            SecondTaskId: SecondTaskID
+        };
+
+        CallJGWebService('TaskSwapSequence', postData, OnSwapTaskSeqSuccess, OnSwapTaskSeqError);
+
+        function OnSwapTaskSeqSuccess(data) {
+
+            if (data.d == true) {
+                alert('Sequences swaped successfully, Reloading Tasks....');
+                sequenceScope.refreshTasks();
+            }
+            else {
+                alert('Error in swaping sequences, Please try again.');
+            }
+        }
+
+        function OnSwapTaskSeqError(err) {
+            alert('Error in swaping sequences, Please try again.');
+        }
+
+    }
+    else {
+        alert("In order to swap sequence both Task should have same designation, Please filter designation from above designation dropdown and then try to swap sequence.");
+    }
+
 }

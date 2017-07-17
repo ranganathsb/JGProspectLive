@@ -543,7 +543,7 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public bool UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
         {
-            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID,  DesignationID, IsTechTask);
+            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID, DesignationID, IsTechTask);
             return true;
         }
 
@@ -708,7 +708,7 @@ namespace JG_Prospect.WebServices
         public string GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             string strMessage = string.Empty;
-            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence(DesignationId,IsTechTask);
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence(DesignationId, IsTechTask);
             if (dtResult != null)
             {
                 strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
@@ -742,10 +742,10 @@ namespace JG_Prospect.WebServices
 
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask,Int64 HighlightedTaskID)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID)
         {
             string strMessage = string.Empty;
-            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize),DesignationIDs,IsTechTask,HighlightedTaskID);
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 //Context.Response.Clear();
@@ -814,6 +814,12 @@ namespace JG_Prospect.WebServices
         public bool SetTaskStatus(int intTaskId, string TaskStatus)
         {
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            return TaskGeneratorBLL.Instance.TaskSwapSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
 
         #endregion
@@ -1073,7 +1079,7 @@ namespace JG_Prospect.WebServices
             }
         }
 
-     
+
 
         #endregion
 
@@ -1151,7 +1157,7 @@ namespace JG_Prospect.WebServices
                 {
                     Int32 DesignationId = Convert.ToInt32(RowItem["ID"]);
 
-                    CommonFunction.BulkEmail((HTMLTemplates)Enum.Parse(typeof(HTMLTemplates),TemplateId.ToString()),DesignationId);
+                    CommonFunction.BulkEmail((HTMLTemplates)Enum.Parse(typeof(HTMLTemplates), TemplateId.ToString()), DesignationId);
                 }
             }
 

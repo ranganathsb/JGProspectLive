@@ -28,17 +28,7 @@
         .tblExamStartup {
             width: 100%;
             padding: 50px;
-        }
-
-        .tdright {
-            vertical-align: top;
-            text-align: right;
-        }
-
-        .tdleft {
-            vertical-align: top;
-            text-align: left;
-        }
+        }    
 
         .ui-button {
             background: url('../img/main-header-bg.png') repeat-x;

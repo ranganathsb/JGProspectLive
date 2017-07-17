@@ -59,5 +59,10 @@ namespace JG_Prospect.BLL
         {
             return DesignationDAL.Instance.GetDesignationByTaskID(TaskID);
         }
+
+        public DataSet getParentTaskDesignation(UInt64 ParentTaskId)
+        {
+            return DesignationDAL.Instance.getParentTaskDesignation(ParentTaskId);
+        }
     }
 }

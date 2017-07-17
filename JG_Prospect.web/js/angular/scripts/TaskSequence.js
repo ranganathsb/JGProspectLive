@@ -1,5 +1,5 @@
-﻿app.controller('TaskSequenceSearchController', function ($scope, $compile, $http) {
-    applyFunctions($scope, $compile, $http);
+﻿app.controller('TaskSequenceSearchController', function ($scope, $compile, $http, $timeout) {
+    applyFunctions($scope, $compile, $http, $timeout);
 
 });
 
@@ -11,9 +11,10 @@ function getTasksWithSearchandPagingM($http, methodName, filters) {
     return $http.post(url + methodName, filters);
 };
 
-function applyFunctions($scope, $compile, $http) {
+function applyFunctions($scope, $compile, $http, $timeout) {
 
     $scope.Tasks = [];
+
     $scope.UserSelectedDesigIds = [];
     $scope.DesignationSelectModel = [];
     $scope.IsTechTask = true;
@@ -25,43 +26,95 @@ function applyFunctions($scope, $compile, $http) {
     $scope.TotalRecords = 0;
     $scope.HighLightTaskId = 0;
 
+
+    $scope.TechTasks = [];
+    $scope.Techpage = 0;
+    $scope.TechpagesCount = 0;
+    $scope.TechCurrentpage = 0;
+    $scope.TechTotalRecords = 0;
+
+
+    $scope.onEnd = function () {
+        $timeout(function () {
+            setActiveTab($scope.IsTechTask);
+        }, 1);
+    };
+
     $scope.getTasks = function (page) {
 
         $scope.loading = true;
         $scope.page = page || 0;
 
         //get all Customers
-        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: $scope.IsTechTask, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            $scope.IsTechTask = false;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
-            //console.log(results.Tasks);
+
             $scope.page = results.RecordCount[0].PageIndex;
             $scope.TotalRecords = results.RecordCount[0].TotalRecords;
             $scope.pagesCount = results.RecordCount[0].TotalPages;
             $scope.Tasks = results.Tasks;
 
             $scope.TaskSelected = $scope.Tasks[0];
-            // $scope.loading = false;
+
+
+        });
+    };
+
+    $scope.getTechTasks = function (page) {
+
+        $scope.loading = true;
+        $scope.Techpage = page || 0;
+
+        //get all Customers
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            $scope.IsTechTask = true;
+            $scope.DesignationSelectModel = [];
+            var results = JSON.parse(data.data.d);
+            //console.log(results.Tasks);
+            $scope.Techpage = results.RecordCount[0].PageIndex;
+            $scope.TechTotalRecords = results.RecordCount[0].TotalRecords;
+            $scope.TechpagesCount = results.RecordCount[0].TotalPages;
+            $scope.TechTasks = results.Tasks;
+            $scope.TaskSelected = $scope.Tasks[0];
 
         });
     };
 
     $scope.SetIsTechTask = function () {
-        $scope.getTasks();
+        $scope.getTechTasks();
+
     }
 
     $scope.SetDesignForSearch = function (value, isRemove) {
+        $scope.UserSelectedDesigIds = [];
+        $scope.UserSelectedDesigIds.push(value);
+        //if (isRemove) {
+        //    $scope.UserSelectedDesigIds.pop(value);
+        //}
+        //else { // if element is to be added
+        //    if ($scope.UserSelectedDesigIds.indexOf(value) === -1) {//check if value is not already added then only add it.
+        //        $scope.UserSelectedDesigIds.push(value);
+        //    }
+        //}
+        if ($scope.IsTechTask) {
+            $scope.getTechTasks();
+        }
+        else {
+            $scope.getTasks();
+        }
 
-        if (isRemove) {
-            $scope.UserSelectedDesigIds.pop(value);
-        }
-        else { // if element is to be added
-            if ($scope.UserSelectedDesigIds.indexOf(value) === -1) {//check if value is not already added then only add it.
-                $scope.UserSelectedDesigIds.push(value);
-            }
-        }
-        $scope.getTasks();
     };
+
+    $scope.refreshTasks = function () {
+        if ($scope.IsTechTask) {
+            $scope.getTechTasks();
+        }
+        else {
+            $scope.getTasks();
+        }
+    }
 
     $scope.getDesignationString = function (Designations) {
 
@@ -71,6 +124,8 @@ function applyFunctions($scope, $compile, $http) {
             return elem.Name;
         }).join(",");
     };
+
+
 
     $scope.getDesignationsArray = function (Designations) {
 
@@ -83,6 +138,87 @@ function applyFunctions($scope, $compile, $http) {
     };
 
     $scope.designationChanged = function () {
+    };
+
+    $scope.getSequenceDisplayText = function (strSequence, strDesigntionID, seqSuffix) {
+
+        var sequenceText = "#SEQ#-#DESGPREFIX#:#TORS#";
+
+        sequenceText = sequenceText.replace("#SEQ#", strSequence).replace("#DESGPREFIX#", $scope.GetInstallIDPrefixFromDesignationIDinJS(strDesigntionID)).replace("#TORS#", seqSuffix);
+
+        return sequenceText;
+    };
+
+    $scope.GetInstallIDPrefixFromDesignationIDinJS = function (DesignID) {
+
+        var prefix = "";
+        switch (DesignID) {
+            case 1:
+                prefix = "ADM";
+                break;
+            case 2:
+                prefix = "JSL";
+                break;
+            case 3:
+                prefix = "JPM";
+                break;
+            case 4:
+                prefix = "OFM";
+                break;
+            case 5:
+                prefix = "REC";
+                break;
+            case 6:
+                prefix = "SLM";
+                break;
+            case 7:
+                prefix = "SSL";
+                break;
+            case 8:
+                prefix = "ITNA";
+                break;
+            case 9:
+                prefix = "ITJN";
+                break;
+            case 10:
+                prefix = "ITSN";
+                break;
+            case 11:
+                prefix = "ITAD";
+                break;
+            case 12:
+                prefix = "ITPH";
+                break;
+            case 13:
+                prefix = "ITSB";
+                break;
+            case 14:
+                prefix = "INH";
+                break;
+            case 15:
+                prefix = "INJ";
+                break;
+            case 16:
+                prefix = "INM";
+                break;
+            case 17:
+                prefix = "INLM";
+                break;
+            case 18:
+                prefix = "INF";
+                break;
+            case 19:
+                prefix = "COM";
+                break;
+            case 20:
+                prefix = "SBC";
+                break;
+            default:
+                prefix = "N.A.";
+                break;
+        }
+
+        return prefix;
     };
 
     initializeOnAjaxUpdate($scope, $compile, $http);

@@ -21,7 +21,7 @@ namespace JG_Prospect.BLL
         public static InstallUserBLL Instance
         {
             get { return m_InstallUserBLL; }
-            private set { ; }
+            private set {; }
         }
         public string AddHoursToAvailability(DateTime dt)
         {
@@ -184,6 +184,12 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetInstallerAvailability(referenceId, installerId);
         }
+
+        public bool UpdateConfirmInstallUser(user objuser)
+        {
+            return InstallUserDAL.Instance.UpdateConfirmInstallUser(objuser);
+        }
+
         public bool UpdateInstallUser(user objuser, int id)
         {
             return InstallUserDAL.Instance.UpdateInstallUser(objuser, id);
@@ -480,9 +486,9 @@ namespace JG_Prospect.BLL
 
         public DataSet ChangeUserStatusToReject(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, Int64 UserId, string StatusReason = "")
         {
-            return InstallUserDAL.Instance.ChangeUserStatusToReject( StatusId, RejectionDate, RejectionTime, RejectedUserId, UserId,  StatusReason);
+            return InstallUserDAL.Instance.ChangeUserStatusToReject(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserId, StatusReason);
         }
-        
+
 
         public DataSet GetAllInterivewUserByPastDate()
         {
@@ -533,7 +539,7 @@ namespace JG_Prospect.BLL
 
         public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
-            return InstallUserDAL.Instance.GetBookMarkingUserDetails( bookmarkedUser);
+            return InstallUserDAL.Instance.GetBookMarkingUserDetails(bookmarkedUser);
         }
 
         //--------- end DP ----------
@@ -652,7 +658,7 @@ namespace JG_Prospect.BLL
 
         public bool ChangeUserStatusToRejectByEmail(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserEmail, string StatusReason = "")
         {
-            return InstallUserDAL.Instance.ChangeUserStatusToRejectByEmail(StatusId,RejectionDate,RejectionTime,RejectedUserId,UserEmail,StatusReason);
+            return InstallUserDAL.Instance.ChangeUserStatusToRejectByEmail(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserEmail, StatusReason);
         }
 
         public bool ChangeUserStatusToRejectByMobile(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, String UserMobile, string StatusReason = "")
@@ -661,9 +667,10 @@ namespace JG_Prospect.BLL
 
         }
 
-        public DataSet ChangeUserSatatus(Int32 UserId, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "") {
+        public DataSet ChangeUserSatatus(Int32 UserId, int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, bool IsInstallUser, string StatusReason = "", string UserIds = "")
+        {
 
-            return InstallUserDAL.Instance.ChangeUserSatatus(UserId,StatusId,RejectionDate, RejectionTime,RejectedUserId,IsInstallUser,StatusReason,UserIds);
+            return InstallUserDAL.Instance.ChangeUserSatatus(UserId, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
     }
 }

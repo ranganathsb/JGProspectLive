@@ -193,6 +193,7 @@ namespace JG_Prospect.App_Code
                     MailMessage Msg = new MailMessage();
                     Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
                     Msg.To.Add(strToAddress);
+                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
                     Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
                     Msg.IsBodyHtml = true;
@@ -241,8 +242,10 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-                    // throw will call application error event, which will log error details.
-                    throw ex;
+                    if (JGApplicationInfo.IsSendEmailExceptionOn())
+                    {
+                        CommonFunction.SendExceptionEmail(ex);
+                    }
                 }
             }
             return retValue;
@@ -995,7 +998,8 @@ namespace JG_Prospect.App_Code
                     string strFooter = objHTMLTemplate.Footer;
                     string strsubject = objHTMLTemplate.Subject;
 
-                    strBody = strBody.Replace("#name#", fullname);
+                    strBody = strBody.Replace("#name#", fullname).Replace("#Email#", installUser["Email"].ToString()).Replace("#Phone number#", installUser["Phone"].ToString());
+
                     strFooter = strFooter.Replace("#Designation#", Designation);
 
                     strBody = strHeader + strBody + strFooter;
@@ -1011,6 +1015,8 @@ namespace JG_Prospect.App_Code
                     try
                     {
                         SendEmail(Designation, emailId, strsubject, strBody, lstAttachments);
+
+                        CommonFunction.UpdateEmailStatistics(emailId);
                     }
                     catch (Exception ex)
                     {
@@ -1021,11 +1027,242 @@ namespace JG_Prospect.App_Code
 
         }
 
+        private static void UpdateEmailStatistics(string emailId)
+        {
+            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\EmailStatistics");
+
+            if (!Directory.Exists(logDirectoryPath))
+            {
+                Directory.CreateDirectory(logDirectoryPath);
+            }
+
+            string path = String.Concat(logDirectoryPath, "\\statistics.txt");
+
+            if (!File.Exists(path))
+            {
+
+                using (TextWriter tw = File.CreateText(path))
+                {
+                    tw.WriteLine(emailId + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+
+
+            }
+            else if (File.Exists(path))
+            {
+                using (var tw = new StreamWriter(path, true))
+                {
+                    tw.WriteLine(emailId + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+            }
+        }
+
         internal static DataSet GetDesignations()
         {
             DataSet dsDesignation = new DataSet();
             dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
             return dsDesignation;
+        }
+
+        internal static void SendExceptionEmail(Exception Error)
+        {
+            // Code that runs when an unhandled error occurs
+            if (!string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["ErrorNotificationEmailId"]))
+            {
+                Exception objException = Error;
+
+                if (objException != null)
+                {
+                    string strSubject, strBody;
+
+                    // inner exception is the actual exception. 
+                    // so, if inner exception is available, send it in email.
+                    if (objException.InnerException != null)
+                    {
+                        strSubject = "Exception - " + objException.InnerException.Message;
+
+                        strBody = GetExceptionHtml(objException.InnerException);
+                    }
+                    // send base exception details, when inner exception is not available.
+                    else
+                    {
+                        strSubject = "Exception - " + objException.Message;
+
+                        strBody = GetExceptionHtml(objException);
+                    }
+
+                    if (!string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["ApplicationEnvironment"]))
+                    {
+                        switch ((JG_Prospect.Common.JGConstant.ApplicationEnvironment)Convert.ToByte(System.Configuration.ConfigurationManager.AppSettings["ApplicationEnvironment"]))
+                        {
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Local:
+                                strSubject = "Local " + strSubject;
+                                break;
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Staging:
+                                strSubject = "Staging " + strSubject;
+                                break;
+                            case JG_Prospect.Common.JGConstant.ApplicationEnvironment.Live:
+                                strSubject = "Live " + strSubject;
+                                break;
+                        }
+                    }
+
+
+                    if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null && !string.IsNullOrEmpty(HttpContext.Current.Request.Url.ToString()))
+                    {
+                        strBody = "<p style='padding:5px;margin:5px;'>" + HttpContext.Current.Request.Url.ToString() + "</p>" + strBody;
+                    }
+
+                    // append all contents to a main table 
+                    // to center align the contents and 
+                    // to keep all the contents in one parent table.
+                    strBody = "<table width='100%'><tr><td align='center' valign='top'>" + strBody + "</td></tr></table>";
+
+                    JG_Prospect.App_Code.CommonFunction.SendEmailInternal
+                                                            (
+                                                                System.Configuration.ConfigurationManager.AppSettings["ErrorNotificationEmailId"],
+                                                                strSubject,
+                                                                strBody
+                                                            );
+                }
+            }
+        }
+
+        internal static string GetInstallIDPrefixFromDesignationID(string DesignID)
+        {
+            string prefix = "";
+            switch (DesignID)
+            {
+                case "1":
+                    prefix = "ADM";
+                    break;
+                case "2":
+                    prefix = "JSL";
+                    break;
+                case "3":
+                    prefix = "JPM";
+                    break;
+                case "4":
+                    prefix = "OFM";
+                    break;
+                case "5":
+                    prefix = "REC";
+                    break;
+                case "6":
+                    prefix = "SLM";
+                    break;
+                case "7":
+                    prefix = "SSL";
+                    break;
+                case "8":
+                    prefix = "ITNA";
+                    break;
+                case "9":
+                    prefix = "ITJN";
+                    break;
+                case "10":
+                    prefix = "ITSN";
+                    break;
+                case "11":
+                    prefix = "ITAD";
+                    break;
+                case "12":
+                    prefix = "ITPH";
+                    break;
+                case "13":
+                    prefix = "ITSB";
+                    break;
+                case "14":
+                    prefix = "INH";
+                    break;
+                case "15":
+                    prefix = "INJ";
+                    break;
+                case "16":
+                    prefix = "INM";
+                    break;
+                case "17":
+                    prefix = "INLM";
+                    break;
+                case "18":
+                    prefix = "INF";
+                    break;
+                case "19":
+                    prefix = "COM";
+                    break;
+                case "20":
+                    prefix = "SBC";
+                    break;
+                default:
+                    prefix = "TSK";
+                    break;
+            }
+
+            return prefix;
+        }
+
+        internal static string GetExceptionHtml(Exception objException)
+        {
+            string strHtml = "";
+
+            strHtml += "<table width='700' cellpadding='5' border='0'>";
+            strHtml += "<tr>";
+            strHtml += "<td valign='top'>Type:</td>";
+            strHtml += "<td valign='top'>" + objException.GetType().FullName + "</td>";
+            strHtml += "</tr>";
+            strHtml += "<tr>";
+            strHtml += "<td valign='top'>Message:</td>";
+            strHtml += "<td valign='top'>" + objException.Message + "</td>";
+            strHtml += "</tr>";
+            strHtml += "<tr>";
+            strHtml += "<td valign='top'>StackTrace:</td>";
+            strHtml += "<td valign='top'>" + objException.StackTrace + "</td>";
+            strHtml += "</tr>";
+            strHtml += "</table>";
+
+            return strHtml;
+        }
+
+        internal static void SendHRFormFillupRequestEmail(string email, Int32 DesignationId, String FirstName)
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.HR_Request_FormFill_EmailTemplate, DesignationId.ToString());
+
+            // Send email to each user.
+            string emailId = String.Empty;
+            string strBody = String.Empty;
+
+            if (JGApplicationInfo.GetApplicationEnvironment() == "1")
+            {
+                emailId = "error@kerconsultancy.com";
+                strBody = "<h1>Email is intended for Email Address: " + email + "</h1><br/><br/>";
+            }
+            else
+            {
+                emailId = email;
+            }
+
+            string strHeader = objHTMLTemplate.Header;
+            strBody = String.Concat(strBody, objHTMLTemplate.Body);
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#name#", FirstName);
+
+            strBody = strHeader + strBody + strFooter;
+
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+            try
+            {
+                SendEmail(String.Empty, emailId, strsubject, strBody, lstAttachments);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
     }
 }

@@ -22,6 +22,7 @@ using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
+
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -2741,15 +2742,21 @@ namespace JG_Prospect
                         objIntsallUser.Designation = string.Empty;
                     }
 
-                    JGConstant.InstallUserStatus objInstallUserStatus;
-                    if (Enum.TryParse<JGConstant.InstallUserStatus>(dtExcel.Rows[i]["Status"].ToString().Trim(), true, out objInstallUserStatus))
-                    {
-                        objIntsallUser.status = Convert.ToByte(objInstallUserStatus).ToString();
-                    }
-                    else
-                    {
-                        objIntsallUser.status = string.Empty;
-                    }
+                    // As per new specification newly added user will have hidden status.
+                    objIntsallUser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Hidden).ToString();
+
+
+                    //Commented By: Yogesh Keraliya
+                    //06/07/2107
+                    //JGConstant.InstallUserStatus objInstallUserStatus;
+                    //if (Enum.TryParse<JGConstant.InstallUserStatus>(dtExcel.Rows[i]["Status"].ToString().Trim(), true, out objInstallUserStatus))
+                    //{
+                    //    objIntsallUser.status = Convert.ToByte(objInstallUserStatus).ToString();
+                    //}
+                    //else
+                    //{
+                    //    objIntsallUser.status = string.Empty;
+                    //}
 
                     //objuser.DateSourced = DateTime.Now.ToString();
                     //objuser.Source = Convert.ToString(Session["Username"]);
@@ -2761,8 +2768,7 @@ namespace JG_Prospect
                                                select (int)drSource["Id"]).FirstOrDefault();
 
                     objIntsallUser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();
-                    objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
-
+                    objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();                    
                     objIntsallUser.Email = dtExcel.Rows[i]["Email"].ToString().Trim();
                     objIntsallUser.phone = dtExcel.Rows[i]["Phone1"].ToString().Trim();
                     objIntsallUser.phonetype = dtExcel.Rows[i]["Phone1Type"].ToString().Trim();
@@ -2776,7 +2782,9 @@ namespace JG_Prospect
                     objIntsallUser.SuiteAptRoom = dtExcel.Rows[i]["Suit_Apt_Room"].ToString().Trim();
 
                     objIntsallUser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
-
+                    
+                    //Default password for jmgrove.
+                    objIntsallUser.Password = "jmgrove";
                     #endregion
 
                     #region Other Values
@@ -3058,6 +3066,15 @@ namespace JG_Prospect
                         lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
 
                         pnlAddNewUser.Visible = true;
+
+                        // Send all newly inserted user HR form fillup request.
+                        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(),AddedInstallUser => {
+
+                        //Send Request email to fill out HR form to Newly added client.
+                        CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(),  Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
+
+                        });
+
                         //Session["DuplicateUsers"] = ds.Tables[0];
                         //listDuplicateUsers.DataSource = ds.Tables[0];
                         //listDuplicateUsers.DataBind();

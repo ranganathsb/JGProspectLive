@@ -865,9 +865,7 @@ namespace JG_Prospect
 
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
-            SendSMS();
-
-
+           
             try
             {
                 JGSession.DesignationId = 0;
@@ -1100,20 +1098,7 @@ namespace JG_Prospect
             }
         }
 
-        private void SendSMS()
-        {
-            using (WebClient client = new WebClient())
-            {
-                byte[] response = client.UploadValues("http://textbelt.com/text", new NameValueCollection() {
-    { "phone", "+919277608655" },
-    { "message", "Hi Yogesh how are you?" },
-    { "key", "b6c82eaecce10df0c4fa006c8a3093438bd5850fZ6ZspSTasK3XtwO9OyoBUwS9r" },
-  });
-                string result = System.Text.Encoding.UTF8.GetString(response);
-            }
-        }
-
-        protected void lblForgotUserId_Click(object sender, EventArgs e)
+           protected void lblForgotUserId_Click(object sender, EventArgs e)
         {
             Response.Redirect("ForgotuserId.aspx");
         }

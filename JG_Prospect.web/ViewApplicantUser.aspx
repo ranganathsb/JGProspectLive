@@ -1239,6 +1239,20 @@
             padding-left: 55px !important;
         }
 
+        .tdright {
+            vertical-align: top;
+            text-align: right;
+            width: 50%;
+        }
+
+        .tdleft {
+            width: 50%;
+            vertical-align: top;
+            text-align: left;
+            margin: 5px;
+            padding: 7px;
+        }
+
         .formCtrl {
             padding: 5px;
             border-radius: 5px;
@@ -1379,6 +1393,20 @@
         .ui-button {
             background: url('../img/main-header-bg.png') repeat-x;
             color: #fff;
+        }
+
+        #confirmBox table {
+            border: 1px solid blue;
+            padding: 5px;
+        }
+
+        #confirmBox input, #confirmBox textarea {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
         }
     </style>
     <script type="text/javascript">
@@ -5211,44 +5239,80 @@
         </strong>
         <br />
         <strong>Assigned To: 
-                <a id="hypExam" runat="server" href="ViewApplicantUser.aspx?Id=">
-                    <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal></a>
+                <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal><a id="hypExam" runat="server" class="bluetext" href="ViewApplicantUser.aspx?Id=">
+                    <asp:Literal ID="ltlAssignToInstallID" runat="server"></asp:Literal></a>
         </strong>
         <br />
         <br />
         Your default Interview Date & Time Deadline has been scheduled for & with below, If you need an alternate due date and time, you may toggle the below date & time:
         <br />
         <br />
-        <span><strong>*Interview Date & Time: </strong>
+        <span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
             <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
         </span>
         <br />
         Recruiter:
         <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
         <br />
+        Change Password<span class="redtext">*</span>:               
+                        <asp:TextBox ID="txtChangePassword1" CssClass="textbox" runat="server" ValidationGroup="vgCPWD"></asp:TextBox>
+        <asp:RequiredFieldValidator ID="rfvCPW1" ControlToValidate="txtChangePassword1" Display="Dynamic" CssClass="redtext" ErrorMessage="Password required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+        <br />
+        <br />
+
         <div style="text-align: center;">
-            <asp:Button ID="btnAcceptTask" Text="Accept" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnAcceptTask_Click" />
+            <span class="redtext">*</span>
+            <asp:Button ID="btnAcceptTask" Text="Accept" ValidationGroup="vgCPWD" CssClass="ui-button" runat="server" OnClick="btnAcceptTask_Click" />
             &nbsp;&nbsp;
             <asp:Button ID="btnRejectTask" Text="Reject" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnRejectTask_Click" />
         </div>
         <br />
         To accept the task and confirm the interview due date, select "Accept" button above. You  have 24 hours to accept technical and Interview Date.
         <div id="confirmBox">
-            <table style="width: 100%; text-align: center; border: solid 1px gray;">
-                <tr>
-                    <td class="tdright">Address:<asp:TextBox ID="txtApplicantAddress" runat="server" TextMode="MultiLine"></asp:TextBox></td>
-                    <td class="tdleft">Date of Birth: 
-                                    <asp:TextBox ID="txtDateOfBirth" CssClass="textbox" runat="server"></asp:TextBox></td>
-                </tr>
-                <tr>
-                    <td class="tdright">Penalty of Perjury:
-                            <asp:DropDownList ID="ddlPenaltyOfPerjury" CssClass="textbox" runat="server"></asp:DropDownList></td>
-                    <td class="tdleft">Marital Status:
-                            <asp:DropDownList ID="DropDownList1" CssClass="textbox" runat="server"></asp:DropDownList></td>
-                </tr>
-                <tr>
-                    <td class="tdright">Children:
+            <asp:UpdatePanel ID="upnlConfirmDetails" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table style="width: 100%; text-align: center;">
+                        <tr>
+                            <td class="tdleft">Address<br />
+                                <asp:TextBox ID="txtApplicantAddress" runat="server" Style="width: 100%" CssClass="textbox" TextMode="MultiLine"></asp:TextBox><br />
+                                <asp:RequiredFieldValidator ID="rfvCAddess" runat="server" ControlToValidate="txtApplicantAddress"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter address"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Date of Birth: 
+                                    <asp:TextBox ID="txtCDateOfBirth" CssClass="textbox"  ValidationGroup="vgConfirm" runat="server"></asp:TextBox>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCDob" runat="server" ControlToValidate="txtCDateOfBirth"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter date of birth"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Penalty of Perjury:
+                        <asp:DropDownList ID="ddlPenaltyOfPerjury" runat="server" Width="150px" TabIndex="528" ValidationGroup="vgConfirm" OnSelectedIndexChanged="ddlcitizen_SelectedIndexChanged">
+                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                            <asp:ListItem Text="Alien authorized to work" Value="authorizedwork"></asp:ListItem>
+                            <asp:ListItem Text="Lawful permanent resident" Value="permanentresident"></asp:ListItem>
+                            <asp:ListItem Text="Non US Citizenship" Value="NonUSCitizenship"></asp:ListItem>
+                            <asp:ListItem Text="US Citizenship" Value="USCitizenship"></asp:ListItem>
+                        </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcPenaltyofPerjury" runat="server" ControlToValidate="ddlPenaltyOfPerjury"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Penalty Of Perjury"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Marital Status:
+                            <asp:DropDownList ID="ddlcmaritalstatus" CssClass="textbox" ValidationGroup="vgConfirm" runat="server">
+                                <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="Married" Value="Married"></asp:ListItem>
+                                <asp:ListItem Text="Single" Value="Single"></asp:ListItem>
+                            </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcMaritalStatus" runat="server" ControlToValidate="ddlcmaritalstatus"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Marital Status"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Children:
                             <asp:DropDownList ID="ddlChildren" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
                                 <asp:ListItem Text="1" Value="1"></asp:ListItem>
                                 <asp:ListItem Text="2" Value="2"></asp:ListItem>
                                 <asp:ListItem Text="3" Value="3"></asp:ListItem>
@@ -5260,36 +5324,46 @@
                                 <asp:ListItem Text="9" Value="9"></asp:ListItem>
                                 <asp:ListItem Text="10" Value="10"></asp:ListItem>
                             </asp:DropDownList></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="tdright">Contract acceptance attach</td>
-                    <td class="tdleft">*ID
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Contract acceptance attach:
+                                <br />
+                                <asp:FileUpload ID="fupContractAttachment" runat="server" /></td>
+                            <td class="tdleft">*ID
                             <asp:DropDownList ID="ddlIdentity" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
                                 <asp:ListItem Text="Passport"></asp:ListItem>
                                 <asp:ListItem Text="Driver's Liscense"></asp:ListItem>
                             </asp:DropDownList>
+                                <br />
+                                Attach:
+                            <asp:FileUpload ID="fupIdentity" ValidationGroup="vgConfirm" runat="server" />
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIndentity" runat="server" ControlToValidate="ddlIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Identity"></asp:RequiredFieldValidator>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIDAttachment" runat="server" ControlToValidate="fupIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please attach Identity proof"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
 
-                        Attach:
-                            <asp:FileUpload ID="fluIdentity" runat="server" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tdright">Change Password:
-                    </td>
-                    <td class="tdleft">
-                        <asp:TextBox ID="TextBox1" CssClass="textbox" runat="server"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr id="trConfirmInterview" runat="server" visible="false" style="text-align: center;">
-                    <td colspan="2">
-                        <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnConfirm_Click" Text="Confirm" />
+                        <tr id="trConfirmInterview" runat="server" visible="false" style="text-align: center;">
+                            <td colspan="2">
+                                <span class="bluetext">*</span>
+                                <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" ValidationGroup="vgConfirm" OnClick="btnConfirm_Click" Text="Confirm" />
 
-                        <asp:Button ID="Button3" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnCancel_Click" Text="Cancel" />
+                                <asp:Button ID="btnConfirmCancel" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnConfirmCancel_Click" Text="Cancel" />
 
-                    </td>
-                </tr>
-            </table>
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="btnConfirm" />
+                
+                </Triggers>
+            </asp:UpdatePanel>
         </div>
     </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
@@ -5317,6 +5391,17 @@
 
         function Initialize() {
             ApplyDropZone();
+
+            $("#<%= txtCDateOfBirth.ClientID %>").datepicker({
+                minDate: new Date(1900, 1 - 1, 1),
+                maxDate: '-18Y',
+                dateFormat: 'mm/dd/yy',
+                defaultDate: new Date(1984, 1 - 1, 1),
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '-110:-18'
+            });
+
         }
 
         function showExamPassPopup(message) {
@@ -5334,7 +5419,7 @@
             });
 
 
-           $($(dialog.parent())).appendTo($('#form1'));
+            $($(dialog.parent())).appendTo($('#form1'));
 
             //console.log($(dialog.parent()).parent().find('form'));
 
