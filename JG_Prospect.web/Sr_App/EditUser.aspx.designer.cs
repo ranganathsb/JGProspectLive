@@ -553,6 +553,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.GridView grdUsers;
         
         /// <summary>
+        /// upnlBulkUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlBulkUpload;
+        
+        /// <summary>
         /// lnkDownload control.
         /// </summary>
         /// <remarks>
@@ -1163,6 +1172,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divBulkUploadUserErrors;
+        
+        /// <summary>
+        /// upnlBUPError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlBUPError;
         
         /// <summary>
         /// grdBulkUploadUserErrors control.

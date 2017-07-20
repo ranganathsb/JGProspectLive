@@ -939,54 +939,61 @@
                     </Triggers>
                 </asp:UpdatePanel>
             </div>
-            <table style="width: 100%">
-                <tr style="width: 100%">
-                    <td>
-                        <asp:LinkButton ID="lnkDownload" Text="Download Sample Excel Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton>
-                        <%--<br />
+            <asp:UpdatePanel ID="upnlBulkUpload" runat="server">
+                <ContentTemplate>
+                    <table style="width: 100%">
+                        <tr style="width: 100%">
+                            <td>
+                                <asp:LinkButton ID="lnkDownload" Text="Download Sample Excel Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton>
+                                <%--<br />
                         <br />
                         <asp:LinkButton ID="lnkDownloadCSV" Text="Download Sample CSV Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.csv' runat="server" OnClick="DownloadFile"></asp:LinkButton>--%>
-                    </td>
-                    <td>
-                        <div style="float: left;">
-                            <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>"
-                                data-accepted-files=".csv,.xlsx" data-upload-path-code="1">
-                                <div class="fallback">
-                                    <input name="WorkFile" type="file" />
-                                    <input type="submit" value="UploadWorkFile" />
+                            </td>
+                            <td>
+                                <div style="float: left;">
+                                    <div id="divBulkUploadFile" class="dropzone work-file" data-hidden="<%=hdnBulkUploadFile.ClientID%>"
+                                        data-accepted-files=".csv,.xlsx" data-upload-path-code="1">
+                                        <div class="fallback">
+                                            <input name="WorkFile" type="file" />
+                                            <input type="submit" value="UploadWorkFile" />
+                                        </div>
+                                    </div>
+                                    <div id="divBulkUploadFilePreview" class="dropzone-previews work-file-previews">
+                                    </div>
                                 </div>
-                            </div>
-                            <div id="divBulkUploadFilePreview" class="dropzone-previews work-file-previews">
-                            </div>
-                        </div>
-                        <div class="btn_sec" style="float: left;">
-                            <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
-                        </div>
-                        <div class="hide">
-                            <input id="hdnBulkUploadFile" runat="server" type="hidden" />
-                            <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClientClick="return ValidateFile()" OnClick="btnUpload_Click" />
+                                <div class="btn_sec" style="float: left;">
+                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
+                                </div>
+                                <div class="hide">
+                                    <input id="hdnBulkUploadFile" runat="server" type="hidden" />
+                                    <asp:Button ID="btnUpload" runat="server" Text="Upload" OnClientClick="return ValidateFile()" OnClick="btnUpload_Click" />
 
-                            <label>
-                                Upload Prospects using xlsx file:
+                                    <label>
+                                        Upload Prospects using xlsx file:
                                 <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
-                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
-                        </div>
-                    </td>
-                    <td align="right">
-                        <asp:LinkButton ID="lbtnDeactivateSelected" runat="server" Text="Deactivate Selected"
-                            OnClientClick="return confirm('Are you sure you want to deactivate selected users?')"
-                            OnClick="lbtnDeactivateSelected_Click" />
-                        <br />
-                        <br />
-                        <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected"
-                            OnClientClick="return confirm('Are you sure you want to delete selected users?')"
-                            OnClick="lbtnDeleteSelected_Click" />
-                        <br />
-                        <br />
-                        <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
-                    </td>
-                </tr>
-            </table>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
+                                </div>
+                            </td>
+                            <td align="right">
+                                <asp:LinkButton ID="lbtnDeactivateSelected" runat="server" Text="Deactivate Selected"
+                                    OnClientClick="return confirm('Are you sure you want to deactivate selected users?')"
+                                    OnClick="lbtnDeactivateSelected_Click" />
+                                <br />
+                                <br />
+                                <asp:LinkButton ID="lbtnDeleteSelected" runat="server" Text="Delete Selected"
+                                    OnClientClick="return confirm('Are you sure you want to delete selected users?')"
+                                    OnClick="lbtnDeleteSelected_Click" />
+                                <br />
+                                <br />
+                                <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
+                </Triggers>
+            </asp:UpdatePanel>
             <br />
             <br />
             <div class="btn_sec">
@@ -1312,60 +1319,64 @@
                 Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
             </div>
             <div style="max-height: 500px; height: 500px; overflow: auto;">
-                <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
-                    CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
-                    <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                    <HeaderStyle CssClass="trHeader " />
-                    <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-                    <AlternatingRowStyle CssClass="AlternateRow " />
-                    <Columns>
-                        <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                            <ItemTemplate>
-                                <%#Eval("FirstName")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                            <ItemTemplate>
-                                <%#Eval("LastName")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                            <ItemTemplate>
-                                <%#Eval("Email")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                            <ItemTemplate>
-                                <%#Eval("Designation")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                            <ItemTemplate>
-                                <%#Eval("Status")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                            <ItemTemplate>
-                                <%#Eval("Source")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                            <ItemTemplate>
-                                <%#Eval("Phone1")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                            <ItemTemplate>
-                                <%#Eval("Phone1Type")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                            <ItemTemplate>
-                                <%#Eval("Zip")%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
+                <asp:UpdatePanel ID="upnlBUPError" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
+                            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
+                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                            <HeaderStyle CssClass="trHeader " />
+                            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                            <AlternatingRowStyle CssClass="AlternateRow " />
+                            <Columns>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("FirstName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("LastName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Email")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("Designation")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Status")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Source")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1Type")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Zip")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
             <br />
         </div>

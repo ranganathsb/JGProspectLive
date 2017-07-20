@@ -17,6 +17,7 @@ function SetLatestSequenceForAddNewSubTask() {
 
 function ShowTaskSequence(editlink, designationDropdownId) {
 
+
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
@@ -51,8 +52,8 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     }
 
     var dlg = $('#taskSequence').dialog({
-        width: 800,
-        height: 500,
+        width: 900,
+        height: 700,
         show: 'slide',
         hide: 'slide',
         autoOpen: true,
@@ -259,7 +260,7 @@ function swapSequence(hyperlink, isup) {
         function OnSwapTaskSeqSuccess(data) {
 
             if (data.d == true) {
-                alert('Sequences swaped successfully, Reloading Tasks....');
+                //alert('Sequences swaped successfully, Reloading Tasks....');
                 sequenceScope.refreshTasks();
             }
             else {

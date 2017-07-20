@@ -1667,8 +1667,8 @@ namespace JG_Prospect
                         else
                         {
                             GetSalesUsersStaticticsAndData(); ;
-                            UcStatusPopUp.changeText();
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
+                            //UcStatusPopUp.changeText();
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
                         }
                     }
                     else
@@ -2675,7 +2675,7 @@ namespace JG_Prospect
             {
                 grdBulkUploadUserErrors.DataSource = dtUserError;
                 grdBulkUploadUserErrors.DataBind();
-
+                upnlBUPError.Update();
                 ScriptManager.RegisterStartupScript
                     (
                         this,

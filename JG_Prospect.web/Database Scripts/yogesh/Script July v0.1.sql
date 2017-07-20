@@ -883,3 +883,168 @@ END
 --- Live publish 07182017
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTaskWithSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTaskWithSequence   
+
+	END  
+GO  
+-- =============================================                
+-- Author:  Yogesh Keraliya                
+-- Create date: 05222017                
+-- Description: This will load all tasks with title and sequence                
+-- =============================================                
+-- usp_GetAllTaskWithSequence 0,20,'',10,575          
+CREATE PROCEDURE usp_GetAllTaskWithSequence                 
+(                
+               
+ @PageIndex INT = 0,                 
+ @PageSize INT =20,          
+ @DesignationIds VARCHAR(20) = NULL,          
+ @IsTechTask BIT = 0,          
+ @HighLightedTaskID BIGINT = NULL          
+                  
+)                
+As                
+BEGIN                
+          
+          
+IF( @DesignationIds = '' )          
+BEGIN          
+          
+ SET @DesignationIds = NULL          
+          
+END          
+                
+                
+;WITH                 
+ Tasklist AS                
+ (                 
+  SELECT DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence],               
+  Title,ParentTaskId,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,
+  [AdminStatus] , [TechLeadStatus], [OtherUserStatus],[AdminStatusUpdated],[TechLeadStatusUpdated],[OtherUserStatusUpdated],[AdminUserId],[TechLeadUserId],[OtherUserId], 
+  AdminUserInstallId, AdminUserFirstName, AdminUserLastName,
+  TechLeadUserInstallId,ITLeadHours,UserHours, TechLeadUserFirstName, TechLeadUserLastName,
+  OtherUserInstallId, OtherUserFirstName,OtherUserLastName,
+  case                 
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId                 
+   when (tasklevel =1 and ParentTaskId>0) then                 
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId                  
+   when (tasklevel =2 and ParentTaskId>0) then                
+    (select InstallId from tbltask where taskid in (                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))                
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId                 
+                     
+   when (tasklevel =3 and ParentTaskId>0) then                
+   (select InstallId from tbltask where taskid in (                
+   (select parenttaskid from tbltask where taskid in (                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))                
+   +'-'+                
+    (select InstallId from tbltask where taskid in (                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))                
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId                 
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order                
+  from (                
+   select DISTINCT a.*                
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle,
+   (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.TechLeadUserId) AS ITLeadHours , (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.OtherUserId) AS UserHours,
+   ta.InstallId AS AdminUserInstallId, ta.FristName AS AdminUserFirstName, ta.LastName AS AdminUserLastName,
+   tT.InstallId AS TechLeadUserInstallId, tT.FristName AS TechLeadUserFirstName, tT.LastName AS TechLeadUserLastName,
+   tU.InstallId AS OtherUserInstallId, tU.FristName AS OtherUserFirstName, tU.LastName AS OtherUserLastName,
+   --,t.FristName + ' ' + t.LastName AS Assigneduser,              
+   (              
+   STUFF((SELECT ', {"Name": "' + Designation +'","Id":'+ CONVERT(VARCHAR(5),DesignationID)+'}'            
+           FROM tblTaskdesignations td               
+           WHERE td.TaskID = a.TaskId               
+          FOR XML PATH('')), 1, 2, '')              
+  )  AS TaskDesignation      
+  --(SELECT TOP 1 DesignationID             
+  --         FROM tblTaskdesignations td               
+  --         WHERE td.TaskID = a.TaskId ) AS DesignationId             
+   from  tbltask a                
+   --LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId                 
+   --LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId                
+   LEFT OUTER JOIN tblInstallUsers as ta ON a.[AdminUserId] = ta.Id 
+   LEFT OUTER JOIN tblInstallUsers as tT ON a.[TechLeadUserId] = tT.Id 
+   LEFT OUTER JOIN tblInstallUsers as tU ON a.[OtherUserId] = tU.Id                  
+   WHERE           
+  (           
+    (a.[Sequence] IS NOT NULL)           
+    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )           
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)          
+             
+   )           
+   OR          
+   (          
+     a.TaskId = @HighLightedTaskID  AND IsTechTask = @IsTechTask        
+   )               
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )                 
+  ) as x                
+ )      
+                
+ ---- get CTE data into temp table                
+ SELECT *                
+ INTO #Tasks                
+ FROM Tasklist                
+          
+---- find page number to show taskid sent.          
+DECLARE @StartIndex INT  = 0                
+          
+                
+--IF @HighLightedTaskID  > 0          
+-- BEGIN          
+--  DECLARE @RowNumber BIGINT = NULL          
+          
+--  -- Find in which rownumber highlighter taskid is.          
+--  SELECT @RowNumber = RowNo_Order           
+--  FROM #Tasks           
+--  WHERE TaskId = @HighLightedTaskID          
+          
+--  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.          
+--  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.           
+--  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index          
+--  -- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.          
+             
+--  IF @RowNumber IS NOT NULL          
+--  BEGIN          
+--   SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1          
+--  END          
+-- END            
+          
+ -- Set start index to fetch record.          
+ SET @StartIndex = (@PageIndex * @PageSize) + 1                
+           
+ -- fetch records from temptable          
+ SELECT *                 
+ FROM #Tasks                 
+ WHERE                 
+ (RowNo_Order >= @StartIndex AND                 
+ (                
+  @PageSize = 0 OR                 
+  RowNo_Order < (@StartIndex + @PageSize)                
+ ))      
+ --ORDER BY  [Sequence]  DESC              
+ ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC              
+ --or      
+ --(      
+ -- TaskId = @HighLightedTaskID      
+ --)                
+ --ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC              
+                
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.               
+ SELECT                
+ COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex AS PageIndex               
+  FROM #Tasks                
+          
+ DROP TABLE #Tasks          
+          
+              
+END 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--- Live publish 07202017
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

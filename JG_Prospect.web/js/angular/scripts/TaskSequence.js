@@ -37,6 +37,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
     $scope.onEnd = function () {
         $timeout(function () {
             setActiveTab($scope.IsTechTask);
+            SetSeqApprovalUI();
         }, 1);
     };
 
@@ -57,6 +58,9 @@ function applyFunctions($scope, $compile, $http, $timeout) {
             $scope.Tasks = results.Tasks;
 
             $scope.TaskSelected = $scope.Tasks[0];
+
+
+            console.log(results.Tasks);
 
 
         });
@@ -219,6 +223,14 @@ function applyFunctions($scope, $compile, $http, $timeout) {
         }
 
         return prefix;
+    };
+
+
+    $scope.StringIsNullOrEmpty = function (value) {
+
+        //var returnVal = (angular.isUndefined(value) || value === null || value)
+        var returnVal = !value;
+        return returnVal;
     };
 
     initializeOnAjaxUpdate($scope, $compile, $http);
