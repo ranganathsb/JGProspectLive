@@ -1876,11 +1876,11 @@ input.fz-user, .fz-user > input {
 }
 
 .badge-largetext {
-font-size:11px;
+    font-size: 11px;
 }
 
 .badge-xstext {
-font-size:8px;
+    font-size: 8px;
 }
 
 .badge-hyperlink {
@@ -2334,6 +2334,7 @@ p.mcqQuestion {
     .btn-primary:hover, .btn-primary:focus {
         background-color: #0486b9;
     }
+
 .faded-row {
-background: rgba(0,0,0,0.7);
+    opacity: 0.7;
 }

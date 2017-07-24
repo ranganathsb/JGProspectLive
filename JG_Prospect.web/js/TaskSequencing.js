@@ -22,25 +22,32 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     var TaskID = edithyperlink.attr('data-taskid');
     var TechTask = edithyperlink.attr('data-task-TechTask');
-    var DesignationIds = edithyperlink.attr('data-task-designationids');
+    //var DesignationIds = edithyperlink.attr('data-task-designationids');
 
-    if (DesignationIds) {
-        sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
+    //if (DesignationIds) {
+    //    sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
 
-        $.each(DesignationIds.split(","), function (index, value) {
+    //    $.each(DesignationIds.split(","), function (index, value) {
 
-            var checkbox = $(designationDropdownId).children("input[value='" + $.trim(value) + "']");
-            if (checkbox) {
-                $(checkbox).attr('checked', true);
-            }
-        });
-    }
+    //        var checkbox = $(designationDropdownId).children("input[value='" + $.trim(value) + "']");
+    //        if (checkbox) {
+    //            $(checkbox).attr('checked', true);
+    //        }
+    //    });
+    //}
+
+
 
     //Set if tech task than load tech task related sequencing.
     sequenceScope.IsTechTask = TechTask;
 
     //search initially all tasks with sequencing.
     sequenceScope.HighLightTaskId = TaskID;
+
+    // set designation id to be search by default
+    sequenceScope.SetDesignForSearch($(designationDropdownId).val());
+
+    // console.log('Designations which are selected to search... ' + sequenceScope.UserSelectedDesigIds);
 
     if (TechTask === 'True') {
 
@@ -51,13 +58,18 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         sequenceScope.getTasks();
     }
 
+    $('#taskSequence').removeClass("hide");
+
     var dlg = $('#taskSequence').dialog({
         width: 900,
         height: 700,
         show: 'slide',
         hide: 'slide',
         autoOpen: true,
-        modal: false
+        modal: false,
+        beforeClose: function (event, ui) {
+            $('#taskSequence').addClass("hide");
+        }
     });
 
 
@@ -143,15 +155,33 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
 
     var instance = $('#txtSeq' + TaskID);
 
-    if (instance.spinner("instance")) {
-        instance.spinner("destroy");
-    }
-    instance.spinner(
-        {
-            min: 1,
-            max: parseInt(maxValueforSeq)
+    instance.prop('disabled', true);
+
+    // If task has never been assigned with any sequence, show default available seq.
+    if (!instance.attr("data-original-val")) {
+
+        var tr = instance.closest('tr');
+        var linkLabel = tr.find('a.autoclickSeqEdit').find('label');
+        var DesignationId = $('#divSeqDesg' + TaskID).find('select').val();
+
+        var TaskPrefix;
+
+        if (linkLabel.html()) {
+            TaskPrefix = linkLabel.html().split(":").pop();
         }
-     );
+
+        linkLabel.html(sequenceScope.getSequenceDisplayText(maxValueforSeq, parseInt(DesignationId), TaskPrefix));
+
+    }
+    //if (instance.spinner("instance")) {
+    //    instance.spinner("destroy");
+    //}
+    //instance.spinner(
+    //    {
+    //        min: 1,
+    //        max: parseInt(maxValueforSeq)
+    //    }
+    // );
 
 }
 
@@ -218,8 +248,8 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
 
 function BindSeqDesignationChange(ControlID) {
     //$(ControlID + ' input').bind('change', function () {
-        //if user selected designation than add it for search.        
-        //search initially all tasks with sequencing.
+    //if user selected designation than add it for search.        
+    //search initially all tasks with sequencing.
     // remove it from search.
     $(ControlID).bind('change', function () {
         sequenceScope.SetDesignForSearch($(this).val(), false);
@@ -235,11 +265,11 @@ function swapSequence(hyperlink, isup) {
     var SecondTaskID, SecondSeq, SecondTaskDesg, otherlink;
     var row = $(hyperlink).closest('tr');
 
-    if (isup) {                      
+    if (isup) {
         otherlink = row.prev().find('[data-taskdesg]').first();
     }
     else {
-        otherlink = row.next().find('[data-taskdesg]').first();        
+        otherlink = row.next().find('[data-taskdesg]').first();
     }
 
     SecondTaskID = otherlink.attr("data-taskid");

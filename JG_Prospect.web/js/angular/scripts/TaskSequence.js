@@ -217,6 +217,9 @@ function applyFunctions($scope, $compile, $http, $timeout) {
             case 20:
                 prefix = "SBC";
                 break;
+            case 26:
+                prefix = "ITJPH";
+                break;
             default:
                 prefix = "N.A.";
                 break;
@@ -233,13 +236,13 @@ function applyFunctions($scope, $compile, $http, $timeout) {
         return returnVal;
     };
 
-    initializeOnAjaxUpdate($scope, $compile, $http);
+    initializeOnAjaxUpdate($scope, $compile, $http, $timeout);
 
     sequenceScope = $scope;
 
 }
 
-function initializeOnAjaxUpdate(scope, compile, http) {
+function initializeOnAjaxUpdate(scope, compile, http, timeout) {
 
 
     Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
@@ -247,7 +250,7 @@ function initializeOnAjaxUpdate(scope, compile, http) {
         compile(elem.children())(scope);
         scope.$apply();
 
-        applyFunctions(scope, compile, http);
+        applyFunctions(scope, compile, http, timeout);
     });
 
     //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function (sender, args) {
