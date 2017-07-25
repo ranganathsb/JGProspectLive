@@ -43,6 +43,8 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     //search initially all tasks with sequencing.
     sequenceScope.HighLightTaskId = TaskID;
+    sequenceScope.BlinkTaskId = TaskID;
+
 
     // set designation id to be search by default
     sequenceScope.SetDesignForSearch($(designationDropdownId).val());
@@ -154,7 +156,7 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
     $('#divSeqDesg' + TaskID).removeClass('hide');
 
     var instance = $('#txtSeq' + TaskID);
-
+    instance.addClass("hide");
     instance.prop('disabled', true);
 
     // If task has never been assigned with any sequence, show default available seq.

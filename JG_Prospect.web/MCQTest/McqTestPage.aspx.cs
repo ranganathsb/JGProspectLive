@@ -840,25 +840,28 @@ namespace JG_Prospect.MCQTest
 
         private void StartExam()
         {
-            // Start very first exam.
-            if (this.NextExamSeq == 0)
+            if (rptExams.Items.Count > this.NextExamSeq)
             {
-                //Before user starts exam set his/her status to Rejected/With Reason, and set it to interview date only when that user has completed all exams. 
-                UpdateUserStatusAsRejectedWithReason(UserID, "Left apptitude test without completing it.");
+                // Start very first exam.
+                if (this.NextExamSeq == 0)
+                {
+                    //Before user starts exam set his/her status to Rejected/With Reason, and set it to interview date only when that user has completed all exams. 
+                    UpdateUserStatusAsRejectedWithReason(UserID, "Left apptitude test without completing it.");
 
-                this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[0].FindControl("ltlExamId")).Text);
-                this.NextExamSeq = 1;// fetch next exam from repeater item index.
+                    this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[0].FindControl("ltlExamId")).Text);
+                    this.NextExamSeq = 1;// fetch next exam from repeater item index.
+                }
+                else
+                {
+                    this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[this.NextExamSeq].FindControl("ltlExamId")).Text);
+
+                    this.NextExamSeq = this.NextExamSeq + 1;
+                }
+
+                SetExamSectionViews();
+                LoadQuestionsForExam();
+                LoadNextQuestion(); 
             }
-            else
-            {
-                this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[this.NextExamSeq].FindControl("ltlExamId")).Text);
-
-                this.NextExamSeq = this.NextExamSeq + 1;
-            }
-
-            SetExamSectionViews();
-            LoadQuestionsForExam();
-            LoadNextQuestion();
         }
 
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, DateTime InterviewDateTime, List<Attachment> Attachments = null, string strManager = "")

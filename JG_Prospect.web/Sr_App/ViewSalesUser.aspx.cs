@@ -805,15 +805,15 @@ namespace JG_Prospect.Sr_App
                             ddlInsteviewtime.Visible = false;
                         }
                         //else if (ds.Tables[0].Rows[0][40].ToString() != "" && ds.Tables[0].Rows[0][6].ToString() == "InterviewDate")
-                        else if (ds.Tables[0].Rows[0][40].ToString() != "" && ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
+                        else if (ds.Tables[0].Rows[0]["RejectionDate"].ToString() != "" && ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString())
                         {
-                            dtInterviewDate.Text = Convert.ToDateTime(ds.Tables[0].Rows[0][40]).ToShortDateString();
+                            dtInterviewDate.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["RejectionDate"]).ToShortDateString();
                             dtInterviewDate.Visible = true;
                             txtReson.Visible = false;
                             ddlInsteviewtime.Visible = true;
-                            if (Convert.ToString(ds.Tables[0].Rows[0][105]) != "")
+                            if (Convert.ToString(ds.Tables[0].Rows[0]["InterviewTime"]) != "")
                             {
-                                ddlInsteviewtime.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0][105]);
+                                ddlInsteviewtime.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["InterviewTime"]);
                             }
                         }
                         else

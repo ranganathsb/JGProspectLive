@@ -25,6 +25,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
     $scope.Currentpage = 0;
     $scope.TotalRecords = 0;
     $scope.HighLightTaskId = 0;
+    $scope.BlinkTaskId = 0;
 
 
     $scope.TechTasks = [];
@@ -48,6 +49,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            $scope.HighLightTaskId = 0;
             $scope.IsTechTask = false;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
@@ -59,10 +61,6 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
             $scope.TaskSelected = $scope.Tasks[0];
 
-
-            console.log(results.Tasks);
-
-
         });
     };
 
@@ -73,6 +71,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            $scope.HighLightTaskId = 0;
             $scope.IsTechTask = true;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
