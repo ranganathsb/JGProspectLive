@@ -101,6 +101,7 @@ namespace JG_Prospect
         {
             CommonFunction.AuthenticateUser();
 
+
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
             {
                 btnExport.Visible = true;
