@@ -22,7 +22,7 @@ using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
-
+using System.Globalization;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -101,6 +101,7 @@ namespace JG_Prospect
         {
             CommonFunction.AuthenticateUser();
 
+            int x = 0;
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
             {
@@ -358,6 +359,7 @@ namespace JG_Prospect
                 {
                     Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
+                    DropDownList ddlEmployeeType = (e.Row.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
@@ -398,6 +400,23 @@ namespace JG_Prospect
                     if (lblPrimaryPhone.Text.IndexOf(chaDelimiter) > 0)
                         lblPrimaryPhone = ManiPulatePrimaryPhone(lblPrimaryPhone, chaDelimiter);
 
+                    string employeeType = Convert.ToString((e.Row.FindControl("lblEmployeeType") as HiddenField).Value);
+                    if (employeeType != "")
+                    {
+
+                        System.Web.UI.WebControls.ListItem lstEmpType = ddlEmployeeType.Items.FindByValue(employeeType);
+
+                        if (lstEmpType != null)
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpType);
+                        }
+                        System.Web.UI.WebControls.ListItem lstEmpTypeText = ddlEmployeeType.Items.FindByText(employeeType);
+
+                        if (lstEmpTypeText != null)
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpTypeText);
+                        }
+                    }
 
                     if (Status != "")
                     {
@@ -3887,7 +3906,19 @@ namespace JG_Prospect
                     {
                         //Session["UserGridData"] = dtSalesUser_Grid;
                         //BindUsers(dtSalesUser_Grid);
+                        foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                        {
+                            string countryCode = string.Empty;
+                            string country = string.Empty;
 
+                            countryCode = dr["CountryCode"].ToString();
+                            if (countryCode.Length > 0)
+                            {
+                                var ri = new RegionInfo(countryCode);
+                                country = ri.EnglishName;
+                                dr["Country"] = country;
+                            }
+                        }
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
@@ -4385,5 +4416,10 @@ namespace JG_Prospect
         #endregion
 
         #endregion
+
+        protected void ddlEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

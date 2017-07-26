@@ -199,6 +199,14 @@
             color: #fff;
             cursor: pointer;
         }
+          /*Code change by Deep*/
+        .scroll tbody {
+            height: 1275px !important;
+        }
+
+        .right_panel {
+            margin: 0 0 0 0 !important;
+        }
     </style>
     <style type="text/css">
         #hint {
@@ -907,11 +915,12 @@
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="12%" ItemStyle-Width="12%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="12%" ItemStyle-Width="12%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
-                                        <div style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
+                                        <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
                                         <%--<span><%# Eval("Zip") %></span>--%>
+                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
 
                                         <br />
@@ -920,7 +929,21 @@
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
 
                                         <br />
-                                        <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>
+                                          <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
+                                        <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server"  OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
+                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Temp" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="Internship" Value="2"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Remote" Value="3"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Onsite" Value="4"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Remote" Value="5"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Onsite" Value="6"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time Hourly" Value="7"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time Salary" Value="8"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time" Value="9"></asp:ListItem>
+                                            <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
+                                        </asp:DropDownList><br />
+                                      <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                         <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
 
                                         <br />
