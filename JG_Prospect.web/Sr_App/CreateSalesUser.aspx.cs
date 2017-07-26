@@ -329,6 +329,16 @@ namespace JG_Prospect.Sr_App
                     ddldesignation.DataSource = dsDesignation.Tables[0];
                     ddldesignation.DataBind();
                     ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+
+
+                    ddlPositionAppliedFor.Items.Clear();
+                    ddlPositionAppliedFor.DataValueField = "Id";
+                    ddlPositionAppliedFor.DataTextField = "DesignationName";
+                    ddlPositionAppliedFor.DataSource = dsDesignation.Tables[0];
+                    ddlPositionAppliedFor.DataBind();
+                    ddlPositionAppliedFor.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+
+
                 }
 
                 //if (dsTrade.Tables.Count > 0)
@@ -1297,6 +1307,7 @@ namespace JG_Prospect.Sr_App
                 //else
                 //  {
                 objuser.picture = Convert.ToString(Session["UplaodPicture"]);
+
                 //  }
                 objuser.attachements = GetUpdateAttachments();
                 objuser.businessname = "";
@@ -2252,7 +2263,14 @@ namespace JG_Prospect.Sr_App
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                 //objuser.Source = ddlSource.SelectedValue;
-                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+                if (ddlSource.SelectedIndex == 0)
+                {
+                    objuser.SourceId = 0;
+                }
+                else
+                {
+                    objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+                }           
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -2512,6 +2530,8 @@ namespace JG_Prospect.Sr_App
                 objuser.cThree = txtcThree.Text;
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+
+
                 objuser.CountryCode = ddlCountry.SelectedValue;
                 objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
@@ -2576,6 +2596,7 @@ namespace JG_Prospect.Sr_App
             }
             catch (Exception ex)
             {
+                Console.WriteLine("{0} Exception caught.", ex);
 
             }
         }
