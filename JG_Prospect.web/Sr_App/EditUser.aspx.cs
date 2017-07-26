@@ -4419,6 +4419,12 @@ namespace JG_Prospect
 
         protected void ddlEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
         {
+             GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+           
+           string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
+            DropDownList ddlEmployeeType = (grow.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
+            
+            InstallUserBLL.Instance.UpdateEmpType(Convert.ToInt32(ID), ddlEmployeeType.SelectedValue);
 
         }
     }

@@ -511,6 +511,7 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateOfferMade(Id, Email, password);
         }
 
+
         public string AddNewEmailForUser(string EmailID, bool IsPrimary, int UserID)
         {
             return InstallUserDAL.Instance.AddNewEmailForUser(EmailID, IsPrimary, UserID);
@@ -672,5 +673,11 @@ namespace JG_Prospect.BLL
 
             return InstallUserDAL.Instance.ChangeUserSatatus(UserId, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
+
+        public void UpdateEmpType(int ID, string EmpType)
+        {
+             InstallUserDAL.Instance.UpdateEmpType(ID, EmpType);
+        }
+
     }
 }

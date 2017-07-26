@@ -2834,5 +2834,24 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
+        public void UpdateEmpType(int ID, string EmpType)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateEmpType");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ID", DbType.Int32, ID);
+                    database.AddInParameter(command, "@EmpType", DbType.String, EmpType);
+                    database.ExecuteScalar(command);
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+        }
     }
 }
