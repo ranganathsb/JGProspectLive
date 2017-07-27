@@ -363,6 +363,31 @@ namespace JG_Prospect
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
+                    Image img = e.Row.FindControl("imgprofile") as Image;
+                    HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
+
+                    if (hdimg.Value != "")
+                    {
+                        string[] value = hdimg.Value.Split('/');
+                        string path=value[value.Length - 1];
+                        string pathvalue = Server.MapPath("/UploadeProfile/");
+                            pathvalue=Path.Combine(pathvalue+path);
+
+                        if (File.Exists(pathvalue))
+                        {
+                            img.ImageUrl = hdimg.Value;
+
+                        }
+                        else
+                        {
+                            img.ImageUrl = "/UploadeProfile/default.jpg";
+                        }
+
+                    }
+                    else
+                    {
+                        img.ImageUrl = "/UploadeProfile/default.jpg";
+                    }
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -501,6 +526,7 @@ namespace JG_Prospect
             }
         }
 
+     
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
