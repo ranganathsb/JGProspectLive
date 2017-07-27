@@ -49,17 +49,6 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     // set designation id to be search by default
     sequenceScope.SetDesignForSearch($(designationDropdownId).val());
 
-    // console.log('Designations which are selected to search... ' + sequenceScope.UserSelectedDesigIds);
-
-    if (TechTask === 'True') {
-
-        sequenceScope.getTechTasks();
-    }
-    else {
-
-        sequenceScope.getTasks();
-    }
-
     $('#taskSequence').removeClass("hide");
 
     var dlg = $('#taskSequence').dialog({
@@ -74,6 +63,17 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         }
     });
 
+    console.log("calling search task from popup loading event....");
+    console.log(TechTask);
+
+    if (TechTask === 'True') {
+
+        sequenceScope.getTechTasks();
+    }
+    else {
+
+        sequenceScope.getTasks();
+    }
 
 }
 
@@ -266,6 +266,10 @@ function swapSequence(hyperlink, isup) {
     var FirstTaskDesg = $(hyperlink).attr("data-taskdesg");
     var SecondTaskID, SecondSeq, SecondTaskDesg, otherlink;
     var row = $(hyperlink).closest('tr');
+
+    if (row.hasClass("yellowthickborder")) {
+        sequenceScope.HighLightTaskId = 0;
+    }
 
     if (isup) {
         otherlink = row.prev().find('[data-taskdesg]').first();

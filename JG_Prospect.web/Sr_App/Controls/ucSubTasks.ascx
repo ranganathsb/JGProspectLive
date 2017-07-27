@@ -1932,40 +1932,43 @@
             var arrAssignedUsers = [];
             var arrDesignationUsers = [];
 
-            $sender.find('option').each(function (index, item) {
+            $.each(options, function (index, item) {
+
                 var intUserId = parseInt($(item).attr('value'));
+
                 if (intUserId > 0) {
                     arrDesignationUsers.push(intUserId);
-
-                    if ($.inArray(intUserId.toString(), $sender.val()) != -1) {
-                        arrAssignedUsers.push(intUserId);
-                    }
-                    //if ($sender.val() == intUserId.toString()) {
+                    //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
                     //    arrAssignedUsers.push(intUserId);
                     //}
+                    if ($(sender).val() == intUserId.toString()) {
+                        arrAssignedUsers.push(intUserId);
+                    }
                 }
             });
 
-            var postData = {
-                intTaskId: intTaskID,
-                intTaskStatus: intTaskStatus,
-                arrAssignedUsers: arrAssignedUsers
-            };
+            SaveAssignedTaskUsers();
 
-            CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
+            //var postData = {
+            //    intTaskId: intTaskID,
+            //    intTaskStatus: intTaskStatus,
+            //    arrAssignedUsers: arrAssignedUsers
+            //};
 
-            function OnValidateTaskStatusSuccess(response) {
-                if (!response.d.IsValid) {
-                    alert(response.d.Message);
-                }
-                else {
-                    SaveAssignedTaskUsers();
-                }
-            }
+            //CallJGWebService('ValidateTaskStatus', postData, OnValidateTaskStatusSuccess);
 
-            function OnValidateTaskStatusError() {
-                alert('Task status cannot be validated. Please try again.');
-            }
+            //function OnValidateTaskStatusSuccess(response) {
+            //    if (!response.d.IsValid) {
+            //        alert(response.d.Message);
+            //    }
+            //    else {
+            //        SaveAssignedTaskUsers();
+            //    }
+            //}
+
+            //function OnValidateTaskStatusError() {
+            //    alert('Task status cannot be validated. Please try again.');
+            //}
 
             // private function (so, it is defined in a function) to save task assigned users only after validating task status.
             function SaveAssignedTaskUsers() {
@@ -2233,19 +2236,21 @@
             }
 
             function applyTaskSequenceTabs() {
-                $('#taskSequenceTabs').tabs({
-                    beforeActivate: function (event, ui) {
-                        if (ui.newPanel.attr('id') == "TechTask") {
-                            sequenceScope.IsTechTask = true;
-                            sequenceScope.getTechTasks();
-                        }
-                        else {
-                            sequenceScope.IsTechTask = false;
-                            sequenceScope.getTasks();
-                        }
+                $('#taskSequenceTabs').tabs({});
 
+                $("#taskSequenceTabs").bind("tabsactivate", function (event, ui) {
+                    console.log("calling load task from tab select....");
+                    if (ui.newPanel.attr('id') == "TechTask") {
+
+                        sequenceScope.IsTechTask = true;
+                        sequenceScope.getTechTasks();
+                    }
+                    else {
+                        sequenceScope.IsTechTask = false;
+                        sequenceScope.getTasks();
                     }
                 });
+
             }
 
             function setActiveTab(isTechTask) {

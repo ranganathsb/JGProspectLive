@@ -49,7 +49,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
-            $scope.HighLightTaskId = 0;
+           
             $scope.IsTechTask = false;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
@@ -71,7 +71,7 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
-            $scope.HighLightTaskId = 0;
+            
             $scope.IsTechTask = true;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
