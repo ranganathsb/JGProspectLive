@@ -199,7 +199,7 @@
             color: #fff;
             cursor: pointer;
         }
-          /*Code change by Deep*/
+        /*Code change by Deep*/
         .scroll tbody {
             height: 1275px !important;
         }
@@ -716,7 +716,14 @@
                 <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
 
-                        <div style="float: left; padding-top: 10px; /*margin-bottom: -40px; */">
+                        <div style="float: right; padding-top: 10px; /*margin-bottom: -40px; */">
+                             
+                               <%-- <asp:Label ID="lblcount" runat="server"  Text="1-" />
+                        
+                                <asp:Label ID="lblto" runat="server" Text="25" />
+                            <asp:Label ID="lblof" runat="server" Text="of" />
+                            <asp:Label ID="lblendvalue" runat="server" Text="321" />
+                              <asp:Label ID="lblselectedchk" runat="server" Text=", 4 users selected" />--%>
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
@@ -725,16 +732,19 @@
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
                                 OnSelectedIndexChanged="ddlPageSize_grdUsers_SelectedIndexChanged">
                                 <asp:ListItem Text="10" Value="10" />
-                                <asp:ListItem Selected="True" Text="20" Value="20" />
+                                <asp:ListItem Text="20" Value="20" />
+                                <asp:ListItem Selected="True" Text="25" Value="25" />
                                 <asp:ListItem Text="30" Value="30" />
                                 <asp:ListItem Text="40" Value="40" />
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
 
-                            Showing :  
+                             <%-- Showing :  
                                 <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" />
-                            of
-                                <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />
+                             of
+                                <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />--%>
+
+                            
                         </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
@@ -745,19 +755,20 @@
                             <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                             <Columns>
 
-                                <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
+                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-                                        <asp:CheckBox ID="chkSelected" runat="server" />
+                                        <asp:CheckBox ID="chkSelected" runat="server" Style="position: relative;top: 22px;right: 25px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
                                         <br />
-                                         <img  src='<%# Eval("picture") %>' style="padding:5px;height:75px; width:75px;"/>
-                                      <%--  <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server"
-                                            CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <img src='<%# Eval("picture").ToString()=="" || Eval("picture")== null ? "/UploadeProfile/default.jpg" : Eval("picture") %>'
+                                            style="height: 75px; width: 75px;" />
+
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />
-                                        <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
+                                        <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
@@ -921,7 +932,7 @@
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
                                         <%--<span><%# Eval("Zip") %></span>--%>
-                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
+                                        <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
 
                                         <br />
@@ -930,9 +941,9 @@
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
 
                                         <br />
-                                          <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
-                                        <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server"  OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
-                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                        <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
+                                        <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
+                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
                                             <asp:ListItem Text="Temp" Value="1"></asp:ListItem>
                                             <asp:ListItem Text="Internship" Value="2"></asp:ListItem>
                                             <asp:ListItem Text="Part Time - Remote" Value="3"></asp:ListItem>
@@ -944,7 +955,7 @@
                                             <asp:ListItem Text="Part Time" Value="9"></asp:ListItem>
                                             <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
                                         </asp:DropDownList><br />
-                                      <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
+                                        <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                         <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
 
                                         <br />
