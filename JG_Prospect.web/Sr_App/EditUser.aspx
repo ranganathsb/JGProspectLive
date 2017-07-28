@@ -715,17 +715,15 @@
             <div style="width: auto; border: 1px solid #ccc; padding: 3px;">
                 <asp:UpdatePanel ID="upUsers" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
-                         
 
 
-                        <div style="float: right; padding-top: 10px;margin-right: 1.7%; /*margin-bottom: -40px; */">
-                             
-                            <%--    <asp:Label ID="lblcount" runat="server"  Text="1-" />
-                        
-                                <asp:Label ID="lblto" runat="server"  style="color:#19ea19"/>
+
+                        <div style="float: right; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
+                            <asp:Label ID="lblFrom" runat="server" />&nbsp;to&nbsp;
+                                <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
                             <asp:Label ID="lblof" runat="server" Text="of" />
-                            <asp:Label ID="lblendvalue" runat="server" Text="321" style="color:red"/>
-                              <asp:Label ID="lblselectedchk" runat="server" Text=", 4 users selected" />--%>
+                            <asp:Label ID="lblCount" runat="server" Style="color: red" />
+                            <asp:Label ID="lblselectedchk" runat="server" />
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
@@ -741,12 +739,10 @@
                                 <asp:ListItem Text="50" Value="50" />
                             </asp:DropDownList>
 
-                             <%-- Showing :  
+                            <%-- Showing :  
                                 <asp:Label ID="PageRowCountLabel" runat="server" Text="Label" />
                              of
                                 <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />--%>
-
-                            
                         </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
@@ -764,15 +760,15 @@
 
                                         <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
 
-                                        <asp:CheckBox ID="chkSelected" runat="server" Style="position: relative;top: 22px;right: 25px;" />
+                                        <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 22px; right: 25px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
                                         <br />
 
-                                       <%-- <img src='<%# Eval("picture").ToString()=="" || Eval("picture")== null ? "/UploadeProfile/default.jpg" : Eval("picture") %>'
+                                        <%-- <img src='<%# Eval("picture").ToString()=="" || Eval("picture")== null ? "/UploadeProfile/default.jpg" : Eval("picture") %>'
                                             style="height: 75px; width: 75px;" />--%>
 
-                                        <asp:Image style="height: 75px; width: 75px;"  ID="imgprofile"  runat="server"  ></asp:Image> 
+                                        <asp:Image Style="height: 75px; width: 75px;" ID="imgprofile" runat="server"></asp:Image>
 
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <br />

@@ -369,9 +369,9 @@ namespace JG_Prospect
                     if (hdimg.Value != "")
                     {
                         string[] value = hdimg.Value.Split('/');
-                        string path=value[value.Length - 1];
+                        string path = value[value.Length - 1];
                         string pathvalue = Server.MapPath("/UploadeProfile/");
-                            pathvalue=Path.Combine(pathvalue+path);
+                        pathvalue = Path.Combine(pathvalue + path);
 
                         if (File.Exists(pathvalue))
                         {
@@ -526,7 +526,7 @@ namespace JG_Prospect
             }
         }
 
-     
+
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
@@ -3755,6 +3755,7 @@ namespace JG_Prospect
                     DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
                     DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
 
+
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -3948,16 +3949,19 @@ namespace JG_Prospect
                         }
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
+                        lblCount.Text = (dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]).ToString();
                         grdUsers.DataBind();
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
+                        LabelSet();
                     }
                     else
                     {
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
+                        LabelSet();
                     }
 
                     upUsers.Update();
@@ -4450,9 +4454,41 @@ namespace JG_Prospect
 
             string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
             DropDownList ddlEmployeeType = (grow.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
-
             InstallUserBLL.Instance.UpdateEmpType(Convert.ToInt32(ID), ddlEmployeeType.SelectedValue);
+        }
 
+        public void LabelSet()
+        {
+            int currentPage = grdUsers.PageIndex + 1;
+            int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+            int last = selValue * currentPage;
+            int first = (last - selValue) + 1;
+            lblTo.Text = last.ToString();
+            lblFrom.Text = first.ToString();
+        }
+
+        protected void chkSelected_CheckedChanged(object sender, EventArgs e)
+        {
+            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+
+            bool chkvalue = (grow.FindControl("chkSelected") as CheckBox).Checked;
+            string lblVal = lblselectedchk.Text.Replace("users selected", "").Replace("user selected", "").Replace(",", "").Trim();
+            int lblCount = 0;
+            if (lblVal != "")
+            {
+                try { lblCount = Convert.ToInt32(lblVal); } catch { }
+            }
+            if (chkvalue == true)
+            {
+
+
+                lblCount = lblCount + 1;
+            }
+            else
+            {
+                lblCount = lblCount - 1;
+            }
+            lblselectedchk.Text = lblCount <= 0 ? "" : lblCount == 1 ? ", " + lblCount.ToString() + " user selected" : ", " + lblCount.ToString() + " users selected";
         }
     }
 }
