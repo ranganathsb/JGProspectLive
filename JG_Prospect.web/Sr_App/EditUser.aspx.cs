@@ -3765,6 +3765,7 @@ namespace JG_Prospect
                         lblCount.Text = "0";
                     }
                     lblselectedchk.Text = string.Empty;
+                    
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -3972,6 +3973,12 @@ namespace JG_Prospect
                     }                   
                    
                     LabelSet();
+                    int countval = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0]["tcount"]);
+                    int dropvalue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                    if (countval < dropvalue)
+                    {
+                        lblTo.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                    }
                     upUsers.Update();
                 }
             }
