@@ -719,8 +719,8 @@
 
 
                         <div style="float: right; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
-                            <asp:Label ID="lblFrom" runat="server" />&nbsp;to&nbsp;
-                                <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
+                            <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to"/>&nbsp;
+                            <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
                             <asp:Label ID="lblof" runat="server" Text="of" />
                             <asp:Label ID="lblCount" runat="server" Style="color: red" />
                             <asp:Label ID="lblselectedchk" runat="server" />
@@ -746,7 +746,7 @@
                         </div>
 
                         <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
-                            AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="20"
+                            AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="25"
                             OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
                             OnPageIndexChanging="grdUsers_PageIndexChanging">
                             <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
@@ -769,8 +769,9 @@
                                             style="height: 75px; width: 75px;" />--%>
 
                                         <asp:Image Style="height: 75px; width: 75px;" ID="imgprofile" runat="server"></asp:Image>
-
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible="false" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        
+                              <%--          <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <br />
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>

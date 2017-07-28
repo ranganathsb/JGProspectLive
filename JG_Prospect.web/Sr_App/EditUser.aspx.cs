@@ -365,7 +365,8 @@ namespace JG_Prospect
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
-
+                    LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
+                    
                     if (hdimg.Value != "")
                     {
                         string[] value = hdimg.Value.Split('/');
@@ -376,7 +377,7 @@ namespace JG_Prospect
                         if (File.Exists(pathvalue))
                         {
                             img.ImageUrl = hdimg.Value;
-
+                            lbltestChk.Visible = true;
                         }
                         else
                         {
@@ -3754,8 +3755,14 @@ namespace JG_Prospect
                     DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
                     DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
                     DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
-
-
+                    if (dsSalesUserData.Tables[6].Rows.Count >0)
+                    {
+                        lblCount.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                    }
+                    else
+                    {
+                        lblCount.Text = "0";
+                    }
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -3949,21 +3956,19 @@ namespace JG_Prospect
                         }
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
-                        lblCount.Text = (dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]).ToString();
                         grdUsers.DataBind();
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
-                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
-                        LabelSet();
+                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);                      
                     }
                     else
                     {
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
-                        LabelSet();
                     }
-
+                   
+                    LabelSet();
                     upUsers.Update();
                 }
             }
@@ -4459,12 +4464,26 @@ namespace JG_Prospect
 
         public void LabelSet()
         {
-            int currentPage = grdUsers.PageIndex + 1;
-            int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
-            int last = selValue * currentPage;
-            int first = (last - selValue) + 1;
-            lblTo.Text = last.ToString();
-            lblFrom.Text = first.ToString();
+            if (grdUsers.PageCount == 0)
+            {
+                lblTo.Text = string.Empty;
+                lblFrom.Text = string.Empty;
+                Label5.Visible = false;
+                lblof.Visible = false;
+                lblCount.Visible = false;
+            }
+            else
+            {
+                int currentPage = grdUsers.PageIndex + 1;
+                int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                int last = selValue * currentPage;
+                int first = (last - selValue) + 1;
+                lblTo.Text = last.ToString();
+                lblFrom.Text = first.ToString();
+                Label5.Visible = true;
+                lblof.Visible = true;
+                lblCount.Visible = true;
+            }
         }
 
         protected void chkSelected_CheckedChanged(object sender, EventArgs e)
