@@ -722,8 +722,8 @@
                             <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to"/>&nbsp;
                             <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
                             <asp:Label ID="lblof" runat="server" Text="of" />
-                            <asp:Label ID="lblCount" runat="server" Style="color: red" />
-                            <asp:Label ID="lblselectedchk" runat="server" />
+                            <asp:Label ID="lblCount" runat="server" Style="color: red;" />
+                            <asp:Label ID="lblselectedchk" runat="server" Style="font-weight:bold;" />
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />

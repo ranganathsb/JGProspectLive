@@ -366,7 +366,8 @@ namespace JG_Prospect
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
                     LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
-                    
+                   
+
                     if (hdimg.Value != "")
                     {
                         string[] value = hdimg.Value.Split('/');
@@ -3763,6 +3764,7 @@ namespace JG_Prospect
                     {
                         lblCount.Text = "0";
                     }
+                    lblselectedchk.Text = string.Empty;
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -3959,14 +3961,15 @@ namespace JG_Prospect
                         grdUsers.DataBind();
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
-                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);                      
+                        BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
+                       
                     }
                     else
                     {
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
-                    }
+                    }                   
                    
                     LabelSet();
                     upUsers.Update();
@@ -4499,8 +4502,6 @@ namespace JG_Prospect
             }
             if (chkvalue == true)
             {
-
-
                 lblCount = lblCount + 1;
             }
             else
