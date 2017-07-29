@@ -755,10 +755,10 @@
                                     <th>TaskTitle</th>
                                     <th>Designation</th>
                                     <th>Status</th>
-                                    <th style="width:9%"></th>
+                                    <th style="width: 9%"></th>
                                 </tr>
 
-                                <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus }" ng-class-even="'AlternateRow'" repeat-end="onEnd()">
+                                <tr data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus }" ng-class-even="'AlternateRow'" repeat-end="onStaffEnd()">
                                     <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{Task.TaskId}}"><span class="badge badge-success badge-xstext">
                                         <label>{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,!Task.IsTechTask ? "SS" : "TT")}}</label></span></a><a style="text-decoration: none;" ng-attr-data-taskid="{{Task.TaskId}}" href="javascript:void(0);" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" onclick="swapSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" href="javascript:void(0);" onclick="swapSequence(this,false)">&#9660;</a>
                                         <div class="handle-counter" ng-class="{hide: Task.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{Task.TaskId}}">
@@ -775,7 +775,7 @@
                                     <td>{{ Task.Title }}</td>
                                     <td>{{getDesignationString(Task.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
-                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
+                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="getDesignationsModel(Task.SequenceDesignationId)">
                                             </select>
                                         </div>
                                     </td>
@@ -797,7 +797,7 @@
                     
                 </any>
                                     </td>
-                                    <td style="width:9%">
+                                    <td style="width: 9%">
                                         <div class="seqapprovalBoxes">
                                             <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
@@ -886,10 +886,10 @@
                                     <th>TaskTitle</th>
                                     <th>Designation</th>
                                     <th>Status</th>
-                                    <th style="width:9%"></th>
+                                    <th style="width: 9%"></th>
                                 </tr>
 
-                                <tr data-ng-repeat="Task in TechTasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onEnd()">
+                                <tr data-ng-repeat="Task in TechTasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onTechEnd()">
                                     <td><a href="javascript:void(0);" onclick="showEditTaskSequence(this)" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{Task.TaskId}}"><span class="badge badge-success badge-xstext">
                                         <label>{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,!Task.IsTechTask ? "SS" : "TT")}}</label></span></a><a style="text-decoration: none;" ng-attr-data-taskid="{{Task.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" onclick="swapSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-taskseq="{{Task.Sequence}}" class="downlink" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" href="javascript:void(0);" onclick="swapSequence(this,false)">&#9660;</a>
                                         <div class="handle-counter" ng-class="{hide: Task.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{Task.TaskId}}">
@@ -905,7 +905,7 @@
                                     <td>{{ Task.Title }}</td>
                                     <td>{{getDesignationString(Task.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
-                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in getDesignationsArray(Task.TaskDesignation) track by item.Id" ng-model="DesignationSelectModel[$index]">
+                                            <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="showEditTaskSequence(this)" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="getDesignationsModel(Task.SequenceDesignationId)">
                                             </select>
                                         </div>
                                     </td>
@@ -927,7 +927,7 @@
                     
                 </any>
                                     </td>
-                                    <td style="width:9%">
+                                    <td style="width: 9%">
                                         <div class="seqapprovalBoxes">
                                             <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
@@ -1458,6 +1458,7 @@
 
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
+    var ddlDesigSeqClientID = '#<%=ddlDesigSeq.ClientID%>';
 
     $(function () {
         ucSubTasks_Initialize();
@@ -2194,9 +2195,7 @@
                 // Choosen selected option with hyperlink to profile.
                 setSelectedUsersLink();
 
-                ApplySubtaskLinkContextMenu();
-
-                applyTaskSequenceTabs();
+                ApplySubtaskLinkContextMenu();                
 
                 //ApplyImageGallery();
 
@@ -2235,45 +2234,8 @@
                 pageLoad(null, null);
             }
 
-            function applyTaskSequenceTabs() {
-                $('#taskSequenceTabs').tabs({});
-
-                $("#taskSequenceTabs").bind("tabsactivate", function (event, ui) {
-                    console.log("calling load task from tab select....");
-                    if (ui.newPanel.attr('id') == "TechTask") {
-
-                        sequenceScope.IsTechTask = true;
-                        sequenceScope.getTechTasks();
-                    }
-                    else {
-                        sequenceScope.IsTechTask = false;
-                        sequenceScope.getTasks();
-                    }
-                });
-
-            }
-
-            function setActiveTab(isTechTask) {
-
-                var activeTab = 0;
-                var clickEditLinkDiv = "#tblStaffSeq tbody > tr.yellowthickborder";
-
-                if (isTechTask) {
-                    activeTab = 1;
-                    clickEditLinkDiv = "#tblTechSeq  tbody > tr.yellowthickborder";
-                }
-
-                $("#taskSequenceTabs").tabs("option", "active", activeTab);
-
-                var divToFindLink = $(clickEditLinkDiv);
-
-                var linkToClick = divToFindLink.find(".autoclickSeqEdit");
-
-                if (linkToClick) {
-                    showEditTaskSequence(linkToClick);
-                }
-
-            }
+        
+      
 
             function txtSubTaskDescription_Blur(editor) {
                 if ($('#<%=hdnSubTaskId.ClientID%>').val() != '0') {

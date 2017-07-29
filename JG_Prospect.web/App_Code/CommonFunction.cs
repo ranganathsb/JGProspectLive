@@ -1195,6 +1195,15 @@ namespace JG_Prospect.App_Code
                 case "20":
                     prefix = "SBC";
                     break;
+                case "24":
+                    prefix = "ITSQA";
+                    break;
+                case "25":
+                    prefix = "ITJQA";
+                    break;
+                case "26":
+                    prefix = "ITJPH";
+                    break;
                 default:
                     prefix = "TSK";
                     break;

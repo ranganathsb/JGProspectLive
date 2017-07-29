@@ -63,17 +63,23 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         }
     });
 
-    console.log("calling search task from popup loading event....");
-    console.log(TechTask);
+    setParentTaskDesignationToJqueryArray(ddlDesigSeqClientID);
+
+   // console.log(TechTask);
 
     if (TechTask === 'True') {
-
+        console.log("calling search tech task after popup initialized....");
         sequenceScope.getTechTasks();
+        applyTaskSequenceTabs(1);
+
     }
     else {
-
+        console.log("calling search staff task after popup initialized....");
         sequenceScope.getTasks();
+        applyTaskSequenceTabs(0);
     }
+
+
 
 }
 
@@ -312,5 +318,60 @@ function swapSequence(hyperlink, isup) {
     else {
         alert("In order to swap sequence both Task should have same designation, Please filter designation from above designation dropdown and then try to swap sequence.");
     }
+
+}
+
+function setActiveTab(isTechTask) {
+
+    var activeTab = 0;
+    var clickEditLinkDiv = "#tblStaffSeq tbody > tr.yellowthickborder";
+
+    if (isTechTask) {
+        //  activeTab = 1;
+        clickEditLinkDiv = "#tblTechSeq  tbody > tr.yellowthickborder";
+    }
+
+    //$("#taskSequenceTabs").tabs("option", "active", activeTab);
+
+    var linkToClick = $(clickEditLinkDiv).find(".autoclickSeqEdit");
+
+    if (linkToClick) {
+        showEditTaskSequence(linkToClick);
+    }
+
+}
+
+function applyTaskSequenceTabs(activeTab) {
+    $('#taskSequenceTabs').tabs({
+        active: activeTab
+    });
+
+   // console.log('Active tab is ' + $("#taskSequenceTabs").tabs("option", "active"));
+
+    $("#taskSequenceTabs").bind("tabsactivate", function (event, ui) {
+        console.log("calling load task from tab select....");
+        if (ui.newPanel.attr('id') == "TechTask") {
+
+            sequenceScope.IsTechTask = true;
+            sequenceScope.getTechTasks();
+        }
+        else {
+            sequenceScope.IsTechTask = false;
+            sequenceScope.getTasks();
+        }
+    });
+
+}
+
+
+function setParentTaskDesignationToJqueryArray(DesignationDropdown) {
+
+    var allDesignations = $(DesignationDropdown).find("option");
+    sequenceScope.ParentTaskDesignations = [];
+
+    $.each(allDesignations, function (index, item) {
+        sequenceScope.ParentTaskDesignations.push({ "Name": $(item).text(), "Id": $(item).val() });
+        console.log(sequenceScope.ParentTaskDesignations);
+    });
 
 }
