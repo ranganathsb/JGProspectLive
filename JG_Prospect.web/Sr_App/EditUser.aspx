@@ -207,7 +207,8 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-
+    </style>
+    <style type="text/css">
         #hint {
             cursor: pointer;
         }
@@ -220,49 +221,6 @@
             position: absolute;
             z-index: 2;
         }
-
-        .contactGrid {
-            padding: 0px;
-            margin: 5px;
-        }
-
-            .contactGrid li {
-                width: 350px !important;
-                text-align: left;
-                margin: 2px 0px;
-            }
-
-            .contactGrid > li:last-child {
-                height: 100px !important;
-            }
-
-            .contactGrid li select.mail {
-                width: 89% !important;
-                height: 25px;
-            }
-
-            .contactGrid li select.phone {
-                width: 61% !important;
-                height: 25px;
-            }
-
-            .contactGrid li input.phone {
-                width: 90px !important;
-            }
-
-            .contactGrid li .ext {
-                width: 30px;background: white;
-    display: inline-block;
-    padding: 5px;
-            }
-
-            .contactGrid .dd .ddTitle .ddTitleText img {
-                padding: 0px !important;
-            }
-
-            .contactGrid select.phone option[data-p='1'] {
-                color: red;
-            }
     </style>
     <script type="text/javascript">
 
@@ -376,55 +334,13 @@
                     });
                 });
 
+
                 $('.PrimaryPhone').click(function () {
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
                 $('.GrdPrimaryEmail').click(function () {
                     //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 });
-
-                try {
-                    $('.typeDrop').msDropDown();// OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
-                } catch (e) {
-                    alert(e.message);
-                }
-
-
-                $(".typeDrop").change(function () {
-                    var selValue = $(this).find('option:selected').text().toLowerCase();
-
-                    if (selValue.indexOf("phone") >= 0) {
-                        $(".contactGrid li input.ext").show();
-                        $(".contactGrid li input.phone").attr('placeholder', 'Phone');
-                    }
-                    else { $(".contactGrid li input.ext").hide(); $(".contactGrid li input.phone").attr('placeholder', 'Email'); }
-                });
-
-                $(".phone").change(function () {
-                    setCheckBox(this);
-
-                    var ext = $(this).find('option:selected').attr('data-ext');
-
-                    if (ext != undefined & ext != null)
-                        $(this).parent().find('span.ext').text(ext);
-                });
-
-                $(".mail").change(function () {
-                    setCheckBox(this);
-                });
-
-                function setCheckBox(obj) {
-                    var isPrimary = $(obj).find('option:selected').attr('data-p');
-
-                    if (isPrimary == '1') {
-                        $(obj).parent().find('input[type="checkbox"]').prop('checked', true);
-                    }
-                    else {
-                        $(obj).parent().find('input[type="checkbox"]').prop('checked', false);
-                        $(obj).parent().find('input[type="checkbox"]').removeProp('checked');
-                    }
-                }
-
             });
 
         }
@@ -803,11 +719,11 @@
 
 
                         <div style="float: right; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
-                            <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to" />&nbsp;
+                            <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to"/>&nbsp;
                             <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
                             <asp:Label ID="lblof" runat="server" Text="of" />
                             <asp:Label ID="lblCount" runat="server" Style="color: red;" />
-                            <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
+                            <asp:Label ID="lblselectedchk" runat="server" Style="font-weight:bold;" />
 
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
@@ -853,9 +769,9 @@
                                             style="height: 75px; width: 75px;" />--%>
 
                                         <asp:Image Style="height: 75px; width: 75px;" ID="imgprofile" runat="server"></asp:Image>
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible="false" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-
-                                        <%--          <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
+                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible="false" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        
+                              <%--          <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <br />
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
@@ -978,7 +894,10 @@
                                 <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                     </ItemTemplate>
+
                                 </asp:TemplateField>
+
+
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="20%" ItemStyle-Width="20%" ItemStyle-HorizontalAlign="Center" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
@@ -988,40 +907,12 @@
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                        <br />
-                                        <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />
-                                        <ul class="contactGrid">
-                                            <li>
-                                                <asp:CheckBox ID="chkEmailPrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
-                                                <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
-                                            </li>
-                                            <li>
-                                                <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
-                                                <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>&nbsp;
-                                                <asp:Label ID="lblExt" CssClass="ext" runat="server"></asp:Label>
-                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop"
-                                                    ID="ddlPhoneTypeDisplay">
-                                                </asp:DropDownList>
-                                            </li>
-                                            <li>
-                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
-                                                    ID="ddlPhoneType">
-                                                </asp:DropDownList>&nbsp;
-                                                <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>&nbsp;
-                                                <asp:TextBox ID="txtContact" CssClass="phone" runat="server"></asp:TextBox>&nbsp;
-                                                <asp:TextBox ID="txtExt" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>&nbsp;
-                                                <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
-                                                    CommandArgument='<%# Eval("Id") %>'></asp:Button>
-                                            </li>
-                                        </ul>
-                                        <br />
-                                        <br />
-                                        <%-- <div class="GrdContainer" style="width: 90%">
+                                        <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
                                                 <span>Click To Add Phone /Email</span>
                                             </div>
-                                            <div class="GrdContent">                                                
-                                               <ul style="padding-left: 0px;">
+                                            <div class="GrdContent">
+                                                <ul style="padding-left: 0px;">
                                                     <li>
                                                         <asp:CheckBox ID="chkIsPrimaryPhone" Text=" Is Primary contact" runat="server"></asp:CheckBox></li>
                                                     <li>
@@ -1037,7 +928,8 @@
                                                         <asp:Button ID="btnAddPhone" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact" CommandArgument='<%# Eval("Id") %>'></asp:Button></li>
                                                 </ul>
                                             </div>
-                                        </div>--%>
+                                        </div>
+
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="12%" ItemStyle-Width="12%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">

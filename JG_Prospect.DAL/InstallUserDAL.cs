@@ -31,53 +31,6 @@ namespace JG_Prospect.DAL
 
         #region userlogin
 
-
-        //sp_SetPrimaryContactOfUser   @DataID int, @UserID int, @DataType INT, @IsPrimary bit
-
-        public void SetPrimaryContactOfUser(int DataID, int UserID, int DataType, bool IsPrimary)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("sp_SetPrimaryContactOfUser");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@DataID", DbType.Int32, DataID);
-                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
-                    database.AddInParameter(command, "@DataType", DbType.Int32, DataType);
-                    database.AddInParameter(command, "@IsPrimary", DbType.Boolean, IsPrimary);
-                    database.ExecuteNonQuery(command);
-                }
-            }
-            catch (Exception ex)
-            { Console.Write(ex.Message); }
-        }
-
-        public string AddUserEmailOrPhone(int UserID, string DataForValidation, int DataType, string PhoneTypeID, string PhoneExt, bool IsPrimary)
-        {
-            string res = "";
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("sp_AddUserEmailOrPhone");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
-                    database.AddInParameter(command, "@DataForValidation", DbType.String, DataForValidation);
-                    database.AddInParameter(command, "@DataType", DbType.Int32, DataType);
-                    database.AddInParameter(command, "@PhoneTypeID", DbType.String, PhoneTypeID);
-                    database.AddInParameter(command, "@PhoneExt", DbType.String, PhoneExt);
-                    database.AddInParameter(command, "@IsPrimary", DbType.Boolean, IsPrimary);
-                    res = database.ExecuteScalar(command).ToString();
-                }
-            }
-            catch (Exception ex)
-            { Console.Write(ex.Message); res = "error"; }
-
-            return res;
-        }
-        
         public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
         {
             DataSet dsTemp = new DataSet();

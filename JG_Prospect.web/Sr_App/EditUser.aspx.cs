@@ -93,38 +93,6 @@ namespace JG_Prospect
             }
         }
 
-        private DataTable dtUserEmails
-        {
-            get
-            {
-                if (ViewState["dt_UserEmails"] == null)
-                {
-                    return null;
-                }
-                return (DataTable)ViewState["dt_UserEmails"];
-            }
-            set
-            {
-                ViewState["dt_UserEmails"] = value;
-            }
-        }
-
-        private DataTable dtUserPhones
-        {
-            get
-            {
-                if (ViewState["dt_UserPhones"] == null)
-                {
-                    return null;
-                }
-                return (DataTable)ViewState["dt_UserPhones"];
-            }
-            set
-            {
-                ViewState["dt_UserPhones"] = value;
-            }
-        }
-
         #endregion
 
         #region '--Page Events--'
@@ -392,15 +360,13 @@ namespace JG_Prospect
                     Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlEmployeeType = (e.Row.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
-                    //DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
+                    DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
                     LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
-                    DropDownList elePhoneTypeDisplay = (e.Row.FindControl("ddlPhoneTypeDisplay") as DropDownList);
-                    DropDownList elePhoneType = (e.Row.FindControl("ddlPhoneType") as DropDownList);
-                    int id = Convert.ToInt32(grdUsers.DataKeys[e.Row.RowIndex].Values[0]);
+                   
 
                     if (hdimg.Value != "")
                     {
@@ -415,14 +381,19 @@ namespace JG_Prospect
                             lbltestChk.Visible = true;
                         }
                         else
-                        { img.ImageUrl = "/UploadeProfile/default.jpg"; }
+                        {
+                            img.ImageUrl = "/UploadeProfile/default.jpg";
+                        }
+
                     }
                     else
-                    { img.ImageUrl = "/UploadeProfile/default.jpg"; }
+                    {
+                        img.ImageUrl = "/UploadeProfile/default.jpg";
+                    }
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
-                    #region populate Designation
+                    //populate Designation
                     DropDownList ddlDesiGrd = (e.Row.FindControl("drpDesig") as DropDownList);//Find the DropDownList in the Row
                     DataSet dsDesignation = new DataSet();
                     dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
@@ -439,71 +410,8 @@ namespace JG_Prospect
                     {
                         ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
                     }
-                    #endregion
 
-
-                    DropDownList elePhone = (e.Row.FindControl("ddlPhone") as DropDownList);
-                    DropDownList eleEmail = (e.Row.FindControl("ddlEmail") as DropDownList);
-
-                    var userEmails = from mails in dtUserEmails.AsEnumerable()
-                                     where mails.Field<int>("UserID") == id
-                                     select mails;
-
-                    var userPhones = from phones in dtUserPhones.AsEnumerable()
-                                     where phones.Field<int>("UserID") == id
-                                     select phones;
-                    int i = 0;
-                    foreach (DataRow RowItem in userEmails)
-                    {
-                        try
-                        {
-                            eleEmail.Items.Add(new ListItem(RowItem["emailID"].ToString(), RowItem["UserEmailID"].ToString()));
-
-                            if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
-                            {
-                                eleEmail.SelectedValue = RowItem["UserEmailID"].ToString();
-                                eleEmail.Items[i].Attributes["data-p"] = "1";
-
-                                CheckBox eleEmailPrimary = (e.Row.FindControl("chkEmailPrimary") as CheckBox);
-                                eleEmailPrimary.Checked = true;
-                                eleEmail.ForeColor = System.Drawing.Color.Red;
-                            }
-                        }
-                        catch { }
-                        finally { i++; }
-                    }
-
-                    i = 0;
-                    Label lblExt = (e.Row.FindControl("lblExt") as Label);
-                    foreach (DataRow RowItem in userPhones)
-                    {
-                        try
-                        {
-                            elePhone.Items.Add(new ListItem(RowItem["Phone"].ToString(), RowItem["UserPhoneID"].ToString()));
-                            if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
-                            {
-                                elePhone.SelectedValue = RowItem["UserPhoneID"].ToString();
-                                elePhone.Items[i].Attributes["data-p"] = "1";
-                                elePhoneTypeDisplay.SelectedValue = RowItem["PhoneTypeID"].ToString();
-
-                                CheckBox elePhonePrimary = (e.Row.FindControl("chkPhonePrimary") as CheckBox);
-                                elePhonePrimary.Checked = true;
-
-                                if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
-                                    lblExt.Text = RowItem["PhoneExtNo"].ToString();
-
-                                elePhonePrimary.ForeColor = System.Drawing.Color.Red;
-                            }
-
-                            if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
-                                elePhone.Items[i].Attributes["data-ext"] = RowItem["PhoneExtNo"].ToString();
-
-                        }
-                        catch { }
-                        finally { i++; }
-                    }
-
-                    BindContactDllForGrid(ref elePhoneType, ref elePhoneTypeDisplay);
+                    ddlContactType = BindContactDllForGrid(ddlContactType);
 
                     System.Web.UI.HtmlControls.HtmlAnchor aReasumePath = (e.Row.FindControl("aReasumePath") as System.Web.UI.HtmlControls.HtmlAnchor);
 
@@ -522,18 +430,21 @@ namespace JG_Prospect
                     string employeeType = Convert.ToString((e.Row.FindControl("lblEmployeeType") as HiddenField).Value);
                     if (employeeType != "")
                     {
+
                         System.Web.UI.WebControls.ListItem lstEmpType = ddlEmployeeType.Items.FindByValue(employeeType);
 
                         if (lstEmpType != null)
-                        { ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpType); }
-
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpType);
+                        }
                         System.Web.UI.WebControls.ListItem lstEmpTypeText = ddlEmployeeType.Items.FindByText(employeeType);
 
                         if (lstEmpTypeText != null)
-                        { ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpTypeText); }
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpTypeText);
+                        }
                     }
 
-                    #region Status Switch
                     if (Status != "")
                     {
                         ddlStatus.Items.FindByValue(Status).Selected = true;
@@ -599,7 +510,7 @@ namespace JG_Prospect
                                 break;
                         }
                     }
-                    #endregion
+
 
                     if (JGSession.DesignationId == (int)JGConstant.DesignationType.Admin || JGSession.DesignationId == (int)JGConstant.DesignationType.IT_Lead)
                     {
@@ -623,112 +534,61 @@ namespace JG_Prospect
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
             SqlConnection con = new SqlConnection(str);
 
-            #region AddNewContact
             if (e.CommandName == "AddNewContact")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewContact");
+                CheckBox chkIsPrimaryPhone = (CheckBox)gvRow.FindControl("chkIsPrimaryPhone");
+                DropDownList ddlContactType = (DropDownList)gvRow.FindControl("ddlContactType");
+                //int Index = gvRow.RowIndex;
+                bool IsPrimary = chkIsPrimaryPhone.Checked;
 
-                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtContact");
-                TextBox txtExt = (TextBox)gvRow.FindControl("txtExt");
-                CheckBox eleEmailPrimary = (CheckBox)gvRow.FindControl("chkEmailPrimary");
-                DropDownList eleEmail = (DropDownList)gvRow.FindControl("ddlEmail");
-                DropDownList elePhone = (DropDownList)gvRow.FindControl("ddlPhone");
-                DropDownList elePhoneTypeDisplay = (DropDownList)gvRow.FindControl("ddlPhoneTypeDisplay");
-                DropDownList elePhoneType = (DropDownList)gvRow.FindControl("ddlPhoneType");
-                CheckBox elePhonePrimary = (CheckBox)gvRow.FindControl("chkPhonePrimary");
-                CheckBox elePrimary = (CheckBox)gvRow.FindControl("chkPrimary");
-
-
-                String PhoneType = elePhoneType.SelectedItem.Text;
+                String PhoneType = ddlContactType.SelectedItem.Text;
                 int id = Convert.ToInt32(e.CommandArgument);
-                bool IsPrimary = elePrimary.Checked;
 
                 if (txtNewContact.Text.Trim() != "")
                 {
-
-                    string result = InstallUserBLL.Instance.AddUserEmailOrPhone(id, txtNewContact.Text.Trim(), (PhoneType == "EMAIL" ? 2 : 1), elePhoneType.SelectedValue, txtExt.Text, IsPrimary);
-
-                    if (result == "error")
+                    if (PhoneType == "EMAIL")
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "errorAlert", "alert('error');", true);
-                    }
-                    else if (result != "")
-                    {
-                        if (PhoneType == "EMAIL")
+                        string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 2, id, 0);
+                        if (strReturnValue != "")
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "dataExistsAlert", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User with email already Exist')", true);
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
                         }
                         else
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "dataExistsAlert", "TheConfirm_OkOnly('User with this Phone already Exist','Phone Alert')", true);
+                            InstallUserBLL.Instance.AddNewEmailForUser(txtNewContact.Text, IsPrimary, id);
                         }
+                        //binddata();
+                        GetSalesUsersStaticticsAndData();
                     }
                     else
                     {
-                        GetSalesUsersStaticticsAndData();
+                        string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 1, id, 0);
+                        if (strReturnValue != "")
+                        {
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this Phone already Exist','Phone Alert')", true);
+                        }
+                        else
+                        {
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimary, txtNewContact.Text, Convert.ToInt32(ddlContactType.SelectedValue), id, null, null, false);
+                            //binddata();
+                            GetSalesUsersStaticticsAndData();
+                        }
                     }
-
-
                 }
                 else
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
                 }
-                #region AddNewContact Old    
-                //    TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewContact");
-                //    CheckBox chkIsPrimaryPhone = (CheckBox)gvRow.FindControl("chkIsPrimaryPhone");
-                //    DropDownList ddlContactType = (DropDownList)gvRow.FindControl("ddlContactType");
 
-                //    bool IsPrimary = chkIsPrimaryPhone.Checked;
+                //DropDownList ddlStatus = (DropDownList)gvRow.FindControl("ddlStatus");
+                //int StatusId = Convert.ToInt32(e.CommandArgument);
+                ////string Status = ddlStatus.SelectedValue;
+                //bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
 
-                //    String PhoneType = ddlContactType.SelectedItem.Text;
-                //    int id = Convert.ToInt32(e.CommandArgument);
-
-                //    if (txtNewContact.Text.Trim() != "")
-                //    {
-                //        if (PhoneType == "EMAIL")
-                //        {
-                //            string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 2, id, 0);
-                //            if (strReturnValue != "")
-                //            {
-                //                ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
-                //            }
-                //            else
-                //            {
-                //                InstallUserBLL.Instance.AddNewEmailForUser(txtNewContact.Text, IsPrimary, id);
-                //            }
-                //            //binddata();
-                //            GetSalesUsersStaticticsAndData();
-                //        }
-                //        else
-                //        {
-                //            string strReturnValue = new_customerBLL.Instance.CheckDuplicateSalesUser(txtNewContact.Text, 1, id, 0);
-                //            if (strReturnValue != "")
-                //            {
-                //                ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmail", "TheConfirm_OkOnly('User with this Phone already Exist','Phone Alert')", true);
-                //            }
-                //            else
-                //            {
-                //                InstallUserBLL.Instance.AddUserPhone(IsPrimary, txtNewContact.Text, Convert.ToInt32(ddlContactType.SelectedValue), id, null, null, false);
-                //                //binddata();
-                //                GetSalesUsersStaticticsAndData();
-                //            }
-                //        }
-                //    }
-                //    else
-                //    {
-                //        ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
-                //    }
-
-                //    //DropDownList ddlStatus = (DropDownList)gvRow.FindControl("ddlStatus");
-                //    //int StatusId = Convert.ToInt32(e.CommandArgument);
-                //    ////string Status = ddlStatus.SelectedValue;
-                //    //bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
-                #endregion
             }
-            #endregion
-
-            #region EditSalesUser
             else if (e.CommandName == "EditSalesUser")
             {
                 //GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
@@ -763,9 +623,6 @@ namespace JG_Prospect
                 //}
 
             }
-            #endregion
-
-            #region DeactivateSalesUser
             else if (e.CommandName == "DeactivateSalesUser")
             {
                 List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
@@ -775,9 +632,6 @@ namespace JG_Prospect
                     GetSalesUsersStaticticsAndData();
                 }
             }
-            #endregion
-
-            #region DeleteSalesUser
             else if (e.CommandName == "DeleteSalesUser")
             {
                 List<int> lstIds = new List<int>() { Convert.ToInt32(e.CommandArgument.ToString()) };
@@ -787,9 +641,6 @@ namespace JG_Prospect
                     GetSalesUsersStaticticsAndData();
                 }
             }
-            #endregion
-
-            #region ShowPicture
             else if (e.CommandName == "ShowPicture")
             {
                 string ImagePath = "";
@@ -798,9 +649,6 @@ namespace JG_Prospect
                 img_InstallerImage.ImageUrl = ImagePath;
                 mp1.Show();
             }
-            #endregion
-
-            #region ChangeStatus
             else if (e.CommandName == "ChangeStatus")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
@@ -810,9 +658,6 @@ namespace JG_Prospect
                 string Status = ddlStatus.SelectedValue;
                 bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
             }
-            #endregion
-
-            #region EditAddedByUserInstall
             else if (e.CommandName == "EditAddedByUserInstall")
             {
                 //GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
@@ -847,8 +692,6 @@ namespace JG_Prospect
                 //}
 
             }
-            #endregion
-
             else if (e.CommandName == "send-email")
             {
                 LoadEmailContentToSentToUser(grdUsers.Rows[Convert.ToInt32(e.CommandArgument)]);
@@ -1096,12 +939,19 @@ namespace JG_Prospect
             //call: updateStauts() function to update it in database.
         }
 
-        private void BindContactDllForGrid(ref DropDownList ddlPhoneType, ref DropDownList ddlPhoneTypeDisplay)
+        private DropDownList BindContactDllForGrid(DropDownList ddlContactType)
         {
             // To Avoid multi call to DB
-            if (ViewState["ContactDllForGrid"] == null)
+            if (ViewState["ContactDllForGrid"] != null)
+            {   // Bind dropdown 
+                ddlContactType = BindContactDllForVS(ddlContactType);
+            }
+            else
             {
-                DataSet dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();// Fill ViewState from DB.
+                // Fill ViewState from DB.
+                DataSet dsPhoneType;
+
+                dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
 
                 foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
                 {
@@ -1114,25 +964,32 @@ namespace JG_Prospect
                 }
 
                 ViewState["ContactDllForGrid"] = dsPhoneType;
+
+                ddlContactType = BindContactDllForVS(ddlContactType);
+
             }
-            // Bind dropdown
-            ddlPhoneType = BindContactDllForVS(ddlPhoneType);
-            ddlPhoneTypeDisplay = BindContactDllForVS(ddlPhoneTypeDisplay);
+            return ddlContactType;
         }
 
-        private DropDownList BindContactDllForVS(DropDownList ddlPhoneType)
+        /// <summary>
+        /// Bind DropDown on from the ViewState.
+        /// </summary>
+        /// <param name="ddlContactType"></param>
+        /// <returns></returns>
+        private DropDownList BindContactDllForVS(DropDownList ddlContactType)
         {
-            DataSet dsPhoneType = (DataSet)ViewState["ContactDllForGrid"];
+            DataSet dsPhoneType;
+            dsPhoneType = (DataSet)ViewState["ContactDllForGrid"];
 
             if (dsPhoneType.Tables[0].Rows.Count > 0)
             {
-                ddlPhoneType.DataSource = dsPhoneType.Tables[0];
-                ddlPhoneType.DataTextField = "ContactName";
-                ddlPhoneType.DataValueField = "UserContactID";
-                ddlPhoneType.DataBind();
+                ddlContactType.DataSource = dsPhoneType.Tables[0];
+                ddlContactType.DataTextField = "ContactName";
+                ddlContactType.DataValueField = "UserContactID";
+                ddlContactType.DataBind();
             }
 
-            return ddlPhoneType;
+            return ddlContactType;
         }
 
         /// <summary>
@@ -3899,14 +3756,7 @@ namespace JG_Prospect
                     DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
                     DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
                     DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
-
-                    //added by deep [to get emails and phone of all users]
-                    DataTable dt_UserEmails = dsSalesUserData.Tables[7];
-                    DataTable dt_UserPhones = dsSalesUserData.Tables[8];
-                    ViewState["dt_UserEmails"] = dt_UserEmails;
-                    ViewState["dt_UserPhones"] = dt_UserPhones;
-
-                    if (dsSalesUserData.Tables[6].Rows.Count > 0)
+                    if (dsSalesUserData.Tables[6].Rows.Count >0)
                     {
                         lblCount.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
                     }
@@ -3915,7 +3765,7 @@ namespace JG_Prospect
                         lblCount.Text = "0";
                     }
                     lblselectedchk.Text = string.Empty;
-
+                    
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -4113,15 +3963,15 @@ namespace JG_Prospect
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
-
+                       
                     }
                     else
                     {
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
-                    }
-
+                    }                   
+                   
                     LabelSet();
                     int countval = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0]["tcount"]);
                     int dropvalue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
@@ -4666,83 +4516,6 @@ namespace JG_Prospect
                 lblCount = lblCount - 1;
             }
             lblselectedchk.Text = lblCount <= 0 ? "" : lblCount == 1 ? ", " + lblCount.ToString() + " user selected" : ", " + lblCount.ToString() + " users selected";
-        }
-
-        protected void PhoneTypeDropdown_PreRender(object sender, EventArgs e)
-        {
-            string imageURL = "";
-
-            DropDownList elePhoneTypeDisplay = (DropDownList)sender;
-
-            if (elePhoneTypeDisplay != null)
-            {
-                for (int i = 0; i < elePhoneTypeDisplay.Items.Count; i++)
-                {
-                    switch (elePhoneTypeDisplay.Items[i].Text.Trim())
-                    {
-                        case "skype":
-                            imageURL = "../Sr_App/img/skype.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-                        case "whatsapp":
-                            imageURL = "../Sr_App/img/WhatsApp.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-
-                        case "HousePhone":
-                        case "House Phone":
-                            imageURL = "../Sr_App/img/Phone_home.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-
-                        case "CellPhone":
-                        case "Cell Phone":
-                            imageURL = "../Sr_App/img/Cell_Phone.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-
-                        case "WorkPhone":
-                        case "Work Phone":
-                            imageURL = "../Sr_App/img/WorkPhone.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-
-                        case "AltPhone":
-                        case "Alt. Phone":
-                            imageURL = "../Sr_App/img/AltPhone.png";
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = imageURL;
-                            break;
-
-                        default:
-                            elePhoneTypeDisplay.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
-                            break;
-                    }
-
-                }
-            }
-        }
-
-        protected void chkPrimary_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                CheckBox chk = (CheckBox)sender;
-                GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-                DropDownList eleEmail = (DropDownList)grow.FindControl("ddlEmail");
-                DropDownList elePhone = (DropDownList)grow.FindControl("ddlPhone");
-                int dataID = 0;
-                int dataType = 1;
-
-                int rowIndex = grow.RowIndex;
-                int userID = (int)grdUsers.DataKeys[rowIndex]["Id"];
-
-
-                if (chk.ClientID.Contains("Email")) { dataID = Convert.ToInt32(eleEmail.SelectedValue); dataType = 2; }
-                else { dataID = Convert.ToInt32(elePhone.SelectedValue); dataType = 1; }
-
-                InstallUserBLL.Instance.SetPrimaryContactOfUser(dataID, userID, dataType, chk.Checked);
-            }
-            catch (Exception ex) { Console.Write(ex.Message); }
         }
     }
 }
