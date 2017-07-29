@@ -365,18 +365,20 @@ namespace JG_Prospect
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
+                    LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
+                   
 
                     if (hdimg.Value != "")
                     {
                         string[] value = hdimg.Value.Split('/');
-                        string path=value[value.Length - 1];
+                        string path = value[value.Length - 1];
                         string pathvalue = Server.MapPath("/UploadeProfile/");
-                            pathvalue=Path.Combine(pathvalue+path);
+                        pathvalue = Path.Combine(pathvalue + path);
 
                         if (File.Exists(pathvalue))
                         {
                             img.ImageUrl = hdimg.Value;
-
+                            lbltestChk.Visible = true;
                         }
                         else
                         {
@@ -526,7 +528,7 @@ namespace JG_Prospect
             }
         }
 
-     
+
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
@@ -3754,7 +3756,16 @@ namespace JG_Prospect
                     DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
                     DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
                     DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
-
+                    if (dsSalesUserData.Tables[6].Rows.Count >0)
+                    {
+                        lblCount.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                    }
+                    else
+                    {
+                        lblCount.Text = "0";
+                    }
+                    lblselectedchk.Text = string.Empty;
+                    
                     #region OrderStatus Column
 
                     string usertype = Session["usertype"].ToString().ToLower();
@@ -3952,14 +3963,22 @@ namespace JG_Prospect
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
+                       
                     }
                     else
                     {
                         //Session["UserGridData"] = null;
                         grdUsers.DataSource = null;
                         grdUsers.DataBind();
+                    }                   
+                   
+                    LabelSet();
+                    int countval = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0]["tcount"]);
+                    int dropvalue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                    if (countval < dropvalue)
+                    {
+                        lblTo.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
                     }
-
                     upUsers.Update();
                 }
             }
@@ -4450,9 +4469,53 @@ namespace JG_Prospect
 
             string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
             DropDownList ddlEmployeeType = (grow.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
-
             InstallUserBLL.Instance.UpdateEmpType(Convert.ToInt32(ID), ddlEmployeeType.SelectedValue);
+        }
 
+        public void LabelSet()
+        {
+            if (grdUsers.PageCount == 0)
+            {
+                lblTo.Text = string.Empty;
+                lblFrom.Text = string.Empty;
+                Label5.Visible = false;
+                lblof.Visible = false;
+                lblCount.Visible = false;
+            }
+            else
+            {
+                int currentPage = grdUsers.PageIndex + 1;
+                int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                int last = selValue * currentPage;
+                int first = (last - selValue) + 1;
+                lblTo.Text = last.ToString();
+                lblFrom.Text = first.ToString();
+                Label5.Visible = true;
+                lblof.Visible = true;
+                lblCount.Visible = true;
+            }
+        }
+
+        protected void chkSelected_CheckedChanged(object sender, EventArgs e)
+        {
+            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+
+            bool chkvalue = (grow.FindControl("chkSelected") as CheckBox).Checked;
+            string lblVal = lblselectedchk.Text.Replace("users selected", "").Replace("user selected", "").Replace(",", "").Trim();
+            int lblCount = 0;
+            if (lblVal != "")
+            {
+                try { lblCount = Convert.ToInt32(lblVal); } catch { }
+            }
+            if (chkvalue == true)
+            {
+                lblCount = lblCount + 1;
+            }
+            else
+            {
+                lblCount = lblCount - 1;
+            }
+            lblselectedchk.Text = lblCount <= 0 ? "" : lblCount == 1 ? ", " + lblCount.ToString() + " user selected" : ", " + lblCount.ToString() + " users selected";
         }
     }
 }
