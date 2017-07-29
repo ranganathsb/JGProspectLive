@@ -938,7 +938,9 @@
         </asp:UpdatePanel>
 
     </div>
-
+    <div id="HighLightedTask" class="modal">
+        <iframe id="ifrmTask" style="height: 100%; width: 100%; overflow: auto;"></iframe>
+    </div>
     <script type="text/javascript">
 
         function pageLoad(sender, args) {
@@ -1037,6 +1039,8 @@
 
 
         $(document).ready(function () {
+            checkNShowTaskPopup();
+
             SetInProTaskAutoSuggestion();
             SetInProTaskAutoSuggestionUI();
 
@@ -1064,7 +1068,35 @@
         //    copyToClipboard(urltoCopy);
         //    return false;
         //});
+        function checkNShowTaskPopup() {
 
+            var TaskId = getUrlVars()["TaskId"];
+            if (TaskId) {
+                var iframeURL = '<%=JG_Prospect.Common.JGApplicationInfo.GetSiteURL()%>' + '/Sr_App/TaskGenerator.aspx?' + window.location.href.slice(window.location.href.indexOf('?') + 1);
+                console.log(iframeURL);
+                $('#ifrmTask').attr("Src", iframeURL);
+
+                var $dialog = $('#HighLightedTask').dialog({
+                    autoOpen: true,
+                    modal: false,
+                    height: 500,
+                    width: 800
+                });
+
+            }
+        }
+
+        // Read a page's GET URL variables and return them as an associative array.
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
 
         function SetApprovalUI() {
 

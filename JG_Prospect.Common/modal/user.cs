@@ -239,7 +239,8 @@ namespace JG_Prospect.Common.modal
         public string SuiteAptRoom2;
         public string SalesExperience;
         public string UserType;
-        
+        public string Password;
+
     }
 
     public class LoginUser

@@ -1536,5 +1536,6 @@ namespace JG_Prospect.DAL
                 //LogManager.Instance.WriteToFlatFile(ex);
             }
         }
+
     }
 }

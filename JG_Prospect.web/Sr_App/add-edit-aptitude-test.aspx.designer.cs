@@ -22,6 +22,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlPageHeader;
         
         /// <summary>
+        /// upnlEditTest control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlEditTest;
+        
+        /// <summary>
         /// vsExam control.
         /// </summary>
         /// <remarks>
@@ -118,7 +127,7 @@ namespace JG_Prospect.Sr_App {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlDesigAptitude;
+        protected global::System.Web.UI.WebControls.ListBox ddlDesigAptitude;
         
         /// <summary>
         /// cvalidatorDesignationAptitude control.

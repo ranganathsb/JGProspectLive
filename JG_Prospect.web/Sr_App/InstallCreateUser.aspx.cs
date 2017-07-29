@@ -2453,7 +2453,10 @@ namespace JG_Prospect.Sr_App
                     }
                     InstallId = Convert.ToString(Session["IdGenerated"]);
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
-                    objuser.status = ddlstatus.SelectedValue;
+                    
+                    //objuser.status = ddlstatus.SelectedValue;
+                    objuser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Hidden).ToString();
+
                     objuser.InstallId = InstallId;
                     objuser.fristname = txtfirstname.Text;
                     objuser.lastname = txtlastname.Text;
@@ -2880,8 +2883,12 @@ namespace JG_Prospect.Sr_App
 
                         //
                         Session["installId"] = "";
+
+                        //Send Request email to fill out HR form to Newly added client.
+                        CommonFunction.SendHRFormFillupRequestEmail(objuser.email, objuser.DesignationID, objuser.fristname);
+
                         //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User has been created successfully');", true);
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User has been created successfully');window.location ='EditInstallUser.aspx';", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User successfully saved and auto-email/sms sent for request for applicant to fill out Hr form http://www.jmgroveconstruction.com/employment.php');window.location ='EditInstallUser.aspx';", true);
                         clearcontrols();
                         //if (ddldesignation.SelectedItem.Text == "Installer")
                         //{

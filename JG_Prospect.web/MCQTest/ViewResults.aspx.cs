@@ -2,7 +2,6 @@
 using JG_Prospect.Common;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -15,7 +14,7 @@ namespace JG_Prospect.MCQTest
         protected void Page_Load(object sender, EventArgs e)
         {
             // Put user code to initialize the page here
-
+           
             String ExamID = (String)Session["exam_id"];
             long totalMarks = (long)Session["TotalMarks"];
             long marksEarned = (long)Session["MarksEarned"];
@@ -49,33 +48,26 @@ namespace JG_Prospect.MCQTest
 
             int InstallUserID = 0;
             int.TryParse(Session["ID"].ToString(), out InstallUserID);
-
+            AptitudeTestBLL.Instance.InsertPerformance(InstallUserID, int.Parse(ExamID), (int)marksEarned, (int)totalMarks, percentage, 1);
             //Session.RemoveAll();
             //Session.Abandon();
 
-            int examPerformance = 0;
-
-            DataTable examDetails = AptitudeTestBLL.Instance.GetMCQ_ExamByID(int.Parse(ExamID)).Tables[0];
-            var passingPercent = Convert.ToDouble(string.IsNullOrEmpty(Convert.ToString(examDetails.Rows[0]["PassPercentage"])) ? "0" : Convert.ToString(examDetails.Rows[0]["PassPercentage"]));
-            if (percentage < passingPercent)
+            if (percentage < 30)
             {
-                //fail
-                InstallUserBLL.Instance.UpdateInstallUserStatus((Convert.ToInt32(JGConstant.InstallUserStatus.Rejected).ToString()), InstallUserID);
-                examPerformance = Convert.ToInt32(JGConstant.ExamPerformanceStatus.Fail);
-                Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('Unfortunately you did NOT pass the apptitude test for the designation you applied for. If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test. Thank you for applying with JMG');"), true);
+                int intUserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
 
-                Session.Clear();
-                Session["LogOut"] = 1;
-                //Response.Redirect("~/login.aspx");
+                JGSession.UserStatus = JGConstant.InstallUserStatus.Rejected;
+
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString(), intUserID, DateTime.Today, DateTime.Now.ToShortTimeString(), intUserID, JGSession.IsInstallUser.Value, "Rejected: Failed apptitude test.");
+
+                pFail.Visible = true;
+                pPass.Visible = false;
             }
             else
             {
-                //pass
-                examPerformance = Convert.ToInt32(JGConstant.ExamPerformanceStatus.Pass);
-                Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('Congratulations! You have passed the apptitude test for the designation you applied for. To continue the Hiring process fill out the remaining following fields and confirm the default given date and time to speak with a hiring manager for instructions for the final step of the hiring process.  You will be contacted to confirm that date and time is acceptable with the hiring manager. You will login to the application to have your Video/Voice/chat \"Interview Date Meeting\"');"), true);
+                pFail.Visible = false;
+                pPass.Visible = true;
             }
-
-            AptitudeTestBLL.Instance.InsertPerformance(InstallUserID, int.Parse(ExamID), (int)marksEarned, (int)totalMarks, percentage, examPerformance);
         }
     }
 }

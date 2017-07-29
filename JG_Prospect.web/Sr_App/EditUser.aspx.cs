@@ -22,6 +22,7 @@ using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
+using System.Globalization;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -99,6 +100,8 @@ namespace JG_Prospect
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
+
+            int x = 0;
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
             {
@@ -356,9 +359,35 @@ namespace JG_Prospect
                 {
                     Label lblPrimaryPhone = (e.Row.FindControl("lblPrimaryPhone") as Label);
                     DropDownList ddlStatus = (e.Row.FindControl("ddlStatus") as DropDownList);//Find the DropDownList in the Row
+                    DropDownList ddlEmployeeType = (e.Row.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
                     DropDownList ddlContactType = (e.Row.FindControl("ddlContactType") as DropDownList);
                     HyperLink hypTechTask = e.Row.FindControl("hypTechTask") as HyperLink;
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
+                    Image img = e.Row.FindControl("imgprofile") as Image;
+                    HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
+
+                    if (hdimg.Value != "")
+                    {
+                        string[] value = hdimg.Value.Split('/');
+                        string path=value[value.Length - 1];
+                        string pathvalue = Server.MapPath("/UploadeProfile/");
+                            pathvalue=Path.Combine(pathvalue+path);
+
+                        if (File.Exists(pathvalue))
+                        {
+                            img.ImageUrl = hdimg.Value;
+
+                        }
+                        else
+                        {
+                            img.ImageUrl = "/UploadeProfile/default.jpg";
+                        }
+
+                    }
+                    else
+                    {
+                        img.ImageUrl = "/UploadeProfile/default.jpg";
+                    }
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -396,6 +425,23 @@ namespace JG_Prospect
                     if (lblPrimaryPhone.Text.IndexOf(chaDelimiter) > 0)
                         lblPrimaryPhone = ManiPulatePrimaryPhone(lblPrimaryPhone, chaDelimiter);
 
+                    string employeeType = Convert.ToString((e.Row.FindControl("lblEmployeeType") as HiddenField).Value);
+                    if (employeeType != "")
+                    {
+
+                        System.Web.UI.WebControls.ListItem lstEmpType = ddlEmployeeType.Items.FindByValue(employeeType);
+
+                        if (lstEmpType != null)
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpType);
+                        }
+                        System.Web.UI.WebControls.ListItem lstEmpTypeText = ddlEmployeeType.Items.FindByText(employeeType);
+
+                        if (lstEmpTypeText != null)
+                        {
+                            ddlEmployeeType.SelectedIndex = ddlEmployeeType.Items.IndexOf(lstEmpTypeText);
+                        }
+                    }
 
                     if (Status != "")
                     {
@@ -480,6 +526,7 @@ namespace JG_Prospect
             }
         }
 
+     
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
@@ -1101,6 +1148,7 @@ namespace JG_Prospect
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "alert('Invalid Interview Date, Please verify');", true);
                 return;
             }
+
             ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate, ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text, ddlUsers.SelectedValue);
             if (ds.Tables.Count > 0)
             {
@@ -1665,8 +1713,8 @@ namespace JG_Prospect
                         else
                         {
                             GetSalesUsersStaticticsAndData(); ;
-                            UcStatusPopUp.changeText();
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
+                            //UcStatusPopUp.changeText();
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
                         }
                     }
                     else
@@ -2673,7 +2721,7 @@ namespace JG_Prospect
             {
                 grdBulkUploadUserErrors.DataSource = dtUserError;
                 grdBulkUploadUserErrors.DataBind();
-
+                upnlBUPError.Update();
                 ScriptManager.RegisterStartupScript
                     (
                         this,
@@ -2740,15 +2788,21 @@ namespace JG_Prospect
                         objIntsallUser.Designation = string.Empty;
                     }
 
-                    JGConstant.InstallUserStatus objInstallUserStatus;
-                    if (Enum.TryParse<JGConstant.InstallUserStatus>(dtExcel.Rows[i]["Status"].ToString().Trim(), true, out objInstallUserStatus))
-                    {
-                        objIntsallUser.status = Convert.ToByte(objInstallUserStatus).ToString();
-                    }
-                    else
-                    {
-                        objIntsallUser.status = string.Empty;
-                    }
+                    // As per new specification newly added user will have hidden status.
+                    objIntsallUser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Hidden).ToString();
+
+
+                    //Commented By: Yogesh Keraliya
+                    //06/07/2107
+                    //JGConstant.InstallUserStatus objInstallUserStatus;
+                    //if (Enum.TryParse<JGConstant.InstallUserStatus>(dtExcel.Rows[i]["Status"].ToString().Trim(), true, out objInstallUserStatus))
+                    //{
+                    //    objIntsallUser.status = Convert.ToByte(objInstallUserStatus).ToString();
+                    //}
+                    //else
+                    //{
+                    //    objIntsallUser.status = string.Empty;
+                    //}
 
                     //objuser.DateSourced = DateTime.Now.ToString();
                     //objuser.Source = Convert.ToString(Session["Username"]);
@@ -2761,7 +2815,6 @@ namespace JG_Prospect
 
                     objIntsallUser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();
                     objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
-
                     objIntsallUser.Email = dtExcel.Rows[i]["Email"].ToString().Trim();
                     objIntsallUser.phone = dtExcel.Rows[i]["Phone1"].ToString().Trim();
                     objIntsallUser.phonetype = dtExcel.Rows[i]["Phone1Type"].ToString().Trim();
@@ -2776,6 +2829,8 @@ namespace JG_Prospect
 
                     objIntsallUser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
 
+                    //Default password for jmgrove.
+                    objIntsallUser.Password = "jmgrove";
                     #endregion
 
                     #region Other Values
@@ -3057,6 +3112,16 @@ namespace JG_Prospect
                         lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
 
                         pnlAddNewUser.Visible = true;
+
+                        // Send all newly inserted user HR form fillup request.
+                        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(), AddedInstallUser =>
+                        {
+
+                            //Send Request email to fill out HR form to Newly added client.
+                            CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(), Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
+
+                        });
+
                         //Session["DuplicateUsers"] = ds.Tables[0];
                         //listDuplicateUsers.DataSource = ds.Tables[0];
                         //listDuplicateUsers.DataBind();
@@ -3868,7 +3933,19 @@ namespace JG_Prospect
                     {
                         //Session["UserGridData"] = dtSalesUser_Grid;
                         //BindUsers(dtSalesUser_Grid);
+                        foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                        {
+                            string countryCode = string.Empty;
+                            string country = string.Empty;
 
+                            countryCode = dr["CountryCode"].ToString();
+                            if (countryCode.Length > 0)
+                            {
+                                var ri = new RegionInfo(countryCode);
+                                country = ri.EnglishName;
+                                dr["Country"] = country;
+                            }
+                        }
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
@@ -4366,5 +4443,16 @@ namespace JG_Prospect
         #endregion
 
         #endregion
+
+        protected void ddlEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+
+            string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
+            DropDownList ddlEmployeeType = (grow.FindControl("ddlEmployeeType") as DropDownList);//Find the DropDownList in the Row
+
+            InstallUserBLL.Instance.UpdateEmpType(Convert.ToInt32(ID), ddlEmployeeType.SelectedValue);
+
+        }
     }
 }

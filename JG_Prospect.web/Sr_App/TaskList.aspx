@@ -252,7 +252,6 @@
                                     </asp:DropDownCheckBoxes>
                                     <asp:LinkButton ID="lbtnRequestStatus" runat="server" Visible="false" Text="Request" 
                                         CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
-                                    <asp:HiddenField ID="hdnSubTaskIds" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60" SortExpression="Status">

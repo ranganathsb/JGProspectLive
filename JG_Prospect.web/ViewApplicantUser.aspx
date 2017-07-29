@@ -19,38 +19,61 @@
     <link type="text/css" href="../css/flags24.css" rddlstatusel="Stylesheet" />
 
 
+
     <%--<script src="../Scripts/jquery.MultiFile.js" type="text/javascript"></script>--%>
 
     <script type="text/javascript">
+        function showFillInformationPopup() {
+
+            var $dialog = $('#divFillDesigInfo').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 100,
+                width: 900,
+                title: "Fill Required Information"
+            });
+
+        }
+
         function showAptTestPage(PageUrl) {
-            var $dialog = $('<div class="Aptitude-popup"></div>')
+
+            var dialogApptitude = $('<div class="Aptitude-popup"></div>')
                            .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
                            .dialog({
                                autoOpen: false,
-                               modal: true,
+                               modal: false,
                                height: 625,
-                               width: 800,
+                               width: 900,
                                title: "Aptitude Test"
                            });
-            $dialog.dialog('open');
+
+            dialogApptitude.dialog('open');
+
+            var dialogApptitudeZindex = $(dialogApptitude).closest("div[role='dialog']").css("z-index");
+
+            $("#divFillDesigInfo").closest("div[role='dialog']").css("z-index", dialogApptitudeZindex + 1);
+
+            $("#divFillDesigInfo").closest("div[role='dialog']").css("top", "0px");
+
+            $(dialogApptitude).closest("div[role='dialog']").css("top", "110px");
         }
 
         //function pageLoad() {
         $(document).ready(function () {
 
-            var dlg = $('#pnlFirstPopup').dialog({
-                width: 270,
-                show: 'slide',
-                hide: 'slide',
-                autoOpen: true,
-                modal: true,
-                closeOnEscape: false,
-                dialogClass: 'task-no-close-dialog'
-            });
+            //var dlg = $('#pnlFirstPopup').dialog({
+            //    width: 270,
+            //    show: 'slide',
+            //    hide: 'slide',
+            //    autoOpen: true,
+            //    modal: true,
+            //    closeOnEscape: false,
+            //    dialogClass: 'task-no-close-dialog'
+            //});
 
-            //dlg.parent().appendTo(jQuery("form:first"));
+            ////dlg.parent().appendTo(jQuery("form:first"));
 
-            $('#pnlFirstPopup').dialog('open');
+            //$('#pnlFirstPopup').dialog('open');
 
             $('#lbtnAptTestLink').click(function () {
                 showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
@@ -261,6 +284,12 @@
                 <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
                 changeFlag('#<%=ddlCountry.ClientID%>');
             });--%>
+                //$('#<%=lbtnAptTestLink.ClientID%>').click(function () {
+                //    var url = window.location.href
+                //    var arr = url.split("/");
+                //    var currDomainName = arr[0] + "//" + arr[2];
+                //    showAptTestPage(currDomainName + '/MCQTest/McqTestPage.aspx');
+                //});
 
                 var text_max = 50;
                 $('#textarea_CharCount').html(text_max + ' characters remaining');
@@ -1210,6 +1239,20 @@
             padding-left: 55px !important;
         }
 
+        .tdright {
+            vertical-align: top;
+            text-align: right;
+            width: 50%;
+        }
+
+        .tdleft {
+            width: 50%;
+            vertical-align: top;
+            text-align: left;
+            margin: 5px;
+            padding: 7px;
+        }
+
         .formCtrl {
             padding: 5px;
             border-radius: 5px;
@@ -1346,6 +1389,25 @@
             overflow: auto;
             height: 150px;
         }
+
+        .ui-button {
+            background: url('../img/main-header-bg.png') repeat-x;
+            color: #fff;
+        }
+
+        #confirmBox table {
+            border: 1px solid blue;
+            padding: 5px;
+        }
+
+        #confirmBox input, #confirmBox textarea {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
+        }
     </style>
     <script type="text/javascript">
         function uploadComplete2() {
@@ -1433,7 +1495,6 @@
         }
     </script>
     <style>
-        
         .task-no-close-dialog .ui-dialog-titlebar-close {
             visibility: hidden;
         }
@@ -1578,7 +1639,7 @@
             <tr>
                 <td colspan="2">
                     <asp:Button ID="btnTakeTestNow" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="120px" TabIndex="6" Text="Take Test Now" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
-                    <asp:Button ID="btnCalClose" OnClientClick="javascript:return false;" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                    <asp:Button ID="btnCalClose" OnClientClick="javascript:return confirm('Are you sure you want to Cancel Test?');" ClientIDMode="Static" CausesValidation="false" runat="server" Height="30px" Width="70px" TabIndex="6" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
                 </td>
             </tr>
         </table>
@@ -1595,7 +1656,7 @@
     <%--<div class="loading" style="display: none">Loading&#8230;</div>--%>
     <asp:UpdatePanel ID="UpdatePanel8" runat="server">
         <ContentTemplate>
-            <asp:Button ID="hdnBtnClose" OnClick="btnCalClose_Click" ClientIDMode="Static" CausesValidation="false" runat="server" style="display:none;"/>
+            <asp:Button ID="hdnBtnClose" OnClick="btnCalClose_Click" ClientIDMode="Static" CausesValidation="false" runat="server" Style="display: none;" />
 
             <input type="hidden" id="hdnWorkFiles" runat="server" />
             <div class="right_panel">
@@ -1949,7 +2010,12 @@
 
 
                             <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
-                                <asp:LinkButton ID="lbtnAptTestLink" ClientIDMode="Static" OnClientClick="return false" runat="server"></asp:LinkButton>
+                                <asp:UpdatePanel ID="upAptTestLink" runat="server">
+                                    <ContentTemplate>
+                                        <asp:LinkButton ID="lbtnAptTestLink" runat="server" CausesValidation="false" OnClick="btnStartTest_Click" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+
                             </div>
 
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
@@ -5130,21 +5196,191 @@
         </Triggers>
     </asp:UpdatePanel>
     <div id="dialog" style="display: none" align="center"></div>
+    <div id="divFillDesigInfo" class="modal">
+        <asp:Literal ID="ltlFillDesigInfo" runat="server"></asp:Literal>
+    </div>
+    <div class="hide">
+        <div id="divStartTest" runat="server" style="text-align: center;" title="Apptitude Test" data-width="300px">
+            <asp:UpdatePanel ID="upStartTest" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <%--<asp:Button ID="btnStartTest" runat="server" Text="Take Test Now" CausesValidation="false" OnClick="btnStartTest_Click" />--%>
+                    <asp:Button ID="btnCancelTest" runat="server" CssClass="ui-button" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="Cancel Test" OnClick="btnCancelTest_Click" />
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </div>
+    <div id="examPassed" class="modal hide">
+        <span id="examSuccess">Congratulations! You have passed the aptitude test for the
+            <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+            position you applied for. You will receive 2 auto-emails in regards to an Interview with hiring Manager &  1st interview assignment. The email also contains additional instructions and training requirements in preparation for your Interview.
+                        
+                      
+                <br />
+            <br />
+            Click on the “Tech Task ID#” link below to view your assigned interview technical task. Please have the following tech task submitted before *Interview Date & Time, If the tech task is not submitted by deadline, your account will be LOCKED and your task will be reassigned! Completing assignment promptly is viewed highly upon by Management!
+        </span>
+        <br />
+        <br />
+        <strong>Tech Task ID#:&nbsp;
+                 <a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
+                     <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
+                 </a></strong>
+        <br />
+        <strong>Parent Task:
+                <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
+        </strong>
+        <br />
+        <strong>Task Title:
+                <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
+        </strong>
+        <br />
+        <strong>Status: 
+                <asp:Literal ID="ltlTaskStatus" runat="server" Text="Assigned"></asp:Literal>
+        </strong>
+        <br />
+        <strong>Assigned To: 
+                <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal><a id="hypExam" runat="server" class="bluetext" href="ViewApplicantUser.aspx?Id=">
+                    <asp:Literal ID="ltlAssignToInstallID" runat="server"></asp:Literal></a>
+        </strong>
+        <br />
+        <br />
+        Your default Interview Date & Time Deadline has been scheduled for & with below, If you need an alternate due date and time, you may toggle the below date & time:
+        <br />
+        <br />
+        <span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
+            <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
+        </span>
+        <br />
+        Recruiter:
+        <asp:Literal ID="ltlManagerName" runat="server"></asp:Literal>
+        <br />
+        Change Password<span class="redtext">*</span>:               
+                        <asp:TextBox ID="txtChangePassword1" CssClass="textbox" runat="server" ValidationGroup="vgCPWD"></asp:TextBox>
+        <asp:RequiredFieldValidator ID="rfvCPW1" ControlToValidate="txtChangePassword1" Display="Dynamic" CssClass="redtext" ErrorMessage="Password required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+        <br />
+        <br />
 
+        <div style="text-align: center;">
+            <span class="redtext">*</span>
+            <asp:Button ID="btnAcceptTask" Text="Accept" ValidationGroup="vgCPWD" CssClass="ui-button" runat="server" OnClick="btnAcceptTask_Click" />
+            &nbsp;&nbsp;
+            <asp:Button ID="btnRejectTask" Text="Reject" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnRejectTask_Click" />
+        </div>
+        <br />
+        To accept the task and confirm the interview due date, select "Accept" button above. You  have 24 hours to accept technical and Interview Date.
+        <div id="confirmBox">
+            <asp:UpdatePanel ID="upnlConfirmDetails" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table style="width: 100%; text-align: center;">
+                        <tr>
+                            <td class="tdleft">Address<br />
+                                <asp:TextBox ID="txtApplicantAddress" runat="server" Style="width: 100%" CssClass="textbox" TextMode="MultiLine"></asp:TextBox><br />
+                                <asp:RequiredFieldValidator ID="rfvCAddess" runat="server" ControlToValidate="txtApplicantAddress"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter address"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Date of Birth: 
+                                    <asp:TextBox ID="txtCDateOfBirth" CssClass="textbox"  ValidationGroup="vgConfirm" runat="server"></asp:TextBox>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCDob" runat="server" ControlToValidate="txtCDateOfBirth"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter date of birth"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Penalty of Perjury:
+                        <asp:DropDownList ID="ddlPenaltyOfPerjury" runat="server" Width="150px" TabIndex="528" ValidationGroup="vgConfirm" OnSelectedIndexChanged="ddlcitizen_SelectedIndexChanged">
+                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                            <asp:ListItem Text="Alien authorized to work" Value="authorizedwork"></asp:ListItem>
+                            <asp:ListItem Text="Lawful permanent resident" Value="permanentresident"></asp:ListItem>
+                            <asp:ListItem Text="Non US Citizenship" Value="NonUSCitizenship"></asp:ListItem>
+                            <asp:ListItem Text="US Citizenship" Value="USCitizenship"></asp:ListItem>
+                        </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcPenaltyofPerjury" runat="server" ControlToValidate="ddlPenaltyOfPerjury"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Penalty Of Perjury"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Marital Status:
+                            <asp:DropDownList ID="ddlcmaritalstatus" CssClass="textbox" ValidationGroup="vgConfirm" runat="server">
+                                <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="Married" Value="Married"></asp:ListItem>
+                                <asp:ListItem Text="Single" Value="Single"></asp:ListItem>
+                            </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcMaritalStatus" runat="server" ControlToValidate="ddlcmaritalstatus"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Marital Status"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Children:
+                            <asp:DropDownList ID="ddlChildren" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="1" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                                <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                                <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                                <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                                <asp:ListItem Text="6" Value="6"></asp:ListItem>
+                                <asp:ListItem Text="7" Value="7"></asp:ListItem>
+                                <asp:ListItem Text="8" Value="8"></asp:ListItem>
+                                <asp:ListItem Text="9" Value="9"></asp:ListItem>
+                                <asp:ListItem Text="10" Value="10"></asp:ListItem>
+                            </asp:DropDownList></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Contract acceptance attach:
+                                <br />
+                                <asp:FileUpload ID="fupContractAttachment" runat="server" /></td>
+                            <td class="tdleft">*ID
+                            <asp:DropDownList ID="ddlIdentity" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="Passport"></asp:ListItem>
+                                <asp:ListItem Text="Driver's Liscense"></asp:ListItem>
+                            </asp:DropDownList>
+                                <br />
+                                Attach:
+                            <asp:FileUpload ID="fupIdentity" ValidationGroup="vgConfirm" runat="server" />
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIndentity" runat="server" ControlToValidate="ddlIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Identity"></asp:RequiredFieldValidator>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIDAttachment" runat="server" ControlToValidate="fupIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please attach Identity proof"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+
+                        <tr id="trConfirmInterview" runat="server" visible="false" style="text-align: center;">
+                            <td colspan="2">
+                                <span class="bluetext">*</span>
+                                <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" ValidationGroup="vgConfirm" OnClick="btnConfirm_Click" Text="Confirm" />
+
+                                <asp:Button ID="btnConfirmCancel" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnConfirmCancel_Click" Text="Cancel" />
+
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="btnConfirm" />
+                
+                </Triggers>
+            </asp:UpdatePanel>
+        </div>
+    </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
+    <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery-ui.js")%>'></script>
     <script type="text/javascript">
 
         Dropzone.autoDiscover = false;
 
         $(function () {
             Initialize();
-            $.fn.hitch = function (scope, fn) {
-                //return function () {
-                //    return fn.apply(scope, arguments);
-                //}
-            }
+            //$.fn.hitch = function (scope, fn) {
+            //    //return function () {
+            //    //    return fn.apply(scope, arguments);
+            //    //}
+            //}
         });
 
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -5155,6 +5391,38 @@
 
         function Initialize() {
             ApplyDropZone();
+
+            $("#<%= txtCDateOfBirth.ClientID %>").datepicker({
+                minDate: new Date(1900, 1 - 1, 1),
+                maxDate: '-18Y',
+                dateFormat: 'mm/dd/yy',
+                defaultDate: new Date(1984, 1 - 1, 1),
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '-110:-18'
+            });
+
+        }
+
+        function showExamPassPopup(message) {
+
+            $('#examPassed').removeClass('hide');
+
+            $('#examSuccess').html(message);
+
+            var dialog = $('#examPassed').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 700,
+                width: 900,
+                title: "Congratulations!!"
+            });
+
+
+            $($(dialog.parent())).appendTo($('#form1'));
+
+            //console.log($(dialog.parent()).parent().find('form'));
+
         }
 
 
@@ -5281,162 +5549,21 @@
                     });
 
                 };
+                try {
+                    $("#<%=ddlstatus.ClientID%>").msDropDown();
+                } catch (e) {
+                    alert(e.message);
+                }
             });
 
-            try {
-                $("#<%=ddlstatus.ClientID%>").msDropDown();
-            } catch (e) {
-                alert(e.message);
+            function TaskAcceptSuccessRedirect(HREF) {
+                window.parent.location.href = HREF;
             }
 
 
-        <%--try {
-            $("#<%=ddlPhontType.ClientID%>").msDropDown();
-        } catch (e) {
-            alert(e.message);
-        }
-        --%>
-
     </script>
 
-    <%--
-    <asp:Panel ID="Panel2" runat="server">
-                        <ul style="overflow: hidden; margin-bottom: 10px;">
-                            <li style="width: 100%;">
-                                
-                            </li>
-                            
-                            <li style="width: 49%;">
-                                 <asp:Panel ID="Panel4" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                    <td class="auto-style14">How many full time positions have you had in the last 5 years?
-                                                            <br />
-                                        <br />
-                                        <asp:TextBox ID="txtFullTimePos"  onkeypress="return IsNumeric(event);" MaxLength="2" runat="server" Width="222px" TabIndex="177"></asp:TextBox>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </td>
-                                </tr>--%>
-    <%--<tr>
-                                    <td class="auto-style15">
-                                        Please list major tools you own for your primary trade only!
-                                                        <asp:TextBox ID="txtMajorTools" runat="server" TextMode="MultiLine" Width="230px" Height="33px" TabIndex="181"></asp:TextBox>
-
-                                        <br />
-
-                                    </td>
-                                </tr>
-                                <%--<tr>
-                                    <td class="auto-style15">Have you previously worked for or applied at j.m grove construction or supply? 
-                                                        <br />
-                                        <br />
-                                        <asp:RadioButton ID="rdoJMApplyYes" runat="server" Text="Yes" GroupName="JMApply" TabIndex="188" />
-                                        <asp:RadioButton ID="rdoJMApplyNo" runat="server" Text="No" GroupName="JMApply" TabIndex="189" />
-                                    </td>
-                                </tr>-%>
-                                <tr>
-                                    
-                                </tr>
 
 
-                                <tr>
-                                    <td class="auto-style15">
-                                        <label>
-                                            Certification/training
-                                        </label>
-                                        &nbsp;<asp:FileUpload ID="flpCirtification" runat="server" Width="221px" TabIndex="201" />
-                                        &nbsp;
-                                                        <asp:Button ID="btnCirtification" runat="server" CssClass="cancel" with="10%" Text="Upload" Height="27px" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnCirtification_Click" OnClientClick="return ValidateFileCirtificate()" TabIndex="202" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        How long have you been doing business under your present company name? Yrs.
-                                                        <asp:TextBox ID="txtCurrentComp" runat="server" onkeypress="return IsNumeric(event);" TabIndex="204" MaxLength="2"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        Add Employee & Partners(If Any)
-                                                        <br />
-                                        <br />
-                                        <label>Type:</label>
-                                        <asp:DropDownList ID="ddlType" runat="server" TabIndex="206" ClientIDMode="Static">
-                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                            <asp:ListItem Text="Employee" Value="Employee"></asp:ListItem>
-                                            <asp:ListItem Text="Parnter" Value="Partner"></asp:ListItem>
-                                        </asp:DropDownList>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlType" InitialValue="0" ValidationGroup="type" ForeColor="Red" ErrorMessage="Select type"></asp:RequiredFieldValidator>
-                                        <br />
-                                        <label>
-                                            Name:</label>
-                                        <asp:TextBox ID="txtName" runat="server" TabIndex="207" Width="242px"></asp:TextBox>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="txtName" runat="server" ValidationGroup="type" ForeColor="Red" ErrorMessage="Enter name"></asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:Button ID="btnAddEmpPartner" TabIndex="208" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="type" CssClass="cancel" Height="27px" Text="Add" with="10%" OnClick="btnAddEmpPartner_Click" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:UpdatePanel ID="UpdatePanel23" runat="server">
-                                            <ContentTemplate>
-                                                <asp:Panel runat="server" ID="Panel5">
-                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
-                                                        <div class="grid">
-                                                            <%--<table id="table2" class="auto-style11">
-                                    <tr>
-                                        <td>-%>
-                                                            <asp:GridView ID="GridView2" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
-                                                                <EmptyDataTemplate>
-                                                                    No data to display
-                                                                </EmptyDataTemplate>
-                                                                <Columns>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("PersonName")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("PersonType")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                            <br />
-                                                            <%--</td>
-                                    </tr>
-                                </table>%>
-                                                        </div>
-                                                    </div>
-                                                </asp:Panel>
-                                            </ContentTemplate>
-                                            <Triggers>
-                                                <asp:AsyncPostBackTrigger ControlID="btnAddEmpPartner" EventName="Click" />
-                                            </Triggers>
-                                        </asp:UpdatePanel>
-                                    </td>
-                                </tr>
-                                                           
-                                    </table>
-                                </asp:Panel>
-                            </li>
-                        </ul>
-                    </asp:Panel>--%>
+
 </asp:Content>

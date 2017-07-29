@@ -391,6 +391,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.CheckBox chkOneYear;
         
         /// <summary>
+        /// chkThreeMonth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkThreeMonth;
+        
+        /// <summary>
         /// chkOneMonth control.
         /// </summary>
         /// <remarks>
@@ -398,6 +407,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkOneMonth;
+        
+        /// <summary>
+        /// chkTwoWks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkTwoWks;
         
         /// <summary>
         /// Label3 control.
@@ -425,24 +443,6 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.CalendarExtender calExtendFromDate;
-        
-        /// <summary>
-        /// chkThreeMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkThreeMonth;
-        
-        /// <summary>
-        /// chkTwoWks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkTwoWks;
         
         /// <summary>
         /// Label4 control.
@@ -526,24 +526,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlPageSize_grdUsers;
         
         /// <summary>
-        /// PageRowCountLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label PageRowCountLabel;
-        
-        /// <summary>
-        /// PageTotalLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label PageTotalLabel;
-        
-        /// <summary>
         /// grdUsers control.
         /// </summary>
         /// <remarks>
@@ -551,6 +533,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView grdUsers;
+        
+        /// <summary>
+        /// upnlBulkUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlBulkUpload;
         
         /// <summary>
         /// lnkDownload control.
@@ -1163,6 +1154,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divBulkUploadUserErrors;
+        
+        /// <summary>
+        /// upnlBUPError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlBUPError;
         
         /// <summary>
         /// grdBulkUploadUserErrors control.

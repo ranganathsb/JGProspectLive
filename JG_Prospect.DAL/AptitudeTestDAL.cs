@@ -34,26 +34,79 @@ namespace JG_Prospect.DAL
 
         public DataTable GetPerformanceByUserID(int userID)
         {
-            string SQL = "select * from [MCQ_Performance] where UserID = '" + userID.ToString() + "'";
+            //string SQL = "select * from [MCQ_Performance] where UserID = '" + userID.ToString() + "'";
 
-            using (SqlConnection con = new SqlConnection(constr))
+            //using (SqlConnection con = new SqlConnection(constr))
+            //{
+            //    using (SqlCommand cmd = new SqlCommand())
+            //    {
+            //        cmd.CommandText = SQL;
+            //        using (SqlDataAdapter sda = new SqlDataAdapter())
+            //        {
+            //            cmd.Connection = con;
+            //            sda.SelectCommand = cmd;
+            //            using (DataSet ds = new DataSet())
+            //            {
+            //                DataTable dt = new DataTable();
+            //                sda.Fill(dt);
+            //                return dt;
+            //            }
+            //        }
+            //    }
+            //}
+            DataTable dt = null;
+
+            try
             {
-                using (SqlCommand cmd = new SqlCommand())
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    cmd.CommandText = SQL;
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    DbCommand command = database.GetStoredProcCommand("usp_GetCandidateTestsResults");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.String, userID.ToString());
+                    DataSet dsResult =  database.ExecuteDataSet(command);
+                    
+
+                    if ( dsResult != null && dsResult.Tables.Count > 0)
                     {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataSet ds = new DataSet())
-                        {
-                            DataTable dt = new DataTable();
-                            sda.Fill(dt);
-                            return dt;
-                        }
+                        dt = dsResult.Tables[0];
                     }
+                    
                 }
             }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return dt;
+        }
+
+        public double GetExamsResultByUserID(int userID, ref bool isAllExamGiven)
+        {
+            Double aggregateResult = 0;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_isAllExamsGivenByUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int64, userID);
+                    database.AddOutParameter(command, "@AggregateScored",DbType.Double,8);
+                    database.AddOutParameter(command, "@AllExamsGiven", DbType.Boolean,1);
+                    database.ExecuteNonQuery(command);
+
+                    aggregateResult = Convert.ToDouble(database.GetParameterValue(command, "@AggregateScored"));
+
+                    isAllExamGiven = Convert.ToBoolean(database.GetParameterValue(command, "@AllExamsGiven"));
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return aggregateResult;
         }
 
         public DataTable GetcorrectAnswerByQuestionID(int questionID)
@@ -79,7 +132,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool InsertPerformance(int installUserID, int examID, int marksEarned, int totalMarks, float percentage, int status)
+        public bool InsertPerformance(int installUserID, int examID, int marksEarned, int totalMarks, double percentage, int status)
         {
             try
             {
@@ -155,30 +208,55 @@ namespace JG_Prospect.DAL
 
         public DataTable GetQuestionsForExamByID(string examID)
         {
+            DataTable dtResult = new DataTable();
 
-            string SQL = "SELECT * FROM [MCQ_Question] WHERE ExamID = " + examID;
-
-            using (SqlConnection con = new SqlConnection(constr))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand())
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    cmd.CommandText = SQL;
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    DbCommand command = database.GetStoredProcCommand("usp_GetQuestionsByExamID");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@ExamId", DbType.Int32, examID);                  
+                     
+                  DataSet dsResult = database.ExecuteDataSet(command);
+
+                    if (dsResult.Tables.Count > 0)
                     {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataSet ds = new DataSet())
-                        {
-                            DataTable dt = new DataTable();
-                            sda.Fill(dt);
-                            return dt;
-                        }
+                        dtResult = dsResult.Tables[0];
                     }
+
+                    return dtResult;
                 }
+            }
+            catch (Exception ex)
+            {
+                return dtResult;
+
             }
 
         }
 
+        public DataTable GetExamsByUserID(int userID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAptTestsByUserID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    //if (intDesignationID.HasValue)
+                    //{
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userID);
+                    //}
+                    return database.ExecuteDataSet(command).Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public DataTable GetExamByExamID(Enums.Aptitude_ExamType examType, int userID)
         {
             var UserDetails = UserDAL.Instance.getInstalluserDetails(userID);
@@ -489,9 +567,30 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("UpdateMCQ_CorrectAnswer");
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@OptionText", DbType.String, objMCQ_Option.OptionText);
+                    database.AddInParameter(command, "@OptionID", DbType.String, objMCQ_Option.OptionID);
                     database.AddInParameter(command, "@QuestionID", DbType.Int64, objMCQ_Option.QuestionID);
 
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateMCQ_ExamDesignations(Int64 intExamId, string Designations)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateExamDesignation");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@ExamID", DbType.Int64, intExamId);
+                    database.AddInParameter(command, "@DesigantionIDs", DbType.String, Designations);
+                    
                     database.ExecuteNonQuery(command);
                 }
             }

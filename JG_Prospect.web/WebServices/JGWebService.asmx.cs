@@ -10,6 +10,8 @@ using JG_Prospect.Common;
 using JG_Prospect.App_Code;
 using System.Net.Mail;
 using System.IO;
+using Newtonsoft.Json;
+using System.Web.Script.Services;
 
 namespace JG_Prospect.WebServices
 {
@@ -211,6 +213,64 @@ namespace JG_Prospect.WebServices
                     objTask.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
                     objTask.OtherUserStatus = true;
                     blIsUser = true;
+                }
+
+                TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
+                                            (
+                                                objTask,
+                                                blIsAdmin,
+                                                blIsTechLead,
+                                                blIsUser
+                                            );
+
+                blSuccess = true;
+                strMessage = "Sub Task freezed successfully.";
+
+                #endregion
+            }
+
+            var result = new
+            {
+                Success = blSuccess,
+                Message = strMessage,
+                TaskId = strTaskId
+            };
+
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public object AdminFreezeTask(string strTaskApprovalId, string strTaskId, string strPassword)
+        {
+            string strMessage;
+            bool blSuccess = false;
+
+            if (string.IsNullOrEmpty(strPassword))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not provided.";
+            }
+            else if (!strPassword.Equals(Convert.ToString(Session["loginpassword"])))
+            {
+                strMessage = "Sub Task cannot be freezed as password is not valid.";
+            }
+            else
+            {
+
+                #region Update Task (Freeze, Status)
+
+                Task objTask = new Task();
+
+                objTask.TaskId = Convert.ToInt32(strTaskId);
+
+                bool blIsAdmin, blIsTechLead, blIsUser;
+
+                blIsAdmin = blIsTechLead = blIsUser = false;
+                if (JGSession.DesignationId == (byte)JG_Prospect.Common.JGConstant.DesignationType.Admin)
+                {
+                    objTask.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                    objTask.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                    objTask.AdminStatus = true;
+                    blIsAdmin = true;
                 }
 
                 TaskGeneratorBLL.Instance.UpdateSubTaskStatusById
@@ -481,6 +541,13 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskSequence(Sequence, TaskID, DesignationID, IsTechTask);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
         public bool UpdateTaskURLById(string tid, string URL)
         {
             TaskGeneratorBLL.Instance.UpdateTaskURLById(tid, URL);
@@ -495,9 +562,9 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64? Sequence)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask, Sequence);
         }
 
         [WebMethod(EnableSession = true)]
@@ -638,6 +705,67 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public string GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetLatestTaskSequence(DesignationId, IsTechTask);
+            if (dtResult != null)
+            {
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        //[WebMethod(EnableSession = true)]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        //public void GetAllTaskWithSequence()
+        //{
+        //    string strMessage = string.Empty;
+        //    DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(0, 999);
+        //    if (dtResult != null && dtResult.Tables.Count > 0)
+        //    {
+        //        Context.Response.Clear();
+        //        Context.Response.ContentType = "application/json";
+        //        Context.Response.Write(JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented));
+
+        //    }
+        //    else
+        //    {
+        //        strMessage = String.Empty;
+        //    }
+        //    //return strMessage;
+        //}
+
+
+        [WebMethod(EnableSession = true)]
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                //Context.Response.Clear();
+                //Context.Response.ContentType = "application/json";
+                //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "RecordCount";
+
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+
+        [WebMethod(EnableSession = true)]
         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
         {
             JGConstant.TaskStatus objTaskStatus = (JGConstant.TaskStatus)intTaskStatus;
@@ -686,6 +814,12 @@ namespace JG_Prospect.WebServices
         public bool SetTaskStatus(int intTaskId, string TaskStatus)
         {
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            return TaskGeneratorBLL.Instance.TaskSwapSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
 
         #endregion
@@ -737,7 +871,7 @@ namespace JG_Prospect.WebServices
             return ReturnSequence;
         }
 
-        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask)
+        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64? Sequence)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -770,6 +904,7 @@ namespace JG_Prospect.WebServices
             objTask.InstallId = InstallID.Trim();
             objTask.ParentTaskId = ParentTaskId;
             objTask.Attachment = Attachments;
+            objTask.Sequence = Sequence;
             int maintaskid = Convert.ToInt32(Context.Request.QueryString["TaskId"]);
 
             if (!String.IsNullOrEmpty(TaskType))
@@ -919,7 +1054,7 @@ namespace JG_Prospect.WebServices
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}", JGApplicationInfo.GetSiteURL(), intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -943,6 +1078,93 @@ namespace JG_Prospect.WebServices
 
             }
         }
+
+
+
+        #endregion
+
+        #region "-- Apptitude Test --"
+
+        [WebMethod(EnableSession = true)]
+        public bool SaveExamDesignation(Int64 intExamId, string Designations)
+        {
+            bool returnVal = true;
+            AptitudeTestBLL.Instance.UpdateMCQ_ExamDesignations(intExamId, Designations);
+            return returnVal;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetTestResultsByUserID(Int32 UserID)
+        {
+            DataTable dtResult = AptitudeTestBLL.Instance.GetPerformanceByUserID(UserID);
+            String ExamResults;
+
+
+            if (dtResult != null)
+            {
+                ExamResults = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                ExamResults = String.Empty;
+            }
+
+            return ExamResults;
+
+        }
+
+        #endregion
+
+        #region "-- Auto Email/SMS Templates --"
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateFromId(Int32 TemplateId, String FromID)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateFromId(TemplateId, FromID);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateSubject(Int32 TemplateId, String Subject)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateSubject(TemplateId, Subject);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateTriggerText(Int32 TemplateId, String TriggerText)
+        {
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateTriggerText(TemplateId, TriggerText);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateHTMLTemplateFreQuency(Int32 TemplateId, Int32 FrequencyInDays, DateTime FrequencyStartDate, DateTime FrequencyTime)
+        {
+            // Send only date part to database
+            FrequencyStartDate = FrequencyStartDate.Date;
+
+            return HTMLTemplateBLL.Instance.UpdateHTMLTemplateFreQuency(TemplateId, FrequencyInDays, FrequencyStartDate, FrequencyTime);
+
+        }
+
+
+        [WebMethod(EnableSession = true)]
+        public void TriggerBulkAutoEmail(Int32 TemplateId)
+        {
+            DataSet Designation = CommonFunction.GetDesignations();
+
+            if (Designation != null && Designation.Tables.Count > 0 && Designation.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow RowItem in Designation.Tables[0].Rows)
+                {
+                    Int32 DesignationId = Convert.ToInt32(RowItem["ID"]);
+
+                    CommonFunction.BulkEmail((HTMLTemplates)Enum.Parse(typeof(HTMLTemplates), TemplateId.ToString()), DesignationId);
+                }
+            }
+
+
+        }
+
+
 
         #endregion
     }

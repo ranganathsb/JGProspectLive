@@ -229,6 +229,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PhoneNumbers, Version=8.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libphonenumber-csharp.8.3.1.1\lib\PhoneNumbers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -1379,6 +1383,7 @@
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
     <Content Include="CreateUser.aspx" />
+    <Content Include="css\bootstrap-datepicker.css" />
     <Content Include="css\chosen.css" />
     <Content Include="css\connected-carousel.css" />
     <Content Include="css\dropzone\css\basic.css" />
@@ -1388,6 +1393,9 @@
     <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\flags24.css" />
+    <Content Include="css\flipclock.css" />
+    <Content Include="css\flipclock_old.css" />
+    <Content Include="css\handle-counter.min.css" />
     <Content Include="css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="css\img\flags%402x.png" />
     <Content Include="css\img\flags.png" />
@@ -1396,6 +1404,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.contextMenu.min.css" />
     <Content Include="css\jquery.multiselect.css" />
+    <Content Include="css\jquery.timepicker.css" />
     <Content Include="css\lightslider.css" />
     <Content Include="css\magnific-popup.css" />
     <Content Include="css\msdropdown\dd.css" />
@@ -1420,6 +1429,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN014_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
+    <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
@@ -1468,8 +1478,14 @@
     <Content Include="Database Scripts\KetankumarGodhani\OLD\12 Apr 2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\14 Apr 2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\Ketankumar_03262017_db_FrozenTaskSP.sql" />
+    <Content Include="Database Scripts\nandc\ITJN028-II-II - c  F&amp;L Name Column Upgrade v1.0.sql" />
+    <Content Include="Database Scripts\nandc\nandkumarchavan_04222017_db.sql" />
+    <Content Include="Database Scripts\nandc\Script HR Edit Page ITJN028-VII v1.0.sql" />
+    <Content Include="Database Scripts\nandc\Scripts App Status - ITSN042-IV  v1.0.sql" />
+    <Content Include="Database Scripts\nandc\Scripts REC001-XIII v 1.0.sql" />
+    <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
-    <Content Include="Database Scripts\yogesh\script April v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\Script July v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1907,11 +1923,16 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\angular\scripts\jgappfactories.js" />
+    <Content Include="js\angular\templates\pager-template.html" />
+    <Content Include="js\flipclock.min.js" />
+    <Content Include="js\angular\scripts\jgapp.js" />
     <Content Include="js\chosen.jquery.js" />
     <Content Include="js\clipboard.min.js" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\handleCounter.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\langs\en.js" />
@@ -2033,10 +2054,15 @@
     <Content Include="js\jquery.js" />
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />
+    <Content Include="js\jquery.timepicker.js" />
+    <Content Include="js\jquery.timepicker.min.js" />
+    <Content Include="js\jquery.timepicker.min_old.js" />
     <Content Include="js\jquery.ui.core.js" />
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
+    <Content Include="js\angular\scripts\TaskSequence.js" />
+    <Content Include="js\TaskSequencing.js" />
     <Content Include="js\TimerFunctions.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
@@ -2047,6 +2073,9 @@
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -2059,7 +2088,7 @@
     <Content Include="Sr_App\ConstructionCalendar.aspx" />
     <Content Include="Sr_App\ContractFooter.aspx" />
     <Content Include="Sr_App\Controls\AddProductLinesControl.ascx" />
-    <Content Include="Sr_App\Controls\TaskGenerator.ascx" />
+    <Content Include="Controls\TaskGenerator.ascx" />
     <Content Include="Sr_App\Controls\ucSubTasks.ascx" />
     <Content Include="Sr_App\Controls\ucTaskHistory.ascx" />
     <Content Include="Sr_App\Controls\ucTaskWorkSpecifications.ascx" />
@@ -2072,9 +2101,11 @@
     <Content Include="Sr_App\DepartmentList.aspx" />
     <Content Include="Sr_App\DesignationAddEdit.aspx" />
     <Content Include="Sr_App\DesignationList.aspx" />
+    <Content Include="Sr_App\edit-sms-template.aspx" />
     <Content Include="Sr_App\edit-html-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
+    <Content Include="Sr_App\email-template-maintainance.aspx" />
     <Content Include="Sr_App\html-template-maintainance.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendors.aspx" />
@@ -2274,7 +2305,7 @@
     <Content Include="login.aspx" />
     <Content Include="ProgressReport.aspx" />
     <Content Include="Prospectmaster.aspx" />
-    <Content Include="Sr_App\Header.ascx" />
+    <Content Include="Sr_App\SRAppHeader.ascx" />
     <Content Include="Sr_App\home.aspx" />
     <Content Include="Sr_App\LeftPanel.ascx" />
     <Content Include="Location_img\Chrysanthemum.jpg" />
@@ -2291,6 +2322,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="unsubscribe.aspx" />
     <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />
     <Content Include="Styles\dd.css" />
@@ -2304,6 +2336,8 @@
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
+    <Content Include="UploadeProfile\2017_7_2610_15-p2.jpg" />
+    <Content Include="UploadeProfile\default.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucRenewSession.ascx" />
@@ -2322,6 +2356,7 @@
     <Content Include="ProspectReport.aspx" />
     <Content Include="Webmail\checkemail.aspx" />
     <Content Include="WebServices\JGWebService.asmx" />
+    <Content Include="Scripts\angular.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation.aspx.cs">
@@ -2443,12 +2478,26 @@
     <Compile Include="Sr_App\DesignationList.aspx.designer.cs">
       <DependentUpon>DesignationList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\edit-sms-template.aspx.cs">
+      <DependentUpon>edit-sms-template.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\edit-sms-template.aspx.designer.cs">
+      <DependentUpon>edit-sms-template.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\edit-html-template.aspx.cs">
       <DependentUpon>edit-html-template.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\edit-html-template.aspx.designer.cs">
       <DependentUpon>edit-html-template.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\email-template-maintainance.aspx.designer.cs">
+      <DependentUpon>email-template-maintainance.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\html-template-maintainance.aspx.cs">
       <DependentUpon>html-template-maintainance.aspx</DependentUpon>
@@ -2523,6 +2572,13 @@
     </Compile>
     <Compile Include="Sr_App\ViewSalesUser.aspx.designer.cs">
       <DependentUpon>ViewSalesUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="unsubscribe.aspx.cs">
+      <DependentUpon>unsubscribe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="unsubscribe.aspx.designer.cs">
+      <DependentUpon>unsubscribe.aspx</DependentUpon>
     </Compile>
     <Compile Include="stafflogin.aspx.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
@@ -2786,11 +2842,11 @@
     <Compile Include="Sr_App\Controls\AddProductLinesControl.ascx.designer.cs">
       <DependentUpon>AddProductLinesControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Sr_App\Controls\TaskGenerator.ascx.cs">
+    <Compile Include="Controls\TaskGenerator.ascx.cs">
       <DependentUpon>TaskGenerator.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sr_App\Controls\TaskGenerator.ascx.designer.cs">
+    <Compile Include="Controls\TaskGenerator.ascx.designer.cs">
       <DependentUpon>TaskGenerator.ascx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\Controls\ucTaskWorkSpecifications.ascx.cs">
@@ -3190,12 +3246,12 @@
     <Compile Include="Prospectmaster.aspx.designer.cs">
       <DependentUpon>Prospectmaster.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sr_App\Header.ascx.cs">
-      <DependentUpon>Header.ascx</DependentUpon>
+    <Compile Include="Sr_App\SRAppHeader.ascx.cs">
+      <DependentUpon>SRAppHeader.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sr_App\Header.ascx.designer.cs">
-      <DependentUpon>Header.ascx</DependentUpon>
+    <Compile Include="Sr_App\SRAppHeader.ascx.designer.cs">
+      <DependentUpon>SRAppHeader.ascx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\home.aspx.cs">
       <DependentUpon>home.aspx</DependentUpon>
@@ -3396,7 +3452,6 @@
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="Sr_App\UploadedFile\" />
-    <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>
@@ -3481,20 +3536,6 @@
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">
-      <Project>{B99F65CE-3A46-4081-9404-902B25F3D653}</Project>
-      <Name>JG_Prospect.BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JG_Prospect.Common\JG_Prospect.Common.csproj">
-      <Project>{A445BB8A-2C2E-4144-93E8-6E6D79EDA646}</Project>
-      <Name>JG_Prospect.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JG_Prospect.DAL\JG_Prospect.DAL.csproj">
-      <Project>{2c56d357-387f-4070-9dc0-70ab17d35668}</Project>
-      <Name>JG_Prospect.DAL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.Word">
       <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>8</VersionMajor>
@@ -3504,6 +3545,20 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">
+      <Project>{b99f65ce-3a46-4081-9404-902b25f3d653}</Project>
+      <Name>JG_Prospect.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JG_Prospect.Common\JG_Prospect.Common.csproj">
+      <Project>{a445bb8a-2c2e-4144-93e8-6e6d79eda646}</Project>
+      <Name>JG_Prospect.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JG_Prospect.DAL\JG_Prospect.DAL.csproj">
+      <Project>{2c56d357-387f-4070-9dc0-70ab17d35668}</Project>
+      <Name>JG_Prospect.DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

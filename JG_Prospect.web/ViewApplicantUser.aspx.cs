@@ -39,6 +39,72 @@ namespace JG_Prospect
         #endregion
 
         #region '--Properties--'
+        public int DesignationID
+        {
+            get
+            {
+                int intDesignID = 0;
+                if (ViewState["DesignID"] != null)
+                {
+                    Int32.TryParse(ViewState["DesignID"].ToString(), out intDesignID);
+                }
+                return intDesignID;
+            }
+            set
+            {
+                ViewState["DesignID"] = value;
+            }
+
+        }
+        public String DesignationName
+        {
+            get
+            {
+                String strDesign = String.Empty;
+                if (ViewState["DGName"] != null)
+                {
+                    strDesign = ViewState["DGName"].ToString();
+                }
+                return strDesign;
+            }
+            set
+            {
+                ViewState["DGName"] = value;
+            }
+
+        }
+        public int UserID
+        {
+            get
+            {
+                int intUserID = 0;
+                if (ViewState["UserID"] != null)
+                {
+                    Int32.TryParse(ViewState["UserID"].ToString(), out intUserID);
+                }
+                return intUserID;
+            }
+            set
+            {
+                ViewState["UserID"] = value;
+            }
+        }
+        public Int64 AssignedSequenceID
+        {
+            get
+            {
+                Int64 intSeqID = 0;
+                if (ViewState["ASID"] != null)
+                {
+                    Int64.TryParse(ViewState["ASID"].ToString(), out intSeqID);
+                }
+                return intSeqID;
+            }
+            set
+            {
+                ViewState["ASID"] = value;
+            }
+        }
 
         #endregion
 
@@ -55,6 +121,8 @@ namespace JG_Prospect
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
+
+            this.Form.Enctype = "multipart/form-data";
 
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
@@ -357,6 +425,7 @@ namespace JG_Prospect
                     btn_UploadFiles.Visible = true;
                     gvUploadedFiles.Visible = true;
                     int id = Convert.ToInt32(Request.QueryString["ID"]);
+                    this.UserID = id;
                     FillEmailIDhin(id);
                     FillPhoneValueTohid(id);
                     Session["ID"] = id;
@@ -372,6 +441,7 @@ namespace JG_Prospect
                             hlnkUserID.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
                             //If Designation is change at edit mode can track it out.
                             hidDesignationBeforeChange.Value = ds.Tables[0].Rows[0]["Designation"].ToString();
+
                         }
 
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
@@ -461,12 +531,23 @@ namespace JG_Prospect
                         }
 
                         System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
+                        System.Web.UI.WebControls.ListItem lstPositionDesig = ddlPositionAppliedFor.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
+
+                        this.DesignationName = ds.Tables[0].Rows[0]["Designation"].ToString();
+                        this.DesignationID = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationID"].ToString());
 
                         if (lstDesig != null)
                         {
                             ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
                             Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
                         }
+
+                        if (lstPositionDesig != null)
+                        {
+                            ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(lstPositionDesig);
+
+                        }
+
                         //ShowHideAptitudeTestLink();
 
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
@@ -1170,7 +1251,29 @@ namespace JG_Prospect
                     lnkFacePage.Visible = false;
                 }
 
-                Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "alert", String.Concat("alert('", GetViewSalesUserAlertPopup(), "');"), true);
+                if (JGSession.UserStatus == JGConstant.InstallUserStatus.Rejected)
+                {
+                    string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                    strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                    strMessage += "Thank you for applying with JMG.";
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+                }
+                else
+                {
+                    //User has cleared all exam then show him success popup.
+                    if (Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]))
+                    {
+                        SetAutoTaskSequence();
+
+                        //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
+                    }
+                    else
+                    {
+                        //fill designation information alert converted to jquery dialog.
+                        ltlFillDesigInfo.Text = GetViewSalesUserAlertPopup();
+                        Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "Give candidate alert", String.Concat("showFillInformationPopup();showAptTestPage('", Page.ResolveUrl("~/MCQTest/McqTestPage.aspx"), "'); "), true);
+                    }
+                }
             }
             else
             {
@@ -1206,6 +1309,42 @@ namespace JG_Prospect
             pnlFngPrint.Visible = false;
         }
 
+        private void SetAutoTaskSequence()
+        {
+            bool isAllExamGiven = false;
+            double overAllPercentageScored = 0;
+
+            overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
+
+
+            if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
+            {
+                if (overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage())
+                {
+
+                    //Get latest task to be assigned for user's designation.
+                    DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedWithSequence(this.DesignationID, true, this.UserID);
+
+                    if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
+                    {
+                        this.AssignedSequenceID = Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["Id"]);
+
+                        // Assign automatic task to user.
+                        AssignedTaskToUser(this.UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
+
+                        //Update automatic task sequence  assignment
+                        //TODO:Uncomment after full spec implementation.
+                        // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
+
+
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    }
+                }
+            }
+        }
+
         private string GetViewSalesUserAlertPopup()
         {
             string alertMessage = "For consideration for the designation #designation#; please fill in the additional required fields & complete timed aptitude test. When all is complete you may schedule an \"tech task interview date and time with a Manager\"";
@@ -1213,6 +1352,133 @@ namespace JG_Prospect
             alertMessage = alertMessage.Replace("#designation#", ddlPositionAppliedFor.SelectedItem.Text);
 
             return alertMessage;
+        }
+
+        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId, String ParentTaskTitle)
+        {
+            SetInterviewDateNTime();
+            ltlUDesg.Text = this.DesignationName;
+            ltlTaskInstallID.Text = InstallId;
+            ltlTaskTitle.Text = TaskTitle;
+            ltlParentTask.Text = ParentTaskTitle;
+
+            ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+            ltlAssignToInstallID.Text = hlnkUserID.Text;
+
+            hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
+
+            hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+            trConfirmInterview.Visible = true;
+            ChangetoInterviewdateStatusandSendEmailtoUser();
+
+        }
+
+        private void SetInterviewDateNTime()
+        {
+
+            int dayDifference = 5;
+
+            DateTime InterviewDate = DateTime.Now.AddDays(dayDifference);
+            DateTime FirstInterviewDate, SecondInterviewDate;
+            TimeSpan InterviewTime, FirstInterviewTime, SecondInterviewTime;
+
+            // Check Interview day of week, it should be only Monday, Wednesday, Friday
+            // Monday - Friday Interview Time - 10 AM IST and Wednesday Interview Time - 8 PM IST
+            switch (InterviewDate.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
+                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday 
+                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
+
+                    FirstInterviewTime = new TimeSpan(20, 00, 00);
+
+                    break;
+
+                case DayOfWeek.Friday:
+                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Monday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Wednesday                    
+
+                    InterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
+                    SecondInterviewTime = new TimeSpan(20, 00, 00);
+                    break;
+
+                case DayOfWeek.Wednesday:
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// second Interview Date Option - Monday                    
+
+                    InterviewTime = new TimeSpan(20, 00, 00);
+
+                    SecondInterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
+                    break;
+
+                case DayOfWeek.Sunday:
+                    InterviewDate = InterviewDate.AddDays(1);// Default Interview Date Option - Monday                    
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
+                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday                    
+
+                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
+
+                    FirstInterviewTime = new TimeSpan(20, 00, 00);
+
+                    break;
+                case DayOfWeek.Tuesday:
+                    InterviewDate = InterviewDate.AddDays(1); // Default Interview Date Option - Wednesday
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Friday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Monday
+
+                    InterviewTime = new TimeSpan(20, 00, 00);
+                    SecondInterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
+
+                    break;
+                case DayOfWeek.Thursday:
+                    InterviewDate = InterviewDate.AddDays(1);// Default Interview Date Option - Friday                    
+                    FirstInterviewDate = InterviewDate.AddDays(3);// First Interview Date Option - Monday                    
+                    SecondInterviewDate = InterviewDate.AddDays(5);// Second Interview Date Option - Wednesday                    
+
+                    InterviewTime = FirstInterviewTime = new TimeSpan(10, 00, 00);
+
+                    SecondInterviewTime = new TimeSpan(20, 00, 00);
+
+                    break;
+                case DayOfWeek.Saturday:
+                    InterviewDate = InterviewDate.AddDays(2);// Default Interview Date Option - Monday                    
+                    FirstInterviewDate = InterviewDate.AddDays(2);// First Interview Date Option - Wednesday                    
+                    SecondInterviewDate = InterviewDate.AddDays(4);// Second Interview Date Option - Friday                    
+
+                    InterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
+
+                    FirstInterviewTime = new TimeSpan(20, 00, 00);
+                    break;
+                default:
+                    InterviewTime = FirstInterviewTime = SecondInterviewTime = new TimeSpan(10, 00, 00);
+                    FirstInterviewDate = SecondInterviewDate = InterviewDate;
+                    break;
+
+            }
+
+            InterviewDate = InterviewDate.Date + InterviewTime;
+            FirstInterviewDate = FirstInterviewDate.Date + FirstInterviewTime;
+            SecondInterviewDate = SecondInterviewDate.Date + SecondInterviewTime;
+
+            ddlInterviewDTOptions.Items.Clear();
+
+            //ltlDefaultInterviewDateTime.Text = InterviewDate.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture);
+            ddlInterviewDTOptions.Items.Add(new System.Web.UI.WebControls.ListItem(CommonFunction.GetStandardDateTimeString(InterviewDate)));
+            ddlInterviewDTOptions.Items.Add(new System.Web.UI.WebControls.ListItem(CommonFunction.GetStandardDateTimeString(FirstInterviewDate)));
+            ddlInterviewDTOptions.Items.Add(new System.Web.UI.WebControls.ListItem(CommonFunction.GetStandardDateTimeString(SecondInterviewDate)));
+
+            ddlInterviewDTOptions.SelectedIndex = 0;
+
+            // set user status to Interview Date with automatic 
+            UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
+
+        }
+
+        // update user status to interview date.
+        private DataSet UpdateUserStatusAsInterviewDateWithReason(DateTime InterviewDateNTime, String StatusReason = "Default automated interview date assigned")
+        {
+            return InstallUserBLL.Instance.ChangeUserSatatus(UserID, Convert.ToInt32(JGConstant.InstallUserStatus.InterviewDate), InterviewDateNTime.Date, InterviewDateNTime.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), JGSession.IsInstallUser.Value, StatusReason, UserID.ToString());
         }
 
         private void SetUserControlValue(string LoginID)
@@ -1228,6 +1494,40 @@ namespace JG_Prospect
 
         #region ' -- Button --'
 
+        protected void btnAddNote_Click(object sender, EventArgs e)
+        {
+            if (txtTouchPointLogNote.Text.Trim() != "")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+        }
+        protected void btnStartTest_Click(object sender, EventArgs e)
+        {
+            if (JGSession.UserStatus == JGConstant.InstallUserStatus.Rejected)
+            {
+                string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                strMessage += "Thank you for applying with JMG.";
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), Guid.NewGuid().ToString(), "HidePopup('#" + divStartTest.ClientID + "');showAptTestPage('" + Page.ResolveUrl("~/MCQTest/McqTestPage.aspx") + "');", true);
+            }
+        }
+
+        protected void btnCancelTest_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/stafflogin.aspx");
+        }
+        protected void btnCalClose_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session["LogOut"] = 1;
+            Response.Redirect("~/login.aspx");
+        }
         protected void btnreset_Click(object sender, EventArgs e)
         {
             clearcontrols();
@@ -1980,6 +2280,139 @@ namespace JG_Prospect
         }
 
         #endregion
+        protected void btnConfirm_Click(object sender, EventArgs e)
+        {
+            UpdateInstallUserConfirmDetails();
+
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+
+        }
+
+        private void UpdateInstallUserConfirmDetails()
+        {
+            user objConfirmUser = new user();
+            objConfirmUser.attachements = GetContractAttachments();
+            objConfirmUser.dob = txtCDateOfBirth.Text;
+            objConfirmUser.citizenship = ddlPenaltyOfPerjury.SelectedValue;
+            objConfirmUser.maritalstatus = ddlcmaritalstatus.SelectedValue;
+            objConfirmUser.MailingAddress = txtApplicantAddress.Text;
+            objConfirmUser.PqLicense = UploadDrivingLicense();
+
+            if (rdoLicenseYes.Checked)
+            {
+                objConfirmUser.LicenseStatus = true;
+            }
+
+            objConfirmUser.id = this.UserID;
+
+            bool result = InstallUserBLL.Instance.UpdateConfirmInstallUser(objConfirmUser);
+
+
+        }
+
+        private string GetContractAttachments()
+        {
+            //string attach = string.Empty;
+            string CsvAttachments = string.Empty;
+            CsvAttachments = UploadFile();
+
+            return CsvAttachments;
+        }
+
+        private string UploadDrivingLicense()
+        {
+            String UploadedFile = String.Empty;
+            if (fupIdentity.HasFile)
+            {
+                string filename = Path.GetFileName(fupIdentity.PostedFile.FileName);
+                filename = DateTime.Now.ToString() + filename;
+                filename = filename.Replace("/", "");
+                filename = filename.Replace(":", "");
+                filename = filename.Replace(" ", "");
+                fupIdentity.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+
+                UploadedFile = filename;
+            }
+
+            return UploadedFile;
+        }
+
+        private String UploadFile()
+        {
+            String UploadedFileName = String.Empty;
+
+            if (fupContractAttachment.HasFile)
+            {
+                string filename = Path.GetFileName(fupContractAttachment.FileName);
+
+                filename = DateTime.Now.ToString() + filename;
+                filename = filename.Replace("/", "");
+                filename = filename.Replace(":", "");
+                filename = filename.Replace(" ", "");
+                Server.MapPath("~/Sr_App/UploadedFile/" + filename);
+                fupContractAttachment.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+
+                UploadedFileName = filename;
+            }
+
+            return UploadedFileName;
+
+        }
+
+        private void ChangetoInterviewdateStatusandSendEmailtoUser()
+        {
+            DataSet dsStatusUpdate;
+
+            if (ddlInterviewDTOptions.SelectedIndex == 0) // that is user has kept default interview date time option.
+            {
+                dsStatusUpdate = UpdateUserStatusAsInterviewDateWithReason(Convert.ToDateTime(ddlInterviewDTOptions.SelectedValue), "Confirmed default Interview datetime option.");
+            }
+            else // user has changed interview date and time.
+            {
+                dsStatusUpdate = UpdateUserStatusAsInterviewDateWithReason(Convert.ToDateTime(ddlInterviewDTOptions.SelectedValue), "Changed default Interview datetime option.");
+            }
+
+            if (dsStatusUpdate.Tables.Count > 0 && dsStatusUpdate.Tables[0].Rows.Count > 0)
+            {
+
+                string email = "";
+                string HireDate = "";
+                string EmpType = "";
+                string PayRates = "";
+                string gitusername = string.Empty;
+
+                if (Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][0]) != "")
+                {
+                    email = Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][0]);
+                }
+                if (Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][1]) != "")
+                {
+                    HireDate = Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][1]);
+                }
+                if (Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][2]) != "")
+                {
+                    EmpType = Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][2]);
+                }
+                if (Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][3]) != "")
+                {
+                    PayRates = Convert.ToString(dsStatusUpdate.Tables[0].Rows[0][3]);
+                }
+                if (!String.IsNullOrEmpty(dsStatusUpdate.Tables[0].Rows[0]["GitUserName"].ToString()))
+                {
+                    gitusername = dsStatusUpdate.Tables[0].Rows[0]["GitUserName"].ToString();
+                }
+
+                SendEmail(email, Convert.ToString(JGSession.Username), Convert.ToString(JGSession.LastName),
+           "Interview Date Auto Email", "", JGSession.Designation, JGSession.DesignationId, HireDate, EmpType, PayRates, HTMLTemplates.InterviewDateAutoEmail
+           , Convert.ToDateTime(ddlInterviewDTOptions.SelectedValue), null, "");
+
+            }
+        }
+
+        protected void btnCancel_Click(object sender, EventArgs e)
+        {
+            LogoutUser(false);
+        }
 
         protected void txtZip_TextChanged(object sender, EventArgs e)
         {
@@ -3491,8 +3924,6 @@ namespace JG_Prospect
             pnl4.Visible = false;
         }
 
-
-
         protected void btnAddExtraIncome_Click(object sender, EventArgs e)
         {
             Double extraincome;
@@ -4541,11 +4972,44 @@ namespace JG_Prospect
             //binddata();
         }
 
+        protected void btnAcceptTask_Click(object sender, EventArgs e)
+        {
+            TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
+
+            ChangePassword();
+
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+        }
+
+        private void ChangePassword()
+        {
+            //int loginid = (int)Session["loginid"];
+            int id = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            // string UserType = (string)Session["usertype"];
+            bool result = false;
+            result = UserBLL.Instance.changepassword(id, txtChangePassword1.Text, JGSession.IsCustomer);//, UserType
+        }
+
+        protected void btnRejectTask_Click(object sender, EventArgs e)
+        {
+            TaskGeneratorBLL.Instance.RejectUserAssignedWithSequence(this.AssignedSequenceID, this.UserID, JGApplicationInfo.GetJMGCAutoUserID());
+        }
+
+        protected void btnConfirmCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region '--Methods--'
 
         #region 'Private Methods - Assigned Task ToUser '
+
+        private void InsertAssignedTaskSequenceInfo(long TaskId, int DesignationID, long AssignedSequence, bool IsTechTask)
+        {
+            TaskGeneratorBLL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationID, IsTechTask, AssignedSequence, TaskId, this.UserID);
+        }
 
         private void AssignedTaskToUser()
         {
@@ -4629,6 +5093,16 @@ namespace JG_Prospect
         }
 
         #endregion
+
+        private void LogoutUser(bool isFailed)
+        {
+            //Logout user and clear its session value.
+            Session["ID"] = null;
+            Session.Clear();
+            Session.Abandon();
+            String ScriptString = "redirectParentToLoginPage('" + Page.ResolveUrl("~/stafflogin.aspx") + (isFailed == true ? "?UF=1" : String.Empty) + "');";
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", ScriptString, true);
+        }
 
         [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
         public static string[] GetZipcodes(string prefixText)
@@ -5250,6 +5724,62 @@ namespace JG_Prospect
             // // Passing values to smtp object
             // smtp.Send("", emailId, "JG Prospect Notification", Convert.ToString(Body));
             #endregion
+        }
+
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, DateTime InterviewDateTime, List<Attachment> Attachments = null, string strManager = "")
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
+
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            strBody = strBody.Replace("#Date#", CommonFunction.GetStandardDateString(InterviewDateTime)).Replace("#date#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strBody = strBody.Replace("#Time#", CommonFunction.GetStandardTimeString(InterviewDateTime)).Replace("#time#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            strFooter = strFooter.Replace("#Date#", CommonFunction.GetStandardDateString(InterviewDateTime)).Replace("#date#", CommonFunction.GetStandardDateString(InterviewDateTime));
+            strFooter = strFooter.Replace("#Time#", CommonFunction.GetStandardTimeString(InterviewDateTime)).Replace("#time#", CommonFunction.GetStandardTimeString(InterviewDateTime));
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+            //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+            strBody = strBody.Replace("Reason", Reason);
+
+            strBody = strBody.Replace("#manager#", strManager);
+
+            strBody = strHeader + strBody + strFooter;
+
+
+
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+
+            if (Attachments != null)
+            {
+                lstAttachments.AddRange(Attachments);
+            }
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + emailId + ".');", true);
+            }
         }
 
         #region TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
@@ -6056,6 +6586,107 @@ namespace JG_Prospect
             gvTouchPointLog.DataBind();
         }
 
+        private void AssignedTaskToUser(int UserId, UInt64 TaskId, UInt64 ParentTaskId, String TaskTitle, String InstallId)
+        {
+            string ApplicantId = UserID.ToString();
+
+            // save (insert / delete) assigned users.
+
+            // save assigned user a TASK.
+            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, ApplicantId);
+
+            // Change task status to assigned = 3.
+            if (isSuccessful)
+                UpdateTaskStatusExam(TaskId, Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+
+            SendEmailToAssignedUsers(ApplicantId, ParentTaskId.ToString(), TaskId.ToString(), TaskTitle, InstallId);
+
+        }
+
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strSubTaskId, string strTaskTitle, String InstallId)
+        {
+            try
+            {
+                //string strHTMLTemplateName = "Task Generator Auto Email";
+                //DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Task_Generator_Auto_Email, JGSession.DesignationId.ToString());
+
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    //string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    //string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    //string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    //string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strHeader = objHTMLTemplate.Header;
+                    string strBody = objHTMLTemplate.Body;
+                    string strFooter = objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
+
+                    strsubject = strsubject.Replace("#ID#", strTaskId);
+                    strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
+                    strsubject = strsubject.Replace("#TaskTitle#", strTaskTitle);
+
+                    strBody = strBody.Replace("#ID#", strTaskId);
+                    strBody = strBody.Replace("#TaskTitleID#", strTaskTitle);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskTitle);
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#email#", emailId);
+
+                    strBody = strBody.Replace("#Designation(s)#", this.DesignationName);
+                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                                                                            "{0}?TaskId={1}&hstid={2}",
+                                                                            string.Concat(
+                                                                                            JGApplicationInfo.GetSiteURL(),
+                                                                                            "/Sr_App/TaskGenerator.aspx"
+                                                                                         ),
+                                                                            strTaskId,
+                                                                            strSubTaskId
+                                                                        )
+                                            );
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    string strHTMLTemplateName = "Task Generator Auto Email";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(HTMLTemplates.Task_Generator_Auto_Email.ToString(), emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+        private void UpdateTaskStatusExam(UInt64 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = Convert.ToInt32(taskId);
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+
+        }
+
         #endregion
 
         #region Old code - May not be in use
@@ -6185,7 +6816,6 @@ namespace JG_Prospect
         }
 
         #endregion
-
 
         #region Non Used code - commented code
 
@@ -6675,24 +7305,11 @@ namespace JG_Prospect
         }
 
 
+
+
+
         #endregion
 
-        protected void btnAddNote_Click(object sender, EventArgs e)
-        {
-            if (txtTouchPointLogNote.Text.Trim() != "")
-            {
-                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
-                txtTouchPointLogNote.Text = "";
-            }
-        }
 
-        protected void btnCalClose_Click(object sender, EventArgs e)
-        {
-            Session.Clear();
-            Session["LogOut"] = 1;
-            Response.Redirect("~/login.aspx");
-        }
-
-        
     }
 }

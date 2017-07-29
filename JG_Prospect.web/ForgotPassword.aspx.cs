@@ -19,7 +19,7 @@ namespace JG_Prospect
             if (!IsPostBack)
             {
                 txtloginid.Text = "";
-                rdCustomer.Checked = true;
+                rdSalesIns.Checked = true;
             }
         }
 
@@ -45,12 +45,12 @@ namespace JG_Prospect
                         if (res == "1")
                         {
                             JG_Prospect.App_Code.CommonFunction.SendEmail("",toEmail, "JM Grove Construction:Forgot Password", str_Body, new List<Attachment>());
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.');window.location ='login.aspx';", true);
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.'); window.parent.location.href = \"stafflogin.aspx\";", true);
                         }
                     }
                     catch(Exception ex)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Forgot password send to your registered email id is fail.');window.location ='login.aspx';", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sorry we can not process your request right now, Please try again later.');", true);
                     }
                 }
             }
