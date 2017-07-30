@@ -1896,7 +1896,7 @@ namespace JG_Prospect.Sr_App
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
 
-                        AddUpdateUserPhoneEmail(true, result.Item2);
+                        //AddUpdateUserPhoneEmail(true, result.Item2);
                         UpdateUserInstallID(result.Item2);
                         CreateUserEmailID();
 
@@ -2563,7 +2563,7 @@ namespace JG_Prospect.Sr_App
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
 
-                    AddUpdateUserPhoneEmail(false, id);
+                    //AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
                     CreateUserEmailID();
 
