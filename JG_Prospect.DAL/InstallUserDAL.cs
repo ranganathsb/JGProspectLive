@@ -29,6 +29,70 @@ namespace JG_Prospect.DAL
 
         public DataSet returndata;
 
+        public DataSet GetUserEmailAndPhone(int UserID)
+        {
+            returndata = new DataSet();
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetUserEmailAndPhone");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
+                    returndata = database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); }
+
+            return returndata;
+        }
+
+        public void SetPrimaryContactOfUser(int DataID, int UserID, int DataType, bool IsPrimary)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_SetPrimaryContactOfUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@DataID", DbType.Int32, DataID);
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
+                    database.AddInParameter(command, "@DataType", DbType.Int32, DataType);
+                    database.AddInParameter(command, "@IsPrimary", DbType.Boolean, IsPrimary);
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); }
+        }
+
+        public string AddUserEmailOrPhone(int UserID, string DataForValidation, int DataType, string PhoneTypeID, string PhoneExt, bool IsPrimary)
+        {
+            string res = "";
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_AddUserEmailOrPhone");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
+                    database.AddInParameter(command, "@DataForValidation", DbType.String, DataForValidation);
+                    database.AddInParameter(command, "@DataType", DbType.Int32, DataType);
+                    database.AddInParameter(command, "@PhoneTypeID", DbType.String, PhoneTypeID);
+                    database.AddInParameter(command, "@PhoneExt", DbType.String, PhoneExt);
+                    database.AddInParameter(command, "@IsPrimary", DbType.Boolean, IsPrimary);
+                    res = database.ExecuteScalar(command).ToString();
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); res = "error"; }
+
+            return res;
+        }
+
         #region userlogin
 
         public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
@@ -1647,7 +1711,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
                     database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
                     database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
-                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId == 0 ? DBNull.Value:(object)objuser.SourceId);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId == 0 ? DBNull.Value : (object)objuser.SourceId);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);

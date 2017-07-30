@@ -23,6 +23,18 @@ namespace JG_Prospect.BLL
             get { return m_InstallUserBLL; }
             private set {; }
         }
+        public DataSet GetUserEmailAndPhone(int UserID)
+        { return InstallUserDAL.Instance.GetUserEmailAndPhone(UserID); }
+
+        public void SetPrimaryContactOfUser(int DataID, int UserID, int DataType, bool IsPrimary)
+        {
+            InstallUserDAL.Instance.SetPrimaryContactOfUser(DataID, UserID, DataType, IsPrimary);
+        }
+        public string AddUserEmailOrPhone(int UserID, string DataForValidation, int DataType, string PhoneTypeID, string PhoneExt, bool IsPrimary)
+        {
+            return InstallUserDAL.Instance.AddUserEmailOrPhone(UserID, DataForValidation, DataType, PhoneTypeID, PhoneExt, IsPrimary);
+        }
+
         public string AddHoursToAvailability(DateTime dt)
         {
             int month = dt.Month;
@@ -676,7 +688,7 @@ namespace JG_Prospect.BLL
 
         public void UpdateEmpType(int ID, string EmpType)
         {
-             InstallUserDAL.Instance.UpdateEmpType(ID, EmpType);
+            InstallUserDAL.Instance.UpdateEmpType(ID, EmpType);
         }
 
     }

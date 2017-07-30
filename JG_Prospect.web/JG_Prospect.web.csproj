@@ -2105,6 +2105,7 @@
     <Content Include="Sr_App\edit-html-template.aspx" />
     <Content Include="Sr_App\EditEmailTemplate.aspx" />
     <Content Include="Sr_App\EditInstallUser.aspx" />
+    <Content Include="Sr_App\EditUser1.aspx" />
     <Content Include="Sr_App\email-template-maintainance.aspx" />
     <Content Include="Sr_App\html-template-maintainance.aspx" />
     <Content Include="Sr_App\EmailTemplateForVendorCategories.aspx" />
@@ -2491,6 +2492,12 @@
     </Compile>
     <Compile Include="Sr_App\edit-html-template.aspx.designer.cs">
       <DependentUpon>edit-html-template.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\EditUser1.aspx.cs">
+      <DependentUpon>EditUser1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\EditUser1.aspx.designer.cs">
+      <DependentUpon>EditUser1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\email-template-maintainance.aspx.cs">
       <DependentUpon>email-template-maintainance.aspx</DependentUpon>
