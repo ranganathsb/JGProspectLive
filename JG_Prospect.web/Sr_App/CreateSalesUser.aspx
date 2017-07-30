@@ -431,20 +431,7 @@
                     changeYear: true,
                     yearRange: '1950:2050',
                     minDate: 'today'
-                });                
-
-                $(".phone").change(function () {
-                    setCheckBox(this);
-
-                    var ext = $(this).find('option:selected').attr('data-ext');
-
-                    if (ext != undefined & ext != null)
-                        $(this).parent().find('span.ext').text(ext);
-                });
-
-                $(".mail").change(function () {
-                    setCheckBox(this);
-                });
+                });               
 
                 $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                     var url = window.location.href
@@ -5193,6 +5180,20 @@
                         $(".loading").hide();
                         $("#<%=ddlstatus.ClientID %>").msDropDown();
                         $(".typeDrop").msDropDown();
+
+                        $(".phone").change(function () {
+                            setCheckBox(this);
+
+                            var ext = $(this).find('option:selected').attr('data-ext');
+
+                            if (ext != undefined & ext != null)
+                                $(this).parent().find('span.ext').text(ext);
+                        });
+
+                        $(".mail").change(function () {
+                            setCheckBox(this);
+                        });
+
                     }
                 });
 
@@ -5210,6 +5211,19 @@
         } catch (e) {
             alert(e.message);
         }
+
+        $(".phone").change(function () {
+            setCheckBox(this);
+
+            var ext = $(this).find('option:selected').attr('data-ext');
+
+            if (ext != undefined & ext != null)
+                $(this).parent().find('span.ext').text(ext);
+        });
+
+        $(".mail").change(function () {
+            setCheckBox(this);
+        });
 
         <%--try {
             $("#<%=ddlPhontType.ClientID%>").msDropDown();

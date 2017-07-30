@@ -6992,8 +6992,11 @@ namespace JG_Prospect.Sr_App
                             ddlPhone.Items[i].Attributes["data-p"] = "1";
                             ddlPhoneTypeDisplay.SelectedValue = RowItem["PhoneTypeID"].ToString();
 
-                            chkPhonePrimary.Checked = true;
+                            chkPhonePrimary.Checked = true;                           
+                        }
 
+                        if (ddlPhone.SelectedValue == RowItem["UserPhoneID"].ToString())
+                        {
                             if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
                             {
                                 lblExt.Text = RowItem["PhoneExtNo"].ToString();
