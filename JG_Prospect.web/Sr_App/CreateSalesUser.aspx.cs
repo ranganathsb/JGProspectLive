@@ -7000,7 +7000,7 @@ namespace JG_Prospect.Sr_App
                             if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
                             {
                                 lblExt.Text = RowItem["PhoneExtNo"].ToString();
-                                lblExt.Style.Add(HtmlTextWriterStyle.Padding, "5");
+                                lblExt.Style.Add(HtmlTextWriterStyle.Padding, "5px");
                             }
                         }
 
@@ -7026,7 +7026,7 @@ namespace JG_Prospect.Sr_App
             txtExt.Text = string.Empty;
             txtExt.Visible = true;
             lblExt.Text = "";
-            lblExt.Style.Add(HtmlTextWriterStyle.Padding, "0");
+            lblExt.Style.Add(HtmlTextWriterStyle.Padding, "0px");
             chkEmailPrimary.Checked = false;
             chkPhonePrimary.Checked = false;
             chkPrimary.Checked = false;
