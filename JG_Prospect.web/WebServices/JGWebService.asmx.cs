@@ -720,6 +720,14 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool DeleteTaskSequence(Int64 TaskId)
+        {
+            Boolean blnReturnResult = TaskGeneratorBLL.Instance.DeleteTaskSequence(TaskId);
+
+            return blnReturnResult;
+        }
+
         //[WebMethod(EnableSession = true)]
         //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         //public void GetAllTaskWithSequence()
