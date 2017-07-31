@@ -226,7 +226,7 @@
                         if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "" && $('#<%=hdnExamsOver.ClientID%>').val() != "1") {   // If exam is time out than hit end result automatically.                                                        
                             $('#<%=divExamSection.ClientID%>').find("input,button,select").attr("disabled", "disabled");
                             $('#<%=divExamSection.ClientID%>').find("a").attr("href", "javascript:void(0);");
-                            alert('Your exam is timeup!');
+                            //alert('Your exam is timeup!');
                             //console.log($('#<%=btnEndExamTimeOut.ClientID%>'));
                             $('#<%=hdnTimeLeft.ClientID%>').val("");
                             $('#<%=btnEndExamTimeOut.ClientID%>').click();

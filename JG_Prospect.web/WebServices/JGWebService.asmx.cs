@@ -720,6 +720,14 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool DeleteTaskSequence(Int64 TaskId)
+        {
+            Boolean blnReturnResult = TaskGeneratorBLL.Instance.DeleteTaskSequence(TaskId);
+
+            return blnReturnResult;
+        }
+
         //[WebMethod(EnableSession = true)]
         //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         //public void GetAllTaskWithSequence()
@@ -799,13 +807,24 @@ namespace JG_Prospect.WebServices
                         SendEmailToAssignedUsers(intTaskId, strUsersIds);
                     }
                 }
-                // send email to all users of the department as task is assigned to designation, but not to any specific user.
-                else
+                else // if all users are removed, then set task status to open.
                 {
-                    string strUserIDs = string.Join(",", arrDesignationUsers);
-
-                    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                    TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = intTaskId,
+                                                    Status = Convert.ToUInt16(JGConstant.TaskStatus.Open)
+                                                }
+                                            );
                 }
+                // send email to all users of the department as task is assigned to designation, but not to any specific user.
+                //else
+                //{
+                //    string strUserIDs = string.Join(",", arrDesignationUsers);
+
+                //    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                //}
             }
             return true;
         }

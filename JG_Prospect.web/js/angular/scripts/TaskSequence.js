@@ -14,7 +14,8 @@ function getTasksWithSearchandPagingM($http, methodName, filters) {
 function applyFunctions($scope, $compile, $http, $timeout) {
 
     $scope.Tasks = [];
-
+    $scope.ParentTaskDesignations = [];
+    $scope.SelectedParentTaskDesignation;
     $scope.UserSelectedDesigIds = [];
     $scope.DesignationSelectModel = [];
     $scope.IsTechTask = true;
@@ -35,10 +36,21 @@ function applyFunctions($scope, $compile, $http, $timeout) {
     $scope.TechTotalRecords = 0;
 
 
-    $scope.onEnd = function () {
+    $scope.onStaffEnd = function () {
         $timeout(function () {
+            //console.log("calling on end event for staff angular repeat....");
             setActiveTab($scope.IsTechTask);
             SetSeqApprovalUI();
+        }, 1);
+    };
+
+    $scope.onTechEnd = function () {
+        $timeout(function () {
+            if ($scope.IsTechTask) {
+                //console.log("calling on end event for tech angular repeat....");
+                setActiveTab($scope.IsTechTask);
+                SetSeqApprovalUI();
+            }
         }, 1);
     };
 
@@ -49,16 +61,14 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
-            $scope.HighLightTaskId = 0;
+
             $scope.IsTechTask = false;
             $scope.DesignationSelectModel = [];
             var results = JSON.parse(data.data.d);
-
             $scope.page = results.RecordCount[0].PageIndex;
             $scope.TotalRecords = results.RecordCount[0].TotalRecords;
             $scope.pagesCount = results.RecordCount[0].TotalPages;
             $scope.Tasks = results.Tasks;
-
             $scope.TaskSelected = $scope.Tasks[0];
 
         });
@@ -66,23 +76,25 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
     $scope.getTechTasks = function (page) {
 
-        $scope.loading = true;
-        $scope.Techpage = page || 0;
+       
+            $scope.loading = true;
+            $scope.Techpage = page || 0
 
-        //get all Customers
-        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
-            $scope.HighLightTaskId = 0;
-            $scope.IsTechTask = true;
-            $scope.DesignationSelectModel = [];
-            var results = JSON.parse(data.data.d);
-            //console.log(results.Tasks);
-            $scope.Techpage = results.RecordCount[0].PageIndex;
-            $scope.TechTotalRecords = results.RecordCount[0].TotalRecords;
-            $scope.TechpagesCount = results.RecordCount[0].TotalPages;
-            $scope.TechTasks = results.Tasks;
-            $scope.TaskSelected = $scope.Tasks[0];
+            //get all Customers
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
 
-        });
+                $scope.IsTechTask = true;
+                $scope.DesignationSelectModel = [];
+                var results = JSON.parse(data.data.d);
+                console.log(results.Tasks);
+                $scope.Techpage = results.RecordCount[0].PageIndex;
+                $scope.TechTotalRecords = results.RecordCount[0].TotalRecords;
+                $scope.TechpagesCount = results.RecordCount[0].TotalPages;
+                $scope.TechTasks = results.Tasks;
+                $scope.TaskSelected = $scope.Tasks[0];
+
+            });
+      
     };
 
     $scope.SetIsTechTask = function () {
@@ -121,22 +133,45 @@ function applyFunctions($scope, $compile, $http, $timeout) {
 
     $scope.getDesignationString = function (Designations) {
 
-        var DesignationArray = JSON.parse("[" + Designations + "]");
+        if (!angular.isUndefinedOrNull(Designations)) {
+            var DesignationArray = JSON.parse("[" + Designations + "]");
 
-        return DesignationArray.map(function (elem) {
-            return elem.Name;
-        }).join(",");
+            return DesignationArray.map(function (elem) {
+                return elem.Name;
+            }).join(",");
+        }
+        else {
+            return "";
+        }
     };
 
+    $scope.getDesignationsModel = function (SeqDesign) {
 
+        var DesignModel;
 
-    $scope.getDesignationsArray = function (Designations) {
+        console.log(SeqDesign);
 
-        var DesignationArray = JSON.parse("[" + Designations + "]");
+        if (!angular.isUndefinedOrNull(SeqDesign)) {
+            DesignModel = $scope.ParentTaskDesignations.filter(function (obj) {
+                return obj.Id === SeqDesign.toString();
+            })[0];
+        }
+        else {
 
-        $scope.DesignationSelectModel.push(DesignationArray[0]);
+            DesignModel = $scope.ParentTaskDesignations.filter(function (obj) {
+                return obj.Id === $(ddlDesigSeqClientID).val();
+            })[0];
+        }
 
-        return DesignationArray;
+        //if (!DesignModel) {
+        //    DesignModel = { 'Name': $(ddlDesigSeqClientID).text(), 'Id': $(ddlDesigSeqClientID).val() };
+        //}
+
+       // console.log("Assigning designation model value is.....");
+
+       // console.log(DesignModel);
+
+        return DesignModel;
 
     };
 
@@ -216,6 +251,12 @@ function applyFunctions($scope, $compile, $http, $timeout) {
             case 20:
                 prefix = "SBC";
                 break;
+            case 24:
+                prefix = "ITSQA";
+                break;
+            case 25:
+                prefix = "ITJQA";
+                break;
             case 26:
                 prefix = "ITJPH";
                 break;
@@ -281,3 +322,7 @@ app.controller('AddNewTaskSequenceController', function PostsController($scope, 
     };
 
 });
+
+angular.isUndefinedOrNull = function (val) {
+    return angular.isUndefined(val) || val === null
+}

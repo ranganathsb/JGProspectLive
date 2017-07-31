@@ -22,21 +22,27 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     var TaskID = edithyperlink.attr('data-taskid');
     var TechTask = edithyperlink.attr('data-task-TechTask');
-    //var DesignationIds = edithyperlink.attr('data-task-designationids');
+    var DesignationIds = edithyperlink.attr('data-task-designationids');
+    //console.log("Task designation is: " + DesignationIds);
+    if (DesignationIds) {
 
-    //if (DesignationIds) {
-    //    sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
+        var DesignationToSelect =  DesignationIds.split(",")[0];
+        
+       // console.log("Splited designation ids are:", $.trim(DesignationToSelect));
 
-    //    $.each(DesignationIds.split(","), function (index, value) {
+        // sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
+            $(ddlDesigSeqClientID).val($.trim(DesignationToSelect));
+        //    $.each(DesignationIds.split(","), function (index, value) {
 
-    //        var checkbox = $(designationDropdownId).children("input[value='" + $.trim(value) + "']");
-    //        if (checkbox) {
-    //            $(checkbox).attr('checked', true);
-    //        }
-    //    });
-    //}
+        //        var checkbox = $(designationDropdownId).children("input[value='" + $.trim(value) + "']");
+        //        if (checkbox) {
+        //            $(checkbox).attr('checked', true);
+        //        }
+        //    });
+    }
 
 
+   // console.log("Master Dropdown selected designation is: " + $(ddlDesigSeqClientID).val());
 
     //Set if tech task than load tech task related sequencing.
     sequenceScope.IsTechTask = TechTask;
@@ -47,18 +53,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
 
     // set designation id to be search by default
-    sequenceScope.SetDesignForSearch($(designationDropdownId).val());
-
-    // console.log('Designations which are selected to search... ' + sequenceScope.UserSelectedDesigIds);
-
-    if (TechTask === 'True') {
-
-        sequenceScope.getTechTasks();
-    }
-    else {
-
-        sequenceScope.getTasks();
-    }
+    sequenceScope.SetDesignForSearch($(ddlDesigSeqClientID).val());
 
     $('#taskSequence').removeClass("hide");
 
@@ -74,26 +69,75 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         }
     });
 
+    setParentTaskDesignationToJqueryArray(ddlDesigSeqClientID);
+
+    // console.log(TechTask);
+
+    if (TechTask === 'True') {
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScope.getTechTasks();
+        applyTaskSequenceTabs(1);
+
+    }
+    else {
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScope.getTasks();
+        applyTaskSequenceTabs(0);
+    }
+
+
 
 }
 
 function showEditTaskSequence(element) {
 
-
+    //console.log("show edit task sequence function called");
     // var edithyperlink = $($('a [data-data-taskid="'+ tasksid +'"]'));
     var TaskID = $(element).attr('data-taskid');
-    //var TaskID = taskid;
-
-
     var sequenceDiv = $('#divSeqDesg' + TaskID);
+    //var TaskID = taskid;
+    var desiDropDown = sequenceDiv.children('select');
+
+    $('#divSeq' + TaskID).removeClass('hide');
+    $('#divSeqDesg' + TaskID).removeClass('hide');
+    
 
     if (sequenceDiv) {
 
-        DesignationID = sequenceDiv.children('select').val();
+        DesignationID = $(desiDropDown).val();// get user selected designation designation value.
 
-        if (DesignationID) {
+
+        // Designation id is null or it is not selected properly.
+        if (!DesignationID || DesignationID === "?") {
+            $(desiDropDown).children("option[value='?']").remove();
+            
+
+            DesignationID = $(element).attr('data-seqdesgid');// use previously assigned seq to task.
+            
+            // if task has no sequence assigned than designation id will be null.in that case select designation from parent designation dropdown.
+            if (!DesignationID) {
+                
+                DesignationID = $(ddlDesigSeqClientID).val();
+
+                //console.log("Designation ID for non assigned sequence: " + DesignationID);
+
+                $(desiDropDown).val(DesignationID); // set task dropdown value to parent designation dropdown.
+                getLastAvailableSequence(TaskID, DesignationID);
+            }
+            else {
+                $(desiDropDown).val(DesignationID);
+            }
+
+        }
+        else {
             getLastAvailableSequence(TaskID, DesignationID);
         }
+
+        //console.log("New designation Id is:" + DesignationID);
+
+     
+       
+     
 
         // if it is new sequence to assign, load latest sequence based on designation.
 
@@ -129,6 +173,10 @@ function getLastAvailableSequence(TaskID, DesignationID) {
         HideAjaxLoader();
 
         if (data.d) {
+
+            //console.log("Retrieved new designation seq.");
+            //console.log(data.d);
+
             var sequence = JSON.parse(data.d);
 
             var valExisting = parseInt($('#txtSeq' + TaskID).val());
@@ -139,6 +187,8 @@ function getLastAvailableSequence(TaskID, DesignationID) {
             }
 
             DisplySequenceBox(TaskID, sequence.Table[0].Sequence);
+
+
         }
 
     }
@@ -152,19 +202,23 @@ var isWarnedForSequenceChange = false;
 
 function DisplySequenceBox(TaskID, maxValueforSeq) {
 
-    $('#divSeq' + TaskID).removeClass('hide');
-    $('#divSeqDesg' + TaskID).removeClass('hide');
-
+    
     var instance = $('#txtSeq' + TaskID);
+
+    var DesignationId = $('#divSeqDesg' + TaskID).find('select').val();
+    var OriginalDesignationId = instance.attr("data-original-desgid");
+
+    //console.log("Original designation was: " + OriginalDesignationId);
+    //console.log("Changed designation was: " + DesignationId);
+
     instance.addClass("hide");
     instance.prop('disabled', true);
 
     // If task has never been assigned with any sequence, show default available seq.
-    if (!instance.attr("data-original-val")) {
+    if ((!instance.attr("data-original-val")) || DesignationId != OriginalDesignationId) {
 
         var tr = instance.closest('tr');
         var linkLabel = tr.find('a.autoclickSeqEdit').find('label');
-        var DesignationId = $('#divSeqDesg' + TaskID).find('select').val();
 
         var TaskPrefix;
 
@@ -174,6 +228,20 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
 
         linkLabel.html(sequenceScope.getSequenceDisplayText(maxValueforSeq, parseInt(DesignationId), TaskPrefix));
 
+    }
+    else if (DesignationId === OriginalDesignationId && instance.attr("data-original-val")) {// if designation selected to same it was, change it to original sequence.
+
+
+        var tr = instance.closest('tr');
+        var linkLabel = tr.find('a.autoclickSeqEdit').find('label');
+
+        var TaskPrefix;
+
+        if (linkLabel.html()) {
+            TaskPrefix = linkLabel.html().split(":").pop();
+        }
+
+        linkLabel.html(sequenceScope.getSequenceDisplayText(instance.attr("data-original-val"), parseInt(DesignationId), TaskPrefix));
     }
     //if (instance.spinner("instance")) {
     //    instance.spinner("destroy");
@@ -192,6 +260,12 @@ function UpdateTaskSequence(savebutton) {
     var TaskID = button.attr('data-taskid');
     var sequence = parseInt($('#txtSeq' + TaskID).val());
     var DesignationID = $('#divSeqDesg' + TaskID).children('select').val();
+    var OriginalDesignationID = button.attr('data-orginal-seqdesg');
+
+    if (DesignationID === OriginalDesignationID) {
+
+        OriginalDesignationID = null;
+    }
 
     if (!isNaN(sequence) && sequence > 0) {
         // if original sequence is changed than it will warn user.
@@ -232,8 +306,12 @@ function SaveTaskSequence(TaskID, Sequence, DesigataionId) {
     function OnSaveSeqSuccess(data, TaskID, Sequence) {
         HideAjaxLoader();
         alert('Sequence updated successfully');
-        $('#TaskSeque' + TaskID).html(Sequence);
+        $('#TaskSeque' + TaskID).html($("#SeqLabel"+TaskID).html());
         $('#divSeq' + TaskID).addClass('hide');
+
+        //console.log("After saving task designation id is set to master dropdown: " + DesigataionId);
+
+        $(ddlDesigSeqClientID).val(DesigataionId).trigger('change');
 
         sequenceScope.refreshTasks();
 
@@ -253,9 +331,8 @@ function BindSeqDesignationChange(ControlID) {
     //if user selected designation than add it for search.        
     //search initially all tasks with sequencing.
     // remove it from search.
-    $(ControlID).bind('change', function () {
-        sequenceScope.SetDesignForSearch($(this).val(), false);
-
+    $(ControlID).bind('change', function () {        
+        sequenceScope.SetDesignForSearch($(this).val(), false);        
     });
 }
 
@@ -266,6 +343,10 @@ function swapSequence(hyperlink, isup) {
     var FirstTaskDesg = $(hyperlink).attr("data-taskdesg");
     var SecondTaskID, SecondSeq, SecondTaskDesg, otherlink;
     var row = $(hyperlink).closest('tr');
+
+    if (row.hasClass("yellowthickborder")) {
+        sequenceScope.HighLightTaskId = 0;
+    }
 
     if (isup) {
         otherlink = row.prev().find('[data-taskdesg]').first();
@@ -309,4 +390,92 @@ function swapSequence(hyperlink, isup) {
         alert("In order to swap sequence both Task should have same designation, Please filter designation from above designation dropdown and then try to swap sequence.");
     }
 
+}
+
+function setActiveTab(isTechTask) {
+
+    var activeTab = 0;
+    var clickEditLinkDiv = "#tblStaffSeq tbody > tr.yellowthickborder";
+
+    if (isTechTask) {
+        //  activeTab = 1;
+        clickEditLinkDiv = "#tblTechSeq  tbody > tr.yellowthickborder";
+    }
+
+    //$("#taskSequenceTabs").tabs("option", "active", activeTab);
+
+    var linkToClick = $(clickEditLinkDiv).find(".autoclickSeqEdit");
+
+    if (linkToClick) {
+        showEditTaskSequence(linkToClick);
+    }
+
+}
+
+function applyTaskSequenceTabs(activeTab) {
+    $('#taskSequenceTabs').tabs({
+        active: activeTab
+    });
+
+    // console.log('Active tab is ' + $("#taskSequenceTabs").tabs("option", "active"));
+
+    $("#taskSequenceTabs").bind("tabsactivate", function (event, ui) {
+        //console.log("calling load task from tab select....");
+        if (ui.newPanel.attr('id') == "TechTask") {
+
+            sequenceScope.IsTechTask = true;
+            sequenceScope.getTechTasks();
+        }
+        else {
+            sequenceScope.IsTechTask = false;
+            sequenceScope.getTasks();
+        }
+    });
+
+}
+
+
+function setParentTaskDesignationToJqueryArray(DesignationDropdown) {
+
+    var allDesignations = $(DesignationDropdown).find("option");
+    sequenceScope.ParentTaskDesignations = [];
+
+    $.each(allDesignations, function (index, item) {
+        sequenceScope.ParentTaskDesignations.push({ "Name": $(item).text(), "Id": $(item).val() });
+        //console.log(sequenceScope.ParentTaskDesignations);
+    });
+
+}
+
+function DeleteTaskSequence(deleteLink) {
+
+    if (confirm('are you sure you want to delete this task from sequence?')) {
+        ShowAjaxLoader();
+
+        var TaskID = parseInt($(deleteLink).attr("data-taskid"));
+
+        var postData = {
+            TaskId: TaskID
+        };
+
+        CallJGWebService('DeleteTaskSequence', postData, OnDeleteTaskSeqSuccess, OnDeleteTaskSeqError);
+
+        function OnDeleteTaskSeqSuccess(data) {
+            HideAjaxLoader();
+            if (data.d == true) {
+                //alert('Sequences swaped successfully, Reloading Tasks....');
+                sequenceScope.refreshTasks();
+            }
+            else {
+                alert('Error in deleting sequence, Please try again.');
+            }
+        }
+
+        function OnDeleteTaskSeqError(err) {
+            HideAjaxLoader();
+            alert('Error in deleting sequence, Please try again.');
+        }
+
+
+    }
 }
