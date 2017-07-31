@@ -86,7 +86,9 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-
+        .form_panel ul li {
+            margin : 0 !important;
+        }
         /*.GrdPrimaryEmail:hover {
         overflow: visible;
         white-space: normal;
@@ -223,36 +225,40 @@
         }
 
         .contactGrid {
-            padding: 0px;
-            margin: 5px;
+            padding: 0px !important;
+            margin: 0px !important;
+            overflow : visible !important;
+            width : 100% !important;
+
         }
 
-            .contactGrid li {
-                width: 350px !important;
+            .contactGrid > li {
+                width: 100% !important;
                 text-align: left;
                 margin: 2px 0px;
+               
             }
-
-            .contactGrid > li:last-child {
-                margin-bottom: 100px !important;
-            }
-
+       
             .contactGrid li select.mail {
-                width: 310px !important;
+                width: 90% !important;
                 height: 25px;
             }
 
             .contactGrid li select.phone {
-                width: 145px !important;
+                width: 35% !important;
                 height: 25px;
             }
+            /*.disabledAll .ddTitle .ddTitleText
+            {
+                width: 35% !important;
+            }*/
 
             .contactGrid li input.phone {
                 width: 95px !important;
             }
 
             .contactGrid li .ext {
-                width: 30px;
+                width: 10%;
                 background: white;
                 display: inline-block;
                 /*padding: 5px;*/
@@ -953,7 +959,7 @@
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="25%" ItemStyle-Width="25%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="20%" ItemStyle-Width="20%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
@@ -994,7 +1000,7 @@
                                 </asp:TemplateField>
 
 
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="20%" ItemStyle-Width="20%" ItemStyle-HorizontalAlign="Center" SortExpression="Phone">
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="25%" ItemStyle-Width="25%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
                                         <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
@@ -1007,7 +1013,7 @@
                                         <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />
                                         <ul class="contactGrid">
                                             <li>
-                                                <asp:CheckBox ID="chkEmailPrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
+                                                <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck"  AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
                                             </li>
                                             <li>
