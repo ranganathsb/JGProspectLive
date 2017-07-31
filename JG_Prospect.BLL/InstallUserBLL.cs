@@ -23,6 +23,11 @@ namespace JG_Prospect.BLL
             get { return m_InstallUserBLL; }
             private set {; }
         }
+
+        public void AddUserNotes(string Notes, int UserID, int AddedByID)
+        {
+            InstallUserDAL.Instance.AddUserNotes(Notes, UserID, AddedByID);
+        }
         public DataSet GetUserEmailAndPhone(int UserID)
         { return InstallUserDAL.Instance.GetUserEmailAndPhone(UserID); }
 
