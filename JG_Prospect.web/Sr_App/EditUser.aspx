@@ -85,6 +85,7 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            display:none;
         }
 
         .form_panel ul li {
@@ -107,11 +108,13 @@
 
         .grd-lblPrimaryPhone img {
             float: left;
+            display:none;
         }
 
         .grd-lblPrimaryPhone {
             width: 135px !important;
             padding-top: 8px;
+            display:none;
         }
 
         .user-zip {
@@ -407,9 +410,9 @@
                 $('.PrimaryPhone').click(function () {
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
-                $('.GrdPrimaryEmail').click(function () {
+                //$('.GrdPrimaryEmail').click(function () {
                     //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
-                });
+                //});
 
                 try {
                     $('.typeDrop').msDropDown();// OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
@@ -1009,15 +1012,7 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="25%" ItemStyle-Width="25%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
-                                        <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
-                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
-                                        <div class="GrdPrimaryEmail">
-                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
-                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
-                                        </div>
-                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                        <br />
-                                       <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
+                                        <%--<label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
                                         <ul class="contactGrid">
                                             <li>
                                                 <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
@@ -1041,8 +1036,11 @@
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
                                         </ul>
-                                        <br />
-                                        <br />
+                                        <div class="GrdPrimaryEmail">
+                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
+                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
+                                        </div>
+                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>                                        
                                         <%-- <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
                                                 <span>Click To Add Phone /Email</span>
@@ -1103,7 +1101,7 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-Width="10%" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <asp:Label runat="server" ID="lblNotes" Text=""></asp:Label>
                                         <br />

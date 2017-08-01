@@ -680,7 +680,7 @@ namespace JG_Prospect
             SqlConnection con = new SqlConnection(str);
 
             #region AddNotes
-            if (e.CommandName == "AddNewContact")
+            if (e.CommandName == "AddNotes")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
                 TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewNote");
