@@ -1711,16 +1711,16 @@
                                                         <li>
                                                             <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>&nbsp;
-                                                <asp:Label ID="lblExt" CssClass="ext" runat="server"></asp:Label>
+                                             
                                                             <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop" ID="ddlPhoneTypeDisplay"></asp:DropDownList>
                                                         </li>
-                                                        <li>
+                                                        <li style="margin-top:-13px;">
                                                             <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
                                                                 ID="ddlPhoneType" AutoPostBack="true" OnSelectedIndexChanged="ddlPhoneType_SelectedIndexChanged">
                                                             </asp:DropDownList>&nbsp;
                                                 <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server"></asp:TextBox>&nbsp;
-                                                <asp:TextBox ID="txtExt" MaxLength="8" Placeholder="Ext" CssClass="ext" runat="server"></asp:TextBox>&nbsp;
+                                               
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" ValidationGroup="addcontact" OnClick="btnAddContact_Click"></asp:Button>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ControlToValidate="txtContact"
                                                                 ForeColor="Red" Display="Dynamic" ValidationGroup="addcontact" ErrorMessage="Please Enter a valid Phone/Email"></asp:RequiredFieldValidator>
@@ -1729,6 +1729,8 @@
                                                             </asp:RegularExpressionValidator>
                                                         </li>
                                                     </ul>
+                                                       <asp:Label ID="lblExt" Visible="false" CssClass="ext" runat="server"></asp:Label>
+                                                     <asp:TextBox Visible="false" ID="txtExt" MaxLength="8" Placeholder="Ext" CssClass="ext" runat="server"></asp:TextBox>&nbsp;
                                                 </td>
                                                 <td style="display: none;">
                                                     <%--<asp:CheckBox class="PrimaryPhoneMain" ID="chkPrimaryPhoneMain" runat="server" Style="color: #fff; margin-top: 18px;" />--%><asp:TextBox ID="txtemail" runat="server" MaxLength="40"></asp:TextBox>
