@@ -124,6 +124,23 @@ namespace JG_Prospect
                 ViewState["dt_UserPhones"] = value;
             }
         }
+
+        private DataTable dtUserNotes
+        {
+            get
+            {
+                if (ViewState["dt_UserNotes"] == null)
+                {
+                    return null;
+                }
+                return (DataTable)ViewState["dt_UserNotes"];
+            }
+            set
+            {
+                ViewState["dt_UserNotes"] = value;
+            }
+        }
+
         #endregion
 
         #region '--Page Events--'
@@ -510,6 +527,35 @@ namespace JG_Prospect
 
                     BindContactDllForGrid(ref elePhoneType, ref elePhoneTypeDisplay);
 
+                    #region BindUserNotes
+
+                    var userNotes = from notes in dtUserNotes.AsEnumerable()
+                                    where notes.Field<int>("UserID") == id
+                                    select notes;
+
+                    Label lblNotes = (e.Row.FindControl("lblNotes") as Label);
+
+                    i = 0;
+                    foreach (DataRow RowItem in userNotes)
+                    {
+                        try
+                        {
+                            if (i == 0)
+                            { lblNotes.Text += "<table class='userNotes'><tbody><tr><th>Notes</th><th>Added By</th></tr>"; }
+
+                            lblNotes.Text += "<tr><td>" + RowItem["Notes"].ToString()
+                                + "</td><td>" + RowItem["AddedBy"].ToString() + "</td></tr>";
+                        }
+                        catch { }
+                        finally { i++; }
+                    }
+
+                    if (i > 0)
+                        lblNotes.Text += "</tbody></table>";
+
+                    #endregion
+
+
                     if (eleEmail.Items.Count == 0) { eleEmail.Items.Add(new System.Web.UI.WebControls.ListItem("No Email", "-99")); }
                     if (elePhone.Items.Count == 0) { elePhone.Items.Add(new System.Web.UI.WebControls.ListItem("No Phone", "-99")); }
 
@@ -633,8 +679,19 @@ namespace JG_Prospect
             string str = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
             SqlConnection con = new SqlConnection(str);
 
-            #region AddNewContact
+            #region AddNotes
             if (e.CommandName == "AddNewContact")
+            {
+                GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewNote");
+                int id = Convert.ToInt32(e.CommandArgument);
+
+                InstallUserBLL.Instance.AddUserNotes(txtNewContact.Text, id, JGSession.UserId);
+                GetSalesUsersStaticticsAndData();
+            }
+            #endregion
+            #region AddNewContact
+            else if (e.CommandName == "AddNewContact")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
 
@@ -3892,6 +3949,8 @@ namespace JG_Prospect
                     DataTable dt_UserPhones = dsSalesUserData.Tables[8];
                     ViewState["dt_UserEmails"] = dt_UserEmails;
                     ViewState["dt_UserPhones"] = dt_UserPhones;
+
+                    ViewState["dt_UserNotes"] = dsSalesUserData.Tables[9];
 
                     if (dsSalesUserData.Tables[6].Rows.Count > 0)
                     {

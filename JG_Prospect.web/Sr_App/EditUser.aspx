@@ -86,8 +86,9 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+
         .form_panel ul li {
-            margin : 0 !important;
+            margin: 0 !important;
         }
         /*.GrdPrimaryEmail:hover {
         overflow: visible;
@@ -227,18 +228,16 @@
         .contactGrid {
             padding: 0px !important;
             margin: 0px !important;
-            overflow : visible !important;
-            width : 100% !important;
-
+            overflow: visible !important;
+            width: 100% !important;
         }
 
             .contactGrid > li {
                 width: 100% !important;
                 text-align: left;
                 margin: 2px 0px;
-               
             }
-       
+
             .contactGrid li select.mail {
                 width: 90% !important;
                 height: 25px;
@@ -271,6 +270,18 @@
             .contactGrid select.phone option[data-p='1'] {
                 color: red;
             }
+
+        .userNotes tbody {
+            height: auto !important;
+        }
+
+        .userNotes tr {
+            display: table-row !important;
+        }
+
+        .userNotes tbody td {
+            border: 1px solid gray !important;
+        }
     </style>
     <script type="text/javascript">
 
@@ -958,8 +969,7 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="20%" ItemStyle-Width="20%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
@@ -992,14 +1002,11 @@
                                     </ItemTemplate>
 
                                 </asp:TemplateField>
-
                                 <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                     </ItemTemplate>
 
                                 </asp:TemplateField>
-
-
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="25%" ItemStyle-Width="25%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
@@ -1010,10 +1017,10 @@
                                         </div>
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
                                         <br />
-                                        <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />
+                                       <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
                                         <ul class="contactGrid">
                                             <li>
-                                                <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck"  AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
+                                                <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
                                             </li>
                                             <li>
@@ -1096,7 +1103,17 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
+                                <asp:TemplateField HeaderText="Notes" HeaderStyle-Width="10%" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="wordBreak">
+                                    <ItemTemplate>
+                                        <asp:Label runat="server" ID="lblNotes" Text=""></asp:Label>
+                                        <br />
+                                        <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"></asp:TextBox>
+                                        <asp:RequiredFieldValidator runat="server" ID="reqNotes" ControlToValidate="txtNewNote" ForeColor="Red" ErrorMessage="Please write note"
+                                            ValidationGroup="note"></asp:RequiredFieldValidator>
+                                        <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add" CommandName="AddNotes" ValidationGroup="note"
+                                            CommandArgument='<%# Eval("Id") %>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                     </ContentTemplate>

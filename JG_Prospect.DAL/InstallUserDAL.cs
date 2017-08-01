@@ -29,6 +29,25 @@ namespace JG_Prospect.DAL
 
         public DataSet returndata;
 
+        public void AddUserNotes(string Notes, int UserID, int AddedByID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("AddUserNotes");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.Int32, UserID);
+                    database.AddInParameter(command, "@Notes", DbType.String, Notes);
+                    database.AddInParameter(command, "@AddedByID", DbType.Int32, AddedByID);
+                    database.AddInParameter(command, "@AddedOn", DbType.DateTime, DateTime.Now);
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); }
+        }
+
         public DataSet GetUserEmailAndPhone(int UserID)
         {
             returndata = new DataSet();
