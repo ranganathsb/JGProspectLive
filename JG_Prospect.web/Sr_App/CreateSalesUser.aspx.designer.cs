@@ -256,15 +256,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.DropDownList ddlPhone;
         
         /// <summary>
-        /// lblExt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblExt;
-        
-        /// <summary>
         /// ddlPhoneTypeDisplay control.
         /// </summary>
         /// <remarks>
@@ -301,15 +292,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtContact;
         
         /// <summary>
-        /// txtExt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtExt;
-        
-        /// <summary>
         /// btnAddContact control.
         /// </summary>
         /// <remarks>
@@ -344,6 +326,24 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator reEmail;
+        
+        /// <summary>
+        /// lblExt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblExt;
+        
+        /// <summary>
+        /// txtExt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtExt;
         
         /// <summary>
         /// txtemail control.
