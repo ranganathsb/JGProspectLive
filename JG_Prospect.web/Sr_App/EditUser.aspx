@@ -1101,14 +1101,14 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" Visible="false" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <asp:Label runat="server" ID="lblNotes" Text=""></asp:Label>
                                         <br />
                                         <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"></asp:TextBox>
-                                        <asp:RequiredFieldValidator runat="server" ID="reqNotes" ControlToValidate="txtNewNote" ForeColor="Red" ErrorMessage="Please write note"
-                                            ValidationGroup="note"></asp:RequiredFieldValidator>
-                                        <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add" CommandName="AddNotes" ValidationGroup="note"
+                                       <%-- <asp:RequiredFieldValidator runat="server" ID="reqNotes" ControlToValidate="txtNewNote" ForeColor="Red" ErrorMessage="Please write note"
+                                            ValidationGroup="note"></asp:RequiredFieldValidator>--%>
+                                        <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add" CommandName="AddNotes" 
                                             CommandArgument='<%# Eval("Id") %>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
