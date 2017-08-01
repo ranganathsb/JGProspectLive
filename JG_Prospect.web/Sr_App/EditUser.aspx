@@ -33,6 +33,8 @@
                 cursor: pointer;
                 font-weight: bold;
                 width: initial;
+                text-align: left;
+                font-size: 20px;
             }
 
             .GrdContainer .GrdContent {
@@ -42,8 +44,9 @@
             }
 
             .GrdContainer .GrdContent span{
-                margin:0px!important;display: block;
-    width: inherit;
+                margin:0px!important;
+                display: block;
+                width: inherit;
             }            
 
         .GrdContent ul li span {
@@ -426,7 +429,7 @@
                         //change text of header based on visibility of content div
                         $header.text(function () {
                             //change text based on condition
-                            return $content.is(":visible") ? "Click To Collapse" : "Click To Display Notes";
+                            return $content.is(":visible") ? "-" : "+";
                         });
                     });
                 });
@@ -1134,7 +1137,7 @@
                                     <ItemTemplate>
                                         <div class="GrdContainer">
                                             <div class="GrdHeader">
-                                                <span>Click To Display Notes</span>
+                                                <span>+</span>
                                             </div>
                                             <div class="GrdContent">
                                                 <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
@@ -1142,8 +1145,8 @@
                                         </div>
                                         <div style="background-color: #FFE9C8; padding: 2px 0px;">
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
-                                                CommandArgument='<%# Eval("Id") %>'  style="vertical-align:middle" />
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="54%" BackColor="#FFFCD9" style="vertical-align:middle"></asp:TextBox>
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle" />
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="54%" BackColor="#FFFCD9" Style="vertical-align: middle"></asp:TextBox>
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
