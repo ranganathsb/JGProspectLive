@@ -533,7 +533,8 @@ namespace JG_Prospect
                                     where notes.Field<int>("UserID") == id
                                     select notes;
 
-                    Label lblNotes = (e.Row.FindControl("lblNotes") as Label);
+                    PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
+                    Label lblNotes = new Label();
 
                     i = 0;
                     foreach (DataRow RowItem in userNotes)
@@ -541,10 +542,10 @@ namespace JG_Prospect
                         try
                         {
                             if (i == 0)
-                            { lblNotes.Text += "<table class='userNotes'><tbody><tr><th>Notes</th><th>Added By</th></tr>"; }
+                            { lblNotes.Text += "<table class='userNotes' cellspacing='0'><tbody><tr><th>User Id</th><th>Date & Time</th><th>Note/Status</th></tr>"; }
 
-                            lblNotes.Text += "<tr><td>" + RowItem["Notes"].ToString()
-                                + "</td><td>" + RowItem["AddedBy"].ToString() + "</td></tr>";
+                            lblNotes.Text += "<tr><td>" + RowItem["UpdatedUserInstallID"].ToString() + "</td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
+                                RowItem["LogDescription"].ToString() + "</td></tr>";
                         }
                         catch { }
                         finally { i++; }
@@ -553,6 +554,7 @@ namespace JG_Prospect
                     if (i > 0)
                         lblNotes.Text += "</tbody></table>";
 
+                    placeHolder.Controls.Add(lblNotes);
                     #endregion
 
 
@@ -683,10 +685,17 @@ namespace JG_Prospect
             if (e.CommandName == "AddNotes")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewNote");
+                TextBox txtNewNote = (TextBox)gvRow.FindControl("txtNewNote");
                 int id = Convert.ToInt32(e.CommandArgument);
 
-                InstallUserBLL.Instance.AddUserNotes(txtNewContact.Text, id, JGSession.UserId);
+                //InstallUserBLL.Instance.AddUserNotes(txtNewContact.Text, id, JGSession.UserId);
+
+                if (txtNewNote.Text.Trim() != "")
+                {
+                    fullTouchPointLog("Note : " + txtNewNote.Text, id);
+                    //txtNewNote.Text = "";
+                }
+
                 GetSalesUsersStaticticsAndData();
             }
             #endregion
@@ -4797,6 +4806,13 @@ namespace JG_Prospect
                 }
             }
             catch (Exception ex) { Console.Write(ex.Message); }
+        }
+
+        private void fullTouchPointLog(string strValueToAdd, int id)
+        {
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.Now, strValueToAdd, "");
         }
     }
 }

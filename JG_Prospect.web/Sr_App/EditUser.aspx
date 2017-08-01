@@ -24,21 +24,27 @@
         }
 
             .GrdContainer div {
-                width: 100%;
+                width: inherit;
             }
 
             .GrdContainer .GrdHeader {
-                background-color: #d3d3d3;
+                background-color: #a09585!important;
                 padding: 2px;
                 cursor: pointer;
                 font-weight: bold;
+                width: initial;
             }
 
             .GrdContainer .GrdContent {
                 display: none;
-                padding: 5px;
-                height: 160px;
+               /* padding: 5px;
+                height: 160px;*/
             }
+
+            .GrdContainer .GrdContent span{
+                margin:0px!important;display: block;
+    width: inherit;
+            }            
 
         .GrdContent ul li span {
             width: 100% !important;
@@ -274,16 +280,35 @@
                 color: red;
             }
 
+        .userNotes  {
+            margin: 1px 0px !important;
+        }
         .userNotes tbody {
             height: auto !important;
         }
 
         .userNotes tr {
             display: table-row !important;
+            background:antiquewhite;
+        }
+
+        .userNotes tr th {
+            background-color:#C0AE96!important;
+            border: none !important;
+            padding:2px;
+        }
+
+        .userNotes tr td {
+            background-color:#FF8D79!important;
+            padding:1px;
+        }
+
+        .userNotes tr:nth-child(2n+1) td {            
+            background-color:#FFFCD9!important;
         }
 
         .userNotes tbody td {
-            border: 1px solid gray !important;
+            border: none !important;
         }
     </style>
     <script type="text/javascript">
@@ -401,7 +426,7 @@
                         //change text of header based on visibility of content div
                         $header.text(function () {
                             //change text based on condition
-                            return $content.is(":visible") ? "Click To Collapse" : "Click To Add Phone /Email";
+                            return $content.is(":visible") ? "Click To Collapse" : "Click To Display Notes";
                         });
                     });
                 });
@@ -411,7 +436,7 @@
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
                 //$('.GrdPrimaryEmail').click(function () {
-                    //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
+                //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
                 //});
 
                 try {
@@ -870,7 +895,7 @@
                             <Columns>
 
                                 <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="3%" ItemStyle-Width="3%">
-                                    <ItemTemplate >
+                                    <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
 
@@ -924,7 +949,7 @@
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
 
-                            <%--    <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
+                                <%--    <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
                                     ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtInstallid" runat="server" MaxLength="30" Text='<%#Eval("InstallId")%>'></asp:TextBox>
@@ -1022,7 +1047,7 @@
                                             <li>
                                                 <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>
                                                 <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>
-                                               <!-- over here -->
+                                                <!-- over here -->
                                                 <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop"
                                                     ID="ddlPhoneTypeDisplay">
                                                 </asp:DropDownList>
@@ -1033,7 +1058,7 @@
                                                 </asp:DropDownList>
                                                 <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>
                                                 <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server" onkeydown="return validateContact(event, this);"></asp:TextBox>
-                                                 <!-- over here -->
+                                                <!-- over here -->
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
@@ -1042,8 +1067,8 @@
                                             <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
-                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>                                        
-                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
+                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
+                                        <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
                                         <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
                                         <%-- <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
@@ -1105,15 +1130,21 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center"  ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%">
                                     <ItemTemplate>
-                                        <asp:Label runat="server" ID="lblNotes" Text=""></asp:Label>
-                                        <br />
-                                        <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"></asp:TextBox>
-                                       <%-- <asp:RequiredFieldValidator runat="server" ID="reqNotes" ControlToValidate="txtNewNote" ForeColor="Red" ErrorMessage="Please write note"
-                                            ValidationGroup="note"></asp:RequiredFieldValidator>--%>
-                                        <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add" CommandName="AddNotes" 
-                                            CommandArgument='<%# Eval("Id") %>' />
+                                        <div class="GrdContainer">
+                                            <div class="GrdHeader">
+                                                <span>Click To Display Notes</span>
+                                            </div>
+                                            <div class="GrdContent">
+                                                <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
+                                            </div>
+                                        </div>
+                                        <div style="background-color: #FFE9C8; padding: 2px 0px;">
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
+                                                CommandArgument='<%# Eval("Id") %>'  style="vertical-align:middle" />
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="54%" BackColor="#FFFCD9" style="vertical-align:middle"></asp:TextBox>
+                                        </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
