@@ -28,7 +28,7 @@
             }
 
             .GrdContainer .GrdHeader {
-                background-color: #a09585!important;
+                background-color: #a09585 !important;
                 padding: 2px;
                 cursor: pointer;
                 font-weight: bold;
@@ -39,15 +39,15 @@
 
             .GrdContainer .GrdContent {
                 display: none;
-               /* padding: 5px;
+                /* padding: 5px;
                 height: 160px;*/
             }
 
-            .GrdContainer .GrdContent span{
-                margin:0px!important;
-                display: block;
-                width: inherit;
-            }            
+                .GrdContainer .GrdContent span {
+                    margin: 0px !important;
+                    display: block;
+                    width: inherit;
+                }
 
         .GrdContent ul li span {
             width: 100% !important;
@@ -94,7 +94,7 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            display:none;
+            display: none;
         }
 
         .form_panel ul li {
@@ -117,13 +117,13 @@
 
         .grd-lblPrimaryPhone img {
             float: left;
-            display:none;
+            display: none;
         }
 
         .grd-lblPrimaryPhone {
             width: 135px !important;
             padding-top: 8px;
-            display:none;
+            display: none;
         }
 
         .user-zip {
@@ -171,10 +171,11 @@
             z-index: 1002;
             overflow: auto;
         }
-       .ddcommon.disabledAll 
-       {
-           width: 35% !important;
-       }
+
+        .ddcommon.disabledAll {
+            width: 35% !important;
+        }
+
         .close {
             position: absolute;
             top: 35px;
@@ -262,7 +263,7 @@
                 width: 40% !important;
                 height: 25px;
             }
-           
+
 
             .contactGrid li input.phone {
                 width: 95px !important;
@@ -283,36 +284,37 @@
                 color: red;
             }
 
-        .userNotes  {
-            margin: 1px 0px !important;
-        }
-        .userNotes tbody {
-            height: auto !important;
+        .userNotes {
+            margin: 0px !important;
         }
 
-        .userNotes tr {
-            display: table-row !important;
-            background:antiquewhite;
-        }
+            .userNotes tbody {
+                height: auto !important;
+            }
 
-        .userNotes tr th {
-            background-color:#C0AE96!important;
-            border: none !important;
-            padding:2px;
-        }
+            .userNotes tr {
+                display: table-row !important;
+                background: antiquewhite;
+            }
 
-        .userNotes tr td {
-            background-color:#FF8D79!important;
-            padding:1px;
-        }
+                .userNotes tr th {
+                    background-color: #C0AE96 !important;
+                    border: none !important;
+                    padding: 2px;
+                }
 
-        .userNotes tr:nth-child(2n+1) td {            
-            background-color:#FFFCD9!important;
-        }
+                .userNotes tr td {
+                    background-color: #FF8D79 !important;
+                    padding: 1px;
+                }
 
-        .userNotes tbody td {
-            border: none !important;
-        }
+                .userNotes tr:nth-child(2n+1) td {
+                    background-color: #FFFCD9 !important;
+                }
+
+            .userNotes tbody td {
+                border: none !important;
+            }
     </style>
     <script type="text/javascript">
 
@@ -896,35 +898,22 @@
                             <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
                             <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                             <Columns>
-
-                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="3%" ItemStyle-Width="3%">
+                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="1%"
+                                    ItemStyle-Width="1%">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-
                                         <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
-
-                                        <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 22px; right: 25px;" />
+                                        <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 2px; right: 30px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
-                                        <br />
-
-                                        <%-- <img src='<%# Eval("picture").ToString()=="" || Eval("picture")== null ? "/UploadeProfile/default.jpg" : Eval("picture") %>'
-                                            style="height: 75px; width: 75px;" />--%>
-
-                                        <asp:Image Style="height: 75px; width: 75px;" ID="imgprofile" runat="server"></asp:Image>
-                                        <br />
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible="false" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-
-                                        <%--          <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                        <br />
+                                        <asp:Image Style="width: 95%; margin-top: -17px" ID="imgprofile" runat="server"></asp:Image>
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                        <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-
-
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="6%" ItemStyle-Width="6%" ControlStyle-ForeColor="Black"
@@ -944,8 +933,6 @@
                                         <br />
                                         <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
                                         <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
-
-
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
@@ -1009,12 +996,11 @@
                                         <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
                                         <br />
-                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
-                                        <br />
-                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#Eval("RejectDetail").ToString()%>'></asp:Literal>
-                                        <br />
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "": Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Eval("RejectDetail").ToString() == "" ? "": Eval("RejectDetail").ToString() + "{0}", "<br />") %>'></asp:Literal>
                                         <span><%#Eval("RejectedByUserName")%></span>
-                                        <a target="_blank" href='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("RejectedUserId")%>'><%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))?"":"- "+ Eval("RejectedByUserInstallId")%></a>
+                                        <asp:HyperLink runat="server" Visible='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))? false:true%>' NavigateUrl='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("RejectedUserId")%>'
+                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))?"":"- "+ Eval("RejectedByUserInstallId")%>'></asp:HyperLink>
                                         <br />
                                         <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                         <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
@@ -1032,14 +1018,12 @@
                                         <br />
                                         <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
                                     </ItemTemplate>
-
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                     </ItemTemplate>
-
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="20%" ItemStyle-Width="20%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="17%" ItemStyle-Width="17%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%--<label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
                                         <ul class="contactGrid">
@@ -1104,12 +1088,10 @@
                                         <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
-
                                         <br />
                                         <br />
                                         <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
-
                                         <br />
                                         <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
                                         <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
@@ -1127,22 +1109,22 @@
                                         </asp:DropDownList><br />
                                         <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                         <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
-
                                         <br />
                                         <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%">
+                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%">
                                     <ItemTemplate>
-                                        <div class="GrdContainer">
+                                        <%--<div class="GrdContainer">
                                             <div class="GrdHeader">
                                                 <span>+</span>
                                             </div>
                                             <div class="GrdContent">
-                                                <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
+                                                
                                             </div>
-                                        </div>
+                                        </div>--%>
+                                        <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
                                         <div style="background-color: #FFE9C8; padding: 2px 0px;">
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle" />

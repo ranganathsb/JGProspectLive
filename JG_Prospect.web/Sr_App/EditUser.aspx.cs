@@ -413,7 +413,7 @@ namespace JG_Prospect
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
-                    LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
+                    //LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
                     DropDownList elePhoneTypeDisplay = (e.Row.FindControl("ddlPhoneTypeDisplay") as DropDownList);
                     DropDownList elePhoneType = (e.Row.FindControl("ddlPhoneType") as DropDownList);
                     int id = Convert.ToInt32(grdUsers.DataKeys[e.Row.RowIndex].Values[0]);
@@ -426,20 +426,10 @@ namespace JG_Prospect
                         pathvalue = Path.Combine(pathvalue + path);
 
                         if (File.Exists(pathvalue))
-                        {
-                            img.ImageUrl = hdimg.Value;
-                            lbltestChk.Visible = true;
-                        }
-                        else
-                        {
-                            img.ImageUrl = "/UploadeProfile/default.jpg";
-                        }
-
+                        { img.ImageUrl = hdimg.Value; /*lbltestChk.Visible = true;*/}
+                        else { img.ImageUrl = "/UploadeProfile/default.jpg"; }
                     }
-                    else
-                    {
-                        img.ImageUrl = "/UploadeProfile/default.jpg";
-                    }
+                    else { img.ImageUrl = "/UploadeProfile/default.jpg"; }
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -455,7 +445,7 @@ namespace JG_Prospect
                         ddlDesiGrd.DataBind();
                     }
                     string strDesignationID = Convert.ToString((e.Row.FindControl("lblDesignationID") as HiddenField).Value);//Select the Designation in DropDownList
-                    //Debug.WriteLine(strDesignation);
+                                                                                                                             //Debug.WriteLine(strDesignation);
                     if (strDesignationID != "")
                     {
                         ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
@@ -529,9 +519,9 @@ namespace JG_Prospect
 
                     #region BindUserNotes
 
-                    var userNotes = from notes in dtUserNotes.AsEnumerable()
+                    var userNotes = (from notes in dtUserNotes.AsEnumerable()
                                     where notes.Field<int>("UserID") == id
-                                    select notes;
+                                    select notes).Take(1);
 
                     PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
                     Label lblNotes = new Label();
