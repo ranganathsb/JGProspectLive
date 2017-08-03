@@ -286,6 +286,7 @@
 
         .userNotes {
             margin: 0px !important;
+            width: 100% !important;
         }
 
             .userNotes tbody {
@@ -297,24 +298,49 @@
                 background: antiquewhite;
             }
 
+                .userNotes tr th:nth-child(1), .userNotes tr td:nth-child(1) {
+                    width: 20% !important;
+                }
+
+                .userNotes tr th:nth-child(2), .userNotes tr td:nth-child(2) {
+                    width: 25% !important;
+                }
+
+                .userNotes tr th:nth-child(3), .userNotes tr td:nth-child(3) {
+                    width: 55% !important;
+                }
+
+                .userNotes tr td:nth-child(2) {
+                    background-color: #B74A4D !important;
+                }
+
                 .userNotes tr th {
                     background-color: #C0AE96 !important;
                     border: none !important;
                     padding: 2px;
+                    display: table-cell !important;
                 }
 
                 .userNotes tr td {
-                    background-color: #FF8D79 !important;
+                    /*background-color: #FFFCD9 !important;*/
                     padding: 1px;
+                    display: table-cell !important;
+                }
+                .userNotes tr {
+                    background-color: #FFFCD9 !important;
                 }
 
-                .userNotes tr:nth-child(2n+1) td {
-                    background-color: #FFFCD9 !important;
+                .userNotes tr:nth-child(2n+1) {
+                    background-color: #FF8D79 !important;
                 }
 
             .userNotes tbody td {
                 border: none !important;
             }
+
+        .noMargin span {
+            margin: 0px !important;
+        }
     </style>
     <script type="text/javascript">
 
@@ -1089,7 +1115,6 @@
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
                                         <br />
-                                        <br />
                                         <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
                                         <br />
@@ -1114,7 +1139,8 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%">
+                                <asp:TemplateField HeaderText="Notes<br/><table class='userNotes' cellspacing='0'><tbody><tr><th>User Id</th><th>Date & Time</th><th>Note/Status</th></tr></table>" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%"
+                                    ItemStyle-Width="15%" ItemStyle-CssClass="noMargin">
                                     <ItemTemplate>
                                         <%--<div class="GrdContainer">
                                             <div class="GrdHeader">
@@ -1126,9 +1152,10 @@
                                         </div>--%>
                                         <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
                                         <div style="background-color: #FFE9C8; padding: 2px 0px;">
-                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
-                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle" />
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="54%" BackColor="#FFFCD9" Style="vertical-align: middle"></asp:TextBox>
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" Width="30%" CommandName="AddNotes"
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle;overflow:hidden;" />
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="62%" BackColor="#FFFCD9"
+                                                Style="vertical-align: middle;padding:0px!important;"></asp:TextBox>
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>

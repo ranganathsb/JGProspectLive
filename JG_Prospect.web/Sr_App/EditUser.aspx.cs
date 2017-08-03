@@ -532,9 +532,9 @@ namespace JG_Prospect
                         try
                         {
                             if (i == 0)
-                            { lblNotes.Text += "<table class='userNotes' cellspacing='0'><tbody><tr><th>User Id</th><th>Date & Time</th><th>Note/Status</th></tr>"; }
+                            { lblNotes.Text += "<table class='userNotes' cellspacing='0'><tbody>"; }
 
-                            lblNotes.Text += "<tr><td>" + RowItem["UpdatedUserInstallID"].ToString() + "</td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
+                            lblNotes.Text += "<tr><td><a href='CreateSalesUser.aspx?id="+ RowItem["UpdatedByUserID"].ToString() + "' style='color:Blue;'>" + RowItem["UpdatedUserInstallID"].ToString() + "</a></td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
                                 RowItem["LogDescription"].ToString() + "</td></tr>";
                         }
                         catch { }
