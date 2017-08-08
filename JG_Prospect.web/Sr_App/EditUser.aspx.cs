@@ -3195,6 +3195,7 @@ namespace JG_Prospect
             strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
             strBody = strBody.Replace("#FirstName#", FName);
             strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#F&L name#", FName + " " + LName);
             strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
             strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
             strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);

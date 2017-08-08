@@ -34,7 +34,7 @@ namespace JG_Prospect
                 string str_Body = "<table><tr><td>Hello,<span style=\"background-color: orange;\">User</span></td></tr><tr><td>your password for the GM Grove Construction is : " + newPassword;
                 str_Body = str_Body + "</td></tr>";
                 str_Body = str_Body + "<tr><td></td></tr>";
-                str_Body = str_Body + "<tr><td>Click <a href='http://web.jmgrovebuildingsupply.com/login.aspx'>web.jmgrovebuildingsupply.com</a> for login with your new password</td></tr>";
+                str_Body = str_Body + "<tr><td>Click <a href='http://web.jmgrovebuildingsupply.com/stafflogin.aspx'>web.jmgrovebuildingsupply.com</a> for login with your new password</td></tr>";
                 str_Body = str_Body + "<tr><td>Thanks & Regards.</td></tr>";
                 str_Body = str_Body + "<tr><td><span style=\"background-color: orange;\">JM Grove Constructions</span></td></tr></table>";
                 if (!string.IsNullOrWhiteSpace(toEmail))

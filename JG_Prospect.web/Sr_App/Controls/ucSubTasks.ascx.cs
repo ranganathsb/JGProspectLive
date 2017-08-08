@@ -415,7 +415,7 @@ namespace JG_Prospect.Sr_App.Controls
                     ddcbAssigned.Attributes.Add("data-taskstatus", DataBinder.Eval(e.Item.DataItem, "Status").ToString());
                     ddcbAssigned.Attributes.Add("onchange", "javascript:EditAssignedTaskUsers(this);");
 
-                    SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUsers")), ddcbAssigned);
+                    SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Item.DataItem, "TaskAssignedUserIds")), ddcbAssigned);
 
                     lblAssigned.Visible = false;
                 }
@@ -2350,14 +2350,17 @@ namespace JG_Prospect.Sr_App.Controls
         private ListItem FindIndexOfItem(ListBox taskUsers, string user)
         {
             ListItem item = null;
-            for (int i = 0; i < taskUsers.Items.Count; i++)
-            {
-                if (taskUsers.Items[i].Text.Contains(user))
-                {
-                    item = taskUsers.Items[i];
-                    break;
-                }
-            }
+
+            item = taskUsers.Items.FindByValue(user);
+
+            //for (int i = 0; i < taskUsers.Items.Count; i++)
+            //{
+            //    if (taskUsers.Items[i].Text.Contains(user))
+            //    {
+            //        item = taskUsers.Items[i];
+            //        break;
+            //    }
+            //}
             return item;
         }
 

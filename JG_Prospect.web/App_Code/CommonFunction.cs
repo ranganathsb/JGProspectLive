@@ -242,6 +242,8 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
+                    CommonFunction.UpdateEmailStatistics(ex.Message);
+
                     if (JGApplicationInfo.IsSendEmailExceptionOn())
                     {
                         CommonFunction.SendExceptionEmail(ex);
