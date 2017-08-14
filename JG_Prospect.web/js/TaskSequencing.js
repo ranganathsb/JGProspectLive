@@ -16,7 +16,7 @@ function SetLatestSequenceForAddNewSubTask() {
 }
 
 function ShowTaskSequence(editlink, designationDropdownId) {
-
+       
 
     var edithyperlink = $(editlink);
 
@@ -55,10 +55,13 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     // set designation id to be search by default
     sequenceScope.SetDesignForSearch($(ddlDesigSeqClientID).val());
 
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScope.getAssignUsers();
+
     $('#taskSequence').removeClass("hide");
 
     var dlg = $('#taskSequence').dialog({
-        width: 900,
+        width: 1100,
         height: 700,
         show: 'slide',
         hide: 'slide',
@@ -71,16 +74,18 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     setParentTaskDesignationToJqueryArray(ddlDesigSeqClientID);
 
-    // console.log(TechTask);
+     //console.log(TechTask);
 
     if (TechTask === 'True') {
         //console.log("calling search tech task after popup initialized....");
+        sequenceScope.IsTechTask = true;
         sequenceScope.getTechTasks();
         applyTaskSequenceTabs(1);
-
+        //sequenceUIGridScope.getUITechTasks();
     }
     else {
         //console.log("calling search staff task after popup initialized....");
+        sequenceScope.IsTechTask = false;
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
     }
@@ -91,24 +96,36 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
 function showEditTaskSequence(element) {
 
+    
     //console.log("show edit task sequence function called");
     // var edithyperlink = $($('a [data-data-taskid="'+ tasksid +'"]'));
     var TaskID = $(element).attr('data-taskid');
+    
     var sequenceDiv = $('#divSeqDesg' + TaskID);
+
+    //console.log("Sequence div is:");
+    //console.log(sequenceDiv);
+    //console.log("TASKID is:"+TaskID);
+    
     //var TaskID = taskid;
     var desiDropDown = sequenceDiv.children('select');
-
+    //console.log(desiDropDown);
     $('#divSeq' + TaskID).removeClass('hide');
     $('#divSeqDesg' + TaskID).removeClass('hide');
     
 
     if (sequenceDiv) {
 
+        
         DesignationID = $(desiDropDown).val();// get user selected designation designation value.
 
+        //console.log("Designation ID is: ");
+        //console.log(DesignationID);
+        //console.log(desiDropDown);
 
         // Designation id is null or it is not selected properly.
         if (!DesignationID || DesignationID === "?") {
+
             $(desiDropDown).children("option[value='?']").remove();
             
 
@@ -217,8 +234,11 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
     // If task has never been assigned with any sequence, show default available seq.
     if ((!instance.attr("data-original-val")) || DesignationId != OriginalDesignationId) {
 
-        var tr = instance.closest('tr');
-        var linkLabel = tr.find('a.autoclickSeqEdit').find('label');
+        var divMaster = $('#divMasterTask'+TaskID);
+        var linkLabel = divMaster.children('div.seq-number').find('a.autoclickSeqEdit').find('label');
+
+        //console.log("Link label is: ");
+        //console.log(linkLabel);
 
         var TaskPrefix;
 
@@ -232,8 +252,8 @@ function DisplySequenceBox(TaskID, maxValueforSeq) {
     else if (DesignationId === OriginalDesignationId && instance.attr("data-original-val")) {// if designation selected to same it was, change it to original sequence.
 
 
-        var tr = instance.closest('tr');
-        var linkLabel = tr.find('a.autoclickSeqEdit').find('label');
+        var divMaster = $('#divMasterTask' + TaskID);
+        var linkLabel = divMaster.children('div.seq-number').find('a.autoclickSeqEdit').find('label');
 
         var TaskPrefix;
 
@@ -332,7 +352,9 @@ function BindSeqDesignationChange(ControlID) {
     //search initially all tasks with sequencing.
     // remove it from search.
     $(ControlID).bind('change', function () {        
-        sequenceScope.SetDesignForSearch($(this).val(), false);        
+        sequenceScope.SetDesignForSearch($(this).val(), false);
+        sequenceScope.getAssignUsers();
+
     });
 }
 
@@ -395,7 +417,12 @@ function swapSequence(hyperlink, isup) {
 function setActiveTab(isTechTask) {
 
     var activeTab = 0;
-    var clickEditLinkDiv = "#tblStaffSeq tbody > tr.yellowthickborder";
+
+    var clickEditLinkDiv = "#tblStaffSeq";
+
+    //console.log("Tech Task in active tab is:");
+    //console.log(isTechTask);
+    //console.log(sequenceScope.IsTechTask);
 
     if (isTechTask) {
         //  activeTab = 1;
@@ -405,6 +432,8 @@ function setActiveTab(isTechTask) {
     //$("#taskSequenceTabs").tabs("option", "active", activeTab);
 
     var linkToClick = $(clickEditLinkDiv).find(".autoclickSeqEdit");
+
+    //console.log(linkToClick);
 
     if (linkToClick) {
         showEditTaskSequence(linkToClick);
@@ -417,10 +446,16 @@ function applyTaskSequenceTabs(activeTab) {
         active: activeTab
     });
 
-    // console.log('Active tab is ' + $("#taskSequenceTabs").tabs("option", "active"));
+    if (activeTab == 0) {
+        sequenceScope.IsTechTask = false;
+    }
+    else {
+        sequenceScope.IsTechTask = true;
+    }
+     //console.log('Active tab is ' + $("#taskSequenceTabs").tabs("option", "active"));
 
     $("#taskSequenceTabs").bind("tabsactivate", function (event, ui) {
-        //console.log("calling load task from tab select....");
+        
         if (ui.newPanel.attr('id') == "TechTask") {
 
             sequenceScope.IsTechTask = true;
@@ -478,4 +513,34 @@ function DeleteTaskSequence(deleteLink) {
 
 
     }
+}
+
+function SetChosenAssignedUser() {    
+    $('*[data-chosen="1"]').each(function (index) {
+        
+        //var dropdown = $(this);
+
+        //var assignedUsers = dropdown.attr("data-AssignedUsers");
+
+        //console.log(assignedUsers);
+
+        //if (assignedUsers) {
+        //    dropdown.val([e]);
+
+        //    // Set the value
+        //    $.each(assignedUsers.split(","), function (i, e) {
+        //        console.log("Assigned Users ..."+e);
+        //        //console.log(dropdown.children().find("OPTION[value=\"" + e + "\"]"));
+        //        //dropdown.children().find("OPTION[vsalue=\"" + e + "\"]").prop("selected", true);
+        //    });
+
+        //   // console.log(dropdown.val());
+        //}
+
+        // Then refresh
+
+        //  $(this).multiselect("refresh");
+
+        $(this).chosen();
+    });
 }

@@ -1,6 +1,7 @@
-﻿var app = angular.module('JGApp', []);
+﻿//var app = angular.module('JGApp', ['ui.grid', 'ui.grid.expandable']);
+var app = angular.module('JGApp', []);
 var url = '/WebServices/JGWebService.asmx/';
-var sequenceScope;
+var sequenceScope, sequenceUIGridScope;
 
 /*************************************************************************/
 // DIRECTIVES

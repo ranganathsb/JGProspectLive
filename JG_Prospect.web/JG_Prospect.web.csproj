@@ -1378,6 +1378,9 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone.wav" />
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
+    <Content Include="Content\ui-grid.css" />
+    <Content Include="Content\ui-grid.min.css" />
+    <Content Include="Content\ui-grid.svg" />
     <Content Include="Controls\CustomPager.ascx" />
     <Content Include="Controls\Header.ascx" />
     <Content Include="Controls\left.ascx" />
@@ -1464,6 +1467,9 @@
     <Content Include="Communication\webphone\sound\DTMF9.ogg" />
     <Content Include="Communication\webphone\sound\DTMFdiez.ogg" />
     <Content Include="Communication\webphone\sound\DTMFx.ogg" />
+    <Content Include="Content\ui-grid.woff" />
+    <Content Include="Content\ui-grid.ttf" />
+    <Content Include="Content\ui-grid.eot" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
@@ -1924,6 +1930,8 @@
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
+    <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
+    <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />
@@ -2078,6 +2086,8 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
+    <Content Include="Scripts\ui-grid.js" />
+    <Content Include="Scripts\ui-grid.min.js" />
     <Content Include="Services\service.aspx" />
     <Content Include="ShowResourcesJr.aspx" />
     <Content Include="Sr_App\add-edit-aptitude-test.aspx" />
@@ -2322,6 +2332,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="js\angular\templates\expandableRowTemplate.html" />
     <Content Include="unsubscribe.aspx" />
     <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />

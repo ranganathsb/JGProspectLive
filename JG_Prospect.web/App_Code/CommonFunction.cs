@@ -954,6 +954,39 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        internal static DataTable ApplyColorCodeToAssignUserDataTable(DataTable dataSource)
+        {
+
+            DataColumn dcColorClass = new DataColumn("CssClass", System.Type.GetType("System.String"));
+
+             dataSource.Columns.Add(dcColorClass);
+            dataSource.AcceptChanges();
+
+            // For all active user set font in red and for all InterviewDate and OfferMade set blue.
+            foreach (DataRow row in dataSource.Rows)
+            {
+                
+                    JGConstant.InstallUserStatus Userstatus;
+                  Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
+
+                    switch (Userstatus)
+                    {
+                        case JGConstant.InstallUserStatus.Active:
+                        case JGConstant.InstallUserStatus.OfferMade:
+                        row["CssClass"] = "activeUser";
+                            break;
+                        case JGConstant.InstallUserStatus.InterviewDate:
+                        row["CssClass"] = "IOUser";                        
+                            break;
+                        default:
+                            break;
+                    }
+                                
+            }
+
+            return dataSource;
+        }
+
         internal static int GetNextWeekdayDifference(DateTime start, DayOfWeek day)
         {
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]

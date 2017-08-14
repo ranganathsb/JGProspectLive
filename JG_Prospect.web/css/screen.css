@@ -1485,6 +1485,18 @@ input.fz-user, .fz-user > input {
     outline-color: blue !important;
 }
 
+input.fz-QA, .fz-QA > input {
+    outline-color: yellow !important;
+}
+
+input.fz-Alpha, .fz-Alpha > input {
+    outline-color: orange !important;
+}
+
+input.fz-Beta, .fz-Beta > input {
+    outline-color: green !important;
+}
+
 .cke_textarea_inline {
     display: block;
     background-color: white;
@@ -2337,4 +2349,77 @@ p.mcqQuestion {
 
 .faded-row {
     opacity: 0.7;
+}
+
+.div-table {
+    display: table;
+    border-spacing: 5px; /* cellspacing:poor IE support for  this */
+    width: 100%;
+}
+
+.div-table-nested {
+    display: table;
+    border-spacing: 2px; /* cellspacing:poor IE support for  this */
+    width: 95%;
+    border: 1px solid #a1a0a0;
+    margin: 10px;
+    border-radius: 5px;
+    float: right;
+    background: #ffffff;
+}
+
+.div-table-row {
+    display: table-row;
+    width: auto;
+    clear: both;
+}
+
+.div-table-col {
+    float: left; /* fix for  buggy browsers */
+    display: table-column;
+    margin: 0 1px;
+    padding: 3px 5px;
+    min-height: 25px;
+}
+
+.div-table-row-header, .div-table-row-header > div {
+    background-color: #000000 !important;
+    color: #ffffff;
+}
+
+.seq-number {
+    width: 10%;
+}
+
+.seq-taskid {
+    width: 15%;
+}
+
+.seq-tasktitle {
+    width: 30%;
+}
+
+.seq-taskstatus {
+    width: 10%;
+}
+
+.seq-taskduedate {
+    width: 10%;
+}
+
+.seq-notes {
+    width: 17%;
+}
+
+input[type='checkbox'].largecheckbox {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #b5b4b4;
+}
+
+input[type='checkbox']:checked.largecheckbox {
+    background: #abd;
 }

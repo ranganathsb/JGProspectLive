@@ -13,6 +13,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Web.Script.Services;
 
+
 namespace JG_Prospect.WebServices
 {
     /// <summary>
@@ -728,6 +729,32 @@ namespace JG_Prospect.WebServices
             return blnReturnResult;
         }
 
+        [WebMethod(EnableSession = true)]
+        public string GetAssignUsers(string TaskDesignations)
+        {
+            // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, TaskDesignations);
+            string strMessage;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0)
+            {
+                
+
+                DataTable dtUsers = CommonFunction.ApplyColorCodeToAssignUserDataTable(dsUsers.Tables[0]);
+
+                dtUsers.TableName = "AssignedUsers";
+
+                strMessage = JsonConvert.SerializeObject(dtUsers, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        
+
         //[WebMethod(EnableSession = true)]
         //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         //public void GetAllTaskWithSequence()
@@ -760,9 +787,19 @@ namespace JG_Prospect.WebServices
                 //Context.Response.ContentType = "application/json";
                 //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
                 dtResult.Tables[0].TableName = "Tasks";
-                dtResult.Tables[1].TableName = "RecordCount";
+                dtResult.Tables[1].TableName = "SubSeqTasks";
+                dtResult.Tables[2].TableName = "RecordCount";
 
-                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                relation.Nested = true;
+                dtResult.DataSetName = "TasksData";
+
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                
+
+                //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
 
             }
             else
