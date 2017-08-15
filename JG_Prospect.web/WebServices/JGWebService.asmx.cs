@@ -1169,6 +1169,35 @@ namespace JG_Prospect.WebServices
 
         }
 
+        [WebMethod(EnableSession = true)]
+        public static Int32 ExamTimeLeft()
+        {
+            int secondLeft = 0;
+
+            // if exam start registration time available.
+            if (JGSession.ExamTimerSetTime != null)
+            {
+                // Subtract Registered time from time now will yeild total time taken so far.
+                TimeSpan TimeTaken = DateTime.Now.Subtract(Convert.ToDateTime(JGSession.ExamTimerSetTime));
+
+                // Subtract total exam alloted time from time taken will yeild Time left to give exam.
+                Double MilliSecondLeft = (JGSession.CurrentExamTime * 60000) - TimeTaken.TotalMilliseconds;
+
+                //TODO: If timeup then call time up methods.
+
+                // If time left to give exam then show that time.
+                if (MilliSecondLeft > 0)
+                {
+                     secondLeft = Convert.ToInt32(MilliSecondLeft * 0.001);                    
+                    //ScriptManager.RegisterStartupScript(this,this.Page.GetType(), "timerDisplay", "startExamTimer(" + secondLeft.ToString() + ");", true); 
+                }
+
+            }
+
+            return secondLeft;
+
+        }
+
         #endregion
 
         #region "-- Auto Email/SMS Templates --"

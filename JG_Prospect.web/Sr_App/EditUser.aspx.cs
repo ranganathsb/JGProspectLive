@@ -400,7 +400,12 @@ namespace JG_Prospect
 
                     if (Status != "")
                     {
-                        ddlStatus.Items.FindByValue(Status).Selected = true;
+                        ListItem statusitem = ddlStatus.Items.FindByValue(Status);
+
+                        if (statusitem != null)
+                        {
+                            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(statusitem); 
+                        }
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
@@ -2768,7 +2773,7 @@ namespace JG_Prospect
                                                select (int)drSource["Id"]).FirstOrDefault();
 
                     objIntsallUser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();
-                    objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();                    
+                    objIntsallUser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
                     objIntsallUser.Email = dtExcel.Rows[i]["Email"].ToString().Trim();
                     objIntsallUser.phone = dtExcel.Rows[i]["Phone1"].ToString().Trim();
                     objIntsallUser.phonetype = dtExcel.Rows[i]["Phone1Type"].ToString().Trim();
@@ -2782,7 +2787,7 @@ namespace JG_Prospect
                     objIntsallUser.SuiteAptRoom = dtExcel.Rows[i]["Suit_Apt_Room"].ToString().Trim();
 
                     objIntsallUser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
-                    
+
                     //Default password for jmgrove.
                     objIntsallUser.Password = "jmgrove";
                     #endregion
@@ -3068,10 +3073,11 @@ namespace JG_Prospect
                         pnlAddNewUser.Visible = true;
 
                         // Send all newly inserted user HR form fillup request.
-                        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(),AddedInstallUser => {
+                        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(), AddedInstallUser =>
+                        {
 
-                        //Send Request email to fill out HR form to Newly added client.
-                        CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(),  Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
+                            //Send Request email to fill out HR form to Newly added client.
+                            CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(), Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
 
                         });
 
