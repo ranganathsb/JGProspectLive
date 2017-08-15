@@ -48,7 +48,7 @@ namespace JG_Prospect.MCQTest
 
             int InstallUserID = 0;
             int.TryParse(Session["ID"].ToString(), out InstallUserID);
-            AptitudeTestBLL.Instance.InsertPerformance(InstallUserID, int.Parse(ExamID), (int)marksEarned, (int)totalMarks, percentage, 1);
+           // AptitudeTestBLL.Instance.InsertPerformance(InstallUserID, int.Parse(ExamID), (int)marksEarned, (int)totalMarks, percentage, 1);
             //Session.RemoveAll();
             //Session.Abandon();
 

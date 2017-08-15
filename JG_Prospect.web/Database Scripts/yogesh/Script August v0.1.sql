@@ -676,6 +676,15 @@ FROM
 			WHERE u.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 0
 		) AS OtherUser
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[sp_GetHrData]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [sp_GetHrData]   
+
+	END  
+GO    
 
  
 -- [sp_GetHrData] NULL,'0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'  
@@ -934,3 +943,156 @@ ORDER BY CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,
  where isnull(UserId,0)>0 and LogDescription like 'Note :%'  
  order by ChangeDateTime desc  
 END
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[SP_InsertPerfomace]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [SP_InsertPerfomace]   
+
+	END  
+GO    
+    
+-- =============================================      
+-- Author: Yogesh Keraliya      
+-- Create date: 05262017      
+-- Description: Update users exam performance.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[SP_InsertPerfomace]       
+ (
+ -- Add the parameters for the stored procedure here      
+ @installUserID varchar(20),       
+ @examID int = 0      
+ ,@marksEarned int
+)
+AS      
+BEGIN      
+ -- SET NOCOUNT ON added to prevent extra result sets from      
+ -- interfering with SELECT statements.      
+ SET NOCOUNT ON;      
+    
+ DECLARE @totalMarks INT      
+ DECLARE @Aggregate REAL      
+ DECLARE @PassPercentage REAL    
+        
+ DECLARE @ExamPerformanceStatus INT      
+
+ -- Get total marks for exam.
+ SELECT @totalMarks = SUM(PositiveMarks) FROM MCQ_Question WHERE ExamID = @examID    
+ 
+ -- User obtained percentage.
+ SET @Aggregate =  (@marksEarned/@totalMarks) * 100
+ 
+ -- Get total pass percentage for exam.    
+ SELECT @PassPercentage = [PassPercentage] FROM MCQ_Exam WHERE [ExamID] = @examID    
+ 
+
+ -- Add user pass and fail result.    
+ IF(@PassPercentage < @Aggregate)    
+	 BEGIN    
+    
+	 SET @ExamPerformanceStatus = 1    
+    
+	 END    
+ ELSE    
+	 BEGIN    
+     
+	  SET @ExamPerformanceStatus = 0    
+    
+	 END    
+   
+     
+    -- Insert user exam result
+ INSERT INTO [MCQ_Performance]      
+           ([UserID]      
+           ,[ExamID]      
+           ,[MarksEarned]      
+           ,[TotalMarks]      
+           ,[Aggregate]      
+     ,[ExamPerformanceStatus]                 
+     )      
+     VALUES      
+           (@installUserID      
+           ,@examID      
+           ,@marksEarned      
+           ,@totalMarks      
+           ,@Aggregate      
+          ,@ExamPerformanceStatus      
+           )      
+END      
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_isAllExamsGivenByUser]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_isAllExamsGivenByUser]   
+
+	END  
+GO    
+
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 05302017      
+-- Description: This will load exam result for user based on his designation      
+-- =============================================      
+-- usp_isAllExamsGivenByUser 3555      
+CREATE PROCEDURE [dbo].[usp_isAllExamsGivenByUser]       
+(      
+ @UserID bigint ,     
+ @AggregateScored FLOAT= 0 OUTPUT,    
+ @AllExamsGiven BIT = 0 OUTPUT    
+)         
+AS      
+BEGIN      
+       
+  DECLARE @DesignationID INT      
+      
+  -- Get users designation based on its user id.      
+  SELECT        @DesignationID = DesignationID      
+  FROM            tblInstallUsers      
+  WHERE        (Id = @UserID)      
+      
+      
+IF(@DesignationID IS NOT NULL)      
+    BEGIN      
+      
+	   DECLARE @ExamCount INT    
+	   DECLARE @GivenExamCount INT    
+    
+	   -- check exams available for existing designation    
+	   SELECT      @ExamCount = COUNT(MCQ_Exam.ExamID)    
+		FROM          MCQ_Exam     
+		WHERE        (@DesignationID IN     
+		   (SELECT   Item   FROM  dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1)) AND  MCQ_Exam.IsActive = 1     
+    
+	-- check exams given by user    
+	SELECT @GivenExamCount = COUNT(ExamID) FROM MCQ_Performance WHERE UserID = @UserID    
+    
+    -- IF all exam given, calcualte result.       
+    IF( @ExamCount = @GivenExamCount AND @GivenExamCount > 0)    
+		BEGIN    
+    
+		 SELECT @AggregateScored = (SUM([Aggregate])/@GivenExamCount) FROM MCQ_Performance  WHERE UserID = @UserID    
+    
+		 SET @AllExamsGiven = 1    
+    
+		END    
+    ELSE    
+		BEGIN    
+		 SET @AllExamsGiven = 0    
+		END    
+    
+    
+ END      
+      
+RETURN @AggregateScored    
+      
+
+END      
+  
+      
