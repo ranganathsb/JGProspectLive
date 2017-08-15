@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="ITDashboard.aspx.cs" Inherits="JG_Prospect.Sr_App.ITDashboard" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" EnableEventValidation="false" CodeBehind="ITDashboard.aspx.cs" Inherits="JG_Prospect.Sr_App.ITDashboard" %>
 
 <%@ Register Src="~/Sr_App/LeftPanel.ascx" TagName="LeftPanel" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -230,7 +230,7 @@
             margin-left: 7px;
         }
     </style>
-
+    <link href="../css/chosen.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel">
@@ -689,13 +689,20 @@
                                         </asp:DropDownList>--%>
                                         <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
                                             <ContentTemplate>
-                                                <asp:DropDownCheckBoxes ID="ddlInProgressAssignedUsers" runat="server" UseSelectAllNode="false"
+                                                <asp:ListBox ID="ddlInProgressAssignedUsers" runat="server" Width="150" ClientIDMode="AutoID" SelectionMode="Multiple"
+                                                    CssClass="chosen-select" data-placeholder="Select"
+                                                    AutoPostBack="false" />
+                                                <asp:Button ID="searchUsers" runat="server" ClientIDMode="AutoID" OnClick="searchUsers_Click" Text="SearchUsers" CssClass="hide"></asp:Button>
+                                                <%--<asp:DropDownCheckBoxes ID="ddlInProgressAssignedUsers" runat="server" UseSelectAllNode="false"
                                                     AutoPostBack="true" OnSelectedIndexChanged="ddlInProgressAssignedUsers_SelectedIndexChanged">
                                                     <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                                     <Texts SelectBoxCaption="--All--" />
-                                                </asp:DropDownCheckBoxes>
+                                                </asp:DropDownCheckBoxes>--%>
                                                 <%--<asp:LinkButton ID="lbtnViewInProgressAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewInProgressAcceptanceLog_Click" />--%>
                                             </ContentTemplate>
+                                            <Triggers>
+                                                <asp:AsyncPostBackTrigger ControlID="searchUsers" EventName="Click" />
+                                            </Triggers>
                                         </asp:UpdatePanel>
                                     </td>
                                 </tr>
@@ -941,6 +948,7 @@
     <div id="HighLightedTask" class="modal">
         <iframe id="ifrmTask" style="height: 100%; width: 100%; overflow: auto;"></iframe>
     </div>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     <script type="text/javascript">
 
         function pageLoad(sender, args) {
@@ -1003,25 +1011,7 @@
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
         prmTaskGenerator.add_endRequest(function () {
-            SetInProTaskAutoSuggestion();
-            SetInProTaskAutoSuggestionUI();
-
-            SetClosedTaskAutoSuggestion();
-            SetClosedTaskAutoSuggestionUI();
-
-            SetFrozenTaskAutoSuggestion();
-            SetFrozenTaskAutoSuggestionUI();
-
-            SetApprovalUI();
-            SetTaskCounterPopup();
-            checkDropdown();
-
-            $(".context-menu").bind("contextmenu", function () {
-                var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
-                copyToClipboard(urltoCopy);
-                return false;
-            });
-
+            Initialize();
         });
 
         function _updateQStringParam(uri, key, value, Mainkey, MainValue) {
@@ -1037,10 +1027,13 @@
             }
         }
 
-
         $(document).ready(function () {
             checkNShowTaskPopup();
+            Initialize();
+        });
 
+
+        function Initialize() {
             SetInProTaskAutoSuggestion();
             SetInProTaskAutoSuggestionUI();
 
@@ -1054,13 +1047,15 @@
             SetTaskCounterPopup();
             checkDropdown();
 
+            ChosenDropDown();
+            setSelectedUsersLink();
+
             $(".context-menu").bind("contextmenu", function () {
                 var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
                 copyToClipboard(urltoCopy);
                 return false;
             });
-
-        });
+        }
 
         //$(".context-menu").bind("contextmenu", function () {
         //    debugger;
@@ -1098,6 +1093,49 @@
             return vars;
         }
 
+        function setSelectedUsersLink() {
+
+            $('.search-choice').each(function () {
+                var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
+                //console.log(itemIndex);
+                if (itemIndex) {
+                    //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
+                    var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
+                    var chspan = $(this).children('span');
+                    if (chspan) {
+                        chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
+                        chspan.bind("click", "a", function () {
+                            window.open($(this).children("a").attr("href"), "_blank", "", false);
+                        });
+                    }
+                }
+            });
+
+            $('.chosen-select').bind('change', function (evt, params) {
+                console.log(evt);
+                console.log(params);
+
+                if (params.selected === "0" || !$('#<%=ddlInProgressAssignedUsers.ClientID%>').val()) {
+                    console.log(params.selected);
+                    $('#<%=ddlInProgressAssignedUsers.ClientID%>').val(null);
+                    $('#<%=ddlInProgressAssignedUsers.ClientID%>').val("0");
+                }
+                else {
+                    $("#<%=ddlInProgressAssignedUsers.ClientID%> option[value='0']").remove();
+                }
+                //console.log($('#<%=ddlInProgressAssignedUsers.ClientID%>').val());
+                var selectedUsers = $('#<%=ddlInProgressAssignedUsers.ClientID%>').val();
+                console.log(selectedUsers);
+                if (selectedUsers) {
+                    SearchUsers();
+                }
+            });
+        }
+
+        function SearchUsers() {
+            $('#<%=searchUsers.ClientID%>').click();
+        }
+
         function SetApprovalUI() {
 
             $('.approvalBoxes').each(function () {
@@ -1123,65 +1161,65 @@
 
                     if (request.term == "") {
                         $('#<%=btnSearchFrozen.ClientID%>').click();
-                        return false;
-                    }
+                         return false;
+                     }
 
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsers",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
+                     $.ajax({
+                         type: "POST",
+                         url: "ajaxcalls.aspx/GetTaskUsers",
+                         dataType: "json",
+                         contentType: "application/json; charset=utf-8",
+                         data: JSON.stringify({ searchterm: request.term }),
+                         success: function (data) {
+                             // Handle 'no match' indicated by [ "" ] response
+                             if (data.d) {
 
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#<%=txtSearchFrozen.ClientID%>").removeClass("ui-autocomplete-loading");
+                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                             }
+                             // remove loading spinner image.                                
+                             $("#<%=txtSearchFrozen.ClientID%>").removeClass("ui-autocomplete-loading");
                         }
                     });
-                },
+                 },
                 minLength: 0,
                 select: function (event, ui) {
                     $("#<%=txtSearchFrozen.ClientID%>").val(ui.item.value);
-                    //TriggerSearch();
-                    $('#<%=btnSearchFrozen.ClientID%>').click();
-                }
+                     //TriggerSearch();
+                     $('#<%=btnSearchFrozen.ClientID%>').click();
+                 }
             });
-        }
+         }
 
-        function SetFrozenTaskAutoSuggestionUI() {
+         function SetFrozenTaskAutoSuggestionUI() {
 
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    var that = this,
-                      currentCategory = "";
-                    $.each(items, function (index, item) {
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     var that = this,
+                       currentCategory = "";
+                     $.each(items, function (index, item) {
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
 
-                }
-            });
-        }
+                 }
+             });
+         }
 
 
-        function SetClosedTaskAutoSuggestion() {
+         function SetClosedTaskAutoSuggestion() {
 
-            $("#<%=txtSearchClosed.ClientID%>").catcomplete({
+             $("#<%=txtSearchClosed.ClientID%>").catcomplete({
                 delay: 500,
                 source: function (request, response) {
 
@@ -1333,4 +1371,3 @@
         }
     </script>
 </asp:Content>
-

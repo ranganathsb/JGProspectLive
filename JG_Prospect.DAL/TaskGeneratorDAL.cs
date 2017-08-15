@@ -195,6 +195,31 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool DeleteTaskSequence(Int64 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_DeleteTaskSequenceByTaskId");
+
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);
+                    
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
 
         public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask,Int64 AssignedSequence, Int64 TaskId,Int32 UserId)
         {
@@ -497,7 +522,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
         public bool SetTaskStatus(int TaskId, string taskStatus)
         {
             try
@@ -689,7 +713,6 @@ namespace JG_Prospect.DAL
             }
 
         }
-
 
         public bool UpdateTaskUserAcceptance(ref TaskUser objTaskUser)
         {

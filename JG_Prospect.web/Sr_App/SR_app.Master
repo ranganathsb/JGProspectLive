@@ -555,7 +555,7 @@
                     data: JSON.stringify(objPostDataJSON),
                     asynch: false,
                     success: function (data) {                        
-                        console.log(OnSuccessCallBack);
+                        //console.log(OnSuccessCallBack);
                         HideAjaxLoader();
                         if (typeof (OnSuccessCallBack) === 'function') {
                             OnSuccessCallBack(data);
@@ -563,10 +563,10 @@
                     },
                     error: function (a, b, c) {
                         HideAjaxLoader();
-                        console.log('jQuery ajax error.');
-                        console.log(a);
-                        console.log(b);
-                        console.log(c);
+                        //console.log('jQuery ajax error.');
+                        //console.log(a);
+                        //console.log(b);
+                        //console.log(c);
                         if (typeof (OnErrorCallBack) === 'function') {
                             OnErrorCallBack(a, b, c);
                         }

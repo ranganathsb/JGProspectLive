@@ -13,6 +13,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Web.Script.Services;
 
+
 namespace JG_Prospect.WebServices
 {
     /// <summary>
@@ -720,6 +721,40 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool DeleteTaskSequence(Int64 TaskId)
+        {
+            Boolean blnReturnResult = TaskGeneratorBLL.Instance.DeleteTaskSequence(TaskId);
+
+            return blnReturnResult;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetAssignUsers(string TaskDesignations)
+        {
+            // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, TaskDesignations);
+            string strMessage;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0)
+            {
+                
+
+                DataTable dtUsers = CommonFunction.ApplyColorCodeToAssignUserDataTable(dsUsers.Tables[0]);
+
+                dtUsers.TableName = "AssignedUsers";
+
+                strMessage = JsonConvert.SerializeObject(dtUsers, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        
+
         //[WebMethod(EnableSession = true)]
         //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         //public void GetAllTaskWithSequence()
@@ -752,9 +787,19 @@ namespace JG_Prospect.WebServices
                 //Context.Response.ContentType = "application/json";
                 //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
                 dtResult.Tables[0].TableName = "Tasks";
-                dtResult.Tables[1].TableName = "RecordCount";
+                dtResult.Tables[1].TableName = "SubSeqTasks";
+                dtResult.Tables[2].TableName = "RecordCount";
 
-                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                relation.Nested = true;
+                dtResult.DataSetName = "TasksData";
+
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                
+
+                //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
 
             }
             else
@@ -799,13 +844,24 @@ namespace JG_Prospect.WebServices
                         SendEmailToAssignedUsers(intTaskId, strUsersIds);
                     }
                 }
-                // send email to all users of the department as task is assigned to designation, but not to any specific user.
-                else
+                else // if all users are removed, then set task status to open.
                 {
-                    string strUserIDs = string.Join(",", arrDesignationUsers);
-
-                    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                    TaskGeneratorBLL.Instance.UpdateTaskStatus
+                                            (
+                                                new Task()
+                                                {
+                                                    TaskId = intTaskId,
+                                                    Status = Convert.ToUInt16(JGConstant.TaskStatus.Open)
+                                                }
+                                            );
                 }
+                // send email to all users of the department as task is assigned to designation, but not to any specific user.
+                //else
+                //{
+                //    string strUserIDs = string.Join(",", arrDesignationUsers);
+
+                //    SendEmailToAssignedUsers(intTaskId, strUserIDs.TrimEnd(','));
+                //}
             }
             return true;
         }
@@ -1110,6 +1166,35 @@ namespace JG_Prospect.WebServices
             }
 
             return ExamResults;
+
+        }
+
+        [WebMethod(EnableSession = true)]
+        public static Int32 ExamTimeLeft()
+        {
+            int secondLeft = 0;
+
+            // if exam start registration time available.
+            if (JGSession.ExamTimerSetTime != null)
+            {
+                // Subtract Registered time from time now will yeild total time taken so far.
+                TimeSpan TimeTaken = DateTime.Now.Subtract(Convert.ToDateTime(JGSession.ExamTimerSetTime));
+
+                // Subtract total exam alloted time from time taken will yeild Time left to give exam.
+                Double MilliSecondLeft = (JGSession.CurrentExamTime * 60000) - TimeTaken.TotalMilliseconds;
+
+                //TODO: If timeup then call time up methods.
+
+                // If time left to give exam then show that time.
+                if (MilliSecondLeft > 0)
+                {
+                     secondLeft = Convert.ToInt32(MilliSecondLeft * 0.001);                    
+                    //ScriptManager.RegisterStartupScript(this,this.Page.GetType(), "timerDisplay", "startExamTimer(" + secondLeft.ToString() + ");", true); 
+                }
+
+            }
+
+            return secondLeft;
 
         }
 

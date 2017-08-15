@@ -13,6 +13,7 @@ using System.IO;
 using JG_Prospect.App_Code;
 using System.Globalization;
 using System.Web;
+using System.Web.Services;
 
 namespace JG_Prospect.MCQTest
 {
@@ -543,7 +544,7 @@ namespace JG_Prospect.MCQTest
             // Set when exam time started.
             JGSession.ExamTimerSetTime = DateTime.Now;
             JGSession.CurrentExamTime = Convert.ToInt32(questionTable.Rows[0]["ExamDuration"]);
-
+            hdnCurrentExamTime.Value = JGSession.CurrentExamTime.ToString();
         }
 
         private void SetQuestionUI(RepeaterItem e)
@@ -728,6 +729,7 @@ namespace JG_Prospect.MCQTest
             JGSession.ExamTimerSetTime = null;
             JGSession.CurrentExamTime = 0;
             divEndExam.Visible = false;
+            hdnTimeLeft.Value = "0";
 
             String userExamsGiven = this.ExamsGiven;
 
@@ -922,6 +924,10 @@ namespace JG_Prospect.MCQTest
 
         #endregion
 
+        #region "-- Web Methods --"
 
+        
+
+        #endregion
     }
 }

@@ -24,9 +24,7 @@ JG_Prospect.web/MCQTest_Old/
 JG_Prospect.web/Properties/PublishProfiles/LocalLive.pubxml.user
 JG_Prospect.web/Properties/PublishProfiles/LivePublish.pubxml.user
 packages/
-/JG_Prospect.web/UploadeProfile
-/WeeklyTasks-07292017.xlsx
-/EditUser.aspx.designer.cs
-/EditUser.aspx.cs
-/EditUser.aspx
 JGBulkEmailServices/
+JG_Prospect.web/Sr_App/Controls/ucSubTasks - Copy.ascx.designer.cs
+JG_Prospect.web/Sr_App/Controls/ucSubTasks - Copy.ascx.cs
+JG_Prospect.web/Sr_App/Controls/ucSubTasks - Copy.ascx

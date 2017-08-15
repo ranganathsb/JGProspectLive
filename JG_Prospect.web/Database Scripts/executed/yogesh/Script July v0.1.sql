@@ -1048,3 +1048,267 @@ END
 --- Live publish 07202017
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTaskSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_UpdateTaskSequence   
+
+	END  
+GO  
+
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05162017    
+-- Description: This will update task sequence    
+-- =============================================    
+CREATE PROCEDURE usp_UpdateTaskSequence     
+(     
+ @Sequence bigint ,  
+ @DesignationID int,     
+ @TaskId bigint,  
+ @IsTechTask bit 
+)    
+AS    
+BEGIN    
+
+
+BEGIN TRANSACTION      
+  
+DECLARE @OriginalSeq BIGINT
+DECLARE @OriginalDesignationID INT    
+
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId
+
+ UPDATE tblTask    
+   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID  
+ WHERE        (TaskId = @TaskId)   
+
+
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.
+IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)
+BEGIN
+
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1. 
+ UPDATE       tblTask    
+     SET                [Sequence] = [Sequence] - 1       
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask  
+
+
+END    
+  
+
+  IF (@@Error <> 0)   -- Check if any error
+     BEGIN          
+        ROLLBACK TRANSACTION       
+     END 
+   ELSE 
+       COMMIT TRANSACTION  
+
+---- if sequence is already assigned to some other task with same designation, all sequence will push back by 1 from alloted sequence for that designation.    
+--IF EXISTS(SELECT   T.TaskId  
+--FROM            tblTask AS T   
+--WHERE        (T.[Sequence] = @Sequence) AND (T.TaskId <> @TaskId) AND (T.[SequenceDesignationId] = @DesignationID) AND T.IsTechTask = @IsTechTask)    
+--  BEGIN    
+    
+--  -- push back all task sequence for 1 from sequence assigned in between.  
+--     UPDATE       tblTask    
+--     SET                [Sequence] = [Sequence] + 1       
+--     WHERE        ([Sequence] >= @Sequence) AND ([SequenceDesignationId] = @DesignationID) AND IsTechTask = @IsTechTask  
+    
+--  END    
+    
+  -- Update task sequence and its respective designationid.  
+ 
+  
+  
+END 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_isAllExamsGivenByUser]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_isAllExamsGivenByUser   
+
+	END  
+GO    
+-- =============================================    
+-- Author:  Yogesh Keraliya    
+-- Create date: 05302017    
+-- Description: This will load exam result for user based on his designation    
+-- =============================================    
+-- usp_isAllExamsGivenByUser 3555    
+CREATE PROCEDURE usp_isAllExamsGivenByUser     
+(    
+ @UserID bigint ,   
+ @AggregateScored FLOAT= 0 OUTPUT,  
+ @AllExamsGiven BIT = 0 OUTPUT  
+)       
+AS    
+BEGIN    
+     
+  DECLARE @DesignationID INT    
+    
+  -- Get users designation based on its user id.    
+  SELECT        @DesignationID = DesignationID    
+  FROM            tblInstallUsers    
+  WHERE        (Id = @UserID)    
+    
+    
+    IF(@DesignationID IS NOT NULL)    
+    BEGIN    
+    
+   DECLARE @ExamCount INT  
+   DECLARE @GivenExamCount INT  
+  
+   -- check exams available for existing designation  
+   SELECT      @ExamCount = COUNT(MCQ_Exam.ExamID)  
+    FROM          MCQ_Exam   
+    WHERE        (@DesignationID IN   
+       (SELECT   Item   FROM  dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1)) AND  MCQ_Exam.IsActive = 1   
+  
+    -- check exams given by user  
+    SELECT @GivenExamCount = COUNT(ExamID) FROM MCQ_Performance WHERE UserID = @UserID  
+  
+    -- IF all exam given, calcualte result.     
+    IF( @ExamCount = @GivenExamCount AND @GivenExamCount > 0)  
+    BEGIN  
+  
+     SELECT @AggregateScored = (SUM([Aggregate])/@GivenExamCount) FROM MCQ_Performance  WHERE UserID = @UserID  
+  
+     SET @AllExamsGiven = 1  
+  
+    END  
+    ELSE  
+    BEGIN  
+     SET @AllExamsGiven = 0  
+    END  
+  
+  
+ END    
+    
+  RETURN @AggregateScored  
+    
+END    
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[UpdateTaskTechTaskById]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [UpdateTaskTechTaskById]   
+
+	END  
+GO    
+
+-- =============================================    
+-- Author:  Yogesh    
+-- Create date: 19 Apr 17    
+-- Description: Updates tech task flag of a Task by Id.    
+-- =============================================    
+CREATE PROCEDURE [dbo].[UpdateTaskTechTaskById]    
+ @TaskId  BIGINT,    
+ @IsTechTask BIT    
+AS    
+BEGIN    
+
+BEGIN TRANSACTION
+   
+ -- SET NOCOUNT ON added to prevent extra result sets from    
+ -- interfering with SELECT statements.    
+ SET NOCOUNT ON;      
+   
+ DECLARE @TaskDesignationId  INT =  (SELECT TOP 1 DesignationID FROM tblTaskDesignations WHERE TaskId = @TaskId)  
+  
+ DECLARE @MaxSeq INT = (SELECT ISNULL(MAX([Sequence]),0) FROM dbo.tblTask WHERE SequenceDesignationId = @TaskDesignationId AND IsTechTask = @IsTechTask)  
+
+ -- Take original sequence and correct entire series for that designation.
+ DECLARE @OriginalSeq BIGINT 
+
+ SELECT @OriginalSeq = [Sequence] FROM tblTask WHERE TaskId = @TaskId
+
+
+ -- Update task sequence with maximum seq in resepective section. 
+ UPDATE tblTask    
+ SET    
+  IsTechTask = @IsTechTask,  
+  [Sequence] = @MaxSeq + 1,  
+  [SequenceDesignationId] = @TaskDesignationId  
+ WHERE TaskId = @TaskId    
+
+
+ -- Correct series for inbetween gap in sequencing.
+
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1. 
+ UPDATE       tblTask    
+     SET                [Sequence] = [Sequence] - 1       
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @TaskDesignationId) AND IsTechTask = @IsTechTask  
+
+   
+  IF (@@Error <> 0)   -- Check if any error
+     BEGIN          
+        ROLLBACK TRANSACTION       
+     END 
+   ELSE 
+       COMMIT TRANSACTION 
+  
+END    
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
+
+	END  
+GO    
+
+-- =============================================    
+-- Author:  Yogesh    
+-- Create date: 31 July 17    
+-- Description: Delete Task Sequence Task by Id.    
+-- =============================================    
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSequenceByTaskId]    
+ @TaskId  BIGINT         
+AS    
+BEGIN    
+  
+BEGIN TRANSACTION      
+  
+DECLARE @OriginalSeq BIGINT
+DECLARE @OriginalDesignationID INT    
+DECLARE @IsTechTask BIT
+
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak 
+SELECT @OriginalSeq = [Sequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId
+
+UPDATE tblTask    
+   SET                [Sequence] = NULL , [SequenceDesignationId] = NULL
+WHERE        (TaskId = @TaskId)   
+
+
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.
+
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1. 
+ UPDATE       tblTask    
+     SET                [Sequence] = [Sequence] - 1       
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask  
+ 
+
+  IF (@@Error <> 0)   -- Check if any error
+     BEGIN          
+        ROLLBACK TRANSACTION       
+     END 
+   ELSE 
+       COMMIT TRANSACTION    
+END       
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--- Live publish 07312017
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
