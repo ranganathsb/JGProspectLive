@@ -3560,6 +3560,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">
       <Project>{b99f65ce-3a46-4081-9404-902b25f3d653}</Project>
       <Name>JG_Prospect.BLL</Name>
