@@ -2350,8 +2350,6 @@
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
-    <Content Include="UploadeProfile\2017_7_2610_15-p2.jpg" />
-    <Content Include="UploadeProfile\default.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucRenewSession.ascx" />
@@ -3453,7 +3451,6 @@
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
     <Folder Include="Database Scripts\Bhavik\Nov\" />
-    <Folder Include="Database Scripts\Deep\" />
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
@@ -3467,6 +3464,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="Sr_App\UploadedFile\" />
+    <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>

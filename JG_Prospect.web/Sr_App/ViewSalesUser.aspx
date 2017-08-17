@@ -334,7 +334,7 @@
 
                 $('#<%=ddlCountry.ClientID%>').bind('change keyup', function (e) {
                     changeFlag('#<%=ddlCountry.ClientID%>');
-                });
+            });
 
             <%--$('#<%=ddlCountry.ClientID%>').change(function (e) {
             changeFlag('#<%=ddlCountry.ClientID%>');
@@ -342,20 +342,20 @@
 
                 $('#<%=lbtnAptTestLink1.ClientID%>').click(function () {
                     showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
-                });
+            });
                 $('#<%=lbtnAptTestLink2.ClientID%>').click(function () {
                     showAptTestPage('<%=Page.ResolveUrl("~/MCQTest/McqTestPage.aspx")%>');
-                });
+            });
 
                 var text_max = 50;
                 $('#textarea_CharCount').html(text_max + ' characters remaining');
 
                 $('#<%=txtREasonChange.ClientID%>').keyup(function () {
-                    var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
-                    var text_remaining = text_max - text_length;
+                var text_length = $('#<%=txtREasonChange.ClientID%>').val().length;
+                var text_remaining = text_max - text_length;
 
-                    $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
-                });
+                $('#textarea_CharCount').html(text_remaining + '  / ' + text_max + ' characters remaining');
+            });
 
                 SetSectionShowHideOnReady();
 
@@ -591,21 +591,21 @@ function SetEmailValuefromCtlToHid() {
 
     var mailEmail = $('#<%= txtemail.ClientID %>').val();
 
-    validateEmail(mailEmail);
+            validateEmail(mailEmail);
 
-    $('#EmailContainer .ExtEmailClass').each(function () {
-        if (this.value != '') {
+            $('#EmailContainer .ExtEmailClass').each(function () {
+                if (this.value != '') {
 
-            if (strEmailIds == '') {
-                strEmailIds = strEmailIds + this.value;
-            }
-            else {
-                strEmailIds = strEmailIds + delimeter + this.value;
-            }
-        }
-    });
+                    if (strEmailIds == '') {
+                        strEmailIds = strEmailIds + this.value;
+                    }
+                    else {
+                        strEmailIds = strEmailIds + delimeter + this.value;
+                    }
+                }
+            });
 
-    $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
+            $('#<%= hidExtEmail.ClientID %>').val(strEmailIds);
         }
 
         function SetPhoneValuefromCtlToHid() {
@@ -1083,13 +1083,6 @@ function SetEmailValuefromCtlToHid() {
 
     </script>
     <style type="text/css">
-        .GrdBtnAdd {
-            margin-top: 12px;
-            height: 30px;
-            background: url(img/main-header-bg.png) repeat-x;
-            color: #fff;
-            width: 75px;
-        }
         #ui-dialog-title {
             background: #ccc;
         }
@@ -1232,80 +1225,6 @@ function SetEmailValuefromCtlToHid() {
             overflow: auto;
             height: 150px;
         }
-
-        .grid td {
-            padding: 0px !important;
-        }
-
-        .userNotes .table {
-            margin: auto !important;
-        }
-
-        .userNotes tr {
-            display: table-row !important;
-            background: antiquewhite;
-        }
-
-            .userNotes tr th {
-                background-color: #C0AE96 !important;
-                border: none !important;
-                padding: 2px;
-            }
-
-            .userNotes tr td {
-                background-color: #FF8D79 !important;
-                padding: 1px;
-            }
-
-            .userNotes tr:nth-child(2n+1) td {
-                background-color: #FFFCD9 !important;
-            }
-
-        .userNotes tbody td {
-            border: none !important;
-        }
-
-        .tabNotes {
-            background-color: #FFE9C8;
-            width: 100% !important;
-            margin: auto !important;
-        }
-
-            .tabNotes td {
-                padding: 0px !important;
-                margin: 0px !important;
-            }
-
-        .GrdContainer {
-            width: 100%;
-            border: 1px solid #d3d3d3;
-        }
-
-            .GrdContainer div {
-                width: inherit;
-            }
-
-            .GrdContainer .GrdHeader {
-                background-color: #a09585 !important;
-                padding: 2px;
-                cursor: pointer;
-                font-weight: bold;
-                width: initial;
-                text-align: left;
-                font-size: 20px;
-            }
-
-            .GrdContainer .GrdContent {
-                display: none;
-                /* padding: 5px;
-                height: 160px;*/
-            }
-
-                .GrdContainer .GrdContent span {
-                    margin: 0px !important;
-                    display: block;
-                    width: inherit;
-                }
     </style>
     <script type="text/javascript">
         function uploadComplete2() {
@@ -1824,64 +1743,58 @@ function SetEmailValuefromCtlToHid() {
                                 </tr>
                             </table>
                         </li>
-                        <li style="width: 99%;">
+                        <li style="width: 97%;">
                             <div>
-                                <asp:UpdatePanel runat="server" ID="upNotes">
-                                    <ContentTemplate>
-                                        <div class="GrdContainer">
-                                            <div class="GrdHeader">
-                                                <span>+</span>
-                                            </div>
-                                            <div class="GrdContent">
-                                                <div class="clsOverFlow userNotes">
-                                                    <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                                                        HeaderStyle-BackColor="#C0AE96" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                                                        EmptyDataText="No Touch Point log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                                        AutoGenerateColumns="False" GridLines="None" DataKeyNames="UserTouchPointLogID">
-                                                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                                        <HeaderStyle CssClass="trHeader" />
-                                                        <RowStyle CssClass="FirstRow" />
-                                                        <AlternatingRowStyle CssClass="AlternateRow " />
-                                                        <Columns>
-                                                            <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                                <ItemTemplate>
-                                                                    <asp:HyperLink runat="server" ForeColor="Blue"
-                                                                        NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
-                                                                        Text='<%# Eval("UpdatedUserInstallID")%>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-
-                                                            <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                                <ItemTemplate>
-                                                                    <%#Eval("ChangeDateTime")%>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <%#Eval("LogDescription")%>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <table cellpadding="0" cellspacing="0" class="tabNotes">
-                                            <tr>
-                                                <td style="text-align: center;">
-                                                    <asp:Button ID="btnAddNote" ValidationGroup="notes" runat="server" Text="Add Notes" CssClass="GrdBtnAdd" OnClick="btnAddNote_Click" Style="vertical-align: middle; margin: 0px;" />
-                                                </td>
-                                                <td width="70%">
-                                                    <asp:TextBox ID="txtTouchPointLogNote" ValidationGroup="notes" runat="server" TextMode="MultiLine" Width="98%" Rows="2" CssClass="textbox" BackColor="#FFFCD9" Style="vertical-align: middle"></asp:TextBox>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ContentTemplate>
-                                    <Triggers>
-                                        <asp:AsyncPostBackTrigger ControlID="btnAddNote" />
-                                    </Triggers>
-                                </asp:UpdatePanel>
+                                <div class="grid">
+                                    <div class="clsOverFlow">
+                                        <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                                            HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                                            EmptyDataText="No Touch Point log available!" CssClass="table" Width="90%" CellSpacing="0" CellPadding="0"
+                                            AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="UserTouchPointLogID">
+                                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                                            <HeaderStyle CssClass="trHeader" />
+                                            <RowStyle CssClass="FirstRow" />
+                                            <AlternatingRowStyle CssClass="AlternateRow " />
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:HyperLink runat="server" ForeColor="Blue"
+                                                            NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
+                                                            Text='<%# Eval("UpdatedUserInstallID")%>' />
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%#Eval("ChangeDateTime")%>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <%#Eval("LogDescription")%>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </div>
                             </div>
+                            <table cellspacing="0" cellpadding="0" border="1" style="width: 100%; border-collapse: collapse; margin-left: 0px;">
+                                <tr>
+                                    <td style="background: none"></td>
+                                </tr>
+                                <tr>
+                                    <td style="background: none; padding-bottom: 0px;">Notes:<br />
+                                        <asp:TextBox ID="txtTouchPointLogNote" runat="server" TextMode="MultiLine" Width="100%" Height="50px" CssClass="textbox"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="background: none; padding-top: 0px;">
+                                        <div class="btn_sec">
+                                            <asp:Button ID="btnAddNote" runat="server" Text="Add Note" CssClass="ui-button" OnClick="btnAddNote_Click" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                             <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
                                 <tr>
                                     <td>
@@ -5000,22 +4913,6 @@ function SetEmailValuefromCtlToHid() {
         function Initialize() {
             ApplyDropZone();
             GetApptitudeResult();
-
-            $(".GrdHeader").click(function () {
-
-                $header = $(this);
-                //getting the next element
-                $content = $header.next();
-                //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
-                $content.slideToggle(500, function () {
-                    //execute this after slideToggle is done
-                    //change text of header based on visibility of content div
-                    $header.text(function () {
-                        //change text based on condition
-                        return $content.is(":visible") ? "-" : "+";
-                    });
-                });
-            });
         }
         var objWorkFileDropzone;
         //Dropzone.autoDiscover = false;
@@ -5125,9 +5022,9 @@ function SetEmailValuefromCtlToHid() {
             });
             try {
                 $("#<%=ddlstatus.ClientID%>").msDropDown();
-            } catch (e) {
-                alert(e.message);
-            }
+        } catch (e) {
+            alert(e.message);
+        }
         <%--try {
             $("#<%=ddlPhontType.ClientID%>").msDropDown();
         } catch (e) {
@@ -5136,33 +5033,33 @@ function SetEmailValuefromCtlToHid() {
         --%>
 
         function GetApptitudeResult() {
-
+            
             var UserID = $('#<%= hidID.ClientID %>').val();
 
-            var postData = {
-                "UserID": UserID,
-            };
+             var postData = {
+                 "UserID": UserID,
+             };
 
-            CallJGWebServiceCommon('GetTestResultsByUserID', postData, function (data) { OnTestScoreSuccess(data) });
+             CallJGWebServiceCommon('GetTestResultsByUserID', postData, function (data) { OnTestScoreSuccess(data) });
 
-            function OnTestScoreSuccess(data) {
-                console.log('successfuully return test result');
-                if (data) {
+             function OnTestScoreSuccess(data) {
+                 console.log('successfuully return test result');
+                 if (data) {
+            
+                     var results = JSON.parse(data.d);
+                     $.each(results, function (index, item) {
 
-                    var results = JSON.parse(data.d);
-                    $.each(results, function (index, item) {
+                         var cssclass = "redtext";
+                         if (item.Result == "1") {
+                             cssclass = "greentext";
+                         }
+                         $('#ulTestResults').prepend($('<li class="testresults"> <span class="' + cssclass + '"> <a target="_blank" href="/Sr_App/view-aptitude-test.aspx?ExamID=' + item.ExamID + '">' + item.ExamTitle + '</a> - ' + item.Aggregate + '% </span></li>'));
+                     });
+                 }
 
-                        var cssclass = "redtext";
-                        if (item.Result == "1") {
-                            cssclass = "greentext";
-                        }
-                        $('#ulTestResults').prepend($('<li class="testresults"> <span class="' + cssclass + '"> <a target="_blank" href="/Sr_App/view-aptitude-test.aspx?ExamID=' + item.ExamID + '">' + item.ExamTitle + '</a> - ' + item.Aggregate + '% </span></li>'));
-                    });
-                }
+             }
 
-            }
-
-        }
+         }
 
     </script>
 

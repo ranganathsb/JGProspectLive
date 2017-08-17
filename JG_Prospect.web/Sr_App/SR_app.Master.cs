@@ -41,15 +41,7 @@ namespace JG_Prospect.Sr_App
                     li_department.Visible = true;
                 }
                 AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
-
-
-                // Code change by Deep
-                var page = HttpContext.Current.Handler as Page;
-                if (page is EditUser)
-                {
-                    leftmenudiv.Visible = false;
-                }
-
+               
             }
             else
             {
