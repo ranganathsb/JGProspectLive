@@ -837,8 +837,16 @@
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
                                         <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
-                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
+                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" onchange="javascript:GridstatusChanged(event,this);" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
+                                        <asp:Label ID="hdnlblEmail" runat="server" CssClass="OffferMadeEmail hide" Text='<%#Eval("Email")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblFname" runat="server" CssClass="OffferMadeFirstName hide" Text='<%#Eval("FristName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblLName" runat="server" CssClass="OffferMadeLastName hide" Text='<%#Eval("LastName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblDesignation" runat="server" CssClass="OffferMadeDesignation hide" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblOldStatus" runat="server" CssClass="OffferMadeOldStatus hide" Text='<%#Eval("Status")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserID" runat="server" CssClass="OffferMadeUserID hide" Text='<%#Eval("Id")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserDesiID" runat="server" CssClass="OffferMadeUserDesignID hide" Text='<%#Eval("DesignationID")%>'></asp:Label>
+
                                         <br />
                                         <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
                                         <br />
@@ -1157,10 +1165,15 @@
                         <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                             cellpadding="0" cellspacing="0">
                             <tr>
-                                <td align="right">Name:
-                                    <asp:Label ID="lblName_OfferMade" runat="server" /></td>
-                                <td>Designation:
-                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                                <td align="left" colspan="2"><strong>Name: 
+                                    <asp:Label ID="lblName_OfferMade" runat="server" />
+                                </strong></td>
+
+                            </tr>
+                            <tr align="left" colspan="2">
+                                <td><strong>Designation:
+                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" />
+                                </strong></td>
                             </tr>
                             <tr>
                                 <td align="right" style="height: 15px;">
@@ -1219,10 +1232,8 @@
                                 <td align="center" colspan="2">
                                     <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                                         Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
-                                        TabIndex="119" OnClick="btnSaveOfferMade_Click" />
-                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
-                                        Style="height: 26px; font-weight: 700; line-height: 1em;"
-                                        OnClientClick="javascript:document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'" />
+                                        TabIndex="119" />
+                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" Width="100px" Style="height: 26px; font-weight: 700; line-height: 1em;" />
                                 </td>
                             </tr>
                         </table>
@@ -1677,7 +1688,91 @@
 
         }
 
+        function GridstatusChanged(event, dropdown) {
 
+            var selectedValue = $(dropdown).val();
+
+            // If user status is offermade than dont postback.
+            if (selectedValue == "6") {
+                OverlayPopupOfferMade();
+                var statustr = $(dropdown).closest("tr");
+
+                var Email = $(statustr).find(".OffferMadeEmail").html();
+                var FirstName = $(statustr).find(".OffferMadeFirstName").html();
+                var LastName = $(statustr).find(".OffferMadeLastName").html();
+                var Designation = $(statustr).find(".OffferMadeDesignation").html();
+                var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
+                var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
+                var UserID = $(statustr).find(".OffferMadeUserID").html();
+
+                console.log(Email);
+                console.log(FirstName);
+                console.log(LastName);
+                console.log(Designation);
+                console.log(OldStatus);
+
+                $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
+                $('#<%=lblDesignation_OfferMade.ClientID%>').html(Designation);
+
+
+                // on cancel button click close popup and reset dropdown to its original status.
+                $('#<%=btnCancelOfferMade.ClientID%>').unbind("click");
+                $('#<%=btnSaveOfferMade.ClientID%>').unbind("click");
+
+                $('#<%=btnCancelOfferMade.ClientID%>').click(function () {
+                    console.log(OldStatus);
+                    $(dropdown).val(OldStatus);
+                    ClosePopupOfferMade();
+                    return false;
+                });
+
+
+                $('#<%=btnSaveOfferMade.ClientID%>').click(function () {
+                    console.log(Email);
+                    console.log(DesignationID);
+                    console.log(UserID);
+
+                    SendOfferMadeEmail(UserID, Email, DesignationID);
+                    return false;
+                });
+                
+                $('#<%=txtEmail.ClientID%>').val(Email);
+                $('#<%=txtPassword1.ClientID%>').val("jmgrove");
+                $('#<%=txtpassword2.ClientID%>').val("jmgrove");
+
+
+
+            }
+            else { // For rest of the statuses postback.
+                __doPostBack($(dropdown).attr("id"));
+            }
+                        
+            return false;
+        }
+
+        function SendOfferMadeEmail(UserID, Email, DesignationID) {
+
+            var postData = {
+                UserEmail: Email,
+                UserID: parseInt(UserID),
+                DesignationID : DesignationID
+            };
+
+            CallJGWebService('SendOfferMadeToCandidate', postData, OnSendOfferMadeToCandidateSuccess, OnSendOfferMadeToCandidateError);
+
+            function OnSendOfferMadeToCandidateSuccess(data) {
+                if (data.d) {
+                    alert("OfferMade Email Sent Successfully!");
+                    ClosePopupOfferMade();
+                }
+            }
+
+            function OnSendOfferMadeToCandidateError(err) {
+                alert("Error occured while sending OfferMade Email");
+                ClosePopupOfferMade();
+            }
+            
+        }
 
         $(document).ready(function () {
 
