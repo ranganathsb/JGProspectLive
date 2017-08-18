@@ -31,7 +31,6 @@ namespace JG_Prospect.Sr_App
 
         #region '--Members--'
 
-        string fn;
         private static int UserId = 0;
         private static int ColorFlag = 0;
         user objuser = new user();
@@ -109,6 +108,7 @@ namespace JG_Prospect.Sr_App
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
+                BindUserEmailAndPhone();
 
                 chkMaddAdd.Checked = true;
                 CalendarExtender1.StartDate = DateTime.Today;
@@ -159,7 +159,7 @@ namespace JG_Prospect.Sr_App
                 //rqSecondaryTrade.Enabled = true;
                 rqFirstName.Enabled = true;
                 //rqEmail.Enabled = true;
-                reEmail.Enabled = true;
+                //reEmail.Enabled = true;//by deep 30 July 17
                 rqZip.Enabled = true;
                 rqState.Enabled = true;
                 lblStateReq.Visible = true;
@@ -181,8 +181,8 @@ namespace JG_Prospect.Sr_App
                 rqLastName.Enabled = true;
                 rqAddress.Enabled = true;
                 lblAddressReq.Visible = true;
-                rqPhone.Enabled = true;
-                lblPhoneReq.Visible = true;
+                //rqPhone.Enabled = true; //by deep 30 July 17
+                //lblPhoneReq.Visible = true; //by deep 30 July 17
                 //rqPass.Enabled = true;
                 lblPassReq.Visible = true;
                 rqSSN1.Enabled = false;
@@ -259,15 +259,15 @@ namespace JG_Prospect.Sr_App
                 lblReqFName.Visible = true;
                 rqFirstName.Enabled = true;
                 RequiredFieldValidator4.Enabled = true;
-                lblPhoneReq.Visible = true;
-                rqPhone.Enabled = true;
+                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                //rqPhone.Enabled = true;//by deep 30 July 17
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
                 //lblNotesReq.Visible = false;
                 //rqNotes.Enabled = false;
-                lblReqEmail.Visible = false;
+                //lblReqEmail.Visible = false;//by deep 30 July 17
                 //rqEmail.Enabled = false;
-                reEmail.Enabled = true;
+                //reEmail.Enabled = true;//by deep 30 July 17
                 lblReqZip.Visible = false;
                 rqZip.Enabled = false;
                 lblStateReq.Visible = false;
@@ -329,6 +329,16 @@ namespace JG_Prospect.Sr_App
                     ddldesignation.DataSource = dsDesignation.Tables[0];
                     ddldesignation.DataBind();
                     ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+
+
+                    ddlPositionAppliedFor.Items.Clear();
+                    ddlPositionAppliedFor.DataValueField = "Id";
+                    ddlPositionAppliedFor.DataTextField = "DesignationName";
+                    ddlPositionAppliedFor.DataSource = dsDesignation.Tables[0];
+                    ddlPositionAppliedFor.DataBind();
+                    ddlPositionAppliedFor.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+
+
                 }
 
                 //if (dsTrade.Tables.Count > 0)
@@ -417,19 +427,20 @@ namespace JG_Prospect.Sr_App
 
                         hidPhoneISDCode.Value = ds.Tables[0].Rows[0]["PhoneISDCode"].ToString();
                         txtPhone.Text = ds.Tables[0].Rows[0]["Phone"].ToString();
-                        txtPhoneExt.Text = ds.Tables[0].Rows[0]["PhoneExtNo"].ToString();
+                        txtExt.Text = ds.Tables[0].Rows[0]["PhoneExtNo"].ToString();
 
                         txtMiddleInitial.Text = ds.Tables[0].Rows[0]["NameMiddleInitial"].ToString();
 
-                        if (ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString() != "")
-                            chkPrimaryEmailMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString());
-                        else
-                            chkPrimaryEmailMain.Checked = false;
+                        //if (ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString() != "")
+                        //    chkPrimaryEmailMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailPrimaryEmail"].ToString());
+                        //else
+                        //    chkPrimaryEmailMain.Checked = false;
 
-                        if (ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString() != "")
-                            chkPrimaryPhoneMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString());
-                        else
-                            chkPrimaryPhoneMain.Checked = false;
+                        //if (ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString() != "")
+                        //    chkPrimaryPhoneMain.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsPhonePrimaryPhone"].ToString());
+                        //else
+                        //    chkPrimaryPhoneMain.Checked = false;
+
                         if (ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString() != "")
                             ContactPreferenceChkEmail.Checked = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsEmailContactPreference"].ToString());
                         else
@@ -519,15 +530,15 @@ namespace JG_Prospect.Sr_App
                                 lblReqFName.Visible = true;
                                 rqFirstName.Enabled = true;
                                 RequiredFieldValidator4.Enabled = true;
-                                lblPhoneReq.Visible = true;
-                                rqPhone.Enabled = true;
+                                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                                //rqPhone.Enabled = true;//by deep 30 July 17
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
                                 //lblNotesReq.Visible = false;
                                 //rqNotes.Enabled = false;
-                                lblReqEmail.Visible = false;
+                                //lblReqEmail.Visible = false;//by deep 30 July 17
                                 //rqEmail.Enabled = false;
-                                reEmail.Enabled = true;
+                                //reEmail.Enabled = true;//by deep 30 July 17
                                 lblReqZip.Visible = false;
                                 rqZip.Enabled = false;
                                 lblStateReq.Visible = false;
@@ -576,15 +587,15 @@ namespace JG_Prospect.Sr_App
                                 lblReqFName.Visible = true;
                                 rqFirstName.Enabled = true;
                                 RequiredFieldValidator4.Enabled = true;
-                                lblPhoneReq.Visible = true;
-                                rqPhone.Enabled = true;
+                                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                                //rqPhone.Enabled = true;//by deep 30 July 17
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
                                 //lblNotesReq.Visible = false;
                                 //rqNotes.Enabled = false;
-                                lblReqEmail.Visible = false;
+                                //lblReqEmail.Visible = false;//by deep 30 July 17
                                 //rqEmail.Enabled = false;
-                                reEmail.Enabled = true;
+                                //reEmail.Enabled = true;//by deep 30 July 17
                                 lblReqZip.Visible = false;
                                 rqZip.Enabled = false;
                                 lblStateReq.Visible = false;
@@ -634,15 +645,15 @@ namespace JG_Prospect.Sr_App
                                 lblReqFName.Visible = true;
                                 rqFirstName.Enabled = true;
                                 RequiredFieldValidator4.Enabled = true;
-                                lblPhoneReq.Visible = true;
-                                rqPhone.Enabled = true;
+                                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                                //rqPhone.Enabled = true;//by deep 30 July 17
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
                                 //lblNotesReq.Visible = false;
                                 //rqNotes.Enabled = false;
-                                lblReqEmail.Visible = false;
+                                //lblReqEmail.Visible = false;//by deep 30 July 17
                                 //rqEmail.Enabled = false;
-                                reEmail.Enabled = true;
+                                //reEmail.Enabled = true;//by deep 30 July 17
                                 lblReqZip.Visible = true;
                                 rqZip.Enabled = true;
                                 lblStateReq.Visible = true;
@@ -702,15 +713,15 @@ namespace JG_Prospect.Sr_App
                                 lblReqFName.Visible = true;
                                 rqFirstName.Enabled = true;
                                 RequiredFieldValidator4.Enabled = true;
-                                lblPhoneReq.Visible = true;
-                                rqPhone.Enabled = true;
+                                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                                //rqPhone.Enabled = true;//by deep 30 July 17
                                 lblSourceReq.Visible = true;
                                 rqSource.Enabled = true;
                                 //lblNotesReq.Visible = false;
                                 //rqNotes.Enabled = false;
-                                lblReqEmail.Visible = false;
+                                //lblReqEmail.Visible = false;//by deep 30 July 17
                                 //rqEmail.Enabled = false;
-                                reEmail.Enabled = true;
+                                //reEmail.Enabled = true;//by deep 30 July 17
                                 lblReqZip.Visible = true;
                                 rqZip.Enabled = true;
                                 lblStateReq.Visible = true;
@@ -757,7 +768,7 @@ namespace JG_Prospect.Sr_App
                                 #endregion
 
                                 //if ((ddlstatus.SelectedValue == "Active")                                    || (ddlstatus.SelectedValue == "OfferMade"))
-                                if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) 
+                                if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                                     || (ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()))
                                 {
                                     showHideNewHireSection(true);
@@ -1230,11 +1241,17 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
-            string note = txtAddNotes.Text.Trim();
-            int CustomerId = Convert.ToInt32(Session["ID"]);
-            InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
-            txtAddNotes.Text = string.Empty;
-            bindGrid();
+            if (txtTouchPointLogNote.Text.Trim() != "")
+            {
+                fullTouchPointLog("Note : " + txtTouchPointLogNote.Text);
+                txtTouchPointLogNote.Text = "";
+            }
+
+            //string note = txtAddNotes.Text.Trim();
+            //int CustomerId = Convert.ToInt32(Session["ID"]);
+            //InstallUserBLL.Instance.AddSalesFollowUp(CustomerId, UserId, DateTime.Now, note);
+            //txtAddNotes.Text = string.Empty;
+            //bindGrid();
         }
 
         #endregion
@@ -1297,6 +1314,7 @@ namespace JG_Prospect.Sr_App
                 //else
                 //  {
                 objuser.picture = Convert.ToString(Session["UplaodPicture"]);
+
                 //  }
                 objuser.attachements = GetUpdateAttachments();
                 objuser.businessname = "";
@@ -1574,13 +1592,13 @@ namespace JG_Prospect.Sr_App
                 objuser.designation = ddldesignation.SelectedItem.Text;
                 objuser.DesignationID = Convert.ToInt32(ddldesignation.SelectedValue);
                 objuser.phone = txtPhone.Text;
-                if (phoneTypeDropDownList.SelectedItem.Text == "Select")
+                if (ddlPhoneType.SelectedItem.Text == "Select")
                 {
                     objuser.phonetype = "";
                 }
                 else
                 {
-                    objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
+                    objuser.phonetype = ddlPhoneType.SelectedItem.Text;
                 }
                 objuser.DateSourced = txtDateSourced.Text;
 
@@ -1853,13 +1871,13 @@ namespace JG_Prospect.Sr_App
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
                 objuser.CountryCode = ddlCountry.SelectedValue;
-                objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
+                objuser.PhoneExtNo = txtExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
-                objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
+                objuser.phonetype = ddlPhoneType.SelectedItem.Text;
 
                 objuser.NameMiddleInitial = txtMiddleInitial.Text;
-                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
-                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                //objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                //objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
                 objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
                 objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
                 objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
@@ -1884,7 +1902,7 @@ namespace JG_Prospect.Sr_App
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
 
-                        AddUpdateUserPhoneEmail(true, result.Item2);
+                        //AddUpdateUserPhoneEmail(true, result.Item2);
                         UpdateUserInstallID(result.Item2);
                         CreateUserEmailID();
 
@@ -2252,7 +2270,14 @@ namespace JG_Prospect.Sr_App
                 //objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                 //objuser.Source = ddlSource.SelectedValue;
-                objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+                if (ddlSource.SelectedIndex == 0)
+                {
+                    objuser.SourceId = 0;
+                }
+                else
+                {
+                    objuser.SourceId = Convert.ToInt32(ddlSource.SelectedValue);
+                }
                 objuser.Notes = txtNotes.Text;
                 string str_Reason = "";
                 if (txtReson.Visible == true && ddlstatus.SelectedValue == "Rejected")
@@ -2512,13 +2537,15 @@ namespace JG_Prospect.Sr_App
                 objuser.cThree = txtcThree.Text;
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+
+
                 objuser.CountryCode = ddlCountry.SelectedValue;
-                objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
+                objuser.PhoneExtNo = txtExt.Text.Trim();
                 objuser.PhoneISDCode = hidPhoneISDCode.Value;
 
                 objuser.NameMiddleInitial = txtMiddleInitial.Text;
-                objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
-                objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
+                //objuser.IsPhonePrimaryPhone = chkPrimaryPhoneMain.Checked;
+                //objuser.IsEmailPrimaryEmail = chkPrimaryEmailMain.Checked;
                 objuser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
                 objuser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
                 objuser.IsTextContactPreference = ContactPreferenceChkText.Checked;
@@ -2542,7 +2569,7 @@ namespace JG_Prospect.Sr_App
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
 
-                    AddUpdateUserPhoneEmail(false, id);
+                    //AddUpdateUserPhoneEmail(false, id);
                     UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
                     CreateUserEmailID();
 
@@ -2576,6 +2603,7 @@ namespace JG_Prospect.Sr_App
             }
             catch (Exception ex)
             {
+                Console.WriteLine("{0} Exception caught.", ex);
 
             }
         }
@@ -2928,8 +2956,8 @@ namespace JG_Prospect.Sr_App
                 return;
             }
             //if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
-            if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) 
-                && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) 
+            if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
+                && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))
                 && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 //binddata();
@@ -2938,7 +2966,7 @@ namespace JG_Prospect.Sr_App
             }
             //else if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active" && ddlstatus.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
             else if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()
-                && ddlstatus.SelectedValue != Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()) 
+                && ddlstatus.SelectedValue != Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString())
                 && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayPassword();", true);
@@ -3087,7 +3115,7 @@ namespace JG_Prospect.Sr_App
                 return;
             }
             //if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()) 
+            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
                 && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
             {
                 showHideNewHireSection(true);
@@ -3143,7 +3171,7 @@ namespace JG_Prospect.Sr_App
             }
 
             //if ((ddlstatus.SelectedValue == "Active")                || (ddlstatus.SelectedValue == "OfferMade"))
-            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) 
+            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                 || (ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()))
             {
                 showHideNewHireSection(true);
@@ -3169,15 +3197,15 @@ namespace JG_Prospect.Sr_App
                 lblReqFName.Visible = true;
                 rqFirstName.Enabled = true;
                 RequiredFieldValidator4.Enabled = true;
-                lblPhoneReq.Visible = true;
-                rqPhone.Enabled = true;
+                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                //rqPhone.Enabled = true;//by deep 30 July 17
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
                 //lblNotesReq.Visible = false;
                 //rqNotes.Enabled = false;
-                lblReqEmail.Visible = false;
+                //lblReqEmail.Visible = false;//by deep 30 July 17
                 //rqEmail.Enabled = false;
-                reEmail.Enabled = true;
+                //reEmail.Enabled = true;//by deep 30 July 17
                 lblReqZip.Visible = false;
                 rqZip.Enabled = false;
                 lblStateReq.Visible = false;
@@ -3229,15 +3257,15 @@ namespace JG_Prospect.Sr_App
                 lblReqFName.Visible = true;
                 rqFirstName.Enabled = true;
                 RequiredFieldValidator4.Enabled = true;
-                lblPhoneReq.Visible = true;
-                rqPhone.Enabled = true;
+                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                //rqPhone.Enabled = true;//by deep 30 July 17
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
                 //lblNotesReq.Visible = false;
                 //rqNotes.Enabled = false;
-                lblReqEmail.Visible = false;
+                //lblReqEmail.Visible = false;//by deep 30 July 17
                 //rqEmail.Enabled = false;
-                reEmail.Enabled = true;
+                //reEmail.Enabled = true;//by deep 30 July 17
                 lblReqZip.Visible = true;
                 rqZip.Enabled = true;
                 lblStateReq.Visible = true;
@@ -3296,15 +3324,15 @@ namespace JG_Prospect.Sr_App
                 lblReqFName.Visible = true;
                 rqFirstName.Enabled = true;
                 RequiredFieldValidator4.Enabled = true;
-                lblPhoneReq.Visible = true;
-                rqPhone.Enabled = true;
+                //lblPhoneReq.Visible = true;//by deep 30 July 17
+                //rqPhone.Enabled = true;//by deep 30 July 17
                 lblSourceReq.Visible = true;
                 rqSource.Enabled = true;
                 //lblNotesReq.Visible = false;
                 //rqNotes.Enabled = false;
-                lblReqEmail.Visible = true;
+                //lblReqEmail.Visible = true;//by deep 30 July 17
                 //rqEmail.Enabled = true;
-                reEmail.Enabled = true;
+                //reEmail.Enabled = true;//by deep 30 July 17
                 lblReqZip.Visible = true;
                 rqZip.Enabled = true;
                 lblStateReq.Visible = true;
@@ -3372,15 +3400,15 @@ namespace JG_Prospect.Sr_App
                 lblReqFName.Visible = false;
                 rqFirstName.Enabled = false;
                 RequiredFieldValidator4.Enabled = false;
-                lblPhoneReq.Visible = false;
-                rqPhone.Enabled = false;
+                //lblPhoneReq.Visible = false;//by deep 30 July 17
+                //rqPhone.Enabled = false;//by deep 30 July 17
                 lblSourceReq.Visible = false;
                 rqSource.Enabled = false;
                 //lblNotesReq.Visible = false;
                 //rqNotes.Enabled = false;
-                lblReqEmail.Visible = false;
+                //lblReqEmail.Visible = false;//by deep 30 July 17
                 //rqEmail.Enabled = false;
-                reEmail.Enabled = false;
+                //reEmail.Enabled = false;//by deep 30 July 17
                 lblReqZip.Visible = false;
                 rqZip.Enabled = false;
                 lblStateReq.Visible = false;
@@ -4023,7 +4051,7 @@ namespace JG_Prospect.Sr_App
                     else
                     {
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record can not be deleted.')", true);
-                    } 
+                    }
                 }
             }
             else
@@ -4287,57 +4315,59 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void ddlPhontType_PreRender(object sender, EventArgs e)
+        //by deep 30 July 17        
+        //protected void ddlPhontType_PreRender(object sender, EventArgs e)
+        //{
+        //    string imageURL = "";
+
+        //    for (int i = 0; i < ddlPhontType.Items.Count; i++)
+        //    {
+        //        switch (ddlPhontType.Items[i].Text.Trim())
+        //        {
+        //            case "skype":
+        //                imageURL = "../Sr_App/img/skype.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+        //            case "whatsapp":
+        //                imageURL = "../Sr_App/img/WhatsApp.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "HousePhone":
+        //            case "House Phone":
+        //                imageURL = "../Sr_App/img/Phone_home.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "CellPhone":
+        //            case "Cell Phone":
+        //                imageURL = "../Sr_App/img/Cell_Phone.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "WorkPhone":
+        //            case "Work Phone":
+        //                imageURL = "../Sr_App/img/WorkPhone.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "AltPhone":
+        //            case "Alt. Phone":
+        //                imageURL = "../Sr_App/img/AltPhone.png";
+        //                ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            default:
+        //                ddlPhontType.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
+        //                break;
+        //        }
+
+        //    }
+        //}
+
+        protected void PhoneTypeDropdown_PreRender(object sender, EventArgs e)
         {
-            string imageURL = "";
-
-            for (int i = 0; i < ddlPhontType.Items.Count; i++)
-            {
-                switch (ddlPhontType.Items[i].Text.Trim())
-                {
-                    case "skype":
-                        imageURL = "../Sr_App/img/skype.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-                    case "whatsapp":
-                        imageURL = "../Sr_App/img/WhatsApp.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-
-                    case "HousePhone":
-                    case "House Phone":
-                        imageURL = "../Sr_App/img/Phone_home.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-
-                    case "CellPhone":
-                    case "Cell Phone":
-                        imageURL = "../Sr_App/img/Cell_Phone.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-
-                    case "WorkPhone":
-                    case "Work Phone":
-                        imageURL = "../Sr_App/img/WorkPhone.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-
-                    case "AltPhone":
-                    case "Alt. Phone":
-                        imageURL = "../Sr_App/img/AltPhone.png";
-                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
-                        break;
-
-                    default:
-                        ddlPhontType.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
-                        break;
-                }
-
-            }
-        }
-
-        protected void phoneTypeDropDownList_PreRender(object sender, EventArgs e)
-        {
+            DropDownList phoneTypeDropDownList = (DropDownList)sender;
             string imageURL = "";
 
             for (int i = 0; i < phoneTypeDropDownList.Items.Count; i++)
@@ -4384,6 +4414,55 @@ namespace JG_Prospect.Sr_App
 
             }
         }
+
+        //protected void phoneTypeDropDownList_PreRender(object sender, EventArgs e)
+        //{
+        //    string imageURL = "";
+
+        //    for (int i = 0; i < phoneTypeDropDownList.Items.Count; i++)
+        //    {
+        //        switch (phoneTypeDropDownList.Items[i].Text.Trim())
+        //        {
+        //            case "skype":
+        //                imageURL = "../Sr_App/img/skype.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+        //            case "whatsapp":
+        //                imageURL = "../Sr_App/img/WhatsApp.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "HousePhone":
+        //            case "House Phone":
+        //                imageURL = "../Sr_App/img/Phone_home.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "CellPhone":
+        //            case "Cell Phone":
+        //                imageURL = "../Sr_App/img/Cell_Phone.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "WorkPhone":
+        //            case "Work Phone":
+        //                imageURL = "../Sr_App/img/WorkPhone.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            case "AltPhone":
+        //            case "Alt. Phone":
+        //                imageURL = "../Sr_App/img/AltPhone.png";
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = imageURL;
+        //                break;
+
+        //            default:
+        //                phoneTypeDropDownList.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
+        //                break;
+        //        }
+
+        //    }
+        //}
 
         protected void ddlstatus_PreRender(object sender, EventArgs e)
         {
@@ -4858,7 +4937,7 @@ namespace JG_Prospect.Sr_App
                 string[] str_Reason = Reason.Split(',');
                 string[] str_Amt = Amount.Split(',');
                 string[] str_Type = Type.Split(',');
-            label:
+                label:
                 drNew = dt.NewRow();
                 for (int i = 0; i < str_Reason.Length; i++)
                 {
@@ -4907,7 +4986,7 @@ namespace JG_Prospect.Sr_App
                 }
                 dt.Rows.Add(drNew);
                 goto label;
-            label1:
+                label1:
                 Session["DtTemp"] = null;
                 Session["DtTemp"] = dt;
                 GridView1.DataSource = dt;
@@ -4926,7 +5005,7 @@ namespace JG_Prospect.Sr_App
             Session["loop5"] = "";
             string[] str_PersonName = PersonName.Split(',');
             string[] str_PersonType = PersonType.Split(',');
-        label:
+            label:
             drNew = dt.NewRow();
             for (int i = 0; i < str_PersonName.Length; i++)
             {
@@ -4961,7 +5040,7 @@ namespace JG_Prospect.Sr_App
             }
             dt.Rows.Add(drNew);
             goto label;
-        label1:
+            label1:
             Session["PersonTypeData"] = null;
             Session["PersonTypeData"] = dt;
             //GridView2.DataSource = dt;
@@ -5980,24 +6059,29 @@ namespace JG_Prospect.Sr_App
         }
         private void FillPhoneTypeDropDown()
         {
+            DataSet dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
 
-            DataSet dsPhoneType;
-
-            dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
+            foreach (DataRow RowItem in dsPhoneType.Tables[0].Rows)
+            {
+                if (RowItem["ContactName"].ToString().ToUpper() == "OTHER")
+                {
+                    RowItem["ContactName"] = "EMAIL";
+                    RowItem["ContactValue"] = "EMAIL";
+                    RowItem["UserContactID"] = "0";
+                }
+            }
 
             if (dsPhoneType.Tables[0].Rows.Count > 0)
             {
-                ddlPhontType.DataSource = dsPhoneType.Tables[0];
-                ddlPhontType.DataTextField = "ContactName";
-                ddlPhontType.DataValueField = "UserContactID";
-                ddlPhontType.DataBind();
+                ddlPhoneType.DataSource = dsPhoneType.Tables[0];
+                ddlPhoneType.DataTextField = "ContactName";
+                ddlPhoneType.DataValueField = "UserContactID";
+                ddlPhoneType.DataBind();
 
-                phoneTypeDropDownList.DataSource = dsPhoneType.Tables[0];
-                phoneTypeDropDownList.DataTextField = "ContactName";
-                phoneTypeDropDownList.DataValueField = "UserContactID";
-                phoneTypeDropDownList.DataBind();
-                //ddlSource.Items.Insert(0, "Select Source");
-                //ddlSource.SelectedIndex = 0;
+                ddlPhoneTypeDisplay.DataSource = dsPhoneType.Tables[0];
+                ddlPhoneTypeDisplay.DataTextField = "ContactName";
+                ddlPhoneTypeDisplay.DataValueField = "UserContactID";
+                ddlPhoneTypeDisplay.DataBind();
             }
         }
 
@@ -6796,5 +6880,166 @@ namespace JG_Prospect.Sr_App
 
         #endregion
 
+        protected void ddlPhoneType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selValue = ddlPhoneType.SelectedItem.Text.ToLower();
+
+            if (selValue.Contains("phone"))
+            {
+                txtExt.Visible = true;
+                txtContact.Attributes.Add("placeholder", "Phone");
+                reEmail.Enabled = false;
+                rePhone.Enabled = true;
+            }
+            else
+            {
+                txtExt.Visible = false;
+                txtContact.Attributes.Add("placeholder", "Email");
+                reEmail.Enabled = true;
+                rePhone.Enabled = false;
+            }
+        }
+
+        protected void chkPrimary_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                CheckBox chk = (CheckBox)sender;
+                int dataType = chk.ClientID.Contains("Email") ? 2 : 1;
+
+                if ((dataType == 2 && ddlEmail.SelectedItem.Text != "No Email") || (dataType == 1 && ddlPhone.SelectedItem.Text != "No Phone"))
+                {
+                    int dataID = 0;
+                    int userID = Convert.ToInt32(hidID.Value);
+
+                    if (chk.ClientID.Contains("Email")) { dataID = Convert.ToInt32(ddlEmail.SelectedValue); }
+                    else { dataID = Convert.ToInt32(ddlPhone.SelectedValue); }
+
+                    InstallUserBLL.Instance.SetPrimaryContactOfUser(dataID, userID, dataType, chk.Checked);
+                    SetContactDataFields();
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "noselection", "alert('Invalid. Please add " + (dataType == 2 ? "Email" : "Phone") + " of user.');", true);
+                    chk.Checked = false;
+                }
+            }
+            catch (Exception ex) { Console.Write(ex.Message); }
+        }
+
+        protected void btnAddContact_Click(object sender, EventArgs e)
+        {
+            String PhoneType = ddlPhoneType.SelectedItem.Text;
+            int id = Convert.ToInt32(hidID.Value);
+
+            if (txtContact.Text.Trim() != "")
+            {
+                string result = InstallUserBLL.Instance.AddUserEmailOrPhone(id, txtContact.Text.Trim(), (PhoneType == "EMAIL" ? 2 : 1), ddlPhoneType.SelectedValue, txtExt.Text, chkPrimary.Checked);
+
+                if (result == "error")
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "errorAlert", "alert('error');", true);
+                }
+                else if (result != "")
+                {
+                    if (PhoneType == "EMAIL")
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "dataExistsAlert", "TheConfirm_OkOnly('User with this email already Exist','Email Alert')", true);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "dataExistsAlert", "TheConfirm_OkOnly('User with this Phone already Exist','Phone Alert')", true);
+                    }
+                }
+                else
+                { SetContactDataFields(); }
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alertForEmailPhone", "TheConfirm_OkOnly('Kindly Enter Phone / Email Value (It can not be blank)','Alert')", true);
+            }
+
+        }
+
+        public void BindUserEmailAndPhone()
+        {
+            try
+            {
+                DataSet ds = InstallUserBLL.Instance.GetUserEmailAndPhone(Convert.ToInt32(hidID.Value));
+
+                int i = 0;
+                foreach (DataRow RowItem in ds.Tables[0].Rows)
+                {
+                    try
+                    {
+                        ddlEmail.Items.Add(new System.Web.UI.WebControls.ListItem(RowItem["emailID"].ToString(), RowItem["UserEmailID"].ToString()));
+
+                        if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
+                        {
+                            ddlEmail.SelectedValue = RowItem["UserEmailID"].ToString();
+                            ddlEmail.Items[i].Attributes["data-p"] = "1";
+
+                            chkEmailPrimary.Checked = true;
+                        }
+                    }
+                    catch { }
+                    finally { i++; }
+                }
+
+                i = 0;
+                foreach (DataRow RowItem in ds.Tables[1].Rows)
+                {
+                    try
+                    {
+                        ddlPhone.Items.Add(new System.Web.UI.WebControls.ListItem(RowItem["Phone"].ToString(), RowItem["UserPhoneID"].ToString()));
+                        if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
+                        {
+                            ddlPhone.SelectedValue = RowItem["UserPhoneID"].ToString();
+                            ddlPhone.Items[i].Attributes["data-p"] = "1";
+                            ddlPhoneTypeDisplay.SelectedValue = RowItem["PhoneTypeID"].ToString();
+
+                            chkPhonePrimary.Checked = true;
+                        }
+
+                        if (ddlPhone.SelectedValue == RowItem["UserPhoneID"].ToString())
+                        {
+                            if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
+                            {
+                                lblExt.Text = RowItem["PhoneExtNo"].ToString();
+                                lblExt.Style.Add(HtmlTextWriterStyle.Padding, "5px");
+                            }
+                        }
+
+                        if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
+                            ddlPhone.Items[i].Attributes["data-ext"] = RowItem["PhoneExtNo"].ToString();
+
+                    }
+                    catch { }
+                    finally { i++; }
+                }
+
+                if (ddlEmail.Items.Count == 0) { ddlEmail.Items.Add(new System.Web.UI.WebControls.ListItem("No Email", "-99")); }
+                if (ddlPhone.Items.Count == 0) { ddlPhone.Items.Add(new System.Web.UI.WebControls.ListItem("No Phone", "-99")); }
+            }
+            catch { }
+        }
+
+        public void SetContactDataFields()
+        {
+            reEmail.Enabled = false;
+            ddlPhoneType.ClearSelection();
+            txtContact.Text = string.Empty;
+            txtExt.Text = string.Empty;
+            txtExt.Visible = true;
+            lblExt.Text = "";
+            lblExt.Style.Add(HtmlTextWriterStyle.Padding, "0px");
+            chkEmailPrimary.Checked = false;
+            chkPhonePrimary.Checked = false;
+            chkPrimary.Checked = false;
+            ddlPhone.Items.Clear();
+            ddlEmail.Items.Clear();
+
+            BindUserEmailAndPhone();
+        }
     }
 }
