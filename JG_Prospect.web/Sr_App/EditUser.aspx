@@ -1705,12 +1705,6 @@
                 var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
                 var UserID = $(statustr).find(".OffferMadeUserID").html();
 
-                console.log(Email);
-                console.log(FirstName);
-                console.log(LastName);
-                console.log(Designation);
-                console.log(OldStatus);
-
                 $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
                 $('#<%=lblDesignation_OfferMade.ClientID%>').html(Designation);
 
@@ -1720,7 +1714,6 @@
                 $('#<%=btnSaveOfferMade.ClientID%>').unbind("click");
 
                 $('#<%=btnCancelOfferMade.ClientID%>').click(function () {
-                    console.log(OldStatus);
                     $(dropdown).val(OldStatus);
                     ClosePopupOfferMade();
                     return false;
@@ -1728,14 +1721,11 @@
 
 
                 $('#<%=btnSaveOfferMade.ClientID%>').click(function () {
-                    console.log(Email);
-                    console.log(DesignationID);
-                    console.log(UserID);
 
                     SendOfferMadeEmail(UserID, Email, DesignationID);
                     return false;
                 });
-                
+
                 $('#<%=txtEmail.ClientID%>').val(Email);
                 $('#<%=txtPassword1.ClientID%>').val("jmgrove");
                 $('#<%=txtpassword2.ClientID%>').val("jmgrove");
@@ -1746,7 +1736,7 @@
             else { // For rest of the statuses postback.
                 __doPostBack($(dropdown).attr("id"));
             }
-                        
+
             return false;
         }
 
@@ -1755,7 +1745,7 @@
             var postData = {
                 UserEmail: Email,
                 UserID: parseInt(UserID),
-                DesignationID : DesignationID
+                DesignationID: DesignationID
             };
 
             CallJGWebService('SendOfferMadeToCandidate', postData, OnSendOfferMadeToCandidateSuccess, OnSendOfferMadeToCandidateError);
@@ -1771,7 +1761,7 @@
                 alert("Error occured while sending OfferMade Email");
                 ClosePopupOfferMade();
             }
-            
+
         }
 
         $(document).ready(function () {

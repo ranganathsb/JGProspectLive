@@ -1266,7 +1266,8 @@ namespace JG_Prospect.WebServices
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
             email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
 
-            ds = InstallUserBLL.Instance.ChangeStatus(JGConstant.InstallUserStatus.OfferMade.ToString(), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "Offer Made from HR page - " + CommonFunction.FormatDateTimeString(DateTime.Now));
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToInt32(JGConstant.InstallUserStatus.OfferMade).ToString(), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "Offer Made from HR page - " + CommonFunction.FormatDateTimeString(DateTime.Now));
+
             if (ds.Tables.Count > 0)
             {
                 if (ds.Tables[0].Rows.Count > 0)
