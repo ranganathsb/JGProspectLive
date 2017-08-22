@@ -785,4 +785,315 @@ END
 -- Live publish 08 15 2017
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SET NOCOUNT ON;  
+
+DECLARE @UserID INT, @Email VARCHAR(250), @EmailCount INT = 0 ;
+
+
+DECLARE email_cursor CURSOR FOR   
+SELECT Id, Email
+FROM tblInstallUsers  
+WHERE Email IS NOT NULL OR Email <> ''  
+ 
+
+OPEN email_cursor  
+
+FETCH NEXT FROM email_cursor   
+INTO @UserID, @Email  
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+
+-- If no email exist then only insert.
+IF NOT EXISTS( SELECT emailID FROM tblUserEmail WHERE emailID = @Email)
+BEGIN
+
+SET @EmailCount = @EmailCount + 1
+
+
+-- if there are already other email exist for user than set it to non primary and then add existing email from install users table as a primary.
+
+UPDATE tblUserEmail SET IsPrimary = 0 WHERE UserID = @UserID
+
+INSERT INTO tblUserEmail
+                         (emailID, IsPrimary, UserID)
+VALUES        (@Email, 1,@UserID)
+
+
+END
+
+-- Get the next vendor.  
+FETCH NEXT FROM email_cursor   
+INTO @UserID, @Email  
+
+END   
+
+PRINT 'Total email inserted --- '
+
+PRINT @EmailCount 
+
+CLOSE email_cursor;  
+DEALLOCATE email_cursor;  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SET NOCOUNT ON;  
+
+DECLARE @UserID INT, @Phone VARCHAR(25),@CountryCode VARCHAR(15), @PhoneCount INT = 0 ;
+
+
+DECLARE phone_cursor CURSOR FOR   
+SELECT Id, Phone,CountryCode
+FROM tblInstallUsers  
+WHERE Phone IS NOT NULL OR Phone <> ''  
+ 
+
+OPEN phone_cursor  
+
+FETCH NEXT FROM phone_cursor   
+INTO @UserID, @Phone , @CountryCode
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+
+-- If no email exist then only insert.
+IF NOT EXISTS( SELECT Phone FROM tblUserPhone WHERE Phone = @Phone)
+BEGIN
+
+SET @PhoneCount = @PhoneCount + 1
+
+
+-- if there are already other email exist for user than set it to non primary and then add existing email from install users table as a primary.
+
+UPDATE tblUserPhone SET IsPrimary = 0 WHERE UserID = @UserID
+
+INSERT INTO tblUserPhone
+                         (Phone, IsPrimary, UserID,PhoneTypeID)
+VALUES        (@Phone, 1,@UserID,1)
+
+
+END
+
+-- Get the next vendor.  
+FETCH NEXT FROM phone_cursor   
+INTO @UserID, @Phone , @CountryCode 
+
+END   
+
+PRINT 'Total phone inserted --- '
+
+PRINT @PhoneCount 
+
+CLOSE phone_cursor;  
+DEALLOCATE phone_cursor;  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[sp_AddUserEmailOrPhone]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [sp_AddUserEmailOrPhone]   
+
+	END  
+GO 
+
+CREATE procedure sp_AddUserEmailOrPhone  
+(  
+ @UserID int, @DataForValidation VARCHAR(256), @DataType INT, @PhoneTypeID varchar(10), @PhoneExt varchar(10), @IsPrimary bit  
+)  
+as  
+begin  
+ declare @DataExists VARCHAR(256)  
+  
+ if(@DataType = 1) --#Check Phone Number  
+ begin  
+  
+  SELECT @DataExists = Phone FROM tblUserPhone WHERE Phone = @DataForValidation --AND UserID = @UserID  
+  
+  IF (isnull(@DataExists, '') <> '')  
+  BEGIN  
+   SET @DataExists = CONVERT(VARCHAR(256), @DataExists)+'# Contact number already exists'  
+  END  
+  else  
+  begin  
+   if(@IsPrimary = 1)  
+   begin  
+    update tblUserPhone set IsPrimary = 0 where UserID = @UserID  
+    update tblUserEmail set IsPrimary = 0 where UserID = @UserID  
+   end  
+   insert into tblUserPhone(Phone, IsPrimary, PhoneTypeID, UserID, PhoneExtNo)  
+   values(@DataForValidation, @IsPrimary, @PhoneTypeID, @UserID, @PhoneExt)  
+  
+   update tab set Phone = @DataForValidation, IsPhonePrimaryPhone = 1, IsEmailPrimaryEmail = 0, PhoneExtNo = @PhoneExt,  
+   --PhoneISDCode = ph.PhoneISDCode,  
+   phonetype = (select case when @PhoneTypeID in (1,2,3,4,7) then ContactName + ' #'  
+      when @PhoneTypeID in (5,6,8) then ContactName  
+      else '' end from tblUsercontact where UserContactId = @PhoneTypeID)  
+   from tblInstallUsers tab  
+   where tab.Id = @UserID and @IsPrimary = 1  
+  
+  end  
+ end  
+ else if(@DataType = 2) --#Check email  
+ begin  
+  SELECT @DataExists = emailID FROM tblUserEmail WHERE emailID = @DataForValidation --AND UserID = @UserID  
+  
+  IF (isnull(@DataExists, '') <> '')  
+  BEGIN  
+   SET @DataExists = CONVERT(VARCHAR(256), @DataExists)+'# Email already exists'  
+  END  
+  else  
+  begin  
+   if(@IsPrimary = 1)  
+   begin  
+    update tblUserEmail set IsPrimary = 0 where UserID = @UserID  
+    update tblUserPhone set IsPrimary = 0 where UserID = @UserID  
+   end  
+   insert into tblUserEmail(emailID, IsPrimary, UserID)  
+   values(@DataForValidation, @IsPrimary, @UserID)  
+  
+   update tab set Email = @DataForValidation, IsPhonePrimaryPhone = 0, IsEmailPrimaryEmail = 1  
+   from tblInstallUsers tab  
+   where tab.Id = @UserID and @IsPrimary = 1  
+  end  
+ end  
+  
+ select isnull(@DataExists, '')  
+end       
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish on 08212017
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_SearchUsersForPopup]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_SearchUsersForPopup]   
+
+	END  
+GO 
+
+CREATE PROCEDURE [dbo].[usp_SearchUsersForPopup]    
+ (
+	 @UserIds VARCHAR(MAX),
+	 @Status VARCHAR(50) = NULL, 
+	 @DesignationId INT = NULL, 
+	 @PageIndex INT = 0,  
+	 @PageSize INT = 0, 
+	 @SortExpression VARCHAR(50), 
+	 @InterviewDateStatus VARChAR(5) = '5',    
+	 @RejectedStatus VARChAR(5) = '9', 
+	 @OfferMadeStatus VARChAR(5) = '6', 
+	 @ActiveStatus VARChAR(5) = '1'     
+ )
+AS    
+
+BEGIN     
+
+SET NOCOUNT ON;    
+    
+     
+ DECLARE @StartIndex INT  = 0    
+ SET @StartIndex = (@PageIndex * @PageSize) + 1    
       
+    
+ -- get records - Table 4    
+ ;WITH SalesUsers    
+ AS    
+ (
+ SELECT t.Id, t.FristName, t.LastName, t.Phone, t.Zip, t.City, d.DesignationName AS Designation, t.Status, t.HireDate, t.InstallId, t.[StatusReason],    
+ t.picture, t.CreatedDateTime, Isnull(s.Source,'') AS Source, t.SourceUser, ISNULL(U.Username,t2.FristName + ' ' + t2.LastName) AddedBy, ISNULL (t.UserInstallId,t.id) As UserInstallId,    
+ InterviewDetail = case when (t.Status=@InterviewDateStatus) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR)  + ' ' + coalesce(t.InterviewTime,'') else '' end,    
+ RejectDetail = case when (t.[Status]=@RejectedStatus ) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR) + ' ' + coalesce(t.RejectionTime,'')  else '' end,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN t.RejectedUserId ELSE NULL END AS RejectedUserId,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN ru.FristName + ' ' + ru.LastName ELSE NULL END AS RejectedByUserName,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN ru.[UserInstallId]  ELSE NULL END AS RejectedByUserInstallId,    
+ t.Email, t.DesignationID, ISNULL(t1.[UserInstallId], t2.[UserInstallId]) As AddedByUserInstallId,    
+ ISNULL(t1.Id,t2.Id) As AddedById, t.emptype as 'EmpType', t.Phone As PrimaryPhone, t.CountryCode, t.Resumepath,    
+ Task.TaskId AS 'TechTaskId', Task.ParentTaskId AS 'ParentTechTaskId', Task.InstallId as 'TechTaskInstallId',  
+ dbo.udf_GetUserExamPercentile(t.Id) AS [Aggregate],    
+ ROW_NUMBER() OVER(ORDER BY    
+   CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,    
+   CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,    
+   CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,    
+   CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,    
+   CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,    
+   CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,    
+   CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,    
+   CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,    
+   CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,    
+   CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,    
+   CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,    
+   CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,    
+   CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,    
+   CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC,     
+   CASE WHEN @SortExpression = 'City ASC' THEN t.City END ASC,    
+   CASE WHEN @SortExpression = 'City DESC' THEN t.City END DESC,     
+   CASE WHEN @SortExpression = 'CreatedDateTime ASC' THEN t.CreatedDateTime END ASC,    
+   CASE WHEN @SortExpression = 'CreatedDateTime DESC' THEN t.CreatedDateTime END DESC     
+       ) AS RowNumber
+
+  FROM tblInstallUsers t    
+  LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId= ru.Id    
+  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id    
+  LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+  LEFT JOIN tblSource s ON t.SourceId = s.Id    
+  OUTER APPLY    
+ (     
+ SELECT tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo    
+ FROM tblTaskAssignedUsers u    
+ INNER JOIN tblTask tsk ON u.TaskId = tsk.TaskId AND    
+ (tsk.ParentTaskId IS NOT NULL OR tsk.IsTechTask = 1)    
+ WHERE u.UserId = t.Id    
+ ) AS Task    
+ WHERE (t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+ AND ISNULL(t.[Status],'') = ISNULL(@Status, ISNULL(t.[Status],''))    
+ AND t.[Status] NOT IN (@OfferMadeStatus, @ActiveStatus)    
+ AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))    
+ AND t.Id IN (SELECT   Item   FROM  dbo.SplitString(@UserIds, ',') AS UserId)
+ 
+)    
+
+
+SELECT  Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
+AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
+AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
+TechTaskInstallId, [StatusReason], City    
+FROM SalesUsers    
+WHERE RowNumber >= @StartIndex AND (@PageSize = 0 OR RowNumber < (@StartIndex + @PageSize))    
+GROUP BY Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
+AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
+AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
+TechTaskInstallId, [StatusReason], City    
+    
+ -- get record count - Table 5    
+ SELECT COUNT(t.Id)  FROM tblInstallUsers t    
+  LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId= ru.Id    
+  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id    
+  LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+  LEFT JOIN tblSource s ON t.SourceId = s.Id    
+  OUTER APPLY    
+ (     
+	 SELECT tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo    
+	 FROM tblTaskAssignedUsers u    
+	 INNER JOIN tblTask tsk ON u.TaskId = tsk.TaskId AND    
+	 (tsk.ParentTaskId IS NOT NULL OR tsk.IsTechTask = 1)    
+	 WHERE u.UserId = t.Id    
+ ) AS Task    
+ WHERE (t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+ AND ISNULL(t.[Status],'') = ISNULL(@Status, ISNULL(t.[Status],''))    
+ AND t.[Status] NOT IN (@OfferMadeStatus, @ActiveStatus)    
+ AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+ AND t.Id IN (SELECT   Item   FROM  dbo.SplitString(@UserIds, ',') AS UserId)
+
+
+END
+

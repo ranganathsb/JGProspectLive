@@ -326,9 +326,10 @@
                     padding: 1px;
                     display: table-cell !important;
                 }
-                .userNotes tr {
-                    background-color: #FFFCD9 !important;
-                }
+
+            .userNotes tr {
+                background-color: #FFFCD9 !important;
+            }
 
                 .userNotes tr:nth-child(2n+1) {
                     background-color: #FF8D79 !important;
@@ -837,7 +838,7 @@
                                 <asp:DropDownList ID="ddlSource" runat="server" Width="90px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </td>
                             <td style="text-align: left; text-wrap: avoid;">
-                                <div style="float:left;width:50%;">
+                                <div style="float: left; width: 50%;">
                                     <ul class="userDatafilter">
                                         <li>
                                             <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
@@ -857,7 +858,7 @@
                                             <asp:CheckBox ID="chkTwoWks" runat="server" Checked="false" Text=" 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" /></li>
                                     </ul>
                                 </div>
-                              <%--  <div style="clear: both;"></div>--%>
+                                <%--  <div style="clear: both;"></div>--%>
                                 <div>
                                     <asp:Label ID="Label3" Text="From :*" runat="server" />
                                     <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
@@ -896,11 +897,11 @@
                             <asp:Label ID="lblof" runat="server" Text="of" />
                             <asp:Label ID="lblCount" runat="server" Style="color: red;" />
                             <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
-                            </div>
-                        <div style="float:right;">
+                        </div>
+                        <div style="float: right;">
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
-                            
+
                             Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
                                 OnSelectedIndexChanged="ddlPageSize_grdUsers_SelectedIndexChanged">
@@ -934,7 +935,8 @@
                                         <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 2px; right: 30px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
-                                        <a href="EditSalesUser.aspx?id="<%#Eval("Id")%>><asp:Image Style="width: 100%; height:85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
+                                        <a href='<%# String.Concat("ViewSalesUser.aspx?ID=",Eval("Id")) %>'>
+                                            <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
@@ -1123,10 +1125,10 @@
                                         <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
-                                      
+
                                         <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
-                                      
+
                                         <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
                                         <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
@@ -1143,7 +1145,7 @@
                                         </asp:DropDownList><br />
                                         <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                         <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
-                                       
+
                                         <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
@@ -1162,9 +1164,9 @@
                                         <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
                                         <div style="background-color: #FFE9C8; padding: 2px 0px;">
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" Width="30%" CommandName="AddNotes"
-                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle;overflow:hidden;" />
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
                                             <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="62%" BackColor="#FFFCD9"
-                                                Style="vertical-align: middle;padding:0px!important;"></asp:TextBox>
+                                                Style="vertical-align: middle; padding: 0px!important;"></asp:TextBox>
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -1396,15 +1398,19 @@
                         <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                             cellpadding="0" cellspacing="0">
                             <tr>
-                                <td align="left" colspan="2"><strong>Name: 
+                                <td align="right"><strong>Name: </strong></td>
+                                <td align="left">
                                     <asp:Label ID="lblName_OfferMade" runat="server" />
-                                </strong></td>
-
+                                </td>
                             </tr>
-                            <tr align="left" colspan="2">
+
+                            <tr align="right">
                                 <td><strong>Designation:
-                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" />
+                                    
                                 </strong></td>
+                                <td align="left">
+                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" />
+                                </td>
                             </tr>
                             <tr>
                                 <td align="right" style="height: 15px;">

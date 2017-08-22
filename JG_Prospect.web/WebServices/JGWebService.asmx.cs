@@ -1373,6 +1373,27 @@ namespace JG_Prospect.WebServices
 
         }
 
+
+        [WebMethod(EnableSession = true)]
+        public string GetEditSalesPopupUsers(String UserIds, String Status, int DesignationId, int PageIndex, int PageSize, String SortExpression)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = InstallUserBLL.Instance.GetPopupEditUsers(UserIds, Status, DesignationId, PageIndex, PageSize, SortExpression);
+
+            if (dtResult != null)
+            {
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+
+            return strMessage;
+            
+        }
+
+        
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());

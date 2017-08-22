@@ -2936,5 +2936,35 @@ namespace JG_Prospect.DAL
             {
             }
         }
+
+        public DataSet GetPopupEditUsers(String UserIds, String Status, int DesignationId, int PageIndex, int PageSize, String SortExpression)
+        {
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_SearchUsersForPopup");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
+                    database.AddInParameter(command, "@Status", DbType.String, Status);                    
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, PageIndex);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, PageSize);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, SortExpression);
+                    
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
     }
 }
