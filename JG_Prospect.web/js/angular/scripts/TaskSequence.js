@@ -60,12 +60,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         }, 1);
     };
 
-    $scope.onAssignEnd = function (dropdown) {
-        $timeout(function () {
-            console.log(dropdown);
-        }, 1);
-    };
-
+   
     $scope.getTasks = function (page) {
        // console.log("Staff Task called....");
         $scope.loading = true;
@@ -120,7 +115,6 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.getAssignUsers = function () {
 
         getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds.join() }).then(function (data) {
-
 
             var AssignedUsers = JSON.parse(data.data.d);
 
@@ -333,13 +327,13 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         return returnVal;
     };
 
-    initializeOnAjaxUpdate($scope, $compile, $http, $timeout);
+    initializeOnAjaxUpdate($scope, $compile, $http, $timeout, $filter);
 
     sequenceScope = $scope;
 
 }
 
-function initializeOnAjaxUpdate(scope, compile, http, timeout) {
+function initializeOnAjaxUpdate(scope, compile, http, timeout,filter) {
 
 
     Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
@@ -347,7 +341,7 @@ function initializeOnAjaxUpdate(scope, compile, http, timeout) {
         compile(elem.children())(scope);
         scope.$apply();
 
-        applyFunctions(scope, compile, http, timeout);
+        applyFunctions(scope, compile, http, timeout,filter);
     });
 
     //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function (sender, args) {
@@ -379,7 +373,3 @@ app.controller('AddNewTaskSequenceController', function PostsController($scope, 
     };
 
 });
-
-angular.isUndefinedOrNull = function (val) {
-    return angular.isUndefined(val) || val === null;
-}

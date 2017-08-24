@@ -1375,14 +1375,17 @@ namespace JG_Prospect.WebServices
 
 
         [WebMethod(EnableSession = true)]
-        public string GetEditSalesPopupUsers(String UserIds, String Status, int DesignationId, int PageIndex, int PageSize, String SortExpression)
+        public string GetEditSalesPopupUsersWithPaging(int PageIndex, int PageSize, String UserIds, String Status, int DesignationId,  String SortExpression)
         {
             string strMessage = string.Empty;
             DataSet dtResult = InstallUserBLL.Instance.GetPopupEditUsers(UserIds, Status, DesignationId, PageIndex, PageSize, SortExpression);
 
-            if (dtResult != null)
+            if (dtResult != null && dtResult.Tables.Count > 0 )
             {
-                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                
+                dtResult.Tables[0].TableName = "EditSalesUsers";
+
+                strMessage = JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented);
             }
             else
             {
@@ -1393,7 +1396,25 @@ namespace JG_Prospect.WebServices
             
         }
 
-        
+        [WebMethod(EnableSession = true)]
+        public string GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
+        {
+
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetInterviewDateSequences(DesignationId, UserCount);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.Tables[0].TableName = "Sequences";
+                strMessage = JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+
+            return strMessage;
+        }
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());

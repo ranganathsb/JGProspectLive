@@ -115,6 +115,7 @@
 <!--nav section-->
 <div class="nav">
     <ul>
+        <li>Toggle Menu</li>
         <li><a href="home.aspx">Home</a></li>
         <li><a href="new_customer.aspx">Add Customer</a></li>
         <%-- <li><a href="view_customer.aspx">Review / Edit Customer Estimate</a></li>--%>

@@ -27,7 +27,8 @@ namespace JG_Prospect.DAL
 
         private DataSet returndata;
 
-        public DataSet GetAllTaskWithSequence(Int32 page, Int32 pageSize,String DesignationIds , bool IsTechTask, Int64 HighlightedTaskID)
+        #region "-- Sequence Related --"
+        public DataSet GetAllTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, Int64 HighlightedTaskID)
         {
             try
             {
@@ -38,10 +39,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
                     database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
                     database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
-                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit,IsTechTask);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
                     database.AddInParameter(command, "@HighLightedTaskID", SqlDbType.BigInt, HighlightedTaskID);
-                    
-                   command.CommandType = CommandType.StoredProcedure;
+
+                    command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
 
@@ -64,10 +65,10 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_GetLastAssignedDesigSequencnce");
-                    
+
                     database.AddInParameter(command, "@DesignationId", SqlDbType.Int, DesignationId);
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
-                    
+
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
@@ -148,8 +149,8 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_UpdateUserAssignedSeqAcceptance");
 
-                    database.AddInParameter(command, "@AssignedSeqID", SqlDbType.BigInt,SequenceId);
-                    
+                    database.AddInParameter(command, "@AssignedSeqID", SqlDbType.BigInt, SequenceId);
+
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.ExecuteNonQuery(command);
@@ -166,7 +167,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId , Int64 FirstTaskId, Int64 SecondTaskId)
+        public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
         {
             try
             {
@@ -204,7 +205,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("usp_DeleteTaskSequenceByTaskId");
 
                     database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);
-                    
+
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.ExecuteNonQuery(command);
@@ -221,7 +222,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask,Int64 AssignedSequence, Int64 TaskId,Int32 UserId)
+        public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask, Int64 AssignedSequence, Int64 TaskId, Int32 UserId)
         {
             try
             {
@@ -238,7 +239,7 @@ namespace JG_Prospect.DAL
 
                     Int32 result = database.ExecuteNonQuery(command);
 
-                    return result>0?true:false;
+                    return result > 0 ? true : false;
 
                 }
             }
@@ -249,7 +250,7 @@ namespace JG_Prospect.DAL
             }
 
         }
-        
+
         public DataSet GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             try
@@ -276,7 +277,8 @@ namespace JG_Prospect.DAL
             }
 
         }
-        public int UpdateTaskSequence(Int64 Sequence , Int64 TaskID, Int32 DesignationID, bool IsTechTask)
+
+        public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
         {
             try
             {
@@ -287,10 +289,10 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@Sequence", DbType.Int64, Sequence);
-                    database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationID);                    
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, DesignationID);
                     database.AddInParameter(command, "@TaskId", DbType.Int64, TaskID);
                     database.AddInParameter(command, "@IsTechTask", DbType.Boolean, IsTechTask);
-                    
+
                     int result = database.ExecuteNonQuery(command);
 
                     return result;
@@ -304,6 +306,37 @@ namespace JG_Prospect.DAL
             }
 
         }
+
+        public DataSet GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
+        {
+            
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAssignedDesigSequenceForInterviewDatePopup");
+
+                    database.AddInParameter(command, "@DesignationId", SqlDbType.Int, DesignationId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, true);
+                    database.AddInParameter(command, "@UserCount", SqlDbType.Int,UserCount);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        #endregion
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             try

@@ -28,6 +28,7 @@ namespace JG_Prospect.BLL
             set {; }
         }
 
+        #region "-- Task Sequences --"
         public DataSet GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             return TaskGeneratorDAL.Instance.GetLatestTaskSequence(DesignationId, IsTechTask);
@@ -45,6 +46,13 @@ namespace JG_Prospect.BLL
 
         }
 
+        public DataSet GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
+        {
+            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId,UserCount);
+
+        }
+
+        #endregion
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);

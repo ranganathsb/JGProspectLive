@@ -652,7 +652,7 @@
                                                     <asp:ListView ID="listAddedBy" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "" )? "No Name" : Eval("AddedBy")%></span></td>
+                                                                <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "") ? "No Name" : Eval("AddedBy")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -664,7 +664,7 @@
                                                     <asp:ListView ID="listDesignation" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("Designation") == null || Eval("Designation") == "" )? "No Designation" : Eval("Designation")%></span></td>
+                                                                <td><span><%#(Eval("Designation") == null || Eval("Designation") == "") ? "No Designation" : Eval("Designation")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -676,7 +676,7 @@
                                                     <asp:ListView ID="listSource" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("Source") == null || Eval("Source") == "" )? "No Name" : Eval("Source")%></span></td>
+                                                                <td><span><%#(Eval("Source") == null || Eval("Source") == "") ? "No Name" : Eval("Source")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -932,10 +932,11 @@
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
                                         <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
-                                        <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 2px; right: 30px;" />
+                                        <%--<asp:CheckBox ID="chkSelected" AutoPostBack="true" data-userid='<%#Eval("Id")%>' OnCheckedChanged="chkSelected_CheckedChanged" runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />--%>
+                                        <asp:CheckBox ID="chkSelected" AutoPostBack="false" data-userid='<%#Eval("Id")%>' data-designationid='<%#Eval("DesignationID")%>' runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
-                                        <a href='<%# String.Concat("ViewSalesUser.aspx?ID=",Eval("Id")) %>'>
+                                        <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
                                             <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
@@ -1017,10 +1018,10 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="7%" ItemStyle-Width="7%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
-                                        <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
+                                        <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
                                         <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
                                         <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" onchange="javascript:GridstatusChanged(event,this);" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
@@ -1033,23 +1034,23 @@
                                         <asp:Label ID="hdnlblUserDesiID" runat="server" CssClass="OffferMadeUserDesignID hide" Text='<%#Eval("DesignationID")%>'></asp:Label>
 
                                         <br />
-                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "": Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>
-                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Eval("RejectDetail").ToString() == "" ? "": Eval("RejectDetail").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "" : Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Eval("RejectDetail").ToString() == "" ? "" : Eval("RejectDetail").ToString() + "{0}", "<br />") %>'></asp:Literal>
                                         <span><%#Eval("RejectedByUserName")%></span>
-                                        <asp:HyperLink runat="server" Visible='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))? false:true%>' NavigateUrl='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("RejectedUserId")%>'
-                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))?"":"- "+ Eval("RejectedByUserInstallId")%>'></asp:HyperLink>
+                                        <asp:HyperLink runat="server" Visible='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? false : true%>' NavigateUrl='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("RejectedUserId")%>'
+                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? "" : "- " + Eval("RejectedByUserInstallId")%>'></asp:HyperLink>
                                         <br />
-                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : "(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                         <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="6%" ItemStyle-Width="6%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="4%" ItemStyle-Width="4%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                         <br />
                                         <span><%#Eval("AddedBy")%></span>
-                                        <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"- "+ Eval("AddedByUserInstallId")%></a>
+                                        <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString())) ? "" : "- " + Eval("AddedByUserInstallId")%></a>
                                         <%--<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"-"+ Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
                                             CommandArgument='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString()))?"":Eval("AddedById")%>' Enabled='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?false:true%>'></asp:LinkButton>--%>
                                         <br />
@@ -1060,7 +1061,7 @@
                                     <ItemTemplate>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="17%" ItemStyle-Width="17%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="10%" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%--<label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
                                         <ul class="contactGrid">
@@ -1118,13 +1119,13 @@
                                         </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="7%" ItemStyle-Width="7%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
                                         <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
-                                        <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
+                                        <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
 
                                         <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
@@ -1144,14 +1145,28 @@
                                             <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
                                         </asp:DropDownList><br />
                                         <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
-                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
+                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
 
                                         <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Notes<br/><table class='userNotes' cellspacing='0'><tbody><tr><th>User Id</th><th>Date & Time</th><th>Note/Status</th></tr></table>" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
                                     ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
+                                    <HeaderTemplate>
+                                        Notes
+                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr class="trHeader " style="color: White;">
+                                                    <th scope="col" style="width: 19%;">User ID</th>
+
+                                                    <th scope="col" style="width: 25%;">Date&Time</th>
+                                                    <th scope="col" style="width: 56%;">Note/Status</th>
+
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </HeaderTemplate>
                                     <ItemTemplate>
                                         <%--<div class="GrdContainer">
                                             <div class="GrdHeader">
@@ -1161,12 +1176,32 @@
                                                 
                                             </div>
                                         </div>--%>
-                                        <asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>
-                                        <div style="background-color: #FFE9C8; padding: 2px 0px;">
-                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" Width="30%" CommandName="AddNotes"
+                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
+                                        <div style="max-height:200px; overflow:auto;">
+                                        <asp:Repeater ID="rptNotes" runat="server">
+                                            <HeaderTemplate>
+                                                <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size:11px;">
+                                                    <tbody>
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
+                                                    <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
+                                                    <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
+                                                    <td style="width: 55%;"><%#Eval("LogDescription")%></td>
+                                                </tr>
+                                            </ItemTemplate>
+                                            <FooterTemplate>
+                                                </tbody>
+                                                </table>
+                                            </FooterTemplate>
+                                        </asp:Repeater>
+                                            </div>
+                                        <div style="text-align:left;">
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3" 
+                                                Style="vertical-align: middle; padding: 0px!important; width:100%" CssClass="textbox"></asp:TextBox><br />
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Columns="10" Width="62%" BackColor="#FFFCD9"
-                                                Style="vertical-align: middle; padding: 0px!important;"></asp:TextBox>
+
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -1226,7 +1261,8 @@
                                     OnClick="lbtnDeleteSelected_Click" />
                                 <br />
                                 <br />
-                                <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
+                                <%--<asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />--%>
+                                <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClientClick="javascript:ChangeStatusForSelected();" />
                             </td>
                         </tr>
                     </table>
@@ -1757,10 +1793,144 @@
             </asp:UpdatePanel>
         </div>
     </div>
-    <%--Popup Ends--%>
+    <div id="divEditUserNG" data-ng-controller="EditUserController">
 
+        <div id="EditUsersModal" class="modal hide">
+
+            <table class="scroll" cellspacing="0" rules="all" border="1" id="tblEditUserPopup" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="width: 10%; text-align: center;">Action
+                            <br>
+                            Picture</th>
+                        <th style="width: 16%; text-align: center;"><a href="javascript:void(0);">Staff ID#
+                            <br>
+                            Designation<br>
+                            F&amp;LName
+                          
+                        </a></th>
+                        <th style="width: 16%; text-align: center;">
+                            <a href="javascript:void(0);">Interview Status
+                            <br>
+                                Interview Date&Time
+                                <br>
+                                TaskID# - Sub ID#
+                            </a>
+                        </th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Source<br>
+                            Added By<br>
+                            Added On</a></th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Country-Zip-City<br>
+                            Type-Apptitude Test %<br>
+                            Resume Attachment</a></th>
+                        <th style="width: 17%; text-align: left;"><a href="javascript:void(0);">Email<br>
+                            Phone Type - Phone</a></th>
+                        <th style="width: 17%; text-align: center;">Notes<br>
+                            <table class="userNotes" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <th>User Id</th>
+                                        <th>Date &amp; Time</th>
+                                        <th>Note/Status</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="EditSalesUser in EditSalesUsers" ng-class="{rejectedUser: EditSalesUser.Status == '9'}" repeat-end="onEditUserBindEnd()">
+                        <td style="width: 10%; text-align: center;">
+
+                            <a href="ViewSalesUser.aspx?ID=3646">
+                                <img id="ContentPlaceHolder1_grdUsers_imgprofile_0" ng-src="{{EditSalesUser.picture}}" style="width: 100%; height: 85%;"></a>
+
+                        </td>
+                        <td style="width: 16%; text-align: center;">
+
+                            <a class="bluetext" ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">{{EditSalesUser.UserInstallId}}</a>
+                            <br>
+                            <label>{{EditSalesUser.Designation}}</label>
+                            <br />
+                            <label class="blacktext">{{EditSalesUser.FristName}} {{EditSalesUser.LastName}}</label>
+                        </td>
+                        <td style="width: 16%; text-align: center;" class="SeqAssignment">
+                            <a href="javascript:void(0);" class="badge-hyperlink"><span class="badge badge-success badge-xstext">
+                                <label class="seqLable"></label>
+                            </span></a><a class="seqTaskURL" href=""></a>
+
+                        </td>
+                        <td style="width: 10%; text-align: center;">
+
+                            <span>{{EditSalesUser.Source}}</span>
+                            <br>
+                            <span>{{EditSalesUser.AddedBy}}</span>
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.AddedById}}">- {{EditSalesUser.AddedByUserInstallId}}</a>
+                            <br>
+                            <span>{{EditSalesUser.CreatedDateTime | date:'M/d/yyyy'}}</span>&nbsp;<span ng-class="redtext">{{EditSalesUser.CreatedDateTime | date:'h:mma'}}</span>&nbsp;<span>(EST)</span>
+                        </td>
+                        <td style="width: 10%; text-align: center;">
+
+                            <div ng-attr-title='{{EditSalesUser.Country}}' style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 22px; width: 24px; margin-top: -5px;" class="us">
+                            </div>
+                            <span>- {{EditSalesUser.Zip}}</span>
+                            <span>{{EditSalesUser.City}}</span>
+                            <br />
+
+                            <any ng-switch="EditSalesUser.EmpType">
+                    <ANY ng-switch-when="1">Temp</ANY>
+                    <ANY ng-switch-when="2">Internship</ANY>
+                    <ANY ng-switch-when="3">Part Time - Remote</ANY>
+                    <ANY ng-switch-when="4">Part Time - Onsite</ANY>
+                    <ANY ng-switch-when="5">Full Time - Remote</ANY>
+                    <ANY ng-switch-when="6">Full Time - Onsite</ANY>
+                    <ANY ng-switch-when="7">Full Time Hourly</ANY>
+                    <ANY ng-switch-when="8">Full Time Salary</ANY>
+                    <ANY ng-switch-when="9">Part Time</ANY>
+                    <ANY ng-switch-when="10">Sub</ANY>                  
+                    
+                </any>
+
+                            <span ng-class="{'redtext': EditSalesUser.Aggregate < 33, 'greentext': EditSalesUser.Aggregate > 33, 'hide': EditSalesUser.Aggregate == null}">{{EditSalesUser.Aggregate | number:2}}%</span>
+                            <br>
+                            <a ng-class="hide" ng-href="http://jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
+
+                        </td>
+                        <td style="width: 17%; text-align: left;">
+
+                            <ul class="contactGrid">
+                                <li>{{EditSalesUser.Email}}
+                                </li>
+                                <li>{{EditSalesUser.Phone}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="noMargin" style="width: 21%; text-align: center;"></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+            <div ng-show="loader.loading" style="position: absolute; top: 50%; left: 50%;">
+                Loading...
+                <img src="../img/ajax-loader.gif" />
+            </div>
+
+            <%--   <div class="text-center">
+                <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getEditUsers(page)"></jgpager>
+            </div>--%>
+        </div>
+
+    </div>
+    <%--Popup Ends--%>
+    <script src="../Scripts/angular.min.js"></script>
+    <script src="../js/angular/scripts/jgapp.js"></script>
+    <script src="../js/angular/scripts/edituser-angular.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
+    <script src="../js/edituser.js"></script>
     <script type="text/javascript">
+
+        var UserGridId = "#<%=grdUsers.ClientID%>";
 
         Dropzone.autoDiscover = false;
 

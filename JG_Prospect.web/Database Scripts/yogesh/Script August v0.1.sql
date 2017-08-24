@@ -995,7 +995,15 @@ AS
 BEGIN     
 
 SET NOCOUNT ON;    
-    
+   
+  IF (@DesignationId = 0)
+     BEGIN
+	 SET @DesignationId = NULL
+	 END  
+ IF (@Status = '')
+     BEGIN
+	 SET @Status = NULL
+	 END  
      
  DECLARE @StartIndex INT  = 0    
  SET @StartIndex = (@PageIndex * @PageSize) + 1    
@@ -1097,3 +1105,41 @@ TechTaskInstallId, [StatusReason], City
 
 END
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_GetAssignedDesigSequenceForInterviewDatePopup]   
+
+	END  
+GO 
+
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 08232017      
+-- Description: This will fetch tentative sequence to be assigned to users.      
+-- =============================================      
+-- [dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup] 9,1,3
+      
+CREATE PROCEDURE [dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup]       
+( 
+ @DesignationId INT,      
+ @IsTechTask BIT,    
+ @UserCount  INT      
+)      
+AS      
+BEGIN      
+    
+SELECT  TOP (@UserCount) ISNULL([Sequence],1) AS SequenceNo, TaskId, dbo.udf_GetParentTaskId(TaskId) AS ParentTaskId,dbo.udf_GetCombineInstallId(TaskId) AS InstallId FROM tblTask       
+WHERE (AdminUserId IS NOT NULL AND TechLeadUserId IS NOT NULL ) AND [SequenceDesignationId] = @DesignationID AND IsTechTask = @IsTechTask AND [Sequence] IS NOT NULL AND [Sequence] > (         
+      
+  SELECT       ISNULL(MAX(AssignedDesigSeq),0) AS LastAssignedSequence      
+   FROM            tblAssignedSequencing      
+  WHERE        (DesignationId = @DesignationId) AND (IsTechTask = @IsTechTask)      
+      
+)       
+ORDER BY [Sequence] ASC      
+
+      
+END

@@ -518,29 +518,72 @@ function DeleteTaskSequence(deleteLink) {
 function SetChosenAssignedUser() {    
     $('*[data-chosen="1"]').each(function (index) {
         
-        //var dropdown = $(this);
+        var dropdown = $(this);
 
-        //var assignedUsers = dropdown.attr("data-AssignedUsers");
-
-        //console.log(assignedUsers);
-
-        //if (assignedUsers) {
-        //    dropdown.val([e]);
-
-        //    // Set the value
-        //    $.each(assignedUsers.split(","), function (i, e) {
-        //        console.log("Assigned Users ..."+e);
-        //        //console.log(dropdown.children().find("OPTION[value=\"" + e + "\"]"));
-        //        //dropdown.children().find("OPTION[vsalue=\"" + e + "\"]").prop("selected", true);
-        //    });
-
-        //   // console.log(dropdown.val());
-        //}
-
-        // Then refresh
-
-        //  $(this).multiselect("refresh");
+        if (dropdown.attr("data-AssignedUsers")) {
+            var assignedUsers = JSON.parse("[" + dropdown.attr("data-AssignedUsers") + "]");
+            $.each(assignedUsers, function (Index, Item) {
+                dropdown.find("option[value='" + Item.Id + "']").prop("selected", true);
+            });
+        }        
 
         $(this).chosen();
     });
+}
+
+function EditSeqAssignedTaskUsers(sender) {
+  
+    var $sender = $(sender);
+    var intTaskID = parseInt($sender.attr('data-taskid'));
+    var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
+    var arrAssignedUsers = [];
+    var arrDesignationUsers = [];
+    var options = $sender.find('option');
+
+    $.each(options, function (index, item) {
+
+        var intUserId = parseInt($(item).attr('value'));
+
+        if (intUserId > 0) {
+            arrDesignationUsers.push(intUserId);
+            //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
+            //    arrAssignedUsers.push(intUserId);
+            //}
+            if ($(sender).val() == intUserId.toString()) {
+                arrAssignedUsers.push(intUserId);
+            }
+        }
+    });
+
+    SaveAssignedTaskUsers();
+
+    
+    function SaveAssignedTaskUsers() {
+        ShowAjaxLoader();
+
+        var postData = {
+            intTaskId: intTaskID,
+            intTaskStatus: intTaskStatus,
+            arrAssignedUsers: arrAssignedUsers,
+            arrDesignationUsers: arrDesignationUsers
+        };
+
+        CallJGWebService('SaveAssignedTaskUsers', postData, OnSaveAssignedTaskUsersSuccess, OnSaveAssignedTaskUsersError);
+
+        function OnSaveAssignedTaskUsersSuccess(response) {
+            HideAjaxLoader();
+            if (response) {
+                HideAjaxLoader();
+            }
+            else {
+                OnSaveAssignedTaskUsersError();
+            }
+        }
+
+        function OnSaveAssignedTaskUsersError(err) {
+            HideAjaxLoader();
+            //alert(JSON.stringify(err));
+            alert('Task assignment cannot be updated. Please try again.');
+        }
+    }
 }

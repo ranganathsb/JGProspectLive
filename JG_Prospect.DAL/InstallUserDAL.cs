@@ -2946,8 +2946,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_SearchUsersForPopup");
 
-                    command.CommandType = CommandType.StoredProcedure;
-                    returndata = database.ExecuteDataSet(command);
+                    command.CommandType = CommandType.StoredProcedure;                    
 
                     database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
                     database.AddInParameter(command, "@Status", DbType.String, Status);                    
@@ -2955,7 +2954,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageSize);
                     database.AddInParameter(command, "@SortExpression", DbType.String, SortExpression);
-                    
+
+                    returndata = database.ExecuteDataSet(command);
+
                     return returndata;
                 }
             }

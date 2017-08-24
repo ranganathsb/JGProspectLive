@@ -160,7 +160,7 @@ namespace JG_Prospect
                 btnExport.Visible = false;
             }
 
-            if (JGSession.Designation.ToUpper() == "RECRUITER" || JGSession.Designation.ToUpper() == "ADMIN")
+            if (JGSession.Designation.ToUpper() == "RECRUITER" || JGSession.Designation.ToUpper() == "ADMIN" || JGSession.Designation.ToUpper() == "ITLEAD")
             {
                 lbtnChangeStatusForSelected.Visible =
                 lbtnDeleteSelected.Visible = true;
@@ -519,32 +519,44 @@ namespace JG_Prospect
 
                     #region BindUserNotes
 
-                    var userNotes = (from notes in dtUserNotes.AsEnumerable()
-                                    where notes.Field<int>("UserID") == id
-                                    select notes).Take(1);
-
-                    PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
-                    Label lblNotes = new Label();
-
-                    i = 0;
-                    foreach (DataRow RowItem in userNotes)
+                    if (dtUserNotes != null && dtUserNotes.Rows.Count > 0)
                     {
-                        try
-                        {
-                            if (i == 0)
-                            { lblNotes.Text += "<table class='userNotes' cellspacing='0'><tbody>"; }
+                        var userNotes = (from notes in dtUserNotes.AsEnumerable()
+                                               where notes.Field<int>("UserID") == id
+                                               select notes).Take(1);
 
-                            lblNotes.Text += "<tr><td><a href='CreateSalesUser.aspx?id="+ RowItem["UpdatedByUserID"].ToString() + "' style='color:Blue;'>" + RowItem["UpdatedUserInstallID"].ToString() + "</a></td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
-                                RowItem["LogDescription"].ToString() + "</td></tr>";
-                        }
-                        catch { }
-                        finally { i++; }
+                        if (userNotes != null && userNotes.Any())
+                        {
+                            Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
+
+                            rptNotes.DataSource = userNotes.CopyToDataTable();
+                            rptNotes.DataBind();
+                        } 
                     }
 
-                    if (i > 0)
-                        lblNotes.Text += "</tbody></table>";
+                    // Removed by yogesh keraliya : High performance code replaced.
+                    //PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
+                    //Label lblNotes = new Label();
 
-                    placeHolder.Controls.Add(lblNotes);
+                    //i = 0;
+                    //foreach (DataRow RowItem in userNotes)
+                    //{
+                    //    try
+                    //    {
+                    //        if (i == 0)
+                    //        { lblNotes.Text += "<table class='gridtbl' cellspacing='0'><tbody>"; }
+
+                    //        lblNotes.Text += "<tr><td><a href='CreateSalesUser.aspx?id="+ RowItem["UpdatedByUserID"].ToString() + "' style='color:Blue;'>" + RowItem["UpdatedUserInstallID"].ToString() + "</a></td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
+                    //            RowItem["LogDescription"].ToString() + "</td></tr>";
+                    //    }
+                    //    catch { }
+                    //    finally { i++; }
+                    //}
+
+                    //if (i > 0)
+                    //    lblNotes.Text += "</tbody></table>";
+
+                    //placeHolder.Controls.Add(lblNotes);
                     #endregion
 
 
@@ -589,7 +601,7 @@ namespace JG_Prospect
 
                         if (statusitem != null)
                         {
-                            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(statusitem); 
+                            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(statusitem);
                         }
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
@@ -1396,7 +1408,7 @@ namespace JG_Prospect
 
         protected void btnSaveOfferMade_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         protected void btnSendEmailToUser_Click(object sender, EventArgs e)
