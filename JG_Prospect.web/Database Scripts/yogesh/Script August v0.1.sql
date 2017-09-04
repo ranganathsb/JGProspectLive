@@ -1,319 +1,4 @@
-﻿/*
-   Wednesday, August 9, 20179:05:07 PM
-   User: jgrovesa
-   Server: jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com,1433
-   Database: JGBS_Dev_New
-   Application: 
-*/
-
-/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
-BEGIN TRANSACTION
-SET QUOTED_IDENTIFIER ON
-SET ARITHABORT ON
-SET NUMERIC_ROUNDABORT OFF
-SET CONCAT_NULL_YIELDS_NULL ON
-SET ANSI_NULLS ON
-SET ANSI_PADDING ON
-SET ANSI_WARNINGS ON
-COMMIT
-BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTask
-	DROP CONSTRAINT DF__tblTask__IsUiReq__5319221E
-GO
-ALTER TABLE dbo.tblTask
-	DROP CONSTRAINT DF__tblTask__TaskLev__4C364F0E
-GO
-ALTER TABLE dbo.tblTask
-	DROP CONSTRAINT DF_tblTask_UpdatedOn
-GO
-CREATE TABLE dbo.Tmp_tblTask_1
-	(
-	TaskId bigint NOT NULL IDENTITY (1, 1),
-	Title varchar(250) NOT NULL,
-	Description varchar(MAX) NOT NULL,
-	Status tinyint NOT NULL,
-	DueDate datetime NULL,
-	Hours varchar(25) NULL,
-	CreatedBy int NOT NULL,
-	CreatedOn datetime NOT NULL,
-	IsDeleted bit NOT NULL,
-	InstallId varchar(50) NULL,
-	ParentTaskId bigint NULL,
-	TaskType tinyint NULL,
-	TaskPriority tinyint NULL,
-	IsTechTask bit NULL,
-	AdminStatus bit NULL,
-	TechLeadStatus bit NULL,
-	OtherUserStatus bit NULL,
-	AdminStatusUpdated datetime NULL,
-	TechLeadStatusUpdated datetime NULL,
-	OtherUserStatusUpdated datetime NULL,
-	AdminUserId int NULL,
-	TechLeadUserId int NULL,
-	OtherUserId int NULL,
-	IsAdminInstallUser bit NULL,
-	IsTechLeadInstallUser bit NULL,
-	IsOtherUserInstallUser bit NULL,
-	Url varchar(250) NULL,
-	IsUiRequested bit NULL,
-	TaskLevel int NULL,
-	MainParentId int NULL,
-	Sequence bigint NULL,
-	SubSequence varchar(5) NULL,
-	SequenceDesignationId int NULL,
-	UpdatedBy int NULL,
-	UpdatedOn datetime NULL
-	)  ON [PRIMARY]
-	 TEXTIMAGE_ON [PRIMARY]
-GO
-ALTER TABLE dbo.Tmp_tblTask_1 SET (LOCK_ESCALATION = TABLE)
-GO
-ALTER TABLE dbo.Tmp_tblTask_1 ADD CONSTRAINT
-	DF__tblTask__IsUiReq__5319221E DEFAULT ((0)) FOR IsUiRequested
-GO
-ALTER TABLE dbo.Tmp_tblTask_1 ADD CONSTRAINT
-	DF__tblTask__TaskLev__4C364F0E DEFAULT ((1)) FOR TaskLevel
-GO
-ALTER TABLE dbo.Tmp_tblTask_1 ADD CONSTRAINT
-	DF_tblTask_UpdatedOn DEFAULT (getdate()) FOR UpdatedOn
-GO
-SET IDENTITY_INSERT dbo.Tmp_tblTask_1 ON
-GO
-IF EXISTS(SELECT * FROM dbo.tblTask)
-	 EXEC('INSERT INTO dbo.Tmp_tblTask_1 (TaskId, Title, Description, Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested, TaskLevel, MainParentId, Sequence, SequenceDesignationId, UpdatedBy, UpdatedOn)
-		SELECT TaskId, Title, Description, Status, DueDate, Hours, CreatedBy, CreatedOn, IsDeleted, InstallId, ParentTaskId, TaskType, TaskPriority, IsTechTask, AdminStatus, TechLeadStatus, OtherUserStatus, AdminStatusUpdated, TechLeadStatusUpdated, OtherUserStatusUpdated, AdminUserId, TechLeadUserId, OtherUserId, IsAdminInstallUser, IsTechLeadInstallUser, IsOtherUserInstallUser, Url, IsUiRequested, TaskLevel, MainParentId, Sequence, SequenceDesignationId, UpdatedBy, UpdatedOn FROM dbo.tblTask WITH (HOLDLOCK TABLOCKX)')
-GO
-SET IDENTITY_INSERT dbo.Tmp_tblTask_1 OFF
-GO
-ALTER TABLE dbo.tblTaskComments
-	DROP CONSTRAINT FK__tblTaskCo__TaskI__168449D3
-GO
-ALTER TABLE dbo.tblAssignedSequencingTemp
-	DROP CONSTRAINT FK_tblAssignedSequencingTemp_tblTask
-GO
-ALTER TABLE dbo.tblTaskAcceptance
-	DROP CONSTRAINT FK__tblTaskAc__TaskI__46E85563
-GO
-ALTER TABLE dbo.tblAssignedSequencing
-	DROP CONSTRAINT FK_tblAssignedSequencing_tblTask
-GO
-ALTER TABLE dbo.tblTaskAcceptance
-	DROP CONSTRAINT FK__tblTaskAc__TaskI__61A66D40
-GO
-ALTER TABLE dbo.tblTaskApprovals
-	DROP CONSTRAINT FK__tblTaskAp__TaskI__1427CB6C
-GO
-ALTER TABLE dbo.tblTaskApprovals
-	DROP CONSTRAINT FK__tblTaskAp__TaskI__31C24FF4
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers
-	DROP CONSTRAINT FK_tblTaskAssignedUsers_tblTask
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests
-	DROP CONSTRAINT FK_tblTaskAssignmentRequests_tblTask
-GO
-ALTER TABLE dbo.tblTaskDesignations
-	DROP CONSTRAINT FK_tblTaskDesignations_tblTask
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications
-	DROP CONSTRAINT FK__tblTaskWo__TaskI__1BFDF75E
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications
-	DROP CONSTRAINT FK__tblTaskWo__TaskI__4CAB505A
-GO
-DROP TABLE dbo.tblTask
-GO
-EXECUTE sp_rename N'dbo.Tmp_tblTask_1', N'tblTask', 'OBJECT' 
-GO
-ALTER TABLE dbo.tblTask ADD CONSTRAINT
-	PK_tblTask PRIMARY KEY CLUSTERED 
-	(
-	TaskId
-	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTask', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications ADD CONSTRAINT
-	FK__tblTaskWo__TaskI__1BFDF75E FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications ADD CONSTRAINT
-	FK__tblTaskWo__TaskI__4CAB505A FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskWorkSpecifications SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskWorkSpecifications', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskWorkSpecifications', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskWorkSpecifications', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskDesignations ADD CONSTRAINT
-	FK_tblTaskDesignations_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskDesignations SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskDesignations', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskDesignations', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskDesignations', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests ADD CONSTRAINT
-	FK_tblTaskAssignmentRequests_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskAssignmentRequests SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskAssignmentRequests', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskAssignmentRequests', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskAssignmentRequests', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers ADD CONSTRAINT
-	FK_tblTaskAssignedUsers_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskAssignedUsers SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskAssignedUsers', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskAssignedUsers', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskAssignedUsers', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskApprovals ADD CONSTRAINT
-	FK__tblTaskAp__TaskI__1427CB6C FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskApprovals ADD CONSTRAINT
-	FK__tblTaskAp__TaskI__31C24FF4 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskApprovals SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskApprovals', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskApprovals', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskApprovals', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblAssignedSequencing ADD CONSTRAINT
-	FK_tblAssignedSequencing_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblAssignedSequencing SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblAssignedSequencing', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblAssignedSequencing', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblAssignedSequencing', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskAcceptance ADD CONSTRAINT
-	FK__tblTaskAc__TaskI__46E85563 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskAcceptance ADD CONSTRAINT
-	FK__tblTaskAc__TaskI__61A66D40 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskAcceptance SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskAcceptance', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskAcceptance', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskAcceptance', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblAssignedSequencingTemp ADD CONSTRAINT
-	FK_tblAssignedSequencingTemp_tblTask FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblAssignedSequencingTemp SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblAssignedSequencingTemp', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblAssignedSequencingTemp', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblAssignedSequencingTemp', 'Object', 'CONTROL') as Contr_Per BEGIN TRANSACTION
-GO
-ALTER TABLE dbo.tblTaskComments ADD CONSTRAINT
-	FK__tblTaskCo__TaskI__168449D3 FOREIGN KEY
-	(
-	TaskId
-	) REFERENCES dbo.tblTask
-	(
-	TaskId
-	) ON UPDATE  NO ACTION 
-	 ON DELETE  NO ACTION 
-	
-GO
-ALTER TABLE dbo.tblTaskComments SET (LOCK_ESCALATION = TABLE)
-GO
-COMMIT
-select Has_Perms_By_Name(N'dbo.tblTaskComments', 'Object', 'ALTER') as ALT_Per, Has_Perms_By_Name(N'dbo.tblTaskComments', 'Object', 'VIEW DEFINITION') as View_def_Per, Has_Perms_By_Name(N'dbo.tblTaskComments', 'Object', 'CONTROL') as Contr_Per 
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+﻿-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
 -- =============================================                      
 -- Author:  Yogesh Keraliya                      
@@ -676,6 +361,15 @@ FROM
 			WHERE u.Id = Tasks.OtherUserId AND Tasks.IsOtherUserInstallUser = 0
 		) AS OtherUser
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[sp_GetHrData]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [sp_GetHrData]   
+
+	END  
+GO    
 
  
 -- [sp_GetHrData] NULL,'0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'  
@@ -934,3 +628,797 @@ ORDER BY CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,
  where isnull(UserId,0)>0 and LogDescription like 'Note :%'  
  order by ChangeDateTime desc  
 END
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[SP_InsertPerfomace]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [SP_InsertPerfomace]   
+
+	END  
+GO    
+    
+-- =============================================      
+-- Author: Yogesh Keraliya      
+-- Create date: 05262017      
+-- Description: Update users exam performance.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[SP_InsertPerfomace]       
+ (
+ -- Add the parameters for the stored procedure here      
+ @installUserID varchar(20),       
+ @examID int = 0      
+ ,@marksEarned int
+)
+AS      
+BEGIN      
+ -- SET NOCOUNT ON added to prevent extra result sets from      
+ -- interfering with SELECT statements.      
+ SET NOCOUNT ON;      
+    
+ DECLARE @totalMarks INT      
+ DECLARE @Aggregate REAL      
+ DECLARE @PassPercentage REAL    
+        
+ DECLARE @ExamPerformanceStatus INT      
+
+ -- Get total marks for exam.
+ SELECT @totalMarks = SUM(PositiveMarks) FROM MCQ_Question WHERE ExamID = @examID    
+ 
+ -- User obtained percentage.
+ SET @Aggregate =  (@marksEarned/@totalMarks) * 100
+ 
+ -- Get total pass percentage for exam.    
+ SELECT @PassPercentage = [PassPercentage] FROM MCQ_Exam WHERE [ExamID] = @examID    
+ 
+
+ -- Add user pass and fail result.    
+ IF(@PassPercentage < @Aggregate)    
+	 BEGIN    
+    
+	 SET @ExamPerformanceStatus = 1    
+    
+	 END    
+ ELSE    
+	 BEGIN    
+     
+	  SET @ExamPerformanceStatus = 0    
+    
+	 END    
+   
+     
+    -- Insert user exam result
+ INSERT INTO [MCQ_Performance]      
+           ([UserID]      
+           ,[ExamID]      
+           ,[MarksEarned]      
+           ,[TotalMarks]      
+           ,[Aggregate]      
+     ,[ExamPerformanceStatus]                 
+     )      
+     VALUES      
+           (@installUserID      
+           ,@examID      
+           ,@marksEarned      
+           ,@totalMarks      
+           ,@Aggregate      
+          ,@ExamPerformanceStatus      
+           )      
+END      
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_isAllExamsGivenByUser]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_isAllExamsGivenByUser]   
+
+	END  
+GO    
+
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 05302017      
+-- Description: This will load exam result for user based on his designation      
+-- =============================================      
+-- usp_isAllExamsGivenByUser 3555      
+CREATE PROCEDURE [dbo].[usp_isAllExamsGivenByUser]       
+(      
+ @UserID bigint ,     
+ @AggregateScored FLOAT= 0 OUTPUT,    
+ @AllExamsGiven BIT = 0 OUTPUT    
+)         
+AS      
+BEGIN      
+       
+  DECLARE @DesignationID INT      
+      
+  -- Get users designation based on its user id.      
+  SELECT        @DesignationID = DesignationID      
+  FROM            tblInstallUsers      
+  WHERE        (Id = @UserID)      
+      
+      
+IF(@DesignationID IS NOT NULL)      
+    BEGIN      
+      
+	   DECLARE @ExamCount INT    
+	   DECLARE @GivenExamCount INT    
+    
+	   -- check exams available for existing designation    
+	   SELECT      @ExamCount = COUNT(MCQ_Exam.ExamID)    
+		FROM          MCQ_Exam     
+		WHERE        (@DesignationID IN     
+		   (SELECT   Item   FROM  dbo.SplitString(MCQ_Exam.DesignationID, ',') AS SplitString_1)) AND  MCQ_Exam.IsActive = 1     
+    
+	-- check exams given by user    
+	SELECT @GivenExamCount = COUNT(ExamID) FROM MCQ_Performance WHERE UserID = @UserID    
+    
+    -- IF all exam given, calcualte result.       
+    IF( @ExamCount = @GivenExamCount AND @GivenExamCount > 0)    
+		BEGIN    
+    
+		 SELECT @AggregateScored = (SUM([Aggregate])/@GivenExamCount) FROM MCQ_Performance  WHERE UserID = @UserID    
+    
+		 SET @AllExamsGiven = 1    
+    
+		END    
+    ELSE    
+		BEGIN    
+		 SET @AllExamsGiven = 0    
+		END    
+    
+    
+ END      
+      
+RETURN @AggregateScored    
+      
+
+END      
+  
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 08 15 2017
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SET NOCOUNT ON;  
+
+DECLARE @UserID INT, @Email VARCHAR(250), @EmailCount INT = 0 ;
+
+
+DECLARE email_cursor CURSOR FOR   
+SELECT Id, Email
+FROM tblInstallUsers  
+WHERE Email IS NOT NULL OR Email <> ''  
+ 
+
+OPEN email_cursor  
+
+FETCH NEXT FROM email_cursor   
+INTO @UserID, @Email  
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+
+-- If no email exist then only insert.
+IF NOT EXISTS( SELECT emailID FROM tblUserEmail WHERE emailID = @Email)
+BEGIN
+
+SET @EmailCount = @EmailCount + 1
+
+
+-- if there are already other email exist for user than set it to non primary and then add existing email from install users table as a primary.
+
+UPDATE tblUserEmail SET IsPrimary = 0 WHERE UserID = @UserID
+
+INSERT INTO tblUserEmail
+                         (emailID, IsPrimary, UserID)
+VALUES        (@Email, 1,@UserID)
+
+
+END
+
+-- Get the next vendor.  
+FETCH NEXT FROM email_cursor   
+INTO @UserID, @Email  
+
+END   
+
+PRINT 'Total email inserted --- '
+
+PRINT @EmailCount 
+
+CLOSE email_cursor;  
+DEALLOCATE email_cursor;  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SET NOCOUNT ON;  
+
+DECLARE @UserID INT, @Phone VARCHAR(25),@CountryCode VARCHAR(15), @PhoneCount INT = 0 ;
+
+
+DECLARE phone_cursor CURSOR FOR   
+SELECT Id, Phone,CountryCode
+FROM tblInstallUsers  
+WHERE Phone IS NOT NULL OR Phone <> ''  
+ 
+
+OPEN phone_cursor  
+
+FETCH NEXT FROM phone_cursor   
+INTO @UserID, @Phone , @CountryCode
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+
+-- If no email exist then only insert.
+IF NOT EXISTS( SELECT Phone FROM tblUserPhone WHERE Phone = @Phone)
+BEGIN
+
+SET @PhoneCount = @PhoneCount + 1
+
+
+-- if there are already other email exist for user than set it to non primary and then add existing email from install users table as a primary.
+
+UPDATE tblUserPhone SET IsPrimary = 0 WHERE UserID = @UserID
+
+INSERT INTO tblUserPhone
+                         (Phone, IsPrimary, UserID,PhoneTypeID)
+VALUES        (@Phone, 1,@UserID,1)
+
+
+END
+
+-- Get the next vendor.  
+FETCH NEXT FROM phone_cursor   
+INTO @UserID, @Phone , @CountryCode 
+
+END   
+
+PRINT 'Total phone inserted --- '
+
+PRINT @PhoneCount 
+
+CLOSE phone_cursor;  
+DEALLOCATE phone_cursor;  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[sp_AddUserEmailOrPhone]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [sp_AddUserEmailOrPhone]   
+
+	END  
+GO 
+
+CREATE procedure sp_AddUserEmailOrPhone  
+(  
+ @UserID int, @DataForValidation VARCHAR(256), @DataType INT, @PhoneTypeID varchar(10), @PhoneExt varchar(10), @IsPrimary bit  
+)  
+as  
+begin  
+ declare @DataExists VARCHAR(256)  
+  
+ if(@DataType = 1) --#Check Phone Number  
+ begin  
+  
+  SELECT @DataExists = Phone FROM tblUserPhone WHERE Phone = @DataForValidation --AND UserID = @UserID  
+  
+  IF (isnull(@DataExists, '') <> '')  
+  BEGIN  
+   SET @DataExists = CONVERT(VARCHAR(256), @DataExists)+'# Contact number already exists'  
+  END  
+  else  
+  begin  
+   if(@IsPrimary = 1)  
+   begin  
+    update tblUserPhone set IsPrimary = 0 where UserID = @UserID  
+    update tblUserEmail set IsPrimary = 0 where UserID = @UserID  
+   end  
+   insert into tblUserPhone(Phone, IsPrimary, PhoneTypeID, UserID, PhoneExtNo)  
+   values(@DataForValidation, @IsPrimary, @PhoneTypeID, @UserID, @PhoneExt)  
+  
+   update tab set Phone = @DataForValidation, IsPhonePrimaryPhone = 1, IsEmailPrimaryEmail = 0, PhoneExtNo = @PhoneExt,  
+   --PhoneISDCode = ph.PhoneISDCode,  
+   phonetype = (select case when @PhoneTypeID in (1,2,3,4,7) then ContactName + ' #'  
+      when @PhoneTypeID in (5,6,8) then ContactName  
+      else '' end from tblUsercontact where UserContactId = @PhoneTypeID)  
+   from tblInstallUsers tab  
+   where tab.Id = @UserID and @IsPrimary = 1  
+  
+  end  
+ end  
+ else if(@DataType = 2) --#Check email  
+ begin  
+  SELECT @DataExists = emailID FROM tblUserEmail WHERE emailID = @DataForValidation --AND UserID = @UserID  
+  
+  IF (isnull(@DataExists, '') <> '')  
+  BEGIN  
+   SET @DataExists = CONVERT(VARCHAR(256), @DataExists)+'# Email already exists'  
+  END  
+  else  
+  begin  
+   if(@IsPrimary = 1)  
+   begin  
+    update tblUserEmail set IsPrimary = 0 where UserID = @UserID  
+    update tblUserPhone set IsPrimary = 0 where UserID = @UserID  
+   end  
+   insert into tblUserEmail(emailID, IsPrimary, UserID)  
+   values(@DataForValidation, @IsPrimary, @UserID)  
+  
+   update tab set Email = @DataForValidation, IsPhonePrimaryPhone = 0, IsEmailPrimaryEmail = 1  
+   from tblInstallUsers tab  
+   where tab.Id = @UserID and @IsPrimary = 1  
+  end  
+ end  
+  
+ select isnull(@DataExists, '')  
+end       
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish on 08212017
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_SearchUsersForPopup]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_SearchUsersForPopup]   
+
+	END  
+GO 
+
+CREATE PROCEDURE [dbo].[usp_SearchUsersForPopup]    
+ (
+	 @UserIds VARCHAR(MAX),
+	 @Status VARCHAR(50) = NULL, 
+	 @DesignationId INT = NULL, 
+	 @PageIndex INT = 0,  
+	 @PageSize INT = 0, 
+	 @SortExpression VARCHAR(50), 
+	 @InterviewDateStatus VARChAR(5) = '5',    
+	 @RejectedStatus VARChAR(5) = '9', 
+	 @OfferMadeStatus VARChAR(5) = '6', 
+	 @ActiveStatus VARChAR(5) = '1'     
+ )
+AS    
+
+BEGIN     
+
+SET NOCOUNT ON;    
+   
+  IF (@DesignationId = 0)
+     BEGIN
+	 SET @DesignationId = NULL
+	 END  
+ IF (@Status = '')
+     BEGIN
+	 SET @Status = NULL
+	 END  
+     
+ DECLARE @StartIndex INT  = 0    
+ SET @StartIndex = (@PageIndex * @PageSize) + 1    
+      
+    
+ -- get records - Table 4    
+ ;WITH SalesUsers    
+ AS    
+ (
+ SELECT t.Id, t.FristName, t.LastName, t.Phone, t.Zip, t.City, d.DesignationName AS Designation, t.Status, t.HireDate, t.InstallId, t.[StatusReason],    
+ t.picture, t.CreatedDateTime, Isnull(s.Source,'') AS Source, t.SourceUser, ISNULL(U.Username,t2.FristName + ' ' + t2.LastName) AddedBy, ISNULL (t.UserInstallId,t.id) As UserInstallId,    
+ InterviewDetail = case when (t.Status=@InterviewDateStatus) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR)  + ' ' + coalesce(t.InterviewTime,'') else '' end,    
+ RejectDetail = case when (t.[Status]=@RejectedStatus ) then CAST(coalesce(t.RejectionDate,'') AS VARCHAR) + ' ' + coalesce(t.RejectionTime,'')  else '' end,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN t.RejectedUserId ELSE NULL END AS RejectedUserId,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN ru.FristName + ' ' + ru.LastName ELSE NULL END AS RejectedByUserName,    
+ CASE when (t.[Status]= @RejectedStatus ) THEN ru.[UserInstallId]  ELSE NULL END AS RejectedByUserInstallId,    
+ t.Email, t.DesignationID, ISNULL(t1.[UserInstallId], t2.[UserInstallId]) As AddedByUserInstallId,    
+ ISNULL(t1.Id,t2.Id) As AddedById, t.emptype as 'EmpType', t.Phone As PrimaryPhone, t.CountryCode, t.Resumepath,    
+ Task.TaskId AS 'TechTaskId', Task.ParentTaskId AS 'ParentTechTaskId', Task.InstallId as 'TechTaskInstallId',  
+ dbo.udf_GetUserExamPercentile(t.Id) AS [Aggregate],    
+ ROW_NUMBER() OVER(ORDER BY    
+   CASE WHEN @SortExpression = 'Id ASC' THEN t.Id END ASC,    
+   CASE WHEN @SortExpression = 'Id DESC' THEN t.Id END DESC,    
+   CASE WHEN @SortExpression = 'Status ASC' THEN t.Status END ASC,    
+   CASE WHEN @SortExpression = 'Status DESC' THEN t.Status END DESC,    
+   CASE WHEN @SortExpression = 'FristName ASC' THEN t.FristName END ASC,    
+   CASE WHEN @SortExpression = 'FristName DESC' THEN t.FristName END DESC,    
+   CASE WHEN @SortExpression = 'Designation ASC' THEN d.DesignationName END ASC,    
+   CASE WHEN @SortExpression = 'Designation DESC' THEN d.DesignationName END DESC,    
+   CASE WHEN @SortExpression = 'Source ASC' THEN s.Source END ASC,    
+   CASE WHEN @SortExpression = 'Source DESC' THEN s.Source END DESC,    
+   CASE WHEN @SortExpression = 'Phone ASC' THEN t.Phone END ASC,    
+   CASE WHEN @SortExpression = 'Phone DESC' THEN t.Phone END DESC,    
+   CASE WHEN @SortExpression = 'Zip ASC' THEN t.Phone END ASC,    
+   CASE WHEN @SortExpression = 'Zip DESC' THEN t.Phone END DESC,     
+   CASE WHEN @SortExpression = 'City ASC' THEN t.City END ASC,    
+   CASE WHEN @SortExpression = 'City DESC' THEN t.City END DESC,     
+   CASE WHEN @SortExpression = 'CreatedDateTime ASC' THEN t.CreatedDateTime END ASC,    
+   CASE WHEN @SortExpression = 'CreatedDateTime DESC' THEN t.CreatedDateTime END DESC     
+       ) AS RowNumber
+
+  FROM tblInstallUsers t    
+  LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId= ru.Id    
+  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id    
+  LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+  LEFT JOIN tblSource s ON t.SourceId = s.Id    
+  OUTER APPLY    
+ (     
+ SELECT tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo    
+ FROM tblTaskAssignedUsers u    
+ INNER JOIN tblTask tsk ON u.TaskId = tsk.TaskId AND    
+ (tsk.ParentTaskId IS NOT NULL OR tsk.IsTechTask = 1)    
+ WHERE u.UserId = t.Id    
+ ) AS Task    
+ WHERE (t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+ AND ISNULL(t.[Status],'') = ISNULL(@Status, ISNULL(t.[Status],''))    
+ AND t.[Status] NOT IN (@OfferMadeStatus, @ActiveStatus)    
+ AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))    
+ AND t.Id IN (SELECT   Item   FROM  dbo.SplitString(@UserIds, ',') AS UserId)
+ 
+)    
+
+
+SELECT  Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
+AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
+AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
+TechTaskInstallId, [StatusReason], City    
+FROM SalesUsers    
+WHERE RowNumber >= @StartIndex AND (@PageSize = 0 OR RowNumber < (@StartIndex + @PageSize))    
+GROUP BY Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
+AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
+AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
+TechTaskInstallId, [StatusReason], City    
+    
+ -- get record count - Table 5    
+ SELECT COUNT(t.Id)  FROM tblInstallUsers t    
+  LEFT OUTER JOIN tblUsers U ON U.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = t.SourceUser    
+  LEFT OUTER JOIN tblInstallUsers ru on t.RejectedUserId= ru.Id    
+  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= U.Id    
+  LEFT OUTER JOIN tbl_Designation d ON t.DesignationId = d.Id    
+  LEFT JOIN tblSource s ON t.SourceId = s.Id    
+  OUTER APPLY    
+ (     
+	 SELECT tsk.TaskId, tsk.ParentTaskId, tsk.InstallId, ROW_NUMBER() OVER(ORDER BY u.TaskUserId DESC) AS RowNo    
+	 FROM tblTaskAssignedUsers u    
+	 INNER JOIN tblTask tsk ON u.TaskId = tsk.TaskId AND    
+	 (tsk.ParentTaskId IS NOT NULL OR tsk.IsTechTask = 1)    
+	 WHERE u.UserId = t.Id    
+ ) AS Task    
+ WHERE (t.UserType = 'SalesUser' OR t.UserType = 'sales') 
+ AND ISNULL(t.[Status],'') = ISNULL(@Status, ISNULL(t.[Status],''))    
+ AND t.[Status] NOT IN (@OfferMadeStatus, @ActiveStatus)    
+ AND ISNULL(d.Id,'') = ISNULL(@DesignationId, ISNULL(d.Id,''))
+ AND t.Id IN (SELECT   Item   FROM  dbo.SplitString(@UserIds, ',') AS UserId)
+
+
+END
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_GetAssignedDesigSequenceForInterviewDatePopup]   
+
+	END  
+GO 
+
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 08232017      
+-- Description: This will fetch tentative sequence to be assigned to users.      
+-- =============================================      
+-- [dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup] 9,1,3
+      
+CREATE PROCEDURE [dbo].[usp_GetAssignedDesigSequenceForInterviewDatePopup]       
+( 
+ @DesignationId INT,      
+ @IsTechTask BIT,    
+ @UserCount  INT      
+)      
+AS      
+BEGIN      
+    
+SELECT  TOP (@UserCount) ISNULL([Sequence],1) AS SequenceNo, TaskId, dbo.udf_GetParentTaskId(TaskId) AS ParentTaskId,dbo.udf_GetCombineInstallId(TaskId) AS InstallId FROM tblTask       
+WHERE (AdminUserId IS NOT NULL AND TechLeadUserId IS NOT NULL ) AND [SequenceDesignationId] = @DesignationID AND IsTechTask = @IsTechTask AND [Sequence] IS NOT NULL AND [Sequence] > (         
+      
+  SELECT       ISNULL(MAX(AssignedDesigSeq),0) AS LastAssignedSequence      
+   FROM            tblAssignedSequencing      
+  WHERE        (DesignationId = @DesignationId) AND (IsTechTask = @IsTechTask)      
+      
+)       
+ORDER BY [Sequence] ASC      
+
+      
+END
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTasksforSubSequencing]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTasksforSubSequencing   
+
+	END  
+GO    
+-- usp_GetAllTasksforSubSequencing '9','-ITJN:SS',0, 556  
+CREATE PROCEDURE usp_GetAllTasksforSubSequencing
+(                                    
+ @DesignationId INT = 0,
+ @DesiSeqCode VARCHAR(20),                  
+ @IsTechTask BIT = 0,
+ @TaskId   BIGINT    
+)                        
+As                        
+BEGIN                        
+                
+
+SELECT DISTINCT TaskId,[Sequence],CONVERT(VARCHAR(20),[Sequence]) + @DesiSeqCode AS SeqLable                    
+           
+FROM  tbltask a                        
+                    
+WHERE                   
+  (                   
+    (a.[Sequence] IS NOT NULL)  
+	AND a.[SubSequence] IS NULL                
+    AND (a.[SequenceDesignationId] = @DesignationId  )                
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)   
+	AND TaskId <> @TaskId               
+                     
+  )               
+ORDER BY a.[Sequence] DESC                  
+                      
+END 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-- Live publish 08262017
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSubSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_DeleteTaskSubSequenceByTaskId   
+
+	END  
+GO    
+
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 01 Sep 17      
+-- Description: Delete Task Sequence Task by Id.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSubSequenceByTaskId]      
+ @TaskId  BIGINT           
+AS      
+BEGIN      
+    
+BEGIN TRANSACTION        
+
+DECLARE @OriginalSeq BIGINT    
+DECLARE @OriginalSubSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+DECLARE @IsTechTask BIT  
+  
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak   
+SELECT  @OriginalSeq = [Sequence] ,@OriginalSubSeq = [SubSequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId  
+  
+UPDATE tblTask      
+   SET                [Sequence] = NULL , [SubSequence] = NULL , [SequenceDesignationId] = NULL  
+WHERE        (TaskId = @TaskId)     
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [SubSequence] = [SubSequence] - 1         
+ WHERE        ([SubSequence] >= @OriginalSubSeq) AND [Sequence] = @OriginalSeq AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+   
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION      
+END         
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_SwapSubTaskSequences]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_SwapSubTaskSequences   
+
+	END  
+GO    
+  
+    
+-- =============================================                  
+-- Author:  Yogesh Keraliya                  
+-- Create date: 09012017                  
+-- Description: This will swap sub sequence between two tasks.                  
+-- =============================================                  
+-- 
+CREATE PROCEDURE [dbo].[usp_SwapSubTaskSequences]                   
+(                  
+                
+ @FirstTaskID BIGINT = 0,                   
+ @SecondTaskID BIGINT = 0,                   
+ @FirstSubSeq BIGINT = 0,            
+ @SecondSubSeq BIGINT = 0                    
+)                  
+As                  
+BEGIN                  
+     
+  UPDATE       tblTask  
+  SET                [SubSequence] = @SecondSubSeq  
+  WHERE        (TaskId = @FirstTaskID)          
+    
+  UPDATE       tblTask  
+  SET                [SubSequence] = @FirstSubSeq  
+  WHERE        (TaskId = @SecondTaskID)          
+    
+                
+END   
+  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------      
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
+
+	END  
+GO    
+
+  
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 31 July 17      
+-- Description: Delete Task Sequence Task by Id.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSequenceByTaskId]      
+ @TaskId  BIGINT           
+AS      
+BEGIN      
+    
+BEGIN TRANSACTION        
+    
+DECLARE @OriginalSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+DECLARE @IsTechTask BIT  
+  
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak   
+SELECT @OriginalSeq = [Sequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId  
+
+
+-- Remove all task subsequences and sequence
+UPDATE tblTask      
+   SET  [Sequence] = NULL, [SubSequence] = NULL , [SequenceDesignationId] = NULL  
+WHERE [Sequence] = @OriginalSeq AND [SequenceDesignationId] = @OriginalDesignationID AND  @IsTechTask = IsTechTask
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [Sequence] = [Sequence] - 1         
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+   
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION      
+END
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTaskSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_UpdateTaskSequence]   
+
+	END  
+GO   
+  
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 05162017      
+-- Description: This will update task sequence      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_UpdateTaskSequence]       
+(       
+ @Sequence bigint ,    
+ @DesignationID int,       
+ @TaskId bigint,    
+ @IsTechTask bit   
+)      
+AS      
+BEGIN      
+  
+  
+BEGIN TRANSACTION        
+    
+DECLARE @OriginalSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+  
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId  
+  
+ UPDATE tblTask      
+   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID    
+ WHERE  ([Sequence] = @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)  
+BEGIN  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [Sequence] = [Sequence] - 1         
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+  
+  
+END      
+    
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION    
+  
+---- if sequence is already assigned to some other task with same designation, all sequence will push back by 1 from alloted sequence for that designation.      
+--IF EXISTS(SELECT   T.TaskId    
+--FROM            tblTask AS T     
+--WHERE        (T.[Sequence] = @Sequence) AND (T.TaskId <> @TaskId) AND (T.[SequenceDesignationId] = @DesignationID) AND T.IsTechTask = @IsTechTask)      
+--  BEGIN      
+      
+--  -- push back all task sequence for 1 from sequence assigned in between.    
+--     UPDATE       tblTask      
+--     SET                [Sequence] = [Sequence] + 1         
+--     WHERE        ([Sequence] >= @Sequence) AND ([SequenceDesignationId] = @DesignationID) AND IsTechTask = @IsTechTask    
+      
+--  END      
+      
+  -- Update task sequence and its respective designationid.    
+   
+    
+    
+END   
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 09022017
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     

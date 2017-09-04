@@ -11,6 +11,7 @@
 
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
+    <link href="../css/jquery.timepicker.css" rel="stylesheet" />
     <style type="text/css">
         .ddlstatus-per-text {
             float: right;
@@ -24,21 +25,30 @@
         }
 
             .GrdContainer div {
-                width: 100%;
+                width: inherit;
             }
 
             .GrdContainer .GrdHeader {
-                background-color: #d3d3d3;
+                background-color: #a09585 !important;
                 padding: 2px;
                 cursor: pointer;
                 font-weight: bold;
+                width: initial;
+                text-align: left;
+                font-size: 20px;
             }
 
             .GrdContainer .GrdContent {
                 display: none;
-                padding: 5px;
-                height: 160px;
+                /* padding: 5px;
+                height: 160px;*/
             }
+
+                .GrdContainer .GrdContent span {
+                    margin: 0px !important;
+                    display: block;
+                    width: inherit;
+                }
 
         .GrdContent ul li span {
             width: 100% !important;
@@ -85,8 +95,12 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            display: none;
         }
 
+        .form_panel ul li {
+            margin: 0 !important;
+        }
         /*.GrdPrimaryEmail:hover {
         overflow: visible;
         white-space: normal;
@@ -104,11 +118,13 @@
 
         .grd-lblPrimaryPhone img {
             float: left;
+            display: none;
         }
 
         .grd-lblPrimaryPhone {
             width: 135px !important;
             padding-top: 8px;
+            display: none;
         }
 
         .user-zip {
@@ -155,6 +171,10 @@
             background-color: white;
             z-index: 1002;
             overflow: auto;
+        }
+
+        .ddcommon.disabledAll {
+            width: 35% !important;
         }
 
         .close {
@@ -221,9 +241,64 @@
             position: absolute;
             z-index: 2;
         }
+
+        .contactGrid {
+            padding: 0px !important;
+            margin: 0px !important;
+            overflow: visible !important;
+            width: 100% !important;
+        }
+
+            .contactGrid > li {
+                width: 100% !important;
+                text-align: left;
+                margin: 2px 0px;
+            }
+
+            .contactGrid li select.mail {
+                width: 90% !important;
+                height: 25px;
+            }
+
+            .contactGrid li select.phone {
+                width: 40% !important;
+                height: 25px;
+            }
+
+
+            .contactGrid li input.phone {
+                width: 65px !important;
+            }
+
+            .contactGrid li .ext {
+                width: 10%;
+                background: white;
+                display: inline-block;
+                /*padding: 5px;*/
+            }
+
+            .contactGrid .dd .ddTitle .ddTitleText img {
+                padding: 0px !important;
+            }
+
+            .contactGrid select.phone option[data-p='1'] {
+                color: red;
+            }
+
+        .noMargin span {
+            margin: 0px !important;
+        }
     </style>
     <script type="text/javascript">
 
+        function validateContact(event, obj) {
+            var selValue = $(obj).parent().find('select.typeDrop option:selected').text().toLowerCase();
+
+            if (selValue.indexOf("phone") >= 0) {
+                return IsNumeric(event, true);
+            }
+            else { return true; }
+        }
 
         function ConfirmDelete() {
             var Ok = confirm('Are you sure you want to Delete this User?');
@@ -329,7 +404,7 @@
                         //change text of header based on visibility of content div
                         $header.text(function () {
                             //change text based on condition
-                            return $content.is(":visible") ? "Click To Collapse" : "Click To Add Phone /Email";
+                            return $content.is(":visible") ? "-" : "+";
                         });
                     });
                 });
@@ -338,11 +413,55 @@
                 $('.PrimaryPhone').click(function () {
                     showCustomPopUp("\\CommingSoon.aspx", "Primary Phone");
                 });
-                $('.GrdPrimaryEmail').click(function () {
-                    //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
+                //$('.GrdPrimaryEmail').click(function () {
+                //showCustomPopUp("\\CommingSoon.aspx", "Primary Email");
+                //});
+
+                try {
+                    $('.typeDrop').msDropDown();// OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
+                } catch (e) {
+                    alert(e.message);
+                }
+
+                $(".typeDrop").change(function () {
+                    var selValue = $(this).parent().find('option:selected').text().toLowerCase();
+                    $(this).parent().parent().find("input.phone").val('');
+
+                    if (selValue.indexOf("phone") >= 0) {
+                        $(this).parent().parent().find("input.ext").show();
+                        $(this).parent().parent().find("input.phone").attr('placeholder', 'Phone');
+                    }
+                    else {
+                        $(this).parent().parent().find("input.ext").hide();
+                        $(this).parent().parent().find("input.phone").attr('placeholder', 'Email');
+                    }
+                });
+
+                $(".phone").change(function () {
+                    setCheckBox(this);
+
+                    var ext = $(this).find('option:selected').attr('data-ext');
+
+                    if (ext != undefined & ext != null)
+                        $(this).parent().find('span.ext').text(ext);
+                });
+
+                $(".mail").change(function () {
+                    setCheckBox(this);
                 });
             });
+        }
 
+        function setCheckBox(obj) {
+            var isPrimary = $(obj).find('option:selected').attr('data-p');
+
+            if (isPrimary == '1') {
+                $(obj).parent().find('input[type="checkbox"]').prop('checked', true);
+            }
+            else {
+                $(obj).parent().find('input[type="checkbox"]').prop('checked', false);
+                $(obj).parent().find('input[type="checkbox"]').removeProp('checked');
+            }
         }
     </script>
     <style type="text/css">
@@ -479,7 +598,7 @@
                                                     <asp:ListView ID="listAddedBy" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "" )? "No Name" : Eval("AddedBy")%></span></td>
+                                                                <td><span><%#(Eval("AddedBy") == null || Eval("AddedBy") == "") ? "No Name" : Eval("AddedBy")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -491,7 +610,7 @@
                                                     <asp:ListView ID="listDesignation" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("Designation") == null || Eval("Designation") == "" )? "No Designation" : Eval("Designation")%></span></td>
+                                                                <td><span><%#(Eval("Designation") == null || Eval("Designation") == "") ? "No Designation" : Eval("Designation")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -503,7 +622,7 @@
                                                     <asp:ListView ID="listSource" runat="server">
                                                         <ItemTemplate>
                                                             <tr>
-                                                                <td><span><%#(Eval("Source") == null || Eval("Source") == "" )? "No Name" : Eval("Source")%></span></td>
+                                                                <td><span><%#(Eval("Source") == null || Eval("Source") == "") ? "No Name" : Eval("Source")%></span></td>
                                                                 <td><span><%#Eval("Count")%></span></td>
                                                             </tr>
                                                         </ItemTemplate>
@@ -665,7 +784,7 @@
                                 <asp:DropDownList ID="ddlSource" runat="server" Width="90px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </td>
                             <td style="text-align: left; text-wrap: avoid;">
-                                <div>
+                                <div style="float: left; width: 50%;">
                                     <ul class="userDatafilter">
                                         <li>
                                             <asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true" />
@@ -685,7 +804,7 @@
                                             <asp:CheckBox ID="chkTwoWks" runat="server" Checked="false" Text=" 2 weeks (pay period!)" OnCheckedChanged="chkTwoWk_CheckedChanged" AutoPostBack="true" /></li>
                                     </ul>
                                 </div>
-                                <div style="clear: both;"></div>
+                                <%--  <div style="clear: both;"></div>--%>
                                 <div>
                                     <asp:Label ID="Label3" Text="From :*" runat="server" />
                                     <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
@@ -718,13 +837,14 @@
 
 
 
-                        <div style="float: right; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
-                            <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to"/>&nbsp;
+                        <div style="float: left; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
+                            <asp:Label ID="lblFrom" runat="server" />&nbsp;<asp:Label ID="Label5" runat="server" Text="to" />&nbsp;
                             <asp:Label ID="lblTo" runat="server" Style="color: #19ea19" />
                             <asp:Label ID="lblof" runat="server" Text="of" />
                             <asp:Label ID="lblCount" runat="server" Style="color: red;" />
-                            <asp:Label ID="lblselectedchk" runat="server" Style="font-weight:bold;" />
-
+                            <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
+                        </div>
+                        <div style="float: right;">
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
                             <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
 
@@ -752,37 +872,27 @@
                             <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
                             <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
                             <Columns>
-
-                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="5%" ItemStyle-Width="5%">
+                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="1%"
+                                    ItemStyle-Width="1%">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
                                         <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-
                                         <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
-
-                                        <asp:CheckBox ID="chkSelected" AutoPostBack="true" OnCheckedChanged="chkSelected_CheckedChanged" runat="server" Style="position: relative; top: 22px; right: 25px;" />
+                                        <%--<asp:CheckBox ID="chkSelected" AutoPostBack="true" data-userid='<%#Eval("Id")%>' OnCheckedChanged="chkSelected_CheckedChanged" runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />--%>
+                                        <asp:CheckBox ID="chkSelected" AutoPostBack="false" data-userid='<%#Eval("Id")%>' data-designationid='<%#Eval("DesignationID")%>' runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
-                                        <br />
-
-                                        <%-- <img src='<%# Eval("picture").ToString()=="" || Eval("picture")== null ? "/UploadeProfile/default.jpg" : Eval("picture") %>'
-                                            style="height: 75px; width: 75px;" />--%>
-
-                                        <asp:Image Style="height: 75px; width: 75px;" ID="imgprofile" runat="server"></asp:Image>
-                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible="false" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-                                        
-                              <%--          <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                        <br />
+                                        <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
+                                            <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                        <br />
                                         <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-
-
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" ControlStyle-ForeColor="Black"
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="6%" ItemStyle-Width="6%" ControlStyle-ForeColor="Black"
                                     Visible="true" SortExpression="Designation">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
@@ -799,15 +909,13 @@
                                         <br />
                                         <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
                                         <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
-
-
                                     </ItemTemplate>
                                     <ControlStyle ForeColor="Black" />
                                     <ControlStyle ForeColor="Black" />
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
+                                <%--    <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
                                     ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtInstallid" runat="server" MaxLength="30" Text='<%#Eval("InstallId")%>'></asp:TextBox>
@@ -824,7 +932,7 @@
                                         <asp:LinkButton ID="lbtnPicture" Text="Picture" CommandName="ShowPicture" runat="server"
                                             CommandArgument='<%#Eval("picture")%>'></asp:LinkButton>
                                     </ItemTemplate>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
 
                                 <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
                                     <EditItemTemplate>
@@ -856,63 +964,89 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="25%" ItemStyle-Width="25%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="7%" ItemStyle-Width="7%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
-                                        <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
+                                        <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
                                         <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
-                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender">
+                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" onchange="javascript:GridstatusChanged(event,this);" OnPreRender="ddlUserStatus_PreRender">
                                         </asp:DropDownList>
+                                        <asp:Label ID="hdnlblEmail" runat="server" CssClass="OffferMadeEmail hide" Text='<%#Eval("Email")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblFname" runat="server" CssClass="OffferMadeFirstName hide" Text='<%#Eval("FristName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblLName" runat="server" CssClass="OffferMadeLastName hide" Text='<%#Eval("LastName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblDesignation" runat="server" CssClass="OffferMadeDesignation hide" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblOldStatus" runat="server" CssClass="OffferMadeOldStatus hide" Text='<%#Eval("Status")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserID" runat="server" CssClass="OffferMadeUserID hide" Text='<%#Eval("Id")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserDesiID" runat="server" CssClass="OffferMadeUserDesignID hide" Text='<%#Eval("DesignationID")%>'></asp:Label>
+
                                         <br />
-                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#Eval("StatusReason").ToString()%>'></asp:Literal>
-                                        <br />
-                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#Eval("RejectDetail").ToString()%>'></asp:Literal>
-                                        <br />
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "" : Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Eval("RejectDetail").ToString() == "" ? "" : Eval("RejectDetail").ToString() + "{0}", "<br />") %>'></asp:Literal>
                                         <span><%#Eval("RejectedByUserName")%></span>
-                                        <a target="_blank" href='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("RejectedUserId")%>'><%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString()))?"":"- "+ Eval("RejectedByUserInstallId")%></a>
+                                        <asp:HyperLink runat="server" Visible='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? false : true%>' NavigateUrl='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("RejectedUserId")%>'
+                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? "" : "- " + Eval("RejectedByUserInstallId")%>'></asp:HyperLink>
                                         <br />
-                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : "(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                         <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="4%" ItemStyle-Width="4%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                         <br />
                                         <span><%#Eval("AddedBy")%></span>
-                                        <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString()))?"#":"ViewSalesUser.aspx?id="+ Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"- "+ Eval("AddedByUserInstallId")%></a>
+                                        <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString())) ? "" : "- " + Eval("AddedByUserInstallId")%></a>
                                         <%--<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"-"+ Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
                                             CommandArgument='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString()))?"":Eval("AddedById")%>' Enabled='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?false:true%>'></asp:LinkButton>--%>
                                         <br />
                                         <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
                                     </ItemTemplate>
-
                                 </asp:TemplateField>
-
                                 <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                     </ItemTemplate>
-
                                 </asp:TemplateField>
-
-
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="20%" ItemStyle-Width="20%" ItemStyle-HorizontalAlign="Center" SortExpression="Phone">
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="10%" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
-                                        <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
-                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
+                                        <%--<label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
+                                        <ul class="contactGrid">
+                                            <li>
+                                                <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>
+                                                <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
+                                            </li>
+                                            <li>
+                                                <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>
+                                                <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>
+                                                <!-- over here -->
+                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop"
+                                                    ID="ddlPhoneTypeDisplay">
+                                                </asp:DropDownList>
+                                            </li>
+                                            <li>
+                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
+                                                    ID="ddlPhoneType" Width="114px">
+                                                </asp:DropDownList>
+                                                <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>
+                                                <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server" onkeydown="return validateContact(event, this);"></asp:TextBox>
+                                                <!-- over here -->
+                                                <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
+                                                    CommandArgument='<%# Eval("Id") %>'></asp:Button>
+                                            </li>
+                                        </ul>
                                         <div class="GrdPrimaryEmail">
                                             <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                        <div class="GrdContainer" style="width: 90%">
+                                        <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
+                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
+                                        <%-- <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
                                                 <span>Click To Add Phone /Email</span>
                                             </div>
-                                            <div class="GrdContent">
-                                                <ul style="padding-left: 0px;">
+                                            <div class="GrdContent">                                                
+                                               <ul style="padding-left: 0px;">
                                                     <li>
                                                         <asp:CheckBox ID="chkIsPrimaryPhone" Text=" Is Primary contact" runat="server"></asp:CheckBox></li>
                                                     <li>
@@ -928,24 +1062,20 @@
                                                         <asp:Button ID="btnAddPhone" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact" CommandArgument='<%# Eval("Id") %>'></asp:Button></li>
                                                 </ul>
                                             </div>
-                                        </div>
-
+                                        </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="12%" ItemStyle-Width="12%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
                                         <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
-                                        <asp:Label ID="lblZip" runat="server" Text='<%# " - "+ Eval("Zip") %>'></asp:Label>
+                                        <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
 
-                                        <br />
-                                        <br />
                                         <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
                                         <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
 
-                                        <br />
                                         <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
                                         <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
                                             <asp:ListItem Text="Select" Value="0"></asp:ListItem>
@@ -961,14 +1091,66 @@
                                             <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
                                         </asp:DropDownList><br />
                                         <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
-                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage())? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>
+                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
 
-                                        <br />
                                         <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
+                                    ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
+                                    <HeaderTemplate>
+                                        Notes
+                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr class="trHeader " style="color: White;">
+                                                    <th scope="col" style="width: 19%;">User ID</th>
 
+                                                    <th scope="col" style="width: 25%;">Date&Time</th>
+                                                    <th scope="col" style="width: 56%;">Note/Status</th>
+
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <%--<div class="GrdContainer">
+                                            <div class="GrdHeader">
+                                                <span>+</span>
+                                            </div>
+                                            <div class="GrdContent">
+                                                
+                                            </div>
+                                        </div>--%>
+                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
+                                        <div style="max-height: 200px; overflow: auto;">
+                                            <asp:Repeater ID="rptNotes" runat="server">
+                                                <HeaderTemplate>
+                                                    <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                                        <tbody>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
+                                                        <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
+                                                        <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
+                                                        <td style="width: 55%;"><%#Eval("LogDescription")%></td>
+                                                    </tr>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </tbody>
+                                                </table>
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </div>
+                                        <div style="text-align: left;">
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
+                                                Style="vertical-align: middle; padding: 0px!important; width: 100%" CssClass="textbox"></asp:TextBox><br />
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
+
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                     </ContentTemplate>
@@ -1025,7 +1207,8 @@
                                     OnClick="lbtnDeleteSelected_Click" />
                                 <br />
                                 <br />
-                                <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />
+                                <%--<asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClick="lbtnChangeStatusForSelected_Click" />--%>
+                                <asp:LinkButton ID="lbtnChangeStatusForSelected" runat="server" Text="Change Status For Selected" OnClientClick="javascript:ChangeStatusForSelected();" />
                             </td>
                         </tr>
                     </table>
@@ -1197,10 +1380,19 @@
                         <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                             cellpadding="0" cellspacing="0">
                             <tr>
-                                <td align="right">Name:
-                                    <asp:Label ID="lblName_OfferMade" runat="server" /></td>
-                                <td>Designation:
-                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" /></td>
+                                <td align="right"><strong>Name: </strong></td>
+                                <td align="left">
+                                    <asp:Label ID="lblName_OfferMade" runat="server" />
+                                </td>
+                            </tr>
+
+                            <tr align="right">
+                                <td><strong>Designation:
+                                    
+                                </strong></td>
+                                <td align="left">
+                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" />
+                                </td>
                             </tr>
                             <tr>
                                 <td align="right" style="height: 15px;">
@@ -1259,10 +1451,8 @@
                                 <td align="center" colspan="2">
                                     <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                                         Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
-                                        TabIndex="119" OnClick="btnSaveOfferMade_Click" />
-                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
-                                        Style="height: 26px; font-weight: 700; line-height: 1em;"
-                                        OnClientClick="javascript:document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'" />
+                                        TabIndex="119" />
+                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" Width="100px" Style="height: 26px; font-weight: 700; line-height: 1em;" />
                                 </td>
                             </tr>
                         </table>
@@ -1549,10 +1739,170 @@
             </asp:UpdatePanel>
         </div>
     </div>
-    <%--Popup Ends--%>
+    <div id="divEditUserNG" data-ng-controller="EditUserController">
 
+        <div id="EditUsersModal" class="modal hide">
+
+            <table class="scroll" cellspacing="0" rules="all" border="1" id="tblEditUserPopup" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="width: 10%; text-align: center;">Action
+                            <br>
+                            Picture</th>
+                        <th style="width: 16%; text-align: center;"><a href="javascript:void(0);">Staff ID#
+                            <br>
+                            Designation<br>
+                            F&amp;LName
+                          
+                        </a></th>
+                        <th style="width: 16%; text-align: center;">
+                            <a href="javascript:void(0);">Interview Status
+                            <br>
+                                Interview Date&Time
+                                <br>
+                                TaskID# - Sub ID#
+                            </a>
+                        </th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Source<br>
+                            Added By<br>
+                            Added On</a></th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Country-Zip-City<br>
+                            Type-Apptitude Test %<br>
+                            Resume Attachment</a></th>
+                        <th style="width: 17%; text-align: left;"><a href="javascript:void(0);">Email<br>
+                            Phone Type - Phone</a></th>
+                        <th style="width: 17%; text-align: center;">Notes<br>
+                            <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr class="trHeader " style="color: White;">
+                                        <th scope="col" style="width: 19%;">User ID</th>
+
+                                        <th scope="col" style="width: 25%;">Date&Time</th>
+                                        <th scope="col" style="width: 56%;">Note/Status</th>
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="height: 400px !important;">
+                    <tr data-ng-repeat="EditSalesUser in EditSalesUsers" ng-class="{rejectedUser: EditSalesUser.Status == '9'}" repeat-end="onEditUserBindEnd()">
+                        <td style="width: 10%; text-align: center;">
+
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">
+                                <img id="ContentPlaceHolder1_grdUsers_imgprofile_0" ng-src="{{EditSalesUser.picture}}" style="width: 100%; height: 85%;"></a>
+
+                        </td>
+                        <td style="width: 16%; text-align: center;">
+
+                            <a class="bluetext" ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">{{EditSalesUser.UserInstallId}}</a>
+                            <br>
+                            <label>{{EditSalesUser.Designation}}</label>
+                            <br />
+                            <label class="blacktext">{{EditSalesUser.FristName}} {{EditSalesUser.LastName}}</label>
+                        </td>
+                        <td style="width: 16%; text-align: center;" class="SeqAssignment">
+
+                            <any ng-switch="EditSalesUser.Status">
+                    <ANY ng-switch-when="1">Active</ANY>
+                    <ANY ng-switch-when="2">Applicant</ANY>
+                    <ANY ng-switch-when="3">Deactive</ANY>
+                    <ANY ng-switch-when="4">InstallProspect</ANY>
+                    <ANY ng-switch-when="5">InterviewDate</ANY>
+                    <ANY ng-switch-when="6">OfferMade</ANY>
+                    <ANY ng-switch-when="7">PhoneScreened</ANY>
+                    <ANY ng-switch-when="8">Phone_VideoScreened</ANY>
+                    <ANY ng-switch-when="9">Rejected</ANY>
+                    <ANY ng-switch-when="10">ReferralApplicant</ANY>                  
+                    
+                </any>
+                            <br />
+                            <input ng-attr-id="intdt{{EditSalesUser.Id}}" style="width: 80px" class="interviewDate" ng-attr-data-email="{{EditSalesUser.Email}}" ng-attr-data-userid="{{EditSalesUser.Id}}" type="text">
+                            <input ng-attr-id="inttime{{EditSalesUser.Id}}" style="width: 70px" class="interviewTime" type="text">
+                            <br />
+                            <a href="javascript:void(0);" class="badge-hyperlink"><span class="badge badge-success badge-xstext">
+                                <label class="seqLable"></label>
+                            </span></a><a class="seqTaskURL" data-taskid=""  href=""></a>
+
+                        </td>
+                        <td style="width: 10%; text-align: center;">
+
+                            <span>{{EditSalesUser.Source}}</span>
+                            <br>
+                            <span>{{EditSalesUser.AddedBy}}</span>
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.AddedById}}">- {{EditSalesUser.AddedByUserInstallId}}</a>
+                            <br>
+                            <span>{{EditSalesUser.CreatedDateTime | date:'M/d/yyyy'}}</span>&nbsp;<span ng-class="redtext">{{EditSalesUser.CreatedDateTime | date:'h:mma'}}</span>&nbsp;<span>(EST)</span>
+                        </td>
+                        <td style="width: 10%; text-align: center;">
+
+                            <div ng-attr-title='{{EditSalesUser.Country}}' style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 22px; width: 24px; margin-top: -5px;" class="us">
+                            </div>
+                            <span>- {{EditSalesUser.Zip}}</span>
+                            <span>{{EditSalesUser.City}}</span>
+                            <br />
+
+                            <any ng-switch="EditSalesUser.EmpType">
+                    <ANY ng-switch-when="1">Temp</ANY>
+                    <ANY ng-switch-when="2">Internship</ANY>
+                    <ANY ng-switch-when="3">Part Time - Remote</ANY>
+                    <ANY ng-switch-when="4">Part Time - Onsite</ANY>
+                    <ANY ng-switch-when="5">Full Time - Remote</ANY>
+                    <ANY ng-switch-when="6">Full Time - Onsite</ANY>
+                    <ANY ng-switch-when="7">Full Time Hourly</ANY>
+                    <ANY ng-switch-when="8">Full Time Salary</ANY>
+                    <ANY ng-switch-when="9">Part Time</ANY>
+                    <ANY ng-switch-when="10">Sub</ANY>                  
+                    
+                </any>
+
+                            <span ng-class="{'redtext': EditSalesUser.Aggregate < 33, 'greentext': EditSalesUser.Aggregate > 33, 'hide': EditSalesUser.Aggregate == null}">{{EditSalesUser.Aggregate | number:2}}%</span>
+                            <br>
+                            <a ng-class="hide" ng-href="http://jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
+
+                        </td>
+                        <td style="width: 17%; text-align: left;">
+
+                            <ul class="contactGrid">
+                                <li>{{EditSalesUser.Email}}
+                                </li>
+                                <li>{{EditSalesUser.Phone}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="noMargin" style="width: 21%; text-align: center;"></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+            <div ng-show="loader.loading" style="position: absolute; top: 50%; left: 50%;">
+                Loading...
+                <img src="../img/ajax-loader.gif" />
+            </div>
+            <div class="btn_sec">
+                <h3><label id="ediPopupStatusSuccess"></label> </h3>
+                <input type="button" value="Save" style="background: url(img/main-header-bg.png) repeat-x; color: #fff; height:30px;width:80px;" id="btnSaveMultipleStatuses" onclick="SetMultipleInterviewDate(this);" class="GrdBtnAdd" title="Save" />
+
+            </div>
+            <%--   <div class="text-center">
+                <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getEditUsers(page)"></jgpager>
+            </div>--%>
+        </div>
+
+    </div>
+    <%--Popup Ends--%>
+    <script src="../Scripts/angular.min.js"></script>
+    <script src="../js/angular/scripts/jgapp.js"></script>
+    <script src="../js/angular/scripts/edituser-angular.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script src="../js/edituser.js"></script>
+
     <script type="text/javascript">
+
+        var UserGridId = "#<%=grdUsers.ClientID%>";
 
         Dropzone.autoDiscover = false;
 
@@ -1717,7 +2067,81 @@
 
         }
 
+        function GridstatusChanged(event, dropdown) {
 
+            var selectedValue = $(dropdown).val();
+
+            // If user status is offermade than dont postback.
+            if (selectedValue == "6") {
+                OverlayPopupOfferMade();
+                var statustr = $(dropdown).closest("tr");
+
+                var Email = $(statustr).find(".OffferMadeEmail").html();
+                var FirstName = $(statustr).find(".OffferMadeFirstName").html();
+                var LastName = $(statustr).find(".OffferMadeLastName").html();
+                var Designation = $(statustr).find(".OffferMadeDesignation").html();
+                var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
+                var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
+                var UserID = $(statustr).find(".OffferMadeUserID").html();
+
+                $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
+                $('#<%=lblDesignation_OfferMade.ClientID%>').html(Designation);
+
+
+                // on cancel button click close popup and reset dropdown to its original status.
+                $('#<%=btnCancelOfferMade.ClientID%>').unbind("click");
+                $('#<%=btnSaveOfferMade.ClientID%>').unbind("click");
+
+                $('#<%=btnCancelOfferMade.ClientID%>').click(function () {
+                    $(dropdown).val(OldStatus);
+                    ClosePopupOfferMade();
+                    return false;
+                });
+
+
+                $('#<%=btnSaveOfferMade.ClientID%>').click(function () {
+
+                    SendOfferMadeEmail(UserID, Email, DesignationID);
+                    return false;
+                });
+
+                $('#<%=txtEmail.ClientID%>').val(Email);
+                $('#<%=txtPassword1.ClientID%>').val("jmgrove");
+                $('#<%=txtpassword2.ClientID%>').val("jmgrove");
+
+
+
+            }
+            else { // For rest of the statuses postback.
+                __doPostBack($(dropdown).attr("id"));
+            }
+
+            return false;
+        }
+
+        function SendOfferMadeEmail(UserID, Email, DesignationID) {
+
+            var postData = {
+                UserEmail: Email,
+                UserID: parseInt(UserID),
+                DesignationID: DesignationID
+            };
+
+            CallJGWebService('SendOfferMadeToCandidate', postData, OnSendOfferMadeToCandidateSuccess, OnSendOfferMadeToCandidateError);
+
+            function OnSendOfferMadeToCandidateSuccess(data) {
+                if (data.d) {
+                    alert("OfferMade Email Sent Successfully!");
+                    ClosePopupOfferMade();
+                }
+            }
+
+            function OnSendOfferMadeToCandidateError(err) {
+                alert("Error occured while sending OfferMade Email");
+                ClosePopupOfferMade();
+            }
+
+        }
 
         $(document).ready(function () {
 

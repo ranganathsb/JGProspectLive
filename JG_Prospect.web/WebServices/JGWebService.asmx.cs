@@ -12,7 +12,7 @@ using System.Net.Mail;
 using System.IO;
 using Newtonsoft.Json;
 using System.Web.Script.Services;
-
+using System.Configuration;
 
 namespace JG_Prospect.WebServices
 {
@@ -730,6 +730,14 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool DeleteTaskSubSequence(Int64 TaskId)
+        {
+            Boolean blnReturnResult = TaskGeneratorBLL.Instance.DeleteTaskSubSequence(TaskId);
+
+            return blnReturnResult;
+        }
+
+        [WebMethod(EnableSession = true)]
         public string GetAssignUsers(string TaskDesignations)
         {
             // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
@@ -738,7 +746,7 @@ namespace JG_Prospect.WebServices
 
             if (dsUsers != null && dsUsers.Tables.Count > 0)
             {
-                
+
 
                 DataTable dtUsers = CommonFunction.ApplyColorCodeToAssignUserDataTable(dsUsers.Tables[0]);
 
@@ -753,7 +761,7 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
-        
+
 
         //[WebMethod(EnableSession = true)]
         //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -797,7 +805,7 @@ namespace JG_Prospect.WebServices
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
                 strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
-                
+
 
                 //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
 
@@ -809,6 +817,40 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        [WebMethod(EnableSession = true)]
+        public String GetAllTasksforSubSequencing(Int32 DesignationId, String DesiSeqCode, bool IsTechTask, Int64 TaskId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTasksforSubSequencing(DesignationId, DesiSeqCode, IsTechTask, TaskId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                //Context.Response.Clear();
+                //Context.Response.ContentType = "application/json";
+                //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
+                dtResult.Tables[0].TableName = "Tasks";
+
+
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+
+        [WebMethod(EnableSession = true)]
+        public bool UpdateTaskSubSequence(Int64 TaskID, Int64 TaskIdSeq, Int64 SubSeqTaskId, Int64 DesignationId)
+        {
+            string strMessage = string.Empty;
+            bool Result = TaskGeneratorBLL.Instance.UpdateTaskSubSequence(TaskID, TaskIdSeq, SubSeqTaskId, DesignationId);
+
+            return Result;
+
+        }
 
         [WebMethod(EnableSession = true)]
         public bool SaveAssignedTaskUsers(Int32 intTaskId, int intTaskStatus, int[] arrAssignedUsers, int[] arrDesignationUsers)
@@ -876,6 +918,12 @@ namespace JG_Prospect.WebServices
         public bool TaskSwapSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
         {
             return TaskGeneratorBLL.Instance.TaskSwapSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool TaskSwapSubSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            return TaskGeneratorBLL.Instance.TaskSwapSubSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
 
         #endregion
@@ -1188,7 +1236,7 @@ namespace JG_Prospect.WebServices
                 // If time left to give exam then show that time.
                 if (MilliSecondLeft > 0)
                 {
-                     secondLeft = Convert.ToInt32(MilliSecondLeft * 0.001);                    
+                    secondLeft = Convert.ToInt32(MilliSecondLeft * 0.001);
                     //ScriptManager.RegisterStartupScript(this,this.Page.GetType(), "timerDisplay", "startExamTimer(" + secondLeft.ToString() + ");", true); 
                 }
 
@@ -1251,6 +1299,362 @@ namespace JG_Prospect.WebServices
 
 
 
+        #endregion
+
+        #region "-- HR Module Methods --"
+
+        [WebMethod(EnableSession = true)]
+        public bool SendOfferMadeToCandidate(string UserEmail, Int32 UserID, string DesignationID)
+        {
+            int EditId = UserID;
+
+            InstallUserBLL.Instance.UpdateOfferMade(EditId, UserEmail, "jmgrove");
+
+            DataSet ds = new DataSet();
+            string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
+            email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
+
+            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToInt32(JGConstant.InstallUserStatus.OfferMade).ToString(), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "Offer Made from HR page - " + CommonFunction.FormatDateTimeString(DateTime.Now));
+
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Email"]) != "")
+                    {
+                        email = Convert.ToString(ds.Tables[0].Rows[0]["Email"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]) != "")
+                    {
+                        HireDate = Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]) != "")
+                    {
+                        EmpType = Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]) != "")
+                    {
+                        PayRates = Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
+                    {
+                        Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FristName"].ToString()))
+                    {
+                        FirstName = ds.Tables[0].Rows[0]["FristName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["LastName"].ToString()))
+                    {
+                        LastName = ds.Tables[0].Rows[0]["LastName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["Address"].ToString()))
+                    {
+                        Address = ds.Tables[0].Rows[0]["Address"].ToString();
+                    }
+                }
+            }
+            //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, DesignationID);
+            string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
+            strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+            strHtml = strHtml.Replace("#FirstName#", FirstName);
+            strHtml = strHtml.Replace("#LastName#", LastName);
+            strHtml = strHtml.Replace("#Address#", Address);
+            strHtml = strHtml.Replace("#Designation#", Desig);
+
+            if (!string.IsNullOrEmpty(EmpType))
+            {
+                int intEmpType = 0;
+                int.TryParse(EmpType, out intEmpType);
+
+                if (intEmpType > 0)
+                {
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                }
+
+                strHtml = strHtml.Replace("#EmpType#", EmpType);
+
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#EmpType#", "________________");
+            }
+            strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+            if (!string.IsNullOrEmpty(PayRates))
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", "____");
+            }
+            DateTime dtPayCheckDate;
+            if (!string.IsNullOrEmpty(HireDate))
+            {
+                dtPayCheckDate = Convert.ToDateTime(HireDate);
+            }
+            else
+            {
+                dtPayCheckDate = DateTime.Now;
+            }
+            dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+            strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+            string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+            List<Attachment> lstAttachments = new List<Attachment>();
+            if (File.Exists(strPath))
+            {
+                Attachment attachment = new Attachment(strPath);
+                attachment.Name = Path.GetFileName(strPath);
+                lstAttachments.Add(attachment);
+            }
+
+            SendEmail(email, FirstName, LastName, "Offer Made", "", Desig, Convert.ToInt32(DesignationID), HireDate, EmpType, PayRates,
+                HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
+
+            //binddata();
+            //GetSalesUsersStaticticsAndData();
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
+
+            return true;
+
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool SendInterviewDatetoCandidate(string UserEmail, Int32 UserID, string DesignationID, String InterviewDate, String InterviewTime, UInt64 TaskId)
+        {
+            int EditId = UserID;
+
+            DataSet dsUser = InstallUserBLL.Instance.ChangeStatus
+                                                   (
+                                                      Convert.ToInt32(JGConstant.InstallUserStatus.InterviewDate).ToString(),
+                                                      EditId,
+                                                      Convert.ToDateTime(InterviewDate),
+                                                      InterviewTime,
+                                                      Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),
+                                                      JGSession.IsInstallUser.Value,
+                                                      "Interview Date setup from HR page popup - " + CommonFunction.FormatDateTimeString(DateTime.Now)
+                                                   );
+            String FirstName = string.Empty, LastName = string.Empty, Designation = string.Empty, EmployeeType = string.Empty;
+
+            if (dsUser.Tables.Count > 0 && dsUser.Tables[0].Rows.Count > 0)
+            {
+                FirstName = Convert.ToString(dsUser.Tables[0].Rows[0]["FristName"]);
+
+                LastName = Convert.ToString(dsUser.Tables[0].Rows[0]["LastName"]);
+                Designation = Convert.ToString(dsUser.Tables[0].Rows[0]["Designation"]);
+               EmployeeType = Convert.ToString(dsUser.Tables[0].Rows[0]["EmpType"]);
+            }
+
+            SendEmail(
+                                    UserEmail,
+                                    FirstName,
+                                    LastName,
+                                    "Interview Date Auto Email",
+                                    "",
+                                    Designation,
+                                    Convert.ToInt32(DesignationID),
+                                    InterviewDate,
+                                    EmployeeType,
+                                    "",
+                                    HTMLTemplates.InterviewDateAutoEmail,
+                                    null,
+                                    "JMGC-PC"
+                                );
+
+            //AssignedTask if any or Default
+            if (TaskId > 0)
+            {
+                AssignedTaskToUser(UserID, TaskId); 
+            }
+
+            return true;
+
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetEditSalesPopupUsersWithPaging(int PageIndex, int PageSize, String UserIds, String Status, int DesignationId, String SortExpression)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = InstallUserBLL.Instance.GetPopupEditUsers(UserIds, Status, DesignationId, PageIndex, PageSize, SortExpression);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+
+                dtResult.Tables[0].TableName = "EditSalesUsers";
+
+                strMessage = JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+
+            return strMessage;
+
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
+        {
+
+            string strMessage = string.Empty;
+            DataSet dtResult = TaskGeneratorBLL.Instance.GetInterviewDateSequences(DesignationId, UserCount);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.Tables[0].TableName = "Sequences";
+                strMessage = JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+
+            return strMessage;
+        }
+        
+        #region "-- Private Methods --"
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
+
+            //DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+            //if (ds == null)
+            //{
+            //    ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
+            //}
+            //else if (ds.Tables[0].Rows.Count == 0)
+            //{
+            //    ds = AdminBLL.Instance.GetEmailTemplate("Admin", htmlTempID);
+            //}
+
+            //string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
+            //string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
+            //string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
+            //string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#F&L name#", FName + " " + LName).Replace("#F&amp;L name#", FName + " " + LName);
+
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            strBody = strBody.Replace("#Date#", "").Replace("#date#", "");
+            strBody = strBody.Replace("#Time#", "").Replace("#time#", "");
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            strFooter = strFooter.Replace("#Date#", "").Replace("#date#", "");
+            strFooter = strFooter.Replace("#Time#", "").Replace("#time#", "");
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+            //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+            strBody = strBody.Replace("Reason", Reason);
+
+            strBody = strBody.Replace("#manager#", strManager);
+
+            strBody = strHeader + strBody + strFooter;
+
+            //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
+
+            if (status == "OfferMade")
+            {
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+            if (status == "Deactive")
+            {
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+            //for (int i = 0; i < lstAttachments.Count; i++)
+            //{
+            //    string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+            //    if (File.Exists(sourceDir))
+            //    {
+            //        Attachment attachment = new Attachment(sourceDir);
+            //        attachment.Name = Path.GetFileName(sourceDir);
+            //        lstAttachments.Add(attachment);
+            //    }
+            //}
+
+            if (Attachments != null)
+            {
+                lstAttachments.AddRange(Attachments);
+            }
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch
+            {
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + emailId + ".');", true);
+            }
+        }
+
+        private void AssignedTaskToUser(int UserID, UInt64 TaskId)
+        {
+            string ApplicantId = UserID.ToString();
+
+            //If dropdown has any value then assigned it to user else. return 
+            if (TaskId > 0)
+            {
+                // save (insert / delete) assigned users.
+                //bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), Session["EditId"].ToString());
+
+                // save assigned user a TASK.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, ApplicantId);
+
+                // Change task status to assigned = 3.
+                if (isSuccessful)
+                    UpdateTaskStatus(Convert.ToInt32(TaskId), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+
+                SendEmailToAssignedUsers(Convert.ToInt32(TaskId), UserID.ToString());
+            }
+        }
+
+        private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = taskId;
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+
+            //String AlertMsg;
+
+            //if (result > 0)
+            //{
+            //    AlertMsg = "Status changed successfully!";
+            //}
+            //else
+            //{
+            //    AlertMsg = "Status change was not successfull, Please try again later.";
+            //}
+        }
+
+        #endregion
+        
         #endregion
     }
 }

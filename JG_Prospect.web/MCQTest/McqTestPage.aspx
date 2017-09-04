@@ -111,7 +111,6 @@
                 <asp:Button ID="btnEndExamTimeOut" runat="server" OnClick="btnEndExam_Click" Style="display: none;" Text="Button" />
                 <div id="divExamSection" runat="server" visible="false" class="mcqquesMain">
 
-                    <%--<div id="divTimer" class="clock"></div>--%>
                     <div id="divTimer" style="height: 100px;" class="stopwatch" data-timer=""></div>
 
                     <!-- Questions Section Start-->
@@ -134,9 +133,13 @@
 
                     </asp:Repeater>
                     <!-- Questions Section Ends-->
+
+
                     <div id="divQues" class="mcqQuestion">
-                        <asp:Literal ID="ltlQuesNo" runat="server"></asp:Literal>
-                        <asp:Literal ID="ltlQuestionTitle" runat="server"></asp:Literal>
+                        <span class="bluetext">
+                            <strong>
+                                <asp:Literal ID="ltlQuesNo" runat="server"></asp:Literal></strong>
+                            <asp:Literal ID="ltlQuestionTitle" runat="server"></asp:Literal></span>
                         <asp:RadioButtonList ID="rblQuestionOptions" AutoPostBack="true" runat="server" OnSelectedIndexChanged="rblQuestionOptions_SelectedIndexChanged"></asp:RadioButtonList>
                         <asp:HiddenField ID="hdnPMarks" runat="server" />
                         <asp:HiddenField ID="hdnNMarks" runat="server" />
