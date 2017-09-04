@@ -1143,3 +1143,282 @@ ORDER BY [Sequence] ASC
 
       
 END
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTasksforSubSequencing]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_GetAllTasksforSubSequencing   
+
+	END  
+GO    
+-- usp_GetAllTasksforSubSequencing '9','-ITJN:SS',0, 556  
+CREATE PROCEDURE usp_GetAllTasksforSubSequencing
+(                                    
+ @DesignationId INT = 0,
+ @DesiSeqCode VARCHAR(20),                  
+ @IsTechTask BIT = 0,
+ @TaskId   BIGINT    
+)                        
+As                        
+BEGIN                        
+                
+
+SELECT DISTINCT TaskId,[Sequence],CONVERT(VARCHAR(20),[Sequence]) + @DesiSeqCode AS SeqLable                    
+           
+FROM  tbltask a                        
+                    
+WHERE                   
+  (                   
+    (a.[Sequence] IS NOT NULL)  
+	AND a.[SubSequence] IS NULL                
+    AND (a.[SequenceDesignationId] = @DesignationId  )                
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)   
+	AND TaskId <> @TaskId               
+                     
+  )               
+ORDER BY a.[Sequence] DESC                  
+                      
+END 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-- Live publish 08262017
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSubSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_DeleteTaskSubSequenceByTaskId   
+
+	END  
+GO    
+
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 01 Sep 17      
+-- Description: Delete Task Sequence Task by Id.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSubSequenceByTaskId]      
+ @TaskId  BIGINT           
+AS      
+BEGIN      
+    
+BEGIN TRANSACTION        
+
+DECLARE @OriginalSeq BIGINT    
+DECLARE @OriginalSubSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+DECLARE @IsTechTask BIT  
+  
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak   
+SELECT  @OriginalSeq = [Sequence] ,@OriginalSubSeq = [SubSequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId  
+  
+UPDATE tblTask      
+   SET                [Sequence] = NULL , [SubSequence] = NULL , [SequenceDesignationId] = NULL  
+WHERE        (TaskId = @TaskId)     
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [SubSequence] = [SubSequence] - 1         
+ WHERE        ([SubSequence] >= @OriginalSubSeq) AND [Sequence] = @OriginalSeq AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+   
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION      
+END         
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_SwapSubTaskSequences]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE usp_SwapSubTaskSequences   
+
+	END  
+GO    
+  
+    
+-- =============================================                  
+-- Author:  Yogesh Keraliya                  
+-- Create date: 09012017                  
+-- Description: This will swap sub sequence between two tasks.                  
+-- =============================================                  
+-- 
+CREATE PROCEDURE [dbo].[usp_SwapSubTaskSequences]                   
+(                  
+                
+ @FirstTaskID BIGINT = 0,                   
+ @SecondTaskID BIGINT = 0,                   
+ @FirstSubSeq BIGINT = 0,            
+ @SecondSubSeq BIGINT = 0                    
+)                  
+As                  
+BEGIN                  
+     
+  UPDATE       tblTask  
+  SET                [SubSequence] = @SecondSubSeq  
+  WHERE        (TaskId = @FirstTaskID)          
+    
+  UPDATE       tblTask  
+  SET                [SubSequence] = @FirstSubSeq  
+  WHERE        (TaskId = @SecondTaskID)          
+    
+                
+END   
+  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------      
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
+
+	END  
+GO    
+
+  
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 31 July 17      
+-- Description: Delete Task Sequence Task by Id.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSequenceByTaskId]      
+ @TaskId  BIGINT           
+AS      
+BEGIN      
+    
+BEGIN TRANSACTION        
+    
+DECLARE @OriginalSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+DECLARE @IsTechTask BIT  
+  
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak   
+SELECT @OriginalSeq = [Sequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId  
+
+
+-- Remove all task subsequences and sequence
+UPDATE tblTask      
+   SET  [Sequence] = NULL, [SubSequence] = NULL , [SequenceDesignationId] = NULL  
+WHERE [Sequence] = @OriginalSeq AND [SequenceDesignationId] = @OriginalDesignationID AND  @IsTechTask = IsTechTask
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [Sequence] = [Sequence] - 1         
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+   
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION      
+END
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_UpdateTaskSequence]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	BEGIN
+ 
+	DROP PROCEDURE [usp_UpdateTaskSequence]   
+
+	END  
+GO   
+  
+-- =============================================      
+-- Author:  Yogesh Keraliya      
+-- Create date: 05162017      
+-- Description: This will update task sequence      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_UpdateTaskSequence]       
+(       
+ @Sequence bigint ,    
+ @DesignationID int,       
+ @TaskId bigint,    
+ @IsTechTask bit   
+)      
+AS      
+BEGIN      
+  
+  
+BEGIN TRANSACTION        
+    
+DECLARE @OriginalSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+  
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId  
+  
+ UPDATE tblTask      
+   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID    
+ WHERE  ([Sequence] = @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)  
+BEGIN  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [Sequence] = [Sequence] - 1         
+ WHERE        ([Sequence] >= @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+  
+  
+END      
+    
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION    
+  
+---- if sequence is already assigned to some other task with same designation, all sequence will push back by 1 from alloted sequence for that designation.      
+--IF EXISTS(SELECT   T.TaskId    
+--FROM            tblTask AS T     
+--WHERE        (T.[Sequence] = @Sequence) AND (T.TaskId <> @TaskId) AND (T.[SequenceDesignationId] = @DesignationID) AND T.IsTechTask = @IsTechTask)      
+--  BEGIN      
+      
+--  -- push back all task sequence for 1 from sequence assigned in between.    
+--     UPDATE       tblTask      
+--     SET                [Sequence] = [Sequence] + 1         
+--     WHERE        ([Sequence] >= @Sequence) AND ([SequenceDesignationId] = @DesignationID) AND IsTechTask = @IsTechTask    
+      
+--  END      
+      
+  -- Update task sequence and its respective designationid.    
+   
+    
+    
+END   
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Live publish 09022017
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     

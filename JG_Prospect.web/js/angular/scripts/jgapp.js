@@ -55,7 +55,7 @@ app.directive('jgpager', function () {
 
 angular.isUndefinedOrNull = function (val) {
     return angular.isUndefined(val) || val === null;
-}
+};
 
 angular.getSequenceDisplayText = function (strSequence, strDesigntionID, seqSuffix) {
     var sequenceText = "#SEQ#-#DESGPREFIX#:#TORS#";

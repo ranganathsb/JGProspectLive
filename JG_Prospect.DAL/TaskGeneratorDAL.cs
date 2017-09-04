@@ -58,6 +58,37 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetAllTasksforSubSequencing( Int32 DesignationId, String DesiSeqCode , bool IsTechTask, Int64 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllTasksforSubSequencing");
+
+                    database.AddInParameter(command, "@DesignationId", SqlDbType.Int, DesignationId);
+                    database.AddInParameter(command, "@DesiSeqCode", SqlDbType.VarChar, DesiSeqCode);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);                  
+
+
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetDesignationTaskToAssignWithSequence(Int32 DesignationId, bool IsTechTask)
         {
             try
@@ -196,6 +227,37 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool TaskSwapSubSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_SwapSubTaskSequences");
+
+                    database.AddInParameter(command, "@FirstTaskID", SqlDbType.BigInt, FirstTaskId);
+                    database.AddInParameter(command, "@SecondTaskID", SqlDbType.BigInt, SecondTaskId);
+                    database.AddInParameter(command, "@FirstSubSeq", SqlDbType.BigInt, FirstSequenceId);
+                    database.AddInParameter(command, "@SecondSubSeq", SqlDbType.BigInt, SecondSequenceId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        
+
         public bool DeleteTaskSequence(Int64 TaskId)
         {
             try
@@ -222,6 +284,33 @@ namespace JG_Prospect.DAL
 
         }
 
+
+        public bool DeleteTaskSubSequence(Int64 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_DeleteTaskSubSequenceByTaskId");
+
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        
         public Boolean InsertAssignedDesignationTaskWithSequence(Int32 DesignationId, bool IsTechTask, Int64 AssignedSequence, Int64 TaskId, Int32 UserId)
         {
             try
@@ -332,6 +421,35 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return null;
+            }
+
+        }
+
+        public bool UpdateTaskSubSequence(Int64 TaskID, Int64 TaskIdSeq, Int64 SubSeqTaskId,Int64 DesignationId )
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateTaskForSubSequencing");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskID);
+                    database.AddInParameter(command, "@TaskIdSeq", DbType.Int64, TaskIdSeq);
+                    database.AddInParameter(command, "@SubSeqTaskId", DbType.Int64, SubSeqTaskId);                    
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
+
+                    database.ExecuteNonQuery(command);
+
+                    return true;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
             }
 
         }

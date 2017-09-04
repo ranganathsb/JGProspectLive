@@ -11,6 +11,7 @@
 
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
+    <link href="../css/jquery.timepicker.css" rel="stylesheet" />
     <style type="text/css">
         .ddlstatus-per-text {
             float: right;
@@ -282,61 +283,6 @@
 
             .contactGrid select.phone option[data-p='1'] {
                 color: red;
-            }
-
-        .userNotes {
-            margin: 0px !important;
-            width: 100% !important;
-        }
-
-            .userNotes tbody {
-                height: auto !important;
-            }
-
-            .userNotes tr {
-                display: table-row !important;
-                background: antiquewhite;
-            }
-
-                .userNotes tr th:nth-child(1), .userNotes tr td:nth-child(1) {
-                    width: 20% !important;
-                }
-
-                .userNotes tr th:nth-child(2), .userNotes tr td:nth-child(2) {
-                    width: 25% !important;
-                }
-
-                .userNotes tr th:nth-child(3), .userNotes tr td:nth-child(3) {
-                    width: 55% !important;
-                }
-
-                .userNotes tr td:nth-child(2) {
-                    background-color: #B74A4D !important;
-                }
-
-                .userNotes tr th {
-                    background-color: #C0AE96 !important;
-                    border: none !important;
-                    padding: 2px;
-                    display: table-cell !important;
-                }
-
-                .userNotes tr td {
-                    /*background-color: #FFFCD9 !important;*/
-                    padding: 1px;
-                    display: table-cell !important;
-                }
-
-            .userNotes tr {
-                background-color: #FFFCD9 !important;
-            }
-
-                .userNotes tr:nth-child(2n+1) {
-                    background-color: #FF8D79 !important;
-                }
-
-            .userNotes tbody td {
-                border: none !important;
             }
 
         .noMargin span {
@@ -1177,28 +1123,28 @@
                                             </div>
                                         </div>--%>
                                         <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-                                        <div style="max-height:200px; overflow:auto;">
-                                        <asp:Repeater ID="rptNotes" runat="server">
-                                            <HeaderTemplate>
-                                                <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size:11px;">
-                                                    <tbody>
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-                                                <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
-                                                    <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
-                                                    <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
-                                                    <td style="width: 55%;"><%#Eval("LogDescription")%></td>
-                                                </tr>
-                                            </ItemTemplate>
-                                            <FooterTemplate>
-                                                </tbody>
+                                        <div style="max-height: 200px; overflow: auto;">
+                                            <asp:Repeater ID="rptNotes" runat="server">
+                                                <HeaderTemplate>
+                                                    <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                                        <tbody>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
+                                                        <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
+                                                        <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
+                                                        <td style="width: 55%;"><%#Eval("LogDescription")%></td>
+                                                    </tr>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </tbody>
                                                 </table>
-                                            </FooterTemplate>
-                                        </asp:Repeater>
-                                            </div>
-                                        <div style="text-align:left;">
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3" 
-                                                Style="vertical-align: middle; padding: 0px!important; width:100%" CssClass="textbox"></asp:TextBox><br />
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </div>
+                                        <div style="text-align: left;">
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
+                                                Style="vertical-align: middle; padding: 0px!important; width: 100%" CssClass="textbox"></asp:TextBox><br />
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
 
@@ -1826,23 +1772,25 @@
                         <th style="width: 17%; text-align: left;"><a href="javascript:void(0);">Email<br>
                             Phone Type - Phone</a></th>
                         <th style="width: 17%; text-align: center;">Notes<br>
-                            <table class="userNotes" cellspacing="0">
-                                <tbody>
-                                    <tr>
-                                        <th>User Id</th>
-                                        <th>Date &amp; Time</th>
-                                        <th>Note/Status</th>
+                            <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr class="trHeader " style="color: White;">
+                                        <th scope="col" style="width: 19%;">User ID</th>
+
+                                        <th scope="col" style="width: 25%;">Date&Time</th>
+                                        <th scope="col" style="width: 56%;">Note/Status</th>
+
                                     </tr>
-                                </tbody>
+                                </thead>
                             </table>
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="height: 400px !important;">
                     <tr data-ng-repeat="EditSalesUser in EditSalesUsers" ng-class="{rejectedUser: EditSalesUser.Status == '9'}" repeat-end="onEditUserBindEnd()">
                         <td style="width: 10%; text-align: center;">
 
-                            <a href="ViewSalesUser.aspx?ID=3646">
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">
                                 <img id="ContentPlaceHolder1_grdUsers_imgprofile_0" ng-src="{{EditSalesUser.picture}}" style="width: 100%; height: 85%;"></a>
 
                         </td>
@@ -1855,9 +1803,27 @@
                             <label class="blacktext">{{EditSalesUser.FristName}} {{EditSalesUser.LastName}}</label>
                         </td>
                         <td style="width: 16%; text-align: center;" class="SeqAssignment">
+
+                            <any ng-switch="EditSalesUser.Status">
+                    <ANY ng-switch-when="1">Active</ANY>
+                    <ANY ng-switch-when="2">Applicant</ANY>
+                    <ANY ng-switch-when="3">Deactive</ANY>
+                    <ANY ng-switch-when="4">InstallProspect</ANY>
+                    <ANY ng-switch-when="5">InterviewDate</ANY>
+                    <ANY ng-switch-when="6">OfferMade</ANY>
+                    <ANY ng-switch-when="7">PhoneScreened</ANY>
+                    <ANY ng-switch-when="8">Phone_VideoScreened</ANY>
+                    <ANY ng-switch-when="9">Rejected</ANY>
+                    <ANY ng-switch-when="10">ReferralApplicant</ANY>                  
+                    
+                </any>
+                            <br />
+                            <input ng-attr-id="intdt{{EditSalesUser.Id}}" style="width: 80px" class="interviewDate" ng-attr-data-email="{{EditSalesUser.Email}}" ng-attr-data-userid="{{EditSalesUser.Id}}" type="text">
+                            <input ng-attr-id="inttime{{EditSalesUser.Id}}" style="width: 70px" class="interviewTime" type="text">
+                            <br />
                             <a href="javascript:void(0);" class="badge-hyperlink"><span class="badge badge-success badge-xstext">
                                 <label class="seqLable"></label>
-                            </span></a><a class="seqTaskURL" href=""></a>
+                            </span></a><a class="seqTaskURL" data-taskid=""  href=""></a>
 
                         </td>
                         <td style="width: 10%; text-align: center;">
@@ -1915,7 +1881,11 @@
                 Loading...
                 <img src="../img/ajax-loader.gif" />
             </div>
+            <div class="btn_sec">
+                <h3><label id="ediPopupStatusSuccess"></label> </h3>
+                <input type="button" value="Save" style="background: url(img/main-header-bg.png) repeat-x; color: #fff; height:30px;width:80px;" id="btnSaveMultipleStatuses" onclick="SetMultipleInterviewDate(this);" class="GrdBtnAdd" title="Save" />
 
+            </div>
             <%--   <div class="text-center">
                 <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getEditUsers(page)"></jgpager>
             </div>--%>
@@ -1927,7 +1897,9 @@
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/edituser-angular.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
     <script src="../js/edituser.js"></script>
+
     <script type="text/javascript">
 
         var UserGridId = "#<%=grdUsers.ClientID%>";

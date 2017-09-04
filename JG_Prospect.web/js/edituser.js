@@ -49,50 +49,121 @@ function GetSequences() {
     CallJGWebService('GetInterviewDateSequences', postData, OnGetSequenceSuccess, OnGetSequenceError);
 
     function OnGetSequenceSuccess(data) {
-        
-        if (data.d) {            
+
+        if (data.d) {
             AllocatedUserWithSequences(JSON.parse(data.d));
         }
     }
 
     function OnGetSequenceError(err) {
-        alert("Error occured while loading sequences automatically.");        
+        alert("Error occured while loading sequences automatically.");
     }
 }
 
 function AllocatedUserWithSequences(AvailableSequences) {
-    
-    console.log(AvailableSequences);
 
     var SeqArray = AvailableSequences;
 
     //Get table rows for edit users.
     var tableRows = $('#tblEditUserPopup > tbody > tr');
 
-    console.log(tableRows);
-
-    $.each(tableRows, function (Index,Item) {
+    $.each(tableRows, function (Index, Item) {
 
         var td = $(Item).find("td.SeqAssignment");// find td that contains assignment.
         var taskUrl = "/Sr_App/TaskGenerator.aspx?TaskId=#PTID#&hstid=#HTID#";
-        console.log(SeqArray.length);
-        console.log(Index);
 
         // Untill sequence is available assign it.
-        if (SeqArray.length > Index) {
-            
+        if (SeqArray && SeqArray.length > Index) {
+
             var seqLabel = $(td).find("label.seqLable");
             $(seqLabel).html(angular.getSequenceDisplayText(SeqArray[Index].SequenceNo, editSalesUserScope.SearchDesignationId, "TT"));
 
             //console.log(seqLabel);
 
-            var TaskURL = $(td).find("a.seqTaskURL");            
+            var TaskURL = $(td).find("a.seqTaskURL");
             $(TaskURL).html(SeqArray[Index].InstallId);
             $(TaskURL).attr("href", taskUrl.replace("#PTID#", SeqArray[Index].ParentTaskId).replace("#HTID#", SeqArray[Index].TaskId));
-            
+            $(TaskURL).attr("data-taskid", SeqArray[Index].TaskId);
             //console.log(TaskURL);
         }
-        
+
+        // Apply Datetime Picker to input.
+        var dateTextBox = $(td).find("input.interviewDate");
+        console.log(dateTextBox);
+        $(dateTextBox).datepicker({
+            dateFormat: 'mm-dd-yy',
+            minDate: new Date()
+        });
+
+        $(dateTextBox).datepicker("setDate", new Date());
+
+        var timeTextBox = $(td).find("input.interviewTime");
+
+        $(timeTextBox).timepicker({ 'timeFormat': 'h:i A' });
+
+        $(timeTextBox).timepicker('setTime', new Date());
+
 
     });
+}
+
+function SetMultipleInterviewDate(button) {
+
+    //Get table rows for edit users.
+    var tableRows = $('#tblEditUserPopup > tbody > tr');
+
+    $.each(tableRows, function (Index, Item) {
+
+        var td = $(Item).find("td.SeqAssignment");
+        var InterviewDateTextBox = $($(td).find("input.interviewDate"));
+
+        var InterviewDate = InterviewDateTextBox.val();
+        var InterviewTime = $($(td).find("input.interviewTime")).val();
+        var DesignationId = editSalesUserScope.SearchDesignationId;
+
+        var UserEmail = InterviewDateTextBox.attr("data-email");
+        var UserId = parseInt(InterviewDateTextBox.attr("data-userid"));
+
+        var TaskURL = $(td).find("a.seqTaskURL");
+
+        var TaskId = parseInt($(TaskURL).attr("data-taskid"));
+
+        if (isNaN(TaskId)) {
+            TaskId = 0;
+        }
+
+        SetInterviewDateStatus(UserId, UserEmail, DesignationId, InterviewDate, InterviewTime, TaskId);
+
+    });
+
+    return false;
+}
+
+function SetInterviewDateStatus(UserId, UserEmail, DesignationId, InterviewDateVal, InterviewTimeVal, TaskId) {
+
+    ShowAjaxLoader();
+    var postData = { UserEmail: UserEmail, UserID: UserId, DesignationID: DesignationId, InterviewDate: InterviewDateVal, InterviewTime: InterviewTimeVal, TaskId: TaskId };
+
+    console.log(postData);
+
+    CallJGWebService('SendInterviewDatetoCandidate', postData, OnSendInterviewDatetoCandidateSuccess, OnSendInterviewDatetoCandidateError);
+
+    function OnSendInterviewDatetoCandidateSuccess(data) {
+
+
+        HideAjaxLoader();
+        if (data.d) {
+
+            $("#ediPopupStatusSuccess").html($("#ediPopupStatusSuccess").html() + "Interview date email sent to :" + UserEmail + "<br/>");
+
+        }
+    }
+
+    function OnSendInterviewDatetoCandidateError(err) {
+
+
+        HideAjaxLoader();
+        alert("Error occured while sending interview date email to: " + UserEmail);
+    }
+
 }
