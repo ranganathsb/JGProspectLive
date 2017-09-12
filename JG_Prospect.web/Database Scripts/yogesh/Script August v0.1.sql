@@ -1423,6 +1423,8 @@ END
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     
+
 
     
 -- =============================================        
@@ -1452,34 +1454,34 @@ SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationI
  
 -- IF TASK HAS NO SEQUENCE ASSIGNED PREVIOUSLY 
 IF( @OriginalSeq IS NULL )
-		BEGIN
+        BEGIN
 
-		UPDATE tblTask        
-		   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID      
-		 WHERE  ([Sequence] = @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask       
+        UPDATE tblTask        
+           SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID      
+         WHERE  ([Sequence] = @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask       
 
-		END
+        END
 
-				-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.    
-		IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)    
-		BEGIN    
+                -- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.    
+        IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)    
+        BEGIN    
     
-			-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
-			 UPDATE       tblTask        
-				 SET                [Sequence] = [Sequence] - 1           
-			 WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask      
+            -- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+             UPDATE       tblTask        
+                 SET                [Sequence] = [Sequence] - 1           
+             WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask      
     
     
-		END       
+        END       
 
 ELSE
-		BEGIN
+        BEGIN
 
-			UPDATE tblTask        
-			   SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID   
-			 WHERE TaskId = @TaskId 
+            UPDATE tblTask        
+               SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID   
+             WHERE TaskId = @TaskId 
 
-		END
+        END
       
     
   IF (@@Error <> 0)   -- Check if any error    
@@ -1496,11 +1498,11 @@ END
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	BEGIN
+    BEGIN
  
-	DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
+    DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
 
-	END  
+    END  
 GO    
 
   
@@ -1549,11 +1551,11 @@ END
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTasksforSubSequencing]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	BEGIN
+    BEGIN
  
-	DROP PROCEDURE usp_GetAllTasksforSubSequencing   
+    DROP PROCEDURE usp_GetAllTasksforSubSequencing   
 
-	END  
+    END  
 GO    
 -- usp_GetAllTasksforSubSequencing 12,'-ITSPH:SS',0, 556    
 CREATE PROCEDURE usp_GetAllTasksforSubSequencing  
@@ -1574,9 +1576,9 @@ FROM  tbltask a
 WHERE                     
   (                     
     (a.[Sequence] IS NOT NULL)    
-	AND (a.[SequenceDesignationId] = @DesignationId  )                  
+    AND (a.[SequenceDesignationId] = @DesignationId  )                  
     AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)     
-	AND TaskId <> @TaskId                 
+    AND TaskId <> @TaskId                 
     AND NOT EXISTS (SELECT 1 FROM tblTask as t WHERE  t.[Sequence] = a.[Sequence] AND t.[SequenceDesignationId] = a.[SequenceDesignationId] AND t.SubSequence IS NOT NULL AND IsTechTask = @IsTechTask)                   
   )                 
 ORDER BY a.[Sequence] DESC                    
@@ -1591,19 +1593,19 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
--- Author:		Yogesh Keraliya
+-- Author:        Yogesh Keraliya
 -- Create date: 060212017
--- Description:	This will get aggregate % for user's given exam if any
+-- Description:    This will get aggregate % for user's given exam if any
 -- =============================================
 CREATE FUNCTION [dbo].[udf_IsUserAssigned] 
-(	
-	@UserID INT
+(    
+    @UserID INT
 )
 RETURNS BIT
 AS
 BEGIN
-	-- Declare the return variable here
-	DECLARE @UserAssigned BIT = 0
+    -- Declare the return variable here
+    DECLARE @UserAssigned BIT = 0
     
     
 IF EXISTS (SELECT AssignedDesigSeq FROM tblAssignedSequencing WHERE UserId = @UserID)

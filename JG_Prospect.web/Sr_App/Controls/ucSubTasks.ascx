@@ -3027,9 +3027,8 @@
         $(".dropzonetask").each(function () {
             var objSubTaskDropzone1;
             var taskId = $(this).attr('data-taskid');
-
-            if (!(this).dropzone) {
-
+            //alert(taskId);
+            if (!(this.dropzone)) {
                 $(this).dropzone({
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
@@ -3064,7 +3063,6 @@
                     });
                 }
             });
-
         }
         });
 }
