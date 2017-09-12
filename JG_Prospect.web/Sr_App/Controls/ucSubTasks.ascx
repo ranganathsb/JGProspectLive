@@ -3027,22 +3027,24 @@
         $(".dropzonetask").each(function () {
             var objSubTaskDropzone1;
             var taskId = $(this).attr('data-taskid');
-            //alert(taskId);
-            $(this).dropzone({
-                maxFiles: 5,
-                url: "taskattachmentupload.aspx",
-                thumbnailWidth: 90,
-                thumbnailHeight: 90,
-                init: function () {
-                    dzClosure = this;
 
-                    this.on("maxfilesexceeded", function (data) {
-                        alert('you are reached maximum attachment upload limit.');
-                    });
+            if (!(this).dropzone) {
 
-                    this.on("drop", function (data) {
-                        //alert(taskId);
-                        $('#<%=hdDropZoneTaskId.ClientID%>').val(taskId);
+                $(this).dropzone({
+                    maxFiles: 5,
+                    url: "taskattachmentupload.aspx",
+                    thumbnailWidth: 90,
+                    thumbnailHeight: 90,
+                    init: function () {
+                        dzClosure = this;
+
+                        this.on("maxfilesexceeded", function (data) {
+                            alert('you are reached maximum attachment upload limit.');
+                        });
+
+                        this.on("drop", function (data) {
+                            //alert(taskId);
+                            $('#<%=hdDropZoneTaskId.ClientID%>').val(taskId);
                     });
 
                     // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
@@ -3062,34 +3064,36 @@
                     });
                 }
             });
+
+        }
         });
-    }
+}
 
 
-    function setSelectedUsersLink() {
+function setSelectedUsersLink() {
 
-        $('.search-choice').each(function () {
-            var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
-            //console.log(itemIndex);
-            if (itemIndex) {
-                //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
-                var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
-                var chspan = $(this).children('span');
-                if (chspan) {
-                    chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
-                    chspan.bind("click", "a", function () {
-                        window.open($(this).children("a").attr("href"), "_blank", "", false);
-                    });
-                }
+    $('.search-choice').each(function () {
+        var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
+        //console.log(itemIndex);
+        if (itemIndex) {
+            //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
+            var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
+            var chspan = $(this).children('span');
+            if (chspan) {
+                chspan.html('<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + chspan.text() + '</a>');
+                chspan.bind("click", "a", function () {
+                    window.open($(this).children("a").attr("href"), "_blank", "", false);
+                });
             }
-        });
-    }
+        }
+    });
+}
 
 
 
 
 
 
-    //--------------- End DP ---------------
+//--------------- End DP ---------------
 
 </script>
