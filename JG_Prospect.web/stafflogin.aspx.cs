@@ -923,6 +923,11 @@ namespace JG_Prospect
                             {
                                 strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
                             }
+                            // if user has passed exam and didn't assigned sequence he should be redirect to view applicant page for auto sequence assignment.
+                            else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate && ds.Tables[0].Rows[0]["AssignedSequence"].ToString() == "0")
+                            {
+                                Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+                            }
                             else
                             {
                                 if (JGSession.IsFirstTime == true)

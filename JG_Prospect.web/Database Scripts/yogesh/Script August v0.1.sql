@@ -1422,3 +1422,254 @@ END
 -- Live publish 09022017
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------     
+
+
+    
+-- =============================================        
+-- Author:  Yogesh Keraliya        
+-- Create date: 05162017        
+-- Description: This will update task sequence        
+-- =============================================       
+-- [dbo].[usp_UpdateTaskSequence]    8,702,12, 0      
+ALTER PROCEDURE [dbo].[usp_UpdateTaskSequence]         
+(         
+ @Sequence bigint ,      
+ @DesignationID int,         
+ @TaskId bigint,      
+ @IsTechTask bit     
+)        
+AS        
+BEGIN        
+    
+    
+BEGIN TRANSACTION          
+      
+DECLARE @OriginalSeq BIGINT    
+DECLARE @OriginalDesignationID INT        
+    
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId    
+    
+ 
+-- IF TASK HAS NO SEQUENCE ASSIGNED PREVIOUSLY 
+IF( @OriginalSeq IS NULL )
+        BEGIN
+
+        UPDATE tblTask        
+           SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID      
+         WHERE  ([Sequence] = @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask       
+
+        END
+
+                -- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.    
+        IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)    
+        BEGIN    
+    
+            -- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+             UPDATE       tblTask        
+                 SET                [Sequence] = [Sequence] - 1           
+             WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask      
+    
+    
+        END       
+
+ELSE
+        BEGIN
+
+            UPDATE tblTask        
+               SET                [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID   
+             WHERE TaskId = @TaskId 
+
+        END
+      
+    
+  IF (@@Error <> 0)   -- Check if any error    
+     BEGIN              
+        ROLLBACK TRANSACTION           
+     END     
+   ELSE     
+       COMMIT TRANSACTION         
+      
+      
+END     
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_DeleteTaskSequenceByTaskId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE [usp_DeleteTaskSequenceByTaskId]   
+
+    END  
+GO    
+
+  
+-- =============================================      
+-- Author:  Yogesh      
+-- Create date: 31 July 17      
+-- Description: Delete Task Sequence Task by Id.      
+-- =============================================      
+CREATE PROCEDURE [dbo].[usp_DeleteTaskSequenceByTaskId]      
+ @TaskId  BIGINT           
+AS      
+BEGIN      
+    
+BEGIN TRANSACTION        
+    
+DECLARE @OriginalSeq BIGINT  
+DECLARE @OriginalDesignationID INT      
+DECLARE @IsTechTask BIT  
+  
+-- Get Sequence, SequenceDesignation, IsTechTask flag from tak   
+SELECT @OriginalSeq = [Sequence], @OriginalDesignationID = [SequenceDesignationId], @IsTechTask = IsTechTask FROM tblTask WHERE TaskId = @TaskId  
+
+
+-- Remove all task subsequences and sequence
+UPDATE tblTask      
+   SET  [Sequence] = NULL, [SubSequence] = NULL , [SequenceDesignationId] = NULL  
+WHERE [Sequence] = @OriginalSeq AND [SequenceDesignationId] = @OriginalDesignationID AND  @IsTechTask = IsTechTask
+  
+  
+-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.  
+  
+-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.   
+ UPDATE       tblTask      
+     SET                [Sequence] = [Sequence] - 1         
+ WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask    
+   
+  
+  IF (@@Error <> 0)   -- Check if any error  
+     BEGIN            
+        ROLLBACK TRANSACTION         
+     END   
+   ELSE   
+       COMMIT TRANSACTION      
+END
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[usp_GetAllTasksforSubSequencing]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE usp_GetAllTasksforSubSequencing   
+
+    END  
+GO    
+-- usp_GetAllTasksforSubSequencing 12,'-ITSPH:SS',0, 556    
+CREATE PROCEDURE usp_GetAllTasksforSubSequencing  
+(                                      
+ @DesignationId INT = 0,  
+ @DesiSeqCode VARCHAR(20),                    
+ @IsTechTask BIT = 0,  
+ @TaskId   BIGINT      
+)                          
+As                          
+BEGIN                          
+                  
+  
+SELECT DISTINCT TaskId,[Sequence],CONVERT(VARCHAR(20),[Sequence]) + @DesiSeqCode AS SeqLable                      
+             
+FROM  tbltask a                          
+                      
+WHERE                     
+  (                     
+    (a.[Sequence] IS NOT NULL)    
+    AND (a.[SequenceDesignationId] = @DesignationId  )                  
+    AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)     
+    AND TaskId <> @TaskId                 
+    AND NOT EXISTS (SELECT 1 FROM tblTask as t WHERE  t.[Sequence] = a.[Sequence] AND t.[SequenceDesignationId] = a.[SequenceDesignationId] AND t.SubSequence IS NOT NULL AND IsTechTask = @IsTechTask)                   
+  )                 
+ORDER BY a.[Sequence] DESC                    
+                        
+END   
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  UserDefinedFunction [dbo].[udf_GetUserExamPercentile]    Script Date: 9/10/2017 1:18:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:        Yogesh Keraliya
+-- Create date: 060212017
+-- Description:    This will get aggregate % for user's given exam if any
+-- =============================================
+CREATE FUNCTION [dbo].[udf_IsUserAssigned] 
+(    
+    @UserID INT
+)
+RETURNS BIT
+AS
+BEGIN
+    -- Declare the return variable here
+    DECLARE @UserAssigned BIT = 0
+    
+    
+IF EXISTS (SELECT AssignedDesigSeq FROM tblAssignedSequencing WHERE UserId = @UserID)
+BEGIN
+
+SET @UserAssigned = 1
+
+END
+
+
+
+-- Return the result of the function
+RETURN @UserAssigned
+
+END
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- =============================================        
+-- Author:  Yogesh        
+-- Create date: 23 Feb 2017      
+-- Updated By : Yogesh      
+--     Added applicant status to allow applicant to login.      
+-- Updated By : Nand Chavan (Task ID#: REC001-XIII)    
+--                  Replace Source with SourceID    
+-- Description: Get an install user by email and status.      
+-- =============================================      
+-- [dbo].[UDP_GetInstallerUserDetailsByLoginId]  'Surmca17@gmail.com' 
+ALTER PROCEDURE [dbo].[UDP_GetInstallerUserDetailsByLoginId]      
+ @loginId varchar(50) ,      
+ @ActiveStatus varchar(5) = '1',      
+ @ApplicantStatus varchar(5) = '2',      
+ @InterviewDateStatus varchar(5) = '5',      
+ @OfferMadeStatus varchar(5) = '6'      
+AS      
+BEGIN      
+    
+ DECLARE @phone varchar(1000) = @loginId    
+    
+ --REC001-XIII - create formatted phone#    
+ IF ISNUMERIC(@loginId) = 1 AND LEN(@loginId) > 5    
+ BEGIN    
+  SET @phone =  '(' + SUBSTRING(@phone, 1, 3) + ')-' + SUBSTRING(@phone, 4, 3) + '-' + SUBSTRING(@phone, 7, LEN(@phone))    
+ END    
+        
+  SELECT Id,FristName,Lastname,Email,[Address],Designation,[Status],      
+   [Password],[Address],Phone,Picture,Attachements,usertype, Picture,IsFirstTime,DesignationID,  
+   CASE WHEN  [Status] = '5' THEN [dbo].[udf_IsUserAssigned](tbi.Id) ELSE 0 END AS AssignedSequence  
+  FROM tblInstallUsers  AS tbi 
+  WHERE       
+   (Email = @loginId OR Phone = @loginId  OR Phone = @phone)     
+   AND ISNULL(@loginId, '') != ''   AND    
+   (      
+    [Status] = @ActiveStatus OR       
+    [Status] = @ApplicantStatus OR      
+    [Status] = @OfferMadeStatus OR       
+    [Status] = @InterviewDateStatus      
+   )      
+    
+END
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------- Live Publish 09102017
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
