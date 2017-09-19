@@ -10,7 +10,7 @@ function initializeAngular() {
 function SetLatestSequenceForAddNewSubTask() {
 
     var sequencetextbox = $('#divNewAddSeq');
-    getLastAvailableSequence(sequencetextbox);
+    getLastAvailableSequence(sequencetextbox,false);
 
 
 }
@@ -86,14 +86,14 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     //console.log(TechTask);
 
     if (TechTask === 'True') {
-        console.log("calling search tech task after popup initialized....");
+        //console.log("calling search tech task after popup initialized....");
         sequenceScope.IsTechTask = true;
         sequenceScope.getTechTasks();
         //sequenceUIGridScope.getUITechTasks();
         applyTaskSequenceTabs(1);
     }
     else {
-        console.log("calling search staff task after popup initialized....");
+        //console.log("calling search staff task after popup initialized....");
         sequenceScope.IsTechTask = false;
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
@@ -183,6 +183,17 @@ function showEditTaskSequence(element) {
 
 }
 
+function showEditTaskSubSequence(element)
+{
+
+    var TaskID = $(element).attr('data-taskid');
+    var Seq = parseInt($(element).attr('data-taskseq'));
+
+    var sequenceDiv = $('#divSeq' + TaskID);     
+    
+    sequenceDiv.removeClass('hide');
+}
+
 function setDropDownChangedData(dropdown) {
 
     var TaskID = $(dropdown).attr('data-taskid');
@@ -192,7 +203,7 @@ function setDropDownChangedData(dropdown) {
     if (sequenceDiv) {
 
         var DesignationID = $(dropdown).val();
-        getLastAvailableSequence(TaskID, DesignationID);
+        getLastAvailableSequence(TaskID, DesignationID,true);
 
     }
 
@@ -241,14 +252,14 @@ function setFirstRowAutoData() {
         $(desiDropDown).val(DesignationID);// set task designation  dropdown to master designation dropdown value.
 
         // set default task sequence.
-        getLastAvailableSequence(TaskID, DesignationID);
+        getLastAvailableSequence(TaskID, DesignationID, false);
     }
 
 
 }
 
 
-function getLastAvailableSequence(TaskID, DesignationID) {
+function getLastAvailableSequence(TaskID, DesignationID, isFromDropDown) {
     ShowAjaxLoader();
 
     var postData = {
@@ -256,25 +267,24 @@ function getLastAvailableSequence(TaskID, DesignationID) {
         IsTechTask: sequenceScope.IsTechTask
     };
 
-    CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, TaskID) }, function (data) { OnGetLatestSeqError(data, TaskID) });
+    CallJGWebServiceCommon('GetLatestTaskSequence', postData, function (data) { OnGetLatestSeqSuccess(data, TaskID, isFromDropDown) }, function (data) { OnGetLatestSeqError(data, TaskID) });
 
-    function OnGetLatestSeqSuccess(data, TaskID) {
+    function OnGetLatestSeqSuccess(data, TaskID, isFromDropDown) {
 
         HideAjaxLoader();
 
         if (data.d) {
 
-            //console.log("Retrieved new designation seq.");
-            //console.log(data.d);
-
             var sequence = JSON.parse(data.d);
 
             var valExisting = parseInt($('#txtSeq' + TaskID).val());
+            
 
-
-            if (isNaN(valExisting) || valExisting == 0 || valExisting + 1 >= parseInt(sequence.Table[0].Sequence)) {
+            if (isNaN(valExisting) || valExisting == 0 || valExisting + 1 >= parseInt(sequence.Table[0].Sequence) || isFromDropDown) {
                 $('#txtSeq' + TaskID).val(parseInt(sequence.Table[0].Sequence));
             }
+
+           // console.log($('#txtSeq' + TaskID).val());
 
             DisplySequenceBox(TaskID, sequence.Table[0].Sequence);
 
@@ -496,7 +506,7 @@ function swapSubSequence(hyperlink, isup) {
     var SecondTaskID, SecondSeq, SecondTaskDesg, otherlink;
     var row = $($(hyperlink).parent()).parent();
 
-    console.log(row);
+    //console.log(row);
 
     if (row.hasClass("yellowthickborder")) {
         sequenceScope.HighLightTaskId = 0;
@@ -509,7 +519,7 @@ function swapSubSequence(hyperlink, isup) {
         otherlink = row.next().find('[data-taskdesg]').first();
     }
 
-    console.log(otherlink);
+    //console.log(otherlink);
 
     SecondTaskID = otherlink.attr("data-taskid");
     SecondSeq = otherlink.attr("data-taskseq");
@@ -582,7 +592,7 @@ function applyTaskSequenceTabs(activeTab) {
     $('#taskSequenceTabs').tabs({
         active: activeTab,
         activate: function (event, ui) {
-            console.log("called tabs select");
+            //console.log("called tabs select");
             if (ui.newPanel.attr('id') == "TechTask") {
 
                 sequenceScope.IsTechTask = true;
@@ -772,8 +782,8 @@ function SaveTaskSubSequence(hyperlink) {
 
     var SubSeqTaskId = $(dropdown).val();
 
-    console.log(dropdown);
-    console.log(SubSeqTaskId);
+    //console.log(dropdown);
+    //console.log(SubSeqTaskId);
 
     ShowAjaxLoader();
 

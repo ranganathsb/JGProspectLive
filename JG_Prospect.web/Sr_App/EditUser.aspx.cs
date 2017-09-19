@@ -448,6 +448,7 @@ namespace JG_Prospect
                                                                                                                              //Debug.WriteLine(strDesignation);
                     if (strDesignationID != "")
                     {
+
                         ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
                     }
 
