@@ -32,7 +32,7 @@ namespace JG_Prospect.App_Code
         /// Add a GitHub user as Collaborator in repo        
         /// </summary>
         /// <param name="gitUserName"></param>
-        public static async void AddUserAsGitcollaborator(string gitUserName)
+        public static void AddUserAsGitcollaborator(string gitUserName)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace JG_Prospect.App_Code
                 Octokit.GitHubClient client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(ConfigurationManager.AppSettings["GitAppName"].ToString()));
                 Octokit.Credentials basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
                 client.Credentials = basicAuth;
-                await client.Repository.Collaborator.Add(adminname, reponame, gitUserName);
+                client.Repository.Collaborator.Add(adminname, reponame, gitUserName);
             }
             catch (Exception ex)
             {
@@ -673,6 +673,9 @@ namespace JG_Prospect.App_Code
                     break;
                 case JGConstant.DesignationType.IT_PHP_Developer:
                     strCode = "ITPH";
+                    break;
+                case JGConstant.DesignationType.IT_Jr_PHP_Developer:
+                    strCode = "ITJP";
                     break;
                 case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
                     strCode = "ITSB";

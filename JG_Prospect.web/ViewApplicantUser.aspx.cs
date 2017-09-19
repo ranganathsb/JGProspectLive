@@ -39,6 +39,23 @@ namespace JG_Prospect
         #endregion
 
         #region '--Properties--'
+        public bool ShowGithubField
+        {
+            get
+            {
+                bool GithubField = false;
+                if(ViewState["ShowGithubField"] != null)
+                {
+                    Boolean.TryParse(ViewState["ShowGithubField"].ToString(), out GithubField);
+                }
+                return GithubField;
+            }
+            set
+            {
+                ViewState["ShowGithubField"] = value;
+            }
+        }
+
         public int DesignationID
         {
             get
@@ -535,6 +552,18 @@ namespace JG_Prospect
 
                         this.DesignationName = ds.Tables[0].Rows[0]["Designation"].ToString();
                         this.DesignationID = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationID"].ToString());
+
+                        //Hide GitHubUsername TextField if user designation not matches
+                        String DesignationCode = ds.Tables[0].Rows[0]["DesignationCode"].ToString();
+                        if (DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Sr_Net_Developer))
+                            || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_Net_Developer))
+                            || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Android_Developer))
+                            || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_PHP_Developer))
+                            || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_PHP_Developer))
+                            || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Network_Admin))
+                            )
+                        { ShowGithubField = true; RequiredFieldValidatorGithubUsername.EnableClientScript = true; RequiredFieldValidatorGithubUsername2.EnableClientScript = true; }
+                        else { GitHubPlaceholder.Visible = false; ShowGithubField = false; RequiredFieldValidatorGithubUsername.EnableClientScript = false; RequiredFieldValidatorGithubUsername2.EnableClientScript = false; }
 
                         if (lstDesig != null)
                         {
@@ -1314,6 +1343,7 @@ namespace JG_Prospect
             bool isAllExamGiven = false;
             double overAllPercentageScored = 0;
 
+
             overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
 
 
@@ -1368,6 +1398,12 @@ namespace JG_Prospect
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
             hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+
+            //Only for programming designations
+            if (ShowGithubField)
+            {
+                txtGithubUsername.Text = InstallUserBLL.Instance.GetUserGithubUserName(this.UserID);
+            }
             trConfirmInterview.Visible = true;
             ChangetoInterviewdateStatusandSendEmailtoUser();
 
@@ -2296,6 +2332,8 @@ namespace JG_Prospect
             objConfirmUser.citizenship = ddlPenaltyOfPerjury.SelectedValue;
             objConfirmUser.maritalstatus = ddlcmaritalstatus.SelectedValue;
             objConfirmUser.MailingAddress = txtApplicantAddress.Text;
+            if (ShowGithubField)
+                objConfirmUser.GitUserName = txtGithubUsername.Text.Trim();
             objConfirmUser.PqLicense = UploadDrivingLicense();
 
             if (rdoLicenseYes.Checked)
@@ -2306,8 +2344,11 @@ namespace JG_Prospect
             objConfirmUser.id = this.UserID;
 
             bool result = InstallUserBLL.Instance.UpdateConfirmInstallUser(objConfirmUser);
-
-
+            if (result)
+            {
+                //Allow access to the GitHub Repository
+                CommonFunction.AddUserAsGitcollaborator(objConfirmUser.GitUserName);
+            }
         }
 
         private string GetContractAttachments()
@@ -4978,6 +5019,17 @@ namespace JG_Prospect
 
             ChangePassword();
 
+            //Only for selected IT designations
+            if (ShowGithubField)
+            {
+                //Update Githubusername in DB
+                String GithubUsername = txtGithubUsername.Text.Trim();
+                InstallUserBLL.Instance.UpdateGithubUserName(this.UserID, GithubUsername);
+
+                //Add user to GitHub
+                CommonFunction.AddUserAsGitcollaborator(GithubUsername);
+
+            }
             ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
         }
 

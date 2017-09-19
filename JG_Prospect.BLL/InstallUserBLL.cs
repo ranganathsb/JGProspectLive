@@ -39,6 +39,16 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.AddUserEmailOrPhone(UserID, DataForValidation, DataType, PhoneTypeID, PhoneExt, IsPrimary);
         }
+        public void UpdateGithubUserName(int UserId, String GithubUsername)
+        {
+            InstallUserDAL.Instance.UpdateGithubUserName(UserId, GithubUsername);
+        }
+
+        public string GetUserGithubUserName(int id)
+        {
+            return InstallUserDAL.Instance.GetUserGitUserName(id);
+        }
+
 
         public string AddHoursToAvailability(DateTime dt)
         {
