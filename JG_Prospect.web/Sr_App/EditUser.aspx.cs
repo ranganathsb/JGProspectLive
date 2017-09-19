@@ -1371,7 +1371,7 @@ namespace JG_Prospect
                 , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
             if (!string.IsNullOrEmpty(gitusername))
             {
-                AddUserAsGitcollaborator(gitusername);
+                CommonFunction.AddUserAsGitcollaborator(gitusername);
             }
 
             //AssignedTask if any or Default
@@ -4475,30 +4475,6 @@ namespace JG_Prospect
             else
             {
                 return "<div style=\"color: blue;font-weight:bold;text-align: center;font-size: 20px;\">x</div>";
-            }
-        }
-
-        /// <summary>
-        /// Add a GitHub user as Collaborator in repo        
-        /// </summary>
-        /// <param name="gitUserName"></param>
-        private async void AddUserAsGitcollaborator(string gitUserName)
-        {
-            try
-            {
-                var reponame = ConfigurationManager.AppSettings["GitRepoName"].ToString();
-                var adminname = ConfigurationManager.AppSettings["GitRepoAdminName"].ToString();
-                var adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginId"].ToString();
-                var adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPassword"].ToString();
-                var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("my-cool-app"));
-                var basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
-                client.Credentials = basicAuth;
-                await client.Repository.Collaborator.Add(adminname, reponame, gitUserName);
-            }
-            catch (Exception ex)
-            {
-                //Log exception 
-                Console.WriteLine("{0} Exception caught.", ex);
             }
         }
 
