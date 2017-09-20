@@ -99,6 +99,18 @@ namespace JG_Prospect.Common
             Live = 3
         }
 
+        public enum GitRepo
+        {
+            Interview,
+            Live
+        }
+
+        public enum GitActions
+        {
+            AddUser,
+            DeleteUser
+        }
+
         public enum ProductType
         {
             shutter = 1,

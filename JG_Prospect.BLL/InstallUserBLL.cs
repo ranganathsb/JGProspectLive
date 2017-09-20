@@ -49,6 +49,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetUserGitUserName(id);
         }
 
+        public string GetUserDesignationCode(int UserId)
+        {
+            return InstallUserDAL.Instance.GetUserDesignationCode(UserId);
+        }
 
         public string AddHoursToAvailability(DateTime dt)
         {

@@ -1125,7 +1125,7 @@ namespace JG_Prospect
                     String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(Convert.ToInt32(Session["EditId"]));
                     if (!string.IsNullOrEmpty(GitUserName.Trim()))
                     {
-                        CommonFunction.DeleteUserFromGit(GitUserName);
+                        CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
                     }
                 }
 
@@ -1304,7 +1304,7 @@ namespace JG_Prospect
                 String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(Convert.ToInt32(Session["EditId"]));
                 if (!string.IsNullOrEmpty(GitUserName.Trim()))
                 {
-                    CommonFunction.DeleteUserFromGit(GitUserName);
+                    CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
                 }
             }
 
@@ -1394,7 +1394,7 @@ namespace JG_Prospect
                 , null, ddlUsers.SelectedItem != null ? ddlUsers.SelectedItem.Text : "");
             if (!string.IsNullOrEmpty(gitusername))
             {
-                CommonFunction.AddUserAsGitcollaborator(gitusername);
+                CommonFunction.AddUserAsGitcollaborator(gitusername, JGConstant.GitRepo.Interview);
             }
 
             //AssignedTask if any or Default
@@ -1418,6 +1418,20 @@ namespace JG_Prospect
             int EditId = 0;
             int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
             InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);
+
+            //Add User to GitHub Live Repository
+            String DesignationCode = InstallUserBLL.Instance.GetUserDesignationCode(EditId);
+            if (DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Sr_Net_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_Net_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Android_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_PHP_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_PHP_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Network_Admin))
+                )
+            {
+                String gitUserName = InstallUserBLL.Instance.GetUserGithubUserName(EditId);
+                CommonFunction.AddUserAsGitcollaborator(gitUserName, JGConstant.GitRepo.Live);
+            }
 
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;

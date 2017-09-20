@@ -599,6 +599,28 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public string GetUserDesignationCode(int UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    String returndata = string.Empty;
+                    DbCommand command = database.GetStoredProcCommand("UDP_GETInstallUserDesignationCode");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.String, UserID);
+                    returndata = database.ExecuteScalar(command).ToString();
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return ex.Message;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
 
         public string AddUserEmails(string ExtEmail, int userId)
         {

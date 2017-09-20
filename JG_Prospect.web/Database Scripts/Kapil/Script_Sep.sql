@@ -70,3 +70,21 @@ WHERE Id = @UserId
 end
 
 GO
+
+CREATE PROCEDURE UDP_GETInstallUserDesignationCode
+	-- Add the parameters for the stored procedure here
+	@UserID int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT [DesignationCode] FROM [dbo].[tblInstallUsers] JOIN
+	[dbo].[tbl_Designation]
+	ON
+	[dbo].[tbl_Designation].[ID] = [dbo].[tblInstallUsers].[DesignationID]
+	WHERE [dbo].[tblInstallUsers].[Id] = @UserID
+END
+GO

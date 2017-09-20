@@ -2347,7 +2347,7 @@ namespace JG_Prospect
             if (result)
             {
                 //Allow access to the GitHub Repository
-                CommonFunction.AddUserAsGitcollaborator(objConfirmUser.GitUserName);
+                CommonFunction.AddUserAsGitcollaborator(objConfirmUser.GitUserName, JGConstant.GitRepo.Interview);
             }
         }
 
@@ -5027,7 +5027,7 @@ namespace JG_Prospect
                 InstallUserBLL.Instance.UpdateGithubUserName(this.UserID, GithubUsername);
 
                 //Add user to GitHub
-                CommonFunction.AddUserAsGitcollaborator(GithubUsername);
+                CommonFunction.AddUserAsGitcollaborator(GithubUsername, JGConstant.GitRepo.Interview);
 
             }
             ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
