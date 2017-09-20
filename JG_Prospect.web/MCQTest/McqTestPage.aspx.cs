@@ -13,6 +13,7 @@ using System.IO;
 using JG_Prospect.App_Code;
 using System.Globalization;
 using System.Web;
+using System.Web.Services;
 
 namespace JG_Prospect.MCQTest
 {
@@ -295,7 +296,15 @@ namespace JG_Prospect.MCQTest
 
         protected void btnEndExam_Click(object sender, EventArgs e)
         {
-            CountExamResultandReset();
+            // Don't allow user to end exam if all exam attempted by user.
+            bool isAllExamGiven = true;
+
+            AptitudeTestBLL.Instance.GetExamsResultByUserID(UserID, ref isAllExamGiven);
+
+            if (!isAllExamGiven)
+            {
+                CountExamResultandReset();
+            }
         }
 
         protected void rptExams_ItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -323,7 +332,7 @@ namespace JG_Prospect.MCQTest
             }
         }
 
-        
+
         #endregion
 
         #region "-- Private Methods --"
@@ -543,7 +552,7 @@ namespace JG_Prospect.MCQTest
             // Set when exam time started.
             JGSession.ExamTimerSetTime = DateTime.Now;
             JGSession.CurrentExamTime = Convert.ToInt32(questionTable.Rows[0]["ExamDuration"]);
-
+            hdnCurrentExamTime.Value = JGSession.CurrentExamTime.ToString();
         }
 
         private void SetQuestionUI(RepeaterItem e)
@@ -708,10 +717,14 @@ namespace JG_Prospect.MCQTest
 
             }
 
-            double percentageObtained = 0.0;
-            percentageObtained = getUserPassingPercentage(TotalMarks, markScored);
+            // Now obtained percentages are calculated inside store procedure.
+            //double percentageObtained = 0.0;
 
-            UpdateUserExamSummary((int)markScored, (int)TotalMarks, percentageObtained, this.CurrentExamID, this.UserID);
+            //percentageObtained = getUserPassingPercentage(TotalMarks, markScored);
+
+            markScored = markScored < 0 ? 0 : markScored;
+
+            UpdateUserExamSummary((int)markScored,this.UserID);
 
             ResetExamParameter();
         }
@@ -728,12 +741,14 @@ namespace JG_Prospect.MCQTest
             JGSession.ExamTimerSetTime = null;
             JGSession.CurrentExamTime = 0;
             divEndExam.Visible = false;
+            hdnTimeLeft.Value = "0";
 
-            String userExamsGiven = this.ExamsGiven;
+           // String userExamsGiven = this.ExamsGiven;
 
-            string[] exams = userExamsGiven.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+           // string[] exams = userExamsGiven.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             bool isAllExamGiven = false;
+
             double overAllPercentageScored = 0;
 
             overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(UserID, ref isAllExamGiven);
@@ -757,8 +772,8 @@ namespace JG_Prospect.MCQTest
                 else // User is pass into our application.
                 {
                     //Response.Redirect("~/ViewApplicantUser.aspx?Id="+UserID+"&IE=1");
-
-                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "SuccessRedirect("+ UserID +");", true);
+                    UpdateUserStatusAsInterviewDateWithReason(DateTime.Now.AddDays(2), "Exam successfully cleared!s");
+                    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "SuccessRedirect(" + UserID + ");", true);
                     ////Get latest task to be assigned for user's designation.
                     //DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID, true);
 
@@ -791,13 +806,14 @@ namespace JG_Prospect.MCQTest
 
         }
 
-     
+
 
         // update user status to interview date.
         private DataSet UpdateUserStatusAsInterviewDateWithReason(DateTime InterviewDateNTime, String StatusReason = "Default automated interview date assigned")
         {
             return InstallUserBLL.Instance.ChangeUserSatatus(UserID, Convert.ToInt32(JGConstant.InstallUserStatus.InterviewDate), InterviewDateNTime.Date, InterviewDateNTime.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), JGSession.IsInstallUser.Value, StatusReason, UserID.ToString());
         }
+
 
         private void LogoutUser(bool isFailed)
         {
@@ -813,7 +829,7 @@ namespace JG_Prospect.MCQTest
         {
             TaskGeneratorBLL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationID, IsTechTask, AssignedSequence, TaskId, this.UserID);
         }
-        
+
         private void FillUserDetailsForConfirmation()
         {
             DataSet dsUserDetails = InstallUserBLL.Instance.getuserdetails(UserID);
@@ -825,16 +841,24 @@ namespace JG_Prospect.MCQTest
         }
 
         //Update User Exam Summary.
-        private void UpdateUserExamSummary(int markScored, int totalMarks, double percentageObtained, int currentExam, int userID)
+        private void UpdateUserExamSummary(int markScored, int userID)
         {
-            AptitudeTestBLL.Instance.InsertPerformance(UserID, CurrentExamID, markScored, totalMarks, percentageObtained, 0);
+            AptitudeTestBLL.Instance.InsertPerformance(UserID, CurrentExamID, markScored);
         }
 
         private double getUserPassingPercentage(double totalMakrs, double markScored)
         {
+            double passingPercentage = 0;
+
             //set total Marks to 1 to avoid divide by zero error.
             totalMakrs = totalMakrs <= 0 ? 1 : totalMakrs;
-            return Math.Round((markScored / totalMakrs) * 100.00, 2);
+
+            //if marks scored are negative, than make it 0.
+            markScored = markScored < 0 ? 0 : markScored;
+
+            Math.Round((markScored / totalMakrs) * 100.00, 2);
+
+            return passingPercentage;
 
         }
 
@@ -860,7 +884,7 @@ namespace JG_Prospect.MCQTest
 
                 SetExamSectionViews();
                 LoadQuestionsForExam();
-                LoadNextQuestion(); 
+                LoadNextQuestion();
             }
         }
 
@@ -922,6 +946,10 @@ namespace JG_Prospect.MCQTest
 
         #endregion
 
+        #region "-- Web Methods --"
 
+
+
+        #endregion
     }
 }

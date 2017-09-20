@@ -696,5 +696,11 @@ namespace JG_Prospect.BLL
             InstallUserDAL.Instance.UpdateEmpType(ID, EmpType);
         }
 
+        public DataSet GetPopupEditUsers(String UserIds, String Status, int DesignationId, int PageIndex, int PageSize, String SortExpression)
+        {
+            return InstallUserDAL.Instance.GetPopupEditUsers(UserIds, Status, DesignationId, PageIndex, PageSize, SortExpression);
+
+        }
+
     }
 }

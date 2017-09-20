@@ -1378,6 +1378,9 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone.wav" />
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
+    <Content Include="Content\ui-grid.css" />
+    <Content Include="Content\ui-grid.min.css" />
+    <Content Include="Content\ui-grid.svg" />
     <Content Include="Controls\CustomPager.ascx" />
     <Content Include="Controls\Header.ascx" />
     <Content Include="Controls\left.ascx" />
@@ -1411,6 +1414,7 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="css\TimeCircles.css" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
@@ -1430,6 +1434,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Vendor_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
@@ -1463,6 +1468,9 @@
     <Content Include="Communication\webphone\sound\DTMF9.ogg" />
     <Content Include="Communication\webphone\sound\DTMFdiez.ogg" />
     <Content Include="Communication\webphone\sound\DTMFx.ogg" />
+    <Content Include="Content\ui-grid.woff" />
+    <Content Include="Content\ui-grid.ttf" />
+    <Content Include="Content\ui-grid.eot" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
@@ -1485,7 +1493,6 @@
     <Content Include="Database Scripts\nandc\Scripts REC001-XIII v 1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
-    <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\yogesh\Script August v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1819,6 +1826,7 @@
     <Content Include="img\22222.png" />
     <Content Include="img\33333.png" />
     <Content Include="img\4444.png" />
+    <Content Include="img\ajax-loader.gif" />
     <Content Include="img\audio-icon.png" />
     <Content Include="img\Bar.png" />
     <Content Include="img\Bar1.png" />
@@ -1925,7 +1933,11 @@
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
+    <Content Include="js\angular\scripts\edituser-angular.js" />
+    <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
+    <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
+    <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />
     <Content Include="js\chosen.jquery.js" />
@@ -2064,6 +2076,7 @@
     <Content Include="js\lightslider.js" />
     <Content Include="js\angular\scripts\TaskSequence.js" />
     <Content Include="js\TaskSequencing.js" />
+    <Content Include="js\TimeCircles.js" />
     <Content Include="js\TimerFunctions.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
@@ -2079,6 +2092,8 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
+    <Content Include="Scripts\ui-grid.js" />
+    <Content Include="Scripts\ui-grid.min.js" />
     <Content Include="Services\service.aspx" />
     <Content Include="ShowResourcesJr.aspx" />
     <Content Include="Sr_App\add-edit-aptitude-test.aspx" />
@@ -2323,6 +2338,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="js\angular\templates\expandableRowTemplate.html" />
     <Content Include="unsubscribe.aspx" />
     <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />
@@ -2337,7 +2353,6 @@
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
-    <Content Include="UploadeProfile\2017_7_2610_15-p2.jpg" />
     <Content Include="UploadeProfile\default.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
@@ -3444,6 +3459,8 @@
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
+    <Folder Include="Employee\ProfilePictures\" />
+    <Folder Include="Employee\Resume\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
     <Folder Include="fileman\tmp\" />
@@ -3547,6 +3564,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JG_Prospect.BLL\JG_Prospect.BLL.csproj">

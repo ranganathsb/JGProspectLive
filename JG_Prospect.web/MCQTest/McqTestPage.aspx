@@ -11,7 +11,8 @@
     <link href="../css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery-ui.css" rel="stylesheet" />
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="../css/flipclock.css" type="text/css" />
+    <%--<link rel="stylesheet" href="../css/flipclock.css" type="text/css" />--%>
+    <link rel="stylesheet" href="../css/TimeCircles.css" type="text/css" />
 
     <style>
         .tblResult {
@@ -28,7 +29,7 @@
         .tblExamStartup {
             width: 100%;
             padding: 50px;
-        }    
+        }
 
         .ui-button {
             background: url('../img/main-header-bg.png') repeat-x;
@@ -110,7 +111,7 @@
                 <asp:Button ID="btnEndExamTimeOut" runat="server" OnClick="btnEndExam_Click" Style="display: none;" Text="Button" />
                 <div id="divExamSection" runat="server" visible="false" class="mcqquesMain">
 
-                    <div id="divTimer" class="clock"></div>
+                    <div id="divTimer" style="height: 100px;" class="stopwatch" data-timer=""></div>
 
                     <!-- Questions Section Start-->
                     <asp:Repeater ID="rptQuestions" runat="server" OnItemCommand="rptQuestions_ItemCommand">
@@ -132,14 +133,19 @@
 
                     </asp:Repeater>
                     <!-- Questions Section Ends-->
+
+
                     <div id="divQues" class="mcqQuestion">
-                        <asp:Literal ID="ltlQuesNo" runat="server"></asp:Literal>
-                        <asp:Literal ID="ltlQuestionTitle" runat="server"></asp:Literal>
+                        <span class="bluetext">
+                            <strong>
+                                <asp:Literal ID="ltlQuesNo" runat="server"></asp:Literal></strong>
+                            <asp:Literal ID="ltlQuestionTitle" runat="server"></asp:Literal></span>
                         <asp:RadioButtonList ID="rblQuestionOptions" AutoPostBack="true" runat="server" OnSelectedIndexChanged="rblQuestionOptions_SelectedIndexChanged"></asp:RadioButtonList>
                         <asp:HiddenField ID="hdnPMarks" runat="server" />
                         <asp:HiddenField ID="hdnNMarks" runat="server" />
                         <asp:HiddenField ID="hdnCorrectAnswer" runat="server" />
                         <asp:HiddenField ID="hdnTimeLeft" runat="server" />
+                        <asp:HiddenField ID="hdnCurrentExamTime" runat="server" />
 
                     </div>
 
@@ -176,7 +182,8 @@
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery-ui.js")%>'></script>
-    <script src="../js/flipclock.min.js"></script>
+    <%--<script src="../js/flipclock.min.js"></script>--%>
+    <script src="../js/TimeCircles.js"></script>
     <script type="text/javascript">
         $(function () {
             Initialize();
@@ -185,6 +192,14 @@
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
         if (prm != null) {
+
+            prm.add_beginRequest(function () {
+                if (clock) {
+                    $('#divTimer').TimeCircles().destroy();
+                    clock = null;
+                }
+            });
+
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
                     Initialize();
@@ -216,31 +231,87 @@
 
         var clock;
 
+        <%-- 
         function startExamTimer() {
 
-            clock = $('#divTimer').FlipClock($('#<%=hdnTimeLeft.ClientID%>').val(), {
-                countdown: true,
-                clockFace: 'MinuteCounter',
-                callbacks: {
-                    stop: function () {
-                        if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "" && $('#<%=hdnExamsOver.ClientID%>').val() != "1") {   // If exam is time out than hit end result automatically.                                                        
-                            $('#<%=divExamSection.ClientID%>').find("input,button,select").attr("disabled", "disabled");
-                            $('#<%=divExamSection.ClientID%>').find("a").attr("href", "javascript:void(0);");
-                            //alert('Your exam is timeup!');
-                            //console.log($('#<%=btnEndExamTimeOut.ClientID%>'));
-                            $('#<%=hdnTimeLeft.ClientID%>').val("");
-                            $('#<%=btnEndExamTimeOut.ClientID%>').click();
+            var TimeLeft = parseInt($('#<%=hdnTimeLeft.ClientID%>').val());
+            console.log("Time left is...");
+            console.log(TimeLeft);
+
+            if (TimeLeft > 0) {
+
+                clock = $('#divTimer').FlipClock($('#<%=hdnTimeLeft.ClientID%>').val(), {
+                    countdown: true,
+                    clockFace: 'MinuteCounter',
+                    callbacks: {
+                        stop: function () {
+                            if (clock && $('#<%=hdnTimeLeft.ClientID%>').val() != "" && $('#<%=hdnExamsOver.ClientID%>').val() != "1") {
+                                var postData = {};
+
+                                CallJGWebService('ExamTimeLeft', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+                                function OnAddNewSubTaskSuccess(data) {
+                                    if (data.d) {
+                                        alert('Time left ...');
+                                        callEndExam();
+                                    }
+                                }
+
+                                function OnAddNewSubTaskError(err) {
+
+                                }
+
+                                return false;
+
+                            }
                         }
                     }
-                }
 
-            });
+                });
+
+            }
+        }--%>
+
+        function startExamTimer() {
+
+            var timeLeft = parseInt($('#<%=hdnTimeLeft.ClientID%>').val());
+
+            $('#divTimer').attr("data-timer", $('#<%=hdnTimeLeft.ClientID%>').val());
+
+            if (timeLeft > 0) {
+                clock = null;
+
+                var totalTime = parseInt($('#<%=hdnCurrentExamTime.ClientID%>').val());
+
+                clock = $('#divTimer').TimeCircles({
+                    count_past_zero: false,
+                    total_duration: totalTime * 60,
+                    "circle_bg_color": "#EEEEEE",
+                    time: {
+                        Days: { show: false },
+                        Hours: { show: false },
+                        Minutes: { color: "#ac0c0c" },
+                        Seconds: { color: "#ac0c0c" }
+                    }
+                }).addListener(function (unit, amount, total) {
+                    if (total == 0) {
+                        callEndExam();
+                    }
+                });
+            }
+
         }
 
         function SuccessRedirect(ID) {
             window.parent.location.href = "../ViewApplicantUser.aspx?Id=" + ID + "&IE=1";
         }
+        function callEndExam() {
+            $('#<%=divExamSection.ClientID%>').find("input,button,select").attr("disabled", "disabled");
+            $('#<%=divExamSection.ClientID%>').find("a").attr("href", "javascript:void(0);");
+            $('#<%=hdnTimeLeft.ClientID%>').val("");
+            $('#<%=hdnCurrentExamTime.ClientID%>').val("");
+            $('#<%=btnEndExamTimeOut.ClientID%>').click();
 
+        }
 
     </script>
 </body>

@@ -74,6 +74,22 @@
                 yearRange: '1950:2050',
                 maxDate: 'today'
             });
+
+            $(".GrdHeader").click(function () {
+
+                $header = $(this);
+                //getting the next element
+                $content = $header.next();
+                //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+                $content.slideToggle(500, function () {
+                    //execute this after slideToggle is done
+                    //change text of header based on visibility of content div
+                    $header.text(function () {
+                        //change text based on condition
+                        return $content.is(":visible") ? "-" : "+";
+                    });
+                });
+            });
         });
 
         function setCheckBox(obj) {
@@ -431,7 +447,7 @@
                     changeYear: true,
                     yearRange: '1950:2050',
                     minDate: 'today'
-                });               
+                });
 
                 $('#<%=lbtnAptTestLink.ClientID%>').click(function () {
                     var url = window.location.href
@@ -1302,7 +1318,73 @@
             padding: 0px !important;
         }
 
+        .userNotes .table {
+        margin: auto!important;}
 
+        .userNotes tr {
+            display: table-row !important;
+            background: antiquewhite;
+        }
+
+            .userNotes tr th {
+                background-color: #C0AE96 !important;
+                border: none !important;
+                padding: 2px;
+            }
+
+            .userNotes tr td {
+                background-color: #FF8D79 !important;
+                padding: 1px;
+            }
+
+            .userNotes tr:nth-child(2n+1) td {
+                background-color: #FFFCD9 !important;
+            }
+
+        .userNotes tbody td {
+            border: none !important;
+        }
+
+        .tabNotes {
+            background-color: #FFE9C8;
+            width: 100% !important;
+            margin: auto!important;
+        }
+
+            .tabNotes td {
+                padding: 0px !important;
+                margin: 0px !important;
+            }
+            .GrdContainer {
+            width: 100%;
+            border: 1px solid #d3d3d3;
+        }
+
+            .GrdContainer div {
+                width: inherit;
+            }
+
+            .GrdContainer .GrdHeader {
+                background-color: #a09585!important;
+                padding: 2px;
+                cursor: pointer;
+                font-weight: bold;
+                width: initial;
+                text-align: left;
+                font-size: 20px;
+            }
+
+            .GrdContainer .GrdContent {
+                display: none;
+               /* padding: 5px;
+                height: 160px;*/
+            }
+
+            .GrdContainer .GrdContent span{
+                margin:0px!important;
+                display: block;
+                width: inherit;
+            } 
         .clsGrid {
             overflow: inherit !important;
         }
@@ -1313,7 +1395,7 @@
 
         .clsOverFlow {
             overflow: auto;
-            height: 150px;
+            /*height: 150px;*/
         }
 
         .contactGrid {
@@ -1711,16 +1793,16 @@
                                                         <li>
                                                             <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>&nbsp;
-                                                <asp:Label ID="lblExt" CssClass="ext" runat="server"></asp:Label>
+                                             
                                                             <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop" ID="ddlPhoneTypeDisplay"></asp:DropDownList>
                                                         </li>
-                                                        <li>
+                                                        <li style="margin-top: -13px;">
                                                             <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
                                                                 ID="ddlPhoneType" AutoPostBack="true" OnSelectedIndexChanged="ddlPhoneType_SelectedIndexChanged">
                                                             </asp:DropDownList>&nbsp;
                                                 <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server"></asp:TextBox>&nbsp;
-                                                <asp:TextBox ID="txtExt" MaxLength="8" Placeholder="Ext" CssClass="ext" runat="server"></asp:TextBox>&nbsp;
+                                               
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" ValidationGroup="addcontact" OnClick="btnAddContact_Click"></asp:Button>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ControlToValidate="txtContact"
                                                                 ForeColor="Red" Display="Dynamic" ValidationGroup="addcontact" ErrorMessage="Please Enter a valid Phone/Email"></asp:RequiredFieldValidator>
@@ -1729,6 +1811,8 @@
                                                             </asp:RegularExpressionValidator>
                                                         </li>
                                                     </ul>
+                                                    <asp:Label ID="lblExt" Visible="false" CssClass="ext" runat="server"></asp:Label>
+                                                    <asp:TextBox Visible="false" ID="txtExt" MaxLength="8" Placeholder="Ext" CssClass="ext" runat="server"></asp:TextBox>&nbsp;
                                                 </td>
                                                 <td style="display: none;">
                                                     <%--<asp:CheckBox class="PrimaryPhoneMain" ID="chkPrimaryPhoneMain" runat="server" Style="color: #fff; margin-top: 18px;" />--%><asp:TextBox ID="txtemail" runat="server" MaxLength="40"></asp:TextBox>
@@ -1958,67 +2042,69 @@
                                 </tr>
                             </table>
                         </li>
-                        <li style="width: 97%;">
+                        <li style="width: 99%;">
                             <div>
-                                <div class="grid">
-                                    <div class="clsOverFlow">
-                                        <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                                            HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                                            EmptyDataText="No Touch Point log available!" CssClass="table" Width="90%" CellSpacing="0" CellPadding="0"
-                                            AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="UserTouchPointLogID">
-                                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                            <HeaderStyle CssClass="trHeader" />
-                                            <RowStyle CssClass="FirstRow" />
-                                            <AlternatingRowStyle CssClass="AlternateRow " />
-                                            <Columns>
-                                                <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:HyperLink runat="server" ForeColor="Blue"
-                                                            NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
-                                                            Text='<%# Eval("UpdatedUserInstallID")%>' />
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
+                                <asp:UpdatePanel runat="server" ID="upNotes">
+                                    <ContentTemplate>
+                                        <div class="GrdContainer">
+                                            <div class="GrdHeader">
+                                                <span>+</span>
+                                            </div>
+                                            <div class="GrdContent">
+                                                <div class="clsOverFlow userNotes">
+                                            <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                                                HeaderStyle-BackColor="#C0AE96" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                                                EmptyDataText="No Touch Point log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                                                AutoGenerateColumns="False" GridLines="None" DataKeyNames="UserTouchPointLogID">
+                                                <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                                                <HeaderStyle CssClass="trHeader" />
+                                                <RowStyle CssClass="FirstRow" />
+                                                <AlternatingRowStyle CssClass="AlternateRow " />
+                                                <Columns>
+                                                    <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:HyperLink runat="server" ForeColor="Blue"
+                                                                NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
+                                                                Text='<%# Eval("UpdatedUserInstallID")%>' />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%#Eval("ChangeDateTime")%>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
-                                                    <ItemTemplate>
-                                                        <%#Eval("LogDescription")%>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
-                                    </div>
-                                </div>
-                            </div>
-                            <table cellspacing="0" cellpadding="0" border="1" style="width: 100%; border-collapse: collapse; margin-left: 0px;">
-                                <tr>
-                                    <td style="background: none"></td>
-                                </tr>
-                                <tr>
-                                    <td style="background: none; padding-bottom: 0px;">Notes:<br />
-                                        <asp:TextBox ID="txtTouchPointLogNote" runat="server" TextMode="MultiLine" Width="100%" Height="50px" CssClass="textbox"></asp:TextBox>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td colspan="2" style="background: none; padding-top: 0px;">
-                                        <div class="btn_sec">
-                                            <asp:Button ID="btnAddNote" runat="server" Text="Add Note" CssClass="ui-button" OnClick="btnAddNote_Click" />
+                                                    <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <%#Eval("ChangeDateTime")%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                                                        <ItemTemplate>
+                                                            <%#Eval("LogDescription")%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
                                         </div>
-                                    </td>
-                                </tr>
-                            </table>
-
-
+                                            </div>
+                                        </div>                                       
+                                        <table cellpadding="0" cellspacing="0" class="tabNotes">
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    <asp:Button ID="btnAddNote" ValidationGroup="notes" runat="server" Text="Add Notes" CssClass="GrdBtnAdd" OnClick="btnAddNote_Click" Style="vertical-align: middle; margin: 0px;" />
+                                                </td>
+                                                <td width="70%">
+                                                    <asp:TextBox ID="txtTouchPointLogNote" ValidationGroup="notes" runat="server" TextMode="MultiLine" Width="98%" Rows="2" CssClass="textbox" BackColor="#FFFCD9" Style="vertical-align: middle"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="btnAddNote" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                            </div>
                             <div style="float: right; font-size: large; margin-top: 15px; margin-right: 12px;">
                                 <asp:LinkButton ID="lbtnAptTestLink" OnClientClick="return false" runat="server"></asp:LinkButton>
                             </div>
 
-                            <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none">
+                            <table cellspacing="0" cellpadding="0" width="950px" border="1" style="border-collapse: collapse; display: none;">
                                 <tr>
                                     <td>
                                         <div class="btn_sec">
@@ -2038,7 +2124,6 @@
                                             </asp:UpdatePanel>
 
                                         </div>
-                                        <%--  <asp:TextBox ID="txtAddNotes" runat="server" TextMode="MultiLine" Height="33px" Width="407px"></asp:TextBox>--%>
                                     </td>
                                     <td>
                                         <span id="spanS3">
@@ -5193,7 +5278,21 @@
                         $(".mail").change(function () {
                             setCheckBox(this);
                         });
+                        $(".GrdHeader").click(function () {
 
+                            $header = $(this);
+                            //getting the next element
+                            $content = $header.next();
+                            //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+                            $content.slideToggle(500, function () {
+                                //execute this after slideToggle is done
+                                //change text of header based on visibility of content div
+                                $header.text(function () {
+                                    //change text based on condition
+                                    return $content.is(":visible") ? "-" : "+";
+                                });
+                            });
+                        });
                     }
                 });
 

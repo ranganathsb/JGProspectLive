@@ -28,6 +28,14 @@ namespace JG_Prospect.BLL
             set {; }
         }
 
+        #region "-- Task Sequences --"
+
+        public DataSet GetAllTasksforSubSequencing(Int32 DesignationId, String DesiSeqCode, bool IsTechTask, Int64 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllTasksforSubSequencing(DesignationId,DesiSeqCode,IsTechTask,TaskId);
+
+        }
+
         public DataSet GetLatestTaskSequence(Int32 DesignationId, bool IsTechTask)
         {
             return TaskGeneratorDAL.Instance.GetLatestTaskSequence(DesignationId, IsTechTask);
@@ -45,6 +53,19 @@ namespace JG_Prospect.BLL
 
         }
 
+        public DataSet GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
+        {
+            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId,UserCount);
+
+        }
+
+        public bool UpdateTaskSubSequence(Int64 TaskID, Int64 TaskIdSeq, Int64 SubSeqTaskId, Int64 DesignationId)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskSubSequence( TaskID,  TaskIdSeq,  SubSeqTaskId,   DesignationId);
+
+        }
+
+        #endregion
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);
@@ -91,9 +112,19 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.TaskSwapSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
+
+        public bool TaskSwapSubSequence(Int64 FirstSequenceId, Int64 SecondSequenceId, Int64 FirstTaskId, Int64 SecondTaskId)
+        {
+            return TaskGeneratorDAL.Instance.TaskSwapSubSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
+        }
+
         public bool DeleteTaskSequence(Int64 TaskId)
         {
             return TaskGeneratorDAL.Instance.DeleteTaskSequence(TaskId);
+        }
+        public bool DeleteTaskSubSequence(Int64 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.DeleteTaskSubSequence(TaskId);
         }
         public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
         {

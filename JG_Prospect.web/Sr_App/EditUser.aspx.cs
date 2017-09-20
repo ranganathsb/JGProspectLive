@@ -160,7 +160,7 @@ namespace JG_Prospect
                 btnExport.Visible = false;
             }
 
-            if (JGSession.Designation.ToUpper() == "RECRUITER" || JGSession.Designation.ToUpper() == "ADMIN")
+            if (JGSession.Designation.ToUpper() == "RECRUITER" || JGSession.Designation.ToUpper() == "ADMIN" || JGSession.Designation.ToUpper() == "ITLEAD")
             {
                 lbtnChangeStatusForSelected.Visible =
                 lbtnDeleteSelected.Visible = true;
@@ -413,7 +413,7 @@ namespace JG_Prospect
                     LinkButton lnkDelete = e.Row.FindControl("lnkDelete") as LinkButton;
                     Image img = e.Row.FindControl("imgprofile") as Image;
                     HiddenField hdimg = e.Row.FindControl("hdimgsource") as HiddenField;
-                    LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
+                    //LinkButton lbltestChk = (e.Row.FindControl("lbltest") as LinkButton);
                     DropDownList elePhoneTypeDisplay = (e.Row.FindControl("ddlPhoneTypeDisplay") as DropDownList);
                     DropDownList elePhoneType = (e.Row.FindControl("ddlPhoneType") as DropDownList);
                     int id = Convert.ToInt32(grdUsers.DataKeys[e.Row.RowIndex].Values[0]);
@@ -426,20 +426,10 @@ namespace JG_Prospect
                         pathvalue = Path.Combine(pathvalue + path);
 
                         if (File.Exists(pathvalue))
-                        {
-                            img.ImageUrl = hdimg.Value;
-                            lbltestChk.Visible = true;
-                        }
-                        else
-                        {
-                            img.ImageUrl = "/UploadeProfile/default.jpg";
-                        }
-
+                        { img.ImageUrl = hdimg.Value; /*lbltestChk.Visible = true;*/}
+                        else { img.ImageUrl = "/UploadeProfile/default.jpg"; }
                     }
-                    else
-                    {
-                        img.ImageUrl = "/UploadeProfile/default.jpg";
-                    }
+                    else { img.ImageUrl = "/UploadeProfile/default.jpg"; }
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
@@ -455,9 +445,10 @@ namespace JG_Prospect
                         ddlDesiGrd.DataBind();
                     }
                     string strDesignationID = Convert.ToString((e.Row.FindControl("lblDesignationID") as HiddenField).Value);//Select the Designation in DropDownList
-                    //Debug.WriteLine(strDesignation);
+                                                                                                                             //Debug.WriteLine(strDesignation);
                     if (strDesignationID != "")
                     {
+
                         ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
                     }
 
@@ -529,30 +520,44 @@ namespace JG_Prospect
 
                     #region BindUserNotes
 
-                    var userNotes = from notes in dtUserNotes.AsEnumerable()
-                                    where notes.Field<int>("UserID") == id
-                                    select notes;
-
-                    Label lblNotes = (e.Row.FindControl("lblNotes") as Label);
-
-                    i = 0;
-                    foreach (DataRow RowItem in userNotes)
+                    if (dtUserNotes != null && dtUserNotes.Rows.Count > 0)
                     {
-                        try
-                        {
-                            if (i == 0)
-                            { lblNotes.Text += "<table class='userNotes'><tbody><tr><th>Notes</th><th>Added By</th></tr>"; }
+                        var userNotes = (from notes in dtUserNotes.AsEnumerable()
+                                               where notes.Field<int>("UserID") == id
+                                               select notes).Take(1);
 
-                            lblNotes.Text += "<tr><td>" + RowItem["Notes"].ToString()
-                                + "</td><td>" + RowItem["AddedBy"].ToString() + "</td></tr>";
-                        }
-                        catch { }
-                        finally { i++; }
+                        if (userNotes != null && userNotes.Any())
+                        {
+                            Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
+
+                            rptNotes.DataSource = userNotes.CopyToDataTable();
+                            rptNotes.DataBind();
+                        } 
                     }
 
-                    if (i > 0)
-                        lblNotes.Text += "</tbody></table>";
+                    // Removed by yogesh keraliya : High performance code replaced.
+                    //PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
+                    //Label lblNotes = new Label();
 
+                    //i = 0;
+                    //foreach (DataRow RowItem in userNotes)
+                    //{
+                    //    try
+                    //    {
+                    //        if (i == 0)
+                    //        { lblNotes.Text += "<table class='gridtbl' cellspacing='0'><tbody>"; }
+
+                    //        lblNotes.Text += "<tr><td><a href='CreateSalesUser.aspx?id="+ RowItem["UpdatedByUserID"].ToString() + "' style='color:Blue;'>" + RowItem["UpdatedUserInstallID"].ToString() + "</a></td><td>" + RowItem["CreatedDate"].ToString() + "</td><td>" +
+                    //            RowItem["LogDescription"].ToString() + "</td></tr>";
+                    //    }
+                    //    catch { }
+                    //    finally { i++; }
+                    //}
+
+                    //if (i > 0)
+                    //    lblNotes.Text += "</tbody></table>";
+
+                    //placeHolder.Controls.Add(lblNotes);
                     #endregion
 
 
@@ -593,7 +598,12 @@ namespace JG_Prospect
 
                     if (Status != "")
                     {
-                        ddlStatus.Items.FindByValue(Status).Selected = true;
+                        ListItem statusitem = ddlStatus.Items.FindByValue(Status);
+
+                        if (statusitem != null)
+                        {
+                            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(statusitem);
+                        }
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
@@ -680,13 +690,20 @@ namespace JG_Prospect
             SqlConnection con = new SqlConnection(str);
 
             #region AddNotes
-            if (e.CommandName == "AddNewContact")
+            if (e.CommandName == "AddNotes")
             {
                 GridViewRow gvRow = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-                TextBox txtNewContact = (TextBox)gvRow.FindControl("txtNewNote");
+                TextBox txtNewNote = (TextBox)gvRow.FindControl("txtNewNote");
                 int id = Convert.ToInt32(e.CommandArgument);
 
-                InstallUserBLL.Instance.AddUserNotes(txtNewContact.Text, id, JGSession.UserId);
+                //InstallUserBLL.Instance.AddUserNotes(txtNewContact.Text, id, JGSession.UserId);
+
+                if (txtNewNote.Text.Trim() != "")
+                {
+                    fullTouchPointLog("Note : " + txtNewNote.Text, id);
+                    //txtNewNote.Text = "";
+                }
+
                 GetSalesUsersStaticticsAndData();
             }
             #endregion
@@ -1392,115 +1409,7 @@ namespace JG_Prospect
 
         protected void btnSaveOfferMade_Click(object sender, EventArgs e)
         {
-            int EditId = 0;
-            int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
-            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);
 
-            DataSet ds = new DataSet();
-            string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
-            email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
-
-            ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), EditId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
-            if (ds.Tables.Count > 0)
-            {
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    if (Convert.ToString(ds.Tables[0].Rows[0]["Email"]) != "")
-                    {
-                        email = Convert.ToString(ds.Tables[0].Rows[0]["Email"]);
-                    }
-                    if (Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]) != "")
-                    {
-                        HireDate = Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]);
-                    }
-                    if (Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]) != "")
-                    {
-                        EmpType = Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]);
-                    }
-                    if (Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]) != "")
-                    {
-                        PayRates = Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]);
-                    }
-                    if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
-                    {
-                        Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
-                    }
-                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FristName"].ToString()))
-                    {
-                        FirstName = ds.Tables[0].Rows[0]["FristName"].ToString();
-                    }
-                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["LastName"].ToString()))
-                    {
-                        LastName = ds.Tables[0].Rows[0]["LastName"].ToString();
-                    }
-                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["Address"].ToString()))
-                    {
-                        Address = ds.Tables[0].Rows[0]["Address"].ToString();
-                    }
-                }
-            }
-            //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
-            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, Convert.ToString(Session["DesignitionIdSC"]));
-            string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
-            strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
-            strHtml = strHtml.Replace("#FirstName#", FirstName);
-            strHtml = strHtml.Replace("#LastName#", LastName);
-            strHtml = strHtml.Replace("#Address#", Address);
-            strHtml = strHtml.Replace("#Designation#", Desig);
-            if (!string.IsNullOrEmpty(EmpType))
-            {
-                int intEmpType = 0;
-                int.TryParse(EmpType, out intEmpType);
-
-                if (intEmpType > 0)
-                {
-                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
-                }
-
-                strHtml = strHtml.Replace("#EmpType#", EmpType);
-
-            }
-            else
-            {
-                strHtml = strHtml.Replace("#EmpType#", "________________");
-            }
-            strHtml = strHtml.Replace("#JoiningDate#", HireDate);
-            if (!string.IsNullOrEmpty(PayRates))
-            {
-                strHtml = strHtml.Replace("#RatePerHour#", PayRates);
-            }
-            else
-            {
-                strHtml = strHtml.Replace("#RatePerHour#", "____");
-            }
-            DateTime dtPayCheckDate;
-            if (!string.IsNullOrEmpty(HireDate))
-            {
-                dtPayCheckDate = Convert.ToDateTime(HireDate);
-            }
-            else
-            {
-                dtPayCheckDate = DateTime.Now;
-            }
-            dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
-            strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
-
-            string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
-            List<Attachment> lstAttachments = new List<Attachment>();
-            if (File.Exists(strPath))
-            {
-                Attachment attachment = new Attachment(strPath);
-                attachment.Name = Path.GetFileName(strPath);
-                lstAttachments.Add(attachment);
-            }
-
-            SendEmail(email, FirstName, LastName, "Offer Made", txtReason.Text, Desig, Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates,
-                HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
-
-            //binddata();
-            GetSalesUsersStaticticsAndData();
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
-            return;
         }
 
         protected void btnSendEmailToUser_Click(object sender, EventArgs e)
@@ -3431,6 +3340,7 @@ namespace JG_Prospect
             strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
             strBody = strBody.Replace("#FirstName#", FName);
             strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#F&L name#", FName + " " + LName);
             strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
             strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
             strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
@@ -4583,7 +4493,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
-                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                    strBody = strBody.Replace("http://web.jmgrovebuildingsupply.com/Sr_App/EditEmailTemplate.aspx?htempID=108#TaskLink#", string.Format(
                                                                             "{0}?TaskId={1}&hstid={2}",
                                                                             string.Concat(
                                                                                             Request.Url.Scheme,
@@ -4797,6 +4707,13 @@ namespace JG_Prospect
                 }
             }
             catch (Exception ex) { Console.Write(ex.Message); }
+        }
+
+        private void fullTouchPointLog(string strValueToAdd, int id)
+        {
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.Now, strValueToAdd, "");
         }
     }
 }

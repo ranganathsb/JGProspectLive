@@ -97,8 +97,7 @@ namespace JG_Prospect.DAL
 
                     aggregateResult = Convert.ToDouble(database.GetParameterValue(command, "@AggregateScored"));
 
-                    isAllExamGiven = Convert.ToBoolean(database.GetParameterValue(command, "@AllExamsGiven"));
-
+                        isAllExamGiven = Convert.ToBoolean(database.GetParameterValue(command, "@AllExamsGiven")); 
                 }
             }
             catch (Exception ex)
@@ -132,7 +131,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public bool InsertPerformance(int installUserID, int examID, int marksEarned, int totalMarks, double percentage, int status)
+        public bool InsertPerformance(int installUserID, int examID, int marksEarned)
         {
             try
             {
@@ -144,9 +143,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@installUserID", DbType.String, installUserID.ToString());
                     database.AddInParameter(command, "@examID", DbType.Int32, examID);
                     database.AddInParameter(command, "@marksEarned", DbType.Int32, marksEarned);
-                    database.AddInParameter(command, "@totalMarks", DbType.Int32, totalMarks);
-                    database.AddInParameter(command, "@Aggregate", DbType.Double, percentage);
-                    database.AddInParameter(command, "@ExamPerformanceStatus", DbType.Int32, status);
+                    
 
                     database.ExecuteScalar(command);
                     //int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
