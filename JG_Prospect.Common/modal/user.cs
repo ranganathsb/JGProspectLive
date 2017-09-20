@@ -193,6 +193,7 @@ namespace JG_Prospect.Common.modal
         public bool IsTextContactPreference;
         public bool IsMailContactPreference;
 
+        public string GitUserName;
     }
 
     public class user1

@@ -3019,6 +3019,42 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCPW1;
         
         /// <summary>
+        /// GitHubPlaceholder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GitHubPlaceholder;
+        
+        /// <summary>
+        /// txtGithubUsername control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtGithubUsername;
+        
+        /// <summary>
+        /// RequiredFieldValidatorGithubUsername control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorGithubUsername;
+        
+        /// <summary>
+        /// RequiredFieldValidatorGithubUsername2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorGithubUsername2;
+        
+        /// <summary>
         /// btnAcceptTask control.
         /// </summary>
         /// <remarks>

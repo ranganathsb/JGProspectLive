@@ -99,6 +99,18 @@ namespace JG_Prospect.Common
             Live = 3
         }
 
+        public enum GitRepo
+        {
+            Interview,
+            Live
+        }
+
+        public enum GitActions
+        {
+            AddUser,
+            DeleteUser
+        }
+
         public enum ProductType
         {
             shutter = 1,
@@ -189,7 +201,8 @@ namespace JG_Prospect.Common
             SubContractor = 20,
             IT_Lead = 21,
             Admin_Sales = 22,
-            Admin_Recruiter = 23
+            Admin_Recruiter = 23,
+            IT_Jr_PHP_Developer = 24
         }
 
         public enum InstallUserStatus
