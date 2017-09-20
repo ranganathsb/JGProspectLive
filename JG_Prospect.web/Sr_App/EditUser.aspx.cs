@@ -1118,6 +1118,17 @@ namespace JG_Prospect
                 // Adding a popUp...
 
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
+
+                //Remove user from GitHub Repository
+                if (ddl.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString())
+                {
+                    String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(Convert.ToInt32(Session["EditId"]));
+                    if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                    {
+                        CommonFunction.DeleteUserFromGit(GitUserName);
+                    }
+                }
+
                 //binddata();
                 GetSalesUsersStaticticsAndData();
 
@@ -1276,7 +1287,8 @@ namespace JG_Prospect
                             PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
                         }
                     }
-                }
+                }                
+
                 SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Deactivation", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, 0);
             }
             else
@@ -1285,6 +1297,17 @@ namespace JG_Prospect
                 //binddata();
                 GetSalesUsersStaticticsAndData();
             }
+
+            //Remove user from GitHub Repository
+            if (Convert.ToString(Session["EditStatus"]) == Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString())
+            {
+                String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(Convert.ToInt32(Session["EditId"]));
+                if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                {
+                    CommonFunction.DeleteUserFromGit(GitUserName);
+                }
+            }
+
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopup()", true);
             return;
         }

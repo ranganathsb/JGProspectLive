@@ -36,13 +36,9 @@ namespace JG_Prospect.App_Code
         {
             try
             {
+                Octokit.GitHubClient client = BuildGitHubClient();
                 String reponame = ConfigurationManager.AppSettings["GitRepoName"].ToString();
                 String adminname = ConfigurationManager.AppSettings["GitRepoAdminName"].ToString();
-                String adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginId"].ToString();
-                String adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPassword"].ToString();
-                Octokit.GitHubClient client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(ConfigurationManager.AppSettings["GitAppName"].ToString()));
-                Octokit.Credentials basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
-                client.Credentials = basicAuth;
                 client.Repository.Collaborator.Add(adminname, reponame, gitUserName);
             }
             catch (Exception ex)
@@ -50,6 +46,41 @@ namespace JG_Prospect.App_Code
                 //Log exception 
                 Console.WriteLine("{0} Exception caught.", ex);
             }
+        }
+
+        /// <summary>
+        /// Add a GitHub user as Collaborator in repo        
+        /// </summary>
+        /// <param name="gitUserName"></param>
+        public static void DeleteUserFromGit(string gitUserName)
+        {
+            try
+            {
+                Octokit.GitHubClient client = BuildGitHubClient();
+                String reponame = ConfigurationManager.AppSettings["GitRepoName"].ToString();
+                String adminname = ConfigurationManager.AppSettings["GitRepoAdminName"].ToString();
+                client.Repository.Collaborator.Delete(adminname, reponame, gitUserName);
+            }
+            catch (Exception ex)
+            {
+                //Log exception 
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Creates a GitHub Client
+        /// </summary>
+        private static Octokit.GitHubClient BuildGitHubClient()
+        {
+            
+            String adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginId"].ToString();
+            String adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPassword"].ToString();
+            Octokit.GitHubClient client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(ConfigurationManager.AppSettings["GitAppName"].ToString()));
+            Octokit.Credentials basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
+            client.Credentials = basicAuth;
+
+            return client;
         }
 
         /// <summary>
