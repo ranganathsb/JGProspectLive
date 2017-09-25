@@ -1054,12 +1054,7 @@
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
-                                        </ul>
-                                        <div class="GrdPrimaryEmail">
-                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
-                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
-                                        </div>
-                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
+                                        </ul>                                        
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
                                         <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
                                         <%-- <div class="GrdContainer" style="width: 90%">
