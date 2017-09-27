@@ -287,19 +287,7 @@
 
         .noMargin span {
             margin: 0px !important;
-        }
-
-        .userNotes tbody {
-            height: auto !important;
-        }
-
-        .userNotes tr {
-            display: table-row !important;
-        }
-
-        .userNotes tbody td {
-            border: 1px solid gray !important;
-        }
+        }        
     </style>
     <script type="text/javascript">
 
@@ -1055,11 +1043,7 @@
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
                                         </ul>
-                                        <div class="GrdPrimaryEmail">
-                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
-                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
-                                        </div>
-                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
+                                        
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
                                         <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
                                         <%-- <div class="GrdContainer" style="width: 90%">
@@ -1118,16 +1102,59 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>                                
-                                <asp:TemplateField HeaderText="Notes" HeaderStyle-Width="10%" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="wordBreak">
-                                    <itemtemplate>
-                                        <asp:Label runat="server" ID="lblNotes" Text=""></asp:Label>
-                                        <br />
-                                        <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"></asp:TextBox>
-                                        <asp:RequiredFieldValidator runat="server" ID="reqNotes" ControlToValidate="txtNewNote" ForeColor="Red" ErrorMessage="Please write note"
-                                            ValidationGroup="note"></asp:RequiredFieldValidator>
-                                        <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add" CommandName="AddNotes" ValidationGroup="note"
-                                            CommandArgument='<%# Eval("Id") %>' />
-                                    </itemtemplate>
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
+                                    ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
+                                    <HeaderTemplate>
+                                        Notes
+                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr class="trHeader " style="color: White;">
+                                                    <th scope="col" style="width: 19%;">User ID</th>
+
+                                                    <th scope="col" style="width: 25%;">Date&Time</th>
+                                                    <th scope="col" style="width: 56%;">Note/Status</th>
+
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <%--<div class="GrdContainer">
+                                            <div class="GrdHeader">
+                                                <span>+</span>
+                                            </div>
+                                            <div class="GrdContent">
+                                                
+                                            </div>
+                                        </div>--%>
+                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
+                                        <div style="max-height: 200px; overflow: auto;">
+                                            <asp:Repeater ID="rptNotes" runat="server">
+                                                <HeaderTemplate>
+                                                    <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                                        <tbody>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
+                                                        <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
+                                                        <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
+                                                        <td style="width: 55%;"><%#Eval("LogDescription")%></td>
+                                                    </tr>
+                                                </ItemTemplate>
+                                                <FooterTemplate>
+                                                    </tbody>
+                                                </table>
+                                                </FooterTemplate>
+                                            </asp:Repeater>
+                                        </div>
+                                        <div style="text-align: left;">
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
+                                                Style="vertical-align: middle; padding: 0px!important; width: 100%" CssClass="textbox"></asp:TextBox><br />
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
+
+                                        </div>
+                                    </ItemTemplate>
                                 </asp:TemplateField>
                                         </Columns>
                         </asp:GridView>
