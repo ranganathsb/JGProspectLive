@@ -97,6 +97,23 @@ namespace JG_Prospect.Sr_App
         }
 
         [WebMethod]
+        public static string GetTaskUsersForDashBoard(string searchterm)
+        {
+            DataSet dsSuggestions;
+
+            string SearchSuggestions = string.Empty;
+
+            dsSuggestions = InstallUserBLL.Instance.GetTaskUsersForDashBoard(searchterm);
+
+            if (dsSuggestions != null && dsSuggestions.Tables.Count > 0 && dsSuggestions.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsSuggestions.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
         public static string StarBookMarkUsers(int bookmarkedUser,   int isdelete)
         {
             string strReturn = "true";
