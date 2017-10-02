@@ -1309,7 +1309,7 @@ namespace JG_Prospect
                             PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
                         }
                     }
-                }
+                }                
 
                 SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Deactivation", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, 0);
             }
@@ -1439,7 +1439,7 @@ namespace JG_Prospect
         {
             int EditId = 0;
             int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
-            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);
+            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);           
 
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
