@@ -564,6 +564,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetTaskUsers(searchTerm);
         }
 
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            return InstallUserDAL.Instance.GetTaskUsersForDashBoard(searchTerm);
+        }
+
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
         {
             return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);

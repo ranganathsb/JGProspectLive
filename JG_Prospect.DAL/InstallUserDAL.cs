@@ -2677,6 +2677,29 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsersForDashboard");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
         {
             try

@@ -1042,8 +1042,7 @@
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
-                                        </ul>
-                                        
+                                        </ul>                                        
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
                                         <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
                                         <%-- <div class="GrdContainer" style="width: 90%">

@@ -1,6 +1,5 @@
 ﻿app.controller('TaskSequenceSearchController',function ($scope, $compile, $http, $timeout,$filter) {
     applyFunctions($scope, $compile, $http, $timeout,$filter);
-
 });
 
 function getTasksWithSearchandPaging(methodName, $http) {
@@ -24,6 +23,8 @@ function getTasksForSubSequencing($http, methodName, filters) {
 function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
     $scope.Tasks = [];
+    $scope.ClosedTask = [];
+    $scope.dish = [];
     $scope.ParentTaskDesignations = [];
     $scope.DesignationAssignUsers = [];
     $scope.DesignationAssignUsersModel = [{ FristName: "Select", Id: 0, Status: "", CssClass: "" }];
@@ -31,11 +32,18 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.UserSelectedDesigIds = [];
     $scope.DesignationSelectModel = [];
     $scope.IsTechTask = true;
+    $scope.ForDashboard = false;
+    $scope.UserId = 0;
+    $scope.vSearch = "";
 
     $scope.SeqSubsets = [];
 
 
     $scope.loader = {
+        loading: false,
+    };
+
+    $scope.loaderClosedTask = {
         loading: false,
     };
 
@@ -76,15 +84,18 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.getTasks = function (page) {
 
         if (!$scope.IsTechTask) {
+            console.log("Url: " + url);
             console.log("Staff Task called....");
             $scope.loader.loading = true;
             $scope.page = page || 0;
 
             // make it blank so TechTask grid don't bind.
             $scope.TechTasks = [];
-
+            //debugger;
             //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard }).then(function (data) {
+                console.log(data);
+                debugger;
                 $scope.loader.loading = false;
                 $scope.IsTechTask = false;
                 $scope.DesignationSelectModel = [];
@@ -120,7 +131,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
 
             //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId }).then(function (data) {
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard }).then(function (data) {
                 $scope.loader.loading = false;
                 $scope.IsTechTask = true;
                 $scope.DesignationSelectModel = [];
@@ -138,7 +149,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             });
 
         }
-    };
+    };   
 
     $scope.toRoman = function (num) {
 
