@@ -5257,6 +5257,13 @@
         Change Password<span class="redtext">*</span>:               
                         <asp:TextBox ID="txtChangePassword1" CssClass="textbox" runat="server" ValidationGroup="vgCPWD"></asp:TextBox>
         <asp:RequiredFieldValidator ID="rfvCPW1" ControlToValidate="txtChangePassword1" Display="Dynamic" CssClass="redtext" ErrorMessage="Password required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+
+        <div id="GitHubPlaceholder" runat="server" style="float:right">
+            Githum Username<span class="redtext">*</span>:
+            <asp:TextBox ID="txtGithubUsername" CssClass="textbox" runat="server"/>
+            <asp:RequiredFieldValidator ID="RequiredFieldValidatorGithubUsername" ControlToValidate="txtGithubUsername" Display="Dynamic" CssClass="redtext" ErrorMessage="Github Username required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+            <asp:RequiredFieldValidator ID="RequiredFieldValidatorGithubUsername2" ControlToValidate="txtGithubUsername" Display="Dynamic" CssClass="redtext" ErrorMessage="Github Username required" ValidationGroup="vgConfirm" runat="server"></asp:RequiredFieldValidator>
+        </div>
         <br />
         <br />
 

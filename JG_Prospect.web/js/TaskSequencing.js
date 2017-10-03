@@ -103,6 +103,76 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
 }
 
+function ShowTaskSequenceDashBoard(DesId, UserId) {
+
+    //debugger;
+    var TechTask = false;
+    var DesignationIds = DesId;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    sequenceScope.IsTechTask = TechTask;
+    sequenceScope.UserId = UserId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScope.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScope.getAssignUsers();
+
+    //debugger;
+
+    var defaultTabIndex;
+
+    if (TechTask == true) {
+        defaultTabIndex = 1;
+    }
+    else {
+        defaultTabIndex = 0;
+    }
+
+    //console.log(TechTask);
+
+    if (TechTask === 'True') {
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScope.IsTechTask = true;
+        sequenceScope.getTechTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabs(1);
+    }
+    else {
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScope.IsTechTask = false;
+        sequenceScope.getTasks();
+        applyTaskSequenceTabs(0);
+    }
+
+    sequenceScope.getAssignUsers();
+
+}
+
+function ShowAllClosedTasksDashBoard(DesIds, UserId, pageSize) {
+
+    debugger;
+    sequenceScope.pageSize = pageSize;
+    sequenceScope.UserSelectedDesigIdsClosedTaks = DesIds;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    sequenceScope.UserId = UserId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    //sequenceScope.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+
+    //debugger;
+
+    sequenceScopeClosedTasks.getClosedTasks();
+
+}
 
 //function showEditTaskSequence(element) {
 

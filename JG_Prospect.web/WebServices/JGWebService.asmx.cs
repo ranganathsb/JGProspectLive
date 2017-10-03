@@ -763,32 +763,63 @@ namespace JG_Prospect.WebServices
 
 
 
-        //[WebMethod(EnableSession = true)]
-        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        //public void GetAllTaskWithSequence()
-        //{
-        //    string strMessage = string.Empty;
-        //    DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(0, 999);
-        //    if (dtResult != null && dtResult.Tables.Count > 0)
-        //    {
-        //        Context.Response.Clear();
-        //        Context.Response.ContentType = "application/json";
-        //        Context.Response.Write(JsonConvert.SerializeObject(dtResult.Tables[0], Formatting.Indented));
-
-        //    }
-        //    else
-        //    {
-        //        strMessage = String.Empty;
-        //    }
-        //    //return strMessage;
-        //}
-
-
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID)
+        public String GetAllClosedTasks(int page, int pageSize, String DesignationIDs, string userid, string vSearch)
         {
             string strMessage = string.Empty;
-            DataSet dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
+            DataSet dtResult = null;
+            if (!CommonFunction.CheckAdminAndItLeadMode())
+            {
+                int UserId = 0;
+                Int32.TryParse(JGSession.LoginUserID, out UserId);
+                userid = UserId.ToString();
+            }
+
+            dtResult = TaskGeneratorBLL.Instance.GetClosedTasks(userid, DesignationIDs, vSearch, page, pageSize);
+            
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "TasksData";
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "RecordCount";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, int UserId, bool ForDashboard)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            if (ForDashboard)
+            {
+                if (!CommonFunction.CheckAdminAndItLeadMode())
+                {                    
+                    Int32.TryParse(JGSession.LoginUserID, out UserId);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
+                }
+                else
+                {
+                    if (UserId == 0)
+                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
+                    else
+                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
+                }
+            }
+
+            else
+            {
+                dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
+            }
+            
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 //Context.Response.Clear();
@@ -1309,7 +1340,19 @@ namespace JG_Prospect.WebServices
             int EditId = UserID;
 
             InstallUserBLL.Instance.UpdateOfferMade(EditId, UserEmail, "jmgrove");
-
+            //Add User to GitHub Live Repository
+            String DesignationCode = InstallUserBLL.Instance.GetUserDesignationCode(EditId);
+            if (DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Sr_Net_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_Net_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Android_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_PHP_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Jr_PHP_Developer))
+                || DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Network_Admin))
+                )
+            {
+                String gitUserName = InstallUserBLL.Instance.GetUserGithubUserName(EditId);
+                CommonFunction.AddUserAsGitcollaborator(gitUserName, JGConstant.GitRepo.Live);
+            }
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
             email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;

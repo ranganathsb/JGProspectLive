@@ -576,7 +576,51 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public string GetUserGitUserName(int UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    String returndata = string.Empty;
+                    DbCommand command = database.GetStoredProcCommand("UDP_GETUserGithubUsername");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@id", DbType.String, UserID);
+                    returndata = database.ExecuteScalar(command).ToString();
 
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return ex.Message;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
+
+        public string GetUserDesignationCode(int UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    String returndata = string.Empty;
+                    DbCommand command = database.GetStoredProcCommand("UDP_GETInstallUserDesignationCode");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserID", DbType.String, UserID);
+                    returndata = database.ExecuteScalar(command).ToString();
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return ex.Message;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
 
         public string AddUserEmails(string ExtEmail, int userId)
         {
@@ -1546,7 +1590,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Attachements", DbType.String, objuser.attachements);
                     database.AddInParameter(command, "@PCLiscense", DbType.String, objuser.PqLicense);
                     database.AddInParameter(command, "@Citizenship", DbType.String, objuser.citizenship);
-
+                    database.AddInParameter(command, "@GithubUsername", DbType.String, objuser.GitUserName);
                     database.ExecuteScalar(command);
 
                     return true;
@@ -2516,6 +2560,26 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
+        public void UpdateGithubUserName(int UserId, String GithubUsername)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateGithubUsername");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@GithubUsername", DbType.String, GithubUsername);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+                    database.ExecuteNonQuery(command);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
+
         public int AddSalesFollowUp(int customerid, DateTime meetingdate, string Status, int userId)
         {
             int result = 0;
@@ -2613,6 +2677,29 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsersForDashboard");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
         {
             try

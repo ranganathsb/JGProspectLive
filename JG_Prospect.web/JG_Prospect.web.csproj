@@ -1493,6 +1493,7 @@
     <Content Include="Database Scripts\nandc\Scripts REC001-XIII v 1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\yogesh\Script August v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1932,6 +1933,7 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\angular\scripts\ClosedTasls.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />

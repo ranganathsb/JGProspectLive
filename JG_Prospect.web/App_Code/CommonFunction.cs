@@ -29,6 +29,97 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Add a GitHub user as Collaborator in repo        
+        /// </summary>
+        /// <param name="gitUserName"></param>
+        /// <param name="repo"></param>
+        public static void AddUserAsGitcollaborator(string gitUserName, JGConstant.GitRepo repo)
+        {
+            try
+            {
+                PerformGitAction(repo, JGConstant.GitActions.AddUser, gitUserName);
+                
+            }
+            catch (Exception ex)
+            {
+                //Log exception 
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Add a GitHub user as Collaborator in repo        
+        /// </summary>
+        /// <param name="gitUserName"></param>
+        /// <param name="repo"></param>
+        public static void DeleteUserFromGit(string gitUserName, JGConstant.GitRepo repo)
+        {
+            try
+            {
+                PerformGitAction(repo, JGConstant.GitActions.DeleteUser, gitUserName);
+            }
+            catch (Exception ex)
+            {
+                //Log exception 
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Performs GitHub Actions
+        /// </summary>
+        /// <param name="repo"></param>
+        /// <param name="action"></param>
+        /// <param name="UserName"></param>
+        private static void PerformGitAction(JGConstant.GitRepo repo, JGConstant.GitActions action, String UserName)
+        {
+            Octokit.GitHubClient client = null;
+            String reponame = string.Empty;
+            String adminname = string.Empty;
+            switch (repo)
+            {
+                case JGConstant.GitRepo.Interview:
+                    {
+                        reponame = ConfigurationManager.AppSettings["GitRepoName"].ToString();
+                        adminname = ConfigurationManager.AppSettings["GitRepoAdminName"].ToString();
+                        String adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginId"].ToString();
+                        String adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPassword"].ToString();
+                        client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(ConfigurationManager.AppSettings["GitAppName"].ToString()));
+                        Octokit.Credentials basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
+                        client.Credentials = basicAuth;
+                        break;
+                    }
+                case JGConstant.GitRepo.Live:
+                    {
+                        reponame = ConfigurationManager.AppSettings["GitRepoNameLive"].ToString();
+                        adminname = ConfigurationManager.AppSettings["GitRepoAdminNameLive"].ToString();
+                        String adminloginId = ConfigurationManager.AppSettings["GitRepoAdminLoginIdLive"].ToString();
+                        String adminpassword = ConfigurationManager.AppSettings["GitRepoAdminPasswordLive"].ToString();
+                        client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(ConfigurationManager.AppSettings["GitAppNameLive"].ToString()));
+                        Octokit.Credentials basicAuth = new Octokit.Credentials(adminloginId, adminpassword);
+                        client.Credentials = basicAuth;
+                        break;
+                    }
+            }            
+
+
+            //Perform Actions       
+            switch (action)
+            {
+                case JGConstant.GitActions.AddUser:
+                    {
+                        client.Repository.Collaborator.Add(adminname, reponame, UserName);
+                        break;
+                    }
+                case JGConstant.GitActions.DeleteUser:
+                    {
+                        client.Repository.Collaborator.Delete(adminname, reponame, UserName);
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
         /// Call to show javascript alert message from page.
         /// </summary>
         /// <param name="page">Pass page obect of current page. i.e. this.Page</param>
@@ -651,6 +742,9 @@ namespace JG_Prospect.App_Code
                     break;
                 case JGConstant.DesignationType.IT_PHP_Developer:
                     strCode = "ITPH";
+                    break;
+                case JGConstant.DesignationType.IT_Jr_PHP_Developer:
+                    strCode = "ITJP";
                     break;
                 case JGConstant.DesignationType.IT_SEO_OR_BackLinking:
                     strCode = "ITSB";

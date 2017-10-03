@@ -30,9 +30,15 @@ namespace JG_Prospect.Sr_App
 {
     public partial class ITDashboard : System.Web.UI.Page
     {
+        #region Page Variables
+        public static bool IsSuperUser = false;
+        #endregion
+
         protected void Page_Load(object sender, EventArgs e)
         {
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
+
+            IsSuperUser = CommonFunction.CheckAdminAndItLeadMode();
 
             if (!Page.IsPostBack)
             {
@@ -53,43 +59,27 @@ namespace JG_Prospect.Sr_App
 
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
-                    tblInProgress.Visible = true;
-                    tblClosedTask.Visible = true;
                     lblalertpopup.Visible = true;
 
                     txtSearchFrozen.Visible = true;
                     btnSearchFrozen.Visible = true;
-
-                    txtSearchClosed.Visible = true;
-                    btnSearchClosed.Visible = true;
-
-                    txtSearchInPro.Visible = true;
-                    btnSearchInPro.Visible = true;
-
                 }
                 else
                 {
-                    tblInProgress.Visible = false;
-                    tblClosedTask.Visible = false;
+                    txtSearchClosedTasks.Visible = ddlDesigClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
 
                     txtSearchFrozen.Visible = false;
                     btnSearchFrozen.Visible = false;
 
-                    txtSearchClosed.Visible = false;
-                    btnSearchClosed.Visible = false;
-
-                    txtSearchInPro.Visible = false;
-                    btnSearchInPro.Visible = false;
+                    //For ng-repeat
+                    tableFilter.Visible = false;
+                    seqArrowDown.Visible = seqArrowUp.Visible = false;
 
                 }
-                LoadFilterUsersByDesgination("", ddlInProgressAssignedUsers);
-                LoadFilterUsersByDesgination("", ddlClosedAssignedUsers);
                 LoadFilterUsersByDesgination("", ddlUserFrozen);
                 //LoadFilterUsersByDesginationFrozen("", drpUserFrozen);
-                //LoadFilterUsersByDesgination("", drpUserNew);
-                BindTaskInProgressGrid();
-                BindTaskClosedGrid();
+                //LoadFilterUsersByDesgination("", drpUserNew);                
                 BindFrozenTasks();
                 BindNewTasks();
 
@@ -212,7 +202,6 @@ namespace JG_Prospect.Sr_App
 
                 //----------------- End DP ------------
             }
-            lblMessage.Text = "";
         }
 
 
@@ -349,15 +338,7 @@ namespace JG_Prospect.Sr_App
         //    //SearchTasks(null);
         //    BindTaskClosedGrid();
         //}
-        protected void drpUsersInProgress_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindTaskInProgressGrid();
-        }
 
-        protected void drpUsersClosed_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindTaskClosedGrid();
-        }
         protected void drpUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFrozenTasks();
@@ -565,6 +546,13 @@ namespace JG_Prospect.Sr_App
         private void FillDesignation()
         {
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+
+            ddlDesigSeq.Items.Clear();
+            ddlDesigSeq.DataSource = dsDesignation.Tables[0];
+            ddlDesigSeq.DataTextField = "DesignationName";
+            ddlDesigSeq.DataValueField = "ID";
+            ddlDesigSeq.DataBind();
+
             //drpDesigInProgress .Items.Clear();
 
             //drpDesigInProgress.DataValueField = "Id";
@@ -575,17 +563,6 @@ namespace JG_Prospect.Sr_App
             //drpDesigInProgress.SelectedIndex = 0;
 
             //DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
-            ddlInprogressUserDesignation.Items.Clear();
-            ddlInprogressUserDesignation.DataSource = dsDesignation.Tables[0];
-            ddlInprogressUserDesignation.DataTextField = "DesignationName";
-            ddlInprogressUserDesignation.DataValueField = "ID";
-            ddlInprogressUserDesignation.DataBind();
-
-            ddlClosedUserDesignation.Items.Clear();
-            ddlClosedUserDesignation.DataSource = dsDesignation.Tables[0];
-            ddlClosedUserDesignation.DataTextField = "DesignationName";
-            ddlClosedUserDesignation.DataValueField = "ID";
-            ddlClosedUserDesignation.DataBind();
             
             ddlDesigFrozen.Items.Clear();
             ddlDesigFrozen.DataSource = dsDesignation.Tables[0];
@@ -792,124 +769,7 @@ namespace JG_Prospect.Sr_App
 
 
         }
-        private void BindTaskInProgressGrid()
-        {
-            DataSet ds = new DataSet();
-
-            string userId = "0";
-            string desigID = "";
-            string strSearch = "";
-            if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
-            {
-                userId = GetSelectedDesignationsString(ddlInProgressAssignedUsers);
-                if (txtSearchInPro.Text != "")
-                {
-                    strSearch = txtSearchInPro.Text;
-                }
-                //else if (Convert.ToInt32(drpUsersInProgress.SelectedValue) > 0)
-                //{
-                //    userId = Convert.ToInt32(drpUsersInProgress.SelectedValue);
-                //}
-            }
-            else
-            {
-                //userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            }
-
-            //if (Convert.ToInt32(drpDesigInProgress.SelectedValue) > 0)
-            //{
-            //    desigID = Convert.ToInt32(drpDesigInProgress.SelectedValue);
-            //}
-
-            desigID = GetSelectedDesignationsString(ddlInprogressUserDesignation);
-
-            // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetInProgressTasks(userId, desigID, strSearch, grdTaskPending.PageIndex, grdTaskPending.PageSize);
-            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                grdTaskPending.DataSource = ds;
-                grdTaskPending.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
-                grdTaskPending.DataBind();
-            }
-            else
-            {
-                //lblMessage.Text = "No In-Progress Tasks Found !!!";
-                grdTaskPending.DataSource = null;
-                grdTaskPending.DataBind();
-
-            }
-
-            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, desigID);
-
-            if (dsUsers != null && dsUsers.Tables.Count > 0)
-            {
-                HighlightInterviewUsers(dsUsers.Tables[0], ddlInProgressAssignedUsers, null); 
-            }
-
-        }
-
-        private void BindTaskClosedGrid()
-        {
-            DataSet ds = new DataSet();
-
-            string userId = "0";
-            string desigID = "";
-            string strSearch = "";
-            if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
-            {
-                userId = GetSelectedDesignationsString(ddlClosedAssignedUsers);
-                if (txtSearchInPro.Text != "")
-                {
-                    strSearch = txtSearchInPro.Text;
-                }
-                //else if (Convert.ToInt32(drpUsersClosed.SelectedValue) > 0)
-                //{
-                //    userId = Convert.ToInt32(drpUsersClosed.SelectedValue);
-                //}
-            }
-            else
-            {
-                //userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            }
-
-            //if (Convert.ToInt32(drpDesigClosed.SelectedValue) > 0)
-            //{
-            //    desigID = Convert.ToInt32(drpDesigClosed.SelectedValue);
-            //}
-
-            desigID = GetSelectedDesignationsString(ddlClosedUserDesignation);
-
-            // if loggedin user is not manager then show tasks assigned to loggedin user only 
-            ds = TaskGeneratorBLL.Instance.GetClosedTasks(userId, desigID, strSearch, grdTaskClosed.PageIndex, grdTaskClosed.PageSize);
-            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                grdTaskClosed.DataSource = ds;
-                grdTaskClosed.VirtualItemCount = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecords"]);
-                grdTaskClosed.DataBind();
-            }
-            else
-            {
-                //lblMessage.Text = "No In-Progress Tasks Found !!!";
-                grdTaskClosed.DataSource = null;
-                grdTaskClosed.DataBind();
-
-            }
-        }
-
-        protected void OnPagingTaskInProgress(object sender, GridViewPageEventArgs e)
-        {
-            grdTaskPending.PageIndex = e.NewPageIndex;
-            BindTaskInProgressGrid();
-            grdTaskPending.DataBind();
-        }
-        protected void OnPagingTaskClosed(object sender, GridViewPageEventArgs e)
-        {
-            grdTaskClosed.PageIndex = e.NewPageIndex;
-            BindTaskClosedGrid();
-            grdTaskClosed.DataBind();
-        }
+        
         protected void OnPaginggrdFrozenTask(object sender, GridViewPageEventArgs e)
         {
             grdFrozenTask.PageIndex = e.NewPageIndex;
@@ -1440,87 +1300,7 @@ namespace JG_Prospect.Sr_App
             {
 
             }
-        }
-
-        protected void drpStatusInPro_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddl_status = (DropDownList)sender;
-            GridViewRow row = (GridViewRow)ddl_status.Parent.Parent;
-            int idx = row.RowIndex;
-
-
-            //Retrieve bookid and studentid from Gridview and status(dropdownlist)
-            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdInPro")).Value);
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
-                    command.CommandType = CommandType.Text;
-                    database.ExecuteNonQuery(command);
-                }
-
-                BindTaskInProgressGrid();
-                BindTaskClosedGrid();
-            }
-            catch (Exception ex)
-            {
-                // return 0;
-                //LogManager.Instance.WriteToFlatFile(ex);
-            }
-        }
-
-        protected void drpStatusClosed_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddl_status = (DropDownList)sender;
-            GridViewRow row = (GridViewRow)ddl_status.Parent.Parent;
-            int idx = row.RowIndex;
-
-            //Retrieve bookid and studentid from Gridview and status(dropdownlist)
-            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdClosed")).Value);
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
-                    command.CommandType = CommandType.Text;
-                    database.ExecuteNonQuery(command);
-                }
-
-                BindTaskClosedGrid();
-            }
-            catch (Exception ex)
-            {
-                // return 0;
-                //LogManager.Instance.WriteToFlatFile(ex);
-            }
-        }
-
-        protected void drpPageSizeInpro_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            grdTaskPending.PageSize = Convert.ToInt32(drpPageSizeInpro.SelectedValue);
-            grdTaskPending.PageIndex = 0;
-            BindTaskInProgressGrid();
-        }
-
-        protected void btnSearchInPro_Click(object sender, EventArgs e)
-        {
-            BindTaskInProgressGrid();
-        }
-
-        protected void drpPageSizeClosed_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            grdTaskClosed.PageSize = Convert.ToInt32(drpPageSizeClosed.SelectedValue);
-            grdTaskClosed.PageIndex = 0;
-            BindTaskClosedGrid();
-        }
-
-        protected void btnSearchClosed_Click(object sender, EventArgs e)
-        {
-            BindTaskClosedGrid();
-        }
+        }        
 
         protected void drpPageSizeNew_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1545,28 +1325,7 @@ namespace JG_Prospect.Sr_App
             BindFrozenTasks();
             //upAlerts.Update();
             //mpNewFrozenTask.Show();
-        }
-
-        protected void ddlInprogressUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string designations = GetSelectedDesignationsString(ddlInprogressUserDesignation);
-
-            LoadFilterUsersByDesgination(designations, ddlInProgressAssignedUsers);
-            
-            BindTaskInProgressGrid();
-
-            ddlInProgressAssignedUsers_SelectedIndexChanged(sender, e);
-
-            ddlInprogressUserDesignation.Texts.SelectBoxCaption = "Select";
-            foreach (ListItem item in ddlInprogressUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlInprogressUserDesignation.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
-        }
+        }      
 
         protected void ddlDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1602,57 +1361,6 @@ namespace JG_Prospect.Sr_App
                 if (item.Selected)
                 {
                     ddlUserFrozen.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
-        }
-
-        protected void ddlClosedUserDesignation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string designations = GetSelectedDesignationsString(ddlClosedUserDesignation);
-
-            LoadFilterUsersByDesgination(designations, ddlClosedAssignedUsers);
-            
-            BindTaskClosedGrid();
-
-            ddlClosedUserDesignation.Texts.SelectBoxCaption = "Select";
-            foreach (ListItem item in ddlClosedUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlClosedUserDesignation.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
-        }
-
-        protected void ddlInProgressAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindTaskInProgressGrid();
-
-            //ddlInProgressAssignedUsers.Texts.SelectBoxCaption = "--All--";
-
-            //foreach (ListItem item in ddlInProgressAssignedUsers.Items)
-            //{
-            //    if (item.Selected)
-            //    {
-            //        ddlInProgressAssignedUsers.Texts.SelectBoxCaption = item.Text;
-            //        break;
-            //    }
-            //}
-        }
-
-        protected void ddlClosedAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindTaskClosedGrid();
-
-            ddlClosedAssignedUsers.Texts.SelectBoxCaption = "--All--";
-
-            foreach (ListItem item in ddlClosedAssignedUsers.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlClosedAssignedUsers.Texts.SelectBoxCaption = item.Text;
                     break;
                 }
             }
@@ -1720,11 +1428,6 @@ namespace JG_Prospect.Sr_App
                 }
             }
             return objListItemCollection;
-        }
-        
-        protected void searchUsers_Click(object sender, EventArgs e)
-        {
-            BindTaskInProgressGrid();
         }
 
     }

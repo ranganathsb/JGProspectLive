@@ -39,6 +39,20 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.AddUserEmailOrPhone(UserID, DataForValidation, DataType, PhoneTypeID, PhoneExt, IsPrimary);
         }
+        public void UpdateGithubUserName(int UserId, String GithubUsername)
+        {
+            InstallUserDAL.Instance.UpdateGithubUserName(UserId, GithubUsername);
+        }
+
+        public string GetUserGithubUserName(int id)
+        {
+            return InstallUserDAL.Instance.GetUserGitUserName(id);
+        }
+
+        public string GetUserDesignationCode(int UserId)
+        {
+            return InstallUserDAL.Instance.GetUserDesignationCode(UserId);
+        }
 
         public string AddHoursToAvailability(DateTime dt)
         {
@@ -548,6 +562,11 @@ namespace JG_Prospect.BLL
         public DataSet GetTaskUsers(String searchTerm)
         {
             return InstallUserDAL.Instance.GetTaskUsers(searchTerm);
+        }
+
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            return InstallUserDAL.Instance.GetTaskUsersForDashBoard(searchTerm);
         }
 
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
