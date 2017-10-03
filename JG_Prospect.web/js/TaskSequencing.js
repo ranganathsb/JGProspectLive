@@ -103,7 +103,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
 }
 
-function ShowTaskSequenceDashBoard(DesId, UserId) {
+function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
 
     //debugger;
     var TechTask = false;
@@ -111,8 +111,119 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
     //console.log("Task designation is: " + DesignationIds);    
     //debugger;
     //Set if tech task than load tech task related sequencing.
+    sequenceScopeFrozenTasks.IsTechTask = TechTask;
+    sequenceScopeFrozenTasks.UserId = UserId;
+    sequenceScope.UserSelectedDesigIdsFrozenTaks = DesId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScopeFrozenTasks.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScopeFrozenTasks.getAssignUsers();
+
+    var defaultTabIndex;
+
+    if (TechTask == true) {
+        defaultTabIndex = 1;
+    }
+
+    else {
+        defaultTabIndex = 0;
+    }
+
+    var dlg = $('#pnlNewFrozenTask').dialog({
+        width: 1200,
+        height: 900,
+        show: 'slide',
+        hide: 'slide',
+        position: 'top',
+        autoOpen: true,
+        modal: true,
+        beforeClose: function (event, ui) {
+            $('#pnlNewFrozenTask').addClass("hide");
+        }
+    }).removeClass("hide");
+
+    if (TechTask === 'True') {
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScopeFrozenTasks.IsTechTask = true;
+        sequenceScopeFrozenTasks.getFrozenTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabsFrozen(1);
+    }
+
+    else {
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScopeFrozenTasks.IsTechTask = false;
+        sequenceScopeFrozenTasks.getFrozenTasks();
+        applyTaskSequenceTabsFrozen(0);
+    }
+
+    sequenceScopeFrozenTasks.getAssignUsers();
+
+}
+
+function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
+
+    //debugger;
+    var TechTask = false;
+    var DesignationIds = DesId;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    sequenceScopeNonFrozenTasks.IsTechTask = TechTask;
+    sequenceScopeNonFrozenTasks.UserId = UserId;
+    sequenceScopeNonFrozenTasks.UserSelectedDesigIdsFrozenTaks = DesId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScopeNonFrozenTasks.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScopeNonFrozenTasks.getAssignUsers();
+
+    //debugger;
+
+    var defaultTabIndex;
+
+    if (TechTask == true) {
+        defaultTabIndex = 1;
+    }
+    else {
+        defaultTabIndex = 0;
+    }
+
+    //console.log(TechTask);
+
+    if (TechTask === 'True') {
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScopeNonFrozenTasks.IsTechTask = true;
+        sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabsNonFrozen(1);
+    }
+    else {
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScopeNonFrozenTasks.IsTechTask = false;
+        sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+        applyTaskSequenceTabsNonFrozen(0);
+    }
+
+    sequenceScopeNonFrozenTasks.getAssignUsers();
+
+}
+
+function ShowTaskSequenceDashBoard(DesId, UserId) {
+
+    debugger;
+    var TechTask = false;
+    var DesignationIds = DesId;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
     sequenceScope.IsTechTask = TechTask;
-    sequenceScope.UserId = UserId;
+    sequenceScope.UserId = UserId;    
     //search initially all tasks with sequencing.
 
     // set designation id to be search by default
@@ -154,7 +265,7 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
 
 function ShowAllClosedTasksDashBoard(DesIds, UserId, pageSize) {
 
-    debugger;
+    //debugger;
     sequenceScope.pageSize = pageSize;
     sequenceScope.UserSelectedDesigIdsClosedTaks = DesIds;
     //console.log("Task designation is: " + DesignationIds);    
@@ -279,7 +390,6 @@ function setDropDownChangedData(dropdown) {
 
 }
 
-
 function setFirstRowAutoData() {
 
     var element = $("#autoClick" + sequenceScope.BlinkTaskId);
@@ -327,7 +437,6 @@ function setFirstRowAutoData() {
 
 
 }
-
 
 function getLastAvailableSequence(TaskID, DesignationID, isFromDropDown) {
     ShowAjaxLoader();
@@ -656,6 +765,43 @@ function setActiveTab(isTechTask) {
 
 }
 
+function applyTaskSequenceTabsFrozen(activeTab) {
+
+    $('#taskSequenceTabsFrozen').tabs({
+        active: activeTab,
+        activate: function (event, ui) {
+            //console.log("called tabs select");
+            if (ui.newPanel.attr('id') == "TechTaskFrozen") {
+
+                sequenceScopeFrozenTasks.IsTechTask = true;
+                sequenceScopeFrozenTasks.getFrozenTasks();
+            }
+            else {
+                sequenceScopeFrozenTasks.IsTechTask = false;
+                sequenceScopeFrozenTasks.getFrozenTasks();
+            }
+        }
+    });
+}
+
+function applyTaskSequenceTabsNonFrozen(activeTab) {
+
+    $('#taskSequenceTabsNonFrozen').tabs({
+        active: activeTab,
+        activate: function (event, ui) {
+            //console.log("called tabs select");
+            if (ui.newPanel.attr('id') == "TechTaskNonFrozen") {
+
+                sequenceScopeNonFrozenTasks.IsTechTask = true;
+                sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+            }
+            else {
+                sequenceScopeNonFrozenTasks.IsTechTask = false;
+                sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+            }
+        }
+    });
+}
 
 function applyTaskSequenceTabs(activeTab) {
 
@@ -689,7 +835,6 @@ function applyTaskSequenceTabs(activeTab) {
     //});
 
 }
-
 
 function setParentTaskDesignationToJqueryArray(DesignationDropdown) {
 

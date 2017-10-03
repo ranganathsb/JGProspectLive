@@ -794,7 +794,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, int UserId, bool ForDashboard)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -802,13 +802,13 @@ namespace JG_Prospect.WebServices
             if (ForDashboard)
             {
                 if (!CommonFunction.CheckAdminAndItLeadMode())
-                {                    
-                    Int32.TryParse(JGSession.LoginUserID, out UserId);
+                {
+                    UserId = JGSession.LoginUserID;
                     dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
                 }
                 else
                 {
-                    if (UserId == 0)
+                    if (UserId == "0")
                         dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
                     else
                         dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
@@ -819,7 +819,7 @@ namespace JG_Prospect.WebServices
             {
                 dtResult = TaskGeneratorBLL.Instance.GetAllTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
             }
-            
+
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 //Context.Response.Clear();
@@ -847,6 +847,88 @@ namespace JG_Prospect.WebServices
             }
             return strMessage;
         }
+
+
+        [WebMethod(EnableSession = true)]
+        public String GetAllFrozenTasksWithPaging(int? page, int? pageSize, String DesignationIDs, string UserId, bool IsTechTask)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            if (UserId == "0")
+                dtResult = TaskGeneratorBLL.Instance.GetAllPartialFrozenTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask);
+            else
+                dtResult = TaskGeneratorBLL.Instance.GetAllPartialFrozenUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
+
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                //Context.Response.Clear();
+                //Context.Response.ContentType = "application/json";
+                //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "SubSeqTasks";
+                dtResult.Tables[2].TableName = "RecordCount";
+
+                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                relation.Nested = true;
+                dtResult.DataSetName = "TasksData";
+
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+
+
+                //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetAllNonFrozenTasksWithPaging(int? page, int? pageSize, String DesignationIDs, string UserId, bool IsTechTask)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            if (UserId == "0")
+                dtResult = TaskGeneratorBLL.Instance.GetAllNonFrozenTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask);
+            else
+                dtResult = TaskGeneratorBLL.Instance.GetAllNonFrozenUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
+
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                //Context.Response.Clear();
+                //Context.Response.ContentType = "application/json";
+                //Context.Response.Write(JsonConvert.SerializeObject(dtResult, Formatting.Indented));
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "SubSeqTasks";
+                dtResult.Tables[2].TableName = "RecordCount";
+
+                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                relation.Nested = true;
+                dtResult.DataSetName = "TasksData";
+
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+
+
+                //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
 
         [WebMethod(EnableSession = true)]
         public String GetAllTasksforSubSequencing(Int32 DesignationId, String DesiSeqCode, bool IsTechTask, Int64 TaskId)

@@ -95,7 +95,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             //get all Customers
             getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard }).then(function (data) {
                 console.log(data);
-                debugger;
+                //debugger;
                 $scope.loader.loading = false;
                 $scope.IsTechTask = false;
                 $scope.DesignationSelectModel = [];
@@ -137,9 +137,9 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 $scope.DesignationSelectModel = [];
                 var resultArray = JSON.parse(data.data.d);
                 var results = resultArray.TasksData;
-                console.log("type of tasks is");
-                console.log(typeof results.Tasks);
-                console.log(results.Tasks);
+                //console.log("type of tasks is");
+                //console.log(typeof results.Tasks);
+                //console.log(results.Tasks);
                 $scope.Techpage = results.RecordCount.PageIndex;
                 $scope.TechTotalRecords = results.RecordCount.TotalRecords;
                 $scope.TechpagesCount = results.RecordCount.TotalPages;
@@ -165,29 +165,6 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             roman = (key[+digits.pop() + (i * 10)] || "") + roman;
 
         return Array(+digits.join("") + 1).join("M") + roman;
-    };
-
-
-    $scope.getTasksForSubset = function (DesignationCode, TaskID) {
-        $scope.loader.loading = true;
-                
-      
-        //get all Customers
-        getTasksForSubSequencing($http, "GetAllTasksforSubSequencing", { DesignationId: $scope.UserSelectedDesigIds.join(), DesiSeqCode: DesignationCode, IsTechTask: false, TaskId: TaskID }).then(function (data) {
-            console.log(data);
-            $scope.loader.loading = false;
-            var resultArray = JSON.parse(data.data.d);
-            
-            var results = resultArray.Tasks;
-            console.log(results);            
-            $scope.SeqSubsets = results;
-            
-            //console.log('Counting Data...');
-            //console.log(results.RecordCount.PageIndex);
-            //console.log(results.RecordCount.TotalRecords);
-            //console.log(results.RecordCount.TotalPages);
-
-        });
     };
 
     $scope.correctDataforAngular = function (ary) {

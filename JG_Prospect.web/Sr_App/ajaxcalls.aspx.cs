@@ -114,6 +114,20 @@ namespace JG_Prospect.Sr_App
         }
 
         [WebMethod]
+        public static string GetUsersByDesignationId(string designationId)
+        {
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designationId);
+            string SearchSuggestions = string.Empty;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0 && dsUsers.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsUsers.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
         public static string StarBookMarkUsers(int bookmarkedUser,   int isdelete)
         {
             string strReturn = "true";
