@@ -18,8 +18,7 @@ function applyFunctionsClosedTask($scope, $compile, $http, $timeout , $filter) {
     $scope.pagesCountClosedTask = 0;
     $scope.CurrentpageClosedTask = 0;
     $scope.TotalRecordsClosedTask = 0;
-    $scope.example1model = []; $scope.example1data = [{ id: 1, label: "David" }, { id: 2, label: "Jhon" }, { id: 3, label: "Danny" }];
-
+    
     $scope.getClosedTasks = function (page) {
             console.log("Closed Task called....");
             $scope.loaderClosedTask.loading = true;
@@ -28,7 +27,7 @@ function applyFunctionsClosedTask($scope, $compile, $http, $timeout , $filter) {
             // make it blank so StaffTask grid don't bind.
             $scope.Tasks = [];
 
-            debugger;
+            //debugger;
             //get all Customers
             getAllClosedTasksWithSearchandPaging($http, "GetAllClosedTasks", { page: $scope.pageClosedTask, pageSize: sequenceScope.pageSize, DesignationIDs: sequenceScope.UserSelectedDesigIdsClosedTaks, userid: sequenceScope.UserId, vSearch: $scope.vSearch }).then(function (data) {
                 

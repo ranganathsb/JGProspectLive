@@ -84,8 +84,135 @@ namespace JG_Prospect.DAL
             }
 
         }
-        
-        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, int UserId)
+
+        public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllPartialFrozenTaskWithSequence");
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllNonFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllNonFrozenTaskWithSequence");
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetFrozenNonFrozenTaskCount()
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetFrozenNonFrozenTaskCount");
+                    command.CommandType = CommandType.StoredProcedure;
+                    DataSet result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllNonFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllNonFrozenUserTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllPartialFrozenUserTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
         {
             try
             {
@@ -95,7 +222,7 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
                     database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
-                    database.AddInParameter(command, "@UserId", SqlDbType.Int, UserId);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
                     command.CommandType = CommandType.StoredProcedure;
 

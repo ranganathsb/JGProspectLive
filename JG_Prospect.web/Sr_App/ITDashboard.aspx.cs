@@ -54,34 +54,28 @@ namespace JG_Prospect.Sr_App
 
                 //----------------- Start DP ------------
                 FillDesignation();
-                lblFrozenCounter0.Visible = false;
-                lblNewCounter0.Visible = false;
 
                 if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
                 {
                     lblalertpopup.Visible = true;
-
-                    txtSearchFrozen.Visible = true;
-                    btnSearchFrozen.Visible = true;
+                    DataSet ds = TaskGeneratorBLL.Instance.GetFrozenNonFrozenTaskCount();
+                    if(ds!=null && ds.Tables.Count>0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        lblFrozenTaskCounter.InnerHtml = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" +ds.Tables[0].Rows[0][0].ToString() + "</div>";
+                        lblNonFrozenTaskCounter.InnerHtml = "Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + ds.Tables[1].Rows[0][0].ToString() + "</div>";
+                    }
                 }
                 else
                 {
                     txtSearchClosedTasks.Visible = ddlDesigClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
 
-                    txtSearchFrozen.Visible = false;
-                    btnSearchFrozen.Visible = false;
-
                     //For ng-repeat
                     tableFilter.Visible = false;
                     seqArrowDown.Visible = seqArrowUp.Visible = false;
-
                 }
-                LoadFilterUsersByDesgination("", ddlUserFrozen);
                 //LoadFilterUsersByDesginationFrozen("", drpUserFrozen);
                 //LoadFilterUsersByDesgination("", drpUserNew);                
-                BindFrozenTasks();
-                BindNewTasks();
 
                 // ----- get NEW and FROZEN task counts for current payperiod
                 DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -172,33 +166,6 @@ namespace JG_Prospect.Sr_App
                 //catch (Exception ex)
                 //{
                 //}
-                //Non Frozen Count
-                lblNewCounter.Visible = false;
-                lblNewCounter0.Visible = true;
-                lblNewCounter0.Text = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
-                if (grdNewTask != null)
-                {
-                    if (grdNewTask.DataSource != null)
-                    {
-                        lblNewCounter.Visible = true;
-                        lblNewCounter0.Visible = false;
-                        lblNewCounter.InnerHtml = " Non Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdNewTask.VirtualItemCount + "</div>";
-                    }
-                }
-
-                //Partial Frozen Count
-                lblFrozenCounter.Visible = false;
-                lblFrozenCounter0.Visible = true;
-                lblFrozenCounter0.Text = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>0</div>";
-                if (grdFrozenTask != null)
-                {
-                    if (grdFrozenTask.DataSource != null)
-                    {
-                        lblFrozenCounter.Visible = true;
-                        lblFrozenCounter0.Visible = false;
-                        lblFrozenCounter.InnerHtml = "Partial Frozen Tasks :<div class='badge1 badge-error' style='width:20px;'>" + grdFrozenTask.VirtualItemCount + "</div>";
-                    }
-                }
 
                 //----------------- End DP ------------
             }
@@ -289,18 +256,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void lnkNewCounter_Click(object sender, EventArgs e)
-        {
-            txtSearchFrozen.Text = "";
-            //mpNewFrozenTask.Show();
-        }
-
-        protected void lnkFrozenCounter_Click(object sender, EventArgs e)
-        {
-            txtSearchFrozen.Text = "";
-           // mpNewFrozenTask.Show();
-        }
-
         protected void btnCalClose_Click(object sender, EventArgs e)
         {
             //mpNewFrozenTask.Hide();
@@ -338,13 +293,6 @@ namespace JG_Prospect.Sr_App
         //    //SearchTasks(null);
         //    BindTaskClosedGrid();
         //}
-
-        protected void drpUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindFrozenTasks();
-            //upAlerts.Update();
-            //mpNewFrozenTask.Show();
-        }
         //protected void drpDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
         //{
         //    string designation = drpDesigInProgress.SelectedValue;
@@ -357,12 +305,6 @@ namespace JG_Prospect.Sr_App
         //    LoadFilterUsersByDesgination(designation,drpUserNew );
         //    BindNewTasks();
         //}
-        protected void drpUserNew_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindNewTasks();
-            //upAlerts.Update();
-            //mpNewFrozenTask.Show();
-        }
 
         private void LoadFilterUsersByDesgination(string designation, ListBox drp)
         {
@@ -553,6 +495,13 @@ namespace JG_Prospect.Sr_App
             ddlDesigSeq.DataValueField = "ID";
             ddlDesigSeq.DataBind();
 
+            //ddlDesigIdsFrozenTasks
+            ddlDesigIdsFrozenTasks.Items.Clear();
+            ddlDesigIdsFrozenTasks.DataSource = dsDesignation.Tables[0];
+            ddlDesigIdsFrozenTasks.DataTextField = "DesignationName";
+            ddlDesigIdsFrozenTasks.DataValueField = "ID";
+            ddlDesigIdsFrozenTasks.DataBind();
+
             //drpDesigInProgress .Items.Clear();
 
             //drpDesigInProgress.DataValueField = "Id";
@@ -563,12 +512,6 @@ namespace JG_Prospect.Sr_App
             //drpDesigInProgress.SelectedIndex = 0;
 
             //DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
-            
-            ddlDesigFrozen.Items.Clear();
-            ddlDesigFrozen.DataSource = dsDesignation.Tables[0];
-            ddlDesigFrozen.DataTextField = "DesignationName";
-            ddlDesigFrozen.DataValueField = "ID";
-            ddlDesigFrozen.DataBind();
 
             //drpDesigClosed.DataValueField = "Id";
             //drpDesigClosed.DataTextField = "DesignationName";
@@ -596,192 +539,6 @@ namespace JG_Prospect.Sr_App
             //drpDesigNew.DataBind();
             //drpDesigNew.Items.Insert(0, new ListItem("--All--", "0"));
             //drpDesigNew.SelectedIndex = 0;
-        }
-
-        private void BindNewTasks()
-        {
-            DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            DateTime firstOfNextMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
-            DateTime lastOfThisMonth = firstOfNextMonth.AddDays(-1);
-            //DateTime MiddleDate = Convert.ToDateTime("15-" + DateTime.Now.Month + "-" + DateTime.Now.Year);
-            DateTime MiddleDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(14);
-            string strnew = "";
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DataSet result = new DataSet();
-                    string vStartDate = "";
-                    string vEndDate = "";
-
-                    if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                    {
-                        vStartDate = firstOfThisMonth.ToString("dd-MMM-yyy");
-                        vEndDate = MiddleDate.ToString("dd-MMM-yyy");
-                    }
-                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                    {
-                        vStartDate = MiddleDate.ToString("dd-MMM-yyy");
-                        vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
-                    }
-                    DbCommand command = database.GetStoredProcCommand("GetNonFrozenTasks");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
-                    database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
-                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdNewTask.PageIndex);
-                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdNewTask.PageSize);
-
-                    result = database.ExecuteDataSet(command);
-                    /*
-                     if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                    {
-                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + firstOfThisMonth.ToString("dd-MMM-yyy") + "' ";
-                        strnew = strnew + " and CreatedOn <= '" + MiddleDate.ToString("dd-MMM-yyy") + "') ";
-                    }
-                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                    {
-                        strnew = "select * from tbltask where [Status]=1 and (CreatedOn >='" + MiddleDate.ToString("dd-MMM-yyy") + "' ";
-                        strnew = strnew + " and CreatedOn <= '" + lastOfThisMonth.ToString("dd-MMM-yyy") + "') ";
-                    }
-                    DbCommand command = database.GetSqlStringCommand(strnew);
-                    command.CommandType = CommandType.Text;
-                    result = database.ExecuteDataSet(command);
-                     
-                     */
-
-                    // if loggedin user is not manager then show tasks assigned to loggedin user only 
-
-                    if (result.Tables[0].Rows.Count > 0)
-                    {
-                        grdNewTask.DataSource = result;
-                        grdNewTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
-                        grdNewTask.DataBind();
-                    }
-                    else
-                    {
-                        //lblMessage.Text = "No In-Progress Tasks Found !!!";
-                        grdNewTask.DataSource = null;
-                        grdNewTask.DataBind();
-                    }
-
-                    result.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-
-
-        }
-        private void BindFrozenTasks()
-        {
-            DateTime firstOfThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            DateTime firstOfNextMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1);
-            DateTime lastOfThisMonth = firstOfNextMonth.AddDays(-1);
-            //DateTime MiddleDate = Convert.ToDateTime("15-" + DateTime.Now.Month + "-" + DateTime.Now.Year);
-            DateTime MiddleDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(14);
-            string strfrozen = "";
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DataSet result = new DataSet();
-
-                    //DataSet resultTask = new DataSet();
-                    string userId = "0";
-                    string desigID = "";
-                    string strSearch = "";
-                    if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
-                    {
-                        userId = GetSelectedDesignationsString(ddlUserFrozen);
-
-                        //if (Convert.ToInt32(drpUserFrozen.SelectedValue) > 0)
-                        //{
-                        //    userId = Convert.ToInt32(drpUserFrozen.SelectedValue);
-                        //}
-                    }
-                    else
-                    {
-                        userId = Convert.ToString(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                    }
-
-                    //if (Convert.ToInt32(drpDesigFrozen.SelectedValue) > 0)
-                    //{
-                    //    desigID = Convert.ToInt32(drpDesigFrozen.SelectedValue);
-                    //}
-
-                    if (string.IsNullOrEmpty(userId))
-                        userId = "0";
-
-                    desigID = GetSelectedDesignationsString(ddlDesigFrozen);
-
-                    string vSearch = "";
-                    string vStartDate = "";
-                    string vEndDate = "";
-
-                    if (txtSearchFrozen.Text != "")
-                    {
-                        vSearch = txtSearchFrozen.Text;
-                    }
-
-                    if (DateTime.Now.Date >= firstOfThisMonth && DateTime.Now.Date <= MiddleDate)
-                    {
-                        vStartDate = firstOfThisMonth.ToString("dd-MMM-yyy");
-                        vEndDate = MiddleDate.ToString("dd-MMM-yyy");
-                    }
-                    else if (DateTime.Now.Date >= MiddleDate && DateTime.Now.Date <= lastOfThisMonth)
-                    {
-                        vStartDate = MiddleDate.ToString("dd-MMM-yyy");
-                        vEndDate = lastOfThisMonth.ToString("dd-MMM-yyy");
-                    }
-
-                    DbCommand command = database.GetStoredProcCommand("GetFrozenTasks");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@search", DbType.String, vSearch);
-                    database.AddInParameter(command, "@startdate", DbType.String, vStartDate);
-                    database.AddInParameter(command, "@enddate", DbType.String, vEndDate);
-                    database.AddInParameter(command, "@PageIndex", DbType.Int32, grdFrozenTask.PageIndex);
-                    database.AddInParameter(command, "@PageSize", DbType.Int32, grdFrozenTask.PageSize);
-                    database.AddInParameter(command, "@userid", DbType.String, userId);
-                    database.AddInParameter(command, "@desigid", DbType.String, desigID);
-
-
-                    result = database.ExecuteDataSet(command);
-                    if (result.Tables[0].Rows.Count > 0)
-                    {
-                        grdFrozenTask.DataSource = result;
-                        grdFrozenTask.VirtualItemCount = Convert.ToInt32(result.Tables[1].Rows[0]["TotalRecords"]);
-                        grdFrozenTask.DataBind();
-                    }
-                    else
-                    {
-                        //lblMessage.Text = "No In-Progress Tasks Found !!!";
-                        grdFrozenTask.DataSource = null;
-                        grdFrozenTask.DataBind();
-                    }
-
-                    result.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-
-
-        }
-        
-        protected void OnPaginggrdFrozenTask(object sender, GridViewPageEventArgs e)
-        {
-            grdFrozenTask.PageIndex = e.NewPageIndex;
-            BindFrozenTasks();
-            grdFrozenTask.DataBind();
-        }
-
-        protected void OnPaginggrdNewTask(object sender, GridViewPageEventArgs e)
-        {
-            grdNewTask.PageIndex = e.NewPageIndex;
-            BindNewTasks();
-            grdNewTask.DataBind();
         }
 
         protected void grdTaskPending_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -1273,98 +1030,7 @@ namespace JG_Prospect.Sr_App
 
                 drpStatusFrozen.Attributes.Add("data-task-id", lblTaskIdInPro.Value);
             }
-        }
-
-        protected void gv_drpStatusFrozen_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddl_status = (DropDownList)sender;
-            GridViewRow row = (GridViewRow)ddl_status.Parent.Parent;
-            int idx = row.RowIndex;
-
-            //Retrieve bookid and studentid from Gridview and status(dropdownlist)
-            int vTaskId = Convert.ToInt32(((HiddenField)row.Cells[0].FindControl("lblTaskIdInPro")).Value);
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetSqlStringCommand("update  tblTask set [status]=" + ddl_status.SelectedValue + " where TaskId=" + vTaskId);
-                    command.CommandType = CommandType.Text;
-                    database.ExecuteNonQuery(command);
-                }
-
-                BindFrozenTasks();
-                BindNewTasks();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }        
-
-        protected void drpPageSizeNew_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            grdNewTask.PageSize = Convert.ToInt32(drpPageSizeNew.SelectedValue);
-            grdNewTask.PageIndex = 0;
-            BindNewTasks();
-            //upAlerts.Update();
-            //mpNewFrozenTask.Show();
-        }
-
-        protected void drpPageSizeFrozen_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            grdFrozenTask.PageSize = Convert.ToInt32(drpPageSizeFrozen.SelectedValue);
-            grdFrozenTask.PageIndex = 0;
-            BindFrozenTasks();
-            //upAlerts.Update();
-            //mpNewFrozenTask.Show();
-        }
-
-        protected void btnSearchFrozen_Click(object sender, EventArgs e)
-        {
-            BindFrozenTasks();
-            //upAlerts.Update();
-            //mpNewFrozenTask.Show();
         }      
-
-        protected void ddlDesigFrozen_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string designations = GetSelectedDesignationsString(ddlDesigFrozen);
-
-            LoadFilterUsersByDesgination(designations, ddlUserFrozen);
-
-            BindFrozenTasks();
-            BindNewTasks();
-
-            gv_ddlUserFrozen_SelectedIndexChanged(sender, e);
-
-            ddlDesigFrozen.Texts.SelectBoxCaption = "Select";
-            foreach (ListItem item in ddlDesigFrozen.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlDesigFrozen.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
-        }
-
-        protected void gv_ddlUserFrozen_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindFrozenTasks();
-            BindNewTasks();
-
-            ddlUserFrozen.Texts.SelectBoxCaption = "--All--";
-
-            foreach (ListItem item in ddlUserFrozen.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlUserFrozen.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
-        }
 
         private string GetSelectedDesignationsString(ListBox drpChkBoxes)
         {

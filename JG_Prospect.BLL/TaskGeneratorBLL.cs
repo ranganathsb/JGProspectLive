@@ -51,9 +51,35 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
         }
 
-        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, int UserId)
+        public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
         {
-            return TaskGeneratorDAL.Instance.GetAllInProAssReqUserTaskWithSequence(page, pageSize,IsTechTask, UserId);
+            return TaskGeneratorDAL.Instance.GetAllPartialFrozenTaskWithSequence(page, pageSize, DesignationIds, IsTechTask);
+        }
+
+        public DataSet GetFrozenNonFrozenTaskCount()
+        {
+            return TaskGeneratorDAL.Instance.GetFrozenNonFrozenTaskCount();
+        }
+
+
+        public DataSet GetAllNonFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            return TaskGeneratorDAL.Instance.GetAllNonFrozenTaskWithSequence(page, pageSize, DesignationIds, IsTechTask);
+        }
+
+        public DataSet GetAllNonFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllNonFrozenUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
+        }
+
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
+        }
+
+        public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllPartialFrozenUserTaskWithSequence(page, pageSize,IsTechTask, UserId);
         }
 
         public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
