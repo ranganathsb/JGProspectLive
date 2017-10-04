@@ -92,7 +92,7 @@ GO
 ---END
 
 
---FOR IT DASHBOARD SEQUENCING
+--FOR IT DASHBOARD SEQUENCING/Sequencing popup issues 
 ALTER PROCEDURE [dbo].[usp_GetAllTaskWithSequence]                         
 (                        
                        
@@ -220,7 +220,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -262,7 +284,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS 
                       
 END 
 
@@ -394,6 +417,28 @@ DECLARE @StartIndex INT  = 0
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
                    
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -435,7 +480,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS 
                       
 END 
 
@@ -554,7 +600,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -596,7 +664,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS   
                       
 END 
 
@@ -860,7 +929,7 @@ END
 GO
 --END
 
---FOR FROZEN/NON FROZEN POPUP
+--FOR FROZEN/NON FROZEN POPUP/Sequencing popup issues 
 CREATE PROCEDURE [dbo].[usp_GetAllNonFrozenTaskWithSequence]                         
 (                        
                        
@@ -980,7 +1049,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -1022,7 +1113,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS             
                       
 END 
 
@@ -1141,7 +1233,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -1183,7 +1297,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS         
                       
 END 
 
@@ -1310,7 +1425,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -1352,7 +1489,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS 
                       
 END 
 
@@ -1471,7 +1609,29 @@ DECLARE @StartIndex INT  = 0
                   
  -- Set start index to fetch record.                  
  SET @StartIndex = (@PageIndex * @PageSize) + 1                        
-                   
+
+ ----missing rows bug solution BEGIN: kapil pancholi
+ --create temp table for Sequences
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT)
+ 
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE] FROM #TASKS WHERE SubSequence IS NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID
+ from #Tasks,#S
+ where #Tasks.TaskId=#S.TASKID
+
+ --create temp table for SubSequences
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT)
+ 
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE]) 
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE] FROM #TASKS WHERE SubSequence IS NOT NULL
+
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID
+ from #Tasks,#SS
+ where #Tasks.TaskId=#SS.TASKID
+ ----missing rows bug solution END: kapil pancholi
+
  -- fetch parent sequence records from temptable                  
  SELECT *                         
  FROM #Tasks                         
@@ -1513,7 +1673,8 @@ DECLARE @StartIndex INT  = 0
   FROM #Tasks  WHERE SubSequence IS NULL                 
                   
  DROP TABLE #Tasks                  
-                  
+ DROP TABLE #S    
+ DROP TABLE #SS   
                       
 END 
 
