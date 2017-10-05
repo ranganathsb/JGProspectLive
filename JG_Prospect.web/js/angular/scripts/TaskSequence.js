@@ -167,6 +167,28 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         return Array(+digits.join("") + 1).join("M") + roman;
     };
 
+    $scope.getTasksForSubset = function (DesignationCode, TaskID) {
+        $scope.loader.loading = true;
+
+
+        //get all Customers		
+        getTasksForSubSequencing($http, "GetAllTasksforSubSequencing", { DesignationId: $scope.UserSelectedDesigIds.join(), DesiSeqCode: DesignationCode, IsTechTask: false, TaskId: TaskID }).then(function (data) {
+            console.log(data);
+            $scope.loader.loading = false;
+            var resultArray = JSON.parse(data.data.d);
+
+            var results = resultArray.Tasks;
+            console.log(results);
+            $scope.SeqSubsets = results;
+
+            //console.log('Counting Data...');		
+            //console.log(results.RecordCount.PageIndex);		
+            //console.log(results.RecordCount.TotalRecords);		
+            //console.log(results.RecordCount.TotalPages);		
+        });
+    };		
+
+
     $scope.correctDataforAngular = function (ary) {
 
         var arr = null;
@@ -192,7 +214,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             var AssignedUsers = JSON.parse(data.data.d);
 
             ///console.log(AssignedUsers);
-
+            debugger;
             $scope.DesignationAssignUsers = AssignedUsers;
 
         });
