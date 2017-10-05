@@ -1272,14 +1272,19 @@
         </asp:UpdatePanel>--%>
         <div id="taskSequence" ng-controller="TaskSequenceSearchController">
             <div class="loading" ng-show="loading === true"></div>
-            
+
+            <%if (IsSuperUser)
+                { %>
             <table class="table" runat="server" id="tableFilter">
                 <tr>
-                    <td width="300px"><h2 class="itdashtitle">In Progress, Assigned-Requested</h2></td>
+                    <td width="300px">
+                        <h2 class="itdashtitle">In Progress, Assigned-Requested</h2>
+                    </td>
                     <td>Designation</td>
                     <td>Users</td>
                     <td></td>
                 </tr>
+
                 <tr>
                     <td></td>
                     <td>
@@ -1296,15 +1301,37 @@
 
                 </tr>
             </table>
+            <%}
+            else
+            {%>
 
+            <h2 class="itdashtitle">In Progress, Assigned-Requested</h2>
+            <%} %>
             <div id="taskSequenceTabs">
                 <ul>
                     <li><a href="#StaffTask">Staff Tasks</a></li>
+                    <%if (IsSuperUser)
+                        {%>
                     <li><a href="#TechTask">Tech Tasks</a></li>
+                    <%} %>
                 </ul>
                 <div id="StaffTask">
                     <div id="tblStaffSeq" class="div-table tableSeqTask">
-
+                        <div class="div-table-row-header">
+                                <div class="div-table-col seq-number">Sequence#</div>
+                                <div class="div-table-col seq-taskid">
+                                    ID#<div>Designation</div>
+                                </div>
+                                <div class="div-table-col seq-tasktitle">
+                                    Parent Task
+                                        <div>SubTask Title</div>
+                                </div>
+                                <div class="div-table-col seq-taskstatus">
+                                    Status<div>Assigned To</div>
+                                </div>
+                                <div class="div-table-col seq-taskduedate">Due Date</div>
+                                <div class="div-table-col seq-notes">Notes</div>
+                            </div>
                         <!-- NG Repeat Div starts -->
                         <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onStaffEnd()">
                             <!-- Sequence# starts -->
@@ -1553,6 +1580,8 @@
 
                 </div>
 
+                <%if (IsSuperUser)
+                    {%>
                 <div id="TechTask">
 
                     <div id="tblTechSeq" class="div-table tableSeqTask">
@@ -1609,8 +1638,8 @@
                             <div class="div-table-col seq-taskstatus">
                                 <select id="drpStatusSubsequence3" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                     <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
-                                    <option ng-selected="{{Task.Status == '2'}}" style="color:red"      value="2">Requested</option>
-                                    <option ng-selected="{{Task.Status == '3'}}" style="color:lawngreen" value="3">Assigned</option>
+                                    <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
+                                    <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
                                     <option ng-selected="{{Task.Status == '4'}}" value="4">InProgress</option>
                                     <% if (IsSuperUser)
                                         { %>
@@ -1629,7 +1658,7 @@
                                     <%} %>
                                 </select>
                                 <br />
-                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
@@ -1757,7 +1786,7 @@
 
                             <!-- UI-Grid Ends here -->--%>
                 </div>
-
+                <%} %>
             </div>
 
 
@@ -1773,8 +1802,10 @@
                         <td width="300px" align="left">
                             <h2 class="itdashtitle">Commits, Closed-Billed</h2>
                         </td>
-                        <td>Designation</td>
-                        <td>Users</td>
+                        <td><%if (IsSuperUser)
+                                { %>Designation<%} %></td>
+                        <td><%if (IsSuperUser)
+                                { %>Users<%} %></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -1813,12 +1844,15 @@
                             </select>
                         </td>
                         <td>
+                            <% if (IsSuperUser)
+                                { %>
                             <select id="ddlSelectUserClosedTask" data-placeholder="Select Users" multiple style="width: 250px;">
                                 <option selected value="">All</option>
                             </select><span id="lblLoadingClosedTask" style="display: none">Loading...</span>
+                            <%} %>
                         </td>
                         <td><input runat="server" id="txtSearchClosedTasks" maxlength="15" class="textbox ui-autocomplete-input" placeholder="search users" autocomplete="off" type="text"></td>
-                        <td>
+                        <td style="text-align:right">
                             Number of Records: 
                                 <select id="drpPageSizeClosedTasks">
                                     <option value="10">10</option>

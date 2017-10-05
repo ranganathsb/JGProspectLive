@@ -740,6 +740,10 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public string GetAssignUsers(string TaskDesignations)
         {
+            if (TaskDesignations.Equals(""))
+            {
+                TaskDesignations = Session["DesignationId"].ToString();
+            }
             // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
             DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, TaskDesignations);
             string strMessage;

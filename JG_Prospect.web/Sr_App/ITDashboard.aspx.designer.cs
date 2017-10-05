@@ -31,15 +31,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblalertpopup;
         
         /// <summary>
-        /// lblFrozenTaskCounter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblFrozenTaskCounter;
-        
-        /// <summary>
         /// lblNonFrozenTaskCounter control.
         /// </summary>
         /// <remarks>
@@ -47,6 +38,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor lblNonFrozenTaskCounter;
+        
+        /// <summary>
+        /// lblFrozenTaskCounter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblFrozenTaskCounter;
         
         /// <summary>
         /// btnFake control.
