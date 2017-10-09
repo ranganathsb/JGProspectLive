@@ -1693,3 +1693,134 @@ where AdminStatus=0 and TechLeadStatus=0 and OtherUserStatus=0
 end
 
 --END
+
+GO
+
+--FOR Sequencing popup issue - ever loading
+ALTER PROCEDURE [dbo].[usp_UpdateTaskSequence]           
+(           
+ @Sequence bigint ,        
+ @DesignationID int,           
+ @TaskId bigint,        
+ @IsTechTask bit       
+)          
+AS          
+BEGIN          
+      
+      
+BEGIN TRANSACTION            
+        
+DECLARE @OriginalSeq BIGINT      
+DECLARE @OriginalDesignationID INT          
+      
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId      
+      
+   
+-- IF TASK HAS NO SEQUENCE ASSIGNED PREVIOUSLY   
+--IF( @OriginalSeq IS NULL )  
+--  BEGIN 
+  
+			  UPDATE tblTask          
+				  SET   [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID     
+				WHERE TaskId = @TaskId   
+  
+			  --IF ONLY SEQ IS CHANGED, UPDATE ALL CHILDREN TO THE NEW SEQ (fixed Sequencing popup issue - ever loading: kapil pancholi)
+			  UPDATE tblTask 
+			  SET [SEQUENCE] = @Sequence, [SequenceDesignationId] = @DesignationID 
+			  WHERE [SequenceDesignationId] = @OriginalDesignationID
+			  AND [Sequence] = @OriginalSeq AND IsTechTask = @IsTechTask
+  --END  
+  
+--ELSE
+--	BEGIN
+			  
+--     END   
+    
+
+	-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.      
+	 IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)      
+			  BEGIN      
+      
+			   -- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.       
+				UPDATE       tblTask          
+				 SET                [Sequence] = [Sequence] - 1             
+				WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask        
+            
+	
+			  END           
+	
+
+	  
+  IF (@@Error <> 0)   -- Check if any error      
+     BEGIN                
+        ROLLBACK TRANSACTION             
+     END       
+   ELSE       
+       COMMIT TRANSACTION           
+        
+        
+END       
+  
+  GO
+
+ALTER PROCEDURE [dbo].[usp_UpdateTaskForSubSequencing]  
+(                                      
+  @TaskId   BIGINT,  
+  @TaskIdSeq BIGINT,  
+  @SubSeqTaskId BIGINT,    
+  @DesignationId INT        
+)                          
+As                          
+BEGIN                          
+           
+BEGIN TRANSACTION      
+  
+-- Get original subsequence task seq id.  
+  
+DECLARE @SubSeqTaskOriginalSeq BIGINT = (SELECT [Sequence] FROM dbo.tblTask WHERE TaskId = @SubSeqTaskId)  
+DECLARE @MaxSeq INT = (SELECT [Sequence] FROM dbo.tblTask WHERE [SequenceDesignationId] = @DesignationId AND IsTechTask = 0)            
+-- Make Subseq Task Seq, SubSeq to NULL  
+  
+ UPDATE tblTask SET [Sequence] = NULL,[SubSequence] = NULL WHERE TaskId = @SubSeqTaskId  
+  
+  IF(@MaxSeq = @TaskIdSeq)
+  BEGIN
+	-- Correct Sequences for subseq update.  
+	-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+	 UPDATE       tblTask        
+		 SET                [Sequence] = [Sequence] - 1           
+	 WHERE        ([Sequence] >= @SubSeqTaskOriginalSeq) AND ([SequenceDesignationId] = @DesignationId) AND IsTechTask = 0   AND TaskId <>  @SubSeqTaskId  
+	  AND [Sequence] <> @TaskIdSeq
+  END
+  ELSE
+  BEGIN
+	-- Correct Sequences for subseq update.  
+	-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+	 UPDATE       tblTask        
+		 SET                [Sequence] = [Sequence] - 1           
+	 WHERE        ([Sequence] >= @SubSeqTaskOriginalSeq) AND ([SequenceDesignationId] = @DesignationId) AND IsTechTask = 0   AND TaskId <>  @SubSeqTaskId  
+  END
+
+
+ -- Fetch new sequence for task to be set.  
+  
+ SET @TaskIdSeq = (SELECT [Sequence] FROM tblTask WHERE TaskId = @TaskId)  
+   
+ -- Assign sub seq to SubSeqTaskId  
+  
+ DECLARE @MaxSubSeq INT = (SELECT ISNULL(MAX([SubSequence]),0) FROM dbo.tblTask WHERE [Sequence] = @TaskIdSeq AND IsTechTask = 0 AND [SequenceDesignationId] = @DesignationId)      
+  
+ UPDATE tblTask SET [Sequence] = @TaskIdSeq , [SubSequence] = @MaxSubSeq + 1 WHERE TaskId = @SubSeqTaskId  
+  
+       
+  IF (@@Error <> 0)   -- Check if any error    
+     BEGIN              
+        ROLLBACK TRANSACTION           
+     END     
+   ELSE     
+       COMMIT TRANSACTION     
+                        
+END 
+
+GO
+--END
