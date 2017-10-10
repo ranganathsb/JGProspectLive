@@ -1824,3 +1824,93 @@ END
 
 GO
 --END
+
+
+--FOR Sequencing popup upgrade
+ALTER PROCEDURE [dbo].[usp_InsertTaskAssignedUsers] 
+(	
+	@TaskId int , 
+	@UserIds VARCHAR(4000) 
+)
+AS
+BEGIN
+
+DECLARE @DESIGNATIONID INT
+DECLARE @SEQUENCE INT
+DECLARE @ISTECHTASK BIT
+
+SET @DESIGNATIONID = (SELECT SEQUENCEDESIGNATIONID FROM tblTask WHERE TASKID = @TaskId)
+SET @SEQUENCE = (SELECT [SEQUENCE] FROM tblTask WHERE TASKID = @TaskId)
+SET @ISTECHTASK = (SELECT ISTECHTASK FROM tblTask WHERE TASKID = @TaskId)
+	
+-- delete users, which are not in provided new user list.
+DELETE 
+FROM tblTaskAssignedUsers
+WHERE 
+	TaskId = @TaskId AND 
+	UserId NOT IN (SELECT Item FROM dbo.SplitString(@UserIds,','))
+
+-- insert users, which are not already present in database but are provided in new user list.
+INSERT INTO tblTaskAssignedUsers (TaskId, UserId)
+SELECT @TaskId , CAST(ss.Item AS BIGINT) 
+FROM dbo.SplitString(@UserIds,',') ss 
+WHERE NOT EXISTS(
+					SELECT CAST(ttau.UserId as varchar) 
+					FROM dbo.tblTaskAssignedUsers ttau 
+					WHERE ttau.UserId = CAST(ss.Item AS bigint) AND ttau.TaskId = @TaskId
+				)
+
+-- Get SubSequence Tasks
+CREATE TABLE #SUBSEQUENCES(TASKID INT)
+
+
+IF EXISTS(SELECT * FROM tblTask WHERE SEQUENCEDESIGNATIONID=@DESIGNATIONID AND ISTECHTASK=@ISTECHTASK AND SUBSEQUENCE IS NULL AND [SEQUENCE] = @SEQUENCE AND TASKID=@TASKID)
+BEGIN
+	INSERT INTO #SUBSEQUENCES
+	SELECT TASKID FROM tblTask 
+	WHERE SEQUENCEDESIGNATIONID=@DESIGNATIONID 
+	AND ISTECHTASK=@ISTECHTASK 
+	AND SUBSEQUENCE IS NOT NULL
+	AND [SEQUENCE] = @SEQUENCE
+END
+ELSE
+BEGIN
+INSERT INTO #SUBSEQUENCES
+	SELECT @TASKID
+END
+
+-- ASSIGN USERS TO SUB_SEQUENCE
+DELETE 
+FROM tblTaskAssignedUsers
+WHERE 
+	TaskId IN (SELECT TASKID FROM #SUBSEQUENCES) AND 
+	UserId NOT IN (SELECT Item FROM dbo.SplitString(@UserIds,','))
+
+	DECLARE @TID INT
+	WHILE EXISTS(SELECT * FROM #SUBSEQUENCES)
+	BEGIN		
+		SET @TID = (SELECT TOP 1 TASKID FROM #SUBSEQUENCES ORDER BY TASKID)
+
+		INSERT INTO tblTaskAssignedUsers (TaskId, UserId)
+			SELECT @TID , CAST(ss.Item AS BIGINT) 
+					FROM dbo.SplitString(@UserIds,',') ss 
+					WHERE NOT EXISTS(
+						SELECT CAST(ttau.UserId as varchar) 
+						FROM dbo.tblTaskAssignedUsers ttau 
+						WHERE ttau.UserId = CAST(ss.Item AS bigint) AND ttau.TaskId = @TID
+					) 
+		--SET TASKS STATUS TO ASSIGNED
+		IF(@UserIds <> '')
+			UPDATE tblTask SET [STATUS] = 3 WHERE TASKID = @TID
+		ELSE
+			--SET TASKS STATUS TO OPEN
+			UPDATE tblTask SET [STATUS] = 1 WHERE TASKID = @TID
+
+		DELETE FROM #SUBSEQUENCES WHERE TASKID = @TID
+
+	END
+
+DROP TABLE #SUBSEQUENCES
+END
+
+--END
