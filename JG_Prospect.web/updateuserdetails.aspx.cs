@@ -27,6 +27,15 @@ namespace JG_Prospect
                         //Save Resume File                        
                         if (dbResumeFile.Equals(resume.FileName))
                         {
+                            if (!Directory.Exists(Server.MapPath("~/Employee")))
+                            {
+                                Directory.CreateDirectory(Server.MapPath("~/") + "Employee");
+                            }
+                            if (!Directory.Exists(Server.MapPath("~/Employee/Resume/")))
+                            {
+                                Directory.CreateDirectory(Server.MapPath("~/Employee/") + "Resume");
+                            }
+
                             var fileName = Path.GetFileName(resume.FileName);
                             var path = Path.Combine(Server.MapPath("~/Employee/Resume/"), fileName);
                             resume.SaveAs(path);
@@ -36,6 +45,15 @@ namespace JG_Prospect
                     HttpPostedFile picture = Request.Files["PROFILEPICTURE"];
                     if (picture != null && picture.ContentLength > 0)
                     {
+                        if (!Directory.Exists(Server.MapPath("~/Employee")))
+                        {
+                            Directory.CreateDirectory(Server.MapPath("~/") + "Employee");
+                        }
+                        if (!Directory.Exists(Server.MapPath("~/Employee/ProfilePictures/")))
+                        {
+                            Directory.CreateDirectory(Server.MapPath("~/Employee/") + "ProfilePictures");
+                        }
+
                         //Save Picture File
                         if (dbPicture.Equals(picture.FileName))
                         {
