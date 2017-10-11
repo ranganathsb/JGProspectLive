@@ -293,7 +293,10 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.getuserdetails(id);
         }
-
+        public DataSet getuserdetailsbyId(int id)
+        {
+            return InstallUserDAL.Instance.getuserdetailsbyId(id);
+        }
         public DataSet getalluserdetails()
         {
             return InstallUserDAL.Instance.getalluserdetails();
