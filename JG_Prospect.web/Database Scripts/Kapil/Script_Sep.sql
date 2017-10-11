@@ -1693,3 +1693,224 @@ where AdminStatus=0 and TechLeadStatus=0 and OtherUserStatus=0
 end
 
 --END
+
+GO
+
+--FOR Sequencing popup issue - ever loading
+ALTER PROCEDURE [dbo].[usp_UpdateTaskSequence]           
+(           
+ @Sequence bigint ,        
+ @DesignationID int,           
+ @TaskId bigint,        
+ @IsTechTask bit       
+)          
+AS          
+BEGIN          
+      
+      
+BEGIN TRANSACTION            
+        
+DECLARE @OriginalSeq BIGINT      
+DECLARE @OriginalDesignationID INT          
+      
+SELECT @OriginalSeq = [Sequence],@OriginalDesignationID =  [SequenceDesignationId] FROM tblTask WHERE TaskId = @TaskId      
+      
+   
+-- IF TASK HAS NO SEQUENCE ASSIGNED PREVIOUSLY   
+--IF( @OriginalSeq IS NULL )  
+--  BEGIN 
+  
+			  UPDATE tblTask          
+				  SET   [Sequence] = @Sequence , [SequenceDesignationId] = @DesignationID     
+				WHERE TaskId = @TaskId   
+  
+			  --IF ONLY SEQ IS CHANGED, UPDATE ALL CHILDREN TO THE NEW SEQ (fixed Sequencing popup issue - ever loading: kapil pancholi)
+			  UPDATE tblTask 
+			  SET [SEQUENCE] = @Sequence, [SequenceDesignationId] = @DesignationID 
+			  WHERE [SequenceDesignationId] = @OriginalDesignationID
+			  AND [Sequence] = @OriginalSeq AND IsTechTask = @IsTechTask
+  --END  
+  
+--ELSE
+--	BEGIN
+			  
+--     END   
+    
+
+	-- IF SEQ DESIGNATION IS CHANGED THAN UPDATE ORIGINAL SEQUENCE SERIES OF DESIGNATION.      
+	 IF ( @OriginalDesignationID IS NOT  NULL AND @OriginalDesignationID <> @DesignationID)      
+			  BEGIN      
+      
+			   -- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.       
+				UPDATE       tblTask          
+				 SET                [Sequence] = [Sequence] - 1             
+				WHERE        ([Sequence] > @OriginalSeq) AND ([SequenceDesignationId] = @OriginalDesignationID) AND IsTechTask = @IsTechTask        
+            
+	
+			  END           
+	
+
+	  
+  IF (@@Error <> 0)   -- Check if any error      
+     BEGIN                
+        ROLLBACK TRANSACTION             
+     END       
+   ELSE       
+       COMMIT TRANSACTION           
+        
+        
+END       
+  
+  GO
+
+ALTER PROCEDURE [dbo].[usp_UpdateTaskForSubSequencing]  
+(                                      
+  @TaskId   BIGINT,  
+  @TaskIdSeq BIGINT,  
+  @SubSeqTaskId BIGINT,    
+  @DesignationId INT        
+)                          
+As                          
+BEGIN                          
+           
+BEGIN TRANSACTION      
+  
+-- Get original subsequence task seq id.  
+  
+DECLARE @SubSeqTaskOriginalSeq BIGINT = (SELECT [Sequence] FROM dbo.tblTask WHERE TaskId = @SubSeqTaskId)  
+DECLARE @MaxSeq INT = (SELECT [Sequence] FROM dbo.tblTask WHERE [SequenceDesignationId] = @DesignationId AND IsTechTask = 0)            
+-- Make Subseq Task Seq, SubSeq to NULL  
+  
+ UPDATE tblTask SET [Sequence] = NULL,[SubSequence] = NULL WHERE TaskId = @SubSeqTaskId  
+  
+  IF(@MaxSeq = @TaskIdSeq)
+  BEGIN
+	-- Correct Sequences for subseq update.  
+	-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+	 UPDATE       tblTask        
+		 SET                [Sequence] = [Sequence] - 1           
+	 WHERE        ([Sequence] >= @SubSeqTaskOriginalSeq) AND ([SequenceDesignationId] = @DesignationId) AND IsTechTask = 0   AND TaskId <>  @SubSeqTaskId  
+	  AND [Sequence] <> @TaskIdSeq
+  END
+  ELSE
+  BEGIN
+	-- Correct Sequences for subseq update.  
+	-- if 2 is removed from sequence than all sequence will greater than 2 for that designation will be shifted up by 1.     
+	 UPDATE       tblTask        
+		 SET                [Sequence] = [Sequence] - 1           
+	 WHERE        ([Sequence] >= @SubSeqTaskOriginalSeq) AND ([SequenceDesignationId] = @DesignationId) AND IsTechTask = 0   AND TaskId <>  @SubSeqTaskId  
+  END
+
+
+ -- Fetch new sequence for task to be set.  
+  
+ SET @TaskIdSeq = (SELECT [Sequence] FROM tblTask WHERE TaskId = @TaskId)  
+   
+ -- Assign sub seq to SubSeqTaskId  
+  
+ DECLARE @MaxSubSeq INT = (SELECT ISNULL(MAX([SubSequence]),0) FROM dbo.tblTask WHERE [Sequence] = @TaskIdSeq AND IsTechTask = 0 AND [SequenceDesignationId] = @DesignationId)      
+  
+ UPDATE tblTask SET [Sequence] = @TaskIdSeq , [SubSequence] = @MaxSubSeq + 1 WHERE TaskId = @SubSeqTaskId  
+  
+       
+  IF (@@Error <> 0)   -- Check if any error    
+     BEGIN              
+        ROLLBACK TRANSACTION           
+     END     
+   ELSE     
+       COMMIT TRANSACTION     
+                        
+END 
+
+GO
+--END
+
+
+--FOR Sequencing popup upgrade
+ALTER PROCEDURE [dbo].[usp_InsertTaskAssignedUsers] 
+(	
+	@TaskId int , 
+	@UserIds VARCHAR(4000) 
+)
+AS
+BEGIN
+
+DECLARE @DESIGNATIONID INT
+DECLARE @SEQUENCE INT
+DECLARE @ISTECHTASK BIT
+
+SET @DESIGNATIONID = (SELECT SEQUENCEDESIGNATIONID FROM tblTask WHERE TASKID = @TaskId)
+SET @SEQUENCE = (SELECT [SEQUENCE] FROM tblTask WHERE TASKID = @TaskId)
+SET @ISTECHTASK = (SELECT ISTECHTASK FROM tblTask WHERE TASKID = @TaskId)
+	
+-- delete users, which are not in provided new user list.
+DELETE 
+FROM tblTaskAssignedUsers
+WHERE 
+	TaskId = @TaskId AND 
+	UserId NOT IN (SELECT Item FROM dbo.SplitString(@UserIds,','))
+
+-- insert users, which are not already present in database but are provided in new user list.
+INSERT INTO tblTaskAssignedUsers (TaskId, UserId)
+SELECT @TaskId , CAST(ss.Item AS BIGINT) 
+FROM dbo.SplitString(@UserIds,',') ss 
+WHERE NOT EXISTS(
+					SELECT CAST(ttau.UserId as varchar) 
+					FROM dbo.tblTaskAssignedUsers ttau 
+					WHERE ttau.UserId = CAST(ss.Item AS bigint) AND ttau.TaskId = @TaskId
+				)
+
+-- Get SubSequence Tasks
+CREATE TABLE #SUBSEQUENCES(TASKID INT)
+
+
+IF EXISTS(SELECT * FROM tblTask WHERE SEQUENCEDESIGNATIONID=@DESIGNATIONID AND ISTECHTASK=@ISTECHTASK AND SUBSEQUENCE IS NULL AND [SEQUENCE] = @SEQUENCE AND TASKID=@TASKID)
+BEGIN
+	INSERT INTO #SUBSEQUENCES
+	SELECT TASKID FROM tblTask 
+	WHERE SEQUENCEDESIGNATIONID=@DESIGNATIONID 
+	AND ISTECHTASK=@ISTECHTASK 
+	AND SUBSEQUENCE IS NOT NULL
+	AND [SEQUENCE] = @SEQUENCE
+END
+ELSE
+BEGIN
+INSERT INTO #SUBSEQUENCES
+	SELECT @TASKID
+END
+
+-- ASSIGN USERS TO SUB_SEQUENCE
+DELETE 
+FROM tblTaskAssignedUsers
+WHERE 
+	TaskId IN (SELECT TASKID FROM #SUBSEQUENCES) AND 
+	UserId NOT IN (SELECT Item FROM dbo.SplitString(@UserIds,','))
+
+	DECLARE @TID INT
+	WHILE EXISTS(SELECT * FROM #SUBSEQUENCES)
+	BEGIN		
+		SET @TID = (SELECT TOP 1 TASKID FROM #SUBSEQUENCES ORDER BY TASKID)
+
+		INSERT INTO tblTaskAssignedUsers (TaskId, UserId)
+			SELECT @TID , CAST(ss.Item AS BIGINT) 
+					FROM dbo.SplitString(@UserIds,',') ss 
+					WHERE NOT EXISTS(
+						SELECT CAST(ttau.UserId as varchar) 
+						FROM dbo.tblTaskAssignedUsers ttau 
+						WHERE ttau.UserId = CAST(ss.Item AS bigint) AND ttau.TaskId = @TID
+					) 
+		--SET TASKS STATUS TO ASSIGNED
+		IF(@UserIds <> '')
+			UPDATE tblTask SET [STATUS] = 3 WHERE TASKID = @TID
+		ELSE
+			--SET TASKS STATUS TO OPEN
+			UPDATE tblTask SET [STATUS] = 1 WHERE TASKID = @TID
+
+		DELETE FROM #SUBSEQUENCES WHERE TASKID = @TID
+
+	END
+
+DROP TABLE #SUBSEQUENCES
+END
+
+--END

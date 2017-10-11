@@ -458,7 +458,12 @@ namespace JG_Prospect
                     //Debug.WriteLine(strDesignation);
                     if (strDesignationID != "")
                     {
-                        ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
+                        ListItem desListItem = ddlDesiGrd.Items.FindByValue(strDesignationID);
+
+                        if (desListItem != null)
+                        {
+                            ddlDesiGrd.SelectedIndex = ddlDesiGrd.Items.IndexOf(desListItem);
+                        }
                     }
 
                     DropDownList elePhone = (e.Row.FindControl("ddlPhone") as DropDownList);
