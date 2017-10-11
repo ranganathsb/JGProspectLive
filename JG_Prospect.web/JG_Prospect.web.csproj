@@ -2089,6 +2089,7 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
@@ -2353,6 +2354,7 @@
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
     <Content Include="TestGoogleMap.aspx" />
+    <Content Include="updateuserdetails.aspx" />
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
@@ -2605,6 +2607,13 @@
     </Compile>
     <Compile Include="stafflogin.aspx.designer.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.designer.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucRenewSession.ascx.cs">
       <DependentUpon>ucRenewSession.ascx</DependentUpon>
