@@ -1978,6 +1978,21 @@
         }
         var desIds = "";
         var pageSize = 20;
+
+        function resetChosen(selector) {
+            var val = $(selector).val();
+            debugger;
+            if (val != undefined) {
+                $(selector)
+                    .find('option:first-child').prop('selected', false)
+                    .end().trigger('chosen:updated');
+            } else {
+                $(selector)
+                    .find('option:first-child').prop('selected', true)
+                    .end().trigger('chosen:updated');
+            }
+        }
+
         $(document).ready(function () {
             $(".chosen-select-multi").chosen();
             $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
@@ -1988,11 +2003,13 @@
 
             //InProAssigned
             $(".chosen-select-users").change(function () {
+                resetChosen(".chosen-select-users");
                 ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).val(), $(".chosen-select-users").val().join());
             });
 
             //Frozen/NonFrozen
             $("#ddlSelectFrozenTask").change(function () {
+                resetChosen("#ddlSelectFrozenTask");
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
             });
@@ -2002,6 +2019,7 @@
 
                 desIds = $(".chosen-select-multi").val();
                 if (desIds == undefined) { desIds = ''; }
+                resetChosen("#ddlSelectUserClosedTask");
                 ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize);
             });
 
@@ -2031,6 +2049,7 @@
             sequenceScope.ForDashboard = true;
             ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
             $('#' + ddlDesigSeqClientID).change(function (e) {
+                
                 ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
             });
