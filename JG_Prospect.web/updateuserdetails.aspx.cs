@@ -25,7 +25,7 @@ namespace JG_Prospect
                     if (resume != null && resume.ContentLength > 0)
                     {
                         //Save Resume File                        
-                        if (dbResumeFile.Equals(resume.FileName))
+                        //if (dbResumeFile.Equals(resume.FileName))
                         {
                             if (!Directory.Exists(Server.MapPath("~/Employee")))
                             {
@@ -55,7 +55,7 @@ namespace JG_Prospect
                         }
 
                         //Save Picture File
-                        if (dbPicture.Equals(picture.FileName))
+                        //if (dbPicture.Equals(picture.FileName))
                         {
                             var fileName = Path.GetFileName(picture.FileName);
                             var path = Path.Combine(Server.MapPath("~/Employee/ProfilePictures/"), fileName);
