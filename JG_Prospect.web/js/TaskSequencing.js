@@ -106,12 +106,12 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
 
     //debugger;
-    var TechTask = false;
+    //var TechTask = false;
     var DesignationIds = DesId;
     //console.log("Task designation is: " + DesignationIds);    
     //debugger;
     //Set if tech task than load tech task related sequencing.
-    sequenceScopeFrozenTasks.IsTechTask = TechTask;
+    //sequenceScopeFrozenTasks.IsTechTask = TechTask;
     sequenceScopeFrozenTasks.UserId = UserId;
     sequenceScope.UserSelectedDesigIdsFrozenTaks = DesId;
     //search initially all tasks with sequencing.
@@ -123,14 +123,6 @@ function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
     sequenceScopeFrozenTasks.getAssignUsers();
 
     var defaultTabIndex;
-
-    if (TechTask == true) {
-        defaultTabIndex = 1;
-    }
-
-    else {
-        defaultTabIndex = 0;
-    }
 
     var dlg = $('#pnlNewFrozenTask').dialog({
         width: 1200,
@@ -145,7 +137,8 @@ function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
         }
     }).removeClass("hide");
 
-    if (TechTask === 'True') {
+    if (sequenceScopeFrozenTasks.IsTechTask == true) {
+        defaultTabIndex = 1;
         //console.log("calling search tech task after popup initialized....");
         sequenceScopeFrozenTasks.IsTechTask = true;
         sequenceScopeFrozenTasks.getFrozenTasks();
@@ -154,6 +147,7 @@ function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
     }
 
     else {
+        defaultTabIndex = 0;
         //console.log("calling search staff task after popup initialized....");
         sequenceScopeFrozenTasks.IsTechTask = false;
         sequenceScopeFrozenTasks.getFrozenTasks();
@@ -167,12 +161,12 @@ function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
 function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
 
     //debugger;
-    var TechTask = false;
+    //var TechTask = false;
     var DesignationIds = DesId;
     //console.log("Task designation is: " + DesignationIds);    
     //debugger;
     //Set if tech task than load tech task related sequencing.
-    sequenceScopeNonFrozenTasks.IsTechTask = TechTask;
+    //sequenceScopeNonFrozenTasks.IsTechTask = TechTask;
     sequenceScopeNonFrozenTasks.UserId = UserId;
     sequenceScopeNonFrozenTasks.UserSelectedDesigIdsFrozenTaks = DesId;
     //search initially all tasks with sequencing.
@@ -186,17 +180,10 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
     //debugger;
 
     var defaultTabIndex;
-
-    if (TechTask == true) {
-        defaultTabIndex = 1;
-    }
-    else {
-        defaultTabIndex = 0;
-    }
-
     //console.log(TechTask);
 
-    if (TechTask === 'True') {
+    if (sequenceScopeNonFrozenTasks.IsTechTask == true) {
+        defaultTabIndex = 1;
         //console.log("calling search tech task after popup initialized....");
         sequenceScopeNonFrozenTasks.IsTechTask = true;
         sequenceScopeNonFrozenTasks.getNonFrozenTasks();
@@ -204,6 +191,7 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
         applyTaskSequenceTabsNonFrozen(1);
     }
     else {
+        defaultTabIndex = 0;
         //console.log("calling search staff task after popup initialized....");
         sequenceScopeNonFrozenTasks.IsTechTask = false;
         sequenceScopeNonFrozenTasks.getNonFrozenTasks();
@@ -217,12 +205,12 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
 function ShowTaskSequenceDashBoard(DesId, UserId) {
 
     debugger;
-    var TechTask = false;
+    //var TechTask = false;
     var DesignationIds = DesId;
     //console.log("Task designation is: " + DesignationIds);    
     //debugger;
     //Set if tech task than load tech task related sequencing.
-    sequenceScope.IsTechTask = TechTask;
+    //sequenceScope.IsTechTask = TechTask;
     sequenceScope.UserId = UserId;    
     //search initially all tasks with sequencing.
 
@@ -236,16 +224,8 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
 
     var defaultTabIndex;
 
-    if (TechTask == true) {
+    if (sequenceScope.IsTechTask == true) {
         defaultTabIndex = 1;
-    }
-    else {
-        defaultTabIndex = 0;
-    }
-
-    //console.log(TechTask);
-
-    if (TechTask === 'True') {
         //console.log("calling search tech task after popup initialized....");
         sequenceScope.IsTechTask = true;
         sequenceScope.getTechTasks();
@@ -253,7 +233,7 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
         applyTaskSequenceTabs(1);
     }
     else {
-        //console.log("calling search staff task after popup initialized....");
+        defaultTabIndex = 0;
         sequenceScope.IsTechTask = false;
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
