@@ -3565,6 +3565,7 @@
     <Content Include="UserFile\SalesSample.xlsx" />
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
+    <None Include="Properties\PublishProfiles\LocalLive.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
