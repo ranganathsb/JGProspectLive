@@ -31,7 +31,7 @@ namespace JG_Prospect
             
             if (newPassword != "")
             {
-                string str_Body = "<table><tr><td>Hello,<span style=\"background-color: orange;\">User</span></td></tr><tr><td>your password for the GM Grove Construction is : " + newPassword;
+                string str_Body = "<table><tr><td>Hello,<span style=\"background-color: orange;\">User</span></td></tr><tr><td>your password for the JM Grove Construction is : " + newPassword;
                 str_Body = str_Body + "</td></tr>";
                 str_Body = str_Body + "<tr><td></td></tr>";
                 str_Body = str_Body + "<tr><td>Click <a href='http://web.jmgrovebuildingsupply.com/stafflogin.aspx'>web.jmgrovebuildingsupply.com</a> for login with your new password</td></tr>";

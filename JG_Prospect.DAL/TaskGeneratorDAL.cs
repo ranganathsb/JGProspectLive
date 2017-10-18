@@ -707,6 +707,45 @@ namespace JG_Prospect.DAL
 
         }
 
+        public String HardDeleteTask(Int64 maintaskid)
+        {
+            String filesToDelete = String.Empty;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_HardDeleteTask");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, maintaskid);
+                    database.AddOutParameter(command, "@TaskAttachments", DbType.String,-1);
+                    database.AddOutParameter(command, "@AllDeleted", DbType.Boolean, -1);
+                                        
+                    int result = database.ExecuteNonQuery(command);
+
+                    if (result > 0)
+                    {
+                        Boolean allDeleted = Convert.ToBoolean(database.GetParameterValue(command, "@AllDeleted"));
+
+                        if (allDeleted)
+                        {
+                             filesToDelete = Convert.ToString(database.GetParameterValue(command, "@TaskAttachments"));
+                        }
+                    }
+                                        
+                }
+            }
+
+            catch (Exception ex)
+            {
+                
+            }
+
+            return filesToDelete;
+
+        }
+
         public int UpdateTaskStatus(Task objTask)
         {
             try

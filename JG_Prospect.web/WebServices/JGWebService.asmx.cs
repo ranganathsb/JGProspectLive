@@ -1043,6 +1043,48 @@ namespace JG_Prospect.WebServices
             return TaskGeneratorBLL.Instance.TaskSwapSubSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool HardDeleteTask(Int64 TaskId)
+        {
+            String filesToDelete = TaskGeneratorBLL.Instance.HardDeleteTask(TaskId);
+            
+            if (!String.IsNullOrEmpty(filesToDelete))
+            {
+                DeleteTaskFiles(filesToDelete);
+            }
+
+            return true;
+
+        }
+
+        //Remove all file related attachments from file system of server.
+        private void DeleteTaskFiles(string filesToDelete)
+        {
+            // Seperate each file name to delete.
+            String[] files = filesToDelete.Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (String fileName in files) // Remove each files.
+            {
+                String filePath = Server.MapPath(String.Concat("~/TaskAttachments/",fileName));// Map physical path on server.
+
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);// Remove file from server.
+                    }
+                    catch (Exception ex )
+                    {
+
+                    }
+
+                }
+
+            } 
+        }
+
+
+
         #endregion
 
         #region '--Private Methods--'

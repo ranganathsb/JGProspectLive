@@ -394,7 +394,10 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationId, IsTechTask, AssignedSequence, TaskId, UserId);
 
         }
-
+        public String HardDeleteTask(Int64 maintaskid)
+        {
+            return TaskGeneratorDAL.Instance.HardDeleteTask(maintaskid);
+        }
 
         #region TaskAcceptance
 
