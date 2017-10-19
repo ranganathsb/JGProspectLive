@@ -404,6 +404,12 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             case 20:
                 prefix = "SBC";
                 break;
+            case 22:
+                prefix = "ADS";
+                break;
+            case 23:
+                prefix = "ADR";
+                break;
             case 24:
                 prefix = "ITSQA";
                 break;

@@ -17,12 +17,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
-    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />    
-    
-    <script src="../ckeditor/ckeditor.js"></script>    
+    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
+
+    <script src="../ckeditor/ckeditor.js"></script>
     <script src="../js/clipboard.min.js"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
-   
+
 
     <div class="right_panel">
         <hr />
@@ -105,12 +105,12 @@
                         <tr>
                             <td class="valigntop">Task Title <span style="color: red;">*</span>:<br />
                                 <asp:TextBox ID="txtTaskTitle" runat="server" Style="width: 90%" CssClass="textbox"></asp:TextBox>
-                                <%--<ajax:Editor ID="txtTaskTitle" Width="100%" Height="20px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
                                 <asp:RequiredFieldValidator ID="rfvTaskTitle" ValidationGroup="Submit"
                                     runat="server" ControlToValidate="txtTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None">                                 
                                 </asp:RequiredFieldValidator>
                                 <asp:HiddenField ID="controlMode" runat="server" />
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
+                                <%--<a id="hypSaveParentTaskTitle" href="javascript:void(0);" onclick="javascript:saveTaskTitle();">Save Title</a>--%>
                             </td>
                             <td style="vertical-align: middle;">
 
@@ -210,7 +210,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="display:none;">
+                        <tr style="display: none;">
                             <td colspan="2"><b>Task Description:</b>
                                 <asp:TextBox ID="txtTUDesc" TextMode="MultiLine" ReadOnly="true" Style="width: 100%;" Rows="10" runat="server"></asp:TextBox>
                             </td>
@@ -525,8 +525,14 @@
 
         function Initialize() {
             ApplyDropZone();
+            EnableAutoTitleSave();
         }
 
+        function EnableAutoTitleSave() {
+            $('#<%=txtTaskTitle.ClientID%>').bind('blur', function () {
+                saveTaskTitle();
+            });           
+        }
         function ShowPopup(varControlID) {
 
             var windowWidth = (parseInt($(window).width()) / 2) - 10;
@@ -620,5 +626,10 @@
             objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews', '#<%= hdnWorkFiles.ClientID %>', '#<%=btnAddAttachment.ClientID%>');
         }
 
+        function saveTaskTitle() {
+            var Title = $('#<%=txtTaskTitle.ClientID%>').val();
+            var Id = $('#<%=hdnTaskId.ClientID%>').val();
+            EditTask(Id, Title);
+        }
     </script>
 </asp:Content>
