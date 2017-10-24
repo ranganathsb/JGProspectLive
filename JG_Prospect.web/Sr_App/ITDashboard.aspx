@@ -337,7 +337,7 @@
 
                                 <!-- ID# and Designation starts -->
                                 <div class="div-table-col seq-taskid">
-                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
                                     {{getDesignationString(Task.TaskDesignation)}}                                        
                                 </div>
                                 <!-- ID# and Designation ends -->
@@ -507,7 +507,7 @@
 
                                         <!-- ID# and Designation starts -->
                                         <div class="div-table-col seq-taskid">
-                                            <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" class="bluetext" target="_blank">{{ TechTask.InstallId }}</a><br />
+                                            <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{TechTask.InstallId}}" parentdata-highlighter="{{TechTask.MainParentId}}" data-highlighter="{{TechTask.TaskId}}" class="bluetext" target="_blank">{{ TechTask.InstallId }}</a><br />
                                             {{getDesignationString(TechTask.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{TechTask.TaskId}}" ng-class="{hide: TechTask.TaskId != HighLightTaskId}">
                                             <select class="textbox hide" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -606,7 +606,7 @@
 
                                 <!-- ID# and Designation starts -->
                                 <div class="div-table-col seq-taskid">
-                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
                                     {{getDesignationString(Task.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
                                             <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="setDropDownChangedData(this)" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -821,7 +821,7 @@
 
                                 <!-- ID# and Designation starts -->
                                 <div class="div-table-col seq-taskid">
-                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
                                     {{getDesignationString(Task.TaskDesignation)}}                                        
                                 </div>
                                 <!-- ID# and Designation ends -->
@@ -991,7 +991,7 @@
 
                                         <!-- ID# and Designation starts -->
                                         <div class="div-table-col seq-taskid">
-                                            <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" class="bluetext" target="_blank">{{ TechTask.InstallId }}</a><br />
+                                            <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{TechTask.InstallId}}" parentdata-highlighter="{{TechTask.MainParentId}}" data-highlighter="{{TechTask.TaskId}}" class="bluetext" target="_blank">{{ TechTask.InstallId }}</a><br />
                                             {{getDesignationString(TechTask.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{TechTask.TaskId}}" ng-class="{hide: TechTask.TaskId != HighLightTaskId}">
                                             <select class="textbox hide" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -1090,7 +1090,7 @@
 
                                 <!-- ID# and Designation starts -->
                                 <div class="div-table-col seq-taskid">
-                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                    <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
                                     {{getDesignationString(Task.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
                                             <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="setDropDownChangedData(this)" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -1309,7 +1309,14 @@
             <%} %>
             <div id="taskSequenceTabs">
                 <ul>
+                    <% if (Session["UserStatus"].Equals(JG_Prospect.Common.JGConstant.InstallUserStatus.InterviewDate))
+                        { %>
+                    <li><a href="#StaffTask">Tech Tasks</a></li>
+                    <%}
+                    else
+                    { %>
                     <li><a href="#StaffTask">Staff Tasks</a></li>
+                    <%} %>
                     <%if (IsSuperUser)
                         {%>
                     <li><a href="#TechTask">Tech Tasks</a></li>
@@ -1346,7 +1353,7 @@
 
                             <!-- ID# and Designation starts -->
                             <div class="div-table-col seq-taskid">
-                                <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext context-menu" target="_blank">{{ Task.InstallId }}</a><br />
                                 {{getDesignationString(Task.TaskDesignation)}}                                        
                             </div>
                             <!-- ID# and Designation ends -->
@@ -1516,7 +1523,7 @@
 
                                     <!-- ID# and Designation starts -->
                                     <div class="div-table-col seq-taskid">
-                                        <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" class="bluetext" target="_blank">{{ TechTask.InstallId }}</a><br />
+                                        <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{TechTask.InstallId}}" parentdata-highlighter="{{TechTask.MainParentId}}" data-highlighter="{{TechTask.TaskId}}" class="bluetext context-menu" target="_blank">{{ TechTask.InstallId }}</a><br />
                                         {{getDesignationString(TechTask.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{TechTask.TaskId}}" ng-class="{hide: TechTask.TaskId != HighLightTaskId}">
                                             <select class="textbox hide" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -1617,7 +1624,7 @@
 
                             <!-- ID# and Designation starts -->
                             <div class="div-table-col seq-taskid">
-                                <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" class="bluetext" target="_blank">{{ Task.InstallId }}</a><br />
+                                <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext context-menu" target="_blank">{{ Task.InstallId }}</a><br />
                                 {{getDesignationString(Task.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{Task.TaskId}}" ng-class="{hide: Task.TaskId != HighLightTaskId}">
                                             <select class="textbox" ng-attr-data-taskid="{{Task.TaskId}}" onchange="setDropDownChangedData(this)" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
@@ -1884,7 +1891,7 @@
                                 <span id="ContentPlaceHolder1_grdTaskClosed_lblAssignedUser_0">{{item.Assigneduser}}</span>
                             </td>
                             <td style="width: 100px;" valign="middle" align="center">
-                                <a id="ContentPlaceHolder1_grdTaskClosed_lnkInstallId_0" class="context-menu" data-highlighter="{{item.TaskId}}" parentdata-highlighter="{{item.MainParentId}}" href="<%=System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"]%>Sr_App/TaskGenerator.aspx?TaskId={{item.MainParentId}}&hstid={{item.TaskId}}" target="_blank" style="color: Blue;">{{item.InstallId}}</a>
+                                <a id="ContentPlaceHolder1_grdTaskClosed_lnkInstallId_0" class="context-menu" oncontextmenu="openCopyBox(this);return false;" data-installid="{{item.InstallId}}" data-highlighter="{{item.TaskId}}" parentdata-highlighter="{{item.MainParentId}}" href="<%=System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"]%>Sr_App/TaskGenerator.aspx?TaskId={{item.MainParentId}}&hstid={{item.TaskId}}" target="_blank" style="color: Blue;">{{item.InstallId}}</a>
                             </td>
                             <td style="width: 300px;" valign="middle" align="justify">
                                 <span id="ContentPlaceHolder1_grdTaskClosed_lblDesc_0">{{item.Title}}</span>
@@ -2209,6 +2216,19 @@
             }
         }
 
+        function _updateQStringParam(uri, key, value, Mainkey, MainValue, InstallKey, InstallValue) {
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+
+            if (uri.match(re)) {
+                return uri.replace(re, '$1' + key + "=" + value + '$2');
+            }
+            else {
+                uri = uri.replace("ITDashboard", "TaskGenerator");
+                return uri + separator + Mainkey + "=" + MainValue + '&' + key + "=" + value + '&' + InstallKey + '=' + InstallValue;
+            }
+        }
+
         $(document).ready(function () {
             checkNShowTaskPopup();
             Initialize();
@@ -2238,6 +2258,12 @@
                 copyToClipboard(urltoCopy);
                 return false;
             });
+        }
+        function openCopyBox(obj) {
+            debugger;
+            var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(obj).attr('data-highlighter'), "TaskId", $(obj).attr('parentdata-highlighter'), "InstallId", $(obj).attr('data-installid'));
+            copyToClipboard(urltoCopy);
+            return false;
         }
 
         //$(".context-menu").bind("contextmenu", function () {
@@ -2344,7 +2370,7 @@
 
         function SetFrozenTaskAutoSuggestionUI() {
             //debugger;
-            console.log("SetFrozenTaskAutoSuggestionUI called");
+            //console.log("SetFrozenTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
                     this._super();
@@ -2372,7 +2398,7 @@
 
         function SetClosedTaskAutoSuggestion() {
             //debugger;
-            console.log("SetClosedTaskAutoSuggestion called");
+            //console.log("SetClosedTaskAutoSuggestion called");
             $('#<%= txtSearchClosedTasks.ClientID %>').catcomplete({
                  delay: 500,
                  source: function (request, response) {
@@ -2421,7 +2447,7 @@
 
         function SetClosedTaskAutoSuggestionUI() {
             //debugger;
-            console.log("SetClosedTaskAutoSuggestionUI called");
+            //console.log("SetClosedTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
                     this._super();
@@ -2534,7 +2560,7 @@
 
         function SetInProTaskAutoSuggestionUI() {
             //debugger;
-            console.log("SetInProTaskAutoSuggestionUI called");
+            //console.log("SetInProTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
                     this._super();
