@@ -808,7 +808,7 @@ namespace JG_Prospect.WebServices
                 if (!CommonFunction.CheckAdminAndItLeadMode())
                 {
                     UserId = JGSession.LoginUserID;
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), false, UserId);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId);
                 }
                 else
                 {
