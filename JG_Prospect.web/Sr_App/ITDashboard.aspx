@@ -1941,6 +1941,7 @@
     <script src="../js/angular/scripts/ClosedTasls.js"></script>    
     <script type="text/javascript">
         var ddlDesigSeqClientIDFrozenTasks = "";
+        var ddlDesigSeqClientID;
         function changeTaskStatusClosed(Task) {
             var StatusId = Task.value;
             var TaskId = Task.getAttribute('data-highlighter');
@@ -2040,22 +2041,35 @@
             });
 
             //fill users
-            fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
-            fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
-            fillUsers('<%=ddlDesigIdsFrozenTasks.ClientID%>', 'ddlSelectFrozenTask', 'lblLoadingFrozen');
+            if ($('#' + ddlDesigSeqClientID).length > 0) {
+                fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
+                fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
+                fillUsers('<%=ddlDesigIdsFrozenTasks.ClientID%>', 'ddlSelectFrozenTask', 'lblLoadingFrozen');
+            }
         });
 
         $(window).load(function () {
             sequenceScope.ForDashboard = true;
-            ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
-            $('#' + ddlDesigSeqClientID).change(function (e) {
-                
-                ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
-                fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
-            });
+            var desId = "";
+            debugger;
+            if ($('#' + ddlDesigSeqClientID).length > 0) {
+                desId = $('#' + ddlDesigSeqClientID).find('option:selected').val();
 
-            // And now fire change event when the DOM is ready
-            $('#' + ddlDesigSeqClientID).trigger('change');
+                $('#' + ddlDesigSeqClientID).change(function (e) {
+
+                    ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
+                    fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
+                });
+
+                // And now fire change event when the DOM is ready
+                $('#' + ddlDesigSeqClientID).trigger('change');
+            }
+            else {
+                sequenceScope.IsTechTask = false;
+            }
+
+            ShowTaskSequenceDashBoard(desId, 0);
+            
 
 
             //Load Closed Tasks

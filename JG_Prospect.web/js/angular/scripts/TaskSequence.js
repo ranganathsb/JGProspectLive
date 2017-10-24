@@ -106,7 +106,8 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 $scope.TotalRecords = results.RecordCount.TotalRecords;
                 $scope.pagesCount = results.RecordCount.TotalPages;
                 $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
-                $scope.TaskSelected = $scope.Tasks[0];
+                if ($scope.Tasks != null)
+                    $scope.TaskSelected = $scope.Tasks[0];
                 //console.log($scope.Tasks[0].SubSeqTasks);
                 //console.log('Counting Data...');
                 //console.log(results.RecordCount.PageIndex);
