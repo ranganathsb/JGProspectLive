@@ -1097,7 +1097,7 @@
                                         <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                         <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
 
-                                        <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
+                                        <a href='<%# "~/Employee/Resume/"+Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>                                

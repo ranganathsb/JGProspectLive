@@ -11,6 +11,8 @@ namespace JG_Prospect
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
             string USERID = Request.Form["USERID"];
             string RESUMEFILE = Request.Form["RESUMEFILE"];
             string PICTUREFILE = Request.Form["PROFILEPICTURE"];

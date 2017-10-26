@@ -422,12 +422,12 @@ namespace JG_Prospect
                     {
                         string[] value = hdimg.Value.Split('/');
                         string path = value[value.Length - 1];
-                        string pathvalue = Server.MapPath("/UploadeProfile/");
+                        string pathvalue = Server.MapPath("/Employee/ProfilePictures/");
                         pathvalue = Path.Combine(pathvalue + path);
 
                         if (File.Exists(pathvalue))
                         {
-                            img.ImageUrl = hdimg.Value;
+                            img.ImageUrl = "~/Employee/ProfilePictures/" + hdimg.Value;
                             lbltestChk.Visible = true;
                         }
                         else
