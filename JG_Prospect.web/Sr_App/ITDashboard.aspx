@@ -1309,7 +1309,7 @@
             <%} %>
             <div id="taskSequenceTabs">
                 <ul>
-                    <% if (Session["UserStatus"].Equals(JG_Prospect.Common.JGConstant.InstallUserStatus.InterviewDate))
+                    <% if (Session["UserStatus"].Equals(JG_Prospect.Common.JGConstant.InstallUserStatus.InterviewDate) && !IsSuperUser)
                         { %>
                     <li><a href="#StaffTask">Tech Tasks</a></li>
                     <%}

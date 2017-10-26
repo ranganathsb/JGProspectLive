@@ -55,7 +55,8 @@ namespace JG_Prospect.Sr_App
                 //----------------- Start DP ------------
                 FillDesignation();
 
-                if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                //if ((string)Session["DesigNew"] == "ITLead" || (string)Session["DesigNew"] == "Admin" || (string)Session["DesigNew"] == "Office Manager")
+                if(IsSuperUser)
                 {
                     lblalertpopup.Visible = true;
                     DataSet ds = TaskGeneratorBLL.Instance.GetFrozenNonFrozenTaskCount();
