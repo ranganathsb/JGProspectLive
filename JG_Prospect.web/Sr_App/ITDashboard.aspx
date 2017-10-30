@@ -230,6 +230,14 @@
             margin-left: 7px;
         }
 
+        .orange{
+            background-color: orange;
+        }
+
+        .yellow{
+            background-color: yellow;
+        }
+
         .gray {
             background-color: Gray;
         }
@@ -324,7 +332,7 @@
                                 <div class="div-table-col seq-notes">Notes</div>
                             </div>
                             <!-- NG Repeat Div starts -->
-                            <div ng-attr-id="divMasterTaskFrozen{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in FrozenTask" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onStaffEnd()">
+                            <div ng-attr-id="divMasterTaskFrozen{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in FrozenTask" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}"  repeat-end="onStaffEnd()">
                                 <!-- Sequence# starts -->
                                 <div class="div-table-col seq-number">
                                     <a ng-attr-id="autoClickFrozen{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-seqdesgid="{{Task.SequenceDesignationId}}"><span class="badge badge-success badge-xstext">
@@ -380,7 +388,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -491,7 +499,7 @@
                                 <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
 
                                     <!-- Body section starts -->
-                                    <div class="div-table-row" ng-repeat="TechTask in correctDataforAngularFrozenTaks(Task.SubSeqTasks)" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: TechTask.TaskId == BlinkTaskId, 'faded-row': !TechTask.AdminStatus || !TechTask.TechLeadStatus}" ng-class-even="'AlternateRow'">
+                                    <div class="div-table-row" ng-repeat="TechTask in correctDataforAngularFrozenTaks(Task.SubSeqTasks)" ng-class="{orange : TechTask.Status==='4', yellow: TechTask.Status==='2', yellow: TechTask.Status==='3', lightgray: TechTask.Status==='8'}" >
                                         <!-- Sequence# starts -->
                                         <div class="div-table-col seq-number">
                                             <a style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{TechTask.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" onclick="swapSubSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" class="downlink" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" href="javascript:void(0);" ng-show="!$last" onclick="swapSubSequence(this,false)">&#9660;</a>
@@ -547,7 +555,102 @@
                                                 <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
                                                 <%} %>
                                             </select>
+                                            <br />
+                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                                <option
+                                                    ng-repeat="item in DesignationAssignUsers"
+                                                    value="{{item.Id}}"
+                                                    label="{{item.FristName}}"
+                                                    class="{{item.CssClass}}">{{item.FristName}}
+                                                
+                                                </option>
+                                            </select>
                                         </div>
+                                            <div class="div-table-col seq-taskduedate">
+                                        <div class="seqapprovalBoxes">
+                                            <div style="width: 65%; float: left;">
+                                                <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                <br />
+                                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            </div>
+                                            <div style="width: 30%; float: right;">
+                                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            </div>
+                                        </div>
+
+                                        <div ng-attr-data-taskid="{{TechTask.TaskId}}" class="seqapprovepopup">
+
+                                            <div id="divTaskAdmin{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">Admin: </div>
+                                                <div style="width: 30%;" class="display_inline"></div>
+                                                <div ng-class="{hide : StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.AdminUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.AdminUserInstallId)? TechTask.AdminUserId : TechTask.AdminUserInstallId}} - {{TechTask.AdminUserFirstName}} {{TechTask.AdminUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.AdminStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.AdminStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.AdminStatusUpdated) ? '' : '(EST)' }} </span>
+                                                </div>
+                                                <div ng-class="{hide : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <input type="password" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffAdminPassword" data-hours-id="txtngstaffAdminEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                            </div>
+                                            <div id="divTaskITLead{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">ITLead: </div>
+                                                <!-- ITLead Hours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.ITLeadHours}}</label>Hour(s)
+                                                    </span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffITLeadEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffITLeadPassword" data-hours-id="txtngstaffITLeadEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- ITLead password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.TechLeadUserInstallId)? TechTask.TechLeadUserId : TechTask.TechLeadUserInstallId}} - {{TechTask.TechLeadUserFirstName}} {{TechTask.TechLeadUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.TechLeadStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.TechLeadStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.TechLeadStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+
+                                            </div>
+                                            <div id="divUser{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">User: </div>
+                                                <!-- UserHours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.UserHours}}</label>Hour(s)
+                                                        Hour(s)</span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffUserEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffUserPassword" data-hours-id="txtngstaffUserEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- User password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.OtherUserInstallId)? TechTask.OtherUserId : TechTask.OtherUserInstallId}} - {{TechTask.OtherUserFirstName}} {{TechTask.OtherUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.OtherUserStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.OtherUserStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.OtherUserStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <div class="div-table-col seq-notes">
+                                                Notes
+                                            </div>
                                         <!-- Status & Assigned To ends -->
 
 
@@ -590,7 +693,7 @@
                                 <div class="div-table-col seq-notes">Notes</div>
                             </div>
 
-                            <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in FrozenTask" ng-class-odd="'FirstRow'" ng-class="{'yellowthickborder': Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onTechEnd()">
+                            <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in FrozenTask" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}"  repeat-end="onTechEnd()">
 
                                 <!-- Sequence# starts -->
                                 <div class="div-table-col seq-number">
@@ -647,7 +750,7 @@
                                         <%} %>
                                     </select>
                                     <br />
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -808,7 +911,7 @@
                                 <div class="div-table-col seq-notes">Notes</div>
                             </div>
                             <!-- NG Repeat Div starts -->
-                            <div ng-attr-id="divMasterTaskNonFrozen{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in NonFrozenTask" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onStaffEnd()">
+                            <div ng-attr-id="divMasterTaskNonFrozen{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in NonFrozenTask" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}"  repeat-end="onStaffEnd()">
                                 <!-- Sequence# starts -->
                                 <div class="div-table-col seq-number">
                                     <a ng-attr-id="autoClickNonFrozen{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-seqdesgid="{{Task.SequenceDesignationId}}"><span class="badge badge-success badge-xstext">
@@ -864,7 +967,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -975,7 +1078,7 @@
                                 <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
 
                                     <!-- Body section starts -->
-                                    <div class="div-table-row" ng-repeat="TechTask in correctDataforAngularFrozenTaks(Task.SubSeqTasks)" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: TechTask.TaskId == BlinkTaskId, 'faded-row': !TechTask.AdminStatus || !TechTask.TechLeadStatus}" ng-class-even="'AlternateRow'">
+                                    <div class="div-table-row" ng-repeat="TechTask in correctDataforAngularFrozenTaks(Task.SubSeqTasks)" ng-class="{orange : TechTask.Status==='4', yellow: TechTask.Status==='2', yellow: TechTask.Status==='3', lightgray: TechTask.Status==='8'}" >
                                         <!-- Sequence# starts -->
                                         <div class="div-table-col seq-number">
                                             <a style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{TechTask.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" onclick="swapSubSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" class="downlink" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" href="javascript:void(0);" ng-show="!$last" onclick="swapSubSequence(this,false)">&#9660;</a>
@@ -1031,10 +1134,104 @@
                                                 <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
                                                 <%} %>
                                             </select>
+                                            <br />
+                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                                <option
+                                                    ng-repeat="item in DesignationAssignUsers"
+                                                    value="{{item.Id}}"
+                                                    label="{{item.FristName}}"
+                                                    class="{{item.CssClass}}">{{item.FristName}}
+                                                
+                                                </option>
+                                            </select>
                                         </div>
                                         <!-- Status & Assigned To ends -->
 
+                                        <div class="div-table-col seq-taskduedate">
+                                        <div class="seqapprovalBoxes">
+                                            <div style="width: 65%; float: left;">
+                                                <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                <br />
+                                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            </div>
+                                            <div style="width: 30%; float: right;">
+                                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            </div>
+                                        </div>
 
+                                        <div ng-attr-data-taskid="{{TechTask.TaskId}}" class="seqapprovepopup">
+
+                                            <div id="divTaskAdmin{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">Admin: </div>
+                                                <div style="width: 30%;" class="display_inline"></div>
+                                                <div ng-class="{hide : StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.AdminUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.AdminUserInstallId)? TechTask.AdminUserId : TechTask.AdminUserInstallId}} - {{TechTask.AdminUserFirstName}} {{TechTask.AdminUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.AdminStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.AdminStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.AdminStatusUpdated) ? '' : '(EST)' }} </span>
+                                                </div>
+                                                <div ng-class="{hide : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <input type="password" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffAdminPassword" data-hours-id="txtngstaffAdminEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                            </div>
+                                            <div id="divTaskITLead{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">ITLead: </div>
+                                                <!-- ITLead Hours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.ITLeadHours}}</label>Hour(s)
+                                                    </span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffITLeadEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffITLeadPassword" data-hours-id="txtngstaffITLeadEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- ITLead password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.TechLeadUserInstallId)? TechTask.TechLeadUserId : TechTask.TechLeadUserInstallId}} - {{TechTask.TechLeadUserFirstName}} {{TechTask.TechLeadUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.TechLeadStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.TechLeadStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.TechLeadStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+
+                                            </div>
+                                            <div id="divUser{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">User: </div>
+                                                <!-- UserHours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.UserHours}}</label>Hour(s)
+                                                        Hour(s)</span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffUserEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffUserPassword" data-hours-id="txtngstaffUserEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- User password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.OtherUserInstallId)? TechTask.OtherUserId : TechTask.OtherUserInstallId}} - {{TechTask.OtherUserFirstName}} {{TechTask.OtherUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.OtherUserStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.OtherUserStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.OtherUserStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <div class="div-table-col seq-notes">
+                                                Notes
+                                            </div>
                                     </div>
                                     <!-- Body section ends -->
 
@@ -1074,7 +1271,7 @@
                                 <div class="div-table-col seq-notes">Notes</div>
                             </div>
 
-                            <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in NonFrozenTask" ng-class-odd="'FirstRow'" ng-class="{'yellowthickborder': Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onTechEnd()">
+                            <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in NonFrozenTask" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}"  repeat-end="onTechEnd()">
 
                                 <!-- Sequence# starts -->
                                 <div class="div-table-col seq-number">
@@ -1131,7 +1328,7 @@
                                         <%} %>
                                     </select>
                                     <br />
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1340,7 +1537,7 @@
                                 <div class="div-table-col seq-notes">Notes</div>
                             </div>
                         <!-- NG Repeat Div starts -->
-                        <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onStaffEnd()">
+                        <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
                             <!-- Sequence# starts -->
                             <div class="div-table-col seq-number">
                                 <a ng-attr-id="autoClick{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-seqdesgid="{{Task.SequenceDesignationId}}"><span class="badge badge-success badge-xstext">
@@ -1396,7 +1593,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
@@ -1507,7 +1704,7 @@
                             <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
 
                                 <!-- Body section starts -->
-                                <div class="div-table-row" ng-repeat="TechTask in correctDataforAngular(Task.SubSeqTasks)" ng-class-odd="'FirstRow'" ng-class="{yellowthickborder: TechTask.TaskId == BlinkTaskId, 'faded-row': !TechTask.AdminStatus || !TechTask.TechLeadStatus}" ng-class-even="'AlternateRow'">
+                                <div class="div-table-row" ng-repeat="TechTask in correctDataforAngular(Task.SubSeqTasks)" ng-class="{orange : TechTask.Status==='4', yellow: TechTask.Status==='2', yellow: TechTask.Status==='3', lightgray: TechTask.Status==='8'}">
                                     <!-- Sequence# starts -->
                                     <div class="div-table-col seq-number">
                                         <a style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{TechTask.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" onclick="swapSubSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" class="downlink" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" href="javascript:void(0);" ng-show="!$last" onclick="swapSubSequence(this,false)">&#9660;</a>
@@ -1544,8 +1741,8 @@
                                     <div class="div-table-col seq-taskstatus">
                                         <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                             <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
-                                            <option ng-selected="{{TechTask.Status == '2'}}" style="color:red"       value="2">Requested</option>
-                                            <option ng-selected="{{TechTask.Status == '3'}}" style="color:lawngreen" value="3">Assigned</option>
+                                            <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
+                                            <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
                                             <option ng-selected="{{TechTask.Status == '4'}}" value="4">InProgress</option>
                                             <% if (IsSuperUser)
                                                 { %>
@@ -1563,10 +1760,103 @@
                                             <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
                                             <%} %>
                                         </select>
+                                        <br />
+                                        <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <option
+                                                ng-repeat="item in DesignationAssignUsers"
+                                                value="{{item.Id}}"
+                                                label="{{item.FristName}}"
+                                                class="{{item.CssClass}}">{{item.FristName}}
+                                                
+                                            </option>
+                                        </select>
                                     </div>
                                     <!-- Status & Assigned To ends -->
+                                    <div class="div-table-col seq-taskduedate">
+                                        <div class="seqapprovalBoxes">
+                                            <div style="width: 65%; float: left;">
+                                                <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                <br />
+                                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            </div>
+                                            <div style="width: 30%; float: right;">
+                                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            </div>
+                                        </div>
 
+                                        <div ng-attr-data-taskid="{{TechTask.TaskId}}" class="seqapprovepopup">
 
+                                            <div id="divTaskAdmin{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">Admin: </div>
+                                                <div style="width: 30%;" class="display_inline"></div>
+                                                <div ng-class="{hide : StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.AdminUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.AdminUserInstallId)? TechTask.AdminUserId : TechTask.AdminUserInstallId}} - {{TechTask.AdminUserFirstName}} {{TechTask.AdminUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.AdminStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.AdminStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.AdminStatusUpdated) ? '' : '(EST)' }} </span>
+                                                </div>
+                                                <div ng-class="{hide : !StringIsNullOrEmpty(TechTask.AdminStatusUpdated), display_inline : StringIsNullOrEmpty(TechTask.AdminStatusUpdated) }">
+                                                    <input type="password" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffAdminPassword" data-hours-id="txtngstaffAdminEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                            </div>
+                                            <div id="divTaskITLead{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">ITLead: </div>
+                                                <!-- ITLead Hours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.ITLeadHours}}</label>Hour(s)
+                                                    </span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffITLeadEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffITLeadPassword" data-hours-id="txtngstaffITLeadEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- ITLead password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(TechTask.ITLeadHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.TechLeadUserInstallId)? TechTask.TechLeadUserId : TechTask.TechLeadUserInstallId}} - {{TechTask.TechLeadUserFirstName}} {{TechTask.TechLeadUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.TechLeadStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.TechLeadStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.TechLeadStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+
+                                            </div>
+                                            <div id="divUser{{TechTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                                <div style="width: 10%;" class="display_inline">User: </div>
+                                                <!-- UserHours section -->
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <span>
+                                                        <label>{{TechTask.UserHours}}</label>Hour(s)
+                                                        Hour(s)</span>
+                                                </div>
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffUserEstimatedHours" />
+                                                </div>
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(TechTask.UserHours), display_inline : StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this);"
+                                                        data-id="txtngstaffUserPassword" data-hours-id="txtngstaffUserEstimatedHours" ng-attr-data-taskid="{{TechTask.TaskId}}" />
+                                                </div>
+                                                <!-- User password section -->
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(TechTask.UserHours), display_inline : !StringIsNullOrEmpty(TechTask.UserHours) }">
+                                                    <a class="bluetext" href="CreateSalesUser.aspx?id={{TechTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(TechTask.OtherUserInstallId)? TechTask.OtherUserId : TechTask.OtherUserInstallId}} - {{TechTask.OtherUserFirstName}} {{TechTask.OtherUserLastName}}
+                                                    </a>
+                                                    <br />
+                                                    <span>{{ TechTask.OtherUserStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ TechTask.OtherUserStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(TechTask.OtherUserStatusUpdated)? '' : '(EST)' }} </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="div-table-col seq-notes">
+                                        Notes
+                                    </div>
                                 </div>
                                 <!-- Body section ends -->
 
@@ -1608,7 +1898,7 @@
                             <div class="div-table-col seq-notes">Notes</div>
                         </div>
 
-                        <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in TechTasks" ng-class-odd="'FirstRow'" ng-class="{'yellowthickborder': Task.TaskId == BlinkTaskId, 'faded-row': !Task.AdminStatus || !Task.TechLeadStatus}" ng-class-even="'AlternateRow'" repeat-end="onTechEnd()">
+                        <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in TechTasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onTechEnd()">
 
                             <!-- Sequence# starts -->
                             <div class="div-table-col seq-number">
@@ -1665,7 +1955,7 @@
                                     <%} %>
                                 </select>
                                 <br />
-                                <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100px;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
