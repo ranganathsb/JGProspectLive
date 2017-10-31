@@ -1319,6 +1319,9 @@
 
                         </div>
 
+                        
+
+                    </div>
                         <div id="TechTask">
 
                             <div id="tblTechSeq" class="div-table tableSeqTask">
@@ -1648,9 +1651,6 @@
 
                             <!-- UI-Grid Ends here -->--%>
                         </div>
-
-                    </div>
-
 
                 </div>
 
