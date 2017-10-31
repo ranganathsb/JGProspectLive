@@ -2238,6 +2238,10 @@ namespace JG_Prospect.Sr_App.Controls
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
 
+                    // Added by Zubair Ahmed Khan for displaying proper text for task link
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
+                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();

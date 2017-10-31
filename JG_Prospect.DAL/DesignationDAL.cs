@@ -141,9 +141,7 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-
         
-
         public int DesignationInsertUpdate(Designation objDec)
         {
             int result = JGConstant.RETURN_ZERO;

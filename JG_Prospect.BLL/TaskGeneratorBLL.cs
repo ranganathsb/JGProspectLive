@@ -138,6 +138,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.AcceptTaskAssignmentRequests(TaskId, UserIds);
         }
 
+        public DataSet GetTasksInformation(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTasksInformation(TaskId);
+        }
+
         public bool UpdateTaskAcceptance(ref TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskUserAcceptance(ref objTaskUser);
