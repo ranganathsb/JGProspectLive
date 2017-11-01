@@ -46,9 +46,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
         }
 
-        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, Int64 HighlightedTaskID)
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, int UserStatus, string StartDate, string EndDate)
         {
-            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, UserStatus, StartDate, EndDate);
         }
 
         public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)

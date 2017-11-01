@@ -57,7 +57,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, Int64 HighlightedTaskID)
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, int UserStatus, string StartDate, string EndDate)
         {
             try
             {
@@ -69,6 +69,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
                     database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    database.AddInParameter(command, "@UserStatus", SqlDbType.Int, UserStatus);
+                    database.AddInParameter(command, "@StartDate", SqlDbType.VarChar, StartDate.Equals("All") ? "" : StartDate);
+                    database.AddInParameter(command, "@EndDate", SqlDbType.VarChar, EndDate);
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);

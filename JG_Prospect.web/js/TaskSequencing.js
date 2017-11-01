@@ -223,6 +223,14 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
     //debugger;
 
     var defaultTabIndex;
+    var UserStatus = $('#ddlUserStatus').val();
+    sequenceScope.UserStatus = UserStatus;
+
+    var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+    sequenceScope.StartDate = StartDate;
+
+    var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+    sequenceScope.EndDate = EndDate;
 
     if (sequenceScope.IsTechTask == true) {
         defaultTabIndex = 1;
@@ -789,12 +797,21 @@ function applyTaskSequenceTabs(activeTab) {
         active: activeTab,
         activate: function (event, ui) {
             //console.log("called tabs select");
-            if (ui.newPanel.attr('id') == "TechTask") {
+            var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+            sequenceScope.StartDate = StartDate;
 
+            var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+            sequenceScope.EndDate = EndDate;
+
+            if (ui.newPanel.attr('id') == "TechTask") {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = true;
                 sequenceScope.getTechTasks();
             }
             else {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = false;
                 sequenceScope.getTasks();
             }

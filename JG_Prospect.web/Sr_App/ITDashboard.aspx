@@ -226,6 +226,10 @@
             height: 370px;
         }
 
+        .tableFilter tbody tr td {
+            padding: 10px;
+        }
+
         .itdashtitle {
             margin-left: 7px;
         }
@@ -241,7 +245,12 @@
         .gray {
             background-color: Gray;
         }
-
+        .red {
+            background-color: red;
+        }
+        .black {
+            background-color: black;
+        }
         .lightgray {
             background-color: lightgray;
         }
@@ -255,6 +264,7 @@
         }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
+    <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel" ng-app="JGApp">
@@ -1472,30 +1482,73 @@
 
             <%if (IsSuperUser)
                 { %>
-            <table class="table" runat="server" id="tableFilter">
+            <table style="width: 100%" id="tableFilter" runat="server" class="tableFilter">
                 <tr>
-                    <td width="300px">
+                    <td colspan="6" style="padding:0px !important;">
                         <h2 class="itdashtitle">In Progress, Assigned-Requested</h2>
                     </td>
-                    <td>Designation</td>
-                    <td>Users</td>
-                    <td></td>
                 </tr>
-
-                <tr>
-                    <td></td>
+                <tr style="background-color: #000; color: white; font-weight: bold; text-align: center;">
                     <td>
-                        <asp:DropDownList ID="ddlDesigSeq" CssClass="textbox" runat="server" AutoPostBack="false"></asp:DropDownList>
+                        <span id="lblDesignation">Designation</span></td>
+                    <td>
+                        <span id="lblUserStatus">User Status</span><span style="color: red">*</span></td>
+                    <td>
+                        <span id="lblAddedBy">Users</span></td>
+                    <td>
+                        <span id="lblSourceH">Saved Report</span></td>
+                    <td>
+                        <span id="Label2">Select Period</span>
+                    </td>
+                    <td>Search</td>
+                </tr>
+                <tr>
+                    <td><asp:DropDownList ID="ddlDesigSeq" CssClass="textbox" runat="server" AutoPostBack="false"></asp:DropDownList></td>
+                    <td>                       
+                        <select id="ddlUserStatus">
+                            <option value="1">Active</option>
+                            <option value="6">Offer Made</option>
+                            <option value="5">Interview Date</option>
+                        </select>
                     </td>
                     <td>
                         <select id="ddlSelectUserInProTask" data-placeholder="Select Users" multiple style="width: 200px;" class="chosen-select-users">
                             <option selected value="">All</option>
                         </select><span id="lblLoading" style="display: none">Loading...</span>
                     </td>
-                    <td>
-                        <input id="txtSearchUser" class="textbox ui-autocomplete-input" maxlength="15" placeholder="search users" type="text" style="margin-top: 14px" />
-                    </td>
+                    <td></td>
+                    <td style="text-align: left; text-wrap: avoid;">
+                        <div style="float: left; width: 50%;">
+                            <input id="chkAllDates" name="chkAllDates" type="checkbox"><label for="chkAllDates">All</label>
+                            <input id="chkOneYear" name="chkOneYear" type="checkbox"><label for="chkOneYear">1 year</label>
+                            <input id="chkThreeMonth" name="chkThreeMonth" type="checkbox"><label for="chkThreeMonth"> Quarter (3 months)</label>
+                            <br />
+                            <input id="chkOneMonth" name="chkOneMonth" type="checkbox"><label for="chkOneMonth"> 1 month</label>
+                            <input id="chkTwoWks" name="chkTwoWks" type="checkbox"><label for="chkTwoWks"> 2 weeks (pay period!)</label>
+                        </div>
 
+                        <div>
+                            <span id="Label3">From :*</span>
+                            <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
+                                        onkeypress="return false" MaxLength="10"
+                                        Style="width: 80px;" ></asp:TextBox>
+                                    <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+                                    </cc1:CalendarExtender>
+
+                            <span id="Label4">To :*</span>
+                            <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
+                                        MaxLength="10" runat="server" TabIndex="3"
+                                        Style="width: 80px;" ></asp:TextBox>
+                                    <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+                                    </cc1:CalendarExtender>
+
+
+                            <span id="requirefrmdate" style="color: Red; visibility: hidden;">Select From date</span><span id="Requiretodate" style="color: Red; visibility: hidden;"> Select To date</span>
+                        </div>
+                    </td>
+                    <td>
+                        <input id="txtSearchUser" class="textbox ui-autocomplete-input" maxlength="15" placeholder="search users" type="text"/>
+                    </td>
                 </tr>
             </table>
             <%}
@@ -1761,7 +1814,7 @@
                                             <%} %>
                                         </select>
                                         <br />
-                                        <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                        <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                             <option
                                                 ng-repeat="item in DesignationAssignUsers"
                                                 value="{{item.Id}}"
@@ -2176,7 +2229,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-class="{lightgray : item.Status==='7', green: item.Status==='13', gray: item.Status==='9'}" data-ng-repeat="item in ClosedTask">
+                        <tr ng-class="{red: item.Status==='12', black : item.Status==='7', green: item.Status==='14', gray: item.Status==='9'}" data-ng-repeat="item in ClosedTask">
                             <td style="width: 100px;" valign="middle" align="center">
                                 <span id="ContentPlaceHolder1_grdTaskClosed_lblAssignedUser_0">{{item.Assigneduser}}</span>
                             </td>
@@ -2234,7 +2287,7 @@
     <script src="../js/angular/scripts/TaskSequence.js"></script>    
     <script src="../js/angular/scripts/FrozenTask.js"></script>
     <script src="../js/TaskSequencing.js"></script>
-    
+    <script src="../js/jquery.dd.min.js"></script>
     <script src="../js/angular/scripts/ClosedTasls.js"></script>    
     <script type="text/javascript">
         var ddlDesigSeqClientIDFrozenTasks = "";
@@ -2342,7 +2395,9 @@
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
                 fillUsers('<%=ddlDesigIdsFrozenTasks.ClientID%>', 'ddlSelectFrozenTask', 'lblLoadingFrozen');
-            }
+            }           
+
+            $("#ddlUserStatus").msDropDown();
         });
 
         $(window).load(function () {
@@ -2350,16 +2405,77 @@
             var desId = "";
             debugger;
             if ($('#' + ddlDesigSeqClientID).length > 0) {
+                $('#chkAllDates').attr("checked", true);
+                //Set Date
+                $('#' + '<%=txtfrmdate.ClientID%>').val("All");
+                var EndDate = new Date();
+                EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
+                $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+
                 desId = $('#' + ddlDesigSeqClientID).find('option:selected').val();
 
                 $('#' + ddlDesigSeqClientID).change(function (e) {
-
                     ShowTaskSequenceDashBoard($('#' + ddlDesigSeqClientID).find('option:selected').val(), 0);
                     fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 });
 
+                $('#ddlUserStatus').change(function () {
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
                 // And now fire change event when the DOM is ready
                 $('#' + ddlDesigSeqClientID).trigger('change');
+
+                //for StartDate and EndDate trigger
+                $('#' + '<%=txtfrmdate.ClientID%>').change(function () {
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#' + '<%=txtTodate.ClientID%>').change(function () {
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+
+                $('#chkAllDates').change(function () {
+                    $('#' + '<%=txtfrmdate.ClientID%>').val("All");
+                    var EndDate = new Date();
+                    EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
+                    $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('#chkThreeMonth').attr("checked", false); $('#chkOneMonth').attr("checked", false); $('#chkTwoWks').attr("checked", false);
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#chkOneYear').change(function () {
+                    addMonthsToDate(12);
+                    $('#' + '<%=txtfrmdate.ClientID%>').val(StartDate);
+                    $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+                    $('#chkThreeMonth').attr("checked", false); $('#chkOneMonth').attr("checked", false); $('#chkTwoWks').attr("checked", false); $('#chkAllDates').attr("checked", false); 
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#chkThreeMonth').change(function () {
+                    addMonthsToDate(3);
+                    $('#' + '<%=txtfrmdate.ClientID%>').val(StartDate);
+                    $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('#chkOneMonth').attr("checked", false); $('#chkTwoWks').attr("checked", false); $('#chkAllDates').attr("checked", false); 
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#chkOneMonth').change(function () {
+                    addMonthsToDate(1);
+                    $('#' + '<%=txtfrmdate.ClientID%>').val(StartDate);
+                    $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('#chkThreeMonth').attr("checked", false); $('#chkTwoWks').attr("checked", false); $('#chkAllDates').attr("checked", false); 
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#chkTwoWks').change(function () {
+                    addDaysToDate(13);
+                    $('#' + '<%=txtfrmdate.ClientID%>').val(StartDate);
+                    $('#' + '<%=txtTodate.ClientID%>').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('#chkThreeMonth').attr("checked", false); $('#chkOneMonth').attr("checked", false); $('#chkAllDates').attr("checked", false); 
+                    $('#' + ddlDesigSeqClientID).trigger('change');
+                });
             }
             else {
                 sequenceScope.IsTechTask = false;
@@ -2385,6 +2501,30 @@
             });
 
         });
+
+        //Date Filter
+        var StartDate = new Date();
+        var EndDate = new Date();
+
+        function addMonthsToDate(Number) {
+            StartDate = new Date();
+            EndDate = new Date();
+
+            StartDate.setMonth(StartDate.getMonth() - Number);
+            StartDate.setDate(StartDate.getDate() - 1);
+            StartDate = (StartDate.getMonth() + 1) + '/' + StartDate.getDate() + '/' + StartDate.getFullYear();
+
+            EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
+        }
+        function addDaysToDate(Number) {
+            StartDate = new Date();
+            EndDate = new Date();
+
+            StartDate.setDate(StartDate.getDate() - 13);
+            StartDate = (StartDate.getMonth() + 1) + '/' + StartDate.getDate() + '/' + StartDate.getFullYear();
+
+            EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
+        }
 
         function fillUsers(selector, fillDDL, loader) {
             debugger;

@@ -798,7 +798,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, int UserStatus, string StartDate, string EndDate)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -813,7 +813,7 @@ namespace JG_Prospect.WebServices
                 else
                 {
                     if (UserId == "0")
-                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, HighlightedTaskID);
+                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, UserStatus, StartDate, EndDate);
                     else
                         dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
                 }
