@@ -17,7 +17,7 @@ function SetLatestSequenceForAddNewSubTask() {
 
 function ShowTaskSequence(editlink, designationDropdownId) {
 
-
+    debugger;
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
@@ -41,7 +41,11 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         //        }
         //    });
     }
+    sequenceScope.UserStatus = 0;
 
+    sequenceScope.StartDate = "";
+
+    sequenceScope.EndDate = "";
 
     // console.log("Master Dropdown selected designation is: " + $(ddlDesigSeqClientID).val());
 
@@ -99,9 +103,6 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
     }
-
-
-
 }
 
 function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
@@ -224,6 +225,23 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
     //debugger;
 
     var defaultTabIndex;
+    var UserStatus = $('#ddlUserStatus').val();
+    if (UserStatus != undefined)
+        sequenceScope.UserStatus = UserStatus;
+    else
+        sequenceScope.UserStatus = 0;
+
+    var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+    if (StartDate != undefined)
+        sequenceScope.StartDate = StartDate;
+    else
+        sequenceScope.StartDate = "";
+
+    var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+    if (EndDate != undefined)
+        sequenceScope.EndDate = EndDate;
+    else
+        sequenceScope.EndDate = "";
 
     if (sequenceScope.IsTechTask == true) {
         defaultTabIndex = 1;
@@ -790,12 +808,21 @@ function applyTaskSequenceTabs(activeTab) {
         active: activeTab,
         activate: function (event, ui) {
             //console.log("called tabs select");
-            if (ui.newPanel.attr('id') == " ") {
+            var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+            sequenceScope.StartDate = StartDate;
 
+            var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+            sequenceScope.EndDate = EndDate;
+
+            if (ui.newPanel.attr('id') == "TechTask") {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = true;
                 sequenceScope.getTechTasks();
             }
             else {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = false;
                 sequenceScope.getTasks();
             }

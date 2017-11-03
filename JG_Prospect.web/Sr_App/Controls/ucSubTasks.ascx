@@ -1356,11 +1356,21 @@
 
                                 </div>
 
-                                <div class="text-center">
-                                    <jgpager page="{{Techpage}}" pages-count="{{TechpagesCount}}" total-count="{{TechTotalRecords}}" search-func="getTechTasks(page)"></jgpager>
-                                </div>
-                                                            
+                            <div class="text-center">
+                                <jgpager page="{{Techpage}}" pages-count="{{TechpagesCount}}" total-count="{{TechTotalRecords}}" search-func="getTechTasks(page)"></jgpager>
+                            </div>
+
+
+                            <%--  <!-- UI-Grid Starts Here -->
+
+                            <div id="divUIGrid" ng-controller="UiGridController">
+                                <div ui-grid="gridOptions" ui-grid-expandable class="grid"></div>
+                            </div>
+
+                            <!-- UI-Grid Ends here -->--%>
                         </div>
+
+                </div>
 
                 </div>
 
