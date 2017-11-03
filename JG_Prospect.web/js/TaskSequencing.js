@@ -224,13 +224,22 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
 
     var defaultTabIndex;
     var UserStatus = $('#ddlUserStatus').val();
-    sequenceScope.UserStatus = UserStatus;
+    if (UserStatus != undefined)
+        sequenceScope.UserStatus = UserStatus;
+    else
+        sequenceScope.UserStatus = 0;
 
     var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
-    sequenceScope.StartDate = StartDate;
+    if (StartDate != undefined)
+        sequenceScope.StartDate = StartDate;
+    else
+        sequenceScope.StartDate = "";
 
     var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
-    sequenceScope.EndDate = EndDate;
+    if (EndDate != undefined)
+        sequenceScope.EndDate = EndDate;
+    else
+        sequenceScope.EndDate = "";
 
     if (sequenceScope.IsTechTask == true) {
         defaultTabIndex = 1;

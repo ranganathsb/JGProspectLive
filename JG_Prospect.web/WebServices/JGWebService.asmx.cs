@@ -740,10 +740,18 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public string GetAssignUsers(string TaskDesignations)
         {
-            if (TaskDesignations.Equals(""))
+            if (TaskDesignations == "")
             {
-                TaskDesignations = Session["DesignationId"].ToString();
+                if (!CommonFunction.CheckAdminAndItLeadMode())
+                {
+                    TaskDesignations = Session["DesignationId"].ToString();
+                }
+                else
+                {
+                    TaskDesignations = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24";
+                }
             }
+            
             // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
             DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, TaskDesignations);
             string strMessage;
@@ -808,15 +816,32 @@ namespace JG_Prospect.WebServices
                 if (!CommonFunction.CheckAdminAndItLeadMode())
                 {
                     UserId = JGSession.LoginUserID;
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false);
                 }
                 else
                 {
                     if (UserId == "0")
-                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, IsTechTask, UserStatus, StartDate, EndDate);
+                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, UserStatus, StartDate, EndDate);
                     else
-                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId);
+                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId, true);
                 }
+                //if (dtResult != null && dtResult.Tables.Count > 0)
+                //{
+                //    dtResult.Tables[0].TableName = "Tasks";
+                //    dtResult.Tables[1].TableName = "SubSeqTasks";
+                //    dtResult.Tables[2].TableName = "RecordCount";
+                //    dtResult.DataSetName = "TasksData";
+
+                //    System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                //    doc.LoadXml(dtResult.GetXml());
+                //    strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                //}
+                //else
+                //{
+                //    strMessage = String.Empty;
+                //}
+
+                //return strMessage;
             }
 
             else
@@ -833,7 +858,12 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[1].TableName = "SubSeqTasks";
                 dtResult.Tables[2].TableName = "RecordCount";
 
-                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                DataColumn[] SeqCols = new DataColumn[] { dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["Tasks"].Columns["SequenceDesignationId"], dtResult.Tables["Tasks"].Columns["IsTechTask"] };
+                DataColumn[] SubSeqCols = new DataColumn[] { dtResult.Tables["SubSeqTasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["SequenceDesignationId"], dtResult.Tables["SubSeqTasks"].Columns["IsTechTask"] };
+
+
+                //DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                DataRelation relation = dtResult.Relations.Add("relation", SeqCols, SubSeqCols);
                 relation.Nested = true;
                 dtResult.DataSetName = "TasksData";
 
@@ -874,7 +904,9 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[1].TableName = "SubSeqTasks";
                 dtResult.Tables[2].TableName = "RecordCount";
 
-                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                DataColumn[] SeqCols = new DataColumn[] { dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["Tasks"].Columns["SequenceDesignationId"] };
+                DataColumn[] SubSeqCols = new DataColumn[] { dtResult.Tables["SubSeqTasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["SequenceDesignationId"] };
+                DataRelation relation = dtResult.Relations.Add("relation", SeqCols, SubSeqCols);
                 relation.Nested = true;
                 dtResult.DataSetName = "TasksData";
 
@@ -914,7 +946,9 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[1].TableName = "SubSeqTasks";
                 dtResult.Tables[2].TableName = "RecordCount";
 
-                DataRelation relation = dtResult.Relations.Add("relation", dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["Sequence"]);
+                DataColumn[] SeqCols = new DataColumn[] { dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["Tasks"].Columns["SequenceDesignationId"] };
+                DataColumn[] SubSeqCols = new DataColumn[] { dtResult.Tables["SubSeqTasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["SequenceDesignationId"] };
+                DataRelation relation = dtResult.Relations.Add("relation", SeqCols, SubSeqCols);
                 relation.Nested = true;
                 dtResult.DataSetName = "TasksData";
 

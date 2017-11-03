@@ -490,18 +490,18 @@ namespace JG_Prospect.Sr_App
         {
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
 
-            ddlDesigSeq.Items.Clear();
-            ddlDesigSeq.DataSource = dsDesignation.Tables[0];
-            ddlDesigSeq.DataTextField = "DesignationName";
-            ddlDesigSeq.DataValueField = "ID";
-            ddlDesigSeq.DataBind();
+            //ddlDesigSeq.Items.Clear();
+            //ddlDesigSeq.DataSource = dsDesignation.Tables[0];
+            //ddlDesigSeq.DataTextField = "DesignationName";
+            //ddlDesigSeq.DataValueField = "ID";
+            //ddlDesigSeq.DataBind();
 
             //ddlDesigIdsFrozenTasks
-            ddlDesigIdsFrozenTasks.Items.Clear();
-            ddlDesigIdsFrozenTasks.DataSource = dsDesignation.Tables[0];
-            ddlDesigIdsFrozenTasks.DataTextField = "DesignationName";
-            ddlDesigIdsFrozenTasks.DataValueField = "ID";
-            ddlDesigIdsFrozenTasks.DataBind();
+            //ddlDesigIdsFrozenTasks.Items.Clear();
+            //ddlDesigIdsFrozenTasks.DataSource = dsDesignation.Tables[0];
+            //ddlDesigIdsFrozenTasks.DataTextField = "DesignationName";
+            //ddlDesigIdsFrozenTasks.DataValueField = "ID";
+            //ddlDesigIdsFrozenTasks.DataBind();
 
             //drpDesigInProgress .Items.Clear();
 
