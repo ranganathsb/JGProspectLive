@@ -2147,7 +2147,10 @@
                 success: function (result) {
                     alert("Task Status Changed.");
                     ShowAllClosedTasksDashBoard("", 0, pageSize);
-                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                    var dids = "";
+                    if ($('.' + ddlDesigSeqClientID).val() != undefined)
+                        dids = $('.' + ddlDesigSeqClientID).val().join();
+                    ShowTaskSequenceDashBoard(dids, 0);
                 },
                 error: function (errorThrown) {
                     alert("Failed!!!");

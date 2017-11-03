@@ -17,7 +17,7 @@ function SetLatestSequenceForAddNewSubTask() {
 
 function ShowTaskSequence(editlink, designationDropdownId) {
 
-
+    debugger;
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
@@ -40,7 +40,11 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         //        }
         //    });
     }
+    sequenceScope.UserStatus = 0;
 
+    sequenceScope.StartDate = "";
+
+    sequenceScope.EndDate = "";
 
     // console.log("Master Dropdown selected designation is: " + $(ddlDesigSeqClientID).val());
 
@@ -98,9 +102,6 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
     }
-
-
-
 }
 
 function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {

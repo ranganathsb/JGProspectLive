@@ -86,6 +86,13 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
    
     $scope.getTasks = function (page) {
 
+        if (sequenceScope.UserStatus == undefined)
+            sequenceScope.UserStatus = 0;
+        if (sequenceScope.StartDate == undefined)
+            sequenceScope.StartDate = "";
+        if (sequenceScope.EndDate == undefined)
+            sequenceScope.EndDate = "";
+
         if (!$scope.IsTechTask) {
             console.log("Url: " + url);
             console.log("Staff Task called....");
@@ -124,6 +131,12 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
     $scope.getTechTasks = function (page) {
        
+        if (sequenceScope.UserStatus == undefined)
+            sequenceScope.UserStatus = 0;
+        if (sequenceScope.StartDate == undefined)
+            sequenceScope.StartDate = "";
+        if (sequenceScope.EndDate == undefined)
+            sequenceScope.EndDate = "";
 
         if ($scope.IsTechTask) {
             console.log("Tech Task called....");
