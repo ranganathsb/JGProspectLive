@@ -130,3 +130,68 @@ END
 GO
 
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[usp_GetEmpInstructionByDesignationId]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE usp_GetEmpInstructionByDesignationId   
+
+    END  
+GO    
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 11/06/2017
+-- Description:	This will fetch instruction to employee.
+-- =============================================
+CREATE PROCEDURE usp_GetEmpInstructionByDesignationId 
+(	
+	@DesignationId INT, 
+	@UsedFor SMALLINT
+)
+AS
+BEGIN
+	
+	SELECT        InstructionText
+	FROM          [dbo].[EmpInstructions]
+	WHERE        (DesignationId = @DesignationId) AND (UsedFor = @UsedFor)
+
+	
+END
+GO
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[usp_GetEmployeeInterviewDetails]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE usp_GetEmployeeInterviewDetails   
+
+    END  
+GO    
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Yogesh Keraliya
+-- Create date: 11/06/2017
+-- Description:	This will fetch employee interview details.
+-- =============================================
+CREATE PROCEDURE usp_GetEmployeeInterviewDetails 
+(	
+	@UserId INT
+)
+AS
+BEGIN
+
+	SELECT FristName,LastName,Designation,CONVERT(VARCHAR(10), [RejectionDate],110)AS [RejectionDate],[RejectionTime],DesignationId,UserInstallId FROM tblInstallUsers WHERE Id = @UserId
+
+END
+GO

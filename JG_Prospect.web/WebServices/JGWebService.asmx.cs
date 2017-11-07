@@ -1896,5 +1896,68 @@ namespace JG_Prospect.WebServices
         }
 
         #endregion
+
+        #region "-- Employee Instructions --"
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeInstructionByDesignationId(Int32 DesignationId, JGConstant.EmployeeInstructionUsedFor UsedFor)
+        {
+
+            String strInstruction = string.Empty;
+
+            DataSet EmployeeInstruction = EmployeeInstructionBLL.Instance.GetEmployeeInstructionByDesignationId(DesignationId, UsedFor);
+
+            if (EmployeeInstruction != null && EmployeeInstruction.Tables.Count > 0)
+            {
+                DataTable dtResult = EmployeeInstruction.Tables[0];
+
+
+                if (dtResult != null)
+                {
+                    strInstruction = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                }
+                else
+                {
+                    strInstruction = String.Empty;
+                }
+            }
+
+            return strInstruction;
+
+        }
+
+
+        #endregion
+
+        #region "-- User Interview Details --"
+
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeInterviewDetails(Int32 UserId)
+        {
+
+            String strInterviewDetails = string.Empty;
+
+            DataSet InterviewDetails = InstallUserBLL.Instance.GetEmployeeInterviewDetails(UserId);
+
+            if (InterviewDetails != null && InterviewDetails.Tables.Count > 0)
+            {
+                DataTable dtResult = InterviewDetails.Tables[0];
+
+
+                if (dtResult != null)
+                {
+                    strInterviewDetails = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                }
+                else
+                {
+                    strInterviewDetails = String.Empty;
+                }
+            }
+
+            return strInterviewDetails;
+
+        }
+
+
+        #endregion
     }
 }

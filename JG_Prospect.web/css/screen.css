@@ -1581,8 +1581,9 @@ input.fz-Beta, .fz-Beta > input {
 .greentext {
     color: darkgreen !important;
 }
+
 .blacktext {
-color: black !important;
+    color: black !important;
 }
 
 .haligncenter {
@@ -2428,22 +2429,36 @@ input[type='checkbox']:checked.largecheckbox {
 }
 
 .rejectedUser {
-background-color: #AEAEAE;
+    background-color: #AEAEAE;
 }
 
 .gridtbl tbody {
-max-height:40px !important;
+    max-height: 40px !important;
 }
 
 .gridtbl thead tr:after {
-    content:none !important;
+    content: none !important;
 }
+
 .gridtbl thead th {
     background-color: #000;
 }
+
 .legaldesclaimer {
     font-size: 8px;
     color: gray;
+    border: 1px solid gray;
+    padding: 15px;
+    max-height: 100px;
+    /* min-height: 100px; */
+    margin: 10px 0;
+    /* -webkit-border-radius: 12px; */
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.employeeinstruction {
+    font-size: 10px;
     border: 1px solid gray;
     padding: 15px;
     max-height: 100px;

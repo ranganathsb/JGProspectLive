@@ -20,6 +20,27 @@ namespace JG_Prospect.DAL
             private set { ; }
         }
 
-        
+        public DataSet GetEmployeeInstructionByDesignationId(int DesignationId, Common.JGConstant.EmployeeInstructionUsedFor UsedFor)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetEmpInstructionByDesignationId");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
+                    database.AddInParameter(command, "@UsedFor", DbType.Int16, Convert.ToInt16(UsedFor));
+
+                    DataSet dsEmpInstruction = database.ExecuteDataSet(command);
+
+                    return dsEmpInstruction;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

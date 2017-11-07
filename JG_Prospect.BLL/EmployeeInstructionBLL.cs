@@ -19,6 +19,12 @@ namespace JG_Prospect.BLL
             set { ; }
         }
 
-       
+        public DataSet GetEmployeeInstructionByDesignationId(int DesignationId, Common.JGConstant.EmployeeInstructionUsedFor UsedFor)
+        {
+            return EmployeeInstructionDAL.Instance.GetEmployeeInstructionByDesignationId(DesignationId,UsedFor);
+
+        }
+
+
     }
 }

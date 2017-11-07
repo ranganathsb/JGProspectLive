@@ -212,6 +212,13 @@ namespace JG_Prospect.Common
             OfferMade = 3
         }
 
+        public enum EmployeeInstructionUsedFor
+        {
+            InterviewDate = 1,
+            SuccessPopup = 2,
+            OfferMade = 3
+        }
+
         public enum InstallUserStatus
         {
             Active = 1

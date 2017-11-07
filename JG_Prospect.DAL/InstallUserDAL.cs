@@ -2699,6 +2699,28 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetEmployeeInterviewDetails(int  UserID)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetEmployeeInterviewDetails");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserID);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTaskUsersForDashBoard(String searchTerm)
         {
             try
