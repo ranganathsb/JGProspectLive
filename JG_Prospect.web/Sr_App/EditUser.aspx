@@ -1009,16 +1009,13 @@
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="25%" ItemStyle-Width="25%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
-                                    <ItemTemplate>
-                                        <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
-                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
+                                    <ItemTemplate>                                        
                                         <div class="GrdPrimaryEmail">
                                             <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                        <br />
-                                        <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
+                                        <br />                                      
                                         <ul class="contactGrid">
                                             <li>
                                                 <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
@@ -1044,36 +1041,13 @@
                                             </li>
                                         </ul>                                        
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
-                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
-                                        <%-- <div class="GrdContainer" style="width: 90%">
-                                            <div class="GrdHeader">
-                                                <span>Click To Add Phone /Email</span>
-                                            </div>
-                                            <div class="GrdContent">                                                
-                                               <ul style="padding-left: 0px;">
-                                                    <li>
-                                                        <asp:CheckBox ID="chkIsPrimaryPhone" Text=" Is Primary contact" runat="server"></asp:CheckBox></li>
-                                                    <li>
-                                                        <asp:DropDownList ID="ddlContactType" runat="server">
-                                                            <asp:ListItem Text="Home Phone"></asp:ListItem>
-                                                            <asp:ListItem Text="Office Phone"></asp:ListItem>
-                                                            <asp:ListItem Text="Alt Phone"></asp:ListItem>
-                                                            <asp:ListItem Text="Email"></asp:ListItem>
-                                                        </asp:DropDownList></li>
-                                                    <li>
-                                                        <asp:TextBox ID="txtNewContact" runat="server"></asp:TextBox></li>
-                                                    <li>
-                                                        <asp:Button ID="btnAddPhone" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact" CommandArgument='<%# Eval("Id") %>'></asp:Button></li>
-                                                </ul>
-                                            </div>
-                                        </div>--%>
+                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>                                        
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
-                                        </div>
-                                        <%--<span><%# Eval("Zip") %></span>--%>
+                                        </div>                                      
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
 

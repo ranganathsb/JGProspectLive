@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data;
-using JG_Prospect.Common.Logger;
-using JG_Prospect.BLL;
-using System.Configuration;
-using System.Net.Mail;
-using System.Net;
-using System.IO;
-using System.Text;
-using System.Security.Cryptography;
-using ASPSnippets.FaceBookAPI;
-using System.Web.Script.Serialization;
+﻿using ASPSnippets.FaceBookAPI;
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
 using DotNetOpenAuth.AspNet.Clients;
+using JG_Prospect.BLL;
 using JG_Prospect.Common;
-using System.Web.Services;
+using JG_Prospect.Common.Logger;
 using JG_Prospect.Common.modal;
-using System.Collections.Specialized;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using System.Web.Script.Serialization;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace JG_Prospect
 {
@@ -38,33 +33,8 @@ namespace JG_Prospect
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (Session["PopUpOnSessionExpire"] == null)
-            //{
-            //    if (c != 0 && Session["LogOut"]!=null)
-            //    {
-            //        ScriptManager.RegisterStartupScript(this, GetType(), "overlay", "SessionExpire();", true);                    
-            //    }
-            //    c++;
-            //}
-            //facebook login
-            FaceBookConnect.API_Key = "1617979618482118";
-            FaceBookConnect.API_Secret = "1b8ede82b0adbebb2282934247773490";
-            //google plus login
-            //GoogleConnect.ClientId = "356184594367-5iu5qlbe4ddgtst0p6teae8r2s0b5a6n.apps.googleusercontent.com";
-            //GoogleConnect.ClientSecret = "rVkwAed1NzC_-F3Z6yUFiFQ_";
-            //GoogleConnect.RedirectUri = Request.Url.AbsoluteUri.Split('?')[0];
-            GoogleConnect.ClientId = "230635153352-67pgqgc8n4ao9dhnnr3plb1sbnvga1tu.apps.googleusercontent.com";
-            GoogleConnect.ClientSecret = "4t6zZfPMfgLVxSRSItsWeOGo";
-            GoogleConnect.RedirectUri = Request.Url.AbsoluteUri.Split('?')[0];
+            SetOAuthCredentials();
 
-
-            //Login with Twitter
-            // TwitterConnect.API_Key = " hlFND0IQOjA7hMPVmVvKKVlzI";
-            // TwitterConnect.API_Secret = "NNL9H5GCNSvNH0XJv4ax2wh9iWbqmqTxO9ydR7ewcX1l7XMY5o";
-            TwitterConnect.API_Key = "SWPrFVQ6o5q2f2Zjo5R4iNeFv";
-            TwitterConnect.API_Secret = "sHRhjjETwXOF5LwxYvK7yk5jz81OchC7IFSyQGWTKzpVeoWOkd";
-            //  CalendarExtender2.EndDate = DateTime.Today;
-            //txtDateOfBith.Attributes.Add("readonly", "readonly");
             if (!IsPostBack)
             {
                 rdSalesIns.Checked = true;
@@ -84,23 +54,7 @@ namespace JG_Prospect
                     DataTable dt = twitter.FetchProfile();
                     string email = dt.Rows[0]["screen_name"].ToString();
                     string name = dt.Rows[0]["name"].ToString();
-                    //pradip sir code
-
-                    //Procedure prObj = new Procedure();
-                    //Generic gnObj = new Generic();
-                    //gnObj.Username1 = dt.Rows[0]["Id"].ToString();                    
-                    //gnObj.StatementName = "Student";
-                    //int count = prObj.InsertFacebookUser(gnObj);
-                    //if (count == 1)
-                    //{
-                    //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "duplicatI", "Student();", true);
-                    //    return;
-                    //}
-                    //else if (count == 2)
-                    //{
-                    //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "register", "Register();", true);
-                    //    return;
-                    //}
+                   
                     try
                     {
                         int isvaliduser = 0;
@@ -803,7 +757,7 @@ namespace JG_Prospect
                 }
                 #endregion
 
-                //if (!JGSession.IsActive)
+                if (!JGSession.IsActive)
                 {
                     if (JGSession.IsCustomer)
                     {
@@ -859,13 +813,25 @@ namespace JG_Prospect
             }
         }
 
+        private void SetOAuthCredentials()
+        {
+            //facebook login
+            FaceBookConnect.API_Key = "1617979618482118";
+            FaceBookConnect.API_Secret = "1b8ede82b0adbebb2282934247773490";
+            GoogleConnect.ClientId = "230635153352-67pgqgc8n4ao9dhnnr3plb1sbnvga1tu.apps.googleusercontent.com";
+            GoogleConnect.ClientSecret = "4t6zZfPMfgLVxSRSItsWeOGo";
+            GoogleConnect.RedirectUri = Request.Url.AbsoluteUri.Split('?')[0];
+            TwitterConnect.API_Key = "SWPrFVQ6o5q2f2Zjo5R4iNeFv";
+            TwitterConnect.API_Secret = "sHRhjjETwXOF5LwxYvK7yk5jz81OchC7IFSyQGWTKzpVeoWOkd";
+        }
+
         #endregion
 
         #region '-- Control Events --'
 
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
-           
+
             try
             {
                 JGSession.DesignationId = 0;
@@ -1103,7 +1069,7 @@ namespace JG_Prospect
             }
         }
 
-           protected void lblForgotUserId_Click(object sender, EventArgs e)
+        protected void lblForgotUserId_Click(object sender, EventArgs e)
         {
             Response.Redirect("ForgotuserId.aspx");
         }

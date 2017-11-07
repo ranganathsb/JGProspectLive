@@ -1829,7 +1829,38 @@ namespace JG_Prospect.WebServices
         }
 
         #endregion
-        
+
+        #endregion
+
+        #region "-- Employee Legal Desclaimer --"
+
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeLegalDesclaimer(Int32 DesignationId , JGConstant.EmployeeLegalDesclaimerUsedFor UsedFor)
+        {
+
+            String strLegalDesclaimer = string.Empty;
+
+            DataSet LegalDesclaimer = EmployeeLegalDesclaimerBLL.Instance.GetEmployeeLegalDesclaimerByDesignationId(DesignationId, UsedFor);
+
+            if (LegalDesclaimer != null && LegalDesclaimer.Tables.Count > 0)
+            {
+                DataTable dtResult = LegalDesclaimer.Tables[0];
+
+
+                if (dtResult != null)
+                {
+                    strLegalDesclaimer = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                }
+                else
+                {
+                    strLegalDesclaimer = String.Empty;
+                } 
+            }
+
+            return strLegalDesclaimer;
+
+        }
+
         #endregion
     }
 }

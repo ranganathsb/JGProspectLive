@@ -71,7 +71,7 @@ namespace JG_Prospect
             //txtDateOfBith.Attributes.Add("readonly", "readonly");
             if (!IsPostBack)
             {
-                rdCustomer.Checked = true;
+              rdCustomer.Checked = true;
                 JGSession.Designation = "";
                 JGSession.DesignationId = 0;
                 btnSignUp.Visible = true;
@@ -813,18 +813,18 @@ namespace JG_Prospect
 
                 //if (!JGSession.IsActive)
                 {
-                    if (JGSession.IsCustomer)
-                    {
-                        rdCustomer.Checked = true;
-                        rdSalesIns.Checked = false;
-                        rdUserType_CheckedChanged(rdCustomer, e);
-                    }
-                    else
-                    {
-                        rdCustomer.Checked = false;
-                        rdSalesIns.Checked = true;
-                        rdUserType_CheckedChanged(rdSalesIns, e);
-                    }
+                    //if (JGSession.IsCustomer)
+                    //{
+                    //    rdCustomer.Checked = true;
+                    //    rdSalesIns.Checked = false;
+                    //    rdUserType_CheckedChanged(rdCustomer, e);
+                    //}
+                    //else
+                    //{
+                    //    rdCustomer.Checked = false;
+                    //    rdSalesIns.Checked = true;
+                    //    rdUserType_CheckedChanged(rdSalesIns, e);
+                    //}
 
                     txtloginid.Text = JGSession.UserLoginId;
                     txtpassword.Text = JGSession.UserPassword;

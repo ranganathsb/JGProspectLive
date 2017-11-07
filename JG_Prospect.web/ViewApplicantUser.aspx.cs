@@ -471,6 +471,7 @@ namespace JG_Prospect
                         //Session["installId"] = ds.Tables[0].Rows[0][62].ToString();
 
                         Session["IdGenerated"] = ds.Tables[0].Rows[0][62].ToString();
+                        imgprofile.ImageUrl = String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                         GenerateBarCode(Convert.ToString(Session["installId"]));
                         txtfirstname.Text = ds.Tables[0].Rows[0][1].ToString();
                         Session["FirstName"] = ds.Tables[0].Rows[0][1].ToString();
@@ -1393,12 +1394,31 @@ namespace JG_Prospect
             ltlParentTask.Text = ParentTaskTitle;
 
             ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+
             ltlAssignToInstallID.Text = hlnkUserID.Text;
+
+            #region "-- User Details in Popup --"
+            lblFirstName.Text = txtfirstname.Text;
+            lblLastName.Text = txtlastname.Text;
+
+            drpDesig.SelectedIndex = ddldesignation.SelectedIndex;
+
+            divCountryCode.Attributes.Add("class",ddlCountry.SelectedValue);
+
+            lblCity.Text = txtCity.Text;
+            lblZip.Text = txtZip.Text;
+
+            lbtnEmail.Text = hidExtEmail.Value;
+
+            lblPrimaryPhone.Text = txtPhone.Text;
+            lblExt.Text = txtExt.Text;
+
+            #endregion
 
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
             hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
-
+            hypTaskLink1.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
             //Only for programming designations
             if (ShowGithubField)
             {
@@ -6450,6 +6470,12 @@ namespace JG_Prospect
                 ddldesignation.DataTextField = "DesignationName";
                 ddldesignation.DataValueField = "ID";
                 ddldesignation.DataBind();
+
+                drpDesig.DataSource = dsDesignation.Tables[0];
+                drpDesig.DataTextField = "DesignationName";
+                drpDesig.DataValueField = "ID";
+                drpDesig.DataBind();
+
 
                 ddlPositionAppliedFor.DataSource = dsDesignation.Tables[0];
                 ddlPositionAppliedFor.DataTextField = "DesignationName";

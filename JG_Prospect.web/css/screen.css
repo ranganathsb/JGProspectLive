@@ -2441,3 +2441,15 @@ max-height:40px !important;
 .gridtbl thead th {
     background-color: #000;
 }
+.legaldesclaimer {
+    font-size: 8px;
+    color: gray;
+    border: 1px solid gray;
+    padding: 15px;
+    max-height: 100px;
+    /* min-height: 100px; */
+    margin: 10px 0;
+    /* -webkit-border-radius: 12px; */
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}

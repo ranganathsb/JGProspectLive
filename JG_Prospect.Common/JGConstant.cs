@@ -205,6 +205,13 @@ namespace JG_Prospect.Common
             IT_Jr_PHP_Developer = 24
         }
 
+        public enum EmployeeLegalDesclaimerUsedFor
+        {
+            InterviewDate = 1,
+            SuccessPopup = 2,
+            OfferMade = 3
+        }
+
         public enum InstallUserStatus
         {
             Active = 1
