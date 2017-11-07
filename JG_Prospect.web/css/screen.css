@@ -2363,7 +2363,7 @@ p.mcqQuestion {
 .div-table-nested {
     display: table;
     border-spacing: 2px; /* cellspacing:poor IE support for  this */
-    width: 95%;
+    width: 99%;
     border: 1px solid #a1a0a0;
     margin: 10px;
     border-radius: 5px;
@@ -2395,15 +2395,15 @@ p.mcqQuestion {
 }
 
 .seq-taskid {
-    width: 15%;
+    width: 9%;
 }
 
 .seq-tasktitle {
-    width: 30%;
+    width: 24%;
 }
 
 .seq-taskstatus {
-    width: 10%;
+    width: 14%;
 }
 
 .seq-taskduedate {
@@ -2411,7 +2411,7 @@ p.mcqQuestion {
 }
 
 .seq-notes {
-    width: 17%;
+    width: 26%;
 }
 
 input[type='checkbox'].largecheckbox {
