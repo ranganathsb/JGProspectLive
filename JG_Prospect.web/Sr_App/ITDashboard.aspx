@@ -1624,6 +1624,14 @@
             <div id="taskSequenceTabs">
                 <div id="StaffTask">
                     <div id="tblStaffSeq" class="div-table tableSeqTask">
+                        <div style="float: left; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
+                            <span id="lblFrom">{{pageFrom}}</span>&nbsp;<span id="ContentPlaceHolder1_Label5">to</span>&nbsp;
+                            <span id="lblTo" style="color: #19ea19">{{pageTo}}</span>
+                            <span id="lblof">of</span>
+                            <span id="lblCount" style="color: red;">{{pageOf}}</span>
+                            <span id="lblselectedchk" style="font-weight: bold;"></span>
+                        </div>
+                        <div style="clear: both"></div>
                         <div class="div-table-row-header">
                             <div class="div-table-col seq-number">Sequence#</div>
                             <div class="div-table-col seq-taskid">
@@ -2466,7 +2474,7 @@
         $(window).load(function () {
             sequenceScope.ForDashboard = true;
             var desId = "";
-            //debugger;
+            debugger;
 
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
                 $('#chkAllDates').attr("checked", true);
@@ -2618,20 +2626,35 @@
                     options.append($("<option selected='selected' />").val('0').text('All'));
                     // Handle 'no match' indicated by [ "" ] response
                     if (data.d) {
-                        debugger;
+
                         var result = [];
                         result = JSON.parse(data.d);
                         $.each(result, function () {
-                            options.append($("<option />").val(this.Id).text(this.FristName));
+                            var names = this.FristName.split(' - ');
+                            var name = names[0] +'&nbsp;-&nbsp;';
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
+                            options.append($("<option />").val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
                     }
                     options.trigger("chosen:updated");
                     $('#' + loader).hide();
                     $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
-                    // remove loading spinner image.                                
+
+                    //Create Links
+                    //$('#ddlSelectUserInProTask_chosen .chosen-drop ul.chosen-results li').each(function (i) {
+                    //    console.log($(this).html());
+                    //    $(this).bind("click", "a", function () {                            
+                    //        window.open($(this).find("a").attr("href"), "_blank", "", false);
+                    //    });
+                    //});
+                    // remove loading spinner image.
                 }
             });
+        }
+
+        function redir(url) {
+            window.open(url, '_blank');
         }
 
         function fillUsersClosedTasks(selector, fillDDL, loader) {
@@ -2735,6 +2758,12 @@
             Initialize();
         });
 
+        //$(document).on('click', '#ddlSelectUserInProTask_chosen', function () {
+        //    debugger;
+        //    var href = $(this).find('li.search-choice a').attr('href');
+        //    window.open(href, "_blank");
+        //});
+
 
         function Initialize() {
             SetInProTaskAutoSuggestion();
@@ -2808,7 +2837,7 @@
 
         function setSelectedUsersLink() {
             //debugger;
-            $('.search-choice').each(function () {
+            $('.chosen-dropDown').each(function () {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 //console.log(itemIndex);
                 if (itemIndex) {
@@ -2913,34 +2942,34 @@
 
                         ShowAllClosedTasksDashBoard(desIds.join(), 0, pageSize);
                         $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
+                         return false;
+                     }
 
 
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            //debugger;
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
+                     $.ajax({
+                         type: "POST",
+                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                         dataType: "json",
+                         contentType: "application/json; charset=utf-8",
+                         data: JSON.stringify({ searchterm: request.term }),
+                         success: function (data) {
+                             //debugger;
+                             // Handle 'no match' indicated by [ "" ] response
+                             if (data.d) {
+                                 ////debugger;
+                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                             }
+                             // remove loading spinner image.                                
+                             $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
                         }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
+                     });
+                 },
+                 minLength: 0,
+                 select: function (event, ui) {
+                     debugger;
+                     //alert(ui.item.value);
+                     //alert(ui.item.id);
+                     $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
                     //TriggerSearch();
                     desIds = $(".chosen-select-multi").val();
                     if (desIds == undefined) { desIds = ''; }
@@ -3092,12 +3121,12 @@
 
         function SetTaskCounterPopup() {
 
-            $('#' + '<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
-            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+            $('#' +'<%=lblFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);

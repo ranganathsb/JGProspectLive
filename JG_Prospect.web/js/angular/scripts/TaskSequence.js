@@ -38,7 +38,9 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.ForDashboard = false;
     $scope.UserId = 0;
     $scope.vSearch = "";
-
+    $scope.pageFrom = "0";
+    $scope.pageTo = "0";
+    $scope.pageOf = "0";
     $scope.SeqSubsets = [];
 
 
@@ -118,6 +120,21 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
                 if ($scope.Tasks != null)
                     $scope.TaskSelected = $scope.Tasks[0];
+
+                if ($scope.TotalRecords > 0) {
+                    $scope.pageFrom = ($scope.page * $scope.pageSize) + 1;
+                    if ($scope.TotalRecords <= $scope.pageSize) {
+                        $scope.pageTo = $scope.TotalRecords;
+                    }
+                    else {
+                        $scope.pageTo = ($scope.page + 1) * $scope.pageSize;
+                    }
+                    $scope.pageOf = $scope.TotalRecords;
+                }
+                else {
+                    $scope.pageFrom = $scope.pageOf = $scope.pageTo = 0;
+                }
+                
                 //console.log($scope.Tasks[0].SubSeqTasks);
                 //console.log('Counting Data...');
                 //console.log(results.RecordCount.PageIndex);
