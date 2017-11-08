@@ -1080,12 +1080,12 @@ namespace JG_Prospect
                             JGSession.UserPassword = txtpassword.Text.Trim();
                             JGSession.Username = ds.Tables[0].Rows[0]["CustomerName"].ToString();
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
-                            // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
+                            // Response.Redirect("~/Customer_Panel.aspx?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            // Response.Redirect("50.191.13.206/JGP/Customer_Panel.aspx?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.aspx");                          
                             Uri uri = Context.Request.Url;
                             string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
-                            //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            //  Response.Redirect(host + "/JGP/Customer_Panel.aspx?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             JGSession.IsCustomer = true;
                             if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
                             {
@@ -1098,7 +1098,7 @@ namespace JG_Prospect
                             }
                             else
                             {
-                                Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                Response.Redirect("~/Customer_Panel.aspx?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                                 //Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             }
                         }
