@@ -849,7 +849,7 @@ namespace JG_Prospect
                     CommonFunction.UpdateLog(UrlReferer.AbsoluteUri);
                 }
 
-                if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsoluteUri.Contains("form.php"))
+                if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com"))
                 {
                     // New user request : Welcome email and Login
                     if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && !string.IsNullOrEmpty(Request.QueryString["Email"]))
